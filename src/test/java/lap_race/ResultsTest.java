@@ -25,7 +25,7 @@ public class ResultsTest {
         // To run from jar, could use https://github.com/classgraph/classgraph/wiki/Code-examples#finding-and-reading-resource-files
         // or Utilities.getResourceDirectoryEntriesFromJar
 
-        Path temp_directory = Files.createTempDirectory(Paths.get("/Users/gnck/Desktop/"),"");//null);
+        Path temp_directory = Files.createTempDirectory(null);
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         Path temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
 

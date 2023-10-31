@@ -39,7 +39,8 @@ public class Results {
     String raw_results_filename;
     String year;
     int number_of_laps;
-    String race_name_for_output;
+    String race_name_for_results;
+    String race_name_for_filenames;
     String overall_results_header;
 
     // Derived.
@@ -65,33 +66,16 @@ public class Results {
     Set<Integer> prizes = new HashSet<>();
 
     List<Duration> mass_start_elapsed_times = new ArrayList<>();
+    List<String> dnf_legs = new ArrayList<>();
 
     public Results(String config_file_path) throws IOException {
 
-        Properties properties = new Properties();
-        try (FileInputStream in = new FileInputStream(config_file_path)) {
-            properties.load(in);
-        }
-
-        loadConfiguration(properties);
-
-        // why not in processResults?
-        loadEntries();
-        loadRawResults();
-
-        calculateLapResults(); // Need to calculate lap results as they're used in following calculations.
-        calculateOverallResults();
+        this(loadProperties(config_file_path));
     }
+
     public Results(Properties properties) throws IOException {
 
         loadConfiguration(properties);
-
-        // why not in processResults?
-        loadEntries();
-        loadRawResults();
-
-        calculateLapResults(); // Need to calculate lap results as they're used in following calculations.
-        calculateOverallResults();
     }
 
     public static void main(String[] args) throws IOException {
@@ -104,6 +88,15 @@ public class Results {
             new Results(args[0]).processResults();
     }
 
+    private static Properties loadProperties(String config_file_path) throws IOException {
+
+        Properties properties = new Properties();
+        try (FileInputStream in = new FileInputStream(config_file_path)) {
+            properties.load(in);
+        }
+        return properties;
+    }
+
     private void loadConfiguration(Properties properties) {
 
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
@@ -112,17 +105,20 @@ public class Results {
         raw_results_filename = properties.getProperty("RAW_RESULTS_FILENAME");
         year = properties.getProperty("YEAR");
         number_of_laps = Integer.parseInt(properties.getProperty("NUMBER_OF_LAPS"));
-        race_name_for_output = properties.getProperty("RACE_NAME_FOR_OUTPUT");
+        race_name_for_results = properties.getProperty("RACE_NAME_FOR_RESULTS");
+        race_name_for_filenames = properties.getProperty("RACE_NAME_FOR_FILENAMES");
         overall_results_header = properties.getProperty("OVERALL_RESULTS_HEADER");
 
         for (String time_as_string : properties.getProperty("MASS_START_ELAPSED_TIMES").split(",")) {
             mass_start_elapsed_times.add(RawResult.parseTime(time_as_string));
         }
 
-        overall_results_filename = race_name_for_output + "_overall_" + year + ".csv";
-        detailed_results_filename = race_name_for_output + "_detailed_" + year + ".csv";
-        lap_results_filename = race_name_for_output + "_leg_times_" + year + ".csv";
-        prizes_filename = race_name_for_output + "_prizes_" + year + ".txt";
+        Collections.addAll(dnf_legs, properties.getProperty("DNF_LEGS").split(","));
+
+        overall_results_filename = race_name_for_filenames + "_overall_" + year + ".csv";
+        detailed_results_filename = race_name_for_filenames + "_detailed_" + year + ".csv";
+        lap_results_filename = race_name_for_filenames + "_leg_times_" + year + ".csv";
+        prizes_filename = race_name_for_filenames + "_prizes_" + year + ".txt";
 
         input_directory_path = working_directory_path.resolve("input");
         entries_path = input_directory_path.resolve(entries_filename);
@@ -136,6 +132,13 @@ public class Results {
     }
 
     public void processResults() throws IOException {
+
+        // why not in processResults?
+        loadEntries();
+        loadRawResults();
+
+        calculateLapResults(); // Need to calculate lap results as they're used in following calculations.
+        calculateOverallResults();
 
         printOverallResults();
         printDetailedResults();
@@ -172,8 +175,9 @@ public class Results {
 
         int position = 1;
         for (OverallResult overall_result : overall_results) {
-            writer.append(String.valueOf(position++)).append(",").append(String.valueOf(overall_result));
+            writer.append(String.valueOf(position)).append(",").append(String.valueOf(overall_result));
             writer.append("\n");
+            position++;
         }
     }
 
@@ -196,7 +200,7 @@ public class Results {
 
             int bib_number = overall_result.bib_number;
 
-            writer.append(String.valueOf(position++)).append(",");
+            writer.append(String.valueOf(position)).append(",");
             writer.append(String.valueOf(bib_number)).append(",");
             writer.append(overall_result.team_name).append(",");
             writer.append(overall_result.team_category.toString()).append(",");
@@ -216,6 +220,7 @@ public class Results {
             }
 
             writer.append("\n");
+            position++;
         }
     }
 
@@ -271,7 +276,7 @@ public class Results {
 
         try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_path))) {
 
-            writer.append("Devil's Burdens Results ").append(year).append("\n");
+            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================\n\n");
 
             for (Category category : Arrays.asList(
@@ -298,8 +303,9 @@ public class Results {
         for (OverallResult overall_result : overall_results) {
 
             if (categoryMatch(category, position, overall_result) && !prizes.contains(overall_result.bib_number) && position <= number_of_prizes) {
-                writer.append(String.valueOf(position++)).append(",").append(String.valueOf(overall_result)).append("\n");
+                writer.append(String.valueOf(position)).append(",").append(String.valueOf(overall_result)).append("\n");
                 prizes.add(overall_result.bib_number);
+                position++;
             }
         }
 
@@ -365,11 +371,11 @@ public class Results {
                                 writer.append(OverallResult.format(lap_result.lap_time)).append(",");
                                 writer.append(an_earlier_lap_was_DNF ? DNF_STRING : OverallResult.format(lap_result.adjusted_split_time));
                             } else {
-                                writer.append(DNF_STRING + "," + DNF_STRING);
+                                writer.append(DNF_STRING).append(",").append(DNF_STRING);
                                 an_earlier_lap_was_DNF = true;
                             }
                         } catch (RuntimeException e) {
-                            writer.append(DNF_STRING + "," + DNF_STRING);
+                            writer.append(DNF_STRING).append(",").append(DNF_STRING);
                         }
 
                         if (lap < number_of_laps) writer.append(",");
@@ -451,14 +457,14 @@ public class Results {
 
             int lap_index = findEarliestLapWithoutNumberRecorded(raw_result.bib_number);
 
-            if (raw_result.recorded_elapsed_time.isZero()) {
-
-                // Mark current lap as DNF.
-                LapResult lap_result = findLapResult(raw_result.bib_number, lap_index - 1);
-                lap_result.DNF = true;
-                lap_result.lap_time = DNF_DUMMY_LAP_TIME;
-
-            } else {
+//            if (raw_result.recorded_elapsed_time.isZero()) {
+//
+//                // Mark current lap as DNF.
+//                LapResult lap_result = findLapResult(raw_result.bib_number, lap_index - 1);
+//                lap_result.DNF = true;
+//                lap_result.lap_time = DNF_DUMMY_LAP_TIME;
+//
+//            } else {
 
                 final List<LapResult> this_lap_results = lap_results.get(lap_index);
 
@@ -476,7 +482,18 @@ public class Results {
                         entries);
 
                 this_lap_results.add(lap_result);
-            }
+//            }
+        }
+
+        for (String dnf_leg : dnf_legs) {
+
+            String[] split = dnf_leg.split(":");
+            int bib_number = Integer.parseInt(split[0]);
+            int leg_number = Integer.parseInt(split[1]);
+
+            LapResult lap_result = findLapResult(bib_number, leg_number - 1);
+            lap_result.DNF = true;
+            lap_result.lap_time = DNF_DUMMY_LAP_TIME;
         }
 
         // Sort the results within each lap.
