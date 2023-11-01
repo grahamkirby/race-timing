@@ -1,5 +1,7 @@
-package lap_race;
+package lap_race.devils_burdens;
 
+import lap_race.Results;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import uk.ac.standrews.cs.utilities.FileManipulation;
 
@@ -19,30 +21,71 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ResultsTest {
 
+    // Test partial results cf results.gk 2020,
+    // test dead heat
+    // test top 2 are women cf cases in comments
+    // add and test early start option
+
+    Properties properties;
+    Path resources_expected_outputs;
+    Path temp_directory;
+    Path temp_output_sub_directory;
+
+    @AfterEach
+    public void tearDown() throws IOException {
+        FileManipulation.deleteDirectory(temp_directory);
+    }
+
     @Test
-    public void resultsAsExpected() throws Exception {
+    public void simple() throws Exception {
 
-        // To run from jar, could use https://github.com/classgraph/classgraph/wiki/Code-examples#finding-and-reading-resource-files
-        // or Utilities.getResourceDirectoryEntriesFromJar
-
-        Path temp_directory = Files.createTempDirectory(null);
-        Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
-        Path temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
-
-        Path resources_inputs = Paths.get("src/test/resources/devils-burdens/input/");
-        Path resources_config = Paths.get("src/test/resources/devils-burdens/race.config");
-        Path resources_expected_outputs = Paths.get("src/test/resources/devils-burdens/expected/");
-
-        copyFilesBetweenDirectories(resources_inputs, temp_input_sub_directory);
-
-        Properties properties = getProperties(resources_config);
-        properties.setProperty("WORKING_DIRECTORY", temp_directory.toString());
+        configureTest("simple");
 
         new Results(properties).processResults();
 
         assertThatDirectoriesHaveSameContent(resources_expected_outputs, temp_output_sub_directory);
+    }
 
-        FileManipulation.deleteDirectory(temp_directory);
+    @Test
+    public void results2020() throws Exception {
+
+        configureTest("2020");
+
+        new Results(properties).processResults();
+
+        assertThatDirectoriesHaveSameContent(resources_expected_outputs, temp_output_sub_directory);
+    }
+
+    @Test
+    public void missingTeam() throws Exception {
+
+        configureTest("missing_team");
+
+        RuntimeException thrown = assertThrows(
+            RuntimeException.class,
+            () -> new Results(properties).processResults()
+        );
+
+        assertEquals("undefined team: 4", thrown.getMessage());
+    }
+
+    private void configureTest(String test_resource_root) throws IOException {
+
+        // temp_directory = Files.createTempDirectory(Paths.get("/Users/gnck/Desktop"), "temp");
+        temp_directory = Files.createTempDirectory(null);
+
+        Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
+        temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
+
+        Path resources_root = Paths.get("src/test/resources/devils_burdens/" + test_resource_root);
+        Path resources_config = resources_root.resolve("race.config");
+        Path resources_inputs = resources_root.resolve("input");
+        resources_expected_outputs = resources_root.resolve("expected");
+
+        copyFilesBetweenDirectories(resources_inputs, temp_input_sub_directory);
+
+        properties = getProperties(resources_config);
+        properties.setProperty("WORKING_DIRECTORY", temp_directory.toString());
     }
 
     private static void copyFilesBetweenDirectories(Path source, Path destination) throws IOException {
