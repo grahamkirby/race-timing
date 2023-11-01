@@ -25,6 +25,7 @@ public class Results {
 
     public static final String DNF_STRING = "DNF";
     public static final String DNS_STRING = "DNS";
+    private static final String NO_MASS_STARTS = "23:59:59,23:59:59,23:59:59,23:59:59";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,7 +74,7 @@ public class Results {
         this(loadProperties(config_file_path));
     }
 
-    public Results(Properties properties) throws IOException {
+    public Results(Properties properties) {
 
         loadConfiguration(properties);
     }
@@ -84,8 +85,15 @@ public class Results {
 
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
-        else
-            new Results(args[0]).processResults();
+        else {
+            try {
+                new Results(args[0]).processResults();
+            }
+            catch (RuntimeException e) {
+                //System.err.println(e.getMessage());
+                throw e;
+            }
+        }
     }
 
     private static Properties loadProperties(String config_file_path) throws IOException {
@@ -109,11 +117,15 @@ public class Results {
         race_name_for_filenames = properties.getProperty("RACE_NAME_FOR_FILENAMES");
         overall_results_header = properties.getProperty("OVERALL_RESULTS_HEADER");
 
-        for (String time_as_string : properties.getProperty("MASS_START_ELAPSED_TIMES").split(",")) {
+        String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
+        if (mass_start_elapsed_times_string.isBlank()) mass_start_elapsed_times_string = NO_MASS_STARTS;
+
+        for (String time_as_string : mass_start_elapsed_times_string.split(",")) {
             mass_start_elapsed_times.add(RawResult.parseTime(time_as_string));
         }
 
-        Collections.addAll(dnf_legs, properties.getProperty("DNF_LEGS").split(","));
+        String dnf_legs_string = properties.getProperty("DNF_LEGS");
+        if (!dnf_legs_string.isBlank()) Collections.addAll(dnf_legs, dnf_legs_string.split(","));
 
         overall_results_filename = race_name_for_filenames + "_overall_" + year + ".csv";
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year + ".csv";
@@ -457,32 +469,22 @@ public class Results {
 
             int lap_index = findEarliestLapWithoutNumberRecorded(raw_result.bib_number);
 
-//            if (raw_result.recorded_elapsed_time.isZero()) {
-//
-//                // Mark current lap as DNF.
-//                LapResult lap_result = findLapResult(raw_result.bib_number, lap_index - 1);
-//                lap_result.DNF = true;
-//                lap_result.lap_time = DNF_DUMMY_LAP_TIME;
-//
-//            } else {
+            final List<LapResult> this_lap_results = lap_results.get(lap_index);
 
-                final List<LapResult> this_lap_results = lap_results.get(lap_index);
+            final Duration adjusted_split_time = calculateAdjustedSplitTime(raw_result, lap_index);
+            final Duration amount_this_lap_finish_later_than_next_lap_mass_start = calculateAmountThisLapFinishLaterThanNextLapMassStart(raw_result, lap_index);
+            final Duration lap_time = calculateLapTime(raw_result, lap_index);
 
-                final Duration adjusted_split_time = calculateAdjustedSplitTime(raw_result, lap_index);
-                final Duration amount_this_lap_finish_later_than_next_lap_mass_start = calculateAmountThisLapFinishLaterThanNextLapMassStart(raw_result, lap_index);
-                final Duration lap_time = calculateLapTime(raw_result, lap_index);
+            final LapResult lap_result = new LapResult(
+                    lap_index + 1,
+                    raw_result.bib_number,
+                    raw_result.recorded_elapsed_time,
+                    adjusted_split_time,
+                    amount_this_lap_finish_later_than_next_lap_mass_start,
+                    lap_time,
+                    entries);
 
-                final LapResult lap_result = new LapResult(
-                        lap_index + 1,
-                        raw_result.bib_number,
-                        raw_result.recorded_elapsed_time,
-                        adjusted_split_time,
-                        amount_this_lap_finish_later_than_next_lap_mass_start,
-                        lap_time,
-                        entries);
-
-                this_lap_results.add(lap_result);
-//            }
+            this_lap_results.add(lap_result);
         }
 
         for (String dnf_leg : dnf_legs) {
