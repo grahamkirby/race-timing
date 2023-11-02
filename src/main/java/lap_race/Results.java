@@ -186,8 +186,30 @@ public class Results {
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
+        int previous_position_with_same_time = 1;
+        Duration previous_time = null;
+
         for (OverallResult overall_result : overall_results) {
-            writer.append(String.valueOf(position)).append(",").append(String.valueOf(overall_result));
+
+            String position_string;
+            Duration overallTime = overall_result.overall_time;
+
+            if (position == 1) {
+                previous_time = overallTime;
+                position_string = String.valueOf(position);
+            }
+            else {
+                if (overallTime.equals(previous_time)) {
+                    position_string = String.valueOf(previous_position_with_same_time) + "=";
+                }
+                else {
+                    previous_time = overallTime;
+                    position_string = String.valueOf(position);
+                    previous_position_with_same_time = position;
+                }
+            }
+
+            writer.append(position_string).append(",").append(String.valueOf(overall_result));
             writer.append("\n");
             position++;
         }
@@ -409,7 +431,9 @@ public class Results {
 
             if (laps_completed == 0) {
                 Team team = entry.getValue();
-                writer.append(",").append(String.valueOf(bib_number)).append(",").append(team.getName()).append(",").append(String.valueOf(team.getCategory())).append(",").append(DNS_STRING).append("\n");
+                writer.append(",").append(String.valueOf(bib_number)).append(",").
+                        append(team.getName()).append(",").append(String.valueOf(team.getCategory())).
+                        append(",").append(DNS_STRING).append("\n");
             }
         }
     }
@@ -587,7 +611,38 @@ public class Results {
         for (int lap_index = 0; lap_index < number_of_laps; lap_index++) {
             if (!bibNumberRecorded(bib_number, lap_index)) return lap_index;
         }
-        throw new RuntimeException("bib number recorded too many times: " + bib_number);
+
+        throw new RuntimeException("surplus result recorded for team: " + bib_number + getDescriptionOfTeamsMissingResults());
+    }
+
+    private String getDescriptionOfTeamsMissingResults() {
+
+        StringBuilder builder = new StringBuilder();
+
+        Map<Integer, Integer> lap_counts = new HashMap<>();
+        for (RawResult raw_result : raw_results) {
+            lap_counts.putIfAbsent(raw_result.bib_number, 0);
+            lap_counts.put(raw_result.bib_number, lap_counts.get(raw_result.bib_number) + 1);
+        }
+
+        for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
+
+            final int bib_number = entry.getKey();
+            final int laps_completed = lap_counts.get(bib_number);
+
+            if (laps_completed < number_of_laps) {
+                if (!builder.isEmpty()) builder.append(", ");
+                builder.append(bib_number);
+            }
+        }
+
+        if (builder.isEmpty()) {
+            builder.append("; no teams missing results");
+        }
+        else {
+            builder = new StringBuilder("; team(s) missing results: ").append(builder);
+        }
+        return builder.toString();
     }
 
     private boolean bibNumberRecorded(final int bib_number, final int lap_index) {

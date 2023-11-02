@@ -23,8 +23,15 @@ public class ResultsTest {
 
     // Test partial results cf results.gk 2020,
     // test dead heat
+    // test different number of laps
+    // mass start times wrong order
+    // all legs DNF
     // test top 2 are women cf cases in comments
     // add and test early start option
+    // annotate detailed results with early and mass starts
+    // generate PDF for overall
+    // generate HTML
+    // generate xls
 
     Properties properties;
     Path resources_expected_outputs;
@@ -39,21 +46,25 @@ public class ResultsTest {
     @Test
     public void simple() throws Exception {
 
-        configureTest("simple");
-
-        new Results(properties).processResults();
-
-        assertThatDirectoriesHaveSameContent(resources_expected_outputs, temp_output_sub_directory);
+        processingCompletes("simple");
     }
 
     @Test
     public void results2020() throws Exception {
 
-        configureTest("2020");
+        processingCompletes("full");
+    }
 
-        new Results(properties).processResults();
+    @Test
+    public void missingResult() throws Exception {
 
-        assertThatDirectoriesHaveSameContent(resources_expected_outputs, temp_output_sub_directory);
+        processingCompletes("missing_result");
+    }
+
+    @Test
+    public void deadHeat() throws Exception {
+
+        processingCompletes("dead_heat");
     }
 
     @Test
@@ -67,6 +78,39 @@ public class ResultsTest {
         );
 
         assertEquals("undefined team: 4", thrown.getMessage());
+    }
+
+    @Test
+    public void extraResult() throws Exception {
+
+        configureTest("extra_result");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("surplus result recorded for team: 2; no teams missing results", thrown.getMessage());
+    }
+
+    @Test
+    public void switchedResult() throws Exception {
+
+        configureTest("switched_result");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("surplus result recorded for team: 2; team(s) missing results: 4", thrown.getMessage());
+    }
+
+    private void processingCompletes(String configuration_name) throws Exception {
+
+        configureTest(configuration_name);
+        new Results(properties).processResults();
+        assertThatDirectoriesHaveSameContent(resources_expected_outputs, temp_output_sub_directory);
     }
 
     private void configureTest(String test_resource_root) throws IOException {
