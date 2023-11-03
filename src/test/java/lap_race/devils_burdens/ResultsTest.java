@@ -50,7 +50,7 @@ public class ResultsTest {
     }
 
     @Test
-    public void results2020() throws Exception {
+    public void full() throws Exception {
 
         processingCompletes("full");
     }

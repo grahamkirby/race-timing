@@ -10,6 +10,7 @@ public class OverallResult {
     Category team_category;
 
     Duration overall_time;
+    String position_string;    // Use string to cater for = positions.
 
     public OverallResult(int bib_number, Duration overall_time, Map<Integer, Team> entries) {
 

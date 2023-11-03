@@ -145,7 +145,6 @@ public class Results {
 
     public void processResults() throws IOException {
 
-        // why not in processResults?
         loadEntries();
         loadRawResults();
 
@@ -185,33 +184,8 @@ public class Results {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        int position = 1;
-        int previous_position_with_same_time = 1;
-        Duration previous_time = null;
-
         for (OverallResult overall_result : overall_results) {
-
-            String position_string;
-            Duration overallTime = overall_result.overall_time;
-
-            if (position == 1) {
-                previous_time = overallTime;
-                position_string = String.valueOf(position);
-            }
-            else {
-                if (overallTime.equals(previous_time)) {
-                    position_string = String.valueOf(previous_position_with_same_time) + "=";
-                }
-                else {
-                    previous_time = overallTime;
-                    position_string = String.valueOf(position);
-                    previous_position_with_same_time = position;
-                }
-            }
-
-            writer.append(position_string).append(",").append(String.valueOf(overall_result));
-            writer.append("\n");
-            position++;
+            writer.append(overall_result.position_string).append(",").append(String.valueOf(overall_result)).append("\n");
         }
     }
 
@@ -228,13 +202,11 @@ public class Results {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        int position = 1;
-
         for (OverallResult overall_result : overall_results) {
 
             int bib_number = overall_result.bib_number;
 
-            writer.append(String.valueOf(position)).append(",");
+            writer.append(String.valueOf(overall_result.position_string)).append(",");
             writer.append(String.valueOf(bib_number)).append(",");
             writer.append(overall_result.team_name).append(",");
             writer.append(overall_result.team_category.toString()).append(",");
@@ -254,7 +226,6 @@ public class Results {
             }
 
             writer.append("\n");
-            position++;
         }
     }
 
@@ -282,7 +253,6 @@ public class Results {
                         LapResult lap_result = results_for_lap.get(pos - 1);
                         if (!lap_result.DNF) {
                             Team team = entries.get(lap_result.bib_number);
-
                             writer.append(",").append(team.runners[lap - 1]).append(",").append(OverallResult.format(lap_result.lap_time));
                         } else {
                             writer.append(",,");
@@ -334,13 +304,36 @@ public class Results {
         writer.append("\n");
 
         int position = 1;
+        List<PrizeResult> prize_results = new ArrayList<>();
+
         for (OverallResult overall_result : overall_results) {
 
             if (categoryMatch(category, position, overall_result) && !prizes.contains(overall_result.bib_number) && position <= number_of_prizes) {
-                writer.append(String.valueOf(position)).append(",").append(String.valueOf(overall_result)).append("\n");
+
+                prize_results.add(new PrizeResult(String.valueOf(position), overall_result));
+
                 prizes.add(overall_result.bib_number);
                 position++;
             }
+        }
+
+        for (int i = 0; i < prize_results.size(); i++) {
+
+            OverallResult result = prize_results.get(i).result;
+            int j = i;
+
+            while (j + 1 < prize_results.size() && result.overall_time.equals(prize_results.get(j + 1).result.overall_time)) j++;
+            if (j > i) {
+                for (int k = i; k <= j; k++)
+                    prize_results.get(k).position_string = i + 1 + "=";
+                i = j + 1;
+            }
+            else
+                result.position_string = String.valueOf(i + 1);
+        }
+
+        for (PrizeResult prize_result : prize_results) {
+            writer.append(String.valueOf(prize_result.position_string)).append(",").append(String.valueOf(prize_result.result)).append("\n");
         }
 
         writer.append("\n\n");
@@ -388,37 +381,42 @@ public class Results {
             if (laps_completed > 0 && laps_completed < number_of_laps) {
 
                 Team team = entry.getValue();
-                writer.append(",").append(String.valueOf(bib_number)).append(",").append(team.getName()).append(",").append(String.valueOf(team.getCategory())).append(",");
+                writer.append(",").append(String.valueOf(bib_number)).append(",").append(team.getName());
+                writer.append(",").append(String.valueOf(team.getCategory())).append(",");
 
                 if (include_lap_details) {
-
-                    boolean an_earlier_lap_was_DNF = false;
-
-                    for (int lap = 1; lap <= number_of_laps; lap++) {
-
-                        writer.append(team.runners[lap - 1]).append(",");
-
-                        try {
-                            final LapResult lap_result = findLapResult(bib_number, lap - 1);
-
-                            if (!lap_result.DNF) {
-                                writer.append(OverallResult.format(lap_result.lap_time)).append(",");
-                                writer.append(an_earlier_lap_was_DNF ? DNF_STRING : OverallResult.format(lap_result.adjusted_split_time));
-                            } else {
-                                writer.append(DNF_STRING).append(",").append(DNF_STRING);
-                                an_earlier_lap_was_DNF = true;
-                            }
-                        } catch (RuntimeException e) {
-                            writer.append(DNF_STRING).append(",").append(DNF_STRING);
-                        }
-
-                        if (lap < number_of_laps) writer.append(",");
-                    }
+                    extracted(bib_number, team, writer);
                     writer.append("\n");
-                } else {
-                    writer.append("DNF\n");
                 }
+                else
+                    writer.append("DNF\n");
             }
+        }
+    }
+
+    private void extracted(int bib_number, Team team, OutputStreamWriter writer) throws IOException {
+
+        boolean an_earlier_lap_was_DNF = false;
+
+        for (int lap = 1; lap <= number_of_laps; lap++) {
+
+            writer.append(team.runners[lap - 1]).append(",");
+
+            try {
+                final LapResult lap_result = findLapResult(bib_number, lap - 1);
+
+                if (!lap_result.DNF) {
+                    writer.append(OverallResult.format(lap_result.lap_time)).append(",");
+                    writer.append(an_earlier_lap_was_DNF ? DNF_STRING : OverallResult.format(lap_result.adjusted_split_time));
+                } else {
+                    writer.append(DNF_STRING).append(",").append(DNF_STRING);
+                    an_earlier_lap_was_DNF = true;
+                }
+            } catch (RuntimeException e) {
+                writer.append(DNF_STRING).append(",").append(DNF_STRING);
+            }
+
+            if (lap < number_of_laps) writer.append(",");
         }
     }
 
@@ -551,6 +549,23 @@ public class Results {
         }
 
         overall_results.sort(Comparator.comparing(o -> o.overall_time));
+
+        int number_of_results = overall_results.size();
+
+        for (int i = 0; i < number_of_results; i++) {
+
+            OverallResult result = overall_results.get(i);
+            int j = i;
+
+            while (j + 1 < number_of_results && result.overall_time.equals(overall_results.get(j + 1).overall_time)) j++;
+            if (j > i) {
+                for (int k = i; k <= j; k++)
+                    overall_results.get(k).position_string = i + 1 + "=";
+                i = j;
+            }
+            else
+                result.position_string = String.valueOf(i + 1);
+        }
     }
 
     private Duration calculateAmountThisLapFinishLaterThanNextLapMassStart(final RawResult raw_result, final int lap_index) {
@@ -651,5 +666,14 @@ public class Results {
             if (lap_result.bib_number == bib_number) return true;
         }
         return false;
+    }
+
+    static class PrizeResult {
+        String position_string;
+        OverallResult result;
+        PrizeResult(String position_string, OverallResult result) {
+            this.position_string = position_string;
+            this.result = result;
+        }
     }
 }
