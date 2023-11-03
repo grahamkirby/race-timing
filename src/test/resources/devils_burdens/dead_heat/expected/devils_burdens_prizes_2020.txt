@@ -10,20 +10,20 @@ Category: Women Senior
 Category: Open Senior
 ---------------------
 
-1,4,Beacon: 50 Shades of Beacon,Women 50+,03:48:29
-2=,3,Anster Haddies Team Elite,Open Senior,03:49:52
-2=,5,Beacon: Beacon Belligerents,Open Senior,03:49:52
+1=,3,Anster Haddies Team Elite,Open Senior,03:49:52
+1=,5,Beacon: Beacon Belligerents,Open Senior,03:49:52
 
 
 Category: Women 40+
 -------------------
 
+1,4,Beacon: 50 Shades of Beacon,Women 50+,03:49:52
 
 
 Category: Open 40+
 ------------------
 
-1,2,Anster Haddies Mens 1,Open 50+,03:49:52
+1,2,Anster Haddies Mens 1,Open 50+,03:59:52
 
 
 Category: Women 50+
