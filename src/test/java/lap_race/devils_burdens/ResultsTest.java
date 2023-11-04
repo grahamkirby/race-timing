@@ -32,6 +32,7 @@ public class ResultsTest {
     // generate PDF for overall
     // generate HTML
     // generate xls
+    // illegal config - dnf lap times, mass start times
 
     Properties properties;
     Path resources_expected_outputs;
