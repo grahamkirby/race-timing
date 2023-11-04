@@ -5,14 +5,14 @@ import java.time.Duration;
 public class RawResult {
 
      int bib_number;
-     Duration recorded_elapsed_time;
+     Duration recorded_time;  // Relative to start of leg 1.
 
     public RawResult(String file_line) {
 
         String[] elements = file_line.split("\t");
 
         bib_number = Integer.parseInt(elements[0]);
-        recorded_elapsed_time = parseTime(elements[1]);
+        recorded_time = parseTime(elements[1]);
     }
 
     static Duration parseTime(final String element) {
@@ -38,6 +38,6 @@ public class RawResult {
     }
 
     public String toString() {
-        return "bib: " + bib_number + ", time: " + recorded_elapsed_time;
+        return "bib: " + bib_number + ", time: " + recorded_time;
     }
 }

@@ -3,9 +3,9 @@ package lap_race;
 import java.time.Duration;
 import java.util.Map;
 
-public class LapResult {
+public class LegResult {
 
-    int lap;
+    int leg_number;
     int bib_number;
     String team_name;
     Category team_category;
@@ -13,17 +13,17 @@ public class LapResult {
 
     Duration recorded_split_time;
     Duration adjusted_split_time;
-    Duration amount_this_lap_finish_later_than_next_lap_mass_start; // Zero if it isn't after mass start.
-    Duration lap_time;
+    Duration adjustment_for_finishing_after_next_leg_mass_start; // Zero if it isn't after mass start.
+    Duration leg_time;
 
-    public LapResult(int lap, int bib_number, Duration recorded_split_time, Duration adjusted_split_time, Duration amount_this_lap_finish_later_than_next_lap_mass_start, Duration lap_time, Map<Integer, Team> entries) {
+    public LegResult(int leg_number, int bib_number, Duration recorded_split_time, Duration adjusted_split_time, Duration adjustment_for_finishing_after_next_leg_mass_start, Duration leg_time, Map<Integer, Team> entries) {
 
-        this.lap = lap;
+        this.leg_number = leg_number;
         this.bib_number = bib_number;
         this.recorded_split_time = recorded_split_time;
         this.adjusted_split_time = adjusted_split_time;
-        this.amount_this_lap_finish_later_than_next_lap_mass_start = amount_this_lap_finish_later_than_next_lap_mass_start;
-        this.lap_time = lap_time;
+        this.adjustment_for_finishing_after_next_leg_mass_start = adjustment_for_finishing_after_next_leg_mass_start;
+        this.leg_time = leg_time;
 
         team_name = getTeamName(bib_number, entries);
         team_category = getTeamCategory(bib_number, entries);
@@ -45,6 +45,6 @@ public class LapResult {
     }
 
     public String toString() {
-        return bib_number + "," + team_name + "," + team_category + "," + OverallResult.format(recorded_split_time) + "," + OverallResult.format(amount_this_lap_finish_later_than_next_lap_mass_start) + "," + OverallResult.format(lap_time);
+        return bib_number + "," + team_name + "," + team_category + "," + OverallResult.format(recorded_split_time) + "," + OverallResult.format(adjustment_for_finishing_after_next_leg_mass_start) + "," + OverallResult.format(leg_time);
     }
 }
