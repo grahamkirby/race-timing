@@ -44,7 +44,6 @@ public class Results {
     int number_of_legs;
     String race_name_for_results;
     String race_name_for_filenames;
-    String overall_results_header;
 
     // Derived.
     String overall_results_filename;
@@ -117,7 +116,6 @@ public class Results {
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
         race_name_for_results = properties.getProperty("RACE_NAME_FOR_RESULTS");
         race_name_for_filenames = properties.getProperty("RACE_NAME_FOR_FILENAMES");
-        overall_results_header = properties.getProperty("OVERALL_RESULTS_HEADER");
 
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
         if (mass_start_elapsed_times_string.isBlank()) mass_start_elapsed_times_string = NO_MASS_STARTS;
@@ -186,8 +184,10 @@ public class Results {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
+        int position = 1;
+
         for (OverallResult overall_result : overall_results) {
-            writer.append(overall_result.position_string).append(",").append(String.valueOf(overall_result)).append("\n");
+            writer.append(String.valueOf(position++)).append(",").append(String.valueOf(overall_result)).append("\n");
         }
     }
 
@@ -204,11 +204,13 @@ public class Results {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
+        int position = 1;
+
         for (OverallResult overall_result : overall_results) {
 
             int bib_number = overall_result.bib_number;
 
-            writer.append(String.valueOf(overall_result.position_string)).append(",");
+            writer.append(String.valueOf(position++)).append(",");
             writer.append(String.valueOf(bib_number)).append(",");
             writer.append(overall_result.team_name).append(",");
             writer.append(overall_result.team_category.toString()).append(",");
@@ -317,21 +319,6 @@ public class Results {
                 prizes.add(overall_result.bib_number);
                 position++;
             }
-        }
-
-        for (int i = 0; i < prize_results.size(); i++) {
-
-            OverallResult result = prize_results.get(i).result;
-            int j = i;
-
-            while (j + 1 < prize_results.size() && result.overall_time.equals(prize_results.get(j + 1).result.overall_time)) j++;
-            if (j > i) {
-                for (int k = i; k <= j; k++)
-                    prize_results.get(k).position_string = i + 1 + "=";
-                i = j + 1;
-            }
-            else
-                result.position_string = String.valueOf(i + 1);
         }
 
         for (PrizeResult prize_result : prize_results) {
@@ -453,12 +440,12 @@ public class Results {
 
     private void printOverallResultsHeader(OutputStreamWriter writer) throws IOException {
 
-        writer.append(overall_results_header).append("Total\n");
+        writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
     }
 
     private void printDetailedResultsHeader(OutputStreamWriter writer) throws IOException {
 
-        writer.append(overall_results_header);
+        writer.append(OVERALL_RESULTS_HEADER);
 
         for (int leg = 1; leg <= number_of_legs; leg++) {
             writer.append("Runners ").append(String.valueOf(leg)).append(",Leg ").append(String.valueOf(leg)).append(",");
@@ -547,23 +534,6 @@ public class Results {
         }
 
         overall_results.sort(Comparator.comparing(o -> o.overall_time));
-
-        int number_of_results = overall_results.size();
-
-        for (int i = 0; i < number_of_results; i++) {
-
-            OverallResult result = overall_results.get(i);
-            int j = i;
-
-            while (j + 1 < number_of_results && result.overall_time.equals(overall_results.get(j + 1).overall_time)) j++;
-            if (j > i) {
-                for (int k = i; k <= j; k++)
-                    overall_results.get(k).position_string = i + 1 + "=";
-                i = j;
-            }
-            else
-                result.position_string = String.valueOf(i + 1);
-        }
     }
 
     private Duration adjustmentForFinishingAfterNextLegMassStart(final RawResult raw_result, final int leg_index) {
@@ -675,3 +645,21 @@ public class Results {
         }
     }
 }
+
+// code for dead heats
+//        int number_of_results = overall_results.size();
+//
+//        for (int i = 0; i < number_of_results; i++) {
+//
+//            OverallResult result = overall_results.get(i);
+//            int j = i;
+//
+//            while (j + 1 < number_of_results && result.overall_time.equals(overall_results.get(j + 1).overall_time)) j++;
+//            if (j > i) {
+//                for (int k = i; k <= j; k++)
+//                    overall_results.get(k).position_string = i + 1 + "=";
+//                i = j;
+//            }
+//            else
+//                result.position_string = String.valueOf(i + 1);
+//        }

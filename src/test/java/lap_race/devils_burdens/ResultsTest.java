@@ -22,8 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ResultsTest {
 
     // Test partial results cf results.gk 2020,
-    // test dead heat
-    // test different number of laps
+    // only process dead heat for leg rankings, separate list for each leg
+    // check prizes with dead heats in recording order
+    // test different number of legs
     // mass start times wrong order
     // all legs DNF
     // test top 2 are women cf cases in comments
@@ -33,6 +34,7 @@ public class ResultsTest {
     // generate HTML
     // generate xls
     // illegal config - dnf lap times, mass start times
+    // 3rd leg runner starts after 4th leg mass start
 
     Properties properties;
     Path resources_expected_outputs;
@@ -60,12 +62,6 @@ public class ResultsTest {
     public void missingResult() throws Exception {
 
         processingCompletes("missing_result");
-    }
-
-    @Test
-    public void deadHeat() throws Exception {
-
-        processingCompletes("dead_heat");
     }
 
     @Test
