@@ -23,18 +23,22 @@ public class ResultsTest {
 
     // Test partial results cf results.gk 2020,
     // only process dead heat for leg rankings, separate list for each leg
-    // check prizes with dead heats in recording order
     // test different number of legs
-    // mass start times wrong order
+    // simple cases with DNFs
     // all legs DNF
-    // test top 2 are women cf cases in comments
+    // 3rd leg DNF but not 4th
+    // all legs DNF except 4th
+    // leg dead heats with and without same start time - only latter should be heats
+    // various category combinations for prizes
+    // top 2 prizes are women cf cases in comments
     // add and test early start option
     // annotate detailed results with early and mass starts
     // generate PDF for overall
     // generate HTML
     // generate xls
-    // illegal config - dnf lap times, mass start times
+    // illegal config - dnf lap times, mass start times / mass start times wrong order
     // 3rd leg runner starts after 4th leg mass start
+    // 1st leg runner finishes after 3rd/4th leg mass start
 
     Properties properties;
     Path resources_expected_outputs;

@@ -5,22 +5,29 @@ import java.util.Map;
 
 public class OverallResult {
 
-    int bib_number;
-    String team_name;
-    Category team_category;
+    Team team;
 
-    Duration overall_time;
+    Duration overall_duration;
 
-    public OverallResult(int bib_number, Duration overall_time, Map<Integer, Team> entries) {
+    LegResult[] leg_results;
 
-        this.bib_number = bib_number;
-        this.overall_time = overall_time;
+    public OverallResult(Team team, int number_of_legs) {
 
-        team_name = getTeamName(bib_number, entries);
-        team_category = getTeamCategory(bib_number, entries);
+        this.team = team;
+        leg_results = new LegResult[number_of_legs];
+        overall_duration = Results.ZERO_TIME;
     }
 
-     String getTeamName(final int bib_number, final Map<Integer, Team> entries) {
+//    public OverallResult(int bib_number, Duration overall_time, Map<Integer, Team> entries) {
+//
+//        this.bib_number = bib_number;
+//        this.overall_duration = overall_time;
+//
+//        team_name = getTeamName(bib_number, entries);
+//        team_category = getTeamCategory(bib_number, entries);
+//    }
+
+    String getTeamName(final int bib_number, final Map<Integer, Team> entries) {
         for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
             if (entry.getKey() == bib_number) return entry.getValue().name;
         }
@@ -35,7 +42,7 @@ public class OverallResult {
     }
 
     public String toString() {
-        return bib_number + "," + team_name + "," + team_category + "," + format(overall_time);
+        return team.bib_number + "," + team.name + "," + team.category + "," + format(overall_duration);
     }
 
     public static String format(Duration duration) {

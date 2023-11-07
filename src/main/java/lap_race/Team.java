@@ -5,11 +5,13 @@ import java.util.Arrays;
 public class Team {
 
     String name;
+    int bib_number;
     Category category;
     String[] runners;
 
     public Team(String[] elements) {
 
+        bib_number = Integer.parseInt(elements[0]);
         name = elements[1];
         category = Category.parse(elements[2]);
         runners = Arrays.copyOfRange(elements, 3, elements.length);
