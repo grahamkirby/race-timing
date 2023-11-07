@@ -61,7 +61,7 @@ public class Results {
     Team[] entries;
     RawResult[] raw_results;
     OverallResult[] results;
-//    Set<Integer> prizes = new HashSet<>();
+    Set<Team> prize_winners = new HashSet<>();
 
     Duration[] start_times_for_mass_starts;  // Relative to start of leg 1.
 
@@ -83,24 +83,18 @@ public class Results {
 
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
-        else {
-            try {
-                new Results(args[0]).processResults();
-            }
-            catch (RuntimeException e) {
-                //System.err.println(e.getMessage());
-                throw e;
-            }
-        }
+        else
+            new Results(args[0]).processResults();
     }
 
     private static Properties loadProperties(String config_file_path) throws IOException {
 
-        Properties properties = new Properties();
         try (FileInputStream in = new FileInputStream(config_file_path)) {
+
+            Properties properties = new Properties();
             properties.load(in);
+            return properties;
         }
-        return properties;
     }
 
     private void loadConfiguration(Properties properties) {
@@ -161,7 +155,7 @@ public class Results {
         printOverallResults();
         printDetailedResults();
         printLegResults();
-//        printPrizes();
+        printPrizes();
     }
 
     public void printOverallResults() throws IOException {
@@ -393,69 +387,72 @@ public class Results {
 //        return count;
 //    }
 
-//    public void printPrizes() throws IOException {
-//
-//        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_path))) {
-//
-//            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
-//            writer.append("============================\n\n");
-//
-//            for (Category category : Arrays.asList(
-//                    Category.FEMALE_SENIOR, Category.OPEN_SENIOR,
-//                    Category.FEMALE_40, Category.OPEN_40,
-//                    Category.FEMALE_50, Category.OPEN_50,
-//                    Category.FEMALE_60, Category.OPEN_60,
-//                    Category.MIXED_SENIOR, Category.MIXED_40)) {
-//
-//                printPrizes(category, writer);
-//            }
-//        }
-//    }
+    public void printPrizes() throws IOException {
 
-//    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
-//
-//        int number_of_prizes = category.getNumberOfPrizes();
-//
-//        writer.append("Category: ").append(String.valueOf(category)).append("\n");
-//        printDashes(category.toString().length() + 10, writer);
-//        writer.append("\n");
-//
-//        int position = 1;
-//        List<PrizeResult> prize_results = new ArrayList<>();
-//
-//        for (OverallResult overall_result : overall_results) {
-//
-//            if (categoryMatch(category, position, overall_result) && !prizes.contains(overall_result.bib_number) && position <= number_of_prizes) {
-//
-//                prize_results.add(new PrizeResult(String.valueOf(position), overall_result));
-//
-//                prizes.add(overall_result.bib_number);
-//                position++;
-//            }
-//        }
-//
-//        for (PrizeResult prize_result : prize_results) {
-//            writer.append(String.valueOf(prize_result.position_string)).append(",").append(String.valueOf(prize_result.result)).append("\n");
-//        }
-//
-//        writer.append("\n\n");
-//    }
+        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_path))) {
 
-//    private boolean categoryMatch(final Category category, final int position, final OverallResult overall_result) {
-//
-//        // Only check for an older category being included in this category when looking for first prize,
-//        // since the first in an older category always gets that prize rather than a lower senior prize.
-//
-//        // This won't work in the case where the top two teams are women or mixed...
-//
-//        return category == overall_result.team_category || (position == 1 && category.includes(overall_result.team_category));
-//    }
+            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
+            writer.append("============================\n\n");
 
-//    private void printDashes(final int n, final OutputStreamWriter writer) throws IOException {
-//
-//        for (int i = 0; i < n; i++) writer.append("-");
-//        writer.append("\n");
-//    }
+            for (Category category : Arrays.asList(
+                    Category.FEMALE_SENIOR, Category.OPEN_SENIOR,
+                    Category.FEMALE_40, Category.OPEN_40,
+                    Category.FEMALE_50, Category.OPEN_50,
+                    Category.FEMALE_60, Category.OPEN_60,
+                    Category.MIXED_SENIOR, Category.MIXED_40)) {
+
+                printPrizes(category, writer);
+            }
+        }
+    }
+
+    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+
+        int number_of_prizes = category.getNumberOfPrizes();
+
+        writer.append("Category: ").append(String.valueOf(category)).append("\n");
+        printDashes(category.toString().length() + 10, writer);
+        writer.append("\n");
+
+        int position = 1;
+        OverallResult[] prize_results = new OverallResult[number_of_prizes];
+
+        for (OverallResult result : results) {
+
+            if (categoryMatch(category, position, result) && !prize_winners.contains(result.team) && position <= number_of_prizes) {
+
+                prize_results[position - 1] = result;
+
+                prize_winners.add(result.team);
+                position++;
+            }
+        }
+
+        for (int i = 0; i < number_of_prizes; i++) {
+
+            OverallResult prize_result = prize_results[i];
+            if (prize_result != null)
+                writer.append(String.valueOf(i + 1)).append(",").append(String.valueOf(prize_result)).append("\n");
+        }
+
+        writer.append("\n\n");
+    }
+
+    private boolean categoryMatch(final Category category, final int position, final OverallResult result) {
+
+        // Only check for an older category being included in this category when looking for first prize,
+        // since the first in an older category always gets that prize rather than a lower senior prize.
+
+        // This won't work in the case where the top two teams are women or mixed...
+
+        return category == result.team.category || (position == 1 && category.includes(result.team.category));
+    }
+
+    private void printDashes(final int n, final OutputStreamWriter writer) throws IOException {
+
+        for (int i = 0; i < n; i++) writer.append("-");
+        writer.append("\n");
+    }
 
 //    private void printDNFs(boolean include_leg_details, OutputStreamWriter writer) throws IOException {
 //
