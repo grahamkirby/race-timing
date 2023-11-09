@@ -43,6 +43,7 @@ public class Results {
     int number_of_legs;
     String race_name_for_results;
     String race_name_for_filenames;
+    String dnf_legs_string;
 
     // Derived.
     String overall_results_filename;
@@ -68,12 +69,10 @@ public class Results {
     boolean[] paired_legs;
 
     public Results(String config_file_path) throws IOException {
-
         this(loadProperties(config_file_path));
     }
 
     public Results(Properties properties) {
-
         loadConfiguration(properties);
     }
 
@@ -107,9 +106,9 @@ public class Results {
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
         race_name_for_results = properties.getProperty("RACE_NAME_FOR_RESULTS");
         race_name_for_filenames = properties.getProperty("RACE_NAME_FOR_FILENAMES");
+        dnf_legs_string = properties.getProperty("DNF_LEGS");
 
         String paired_legs_string = properties.getProperty("PAIRED_LEGS");
-        String dnf_legs_string = properties.getProperty("DNF_LEGS");
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
         if (mass_start_elapsed_times_string.isBlank()) mass_start_elapsed_times_string = NO_MASS_STARTS;
@@ -124,8 +123,6 @@ public class Results {
         for (String s : paired_legs_string.split(",")) {
             paired_legs[Integer.parseInt(s) - 1] = true;
         }
-
-//        if (!dnf_legs_string.isBlank()) Collections.addAll(dnf_legs, dnf_legs_string.split(","));
 
         overall_results_filename = race_name_for_filenames + "_overall_" + year + ".csv";
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year + ".csv";
@@ -147,15 +144,20 @@ public class Results {
         loadRawResults();
         initialiseResults();
 
+        fillLegFinishTimes();
+        fillDNFs();
+        fillLegStartTimes();
         calculateResults();
-
-//        calculateLegResults(); // Need to calculate leg results as they're used in following calculations.
-//        calculateOverallResults();
 
         printOverallResults();
         printDetailedResults();
         printLegResults();
         printPrizes();
+    }
+
+    private void calculateResults() {
+
+        Arrays.sort(results);
     }
 
     public void printOverallResults() throws IOException {
@@ -164,15 +166,17 @@ public class Results {
 
             printOverallResultsHeader(writer);
             printOverallResults(writer);
-//            printDNFs(false, writer);
-//            printDNSs(writer);
         }
     }
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         for (int i = 0; i < results.length; i++) {
-            writer.append(String.valueOf(i+1)).append(",").append(String.valueOf(results[i])).append("\n");
+
+            OverallResult result = results[i];
+
+            if (!result.dnf()) writer.append(String.valueOf(i+1));
+            writer.append(",").append(String.valueOf(results[i])).append("\n");
         }
     }
 
@@ -212,42 +216,68 @@ public class Results {
         writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
     }
 
-    private void calculateResults() {
+    private void fillLegFinishTimes() {
 
         for (RawResult raw_result : raw_results) {
 
-            int index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
-            OverallResult result = results[index];
-            addNextLegResult(result, raw_result);
+            try {
+                int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
+                OverallResult result = results[team_index];
+                LegResult[] leg_results = result.leg_results;
+
+                int leg_index = findIndexOfNextLegResult(leg_results);
+                leg_results[leg_index].finish_time = raw_result.recorded_finish_time;
+                leg_results[leg_index].DNF = false;
+            }
+            catch (RuntimeException e) {
+                throw new RuntimeException(e.getMessage() + raw_result.bib_number);
+            }
         }
     }
 
-    private void addNextLegResult(OverallResult result, RawResult raw_result) {
+    private void fillDNFs() {
 
-        LegResult[] leg_results = result.leg_results;
-        int index_of_next_leg_result = findIndexOfNextLegResult(leg_results);
+        if (!dnf_legs_string.isBlank()) {
 
-        Duration leg_start_time = index_of_next_leg_result < 1 ? ZERO_TIME : leg_results[index_of_next_leg_result - 1].finish_time;
+            for (String dnf_string : dnf_legs_string.split(",")) {
+                String[] dnf = dnf_string.split(":");
+                int bib_number = Integer.parseInt(dnf[0]);
+                int leg_number = Integer.parseInt(dnf[1]);
 
-        LegResult leg_result = new LegResult();
+                int index = findIndexOfTeamWithBibNumber(bib_number);
+                OverallResult result = results[index];
+                result.leg_results[leg_number - 1].DNF = true;
+            }
+        }
+    }
 
-        leg_result.team = result.team;
-        leg_result.leg_number = index_of_next_leg_result + 1;
-        leg_result.leg_duration = raw_result.recorded_time.minus(leg_start_time);
-        leg_result.finish_time = raw_result.recorded_time;
+    private void fillLegStartTimes() {
 
-        leg_results[index_of_next_leg_result] = leg_result;
+        for (OverallResult result : results) {
 
-        result.overall_duration = result.overall_duration.plus(leg_result.leg_duration);
+            LegResult[] leg_results = result.leg_results;
+
+            leg_results[0].start_time = ZERO_TIME;
+
+            for (int i = 1; i < number_of_legs; i++) {
+
+                Duration mass_start_time = start_times_for_mass_starts[i];
+                if (leg_results[i-1].finish_time != null)
+                    leg_results[i].start_time = earlierOf(leg_results[i-1].finish_time, mass_start_time);
+            }
+        }
+    }
+
+    private Duration earlierOf(Duration duration1, Duration duration2) {
+        return duration1.compareTo(duration2) <= 0 ? duration1 : duration2;
     }
 
     private int findIndexOfNextLegResult(LegResult[] leg_results) {
 
         for (int i = 0; i < leg_results.length; i++) {
-            if (leg_results[i] == null) return i;
+            if (leg_results[i].finish_time == null) return i;
         }
-
-        return -1;
+        throw new RuntimeException("surplus result recorded for team: ");
     }
 
     private int findIndexOfTeamWithBibNumber(int bib_number) {
@@ -255,23 +285,8 @@ public class Results {
         for (int i = 0; i < results.length; i++) {
             if (results[i].team.bib_number == bib_number) return i;
         }
-        return -1;
+        throw new RuntimeException("unregistered team: ");
     }
-
-
-//    public void printEntries() {
-//
-//        for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
-//            System.out.println("team " + entry.getKey() + ": " + entry.getValue());
-//        }
-//    }
-//
-//    public void printRawResults() {
-//
-//        for (RawResult result : raw_results) {
-//            System.out.println(result);
-//        }
-//    }
 
     public void printDetailedResults() throws IOException {
 
@@ -279,8 +294,6 @@ public class Results {
 
             printDetailedResultsHeader(writer);
             printDetailedResults(writer);
-//            printDNFs(true, writer);
-//            printDNSs(writer);
         }
     }
 
@@ -294,25 +307,39 @@ public class Results {
 
             int bib_number = team.bib_number;
 
-            writer.append(String.valueOf(position++)).append(",");
+            if (!result.dnf()) writer.append(String.valueOf(position++));
+            writer.append(",");
             writer.append(String.valueOf(bib_number)).append(",");
             writer.append(team.name).append(",");
             writer.append(team.category.toString()).append(",");
 
-            for (int leg = 1; leg <= number_of_legs; leg++) {
+            boolean previous_leg_dnf = false;
 
-                writer.append(team.runners[leg - 1]).append(",");
+            for (int leg = 1; leg <= number_of_legs; leg++) {
 
                 LegResult leg_result = result.leg_results[leg - 1];
 
-                writer.append(OverallResult.format(leg_result.leg_duration)).append(",");
-                writer.append(OverallResult.format(leg_result.finish_time));
+                writer.append(team.runners[leg - 1]);
+                writer.append(",");
+                writer.append(leg_result.DNF ? "DNF" : OverallResult.format(leg_result.duration()));
+                writer.append(",");
+                writer.append(leg_result.DNF || previous_leg_dnf ? "DNF" : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
 
                 if (leg < number_of_legs) writer.append(",");
+
+                if (leg_result.DNF) previous_leg_dnf = true;
             }
 
             writer.append("\n");
         }
+    }
+
+    private Duration sumDurationsUpToLeg(LegResult[] leg_results, int leg) {
+
+        Duration total = leg_results[0].duration();
+        for (int i = 1; i < leg; i++)
+            total = total.plus(leg_results[i].duration());
+        return total;
     }
 
     public void printLegResults() throws IOException {
@@ -334,58 +361,15 @@ public class Results {
                 Arrays.sort(leg_results);
 
                 for (int i = 0; i < leg_results.length; i++) {
-//                    System.out.println(String.valueOf(i + 1) + leg_results[i].toString() + "\n");
-                    writer.append(String.valueOf(i + 1)).append(",").append(leg_results[i].toString()).append("\n");
+                    LegResult leg_result = leg_results[i];
+                    if (!leg_result.DNF) {
+                        writer.append(String.valueOf(i + 1));
+                        writer.append(",").append(leg_result.toString()).append("\n");
+                    }
                 }
             }
         }
-
-
-
-//        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(leg_results_path))) {
-//
-//            int max_completions_in_any_leg = 0;
-//            for (int leg = 1; leg <= number_of_legs; leg++) {
-//                int completions_for_leg = countValidLegResults(leg_results.get(leg - 1));
-//                if (max_completions_in_any_leg < completions_for_leg) max_completions_in_any_leg = completions_for_leg;
-//            }
-//
-//            printLegResultsHeader(writer);
-//
-//            for (int pos = 1; pos <= max_completions_in_any_leg; pos++) {
-//
-//                writer.append(String.valueOf(pos));
-//
-//                for (int leg = 1; leg <= number_of_legs; leg++) {
-//
-//                    final List<LegResult> results_for_leg = leg_results.get(leg - 1);
-//
-//                    if (results_for_leg.size() >= pos) {
-//                        LegResult leg_result = results_for_leg.get(pos - 1);
-//                        if (!leg_result.DNF) {
-//                            Team team = entries.get(leg_result.bib_number);
-//                            writer.append(",").append(team.runners[leg - 1]).append(",").append(OverallResult.format(leg_result.leg_duration));
-//                        } else {
-//                            writer.append(",,");
-//                        }
-//                    } else {
-//                        writer.append(",,");
-//                    }
-//                }
-//
-//                writer.append("\n");
-//            }
-//        }
     }
-
-//    private int countValidLegResults(final List<LegResult> leg_results) {
-//
-//        int count = 0;
-//        for (LegResult leg_result : leg_results) {
-//            if (!leg_result.DNF) count++;
-//        }
-//        return count;
-//    }
 
     public void printPrizes() throws IOException {
 
@@ -419,7 +403,7 @@ public class Results {
 
         for (OverallResult result : results) {
 
-            if (categoryMatch(category, position, result) && !prize_winners.contains(result.team) && position <= number_of_prizes) {
+            if (!result.dnf() && categoryMatch(category, position, result) && !prize_winners.contains(result.team) && position <= number_of_prizes) {
 
                 prize_results[position - 1] = result;
 
@@ -454,83 +438,6 @@ public class Results {
         writer.append("\n");
     }
 
-//    private void printDNFs(boolean include_leg_details, OutputStreamWriter writer) throws IOException {
-//
-//        for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
-//
-//            final int bib_number = entry.getKey();
-//            final int legs_completed = countLegsCompleted(bib_number);
-//            if (legs_completed > 0 && legs_completed < number_of_legs) {
-//
-//                Team team = entry.getValue();
-//                writer.append(",").append(String.valueOf(bib_number)).append(",").append(team.getName());
-//                writer.append(",").append(String.valueOf(team.getCategory())).append(",");
-//
-//                if (include_leg_details) {
-//                    extracted(bib_number, team, writer);
-//                    writer.append("\n");
-//                }
-//                else
-//                    writer.append("DNF\n");
-//            }
-//        }
-//    }
-
-//    private void extracted(int bib_number, Team team, OutputStreamWriter writer) throws IOException {
-//
-//        boolean an_earlier_leg_was_DNF = false;
-//
-//        for (int leg = 1; leg <= number_of_legs; leg++) {
-//
-//            writer.append(team.runners[leg - 1]).append(",");
-//
-//            try {
-//                final LegResult leg_result = findLegResult(bib_number, leg - 1);
-//
-//                if (!leg_result.DNF) {
-//                    writer.append(OverallResult.format(leg_result.leg_duration)).append(",");
-//                    writer.append(an_earlier_leg_was_DNF ? DNF_STRING : OverallResult.format(leg_result.adjusted_split_time));
-//                } else {
-//                    writer.append(DNF_STRING).append(",").append(DNF_STRING);
-//                    an_earlier_leg_was_DNF = true;
-//                }
-//            } catch (RuntimeException e) {
-//                writer.append(DNF_STRING).append(",").append(DNF_STRING);
-//            }
-//
-//            if (leg < number_of_legs) writer.append(",");
-//        }
-//    }
-
-//    private void printDNSs(OutputStreamWriter writer) throws IOException {
-//
-//        for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
-//
-//            final int bib_number = entry.getKey();
-//
-//            if (countLegsCompleted(bib_number) == 0) {
-//
-//                Team team = entry.getValue();
-//                writer.append(",").append(String.valueOf(bib_number)).append(",").
-//                        append(team.getName()).append(",").append(String.valueOf(team.getCategory())).
-//                        append(",").append(DNS_STRING).append("\n");
-//            }
-//        }
-//    }
-
-//    private int countLegsCompleted(final int bib_number) {
-//
-//        int count = 0;
-//
-//        for (int leg_index = 0; leg_index < number_of_legs; leg_index++) {
-//
-//            final LegResult leg_result = findLegResult(bib_number, leg_index);
-//            if (leg_result != null && !leg_result.DNF) count++;
-//        }
-//
-//        return count;
-//    }
-
     private void printDetailedResultsHeader(OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
@@ -545,191 +452,12 @@ public class Results {
 
     private void printLegResultsHeader(int leg, OutputStreamWriter writer) throws IOException {
 
-        // Pos,Runner,Time
         writer.append("Pos,Runner");
         if (paired_legs[leg - 1]) writer.append("s");
         writer.append(",Time\n");
     }
-
-//    private void calculateLegResults() {
-//
-//        for (int i = 0; i < number_of_legs; i++) {
-//            leg_results.add(new ArrayList<>());
-//        }
-//
-//        for (RawResult raw_result : raw_results) {
-//
-//            int leg_index = findEarliestLegWithoutNumberRecorded(raw_result.bib_number);
-//
-//            final List<LegResult> this_leg_results = leg_results.get(leg_index);
-//
-//            // Do we need to store all 3 times? Combine adjustedSplitTime and adjustmentForFinishingAfterNextLegMassStart?
-//            final Duration adjusted_split_time = adjustedSplitTime(raw_result, leg_index);
-//            final Duration adjustment_for_finishing_after_next_leg_mass_start = adjustmentForFinishingAfterNextLegMassStart(raw_result, leg_index);
-//            final Duration leg_time = calculateLegTime(raw_result, leg_index);
-//
-//            final LegResult leg_result = new LegResult(
-//                    leg_index + 1,
-//                    raw_result.bib_number,
-//                    raw_result.recorded_time,
-//                    adjusted_split_time,
-//                    adjustment_for_finishing_after_next_leg_mass_start,
-//                    leg_time,
-//                    entries);
-//
-//            this_leg_results.add(leg_result);
-//        }
-//
-//        for (String dnf_leg : dnf_legs) {
-//
-//            String[] split = dnf_leg.split(":");
-//            int bib_number = Integer.parseInt(split[0]);
-//            int leg_number = Integer.parseInt(split[1]);
-//
-//            LegResult leg_result = findLegResult(bib_number, leg_number - 1);
-//            if (leg_result == null) throw new RuntimeException("non-existent DNF leg: " + bib_number + ", " + leg_number);
-//            leg_result.DNF = true;
-//            leg_result.leg_duration = DNF_DUMMY_LEG_TIME;
-//        }
-//
-//        // Sort the results within each leg.
-//        for (int i = 0; i < number_of_legs; i++) {
-//            leg_results.get(i).sort(Comparator.comparing(o -> o.leg_time));
-//        }
-//    }
-
-//    private void calculateOverallResults() {
-//
-//        for (int bib_number : entries.keySet()) {
-//
-//            Duration overall_time = ZERO_TIME;
-//            boolean all_legs_completed = true;
-//
-//            for (int leg_index = 0; leg_index < number_of_legs; leg_index++) {
-//
-//                final LegResult leg_result = findLegResult(bib_number, leg_index);
-//                if (leg_result == null || leg_result.DNF)
-//                    all_legs_completed = false;
-//                else
-//                    overall_time = overall_time.plus(leg_result.leg_duration);
-//            }
-//
-//            if (all_legs_completed)
-//                overall_results.add(new OverallResult(bib_number, overall_time, entries));
-//        }
-//
-//        overall_results.sort(Comparator.comparing(o -> o.overall_time));
-//    }
-
-//    private Duration adjustmentForFinishingAfterNextLegMassStart(final RawResult raw_result, final int leg_index) {
-//
-//        if (leg_index == number_of_legs - 1) return ZERO_TIME;   // This leg is last leg.
-//
-//        Duration difference = raw_result.recorded_time.minus(start_times_for_mass_starts.get(leg_index + 1));
-//
-//        return difference.isNegative() ? ZERO_TIME : difference;
-//    }
-
-//    private Duration adjustedSplitTime(final RawResult raw_result, final int leg_index) {
-//
-//        Duration adjusted_split_time = raw_result.recorded_time;
-//
-//        // Add on mass start adjustments from all previous legs.
-//        for (int i = 0; i < leg_index; i++) {
-//            LegResult earlier_leg_result = findLegResult(raw_result.bib_number, i);
-//            adjusted_split_time = adjusted_split_time.plus(earlier_leg_result.adjustment_for_finishing_after_next_leg_mass_start);
-//        }
-//
-//        return adjusted_split_time;
-//    }
-
-//    private Duration calculateLegTime(final RawResult raw_result, final int lap_index) {
-//
-//        Duration previous_lap_recorded_split_time = ZERO_TIME;
-//
-//        if (lap_index > 0) {
-//
-//            LegResult previous_lap_result = findLegResult(raw_result.bib_number, lap_index - 1);
-//            previous_lap_recorded_split_time = previous_lap_result.recorded_split_time;
-//        }
-//
-//        Duration lap_time = raw_result.recorded_time.minus(previous_lap_recorded_split_time);
-//
-//        // Add on mass start adjustment from previous lap.
-//        if (lap_index > 0) {
-//            LegResult earlier_lap_result = findLegResult(raw_result.bib_number, lap_index - 1);
-//            lap_time = lap_time.plus(earlier_lap_result.adjustment_for_finishing_after_next_leg_mass_start);
-//        }
-//
-//        return lap_time;
-//    }
-
-//    private LegResult findLegResult(final int bib_number, int lap_index) {
-//
-//        final List<LegResult> this_lap_results = leg_results.get(lap_index);
-//        for (LegResult lap_result : this_lap_results) {
-//            if (lap_result.bib_number == bib_number) return lap_result;
-//        }
-//        return null;
-//    }
-
-    // Find the earliest lap that doesn't yet have this bib number recorded.
-//    private int findEarliestLegWithoutNumberRecorded(final int bib_number) {
-//
-//        for (int lap_index = 0; lap_index < number_of_legs; lap_index++) {
-//            if (!bibNumberRecorded(bib_number, lap_index)) return lap_index;
-//        }
-//
-//        throw new RuntimeException("surplus result recorded for team: " + bib_number + getDescriptionOfTeamsMissingResults());
-//    }
-
-//    private String getDescriptionOfTeamsMissingResults() {
-//
-//        StringBuilder builder = new StringBuilder();
-//
-//        Map<Integer, Integer> lap_counts = new HashMap<>();
-//        for (RawResult raw_result : raw_results) {
-//            lap_counts.putIfAbsent(raw_result.bib_number, 0);
-//            lap_counts.put(raw_result.bib_number, lap_counts.get(raw_result.bib_number) + 1);
-//        }
-//
-//        for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
-//
-//            final int bib_number = entry.getKey();
-//            final int laps_completed = lap_counts.get(bib_number);
-//
-//            if (laps_completed < number_of_legs) {
-//                if (!builder.isEmpty()) builder.append(", ");
-//                builder.append(bib_number);
-//            }
-//        }
-//
-//        if (builder.isEmpty()) {
-//            builder.append("; no teams missing results");
-//        }
-//        else {
-//            builder = new StringBuilder("; team(s) missing results: ").append(builder);
-//        }
-//        return builder.toString();
-//    }
-
-//    private boolean bibNumberRecorded(final int bib_number, final int lap_index) {
-//
-//        for (LegResult lap_result : leg_results.get(lap_index)) {
-//            if (lap_result.bib_number == bib_number) return true;
-//        }
-//        return false;
-//    }
-
-//    static class PrizeResult {
-//        String position_string;
-//        OverallResult result;
-//        PrizeResult(String position_string, OverallResult result) {
-//            this.position_string = position_string;
-//            this.result = result;
-//        }
-//    }
 }
+
 
 // code for dead heats
 //        int number_of_results = overall_results.size();
