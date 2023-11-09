@@ -22,13 +22,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ResultsTest {
 
     // Test partial results cf results.gk 2020,
-    // only process dead heat for leg rankings, separate list for each leg
     // test different number of legs
+    // simple mass start cases
+    // 1st leg runner finishes after 3rd/4th leg mass start
     // simple cases with DNFs
-    // all legs DNF
-    // 3rd leg DNF but not 4th
+    // DNF in each leg separately, mass starts none, 3, 4, 3&4 - organise test case output by number of mass starts
+    // all legs DNF - DNS
     // all legs DNF except 4th
-    // leg dead heats with and without same start time - only latter should be heats
+    // DNFs listed in bib order even if unordered in entry list
+    // leg dead heats
+    // overall/prizes no heats, with same time late start beats early
     // various category combinations for prizes
     // top 2 prizes are women cf cases in comments
     // add and test early start option
@@ -37,8 +40,6 @@ public class ResultsTest {
     // generate HTML
     // generate xls
     // illegal config - dnf lap times, mass start times / mass start times wrong order
-    // 3rd leg runner starts after 4th leg mass start
-    // 1st leg runner finishes after 3rd/4th leg mass start
 
     Properties properties;
     Path resources_expected_outputs;
@@ -63,22 +64,34 @@ public class ResultsTest {
     }
 
     @Test
-    public void missingResult() throws Exception {
+    public void dnfLeg3() throws Exception {
 
-        processingCompletes("missing_result");
+        processingCompletes("dnf_leg_3");
     }
 
     @Test
-    public void missingTeam() throws Exception {
+    public void dnfLeg4() throws Exception {
 
-        configureTest("missing_team");
+        processingCompletes("dnf_leg_4");
+    }
+
+    @Test
+    public void dnfLeg3And4() throws Exception {
+
+        processingCompletes("dnf_leg_3_4");
+    }
+
+    @Test
+    public void unregisteredTeam() throws Exception {
+
+        configureTest("unregistered_team");
 
         RuntimeException thrown = assertThrows(
             RuntimeException.class,
             () -> new Results(properties).processResults()
         );
 
-        assertEquals("undefined team: 4", thrown.getMessage());
+        assertEquals("unregistered team: 4", thrown.getMessage());
     }
 
     @Test
@@ -91,7 +104,7 @@ public class ResultsTest {
                 () -> new Results(properties).processResults()
         );
 
-        assertEquals("surplus result recorded for team: 2; no teams missing results", thrown.getMessage());
+        assertEquals("surplus result recorded for team: 2", thrown.getMessage());
     }
 
     @Test
@@ -104,7 +117,7 @@ public class ResultsTest {
                 () -> new Results(properties).processResults()
         );
 
-        assertEquals("surplus result recorded for team: 2; team(s) missing results: 4", thrown.getMessage());
+        assertEquals("surplus result recorded for team: 2", thrown.getMessage());
     }
 
     private void processingCompletes(String configuration_name) throws Exception {
@@ -116,7 +129,6 @@ public class ResultsTest {
 
     private void configureTest(String test_resource_root) throws IOException {
 
-        // temp_directory = Files.createTempDirectory(Paths.get("/Users/gnck/Desktop"), "temp");
         temp_directory = Files.createTempDirectory(null);
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));

@@ -1,48 +1,53 @@
 package lap_race;
 
 import java.time.Duration;
-import java.util.Map;
 
-public class OverallResult {
+public class OverallResult implements Comparable<OverallResult> {
 
     Team team;
-
-    Duration overall_duration;
-
     LegResult[] leg_results;
 
     public OverallResult(Team team, int number_of_legs) {
 
         this.team = team;
         leg_results = new LegResult[number_of_legs];
-        overall_duration = Results.ZERO_TIME;
+
+        for (int i = 0; i < number_of_legs; i++) {
+
+            leg_results[i] = new LegResult();
+            leg_results[i].team = team;
+            leg_results[i].leg_number = i + 1;
+            leg_results[i].DNF = true;
+        }
     }
 
-//    public OverallResult(int bib_number, Duration overall_time, Map<Integer, Team> entries) {
-//
-//        this.bib_number = bib_number;
-//        this.overall_duration = overall_time;
-//
-//        team_name = getTeamName(bib_number, entries);
-//        team_category = getTeamCategory(bib_number, entries);
-//    }
+    public Duration duration() {
 
-    String getTeamName(final int bib_number, final Map<Integer, Team> entries) {
-        for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
-            if (entry.getKey() == bib_number) return entry.getValue().name;
+        Duration overall = Results.ZERO_TIME;
+
+        for (LegResult leg_result : leg_results) {
+            if (leg_result.DNF) return Results.DNF_DUMMY_LEG_TIME;
+            overall = overall.plus(leg_result.duration());
         }
-        throw new RuntimeException("undefined team: " + bib_number);
+
+        return overall;
     }
 
-     Category getTeamCategory(final int bib_number, final Map<Integer, Team> entries) {
-        for (Map.Entry<Integer, Team> entry : entries.entrySet()) {
-            if (entry.getKey() == bib_number) return entry.getValue().category;
-        }
-        throw new RuntimeException("undefined team: " + bib_number);
+    public boolean dnf() {
+
+        for (LegResult leg_result : leg_results)
+            if (leg_result.DNF) return true;
+
+        return false;
     }
 
     public String toString() {
-        return team.bib_number + "," + team.name + "," + team.category + "," + format(overall_duration);
+        return team.bib_number + "," + team.name + "," + team.category + "," + (dnf() ? "DNF" : format(duration()));
+    }
+
+    @Override
+    public int compareTo(OverallResult o) {
+        return duration().compareTo(o.duration());
     }
 
     public static String format(Duration duration) {
