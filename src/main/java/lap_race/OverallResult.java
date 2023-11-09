@@ -12,13 +12,8 @@ public class OverallResult implements Comparable<OverallResult> {
         this.team = team;
         leg_results = new LegResult[number_of_legs];
 
-        for (int i = 0; i < number_of_legs; i++) {
-
-            leg_results[i] = new LegResult();
-            leg_results[i].team = team;
-            leg_results[i].leg_number = i + 1;
-            leg_results[i].DNF = true;
-        }
+        for (int i = 0; i < number_of_legs; i++)
+            leg_results[i] = new LegResult(team, i+1, true);
     }
 
     public Duration duration() {

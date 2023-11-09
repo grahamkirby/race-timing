@@ -23,17 +23,14 @@ public class RawResult {
     }
 
     static String hours(final String[] parts) {
-
         return parts.length > 2 ? parts[0] + "H" : "";
     }
 
     static String minutes(final String[] parts) {
-
         return (parts.length > 2 ? parts[1] : parts[0]) + "M";
     }
 
     static String seconds(final String[] parts) {
-
         return (parts.length > 2 ? parts[2] : parts[1]) + "S";
     }
 
