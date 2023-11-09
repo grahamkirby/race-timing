@@ -32,7 +32,6 @@ public class Results {
 
     static Duration ZERO_TIME = RawResult.parseTime("0:0");
 
-    private static final String COMMENT_PREFIX = "//";
     public static final Duration DNF_DUMMY_LEG_TIME = RawResult.parseTime("23:59:59");
 
     // Read from configuration file.
@@ -65,7 +64,6 @@ public class Results {
     Set<Team> prize_winners = new HashSet<>();
 
     Duration[] start_times_for_mass_starts;  // Relative to start of leg 1.
-
     boolean[] paired_legs;
 
     public Results(String config_file_path) throws IOException {
@@ -98,6 +96,14 @@ public class Results {
 
     private void loadConfiguration(Properties properties) {
 
+        readProperties(properties);
+        configureMassStarts(properties);
+        configurePairedLegs(properties);
+        constructFilePaths();
+    }
+
+    private void readProperties(Properties properties) {
+
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
 
         entries_filename = properties.getProperty("ENTRIES_FILENAME");
@@ -107,22 +113,32 @@ public class Results {
         race_name_for_results = properties.getProperty("RACE_NAME_FOR_RESULTS");
         race_name_for_filenames = properties.getProperty("RACE_NAME_FOR_FILENAMES");
         dnf_legs_string = properties.getProperty("DNF_LEGS");
+    }
 
-        String paired_legs_string = properties.getProperty("PAIRED_LEGS");
+    private void configureMassStarts(Properties properties) {
+
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
-        if (mass_start_elapsed_times_string.isBlank()) mass_start_elapsed_times_string = NO_MASS_STARTS;
+        if (mass_start_elapsed_times_string.isBlank())
+            mass_start_elapsed_times_string = NO_MASS_STARTS;
 
         start_times_for_mass_starts = new Duration[number_of_legs];
         int leg = 0;
         for (String time_as_string : mass_start_elapsed_times_string.split(",")) {
             start_times_for_mass_starts[leg++] = RawResult.parseTime(time_as_string);
         }
+    }
 
+    private void configurePairedLegs(Properties properties) {
+
+        String paired_legs_string = properties.getProperty("PAIRED_LEGS");
         paired_legs = new boolean[number_of_legs];
         for (String s : paired_legs_string.split(",")) {
             paired_legs[Integer.parseInt(s) - 1] = true;
         }
+    }
+
+    private void constructFilePaths() {
 
         overall_results_filename = race_name_for_filenames + "_overall_" + year + ".csv";
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year + ".csv";
@@ -155,31 +171,6 @@ public class Results {
         printPrizes();
     }
 
-    private void calculateResults() {
-
-        Arrays.sort(results);
-    }
-
-    public void printOverallResults() throws IOException {
-
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_path))) {
-
-            printOverallResultsHeader(writer);
-            printOverallResults(writer);
-        }
-    }
-
-    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
-
-        for (int i = 0; i < results.length; i++) {
-
-            OverallResult result = results[i];
-
-            if (!result.dnf()) writer.append(String.valueOf(i+1));
-            writer.append(",").append(String.valueOf(results[i])).append("\n");
-        }
-    }
-
     private void loadEntries() throws IOException {
 
         List<String> lines = Files.readAllLines(entries_path);
@@ -209,11 +200,6 @@ public class Results {
         for (int i = 0; i < results.length; i++) {
             results[i] = new OverallResult(entries[i], number_of_legs);
         }
-    }
-
-    private void printOverallResultsHeader(OutputStreamWriter writer) throws IOException {
-
-        writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
     }
 
     private void fillLegFinishTimes() {
@@ -268,24 +254,25 @@ public class Results {
         }
     }
 
-    private Duration earlierOf(Duration duration1, Duration duration2) {
-        return duration1.compareTo(duration2) <= 0 ? duration1 : duration2;
+    private void calculateResults() {
+
+        Arrays.sort(results);
     }
 
-    private int findIndexOfNextLegResult(LegResult[] leg_results) {
+    public void printOverallResults() throws IOException {
 
-        for (int i = 0; i < leg_results.length; i++) {
-            if (leg_results[i].finish_time == null) return i;
+        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_path))) {
+
+            writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
+
+            for (int i = 0; i < results.length; i++) {
+
+                OverallResult result = results[i];
+
+                if (!result.dnf()) writer.append(String.valueOf(i+1));
+                writer.append(",").append(String.valueOf(results[i])).append("\n");
+            }
         }
-        throw new RuntimeException("surplus result recorded for team: ");
-    }
-
-    private int findIndexOfTeamWithBibNumber(int bib_number) {
-
-        for (int i = 0; i < results.length; i++) {
-            if (results[i].team.bib_number == bib_number) return i;
-        }
-        throw new RuntimeException("unregistered team: ");
     }
 
     public void printDetailedResults() throws IOException {
@@ -295,6 +282,18 @@ public class Results {
             printDetailedResultsHeader(writer);
             printDetailedResults(writer);
         }
+    }
+
+    private void printDetailedResultsHeader(OutputStreamWriter writer) throws IOException {
+
+        writer.append(OVERALL_RESULTS_HEADER);
+
+        for (int leg = 1; leg <= number_of_legs; leg++) {
+            writer.append("Runners ").append(String.valueOf(leg)).append(",Leg ").append(String.valueOf(leg)).append(",");
+            if (leg < number_of_legs) writer.append("Split ").append(String.valueOf(leg)).append(",");
+        }
+
+        writer.append("Total\n");
     }
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
@@ -321,9 +320,9 @@ public class Results {
 
                 writer.append(team.runners[leg - 1]);
                 writer.append(",");
-                writer.append(leg_result.DNF ? "DNF" : OverallResult.format(leg_result.duration()));
+                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration()));
                 writer.append(",");
-                writer.append(leg_result.DNF || previous_leg_dnf ? "DNF" : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
+                writer.append(leg_result.DNF || previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
 
                 if (leg < number_of_legs) writer.append(",");
 
@@ -332,14 +331,6 @@ public class Results {
 
             writer.append("\n");
         }
-    }
-
-    private Duration sumDurationsUpToLeg(LegResult[] leg_results, int leg) {
-
-        Duration total = leg_results[0].duration();
-        for (int i = 1; i < leg; i++)
-            total = total.plus(leg_results[i].duration());
-        return total;
     }
 
     public void printLegResults() throws IOException {
@@ -355,7 +346,7 @@ public class Results {
                 LegResult[] leg_results = new LegResult[results.length];
 
                 for (int i = 0; i < leg_results.length; i++) {
-                    leg_results[i] = results[i].leg_results[leg - 1];
+                    leg_results[i] = results[i].leg_results[leg-1];
                 }
 
                 Arrays.sort(leg_results);
@@ -363,12 +354,19 @@ public class Results {
                 for (int i = 0; i < leg_results.length; i++) {
                     LegResult leg_result = leg_results[i];
                     if (!leg_result.DNF) {
-                        writer.append(String.valueOf(i + 1));
+                        writer.append(String.valueOf(i+1));
                         writer.append(",").append(leg_result.toString()).append("\n");
                     }
                 }
             }
         }
+    }
+
+    private void printLegResultsHeader(int leg, OutputStreamWriter writer) throws IOException {
+
+        writer.append("Pos,Runner");
+        if (paired_legs[leg - 1]) writer.append("s");
+        writer.append(",Time\n");
     }
 
     public void printPrizes() throws IOException {
@@ -422,6 +420,34 @@ public class Results {
         writer.append("\n\n");
     }
 
+    private Duration earlierOf(Duration duration1, Duration duration2) {
+        return duration1.compareTo(duration2) <= 0 ? duration1 : duration2;
+    }
+
+    private int findIndexOfNextLegResult(LegResult[] leg_results) {
+
+        for (int i = 0; i < leg_results.length; i++) {
+            if (leg_results[i].finish_time == null) return i;
+        }
+        throw new RuntimeException("surplus result recorded for team: ");
+    }
+
+    private int findIndexOfTeamWithBibNumber(int bib_number) {
+
+        for (int i = 0; i < results.length; i++) {
+            if (results[i].team.bib_number == bib_number) return i;
+        }
+        throw new RuntimeException("unregistered team: ");
+    }
+
+    private Duration sumDurationsUpToLeg(LegResult[] leg_results, int leg) {
+
+        Duration total = leg_results[0].duration();
+        for (int i = 1; i < leg; i++)
+            total = total.plus(leg_results[i].duration());
+        return total;
+    }
+
     private boolean categoryMatch(final Category category, final int position, final OverallResult result) {
 
         // Only check for an older category being included in this category when looking for first prize,
@@ -436,25 +462,6 @@ public class Results {
 
         for (int i = 0; i < n; i++) writer.append("-");
         writer.append("\n");
-    }
-
-    private void printDetailedResultsHeader(OutputStreamWriter writer) throws IOException {
-
-        writer.append(OVERALL_RESULTS_HEADER);
-
-        for (int leg = 1; leg <= number_of_legs; leg++) {
-            writer.append("Runners ").append(String.valueOf(leg)).append(",Leg ").append(String.valueOf(leg)).append(",");
-            if (leg < number_of_legs) writer.append("Split ").append(String.valueOf(leg)).append(",");
-        }
-
-        writer.append("Total\n");
-    }
-
-    private void printLegResultsHeader(int leg, OutputStreamWriter writer) throws IOException {
-
-        writer.append("Pos,Runner");
-        if (paired_legs[leg - 1]) writer.append("s");
-        writer.append(",Time\n");
     }
 }
 
