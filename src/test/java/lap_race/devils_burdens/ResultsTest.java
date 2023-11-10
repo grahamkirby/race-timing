@@ -40,6 +40,7 @@ public class ResultsTest {
     // generate HTML
     // generate xls
     // illegal config - dnf lap times, mass start times / mass start times wrong order
+    // illegal category
 
     Properties properties;
     Path resources_expected_outputs;
