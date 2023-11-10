@@ -12,11 +12,11 @@ public class LegResult implements Comparable<LegResult> {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public LegResult(Team team, int leg_number, boolean DNF) {
+    public LegResult(Team team, int leg_number) {
 
         this.team = team;
         this.leg_number = leg_number;
-        this. DNF = DNF;
+        this.DNF = true;
     }
 
     public Duration duration() {

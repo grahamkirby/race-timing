@@ -13,7 +13,7 @@ public class OverallResult implements Comparable<OverallResult> {
         leg_results = new LegResult[number_of_legs];
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results[i] = new LegResult(team, i+1, true);
+            leg_results[i] = new LegResult(team, i+1);
     }
 
     public Duration duration() {

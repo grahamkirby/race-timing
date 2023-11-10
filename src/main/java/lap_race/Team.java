@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class Team {
 
-    String name;
     int bib_number;
+    String name;
     Category category;
     String[] runners;
 
@@ -25,13 +25,5 @@ public class Team {
             builder.append(runner);
         }
         return name + ", " + category + ": " + builder;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Category getCategory() {
-        return category;
     }
 }
