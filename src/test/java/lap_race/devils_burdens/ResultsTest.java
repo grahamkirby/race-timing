@@ -41,6 +41,7 @@ public class ResultsTest {
     // generate xls
     // illegal config - dnf lap times, mass start times / mass start times wrong order
     // illegal category
+    // raw results not in order
 
     Properties properties;
     Path resources_expected_outputs;
@@ -65,6 +66,18 @@ public class ResultsTest {
     }
 
     @Test
+    public void dnfLeg1() throws Exception {
+
+        processingCompletes("dnf_leg_1");
+    }
+
+    @Test
+    public void dnfLeg2() throws Exception {
+
+        processingCompletes("dnf_leg_2");
+    }
+
+    @Test
     public void dnfLeg3() throws Exception {
 
         processingCompletes("dnf_leg_3");
@@ -77,9 +90,15 @@ public class ResultsTest {
     }
 
     @Test
-    public void dnfLeg3And4() throws Exception {
+    public void dnfLeg3And4NoFinishes() throws Exception {
 
-        processingCompletes("dnf_leg_3_4");
+        processingCompletes("dnf_leg_3_4a");
+    }
+
+    @Test
+    public void dnfLeg3And4Finishes() throws Exception {
+
+        processingCompletes("dnf_leg_3_4b");
     }
 
     @Test
