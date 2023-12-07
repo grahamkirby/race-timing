@@ -66,51 +66,99 @@ public class ResultsTest {
     }
 
     @Test
-    public void massStartsNoneDNFLeg1() throws Exception {
+    public void massStartNoneDNFLeg1() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_1");
+        processingCompletes("mass_start_none/dnf_leg_1");
     }
 
     @Test
-    public void massStartsNoneDNFButCompleted() throws Exception {
+    public void massStartNoneDNFButCompleted() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_1_2_3_4a");
+        processingCompletes("mass_start_none/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    public void massStartsNoneDNFNotCompleted() throws Exception {
+    public void massStartNoneDNFNotCompleted() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_1_2_3_4b");
+        processingCompletes("mass_start_none/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    public void massStartsNoneDNFLeg2() throws Exception {
+    public void massStartNoneDNFLeg2() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_2");
+        processingCompletes("mass_start_none/dnf_leg_2");
     }
 
     @Test
-    public void massStartsNoneDNFLeg3() throws Exception {
+    public void massStartNoneDNFLeg3() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_3");
+        processingCompletes("mass_start_none/dnf_leg_3");
     }
 
     @Test
-    public void massStartsNoneDNFLeg4() throws Exception {
+    public void massStartNoneDNFLeg4() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_4");
+        processingCompletes("mass_start_none/dnf_leg_4");
     }
 
     @Test
-    public void massStartsNoneDNFLeg3And4NotCompleted() throws Exception {
+    public void massStartNoneDNFLeg3And4NotCompleted() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_3_4a");
+        processingCompletes("mass_start_none/dnf_leg_3_4a");
     }
 
     @Test
-    public void massStartsNoneDNFLeg3And4ButCompleted() throws Exception {
+    public void massStartNoneDNFLeg3And4ButCompleted() throws Exception {
 
-        processingCompletes("mass_starts_none/dnf_leg_3_4b");
+        processingCompletes("mass_start_none/dnf_leg_3_4b");
+    }
+
+    @Test
+    public void massStart_3_4_DNFLeg1() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_1");
+    }
+
+    @Test
+    public void massStart_3_4_DNFButCompleted() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_1_2_3_4a");
+    }
+
+    @Test
+    public void massStart_3_4_DNFNotCompleted() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_1_2_3_4b");
+    }
+
+    @Test
+    public void massStart_3_4_DNFLeg2() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_2");
+    }
+
+    @Test
+    public void massStart_3_4_DNFLeg3() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_3");
+    }
+
+    @Test
+    public void massStart_3_4_DNFLeg3And4NoFinishes() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_3_4a");
+    }
+
+    @Test
+    public void massStart_3_4_DNFLeg3And4ButCompleted() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_3_4b");
+    }
+
+    @Test
+    public void massStart_3_4_DNFLeg4() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_4");
     }
 
     @Test
