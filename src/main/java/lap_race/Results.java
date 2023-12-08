@@ -248,14 +248,13 @@ public class Results {
             LegResult[] leg_results = result.leg_results;
             leg_results[0].start_time = ZERO_TIME;   // All times are relative to start of leg 1.
 
-            for (int i = 1; i < number_of_legs; i++)
+//            for (int i = 1; i < number_of_legs; i++)
+                for (int i = 0; i < number_of_legs; i++)
                 fillLegStartTime(leg_results, i);
         }
     }
 
     private void fillLegStartTime(LegResult[] leg_results, int leg) {
-
-        Duration mass_start_time = start_times_for_mass_starts[leg];
 
         // If there isn't a recorded finish time for the previous leg then we can't set
         // a start time for this one. Both legs will be DNF.
@@ -267,8 +266,19 @@ public class Results {
         // If the previous leg finish was after the mass start for this leg, allow for
         // this leg runners starting in the mass start rather than when the previous
         // leg runners finished.
-        if (leg_results[leg -1].finish_time != null)
-            leg_results[leg].start_time = earlierOf(leg_results[leg -1].finish_time, mass_start_time);
+
+        // This method is not called for the first leg.
+        assert leg > 0;
+
+        Duration mass_start_time = start_times_for_mass_starts[leg];
+
+        //noinspection StatementWithEmptyBody
+        if (leg_results[leg-1].finish_time == null) {
+            // No action since leg result will already be set to DNF.
+        }
+        else {
+            leg_results[leg].start_time = earlierOf(leg_results[leg-1].finish_time, mass_start_time);
+        }
     }
 
     private void calculateResults() {
