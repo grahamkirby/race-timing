@@ -4,15 +4,15 @@ Devil's Burdens Results 2020
 Category: Women Senior
 ----------------------
 
-1,4,Beacon: 50 Shades of Beacon,Women 50+,04:02:16
+1,4,Beacon: 50 Shades of Beacon,Women 50+,04:06:54
 
 
 Category: Open Senior
 ---------------------
 
 1,1,Anster Haddies Ladies B,Women Senior,03:47:58
-2,5,Beacon: Beacon Belligerents,Open Senior,04:06:54
-3,3,Anster Haddies Team Elite,Open Senior,04:08:55
+2,3,Anster Haddies Team Elite,Open Senior,04:02:16
+3,5,Beacon: Beacon Belligerents,Open Senior,04:08:55
 
 
 Category: Women 40+

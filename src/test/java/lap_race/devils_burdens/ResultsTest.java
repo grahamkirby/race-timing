@@ -257,7 +257,8 @@ public class ResultsTest {
 
     private void configureTest(String test_resource_root) throws IOException {
 
-        temp_directory = Files.createTempDirectory(null);
+        //temp_directory = Files.createTempDirectory(null);
+        temp_directory = Paths.get("/Users/gnck/Desktop/temp");
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
@@ -337,6 +338,8 @@ public class ResultsTest {
 
             while ((line1 = reader1.readLine()) != null) {
                 String line2 = reader2.readLine();
+                if (!line1.equals(line2))
+                    System.out.println("difference in files: " + path1 + ", " + path2);
                 assertEquals(line1, line2);
             }
 
