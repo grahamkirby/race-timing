@@ -2,16 +2,16 @@ package lap_race;
 
 public enum Category {
 
-    FEMALE_SENIOR("Women Senior", "Women", 15, 3),
     OPEN_SENIOR("Open Senior", "Open", 15, 3),
-    FEMALE_40("Women 40+", "Women", 40, 1),
-    OPEN_40("Open 40+", "Open", 40, 1),
-    FEMALE_50("Women 50+", "Women", 50, 1),
-    OPEN_50("Open 50+", "Open", 50,1),
-    FEMALE_60("Women 60+", "Women", 60, 1),
-    OPEN_60("Open 60+", "Open", 60,1),
     MIXED_SENIOR("Mixed Senior", "Mixed", 15, 1),
-    MIXED_40("Mixed 40+", "Mixed", 40, 1);
+    FEMALE_SENIOR("Women Senior", "Women", 15, 3),
+    OPEN_40("Open 40+", "Open", 40, 1),
+    MIXED_40("Mixed 40+", "Mixed", 40, 1),
+    FEMALE_40("Women 40+", "Women", 40, 1),
+    OPEN_50("Open 50+", "Open", 50,1),
+    FEMALE_50("Women 50+", "Women", 50, 1),
+    OPEN_60("Open 60+", "Open", 60,1),
+    FEMALE_60("Women 60+", "Women", 60, 1);
 
     private final String category_name;
     private final String composition;

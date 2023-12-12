@@ -28,6 +28,18 @@ public class Results {
     public static final String NO_MASS_STARTS = "23:59:59,23:59:59,23:59:59,23:59:59";
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
+    public static final List<Category> CATEGORY_REPORT_ORDER = Arrays.asList(
+            Category.FEMALE_SENIOR,
+            Category.OPEN_SENIOR,
+            Category.FEMALE_40,
+            Category.OPEN_40,
+            Category.FEMALE_50,
+            Category.OPEN_50,
+            Category.FEMALE_60,
+            Category.OPEN_60,
+            Category.MIXED_SENIOR,
+            Category.MIXED_40);
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     static Duration ZERO_TIME = RawResult.parseTime("0:0");
@@ -248,8 +260,7 @@ public class Results {
             LegResult[] leg_results = result.leg_results;
             leg_results[0].start_time = ZERO_TIME;   // All times are relative to start of leg 1.
 
-//            for (int i = 1; i < number_of_legs; i++)
-                for (int i = 0; i < number_of_legs; i++)
+            for (int i = 1; i < number_of_legs; i++)
                 fillLegStartTime(leg_results, i);
         }
     }
@@ -427,12 +438,12 @@ public class Results {
     }
 
     private void allocateFirstPrizes() {
-        
-        for (Category category : Category.values()) {
+
+        for (final Category category : Category.values()) {
 
             prize_winners.put(category, new ArrayList<>());
 
-            for (OverallResult result : results) {
+            for (final OverallResult result : results) {
                 if (prizeWinner(result, category)) {
                     prize_winners.get(category).add(result.team);
                     break;
@@ -443,7 +454,7 @@ public class Results {
 
     private void allocateMinorPrizes() {
 
-        for (Category category : Category.values()) {
+        for (final Category category : Category.values()) {
 
             int position = 2;
 
@@ -459,11 +470,11 @@ public class Results {
         }
     }
 
-    private void printPrizes(OutputStreamWriter writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
-        for (Category category : Category.values()) {
+        for (final Category category : CATEGORY_REPORT_ORDER) {
 
-            String header = "Category: " + category;
+            final String header = "Category: " + category;
 
             writer.append(header).append("\n");
             writer.append("-".repeat(header.length())).append("\n\n");
@@ -471,7 +482,7 @@ public class Results {
             int position = 1;
             for (Team team : prize_winners.get(category)) {
 
-                OverallResult result = results[findIndexOfTeamWithBibNumber(team.bib_number)];
+                final OverallResult result = results[findIndexOfTeamWithBibNumber(team.bib_number)];
                 writer.append(String.valueOf(position++)).append(",").append(String.valueOf(result)).append("\n");
             }
 
@@ -479,21 +490,21 @@ public class Results {
         }
     }
 
-    private boolean prizeWinner(OverallResult result, Category category) {
+    private boolean prizeWinner(final OverallResult result, final Category category) {
         return !result.dnf() && category.includes(result.team.category) && !alreadyWonPrize(result.team);
     }
 
-    private boolean alreadyWonPrize(Team team) {
+    private boolean alreadyWonPrize(final Team team) {
         for (List<Team> winners : prize_winners.values())
             if (winners.contains(team)) return true;
         return false;
     }
 
-    private Duration earlierOf(Duration duration1, Duration duration2) {
+    private Duration earlierOf(final Duration duration1, final Duration duration2) {
         return duration1.compareTo(duration2) <= 0 ? duration1 : duration2;
     }
 
-    private int findIndexOfNextUnfilledLegResult(LegResult[] leg_results) {
+    private int findIndexOfNextUnfilledLegResult(final LegResult[] leg_results) {
 
         for (int i = 0; i < leg_results.length; i++)
             if (leg_results[i].finish_time == null) return i;
@@ -501,7 +512,7 @@ public class Results {
         throw new RuntimeException("surplus result recorded for team: ");
     }
 
-    private int findIndexOfTeamWithBibNumber(int bib_number) {
+    private int findIndexOfTeamWithBibNumber(final int bib_number) {
 
         for (int i = 0; i < results.length; i++)
             if (results[i].team.bib_number == bib_number) return i;
@@ -509,7 +520,7 @@ public class Results {
         throw new RuntimeException("unregistered team: ");
     }
 
-    private Duration sumDurationsUpToLeg(LegResult[] leg_results, int leg) {
+    private Duration sumDurationsUpToLeg(final LegResult[] leg_results, final int leg) {
 
         Duration total = leg_results[0].duration();
         for (int i = 1; i < leg; i++)
