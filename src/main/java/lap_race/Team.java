@@ -4,12 +4,14 @@ import java.util.Arrays;
 
 public class Team {
 
-    int bib_number;
-    String name;
-    Category category;
-    String[] runners;
+    final int bib_number;
+    final String name;
+    final Category category;
+    final String[] runners;
 
     public Team(String[] elements) {
+
+        // Expected format: "1", "Anster Haddies Ladies B", "Women Senior", "Tracy Knox", "Pamela Cruickshanks & Debz Hay", "Lynne Herd & Jacs McDonald", "Rosie Knox"
 
         bib_number = Integer.parseInt(elements[0]);
         name = elements[1];

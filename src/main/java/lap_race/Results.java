@@ -114,6 +114,23 @@ public class Results {
         configurePairedLegs(properties);
     }
 
+    public void processResults() throws IOException {
+
+        loadEntries();
+        loadRawResults();
+        initialiseResults();
+
+        fillLegFinishTimes();
+        fillDNFs();
+        fillLegStartTimes();
+        calculateResults();
+
+        printOverallResults();
+        printDetailedResults();
+        printLegResults();
+        printPrizes();
+    }
+
     private void readProperties(Properties properties) {
 
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
@@ -168,24 +185,7 @@ public class Results {
         }
     }
 
-    public void processResults() throws IOException {
-
-        loadEntries();
-        loadRawResults();
-        initialiseResults();
-
-        fillLegFinishTimes();
-        fillDNFs();
-        fillLegStartTimes();
-        calculateResults();
-
-        printOverallResults();
-        printDetailedResults();
-        printLegResults();
-        printPrizes();
-    }
-
-    private void loadEntries() throws IOException {
+     private void loadEntries() throws IOException {
 
         List<String> lines = Files.readAllLines(entries_path);
         entries = new Team[lines.size()];
@@ -241,14 +241,15 @@ public class Results {
 
         if (!dnf_legs_string.isBlank()) {
 
-            for (String dnf_string : dnf_legs_string.split(",")) {
+            for (final String dnf_string : dnf_legs_string.split(",")) {
 
                 String[] dnf = dnf_string.split(":");
-                int bib_number = Integer.parseInt(dnf[0]);
-                int leg_number = Integer.parseInt(dnf[1]);
+                final int bib_number = Integer.parseInt(dnf[0]);
+                final int leg_number = Integer.parseInt(dnf[1]);
+                final int leg_index = leg_number - 1;
 
                 OverallResult result = results[findIndexOfTeamWithBibNumber(bib_number)];
-                result.leg_results[leg_number-1].DNF = true;
+                result.leg_results[leg_index].DNF = true;
             }
         }
     }
@@ -260,12 +261,12 @@ public class Results {
             LegResult[] leg_results = result.leg_results;
             leg_results[0].start_time = ZERO_TIME;   // All times are relative to start of leg 1.
 
-            for (int i = 1; i < number_of_legs; i++)
-                fillLegStartTime(leg_results, i);
+            for (int leg_index = 1; leg_index < number_of_legs; leg_index++)
+                fillLegStartTime(leg_results, leg_index);
         }
     }
 
-    private void fillLegStartTime(LegResult[] leg_results, int leg) {
+    private void fillLegStartTime(LegResult[] leg_results, int leg_index) {
 
         // If there isn't a recorded finish time for the previous leg then we can't set
         // a start time for this one. Both legs will be DNF.
@@ -275,20 +276,21 @@ public class Results {
         // to set this leg's start time.
 
         // If the previous leg finish was after the mass start for this leg, allow for
-        // this leg runners starting in the mass start rather than when the previous
-        // leg runners finished.
+        // this leg runner(s) starting in the mass start rather than when the previous
+        // leg runner(s) finished.
 
-        // This method is not called for the first leg.
-        assert leg > 0;
+        // This method is not called for the first leg, since it always starts at zero.
+        assert leg_index > 0;
 
-        Duration mass_start_time = start_times_for_mass_starts[leg];
+        final Duration mass_start_time = start_times_for_mass_starts[leg_index];
+        final int previous_leg_index = leg_index - 1;
 
         //noinspection StatementWithEmptyBody
-        if (leg_results[leg-1].finish_time == null) {
+        if (leg_results[previous_leg_index].finish_time == null) {
             // No action since leg result will already be set to DNF.
         }
         else {
-            leg_results[leg].start_time = earlierOf(leg_results[leg-1].finish_time, mass_start_time);
+            leg_results[leg_index].start_time = earlierOf(leg_results[previous_leg_index].finish_time, mass_start_time);
         }
     }
 

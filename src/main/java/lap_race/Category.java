@@ -2,6 +2,9 @@ package lap_race;
 
 public enum Category {
 
+    // Declared in order of decreasing generality.
+    // The order is significant in that it defines the order of iteration when allocating prizes.
+
     OPEN_SENIOR("Open Senior", "Open", 15, 3),
     MIXED_SENIOR("Mixed Senior", "Mixed", 15, 1),
     FEMALE_SENIOR("Women Senior", "Women", 15, 3),
