@@ -4,12 +4,12 @@ import java.time.Duration;
 
 public class RawResult {
 
-     int bib_number;
-     Duration recorded_finish_time;  // Relative to start of leg 1.
+     final int bib_number;
+     final Duration recorded_finish_time;  // Relative to start of leg 1.
 
     public RawResult(String file_line) {
 
-        String[] elements = file_line.split("\t");
+        final String[] elements = file_line.split("\t");
 
         bib_number = Integer.parseInt(elements[0]);
         recorded_finish_time = parseTime(elements[1]);
@@ -17,8 +17,9 @@ public class RawResult {
 
     static Duration parseTime(final String element) {
 
-        String[] parts = element.split(":");
-        String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
+        final String[] parts = element.split(":");
+        final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
+
         return Duration.parse(time_as_ISO);
     }
 

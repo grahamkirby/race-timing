@@ -4,8 +4,8 @@ import java.time.Duration;
 
 public class OverallResult implements Comparable<OverallResult> {
 
-    Team team;
-    LegResult[] leg_results;
+    final Team team;
+    final LegResult[] leg_results;
 
     public OverallResult(Team team, int number_of_legs) {
 
@@ -20,8 +20,10 @@ public class OverallResult implements Comparable<OverallResult> {
 
         Duration overall = Results.ZERO_TIME;
 
-        for (LegResult leg_result : leg_results) {
+        for (final LegResult leg_result : leg_results) {
+
             if (leg_result.DNF) return Results.DNF_DUMMY_LEG_TIME;
+
             overall = overall.plus(leg_result.duration());
         }
 
@@ -30,7 +32,7 @@ public class OverallResult implements Comparable<OverallResult> {
 
     public boolean dnf() {
 
-        for (LegResult leg_result : leg_results)
+        for (final LegResult leg_result : leg_results)
             if (leg_result.DNF) return true;
 
         return false;
@@ -47,7 +49,7 @@ public class OverallResult implements Comparable<OverallResult> {
 
     public static String format(Duration duration) {
 
-        long s = duration.getSeconds();
+        final long s = duration.getSeconds();
         return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
     }
 }

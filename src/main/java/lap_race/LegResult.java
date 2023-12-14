@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class LegResult implements Comparable<LegResult> {
 
-    Team team;
-    int leg_number;
+    final Team team;
+    final int leg_number;
     boolean DNF;
 
     Duration start_time;  // Relative to start of leg 1.
