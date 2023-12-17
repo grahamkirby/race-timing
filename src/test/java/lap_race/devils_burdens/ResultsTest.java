@@ -21,27 +21,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ResultsTest {
 
-    // Test partial results cf results.gk 2020,
     // test different number of legs
-    // simple mass start cases
-    // 1st leg runner finishes after 3rd/4th leg mass start
-    // simple cases with DNFs
-    // DNF in each leg separately, mass starts none, 3, 4, 3&4 - organise test case output by number of mass starts
-    // all legs DNF - DNS
+    // 1st leg runner finishes after 4th leg mass start
     // all legs DNF except 4th
     // multiple teams DNF listed in bib order even if unordered in entry list
     // leg dead heats
     // overall/prizes no heats, with same time late start beats early
     // various category combinations for prizes
     // top 2 prizes are women cf cases in comments
-    // add and test early start option
+    // illegal config - dnf lap times, mass start times / mass start times wrong order
+    // illegal category
+    // raw results not in order
     // annotate detailed results with early and mass starts
     // generate PDF for overall
     // generate HTML
     // generate xls
-    // illegal config - dnf lap times, mass start times / mass start times wrong order
-    // illegal category
-    // raw results not in order
 
     Properties properties;
     Path resources_expected_outputs;
@@ -63,6 +57,12 @@ public class ResultsTest {
     public void full() throws Exception {
 
         processingCompletes("full");
+    }
+
+    @Test
+    public void lastFewResultsNotRecorded() throws Exception {
+
+        processingCompletes("last_few_results_not_recorded");
     }
 
     @Test
