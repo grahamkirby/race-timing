@@ -29,7 +29,7 @@ public class ResultsTest {
     // DNF in each leg separately, mass starts none, 3, 4, 3&4 - organise test case output by number of mass starts
     // all legs DNF - DNS
     // all legs DNF except 4th
-    // DNFs listed in bib order even if unordered in entry list
+    // multiple teams DNF listed in bib order even if unordered in entry list
     // leg dead heats
     // overall/prizes no heats, with same time late start beats early
     // various category combinations for prizes
