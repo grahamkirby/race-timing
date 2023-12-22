@@ -22,8 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ResultsTest {
 
     // test different number of legs
-    // 1st leg runner finishes after 4th leg mass start
-    // all legs DNF except 4th
     // multiple teams DNF listed in bib order even if unordered in entry list
     // leg dead heats
     // overall/prizes no heats, with same time late start beats early
@@ -69,6 +67,12 @@ public class ResultsTest {
     public void massStartNoneDNFLeg1() throws Exception {
 
         processingCompletes("mass_start_none/dnf_leg_1");
+    }
+
+    @Test
+    public void massStartNoneDNFLeg1And2And3() throws Exception {
+
+        processingCompletes("mass_start_none/dnf_leg_1_2_3");
     }
 
     @Test
@@ -120,6 +124,12 @@ public class ResultsTest {
     }
 
     @Test
+    public void massStart_3_4_DNFLeg1And2And3() throws Exception {
+
+        processingCompletes("mass_start_3_4/dnf_leg_1_2_3");
+    }
+
+    @Test
     public void massStart_3_4_DNFButCompleted() throws Exception {
 
         processingCompletes("mass_start_3_4/dnf_leg_1_2_3_4a");
@@ -162,9 +172,27 @@ public class ResultsTest {
     }
 
     @Test
+    public void massStart_3_4_FirstLegFinishAfterMassStart3() throws Exception {
+
+        processingCompletes("mass_start_3_4/first_leg_finish_after_mass_start_3");
+    }
+
+    @Test
+    public void massStart_3_4_FirstLegFinishAfterMassStart4() throws Exception {
+
+        processingCompletes("mass_start_3_4/first_leg_finish_after_mass_start_4");
+    }
+
+    @Test
     public void massStart_4_DNFLeg1() throws Exception {
 
         processingCompletes("mass_start_4/dnf_leg_1");
+    }
+
+    @Test
+    public void massStart_4_DNFLeg1And2And3() throws Exception {
+
+        processingCompletes("mass_start_4/dnf_leg_1_2_3");
     }
 
     @Test
