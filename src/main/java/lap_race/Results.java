@@ -24,8 +24,7 @@ public class Results {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final String DNF_STRING = "DNF";
-    public static final String DNS_STRING = "DNS";
-    public static final String NO_MASS_STARTS = "23:59:59,23:59:59,23:59:59,23:59:59";
+    public static final String NO_MASS_START_TIME = "23:59:59";
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
     public static final List<Category> CATEGORY_REPORT_ORDER = Arrays.asList(
@@ -165,13 +164,21 @@ public class Results {
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
         if (mass_start_elapsed_times_string.isBlank())
-            mass_start_elapsed_times_string = NO_MASS_STARTS;
+            mass_start_elapsed_times_string = NO_MASS_START_TIME + "," + NO_MASS_START_TIME + "," + NO_MASS_START_TIME + "," + NO_MASS_START_TIME;
 
         start_times_for_mass_starts = new Duration[number_of_legs];
-        int leg = 1;
+
+        int leg_index = 0;
         for (String time_as_string : mass_start_elapsed_times_string.split(",")) {
-            start_times_for_mass_starts[leg-1] = RawResult.parseTime(time_as_string);
-            leg++;
+            start_times_for_mass_starts[leg_index] = RawResult.parseTime(time_as_string);
+            leg_index++;
+        }
+
+        // If there is no mass start configured for leg 2,
+        // use the leg 3 mass start time for leg 2 too.
+        // This covers the case where the leg 1 runner finishes after a mass start.
+        if (start_times_for_mass_starts[1].equals(RawResult.parseTime(NO_MASS_START_TIME))) {
+            start_times_for_mass_starts[1] = start_times_for_mass_starts[2];
         }
     }
 
