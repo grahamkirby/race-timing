@@ -20,18 +20,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ResultsTest {
 
-    // test different number of legs
+    // leg dead heats (legs 2,3,4) - no heats in overall/prizes
     // multiple teams DNF listed in bib order even if unordered in entry list
-    // leg dead heats
-    // overall/prizes no heats, with same time late start beats early
-    // top 2 prizes are women cf cases in comments
     // illegal config - dnf lap times, mass start times / mass start times wrong order
     // illegal category
     // raw results not in order
     // annotate detailed results with mass starts
-    // generate PDF for overall
     // generate HTML
     // generate xls
+    // test different number of legs
 
     Properties properties;
     Path resources_expected_outputs;
@@ -47,6 +44,12 @@ public class ResultsTest {
     public void simple() throws Exception {
 
         processingCompletes("simple");
+    }
+
+    @Test
+    public void topTwoResultsWomen() throws Exception {
+
+        processingCompletes("top_two_results_women");
     }
 
     @Test
