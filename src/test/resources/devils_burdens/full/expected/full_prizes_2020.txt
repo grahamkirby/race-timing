@@ -4,64 +4,64 @@ Devil's Burdens Results 2020
 Category: Women Senior
 ----------------------
 
-1,72,Fife AC/Wizards We are not Hillrunners,Women Senior,04:04:14
-2,25,Carnethy HRC WSen,Women Senior,04:05:15
-3,86,HBT Women A,Women Senior,04:07:12
+1: Fife AC/Wizards We are not Hillrunners (Women Senior) 04:04:14
+2: Carnethy HRC WSen (Women Senior) 04:05:15
+3: HBT Women A (Women Senior) 04:07:12
 
 
 Category: Open Senior
 ---------------------
 
-1,18,Carnethy HRC Open Sen 1,Open Senior,03:18:22
-2,121,Shettleston Dibbers,Open Senior,03:20:09
-3,150,Westies Super T,Open Senior,03:23:26
+1: Carnethy HRC Open Sen 1 (Open Senior) 03:18:22
+2: Shettleston Dibbers (Open Senior) 03:20:09
+3: Westies Super T (Open Senior) 03:23:26
 
 
 Category: Women 40+
 -------------------
 
-1,69,Fife AC/Wizards Satan's Sisters,Women 40+,04:26:50
+1: Fife AC/Wizards Satan's Sisters (Women 40+) 04:26:50
 
 
 Category: Open 40+
 ------------------
 
-1,119,Shettleston Aging Gracefully,Open 40+,03:30:13
+1: Shettleston Aging Gracefully (Open 40+) 03:30:13
 
 
 Category: Women 50+
 -------------------
 
-1,56,Fife AC/Wizards Fife Flying Fifties,Women 50+,04:55:37
+1: Fife AC/Wizards Fife Flying Fifties (Women 50+) 04:55:37
 
 
 Category: Open 50+
 ------------------
 
-1,146,Westies Hooch,Open 50+,04:18:10
+1: Westies Hooch (Open 50+) 04:18:10
 
 
 Category: Women 60+
 -------------------
 
-1,57,Fife AC/Wizards Fife Sixties Plus,Women 60+,06:09:00
+1: Fife AC/Wizards Fife Sixties Plus (Women 60+) 06:09:00
 
 
 Category: Open 60+
 ------------------
 
-1,144,Westies Glens,Open 60+,04:38:50
+1: Westies Glens (Open 60+) 04:38:50
 
 
 Category: Mixed Senior
 ----------------------
 
-1,147,Westies MD2020,Mixed Senior,04:04:53
+1: Westies MD2020 (Mixed Senior) 04:04:53
 
 
 Category: Mixed 40+
 -------------------
 
-1,92,Kinnoull Runners Down,Mixed 40+,05:03:25
+1: Kinnoull Runners Down (Mixed 40+) 05:03:25
 
 
