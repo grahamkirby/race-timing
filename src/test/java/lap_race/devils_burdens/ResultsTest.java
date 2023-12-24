@@ -5,7 +5,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import uk.ac.standrews.cs.utilities.FileManipulation;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,12 +24,11 @@ public class ResultsTest {
     // multiple teams DNF listed in bib order even if unordered in entry list
     // leg dead heats
     // overall/prizes no heats, with same time late start beats early
-    // various category combinations for prizes
     // top 2 prizes are women cf cases in comments
     // illegal config - dnf lap times, mass start times / mass start times wrong order
     // illegal category
     // raw results not in order
-    // annotate detailed results with early and mass starts
+    // annotate detailed results with mass starts
     // generate PDF for overall
     // generate HTML
     // generate xls
@@ -280,7 +278,7 @@ public class ResultsTest {
 
         configureTest(configuration_name);
         new Results(properties).processResults();
-        assertThatDirectoriesHaveSameContent(resources_expected_outputs, temp_output_sub_directory);
+        assertThatDirectoryContainsAllExpectedContent(resources_expected_outputs, temp_output_sub_directory);
     }
 
     private void configureTest(String test_resource_root) throws IOException {
@@ -321,36 +319,35 @@ public class ResultsTest {
         }
     }
 
-    private static void assertThatDirectoriesHaveSameContent(final Path directory1, final Path directory2) throws IOException {
+    private static void assertThatDirectoryContainsAllExpectedContent(final Path expected, final Path actual) throws IOException {
 
-        Set<String> directory_listing_1 = getDirectoryEntries(directory1);
-        Set<String> directory_listing_2 = getDirectoryEntries(directory2);
+        final Set<String> directory_listing_expected = getDirectoryEntries(expected);
 
-        assertEquals(directory_listing_1, directory_listing_2);
+        for (final String file_name : directory_listing_expected) {
 
-        for (String file_name : directory_listing_1) {
+            if (!file_name.equals(".DS_Store")) {
 
-            Path path1 = directory1.resolve(file_name);
-            Path path2 = directory2.resolve(file_name);
+                final Path path_expected = expected.resolve(file_name);
+                final Path path_actual = actual.resolve(file_name);
 
-            if (Files.isDirectory(path1)) {
-                assertTrue(Files.isDirectory(path2));
-                assertThatDirectoriesHaveSameContent(path1, path2);
-            }
-            else {
-                assertFalse(Files.isDirectory(path2));
-                assertThatFilesHaveSameContent(path1, path2);
+                if (Files.isDirectory(path_expected)) {
+                    assertTrue(Files.isDirectory(path_actual));
+                    assertThatDirectoryContainsAllExpectedContent(path_expected, path_actual);
+                } else {
+                    assertFalse(Files.isDirectory(path_actual));
+                    assertThatFilesHaveSameContent(path_expected, path_actual);
+                }
             }
         }
     }
 
-    private static Set<String> getDirectoryEntries(Path directory) throws IOException {
+    private static Set<String> getDirectoryEntries(final Path directory) throws IOException {
 
-        Set<String> directory_listing = new HashSet<>();
+        final Set<String> directory_listing = new HashSet<>();
 
         try (Stream<Path> entries = Files.list(directory)) {
             for (Iterator<Path> iterator = entries.iterator(); iterator.hasNext(); ) {
-                Path file = iterator.next();
+                final Path file = iterator.next();
                 directory_listing.add(file.getFileName().toString());
             }
         }
@@ -360,18 +357,8 @@ public class ResultsTest {
 
     private static void assertThatFilesHaveSameContent(final Path path1, final Path path2) throws IOException {
 
-        try (BufferedReader reader1 = Files.newBufferedReader(path1); BufferedReader reader2 = Files.newBufferedReader(path2)) {
-
-            String line1;
-
-            while ((line1 = reader1.readLine()) != null) {
-                String line2 = reader2.readLine();
-                if (!line1.equals(line2))
-                    System.out.println("difference in files: " + path1 + ", " + path2);
-                assertEquals(line1, line2);
-            }
-
-            assertNull(reader2.readLine());
-        }
+        byte[] expected = Files.readAllBytes(path1);
+        byte[] actual = Files.readAllBytes(path2);
+        assertArrayEquals(expected, actual, "Files differ: " + path1 + ", " + path2);
     }
 }

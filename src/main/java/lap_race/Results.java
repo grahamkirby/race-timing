@@ -1,30 +1,32 @@
 package lap_race;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfWriter;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
+import java.util.List;
 
 public class Results {
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
-    //  1. If a time was recorded for any leg that should be treated as a DNF, e.g. if the runners  //
-    //     reported that they missed a checkpoint, insert an additional dummy entry into the times  //
-    //     file, following the recorded time, with the relevant bib number and time 00:00           //
+    //  1. Create new copy of directory src/main/resources/lap_race/devils_burdens/sample_config.   //
     //                                                                                              //
-    //  2. Edit the details in the following section as appropriate                                 //
-
-    // format for mass start times
+    //  2. Edit WORKING_DIRECTORY property to location of new directory.                            //
+    //                                                                                              //
+    //  3. Update year and mass start times.                                                        //
+    //                                                                                              //
+    //  4. Run Results, passing path of config file as command line parameter.                      //
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final String DNF_STRING = "DNF";
-    public static final String NO_MASS_START_TIME = "23:59:59";
+    public static final String DUMMY_DURATION = "23:59:59";
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
     public static final List<Category> CATEGORY_REPORT_ORDER = Arrays.asList(
@@ -41,9 +43,15 @@ public class Results {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
+    private static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+    private static final Font PDF_BOLD_UNDERLINED_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, Font.DEFAULTSIZE, Font.UNDERLINE);
+    private static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
+    private static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
+
     static Duration ZERO_TIME = RawResult.parseTime("0:0");
 
-    public static final Duration DNF_DUMMY_LEG_TIME = RawResult.parseTime("23:59:59");
+    public static final Duration DNF_DUMMY_LEG_TIME = RawResult.parseTime(DUMMY_DURATION);
 
     // Read from configuration file.
     Path working_directory_path;
@@ -58,7 +66,8 @@ public class Results {
     // Derived.
     String overall_results_filename;
     String detailed_results_filename;
-    String prizes_filename;
+    String prizes_text_filename;
+    String prizes_pdf_filename;
 
     Path input_directory_path;
     Path entries_path;
@@ -67,7 +76,8 @@ public class Results {
     Path output_directory_path;
     Path overall_results_path;
     Path detailed_results_path;
-    Path prizes_path;
+    Path prizes_text_path;
+    Path prizes_pdf_path;
 
     Team[] entries;
     RawResult[] raw_results;
@@ -91,8 +101,9 @@ public class Results {
 
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
-        else
+        else {
             new Results(args[0]).processResults();
+        }
     }
 
     private static Properties readProperties(String config_file_path) throws IOException {
@@ -147,7 +158,8 @@ public class Results {
 
         overall_results_filename = race_name_for_filenames + "_overall_" + year + ".csv";
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year + ".csv";
-        prizes_filename = race_name_for_filenames + "_prizes_" + year + ".txt";
+        prizes_text_filename = race_name_for_filenames + "_prizes_" + year + ".txt";
+        prizes_pdf_filename = race_name_for_filenames + "_prizes_" + year + ".pdf";
 
         input_directory_path = working_directory_path.resolve("input");
         entries_path = input_directory_path.resolve(entries_filename);
@@ -156,7 +168,8 @@ public class Results {
         output_directory_path = working_directory_path.resolve("output");
         overall_results_path = output_directory_path.resolve(overall_results_filename);
         detailed_results_path = output_directory_path.resolve(detailed_results_filename);
-        prizes_path = output_directory_path.resolve(prizes_filename);
+        prizes_text_path = output_directory_path.resolve(prizes_text_filename);
+        prizes_pdf_path = output_directory_path.resolve(prizes_pdf_filename);
     }
 
     private void configureMassStarts(Properties properties) {
@@ -164,7 +177,7 @@ public class Results {
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
         if (mass_start_elapsed_times_string.isBlank())
-            mass_start_elapsed_times_string = NO_MASS_START_TIME + "," + NO_MASS_START_TIME + "," + NO_MASS_START_TIME + "," + NO_MASS_START_TIME;
+            mass_start_elapsed_times_string = DUMMY_DURATION + "," + DUMMY_DURATION + "," + DUMMY_DURATION + "," + DUMMY_DURATION;
 
         start_times_for_mass_starts = new Duration[number_of_legs];
 
@@ -177,7 +190,7 @@ public class Results {
         // If there is no mass start configured for leg 2,
         // use the leg 3 mass start time for leg 2 too.
         // This covers the case where the leg 1 runner finishes after a mass start.
-        if (start_times_for_mass_starts[1].equals(RawResult.parseTime(NO_MASS_START_TIME))) {
+        if (start_times_for_mass_starts[1].equals(RawResult.parseTime(DUMMY_DURATION))) {
             start_times_for_mass_starts[1] = start_times_for_mass_starts[2];
         }
     }
@@ -429,21 +442,90 @@ public class Results {
 
     public void printPrizes() throws IOException {
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_path))) {
+        // Allocate first prize in each category first, in decreasing order of category breadth.
+        // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
+        // prize in open category.
+        allocateFirstPrizes();
+
+        // Now consider other prizes (only available in senior categories).
+        allocateMinorPrizes();
+
+        printPrizesToText();
+        printPrizesToPDF();
+    }
+
+    private void printPrizesToText() throws IOException {
+
+        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
 
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
-            writer.append("============================\n\n");
-            
-            // Allocate first prize in each category first, in decreasing order of category breadth.
-            // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
-            // prize in open category.
-            allocateFirstPrizes();
+            writer.append("============================").append("\n\n");
 
-            // Now consider other prizes (only available in senior categories).
-            allocateMinorPrizes();
+            for (final Category category : CATEGORY_REPORT_ORDER) {
 
-            printPrizes(writer);
+                final String header = "Category: " + category;
+
+                writer.append(header).append("\n");
+                writer.append("-".repeat(header.length())).append("\n\n");
+
+                final List<Team> category_prize_winners = prize_winners.get(category);
+
+                if (category_prize_winners.isEmpty())
+                    writer.append("No results\n");
+
+                int position = 1;
+                for (final Team team : category_prize_winners) {
+
+                    final OverallResult result = results[findIndexOfTeamWithBibNumber(team.bib_number)];
+
+                    writer.append(String.valueOf(position++)).append(": ").
+                            append(result.team.name).append(" (").
+                            append(result.team.category.toString()).append(") ").
+                            append(OverallResult.format(result.duration())).append("\n");
+                }
+
+                writer.append("\n\n");
+            }
         }
+    }
+
+    private void printPrizesToPDF() throws IOException {
+
+        final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
+
+        final Document document = new Document();
+        PdfWriter.getInstance(document, pdf_file_output_stream);
+
+        document.open();
+        document.add(new Paragraph(race_name_for_results + " Results " + year, PDF_BOLD_LARGE_FONT));
+
+        for (final Category category : CATEGORY_REPORT_ORDER) {
+
+            final String header = "Category: " + category;
+
+            final Paragraph category_header_paragraph = new Paragraph(48f, header, PDF_BOLD_UNDERLINED_FONT);
+            category_header_paragraph.setSpacingAfter(12);
+            document.add(category_header_paragraph);
+
+            final List<Team> category_prize_winners = prize_winners.get(category);
+
+            if (category_prize_winners.isEmpty())
+                document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+
+            int position = 1;
+            for (final Team team : category_prize_winners) {
+
+                final OverallResult result = results[findIndexOfTeamWithBibNumber(team.bib_number)];
+
+                final Paragraph paragraph = new Paragraph();
+                paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
+                paragraph.add(new Chunk(result.team.name, PDF_BOLD_FONT));
+                paragraph.add(new Chunk(" (" + result.team.category + ") ", PDF_FONT));
+                paragraph.add(new Chunk(OverallResult.format(result.duration()), PDF_FONT));
+                document.add(paragraph);
+            }
+        }
+        document.close();
     }
 
     private void allocateFirstPrizes() {
@@ -476,26 +558,6 @@ public class Results {
                     position++;
                 }
             }
-        }
-    }
-
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
-
-        for (final Category category : CATEGORY_REPORT_ORDER) {
-
-            final String header = "Category: " + category;
-
-            writer.append(header).append("\n");
-            writer.append("-".repeat(header.length())).append("\n\n");
-
-            int position = 1;
-            for (Team team : prize_winners.get(category)) {
-
-                final OverallResult result = results[findIndexOfTeamWithBibNumber(team.bib_number)];
-                writer.append(String.valueOf(position++)).append(",").append(String.valueOf(result)).append("\n");
-            }
-
-            writer.append("\n\n");
         }
     }
 
