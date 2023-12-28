@@ -7,15 +7,18 @@ public class LegResult implements Comparable<LegResult> {
 
     final Team team;
     final int leg_number;
+    final Results results;
     boolean DNF;
+    String position_string;
 
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public LegResult(Team team, int leg_number) {
+    public LegResult(Team team, int leg_number, final Results results) {
 
         this.team = team;
         this.leg_number = leg_number;
+        this.results = results;
         this.DNF = true;
     }
 
@@ -29,6 +32,11 @@ public class LegResult implements Comparable<LegResult> {
 
     @Override
     public int compareTo(LegResult o) {
+
+        if (duration().equals(o.duration())) {
+            return results.getRecordedLegPosition(team.bib_number, leg_number).compareTo(results.getRecordedLegPosition(o.team.bib_number, leg_number));
+        }
+
         return duration().compareTo(o.duration());
     }
 }
