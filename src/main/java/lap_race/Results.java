@@ -228,7 +228,7 @@ public class Results {
         results = new OverallResult[entries.length];
 
         for (int i = 0; i < results.length; i++)
-            results[i] = new OverallResult(entries[i], number_of_legs);
+            results[i] = new OverallResult(entries[i], number_of_legs, this);
     }
 
     private void fillLegFinishTimes() {
@@ -420,14 +420,50 @@ public class Results {
         return leg_results;
     }
 
+    Integer getRecordedLegPosition(final int bib_number, final int leg_number) {
+
+        int count = 0;
+
+        for (int i = 0; i < raw_results.length; i++) {
+            if (raw_results[i].bib_number == bib_number) {
+                count++;
+                if (count == leg_number) return i + 1;
+            }
+        }
+        //throw new RuntimeException("bib number not found");
+        return Integer.MAX_VALUE;
+    }
+
     private static void printLegResults(LegResult[] leg_results, OutputStreamWriter writer) throws IOException {
+
+        int number_of_results = leg_results.length;
+
+        // Deal with dead heats in legs 2-4.
+        for (int i = 0; i < number_of_results; i++) {
+
+            LegResult result = leg_results[i];
+            if (result.leg_number == 1) {
+                result.position_string = String.valueOf(i + 1);
+            }
+            else {
+                int j = i;
+
+                while (j + 1 < number_of_results && result.duration().equals(leg_results[j + 1].duration())) j++;
+                if (j > i) {
+                    for (int k = i; k <= j; k++)
+                        leg_results[k].position_string = i + 1 + "=";
+                    i = j;
+                } else
+                    result.position_string = String.valueOf(i + 1);
+            }
+        }
 
         for (int i = 0; i < leg_results.length; i++) {
 
             LegResult leg_result = leg_results[i];
 
             if (!leg_result.DNF) {
-                writer.append(String.valueOf(i+1)).append(",");
+                writer.append(leg_result.position_string).append(",");
                 writer.append(leg_result.toString()).append("\n");
             }
         }
@@ -599,22 +635,3 @@ public class Results {
         return total;
     }
 }
-
-
-// code for dead heats
-//        int number_of_results = overall_results.size();
-//
-//        for (int i = 0; i < number_of_results; i++) {
-//
-//            OverallResult result = overall_results.get(i);
-//            int j = i;
-//
-//            while (j + 1 < number_of_results && result.overall_time.equals(overall_results.get(j + 1).overall_time)) j++;
-//            if (j > i) {
-//                for (int k = i; k <= j; k++)
-//                    overall_results.get(k).position_string = i + 1 + "=";
-//                i = j;
-//            }
-//            else
-//                result.position_string = String.valueOf(i + 1);
-//        }

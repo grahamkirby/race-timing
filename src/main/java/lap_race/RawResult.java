@@ -4,8 +4,8 @@ import java.time.Duration;
 
 public class RawResult {
 
-     final int bib_number;
-     final Duration recorded_finish_time;  // Relative to start of leg 1.
+    final int bib_number;
+    final Duration recorded_finish_time;  // Relative to start of leg 1.
 
     public RawResult(String file_line) {
 
