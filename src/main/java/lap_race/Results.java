@@ -137,7 +137,7 @@ public class Results {
 
         printOverallResults();
         printDetailedResults();
-        printLegResults();
+        printLegResultsCSV();
         printPrizes();
     }
 
@@ -392,26 +392,32 @@ public class Results {
         }
     }
 
-    private void printLegResults() throws IOException {
+    private void printLegResultsCSV() throws IOException {
 
         for (int leg = 1; leg <= number_of_legs; leg++)
-            printLegResults(leg);
+            printLegResultsCSV(leg);
     }
 
-    private void printLegResults(int leg) throws IOException {
+    private void printLegResultsCSV(final int leg) throws IOException {
 
-        Path leg_results_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv");
+        final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv");
+        final Path leg_results_html_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html");
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(leg_results_path))) {
+        try (OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path));
+                OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_html_path))) {
 
-            printLegResultsHeader(leg, writer);
-            printLegResults(getLegResults(leg), writer);
+            printLegResultsCSVHeader(leg, csv_writer);
+            printLegResultsCSV(getLegResults(leg), csv_writer);
+
+            printLegResultsHTMLHeader(leg, html_writer);
+            printLegResultsHTML(getLegResults(leg), html_writer);
+            printLegResultsHTMLFooter(leg, html_writer);
         }
     }
 
-    private LegResult[] getLegResults(int leg) {
+    private LegResult[] getLegResults(final int leg) {
 
-        LegResult[] leg_results = new LegResult[results.length];
+        final LegResult[] leg_results = new LegResult[results.length];
 
         for (int i = 0; i < leg_results.length; i++)
             leg_results[i] = results[i].leg_results[leg-1];
@@ -430,11 +436,11 @@ public class Results {
                 if (count == leg_number) return i + 1;
             }
         }
-        //throw new RuntimeException("bib number not found");
+
         return Integer.MAX_VALUE;
     }
 
-    private static void printLegResults(LegResult[] leg_results, OutputStreamWriter writer) throws IOException {
+    private static void printLegResultsCSV(LegResult[] leg_results, OutputStreamWriter writer) throws IOException {
 
         int number_of_results = leg_results.length;
 
@@ -458,9 +464,7 @@ public class Results {
             }
         }
 
-        for (int i = 0; i < leg_results.length; i++) {
-
-            LegResult leg_result = leg_results[i];
+        for (LegResult leg_result : leg_results) {
 
             if (!leg_result.DNF) {
                 writer.append(leg_result.position_string).append(",");
@@ -469,11 +473,58 @@ public class Results {
         }
     }
 
-    private void printLegResultsHeader(int leg, OutputStreamWriter writer) throws IOException {
+    private void printLegResultsHTML(LegResult[] leg_results, OutputStreamWriter writer) throws IOException {
+
+        for (LegResult leg_result : leg_results) {
+
+            if (!leg_result.DNF) {
+                writer.append("""
+                                <tr>
+                                <td>""");
+                writer.append(leg_result.position_string);
+                writer.append("""
+                                </td>
+                                <td>""");
+                writer.append(leg_result.team.runners[leg_result.leg_number-1]);
+                writer.append("""
+                                </td>
+                                <td>""");
+                writer.append(OverallResult.format(leg_result.duration()));
+                writer.append("""
+                                </td>
+                            </tr>""");
+            }
+        }
+    }
+
+    private void printLegResultsCSVHeader(int leg, OutputStreamWriter writer) throws IOException {
 
         writer.append("Pos,Runner");
         if (paired_legs[leg-1]) writer.append("s");
         writer.append(",Time\n");
+    }
+
+    private void printLegResultsHTMLHeader(int leg, OutputStreamWriter writer) throws IOException {
+
+        writer.append("""
+            <table class="fac-table">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Runner</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+            """);
+    }
+
+    private void printLegResultsHTMLFooter(int leg, OutputStreamWriter writer) throws IOException {
+
+        writer.append("""
+                </tbody>
+            </table>
+            """);
     }
 
     public void printPrizes() throws IOException {

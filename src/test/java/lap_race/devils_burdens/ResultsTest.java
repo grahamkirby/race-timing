@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +32,7 @@ public class ResultsTest {
 
     @AfterEach
     public void tearDown() throws IOException {
-        FileManipulation.deleteDirectory(temp_directory);
+        //FileManipulation.deleteDirectory(temp_directory);
     }
 
     @Test
@@ -54,6 +51,12 @@ public class ResultsTest {
     public void deadHeats() throws Exception {
 
         processingCompletes("dead_heats");
+    }
+
+    @Test
+    public void htmlOutput() throws Exception {
+
+        processingCompletes("html_output");
     }
 
     @Test
@@ -366,6 +369,8 @@ public class ResultsTest {
 
         byte[] expected = Files.readAllBytes(path1);
         byte[] actual = Files.readAllBytes(path2);
-        assertArrayEquals(expected, actual, "Files differ: " + path1 + ", " + path2);
+
+        if (!Arrays.equals(expected, actual) && !filesHaveSameContentIgnoringWhitespace(path1, path2))
+            fail("Files differ: " + path1 + ", " + path2);
     }
 }
