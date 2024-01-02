@@ -66,7 +66,7 @@ public class Results {
     // Derived.
     String overall_results_filename;
     String detailed_results_filename;
-    String prizes_text_filename;
+    String prizes_filename;
     String prizes_pdf_filename;
 
     Path input_directory_path;
@@ -74,24 +74,24 @@ public class Results {
     Path raw_results_path;
 
     Path output_directory_path;
-    Path overall_results_path;
-    Path detailed_results_path;
-    Path prizes_text_path;
-    Path prizes_pdf_path;
+//    Path overall_results_path;
+//    Path detailed_results_path;
+//    Path prizes_text_path;
+//    Path prizes_pdf_path;
 
     Team[] entries;
     RawResult[] raw_results;
     OverallResult[] results;
-    Map<Category, List<Team>> prize_winners = new HashMap<>();
+    final Map<Category, List<Team>> prize_winners = new HashMap<>();
 
     Duration[] start_times_for_mass_starts;  // Relative to start of leg 1.
     boolean[] paired_legs;
 
-    public Results(String config_file_path) throws IOException {
+    public Results(final String config_file_path) throws IOException {
         this(readProperties(config_file_path));
     }
 
-    public Results(Properties properties) {
+    public Results(final Properties properties) {
         configure(properties);
     }
 
@@ -106,17 +106,17 @@ public class Results {
         }
     }
 
-    private static Properties readProperties(String config_file_path) throws IOException {
+    private static Properties readProperties(final String config_file_path) throws IOException {
 
-        try (FileInputStream in = new FileInputStream(config_file_path)) {
+        try (final FileInputStream in = new FileInputStream(config_file_path)) {
 
-            Properties properties = new Properties();
+            final Properties properties = new Properties();
             properties.load(in);
             return properties;
         }
     }
 
-    private void configure(Properties properties) {
+    private void configure(final Properties properties) {
 
         readProperties(properties);
         constructFilePaths();
@@ -137,11 +137,11 @@ public class Results {
 
         printOverallResults();
         printDetailedResults();
-        printLegResultsCSV();
+        printLegResults();
         printPrizes();
     }
 
-    private void readProperties(Properties properties) {
+    private void readProperties(final Properties properties) {
 
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
 
@@ -156,23 +156,22 @@ public class Results {
 
     private void constructFilePaths() {
 
-        overall_results_filename = race_name_for_filenames + "_overall_" + year + ".csv";
-        detailed_results_filename = race_name_for_filenames + "_detailed_" + year + ".csv";
-        prizes_text_filename = race_name_for_filenames + "_prizes_" + year + ".txt";
-        prizes_pdf_filename = race_name_for_filenames + "_prizes_" + year + ".pdf";
+        overall_results_filename = race_name_for_filenames + "_overall_" + year;
+        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
+        prizes_filename = race_name_for_filenames + "_prizes_" + year;
 
         input_directory_path = working_directory_path.resolve("input");
         entries_path = input_directory_path.resolve(entries_filename);
         raw_results_path = input_directory_path.resolve(raw_results_filename);
 
         output_directory_path = working_directory_path.resolve("output");
-        overall_results_path = output_directory_path.resolve(overall_results_filename);
-        detailed_results_path = output_directory_path.resolve(detailed_results_filename);
-        prizes_text_path = output_directory_path.resolve(prizes_text_filename);
-        prizes_pdf_path = output_directory_path.resolve(prizes_pdf_filename);
+//        overall_results_path = output_directory_path.resolve(overall_results_filename);
+//        detailed_results_path = output_directory_path.resolve(detailed_results_filename);
+//        prizes_text_path = output_directory_path.resolve(prizes_text_filename);
+//        prizes_pdf_path = output_directory_path.resolve(prizes_pdf_filename);
     }
 
-    private void configureMassStarts(Properties properties) {
+    private void configureMassStarts(final Properties properties) {
 
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
@@ -195,9 +194,9 @@ public class Results {
         }
     }
 
-    private void configurePairedLegs(Properties properties) {
+    private void configurePairedLegs(final Properties properties) {
 
-        String paired_legs_string = properties.getProperty("PAIRED_LEGS");
+        final String paired_legs_string = properties.getProperty("PAIRED_LEGS");
         paired_legs = new boolean[number_of_legs];
 
         for (String s : paired_legs_string.split(",")) {
@@ -207,7 +206,7 @@ public class Results {
 
      private void loadEntries() throws IOException {
 
-        List<String> lines = Files.readAllLines(entries_path);
+        final List<String> lines = Files.readAllLines(entries_path);
         entries = new Team[lines.size()];
 
         for (int i = 0; i < entries.length; i++)
@@ -216,7 +215,7 @@ public class Results {
 
     private void loadRawResults() throws IOException {
 
-        List<String> lines = Files.readAllLines(raw_results_path);
+        final List<String> lines = Files.readAllLines(raw_results_path);
         raw_results = new RawResult[lines.size()];
 
         for (int i = 0; i < raw_results.length; i++)
@@ -233,14 +232,14 @@ public class Results {
 
     private void fillLegFinishTimes() {
 
-        for (RawResult raw_result : raw_results) {
+        for (final RawResult raw_result : raw_results) {
 
             try {
-                int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
-                OverallResult result = results[team_index];
-                LegResult[] leg_results = result.leg_results;
+                final int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
+                final OverallResult result = results[team_index];
+                final LegResult[] leg_results = result.leg_results;
 
-                int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
+                final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
                 leg_results[leg_index].finish_time = raw_result.recorded_finish_time;
                 leg_results[leg_index].DNF = false;
             }
@@ -263,12 +262,12 @@ public class Results {
 
             for (final String dnf_string : dnf_legs_string.split(",")) {
 
-                String[] dnf = dnf_string.split(":");
+                final String[] dnf = dnf_string.split(":");
                 final int bib_number = Integer.parseInt(dnf[0]);
                 final int leg_number = Integer.parseInt(dnf[1]);
                 final int leg_index = leg_number - 1;
 
-                OverallResult result = results[findIndexOfTeamWithBibNumber(bib_number)];
+                final OverallResult result = results[findIndexOfTeamWithBibNumber(bib_number)];
                 result.leg_results[leg_index].DNF = true;
             }
         }
@@ -276,9 +275,9 @@ public class Results {
 
     private void fillLegStartTimes() {
 
-        for (OverallResult result : results) {
+        for (final OverallResult result : results) {
 
-            LegResult[] leg_results = result.leg_results;
+            final LegResult[] leg_results = result.leg_results;
             leg_results[0].start_time = ZERO_TIME;   // All times are relative to start of leg 1.
 
             for (int leg_index = 1; leg_index < number_of_legs; leg_index++)
@@ -286,7 +285,7 @@ public class Results {
         }
     }
 
-    private void fillLegStartTime(LegResult[] leg_results, int leg_index) {
+    private void fillLegStartTime(final LegResult[] leg_results, final int leg_index) {
 
         // If there isn't a recorded finish time for the previous leg then we can't set
         // a start time for this one. Both legs will be DNF.
@@ -320,34 +319,105 @@ public class Results {
 
     public void printOverallResults() throws IOException {
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_path))) {
+        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
+        final Path overall_results_html_path = output_directory_path.resolve(overall_results_filename + ".html");
 
-            writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
-            printOverallResults(writer);
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path));
+             final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_html_path))) {
+
+            csv_writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
+            printOverallResultsCSV(csv_writer);
+
+            printOverallResultsHTMLHeader(html_writer);
+            printOverallResultsHTML(html_writer);
+            printOverallResultsHTMLFooter(html_writer);
         }
     }
 
-    private void printOverallResults(OutputStreamWriter writer) throws IOException {
-        
+    private void printOverallResultsCSV(final OutputStreamWriter writer) throws IOException {
+
         for (int i = 0; i < results.length; i++) {
 
-            OverallResult result = results[i];
-
-            if (!result.dnf()) writer.append(String.valueOf(i+1));
+            if (!results[i].dnf()) writer.append(String.valueOf(i+1));
             writer.append(",").append(String.valueOf(results[i])).append("\n");
         }
     }
 
-    public void printDetailedResults() throws IOException {
+    private void printOverallResultsHTML(final OutputStreamWriter writer) throws IOException {
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_path))) {
+        int position = 1;
 
-            printDetailedResultsHeader(writer);
-            printDetailedResults(writer);
+        for (final OverallResult result : results) {
+
+            writer.append("""
+                            <tr>
+                            <td>""");
+            writer.append(String.valueOf(position++));
+            writer.append("""
+                            </td>
+                            <td>""");
+            writer.append(String.valueOf(result.team.bib_number));
+            writer.append("""
+                                </td>
+                                <td>""");
+            writer.append(String.valueOf(result.team.name));
+            writer.append("""
+                                </td>
+                                <td>""");
+            writer.append(String.valueOf(result.team.category));
+            writer.append("""
+                                </td>
+                                <td>""");
+            writer.append(OverallResult.format(result.duration()));
+            writer.append("""
+                            </td>
+                        </tr>""");
         }
     }
 
-    private void printDetailedResultsHeader(OutputStreamWriter writer) throws IOException {
+    private void printOverallResultsHTMLHeader(final OutputStreamWriter writer) throws IOException {
+
+        writer.append("""
+                <table class="fac-table">
+                               <thead>
+                                   <tr>
+                                       <th>Pos</th>
+                                       <th>No</th>
+                                       <th>Team</th>
+                                       <th>Category</th>
+                                       <th>Total</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+            """);
+    }
+
+    private void printOverallResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
+
+        writer.append("""
+                </tbody>
+            </table>
+            """);
+    }
+
+    public void printDetailedResults() throws IOException {
+
+        final Path detailed_results_csv_path = output_directory_path.resolve(detailed_results_filename + ".csv");
+        final Path detailed_results_html_path = output_directory_path.resolve(detailed_results_filename + ".html");
+
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_csv_path));
+             final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_html_path))) {
+
+            printDetailedResultsCSVHeader(csv_writer);
+            printDetailedResultsCSV(csv_writer);
+
+            printDetailedResultsHTMLHeader(html_writer);
+            printDetailedResultsHTML(html_writer);
+            printDetailedResultsHTMLFooter(html_writer);
+        }
+    }
+
+    private void printDetailedResultsCSVHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
@@ -359,26 +429,25 @@ public class Results {
         writer.append("Total\n");
     }
 
-    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResultsCSV(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
 
-        for (OverallResult result : results) {
+        for (final OverallResult result : results) {
 
-            Team team = result.team;
-            int bib_number = team.bib_number;
+            final Team team = result.team;
             boolean any_previous_leg_dnf = false;
 
             if (!result.dnf()) writer.append(String.valueOf(position++));
             
             writer.append(",");
-            writer.append(String.valueOf(bib_number)).append(",");
+            writer.append(String.valueOf(team.bib_number)).append(",");
             writer.append(team.name).append(",");
             writer.append(team.category.toString()).append(",");
             
             for (int leg = 1; leg <= number_of_legs; leg++) {
 
-                LegResult leg_result = result.leg_results[leg-1];
+                final LegResult leg_result = result.leg_results[leg-1];
 
                 writer.append(team.runners[leg-1]).append(",");
                 writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration())).append(",");
@@ -392,26 +461,119 @@ public class Results {
         }
     }
 
-    private void printLegResultsCSV() throws IOException {
+    private void printDetailedResultsHTML(final OutputStreamWriter writer) throws IOException {
 
-        for (int leg = 1; leg <= number_of_legs; leg++)
-            printLegResultsCSV(leg);
+        int position = 1;
+
+        for (final OverallResult result : results) {
+
+            final Team team = result.team;
+            boolean any_previous_leg_dnf = false;
+
+            writer.append("""
+                    <tr>
+                    <td>""");
+            if (!result.dnf()) writer.append(String.valueOf(position++));
+            writer.append("""
+                    </td>
+                    <td>""");
+            writer.append(String.valueOf(result.team.bib_number));
+            writer.append("""
+                    </td>
+                    <td>""");
+            writer.append(String.valueOf(result.team.name));
+            writer.append("""
+                    </td>
+                    <td>""");
+            writer.append(String.valueOf(result.team.category));
+            writer.append("""
+                    </td>""");
+
+            for (int leg = 1; leg <= number_of_legs; leg++) {
+
+                final LegResult leg_result = result.leg_results[leg - 1];
+
+                writer.append("""
+                    <td>""");
+                writer.append(team.runners[leg - 1]);
+                writer.append("""
+                    </td>
+                    <td>""");
+
+                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration()));
+                writer.append("""
+                    </td>
+                    <td>""");
+                writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
+                writer.append("""
+                    </td>""");
+                if (leg_result.DNF) any_previous_leg_dnf = true;
+            }
+
+            writer.append("""
+                    </tr>""");
+        }
     }
 
-    private void printLegResultsCSV(final int leg) throws IOException {
+    private void printDetailedResultsHTMLHeader(final OutputStreamWriter writer) throws IOException {
+
+        writer.append("""
+                <table class="fac-table">
+                               <thead>
+                                   <tr>
+                                       <th>Pos</th>
+                                       <th>No</th>
+                                       <th>Team</th>
+                                       <th>Category</th>
+            """);
+
+        for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
+
+            writer.append("<th>Runners " + leg_number + "</th>");
+            writer.append("<th>Leg " + leg_number + "</th>");
+
+            if (leg_number < number_of_legs)
+                writer.append("<th>Split " + leg_number + "</th>");
+            else
+                writer.append("<th>Total</th>");
+        }
+
+        writer.append("""
+                                   </tr>
+                               </thead>
+                               <tbody>
+            """);
+    }
+
+    private void printDetailedResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
+
+        writer.append("""
+                </tbody>
+            </table>
+            """);
+    }
+
+
+    private void printLegResults() throws IOException {
+
+        for (int leg = 1; leg <= number_of_legs; leg++)
+            printLegResults(leg);
+    }
+
+    private void printLegResults(final int leg) throws IOException {
 
         final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv");
         final Path leg_results_html_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html");
 
-        try (OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path));
-                OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_html_path))) {
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path));
+                final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_html_path))) {
 
             printLegResultsCSVHeader(leg, csv_writer);
             printLegResultsCSV(getLegResults(leg), csv_writer);
 
             printLegResultsHTMLHeader(leg, html_writer);
             printLegResultsHTML(getLegResults(leg), html_writer);
-            printLegResultsHTMLFooter(leg, html_writer);
+            printLegResultsHTMLFooter(html_writer);
         }
     }
 
@@ -440,14 +602,14 @@ public class Results {
         return Integer.MAX_VALUE;
     }
 
-    private static void printLegResultsCSV(LegResult[] leg_results, OutputStreamWriter writer) throws IOException {
+    private static void printLegResultsCSV(final LegResult[] leg_results, final OutputStreamWriter writer) throws IOException {
 
-        int number_of_results = leg_results.length;
+        final int number_of_results = leg_results.length;
 
         // Deal with dead heats in legs 2-4.
         for (int i = 0; i < number_of_results; i++) {
 
-            LegResult result = leg_results[i];
+            final LegResult result = leg_results[i];
             if (result.leg_number == 1) {
                 result.position_string = String.valueOf(i + 1);
             }
@@ -464,7 +626,7 @@ public class Results {
             }
         }
 
-        for (LegResult leg_result : leg_results) {
+        for (final LegResult leg_result : leg_results) {
 
             if (!leg_result.DNF) {
                 writer.append(leg_result.position_string).append(",");
@@ -473,9 +635,9 @@ public class Results {
         }
     }
 
-    private void printLegResultsHTML(LegResult[] leg_results, OutputStreamWriter writer) throws IOException {
+    private void printLegResultsHTML(final LegResult[] leg_results, final OutputStreamWriter writer) throws IOException {
 
-        for (LegResult leg_result : leg_results) {
+        for (final LegResult leg_result : leg_results) {
 
             if (!leg_result.DNF) {
                 writer.append("""
@@ -497,21 +659,27 @@ public class Results {
         }
     }
 
-    private void printLegResultsCSVHeader(int leg, OutputStreamWriter writer) throws IOException {
+    private void printLegResultsCSVHeader(final int leg, final OutputStreamWriter writer) throws IOException {
 
         writer.append("Pos,Runner");
         if (paired_legs[leg-1]) writer.append("s");
         writer.append(",Time\n");
     }
 
-    private void printLegResultsHTMLHeader(int leg, OutputStreamWriter writer) throws IOException {
+    private void printLegResultsHTMLHeader(final int leg, final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
             <table class="fac-table">
                 <thead>
                     <tr>
                         <th>Pos</th>
-                        <th>Runner</th>
+                        <th>Runner
+            """);
+
+        if (paired_legs[leg-1]) writer.append("s");
+
+        writer.append("""
+            </th>
                         <th>Time</th>
                     </tr>
                 </thead>
@@ -519,7 +687,7 @@ public class Results {
             """);
     }
 
-    private void printLegResultsHTMLFooter(int leg, OutputStreamWriter writer) throws IOException {
+    private void printLegResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 </tbody>
@@ -537,13 +705,15 @@ public class Results {
         // Now consider other prizes (only available in senior categories).
         allocateMinorPrizes();
 
-        printPrizesToText();
-        printPrizesToPDF();
+        printPrizesText();
+        printPrizesPDF();
     }
 
-    private void printPrizesToText() throws IOException {
+    private void printPrizesText() throws IOException {
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
+        final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
 
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
@@ -576,8 +746,9 @@ public class Results {
         }
     }
 
-    private void printPrizesToPDF() throws IOException {
+    private void printPrizesPDF() throws IOException {
 
+        final Path prizes_pdf_path = output_directory_path.resolve(prizes_pdf_filename + ".pdf");
         final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
 
         final Document document = new Document();
@@ -636,7 +807,7 @@ public class Results {
 
             int position = 2;
 
-            for (OverallResult result : results) {
+            for (final OverallResult result : results) {
                 
                 if (position > category.number_of_prizes) break;
                 

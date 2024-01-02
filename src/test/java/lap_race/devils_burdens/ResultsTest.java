@@ -3,14 +3,15 @@ package lap_race.devils_burdens;
 import lap_race.Results;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import uk.ac.standrews.cs.utilities.FileManipulation;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -370,7 +371,23 @@ public class ResultsTest {
         byte[] expected = Files.readAllBytes(path1);
         byte[] actual = Files.readAllBytes(path2);
 
-        if (!Arrays.equals(expected, actual) && !filesHaveSameContentIgnoringWhitespace(path1, path2))
+        if (!Arrays.equals(expected, actual) && !filesHaveSameContentIgnoreWhitespace(path1, path2))
             fail("Files differ: " + path1 + ", " + path2);
+    }
+
+    private static boolean filesHaveSameContentIgnoreWhitespace(Path path1, Path path2) throws IOException {
+        String fileContent1 = getFileContent(path1);
+        String fileContent2 = getFileContent(path2);
+
+        if (!fileContent1.equals(fileContent2)) {
+            System.out.println("f1: " + fileContent1);
+            System.out.println("f2: " + fileContent2);
+        }
+        return fileContent1.equals(fileContent2);
+    }
+
+    private static String getFileContent(Path path) throws IOException {
+
+        return Files.readAllLines(path).stream().reduce((s1, s2) -> s1 + s2).orElseThrow().replaceAll("\t", "").replaceAll("\n", "").replaceAll(" ", "");
     }
 }
