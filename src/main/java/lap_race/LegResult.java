@@ -10,6 +10,7 @@ public class LegResult implements Comparable<LegResult> {
     final Results results;
     boolean DNF;
     String position_string;
+    boolean in_mass_start = false;
 
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
@@ -20,7 +21,7 @@ public class LegResult implements Comparable<LegResult> {
         this.leg_number = leg_number;
         this.results = results;
         this.DNF = true;
-    }final
+    }
 
     public Duration duration() {
         return DNF ? Results.DNF_DUMMY_LEG_TIME : finish_time.minus(start_time);

@@ -68,7 +68,6 @@ public class Results {
     String overall_results_filename;
     String detailed_results_filename;
     String prizes_filename;
-    String prizes_pdf_filename;
 
     Path input_directory_path;
     Path entries_path;
@@ -328,7 +327,8 @@ public class Results {
             // No action since leg result will already be set to DNF.
         }
         else {
-            leg_results[leg_index].start_time = earlierOf(leg_results[previous_leg_index].finish_time, mass_start_time);
+            leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
+            leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
         }
     }
 
@@ -468,7 +468,10 @@ public class Results {
 
                 final LegResult leg_result = result.leg_results[leg-1];
 
-                writer.append(team.runners[leg-1]).append(",");
+                writer.append(team.runners[leg-1]);
+                if (leg_result.in_mass_start)
+                    writer.append(" (M").append(String.valueOf(leg)).append(")");
+                writer.append(",");
                 writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration())).append(",");
                 writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
 
@@ -515,6 +518,8 @@ public class Results {
                 writer.append("""
                     <td>""");
                 writer.append(team.runners[leg - 1]);
+                if (leg_result.in_mass_start)
+                    writer.append(" (M").append(String.valueOf(leg)).append(")");
                 writer.append("""
                     </td>
                     <td>""");
@@ -767,14 +772,14 @@ public class Results {
 
     private void printPrizesPDF() throws IOException {
 
-        final Path prizes_pdf_path = output_directory_path.resolve(prizes_pdf_filename + ".pdf");
+        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
         final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
 
         final Document document = new Document();
         PdfWriter.getInstance(document, pdf_file_output_stream);
 
         document.open();
-        document.add(new Paragraph(race_name_for_results + " Results " + year, PDF_BOLD_LARGE_FONT));
+        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
 
         for (final Category category : CATEGORY_REPORT_ORDER) {
 
