@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ResultsTest {
 
-    // illegal config - dnf lap times, mass start times / mass start times wrong order
     // annotate detailed results with mass starts
     // generate xls
 
@@ -279,6 +278,45 @@ public class ResultsTest {
         );
 
         assertEquals("surplus result recorded for team: 2", thrown.getMessage());
+    }
+
+    @Test
+    public void illegalDNFTime() throws Exception {
+
+        configureTest("illegal_dnf_time");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("illegal DNF time", thrown.getMessage());
+    }
+
+    @Test
+    public void illegalMassStartTime() throws Exception {
+
+        configureTest("illegal_mass_start_time");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("illegal mass start time", thrown.getMessage());
+    }
+
+    @Test
+    public void illegalMassStartTimeOrder() throws Exception {
+
+        configureTest("illegal_mass_start_time_order");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("illegal mass start time order", thrown.getMessage());
     }
 
     @Test

@@ -174,8 +174,20 @@ public class Results {
         start_times_for_mass_starts = new Duration[number_of_legs];
 
         int leg_index = 0;
+        Duration previous_mass_start_time = null;
+
         for (String time_as_string : mass_start_elapsed_times_string.split(",")) {
-            start_times_for_mass_starts[leg_index] = RawResult.parseTime(time_as_string);
+            Duration mass_start_time;
+            try {
+                mass_start_time = RawResult.parseTime(time_as_string);
+            }
+            catch (Exception e) {
+                throw new RuntimeException("illegal mass start time");
+            }
+            start_times_for_mass_starts[leg_index] = mass_start_time;
+            if (previous_mass_start_time != null && !(previous_mass_start_time.equals(DNF_DUMMY_LEG_TIME)) && previous_mass_start_time.compareTo(start_times_for_mass_starts[leg_index]) > 0)
+                throw new RuntimeException("illegal mass start time order");
+            previous_mass_start_time = start_times_for_mass_starts[leg_index];
             leg_index++;
         }
 
@@ -264,13 +276,18 @@ public class Results {
 
             for (final String dnf_string : dnf_legs_string.split(",")) {
 
-                final String[] dnf = dnf_string.split(":");
-                final int bib_number = Integer.parseInt(dnf[0]);
-                final int leg_number = Integer.parseInt(dnf[1]);
-                final int leg_index = leg_number - 1;
+                try {
+                    final String[] dnf = dnf_string.split(":");
+                    final int bib_number = Integer.parseInt(dnf[0]);
+                    final int leg_number = Integer.parseInt(dnf[1]);
+                    final int leg_index = leg_number - 1;
 
-                final OverallResult result = results[findIndexOfTeamWithBibNumber(bib_number)];
-                result.leg_results[leg_index].DNF = true;
+                    final OverallResult result = results[findIndexOfTeamWithBibNumber(bib_number)];
+                    result.leg_results[leg_index].DNF = true;
+                }
+                catch (Exception e) {
+                    throw new RuntimeException("illegal DNF time");
+                }
             }
         }
     }
