@@ -45,7 +45,7 @@ public class OverallResult implements Comparable<OverallResult> {
     }
 
     @Override
-    public int compareTo(OverallResult o) {
+    public int compareTo(final OverallResult o) {
 
         if (duration().equals(o.duration())) {
 
@@ -57,7 +57,7 @@ public class OverallResult implements Comparable<OverallResult> {
         return duration().compareTo(o.duration());
     }
 
-    public static String format(Duration duration) {
+    public static String format(final Duration duration) {
 
         final long s = duration.getSeconds();
         return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));

@@ -1,0 +1,5 @@
+1	Anster Haddies Ladies B	Women Senior	Tracy Knox	Pamela Cruickshanks & Debz Hay	Lynne Herd & Jacs McDonald	Rosie Knox	Leg 5 Team 1
+2	Anster Haddies Mens 1	Open 50+	Davie Burgess	Jim Hogsflesh & Craig Watson	George Findlay & Giles Harris	Allan Gibson	Leg 5 Team 2
+3	Anster Haddies Team Elite	Open Senior	Davie Brisland	Ross Young & Colin McKie	Mike Reilly & Alan Davie	Eric Anderson	Leg 5 Team 3
+4	Beacon: 50 Shades of Beacon	Women 50+	Shan Lees	Karen Young & Grace Kinsella	Trish Whitelaw & Adele Osborne	Claire Duncan	Leg 5 Team 4
+5	Beacon: Beacon Belligerents	Open Senior	Clark Christie	Neil MacNicol & Andrew Waddington	Bobby Summers & Patrick Leask	Lisa Johnstone	Leg 5 Team 5

@@ -3,6 +3,7 @@ package lap_race.devils_burdens;
 import lap_race.Results;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import uk.ac.standrews.cs.utilities.FileManipulation;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -22,9 +23,7 @@ public class ResultsTest {
     // illegal category
     // raw results not in order
     // annotate detailed results with mass starts
-    // generate HTML
     // generate xls
-    // test different number of legs
 
     Properties properties;
     Path resources_expected_outputs;
@@ -33,13 +32,25 @@ public class ResultsTest {
 
     @AfterEach
     public void tearDown() throws IOException {
-        //FileManipulation.deleteDirectory(temp_directory);
+        FileManipulation.deleteDirectory(temp_directory);
     }
 
     @Test
     public void simple() throws Exception {
 
         processingCompletes("simple");
+    }
+
+    @Test
+    public void legs3() throws Exception {
+
+        processingCompletes("legs_3");
+    }
+
+    @Test
+    public void legs5() throws Exception {
+
+        processingCompletes("legs_5");
     }
 
     @Test
