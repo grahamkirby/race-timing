@@ -74,10 +74,6 @@ public class Results {
     Path raw_results_path;
 
     Path output_directory_path;
-//    Path overall_results_path;
-//    Path detailed_results_path;
-//    Path prizes_text_path;
-//    Path prizes_pdf_path;
 
     Team[] entries;
     RawResult[] raw_results;
@@ -165,10 +161,6 @@ public class Results {
         raw_results_path = input_directory_path.resolve(raw_results_filename);
 
         output_directory_path = working_directory_path.resolve("output");
-//        overall_results_path = output_directory_path.resolve(overall_results_filename);
-//        detailed_results_path = output_directory_path.resolve(detailed_results_filename);
-//        prizes_text_path = output_directory_path.resolve(prizes_text_filename);
-//        prizes_pdf_path = output_directory_path.resolve(prizes_pdf_filename);
     }
 
     private void configureMassStarts(final Properties properties) {
@@ -176,7 +168,7 @@ public class Results {
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
         if (mass_start_elapsed_times_string.isBlank())
-            mass_start_elapsed_times_string = DUMMY_DURATION + "," + DUMMY_DURATION + "," + DUMMY_DURATION + "," + DUMMY_DURATION;
+            mass_start_elapsed_times_string = (DUMMY_DURATION + ",").repeat(number_of_legs - 1) + DUMMY_DURATION;
 
         start_times_for_mass_starts = new Duration[number_of_legs];
 

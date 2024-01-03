@@ -7,7 +7,7 @@ public class RawResult {
     final int bib_number;
     final Duration recorded_finish_time;  // Relative to start of leg 1.
 
-    public RawResult(String file_line) {
+    public RawResult(final String file_line) {
 
         final String[] elements = file_line.split("\t");
 
