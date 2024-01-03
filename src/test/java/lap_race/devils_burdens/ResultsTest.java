@@ -135,6 +135,12 @@ public class ResultsTest {
     }
 
     @Test
+    public void massStart_3_4_AllCompleted() throws Exception {
+
+        processingCompletes("mass_start_3_4/all_completed");
+    }
+
+    @Test
     public void massStart_3_4_DNFLeg1() throws Exception {
 
         processingCompletes("mass_start_3_4/dnf_leg_1");
@@ -198,6 +204,12 @@ public class ResultsTest {
     public void massStart_3_4_FirstLegFinishAfterMassStart4() throws Exception {
 
         processingCompletes("mass_start_3_4/first_leg_finish_after_mass_start_4");
+    }
+
+    @Test
+    public void massStart_4_AllCompleted() throws Exception {
+
+        processingCompletes("mass_start_4/all_completed");
     }
 
     @Test
