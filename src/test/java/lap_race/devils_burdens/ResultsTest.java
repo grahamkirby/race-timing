@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ResultsTest {
 
     // illegal config - dnf lap times, mass start times / mass start times wrong order
-    // illegal category
-    // raw results not in order
     // annotate detailed results with mass starts
     // generate xls
 
@@ -284,6 +282,19 @@ public class ResultsTest {
     }
 
     @Test
+    public void illegalCategory() throws Exception {
+
+        configureTest("illegal_category");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("illegal category for team: 3", thrown.getMessage());
+    }
+
+    @Test
     public void switchedResult() throws Exception {
 
         configureTest("switched_result");
@@ -294,6 +305,19 @@ public class ResultsTest {
         );
 
         assertEquals("surplus result recorded for team: 2", thrown.getMessage());
+    }
+
+    @Test
+    public void resultsOutOfOrder() throws Exception {
+
+        configureTest("results_out_of_order");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("result 15 out of order", thrown.getMessage());
     }
 
     private void processingCompletes(String configuration_name) throws Exception {

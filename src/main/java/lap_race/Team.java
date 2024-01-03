@@ -15,7 +15,12 @@ public class Team {
 
         bib_number = Integer.parseInt(elements[0]);
         name = elements[1];
-        category = Category.parse(elements[2]);
+        try {
+            category = Category.parse(elements[2]);
+        }
+        catch (RuntimeException e) {
+            throw new RuntimeException("illegal category for team: " + bib_number);
+        }
         runners = Arrays.copyOfRange(elements, 3, elements.length);
     }
 

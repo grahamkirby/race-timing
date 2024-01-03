@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.RemoteException;
 import java.time.Duration;
 import java.util.*;
 import java.util.List;
@@ -210,8 +211,17 @@ public class Results {
         final List<String> lines = Files.readAllLines(raw_results_path);
         raw_results = new RawResult[lines.size()];
 
-        for (int i = 0; i < raw_results.length; i++)
-            raw_results[i] = new RawResult(lines.get(i));
+        RawResult previous_result = null;
+
+        for (int i = 0; i < raw_results.length; i++) {
+
+            final RawResult result = new RawResult(lines.get(i));
+            if (previous_result != null && previous_result.recorded_finish_time.compareTo(result.recorded_finish_time) > 0)
+                throw new RuntimeException("result " + (i+1) + " out of order");
+
+            raw_results[i] = result;
+            previous_result = result;
+        }
     }
 
     private void initialiseResults() {
