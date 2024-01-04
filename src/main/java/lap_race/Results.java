@@ -335,7 +335,8 @@ public class Results {
         }
         else {
             leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
-            leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+            //leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+            leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
         }
     }
 
@@ -476,8 +477,13 @@ public class Results {
                 final LegResult leg_result = result.leg_results[leg-1];
 
                 writer.append(team.runners[leg-1]);
-                if (leg_result.in_mass_start)
-                    writer.append(" (M").append(String.valueOf(leg)).append(")");
+                if (leg_result.in_mass_start) {
+                    int mass_start_leg = leg;
+                    while (!mass_start_legs[mass_start_leg-1]) {
+                        mass_start_leg++;
+                    }
+                    writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
+                }
                 writer.append(",");
                 writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration())).append(",");
                 writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
