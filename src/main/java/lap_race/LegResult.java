@@ -1,7 +1,6 @@
 package lap_race;
 
 import java.time.Duration;
-import java.util.Map;
 
 public class LegResult implements Comparable<LegResult> {
 
@@ -9,8 +8,8 @@ public class LegResult implements Comparable<LegResult> {
     final int leg_number;
     final Results results;
     boolean DNF;
+    boolean in_mass_start;
     String position_string;
-    boolean in_mass_start = false;
 
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
@@ -21,10 +20,11 @@ public class LegResult implements Comparable<LegResult> {
         this.leg_number = leg_number;
         this.results = results;
         this.DNF = true;
+        this.in_mass_start = false;
     }
 
     public Duration duration() {
-        return DNF ? Results.DNF_DUMMY_LEG_TIME : finish_time.minus(start_time);
+        return DNF ? Results.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
     public String toString() {

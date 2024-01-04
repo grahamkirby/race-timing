@@ -24,7 +24,7 @@ public class OverallResult implements Comparable<OverallResult> {
 
         for (final LegResult leg_result : leg_results) {
 
-            if (leg_result.DNF) return Results.DNF_DUMMY_LEG_TIME;
+            if (leg_result.DNF) return Results.DUMMY_DURATION;
 
             overall = overall.plus(leg_result.duration());
         }

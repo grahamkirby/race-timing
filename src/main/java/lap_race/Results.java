@@ -7,7 +7,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.rmi.RemoteException;
 import java.time.Duration;
 import java.util.*;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Results {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final String DNF_STRING = "DNF";
-    public static final String DUMMY_DURATION = "23:59:59";
+    public static final String DUMMY_DURATION_STRING = "23:59:59";
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
     public static final List<Category> CATEGORY_REPORT_ORDER = Arrays.asList(
@@ -52,7 +51,7 @@ public class Results {
 
     static Duration ZERO_TIME = RawResult.parseTime("0:0");
 
-    public static final Duration DNF_DUMMY_LEG_TIME = RawResult.parseTime(DUMMY_DURATION);
+    public static final Duration DUMMY_DURATION = RawResult.parseTime(DUMMY_DURATION_STRING);
 
     // Read from configuration file.
     Path working_directory_path;
@@ -81,6 +80,11 @@ public class Results {
     final Map<Category, List<Team>> prize_winners = new HashMap<>();
 
     Duration[] start_times_for_mass_starts;  // Relative to start of leg 1.
+
+    // Subtly different from start_times_for_mass_starts: there may be a mass start time recorded for a leg even though
+    // it's not a leg with a mass start, to allow for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
+    boolean[] mass_start_legs;
+
     boolean[] paired_legs;
 
     public Results(final String config_file_path) throws IOException {
@@ -168,9 +172,10 @@ public class Results {
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
         if (mass_start_elapsed_times_string.isBlank())
-            mass_start_elapsed_times_string = (DUMMY_DURATION + ",").repeat(number_of_legs - 1) + DUMMY_DURATION;
+            mass_start_elapsed_times_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
 
         start_times_for_mass_starts = new Duration[number_of_legs];
+        mass_start_legs = new boolean[number_of_legs];
 
         int leg_index = 0;
         Duration previous_mass_start_time = null;
@@ -184,7 +189,8 @@ public class Results {
                 throw new RuntimeException("illegal mass start time");
             }
             start_times_for_mass_starts[leg_index] = mass_start_time;
-            if (previous_mass_start_time != null && !(previous_mass_start_time.equals(DNF_DUMMY_LEG_TIME)) && previous_mass_start_time.compareTo(start_times_for_mass_starts[leg_index]) > 0)
+            mass_start_legs[leg_index] = !mass_start_time.equals(DUMMY_DURATION);
+            if (previous_mass_start_time != null && !(previous_mass_start_time.equals(DUMMY_DURATION)) && previous_mass_start_time.compareTo(start_times_for_mass_starts[leg_index]) > 0)
                 throw new RuntimeException("illegal mass start time order");
             previous_mass_start_time = start_times_for_mass_starts[leg_index];
             leg_index++;
@@ -193,7 +199,7 @@ public class Results {
         // If there is no mass start configured for leg 2,
         // use the leg 3 mass start time for leg 2 too.
         // This covers the case where the leg 1 runner finishes after a mass start.
-        if (start_times_for_mass_starts[1].equals(RawResult.parseTime(DUMMY_DURATION))) {
+        if (start_times_for_mass_starts[1].equals(RawResult.parseTime(DUMMY_DURATION_STRING))) {
             start_times_for_mass_starts[1] = start_times_for_mass_starts[2];
         }
     }
@@ -324,11 +330,12 @@ public class Results {
 
         //noinspection StatementWithEmptyBody
         if (leg_results[previous_leg_index].finish_time == null) {
-            // No action since leg result will already be set to DNF.
+            // Leg result will already be set to DNF.
+            leg_results[leg_index].in_mass_start = mass_start_legs[leg_index];
         }
         else {
             leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
-            leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+            leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
         }
     }
 
