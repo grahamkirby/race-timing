@@ -25,6 +25,8 @@ public class Results {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
+
     public static final String DNF_STRING = "DNF";
     public static final String DUMMY_DURATION_STRING = "23:59:59";
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
@@ -87,6 +89,8 @@ public class Results {
 
     boolean[] paired_legs;
 
+    IndividualLegStart[] individual_leg_starts;
+
     public Results(final String config_file_path) throws IOException {
         this(readProperties(config_file_path));
     }
@@ -122,6 +126,7 @@ public class Results {
         constructFilePaths();
         configureMassStarts(properties);
         configurePairedLegs(properties);
+        configureIndividualLegStarts(properties);
     }
 
     public void processResults() throws IOException {
@@ -186,7 +191,7 @@ public class Results {
                 mass_start_time = RawResult.parseTime(time_as_string);
             }
             catch (Exception e) {
-                throw new RuntimeException("illegal mass start time");
+                throw new RuntimeException("illegal mass start time: " + time_as_string);
             }
             start_times_for_mass_starts[leg_index] = mass_start_time;
             mass_start_legs[leg_index] = !mass_start_time.equals(DUMMY_DURATION);
@@ -211,6 +216,25 @@ public class Results {
 
         for (String s : paired_legs_string.split(",")) {
             paired_legs[Integer.parseInt(s) - 1] = true;
+        }
+    }
+
+    private void configureIndividualLegStarts(final Properties properties) {
+
+        String individual_leg_starts_string = properties.getProperty("INDIVIDUAL_LEG_STARTS");
+        if (individual_leg_starts_string == null)
+            individual_leg_starts = new IndividualLegStart[0];
+        else {
+            String[] strings = individual_leg_starts_string.split(",");
+            individual_leg_starts = new IndividualLegStart[strings.length];
+
+            for (int i = 0; i < strings.length; i++) {
+                String[] split = strings[i].split("/");
+                final int bib_number = Integer.parseInt(split[0]);
+                final int leg_number = Integer.parseInt(split[1]);
+                final Duration start_time = RawResult.parseTime(split[2]);
+                individual_leg_starts[i] = new IndividualLegStart(bib_number, leg_number, start_time);
+            }
         }
     }
 
@@ -282,7 +306,7 @@ public class Results {
             for (final String dnf_string : dnf_legs_string.split(",")) {
 
                 try {
-                    final String[] dnf = dnf_string.split(":");
+                    final String[] dnf = dnf_string.split("/");
                     final int bib_number = Integer.parseInt(dnf[0]);
                     final int leg_number = Integer.parseInt(dnf[1]);
                     final int leg_index = leg_number - 1;
@@ -304,7 +328,7 @@ public class Results {
             final LegResult[] leg_results = result.leg_results;
             leg_results[0].start_time = ZERO_TIME;   // All times are relative to start of leg 1.
 
-            for (int leg_index = 1; leg_index < number_of_legs; leg_index++)
+            for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
                 fillLegStartTime(leg_results, leg_index);
         }
     }
@@ -322,21 +346,21 @@ public class Results {
         // this leg runner(s) starting in the mass start rather than when the previous
         // leg runner(s) finished.
 
-        // This method is not called for the first leg, since it always starts at zero.
-        assert leg_index > 0;
+        // First leg always starts at zero, but there might be an individual start time
+        // recorded for a leg 1 runner.
+        if (leg_index > 0) {
 
-        final Duration mass_start_time = start_times_for_mass_starts[leg_index];
-        final int previous_leg_index = leg_index - 1;
+            final Duration mass_start_time = start_times_for_mass_starts[leg_index];
+            final int previous_leg_index = leg_index - 1;
 
-        //noinspection StatementWithEmptyBody
-        if (leg_results[previous_leg_index].finish_time == null) {
-            // Leg result will already be set to DNF.
-            leg_results[leg_index].in_mass_start = mass_start_legs[leg_index];
-        }
-        else {
-            leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
-            //leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
-            leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+            if (leg_results[previous_leg_index].finish_time == null) {
+                // Leg result will already be set to DNF.
+                leg_results[leg_index].in_mass_start = mass_start_legs[leg_index];
+            } else {
+                leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
+                //leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+                leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+            }
         }
     }
 
