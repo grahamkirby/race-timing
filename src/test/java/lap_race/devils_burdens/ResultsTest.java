@@ -21,7 +21,6 @@ public class ResultsTest {
 
     // To do: generate xls files.
 
-    // malformed raw time
     // per runner start times
 
     Properties properties;
@@ -269,6 +268,18 @@ public class ResultsTest {
     }
 
     @Test
+    public void individualRunnerStartTimeLeg1() throws Exception {
+
+        processingCompletes("individual_runner_start_time/leg_1");
+    }
+
+    @Test
+    public void individualRunnerStartTimeLeg3() throws Exception {
+
+        processingCompletes("individual_runner_start_time/leg_3");
+    }
+
+    @Test
     public void unregisteredTeam() throws Exception {
 
         configureTest("unregistered_team");
@@ -317,7 +328,20 @@ public class ResultsTest {
                 () -> new Results(properties).processResults()
         );
 
-        assertEquals("illegal mass start time", thrown.getMessage());
+        assertEquals("illegal mass start time: XXX", thrown.getMessage());
+    }
+
+    @Test
+    public void illegalRawTime() throws Exception {
+
+        configureTest("illegal_raw_time");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("illegal time: XXX", thrown.getMessage());
     }
 
     @Test

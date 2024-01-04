@@ -17,10 +17,15 @@ public class RawResult {
 
     static Duration parseTime(final String element) {
 
-        final String[] parts = element.split(":");
-        final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
+        try {
+            final String[] parts = element.split(":");
+            final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
 
-        return Duration.parse(time_as_ISO);
+            return Duration.parse(time_as_ISO);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal time: " + element);
+        }
     }
 
     static String hours(final String[] parts) {
