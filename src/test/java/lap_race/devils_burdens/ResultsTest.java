@@ -19,8 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ResultsTest {
 
-    // annotate detailed results with mass starts
-    // generate xls
+    // To do: generate xls files.
 
     Properties properties;
     Path resources_expected_outputs;
