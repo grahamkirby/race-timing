@@ -11,7 +11,7 @@ public class Team {
 
     public Team(String[] elements) {
 
-        // Expected format: "1", "Anster Haddies Ladies B", "Women Senior", "Tracy Knox", "Pamela Cruickshanks & Debz Hay", "Lynne Herd & Jacs McDonald", "Rosie Knox"
+        // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
         bib_number = Integer.parseInt(elements[0]);
         name = elements[1];

@@ -243,8 +243,12 @@ public class Results {
         final List<String> lines = Files.readAllLines(entries_path);
         entries = new Team[lines.size()];
 
-        for (int i = 0; i < entries.length; i++)
-            entries[i] = new Team(lines.get(i).split("\t"));
+        for (int i = 0; i < entries.length; i++) {
+            String[] strings = lines.get(i).split("\t");
+            if (strings.length != number_of_legs + 3)
+                throw new RuntimeException("illegal composition for team: " + strings[0]);
+            entries[i] = new Team(strings);
+        }
     }
 
     private void loadRawResults() throws IOException {
