@@ -1,4 +1,4 @@
-1	Anster Haddies Ladies B	Women Senior	Tracy Knox	Pamela Cruickshanks & Debz Hay	Lynne Herd & Jacs McDonald	Rosie Knox
-2	Anster Haddies Mens 1	Open 50+	Davie Burgess	Jim Hogsflesh & Craig Watson	George Findlay & Giles Harris	Allan Gibson
-3	Anster Haddies Team Elite	Open Senior	Davie Brisland	Ross Young & Colin McKie	Mike Reilly & Alan Davie	Eric Anderson
-5	Beacon: Beacon Belligerents	Open Senior	Clark Christie	Neil MacNicol & Andrew Waddington	Bobby Summers & Patrick Leask	Lisa Johnstone
+1	Team 1	Women Senior	John Smith	Hailey Dickson:) & Alix Crawford	Rhys Müllar & Paige Thompson	Amé MacDonald
+2	Team 2	Open 50+	Bartosz Thomson	John Smith & Zuzanna Miller-Ford	Leo McKenzie & Henry Muir	Regan Millar
+3	Team 3	Open Senior	JackBruce	Martin King & Leland Donaldson	Neil MacDonald & Myles  Christie	Hubert Gray
+5	Team 5	Open Senior	Clark O' Connor	Nina Joan Fiona Walker & Hope Christie	Cayla Duncan & Scott Kelly	Amelia Muir
