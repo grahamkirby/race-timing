@@ -21,7 +21,8 @@ public class ResultsTest {
 
     // To do: generate xls files.
 
-    // per runner start times
+    // anonymise small tests
+    // test names with spaces, punctuation and accents
 
     Properties properties;
     Path resources_expected_outputs;
