@@ -348,18 +348,35 @@ public class Results {
 
         // First leg always starts at zero, but there might be an individual start time
         // recorded for a leg 1 runner.
-        if (leg_index > 0) {
 
-            final Duration mass_start_time = start_times_for_mass_starts[leg_index];
-            final int previous_leg_index = leg_index - 1;
 
-            if (leg_results[previous_leg_index].finish_time == null) {
-                // Leg result will already be set to DNF.
-                leg_results[leg_index].in_mass_start = mass_start_legs[leg_index];
-            } else {
-                leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
-                //leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
-                leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+        // Look for an individual start time.
+        Duration individual_start_time = null;
+
+        //IndividualLegStart[] individual_leg_starts;
+
+        for (IndividualLegStart individual_leg_start : individual_leg_starts) {
+            if (individual_leg_start.bib_number == leg_results[leg_index].team.bib_number && individual_leg_start.leg_number == leg_index + 1)
+                individual_start_time = individual_leg_start.start_time;
+        }
+
+        if (individual_start_time != null) {
+            leg_results[leg_index].start_time = individual_start_time;
+        }
+        else {
+            if (leg_index > 0) {
+
+                final Duration mass_start_time = start_times_for_mass_starts[leg_index];
+                final int previous_leg_index = leg_index - 1;
+
+                if (leg_results[previous_leg_index].finish_time == null) {
+                    // Leg result will already be set to DNF.
+                    leg_results[leg_index].in_mass_start = mass_start_legs[leg_index];
+                } else {
+                    leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
+                    //leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+                    leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
+                }
             }
         }
     }
