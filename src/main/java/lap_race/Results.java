@@ -51,7 +51,7 @@ public class Results {
     private static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
     private static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
-    static Duration ZERO_TIME = RawResult.parseTime("0:0");
+    static final Duration ZERO_TIME = RawResult.parseTime("0:0");
 
     public static final Duration DUMMY_DURATION = RawResult.parseTime(DUMMY_DURATION_STRING);
 
@@ -78,7 +78,7 @@ public class Results {
 
     Team[] entries;
     RawResult[] raw_results;
-    OverallResult[] results;
+    OverallResult[] overall_results;
     final Map<Category, List<Team>> prize_winners = new HashMap<>();
 
     Duration[] start_times_for_mass_starts;  // Relative to start of leg 1.
@@ -90,6 +90,9 @@ public class Results {
     boolean[] paired_legs;
 
     IndividualLegStart[] individual_leg_starts;
+
+    OutputCSV output_CSV;
+    OutputHTML output_HTML;
 
     public Results(final String config_file_path) throws IOException {
         this(readProperties(config_file_path));
@@ -140,6 +143,7 @@ public class Results {
         fillLegStartTimes();
         calculateResults();
 
+        configureOutput();
         printOverallResults();
         printDetailedResults();
         printLegResults();
@@ -271,10 +275,10 @@ public class Results {
 
     private void initialiseResults() {
 
-        results = new OverallResult[entries.length];
+        overall_results = new OverallResult[entries.length];
 
-        for (int i = 0; i < results.length; i++)
-            results[i] = new OverallResult(entries[i], number_of_legs, this);
+        for (int i = 0; i < overall_results.length; i++)
+            overall_results[i] = new OverallResult(entries[i], number_of_legs, this);
     }
 
     private void fillLegFinishTimes() {
@@ -283,7 +287,7 @@ public class Results {
 
             try {
                 final int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
-                final OverallResult result = results[team_index];
+                final OverallResult result = overall_results[team_index];
                 final LegResult[] leg_results = result.leg_results;
 
                 final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
@@ -315,7 +319,7 @@ public class Results {
                     final int leg_number = Integer.parseInt(dnf[1]);
                     final int leg_index = leg_number - 1;
 
-                    final OverallResult result = results[findIndexOfTeamWithBibNumber(bib_number)];
+                    final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
                     result.leg_results[leg_index].DNF = true;
                 }
                 catch (Exception e) {
@@ -327,7 +331,7 @@ public class Results {
 
     private void fillLegStartTimes() {
 
-        for (final OverallResult result : results) {
+        for (final OverallResult result : overall_results) {
 
             final LegResult[] leg_results = result.leg_results;
             leg_results[0].start_time = ZERO_TIME;   // All times are relative to start of leg 1.
@@ -386,255 +390,26 @@ public class Results {
     }
 
     private void calculateResults() {
-        Arrays.sort(results);
+        Arrays.sort(overall_results);
+    }
+
+    public void configureOutput() throws IOException {
+
+        output_CSV = new OutputCSV(this);
+        output_HTML = new OutputHTML(this);
     }
 
     public void printOverallResults() throws IOException {
 
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
-        final Path overall_results_html_path = output_directory_path.resolve(overall_results_filename + ".html");
-
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path));
-             final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_html_path))) {
-
-            csv_writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
-            printOverallResultsCSV(csv_writer);
-
-            printOverallResultsHTMLHeader(html_writer);
-            printOverallResultsHTML(html_writer);
-            printOverallResultsHTMLFooter(html_writer);
-        }
-    }
-
-    private void printOverallResultsCSV(final OutputStreamWriter writer) throws IOException {
-
-        for (int i = 0; i < results.length; i++) {
-
-            if (!results[i].dnf()) writer.append(String.valueOf(i+1));
-            writer.append(",").append(String.valueOf(results[i])).append("\n");
-        }
-    }
-
-    private void printOverallResultsHTML(final OutputStreamWriter writer) throws IOException {
-
-        int position = 1;
-
-        for (final OverallResult result : results) {
-
-            writer.append("""
-                            <tr>
-                            <td>""");
-            writer.append(String.valueOf(position++));
-            writer.append("""
-                            </td>
-                            <td>""");
-            writer.append(String.valueOf(result.team.bib_number));
-            writer.append("""
-                                </td>
-                                <td>""");
-            writer.append(String.valueOf(result.team.name));
-            writer.append("""
-                                </td>
-                                <td>""");
-            writer.append(String.valueOf(result.team.category));
-            writer.append("""
-                                </td>
-                                <td>""");
-            writer.append(OverallResult.format(result.duration()));
-            writer.append("""
-                            </td>
-                        </tr>""");
-        }
-    }
-
-    private void printOverallResultsHTMLHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>No</th>
-                                       <th>Team</th>
-                                       <th>Category</th>
-                                       <th>Total</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
-    }
-
-    private void printOverallResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            """);
+        output_CSV.printOverallResultsCSV();
+        output_HTML.printOverallResultsHTML();
     }
 
     public void printDetailedResults() throws IOException {
 
-        final Path detailed_results_csv_path = output_directory_path.resolve(detailed_results_filename + ".csv");
-        final Path detailed_results_html_path = output_directory_path.resolve(detailed_results_filename + ".html");
-
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_csv_path));
-             final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_html_path))) {
-
-            printDetailedResultsCSVHeader(csv_writer);
-            printDetailedResultsCSV(csv_writer);
-
-            printDetailedResultsHTMLHeader(html_writer);
-            printDetailedResultsHTML(html_writer);
-            printDetailedResultsHTMLFooter(html_writer);
-        }
+        output_CSV.printDetailedResultsCSV();
+        output_HTML.printDetailedResultsHTML();
     }
-
-    private void printDetailedResultsCSVHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append(OVERALL_RESULTS_HEADER);
-
-        for (int leg = 1; leg <= number_of_legs; leg++) {
-            writer.append("Runners ").append(String.valueOf(leg)).append(",Leg ").append(String.valueOf(leg)).append(",");
-            if (leg < number_of_legs) writer.append("Split ").append(String.valueOf(leg)).append(",");
-        }
-
-        writer.append("Total\n");
-    }
-
-    private void printDetailedResultsCSV(final OutputStreamWriter writer) throws IOException {
-
-        int position = 1;
-
-        for (final OverallResult result : results) {
-
-            final Team team = result.team;
-            boolean any_previous_leg_dnf = false;
-
-            if (!result.dnf()) writer.append(String.valueOf(position++));
-            
-            writer.append(",");
-            writer.append(String.valueOf(team.bib_number)).append(",");
-            writer.append(team.name).append(",");
-            writer.append(team.category.toString()).append(",");
-            
-            for (int leg = 1; leg <= number_of_legs; leg++) {
-
-                final LegResult leg_result = result.leg_results[leg-1];
-
-                writer.append(team.runners[leg-1]);
-                if (leg_result.in_mass_start) {
-                    int mass_start_leg = leg;
-                    while (!mass_start_legs[mass_start_leg-1]) {
-                        mass_start_leg++;
-                    }
-                    writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
-                }
-                writer.append(",");
-                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration())).append(",");
-                writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
-
-                if (leg < number_of_legs) writer.append(",");
-                if (leg_result.DNF) any_previous_leg_dnf = true;
-            }
-
-            writer.append("\n");
-        }
-    }
-
-    private void printDetailedResultsHTML(final OutputStreamWriter writer) throws IOException {
-
-        int position = 1;
-
-        for (final OverallResult result : results) {
-
-            final Team team = result.team;
-            boolean any_previous_leg_dnf = false;
-
-            writer.append("""
-                    <tr>
-                    <td>""");
-            if (!result.dnf()) writer.append(String.valueOf(position++));
-            writer.append("""
-                    </td>
-                    <td>""");
-            writer.append(String.valueOf(result.team.bib_number));
-            writer.append("""
-                    </td>
-                    <td>""");
-            writer.append(String.valueOf(result.team.name));
-            writer.append("""
-                    </td>
-                    <td>""");
-            writer.append(String.valueOf(result.team.category));
-            writer.append("""
-                    </td>""");
-
-            for (int leg = 1; leg <= number_of_legs; leg++) {
-
-                final LegResult leg_result = result.leg_results[leg - 1];
-
-                writer.append("""
-                    <td>""");
-                writer.append(team.runners[leg - 1]);
-                if (leg_result.in_mass_start)
-                    writer.append(" (M").append(String.valueOf(leg)).append(")");
-                writer.append("""
-                    </td>
-                    <td>""");
-
-                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration()));
-                writer.append("""
-                    </td>
-                    <td>""");
-                writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
-                writer.append("""
-                    </td>""");
-                if (leg_result.DNF) any_previous_leg_dnf = true;
-            }
-
-            writer.append("""
-                    </tr>""");
-        }
-    }
-
-    private void printDetailedResultsHTMLHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>No</th>
-                                       <th>Team</th>
-                                       <th>Category</th>
-            """);
-
-        for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
-
-            writer.append("<th>Runners " + leg_number + "</th>");
-            writer.append("<th>Leg " + leg_number + "</th>");
-
-            if (leg_number < number_of_legs)
-                writer.append("<th>Split " + leg_number + "</th>");
-            else
-                writer.append("<th>Total</th>");
-        }
-
-        writer.append("""
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
-    }
-
-    private void printDetailedResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            """);
-    }
-
 
     private void printLegResults() throws IOException {
 
@@ -661,10 +436,10 @@ public class Results {
 
     private LegResult[] getLegResults(final int leg) {
 
-        final LegResult[] leg_results = new LegResult[results.length];
+        final LegResult[] leg_results = new LegResult[overall_results.length];
 
         for (int i = 0; i < leg_results.length; i++)
-            leg_results[i] = results[i].leg_results[leg-1];
+            leg_results[i] = overall_results[i].leg_results[leg-1];
 
         Arrays.sort(leg_results);
         return leg_results;
@@ -815,7 +590,7 @@ public class Results {
                 int position = 1;
                 for (final Team team : category_prize_winners) {
 
-                    final OverallResult result = results[findIndexOfTeamWithBibNumber(team.bib_number)];
+                    final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(team.bib_number)];
 
                     writer.append(String.valueOf(position++)).append(": ").
                             append(result.team.name).append(" (").
@@ -855,7 +630,7 @@ public class Results {
             int position = 1;
             for (final Team team : category_prize_winners) {
 
-                final OverallResult result = results[findIndexOfTeamWithBibNumber(team.bib_number)];
+                final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(team.bib_number)];
 
                 final Paragraph paragraph = new Paragraph();
                 paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
@@ -874,7 +649,7 @@ public class Results {
 
             prize_winners.put(category, new ArrayList<>());
 
-            for (final OverallResult result : results) {
+            for (final OverallResult result : overall_results) {
                 if (prizeWinner(result, category)) {
                     prize_winners.get(category).add(result.team);
                     break;
@@ -889,7 +664,7 @@ public class Results {
 
             int position = 2;
 
-            for (final OverallResult result : results) {
+            for (final OverallResult result : overall_results) {
                 
                 if (position > category.number_of_prizes) break;
                 
@@ -925,13 +700,13 @@ public class Results {
 
     private int findIndexOfTeamWithBibNumber(final int bib_number) {
 
-        for (int i = 0; i < results.length; i++)
-            if (results[i].team.bib_number == bib_number) return i;
+        for (int i = 0; i < overall_results.length; i++)
+            if (overall_results[i].team.bib_number == bib_number) return i;
 
         throw new RuntimeException("unregistered team: ");
     }
 
-    private Duration sumDurationsUpToLeg(final LegResult[] leg_results, final int leg) {
+    Duration sumDurationsUpToLeg(final LegResult[] leg_results, final int leg) {
 
         Duration total = leg_results[0].duration();
         for (int i = 1; i < leg; i++)
