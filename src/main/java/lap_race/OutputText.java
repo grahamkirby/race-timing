@@ -34,14 +34,14 @@ public class OutputText extends Output {
     @Override
     public void printPrizes() throws IOException {
 
-        final Path prizes_text_path = results.output_directory_path.resolve(results.prizes_filename + ".txt");
+        final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
 
-            writer.append(results.race_name_for_results).append(" Results ").append(results.year).append("\n");
+            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            for (final Category category : results.CATEGORY_REPORT_ORDER) {
+            for (final Category category : CATEGORY_REPORT_ORDER) {
 
                 final String header = "Category: " + category;
 

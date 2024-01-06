@@ -20,7 +20,7 @@ public class OutputHTML extends Output {
     @Override
     public void printOverallResults() throws IOException {
 
-        final Path overall_results_html_path = results.output_directory_path.resolve(results.overall_results_filename + ".html");
+        final Path overall_results_html_path = output_directory_path.resolve(overall_results_filename + ".html");
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_html_path))) {
 
@@ -33,7 +33,7 @@ public class OutputHTML extends Output {
     @Override
     public void printDetailedResults() throws IOException {
 
-        final Path detailed_results_html_path = results.output_directory_path.resolve(results.detailed_results_filename + ".html");
+        final Path detailed_results_html_path = output_directory_path.resolve(detailed_results_filename + ".html");
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_html_path))) {
 
@@ -45,7 +45,7 @@ public class OutputHTML extends Output {
 
     void printLegResults(final int leg) throws IOException {
 
-        final Path leg_results_html_path = results.output_directory_path.resolve(results.race_name_for_filenames + "_leg_" + leg + "_" + results.year + ".html");
+        final Path leg_results_html_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html");
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_html_path))) {
 
@@ -183,11 +183,11 @@ public class OutputHTML extends Output {
                     </td>
                     <td>""");
 
-                writer.append(leg_result.DNF ? Results.DNF_STRING : OverallResult.format(leg_result.duration()));
+                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration()));
                 writer.append("""
                     </td>
                     <td>""");
-                writer.append(leg_result.DNF || any_previous_leg_dnf ? Results.DNF_STRING : OverallResult.format(results.sumDurationsUpToLeg(result.leg_results, leg)));
+                writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
                 writer.append("""
                     </td>""");
                 if (leg_result.DNF) any_previous_leg_dnf = true;
