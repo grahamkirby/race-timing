@@ -39,26 +39,31 @@ public class Results {
     Path working_directory_path;
 
     int number_of_legs;
+
+    // String read from configuration file specifying all the runners who did have a finish
+    // time recorded but were declared DNF due to missing checkpoints.
     String dnf_legs_string;
 
     Team[] entries;
     RawResult[] raw_results;
     OverallResult[] overall_results;
-    final Map<Category, List<Team>> prize_winners = new HashMap<>();
+    Map<Category, List<Team>> prize_winners = new HashMap<>();
 
-    Duration[] start_times_for_mass_starts;  // Relative to start of leg 1.
-
-    // Subtly different from start_times_for_mass_starts: there may be a mass start time recorded for a leg even though
-    // it's not a leg with a mass start, to allow for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
+    // Records for each leg whether there was a mass start.
     boolean[] mass_start_legs;
 
-    boolean[] paired_legs;
+    // Times relative to start of leg 1 at which each mass start occurred.
+    // For leg 2 onward, legs that didn't have a mass start are recorded with the time of the next actual
+    // mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
+    Duration[] start_times_for_mass_starts;
 
+    boolean[] paired_legs;
     IndividualLegStart[] individual_leg_starts;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Results(final String config_file_path) throws IOException {
+
         this(readProperties(config_file_path));
     }
 
@@ -81,6 +86,16 @@ public class Results {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static Properties readProperties(final String config_file_path) throws IOException {
+
+        try (final FileInputStream in = new FileInputStream(config_file_path)) {
+
+            final Properties properties = new Properties();
+            properties.load(in);
+            return properties;
+        }
+    }
+
     public void processResults() throws IOException {
 
         initialiseResults();
@@ -97,19 +112,10 @@ public class Results {
         printPrizes();
     }
 
-    private static Properties readProperties(final String config_file_path) throws IOException {
-
-        try (final FileInputStream in = new FileInputStream(config_file_path)) {
-
-            final Properties properties = new Properties();
-            properties.load(in);
-            return properties;
-        }
-    }
-
     private void configure() throws IOException {
 
         readProperties();
+
         configureHelpers();
         configureInputData();
         configureMassStarts();
@@ -120,7 +126,6 @@ public class Results {
     private void readProperties() {
 
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
-
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
         dnf_legs_string = properties.getProperty("DNF_LEGS");
     }
@@ -145,18 +150,32 @@ public class Results {
 
     private void configureMassStarts() {
 
-        String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
-
-        if (mass_start_elapsed_times_string.isBlank())
-            mass_start_elapsed_times_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
-
         start_times_for_mass_starts = new Duration[number_of_legs];
         mass_start_legs = new boolean[number_of_legs];
 
-        int leg_index = 0;
+        setMassStartTimes(getMassStartElapsedTimesString().split(","));
+
+        // If there is no mass start configured for legs 2 and above, use the first actual mass start time.
+        // This covers the case where an early leg runner finishes after a mass start.
+        setEmptyMassStartTimes();
+    }
+
+    private String getMassStartElapsedTimesString() {
+
+        final String default_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
+        return getPropertyWithDefault("MASS_START_ELAPSED_TIMES", default_string);
+
+        // Example: MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,23:59:59,2:36:00
+    }
+
+    private void setMassStartTimes(String[] mass_start_elapsed_times_strings) {
+
         Duration previous_mass_start_time = null;
 
-        for (String time_as_string : mass_start_elapsed_times_string.split(",")) {
+        for (int leg_index = 0; leg_index < number_of_legs; leg_index++) {
+
+            final String time_as_string = mass_start_elapsed_times_strings[leg_index];
+
             Duration mass_start_time;
             try {
                 mass_start_time = RawResult.parseTime(time_as_string);
@@ -164,49 +183,72 @@ public class Results {
             catch (Exception e) {
                 throw new RuntimeException("illegal mass start time: " + time_as_string);
             }
+
             start_times_for_mass_starts[leg_index] = mass_start_time;
             mass_start_legs[leg_index] = !mass_start_time.equals(DUMMY_DURATION);
-            if (previous_mass_start_time != null && !(previous_mass_start_time.equals(DUMMY_DURATION)) && previous_mass_start_time.compareTo(start_times_for_mass_starts[leg_index]) > 0)
-                throw new RuntimeException("illegal mass start time order");
-            previous_mass_start_time = start_times_for_mass_starts[leg_index];
-            leg_index++;
-        }
 
-        // If there is no mass start configured for leg 2,
-        // use the leg 3 mass start time for leg 2 too.
-        // This covers the case where the leg 1 runner finishes after a mass start.
-        if (start_times_for_mass_starts[1].equals(RawResult.parseTime(DUMMY_DURATION_STRING))) {
-            start_times_for_mass_starts[1] = start_times_for_mass_starts[2];
+            if (previous_mass_start_time != null && !previous_mass_start_time.equals(DUMMY_DURATION) && previous_mass_start_time.compareTo(start_times_for_mass_starts[leg_index]) > 0)
+                throw new RuntimeException("illegal mass start time order");
+
+            previous_mass_start_time = mass_start_time;
+        }
+    }
+
+    private void setEmptyMassStartTimes() {
+
+        for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--) {
+
+            if (start_times_for_mass_starts[leg_index].equals(RawResult.parseTime(DUMMY_DURATION_STRING))) {
+                start_times_for_mass_starts[leg_index] = start_times_for_mass_starts[leg_index+1];
+            }
         }
     }
 
     private void configurePairedLegs() {
 
         final String paired_legs_string = properties.getProperty("PAIRED_LEGS");
+
+        // Example: PAIRED_LEGS = 2,3
+
         paired_legs = new boolean[number_of_legs];
 
-        for (String s : paired_legs_string.split(",")) {
-            paired_legs[Integer.parseInt(s) - 1] = true;
+        for (final String leg_number_as_string : paired_legs_string.split(",")) {
+            paired_legs[Integer.parseInt(leg_number_as_string) - 1] = true;
         }
     }
 
     private void configureIndividualLegStarts() {
 
-        String individual_leg_starts_string = properties.getProperty("INDIVIDUAL_LEG_STARTS");
-        if (individual_leg_starts_string == null)
+        final String individual_leg_starts_string = getPropertyWithDefault("INDIVIDUAL_LEG_STARTS", "");
+
+        // bib number / leg number / start time
+        // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20
+
+        if (individual_leg_starts_string.isBlank())
             individual_leg_starts = new IndividualLegStart[0];
         else {
-            String[] strings = individual_leg_starts_string.split(",");
-            individual_leg_starts = new IndividualLegStart[strings.length];
+            final String[] individual_leg_starts_strings = individual_leg_starts_string.split(",");
+            individual_leg_starts = new IndividualLegStart[individual_leg_starts_strings.length];
 
-            for (int i = 0; i < strings.length; i++) {
-                String[] split = strings[i].split("/");
-                final int bib_number = Integer.parseInt(split[0]);
-                final int leg_number = Integer.parseInt(split[1]);
-                final Duration start_time = RawResult.parseTime(split[2]);
-                individual_leg_starts[i] = new IndividualLegStart(bib_number, leg_number, start_time);
-            }
+            for (int i = 0; i < individual_leg_starts_strings.length; i++)
+                individual_leg_starts[i] = getIndividualLegStart(individual_leg_starts_strings[i]);
         }
+    }
+
+    private static IndividualLegStart getIndividualLegStart(String individual_leg_starts_strings) {
+
+        final String[] split = individual_leg_starts_strings.split("/");
+        final int bib_number = Integer.parseInt(split[0]);
+        final int leg_number = Integer.parseInt(split[1]);
+        final Duration start_time = RawResult.parseTime(split[2]);
+
+        return new IndividualLegStart(bib_number, leg_number, start_time);
+    }
+
+    private String getPropertyWithDefault(final String property_key, final String default_value) {
+
+        final String value = properties.getProperty(property_key);
+        return value == null || value.isBlank() ? default_value : value;
     }
 
     private void initialiseResults() {
@@ -270,7 +312,6 @@ public class Results {
         for (final OverallResult result : overall_results) {
 
             final LegResult[] leg_results = result.leg_results;
-            leg_results[0].start_time = ZERO_TIME;   // All times are relative to start of leg 1.
 
             for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
                 fillLegStartTime(leg_results, leg_index);
@@ -279,48 +320,58 @@ public class Results {
 
     private void fillLegStartTime(final LegResult[] leg_results, final int leg_index) {
 
-        // If there isn't a recorded finish time for the previous leg then we can't set
-        // a start time for this one. Both legs will be DNF.
+        // Possible cases:
 
-        // Even if the previous leg does have a recorded finish time it still might be
-        // DNF, if the runners reported missing a checkpoint, but it can still be used
-        // to set this leg's start time.
+        // Individual start time recorded explicitly in the race configuration file (rare).
+        // Zero if first leg.
+        // Finish time of the previous leg runner.
+        // Time of the relevant mass start if that was earlier that previous leg finish.
+        // Null if no previous leg finish time was recorded: no time can be calculated for current leg so DNF.
 
-        // If the previous leg finish was after the mass start for this leg, allow for
-        // this leg runner(s) starting in the mass start rather than when the previous
-        // leg runner(s) finished.
+        final Duration individual_start_time = getIndividualStartTime(leg_results, leg_index);
+        final Duration mass_start_time = start_times_for_mass_starts[leg_index];
+        final Duration previous_runner_finish_time = leg_index > 0 ? leg_results[leg_index - 1].finish_time : null;
 
-        // First leg always starts at zero, but there might be an individual start time
-        // recorded for a leg 1 runner.
+        leg_results[leg_index].start_time = getLegStartTime(individual_start_time, mass_start_time, previous_runner_finish_time, leg_index);
 
-
-        // Look for an individual start time.
-        Duration individual_start_time = null;
-
-        for (IndividualLegStart individual_leg_start : individual_leg_starts) {
-            if (individual_leg_start.bib_number == leg_results[leg_index].team.bib_number && individual_leg_start.leg_number == leg_index + 1)
-                individual_start_time = individual_leg_start.start_time;
+        if (individual_start_time == null && leg_index > 0) {
+            leg_results[leg_index].in_mass_start = isInMassStart(mass_start_time, previous_runner_finish_time, leg_index);
         }
+    }
 
-        if (individual_start_time != null) {
-            leg_results[leg_index].start_time = individual_start_time;
+    private Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
+
+        if (individual_start_time != null) return individual_start_time;
+        if (leg_index == 0) return ZERO_TIME;
+
+        // No finish time recorded for previous runner, so we can't record a start time for this one.
+        // This leg result will be set to DNF by default.
+        if (previous_runner_finish_time == null) return null;
+
+        return mass_start_time.compareTo(previous_runner_finish_time) < 0 ? mass_start_time : previous_runner_finish_time;
+    }
+
+    private boolean isInMassStart(final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
+
+        if (previous_runner_finish_time == null) {
+
+            // Record this runner as starting in mass start if it's a mass start leg.
+            return mass_start_legs[leg_index];
         }
         else {
-            if (leg_index > 0) {
 
-                final Duration mass_start_time = start_times_for_mass_starts[leg_index];
-                final int previous_leg_index = leg_index - 1;
-
-                if (leg_results[previous_leg_index].finish_time == null) {
-
-                    // Leg result will already be set to DNF.
-                    leg_results[leg_index].in_mass_start = mass_start_legs[leg_index];
-                } else {
-                    leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
-                    leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
-                }
-            }
+            // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
+            return mass_start_time.compareTo(previous_runner_finish_time) < 0;
         }
+    }
+
+    private Duration getIndividualStartTime(LegResult[] leg_results, int leg_index) {
+
+        for (IndividualLegStart individual_leg_start : individual_leg_starts)
+            if (individual_leg_start.bib_number == leg_results[leg_index].team.bib_number && individual_leg_start.leg_number == leg_index + 1)
+                return individual_leg_start.start_time;
+
+        return null;
     }
 
     private void calculateResults() {
