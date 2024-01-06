@@ -7,6 +7,8 @@ import java.nio.file.Path;
 
 public class OutputCSV extends Output {
 
+    public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
+
     public OutputCSV(final Results results) {
         super(results);
     }
@@ -20,7 +22,7 @@ public class OutputCSV extends Output {
     @Override
     public void printOverallResults() throws IOException {
 
-        final Path overall_results_csv_path = results.output_directory_path.resolve(results.overall_results_filename + ".csv");
+        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
 
@@ -32,7 +34,7 @@ public class OutputCSV extends Output {
     @Override
     public void printDetailedResults() throws IOException {
 
-        final Path detailed_results_csv_path = results.output_directory_path.resolve(results.detailed_results_filename + ".csv");
+        final Path detailed_results_csv_path = output_directory_path.resolve(detailed_results_filename + ".csv");
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_csv_path))) {
 
@@ -44,7 +46,7 @@ public class OutputCSV extends Output {
     @Override
     void printLegResults(final int leg) throws IOException {
 
-        final Path leg_results_csv_path = results.output_directory_path.resolve(results.race_name_for_filenames + "_leg_" + leg + "_" + results.year + ".csv");
+        final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv");
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
 
@@ -55,7 +57,7 @@ public class OutputCSV extends Output {
 
     private void printOverallResultsCSVHeader(final OutputStreamWriter writer) throws IOException {
 
-        writer.append(Results.OVERALL_RESULTS_HEADER).append("Total\n");
+        writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
     }
 
     private void printOverallResultsCSV(final OutputStreamWriter writer) throws IOException {
@@ -69,7 +71,7 @@ public class OutputCSV extends Output {
 
     private void printDetailedResultsCSVHeader(final OutputStreamWriter writer) throws IOException {
 
-        writer.append(Results.OVERALL_RESULTS_HEADER);
+        writer.append(OVERALL_RESULTS_HEADER);
 
         for (int leg = 1; leg <= results.number_of_legs; leg++) {
             writer.append("Runners ").append(String.valueOf(leg)).append(",Leg ").append(String.valueOf(leg)).append(",");
@@ -108,8 +110,8 @@ public class OutputCSV extends Output {
                     writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
                 }
                 writer.append(",");
-                writer.append(leg_result.DNF ? Results.DNF_STRING : OverallResult.format(leg_result.duration())).append(",");
-                writer.append(leg_result.DNF || any_previous_leg_dnf ? Results.DNF_STRING : OverallResult.format(results.sumDurationsUpToLeg(result.leg_results, leg)));
+                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration())).append(",");
+                writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
 
                 if (leg < results.number_of_legs) writer.append(",");
                 if (leg_result.DNF) any_previous_leg_dnf = true;

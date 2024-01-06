@@ -1,10 +1,6 @@
 package lap_race;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfWriter;
-
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -25,51 +21,25 @@ public class Results {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
+    private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
 
-    public static final String DNF_STRING = "DNF";
     public static final String DUMMY_DURATION_STRING = "23:59:59";
-    public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
-
-    public static final List<Category> CATEGORY_REPORT_ORDER = Arrays.asList(
-            Category.FEMALE_SENIOR,
-            Category.OPEN_SENIOR,
-            Category.FEMALE_40,
-            Category.OPEN_40,
-            Category.FEMALE_50,
-            Category.OPEN_50,
-            Category.FEMALE_60,
-            Category.OPEN_60,
-            Category.MIXED_SENIOR,
-            Category.MIXED_40);
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
+    public static final Duration DUMMY_DURATION = RawResult.parseTime(DUMMY_DURATION_STRING);
 
     static final Duration ZERO_TIME = RawResult.parseTime("0:0");
 
-    public static final Duration DUMMY_DURATION = RawResult.parseTime(DUMMY_DURATION_STRING);
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Read from configuration file.
+    Properties properties;
+
+    Input input;
+    Output output_CSV, output_HTML, output_text, output_PDF;
+    Prizes prizes;
+
     Path working_directory_path;
-    String entries_filename;
-    String raw_results_filename;
-    String year;
+
     int number_of_legs;
-    String race_name_for_results;
-    String race_name_for_filenames;
     String dnf_legs_string;
-
-    // Derived.
-    String overall_results_filename;
-    String detailed_results_filename;
-    String prizes_filename;
-
-    Path input_directory_path;
-    Path entries_path;
-    Path raw_results_path;
-
-    Path output_directory_path;
 
     Team[] entries;
     RawResult[] raw_results;
@@ -86,17 +56,16 @@ public class Results {
 
     IndividualLegStart[] individual_leg_starts;
 
-    Output output_CSV;
-    Output output_HTML;
-    Output output_text;
-    Output output_PDF;
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Results(final String config_file_path) throws IOException {
         this(readProperties(config_file_path));
     }
 
     public Results(final Properties properties) throws IOException {
-        configure(properties);
+
+        this.properties = properties;
+        configure();
     }
 
     public static void main(String[] args) throws IOException {
@@ -110,30 +79,10 @@ public class Results {
         }
     }
 
-    private static Properties readProperties(final String config_file_path) throws IOException {
-
-        try (final FileInputStream in = new FileInputStream(config_file_path)) {
-
-            final Properties properties = new Properties();
-            properties.load(in);
-            return properties;
-        }
-    }
-
-    private void configure(final Properties properties) throws IOException {
-
-        readProperties(properties);
-        constructFilePaths();
-        configureOutput();
-        configureMassStarts(properties);
-        configurePairedLegs(properties);
-        configureIndividualLegStarts(properties);
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void processResults() throws IOException {
 
-        loadEntries();
-        loadRawResults();
         initialiseResults();
 
         fillLegFinishTimes();
@@ -148,33 +97,53 @@ public class Results {
         printPrizes();
     }
 
-    private void readProperties(final Properties properties) {
+    private static Properties readProperties(final String config_file_path) throws IOException {
+
+        try (final FileInputStream in = new FileInputStream(config_file_path)) {
+
+            final Properties properties = new Properties();
+            properties.load(in);
+            return properties;
+        }
+    }
+
+    private void configure() throws IOException {
+
+        readProperties();
+        configureHelpers();
+        configureInputData();
+        configureMassStarts();
+        configurePairedLegs();
+        configureIndividualLegStarts();
+    }
+
+    private void readProperties() {
 
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
 
-        entries_filename = properties.getProperty("ENTRIES_FILENAME");
-        raw_results_filename = properties.getProperty("RAW_RESULTS_FILENAME");
-        year = properties.getProperty("YEAR");
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
-        race_name_for_results = properties.getProperty("RACE_NAME_FOR_RESULTS");
-        race_name_for_filenames = properties.getProperty("RACE_NAME_FOR_FILENAMES");
         dnf_legs_string = properties.getProperty("DNF_LEGS");
     }
 
-    private void constructFilePaths() {
+    private void configureHelpers() throws IOException {
 
-        overall_results_filename = race_name_for_filenames + "_overall_" + year;
-        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
-        prizes_filename = race_name_for_filenames + "_prizes_" + year;
+        input = new Input(this);
 
-        input_directory_path = working_directory_path.resolve("input");
-        entries_path = input_directory_path.resolve(entries_filename);
-        raw_results_path = input_directory_path.resolve(raw_results_filename);
+        output_CSV = new OutputCSV(this);
+        output_HTML = new OutputHTML(this);
+        output_text = new OutputText(this);
+        output_PDF = new OutputPDF(this);
 
-        output_directory_path = working_directory_path.resolve("output");
+        prizes = new Prizes(this);
     }
 
-    private void configureMassStarts(final Properties properties) {
+    private void configureInputData() throws IOException {
+
+        entries = input.loadEntries();
+        raw_results = input.loadRawResults();
+    }
+
+    private void configureMassStarts() {
 
         String mass_start_elapsed_times_string = properties.getProperty("MASS_START_ELAPSED_TIMES");
 
@@ -211,7 +180,7 @@ public class Results {
         }
     }
 
-    private void configurePairedLegs(final Properties properties) {
+    private void configurePairedLegs() {
 
         final String paired_legs_string = properties.getProperty("PAIRED_LEGS");
         paired_legs = new boolean[number_of_legs];
@@ -221,7 +190,7 @@ public class Results {
         }
     }
 
-    private void configureIndividualLegStarts(final Properties properties) {
+    private void configureIndividualLegStarts() {
 
         String individual_leg_starts_string = properties.getProperty("INDIVIDUAL_LEG_STARTS");
         if (individual_leg_starts_string == null)
@@ -237,37 +206,6 @@ public class Results {
                 final Duration start_time = RawResult.parseTime(split[2]);
                 individual_leg_starts[i] = new IndividualLegStart(bib_number, leg_number, start_time);
             }
-        }
-    }
-
-     private void loadEntries() throws IOException {
-
-        final List<String> lines = Files.readAllLines(entries_path);
-        entries = new Team[lines.size()];
-
-        for (int i = 0; i < entries.length; i++) {
-            String[] strings = lines.get(i).split("\t");
-            if (strings.length != number_of_legs + 3)
-                throw new RuntimeException("illegal composition for team: " + strings[0]);
-            entries[i] = new Team(strings);
-        }
-    }
-
-    private void loadRawResults() throws IOException {
-
-        final List<String> lines = Files.readAllLines(raw_results_path);
-        raw_results = new RawResult[lines.size()];
-
-        RawResult previous_result = null;
-
-        for (int i = 0; i < raw_results.length; i++) {
-
-            final RawResult result = new RawResult(lines.get(i));
-            if (previous_result != null && previous_result.recorded_finish_time.compareTo(result.recorded_finish_time) > 0)
-                throw new RuntimeException("result " + (i+1) + " out of order");
-
-            raw_results[i] = result;
-            previous_result = result;
         }
     }
 
@@ -359,8 +297,6 @@ public class Results {
         // Look for an individual start time.
         Duration individual_start_time = null;
 
-        //IndividualLegStart[] individual_leg_starts;
-
         for (IndividualLegStart individual_leg_start : individual_leg_starts) {
             if (individual_leg_start.bib_number == leg_results[leg_index].team.bib_number && individual_leg_start.leg_number == leg_index + 1)
                 individual_start_time = individual_leg_start.start_time;
@@ -376,11 +312,11 @@ public class Results {
                 final int previous_leg_index = leg_index - 1;
 
                 if (leg_results[previous_leg_index].finish_time == null) {
+
                     // Leg result will already be set to DNF.
                     leg_results[leg_index].in_mass_start = mass_start_legs[leg_index];
                 } else {
                     leg_results[leg_index].start_time = earlierOf(mass_start_time, leg_results[previous_leg_index].finish_time);
-                    //leg_results[leg_index].in_mass_start = mass_start_legs[leg_index] && mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
                     leg_results[leg_index].in_mass_start = mass_start_time.compareTo(leg_results[previous_leg_index].finish_time) < 0;
                 }
             }
@@ -388,36 +324,34 @@ public class Results {
     }
 
     private void calculateResults() {
+
         Arrays.sort(overall_results);
     }
 
-    public void configureOutput() throws IOException {
+    private void allocatePrizes() throws IOException {
 
-        output_CSV = new OutputCSV(this);
-        output_HTML = new OutputHTML(this);
-        output_text = new OutputText(this);
-        output_PDF = new OutputPDF(this);
+        prizes.allocatePrizes();
     }
 
-    public void printOverallResults() throws IOException {
+    private void printOverallResults() throws IOException {
 
         output_CSV.printOverallResults();
         output_HTML.printOverallResults();
     }
 
-    public void printDetailedResults() throws IOException {
+    private void printDetailedResults() throws IOException {
 
         output_CSV.printDetailedResults();
         output_HTML.printDetailedResults();
     }
 
-    public void printLegResults() throws IOException {
+    private void printLegResults() throws IOException {
 
         output_CSV.printLegResults();
         output_HTML.printLegResults();
     }
 
-    public void printPrizes() throws IOException {
+    private void printPrizes() throws IOException {
 
         output_text.printPrizes();
         output_PDF.printPrizes();
@@ -448,101 +382,8 @@ public class Results {
         return Integer.MAX_VALUE;
     }
 
-    private void allocatePrizes() throws IOException {
-
-        // Allocate first prize in each category first, in decreasing order of category breadth.
-        // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
-        // prize in open category.
-        allocateFirstPrizes();
-
-        // Now consider other prizes (only available in senior categories).
-        allocateMinorPrizes();
-    }
-
-//    private void printPrizesPDF() throws IOException {
-
-//        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
-//        final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
-//
-//        final Document document = new Document();
-//        PdfWriter.getInstance(document, pdf_file_output_stream);
-//
-//        document.open();
-//        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
-//
-//        for (final Category category : CATEGORY_REPORT_ORDER) {
-//
-//            final String header = "Category: " + category;
-//
-//            final Paragraph category_header_paragraph = new Paragraph(48f, header, PDF_BOLD_UNDERLINED_FONT);
-//            category_header_paragraph.setSpacingAfter(12);
-//            document.add(category_header_paragraph);
-//
-//            final List<Team> category_prize_winners = prize_winners.get(category);
-//
-//            if (category_prize_winners.isEmpty())
-//                document.add(new Paragraph("No results", PDF_ITALIC_FONT));
-//
-//            int position = 1;
-//            for (final Team team : category_prize_winners) {
-//
-//                final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(team.bib_number)];
-//
-//                final Paragraph paragraph = new Paragraph();
-//                paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
-//                paragraph.add(new Chunk(result.team.name, PDF_BOLD_FONT));
-//                paragraph.add(new Chunk(" (" + result.team.category + ") ", PDF_FONT));
-//                paragraph.add(new Chunk(OverallResult.format(result.duration()), PDF_FONT));
-//                document.add(paragraph);
-//            }
-//        }
-//        document.close();
-//    }
-
-    private void allocateFirstPrizes() {
-
-        for (final Category category : Category.values()) {
-
-            prize_winners.put(category, new ArrayList<>());
-
-            for (final OverallResult result : overall_results) {
-                if (prizeWinner(result, category)) {
-                    prize_winners.get(category).add(result.team);
-                    break;
-                }
-            }
-        }
-    }
-
-    private void allocateMinorPrizes() {
-
-        for (final Category category : Category.values()) {
-
-            int position = 2;
-
-            for (final OverallResult result : overall_results) {
-                
-                if (position > category.number_of_prizes) break;
-                
-                if (prizeWinner(result, category)) {
-                    prize_winners.get(category).add(result.team);
-                    position++;
-                }
-            }
-        }
-    }
-
-    private boolean prizeWinner(final OverallResult result, final Category category) {
-        return !result.dnf() && category.includes(result.team.category) && !alreadyWonPrize(result.team);
-    }
-
-    private boolean alreadyWonPrize(final Team team) {
-        for (List<Team> winners : prize_winners.values())
-            if (winners.contains(team)) return true;
-        return false;
-    }
-
     private Duration earlierOf(final Duration duration1, final Duration duration2) {
+
         return duration1.compareTo(duration2) <= 0 ? duration1 : duration2;
     }
 
@@ -560,13 +401,5 @@ public class Results {
             if (overall_results[i].team.bib_number == bib_number) return i;
 
         throw new RuntimeException("unregistered team: ");
-    }
-
-    Duration sumDurationsUpToLeg(final LegResult[] leg_results, final int leg) {
-
-        Duration total = leg_results[0].duration();
-        for (int i = 1; i < leg; i++)
-            total = total.plus(leg_results[i].duration());
-        return total;
     }
 }

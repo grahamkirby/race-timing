@@ -43,16 +43,16 @@ public class OutputPDF extends Output {
     @Override
     public void printPrizes() throws IOException {
 
-        final Path prizes_pdf_path = results.output_directory_path.resolve(results.prizes_filename + ".pdf");
+        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
         final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
 
         final Document document = new Document();
         PdfWriter.getInstance(document, pdf_file_output_stream);
 
         document.open();
-        document.add(new Paragraph(results.race_name_for_results + " " + results.year + " Category Prizes", PDF_BOLD_LARGE_FONT));
+        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
 
-        for (final Category category : results.CATEGORY_REPORT_ORDER) {
+        for (final Category category : CATEGORY_REPORT_ORDER) {
 
             final String header = "Category: " + category;
 
