@@ -1,6 +1,5 @@
 package lap_race;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class Prizes {
         this.results = results;
     }
 
-    public void allocatePrizes() throws IOException {
+    public void allocatePrizes() {
 
         // Allocate first prize in each category first, in decreasing order of category breadth.
         // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
@@ -29,30 +28,37 @@ public class Prizes {
         for (final Category category : Category.values()) {
 
             results.prize_winners.put(category, new ArrayList<>());
+            allocateFirstPrize(category);
+        }
+    }
 
-            for (final OverallResult result : results.overall_results) {
-                if (prizeWinner(result, category)) {
-                    results.prize_winners.get(category).add(result.team);
-                    break;
-                }
+    private void allocateFirstPrize(final Category category) {
+
+        for (final OverallResult result : results.overall_results) {
+            if (prizeWinner(result, category)) {
+                results.prize_winners.get(category).add(result.team);
+                return;
             }
         }
     }
 
     private void allocateMinorPrizes() {
 
-        for (final Category category : Category.values()) {
+        for (final Category category : Category.values())
+            allocateMinorPrizes(category);
+    }
 
-            int position = 2;
+    private void allocateMinorPrizes(final Category category) {
 
-            for (final OverallResult result : results.overall_results) {
+        int position = 2;
 
-                if (position > category.number_of_prizes) break;
+        for (final OverallResult result : results.overall_results) {
 
-                if (prizeWinner(result, category)) {
-                    results.prize_winners.get(category).add(result.team);
-                    position++;
-                }
+            if (position > category.number_of_prizes) return;
+
+            if (prizeWinner(result, category)) {
+                results.prize_winners.get(category).add(result.team);
+                position++;
             }
         }
     }
@@ -66,6 +72,7 @@ public class Prizes {
 
         for (List<Team> winners : results.prize_winners.values())
             if (winners.contains(team)) return true;
+
         return false;
     }
 }

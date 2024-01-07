@@ -43,35 +43,43 @@ public class Input {
     Team[] loadEntries() throws IOException {
 
         final List<String> lines = Files.readAllLines(entries_path);
-        Team[] entries = new Team[lines.size()];
+        final Team[] entries = new Team[lines.size()];
 
-        for (int i = 0; i < entries.length; i++) {
-            String[] strings = lines.get(i).split("\t");
-            if (strings.length != results.number_of_legs + 3)
-                throw new RuntimeException("illegal composition for team: " + strings[0]);
-            entries[i] = new Team(strings);
-        }
+        for (int i = 0; i < entries.length; i++)
+            loadEntry(entries, lines, i);
 
         return entries;
+    }
+
+    private void loadEntry(final Team[] entries, final List<String> lines, final int entry_index) {
+
+        final String[] team_elements = lines.get(entry_index).split("\t");
+
+        if (team_elements.length != results.number_of_legs + 3)
+            throw new RuntimeException("illegal composition for team: " + team_elements[0]);
+
+        entries[entry_index] = new Team(team_elements);
     }
 
     RawResult[] loadRawResults() throws IOException {
 
         final List<String> lines = Files.readAllLines(raw_results_path);
-        RawResult[]raw_results = new RawResult[lines.size()];
+        final RawResult[] raw_results = new RawResult[lines.size()];
 
-        RawResult previous_result = null;
-
-        for (int i = 0; i < raw_results.length; i++) {
-
-            final RawResult result = new RawResult(lines.get(i));
-            if (previous_result != null && previous_result.recorded_finish_time.compareTo(result.recorded_finish_time) > 0)
-                throw new RuntimeException("result " + (i+1) + " out of order");
-
-            raw_results[i] = result;
-            previous_result = result;
-        }
+        for (int i = 0; i < raw_results.length; i++)
+            loadRawResult(raw_results, lines, i);
 
         return raw_results;
+    }
+
+    private static void loadRawResult(final RawResult[] raw_results, final List<String> lines, final int raw_result_index) {
+
+        final RawResult previous_result = raw_result_index > 0 ? raw_results[raw_result_index -1] : null;
+        final RawResult result = new RawResult(lines.get(raw_result_index));
+
+        if (previous_result != null && previous_result.recorded_finish_time.compareTo(result.recorded_finish_time) > 0)
+            throw new RuntimeException("result " + (raw_result_index +1) + " out of order");
+
+        raw_results[raw_result_index] = result;
     }
 }

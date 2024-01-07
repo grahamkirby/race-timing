@@ -21,7 +21,7 @@ public enum Category {
     private final int minimum_age;
     public final int number_of_prizes;
 
-    Category(String category_name, String composition, int minimum_age, int number_of_prizes) {
+    Category(final String category_name, final String composition, final int minimum_age, final int number_of_prizes) {
 
         this.category_name = category_name;
         this.composition = composition;
@@ -29,12 +29,12 @@ public enum Category {
         this.number_of_prizes = number_of_prizes;
     }
 
-    public boolean includes(Category other_category) {
+    public boolean includes(final Category other_category) {
 
         return compositionIncludes(other_category.composition) && minimum_age <= other_category.minimum_age;
     }
 
-    private boolean compositionIncludes(String other_composition) {
+    private boolean compositionIncludes(final String other_composition) {
 
         return composition.equals(other_composition) ||
                 composition.equals("Open") && other_composition.equals("Women") ||
@@ -43,9 +43,9 @@ public enum Category {
 
     public static Category parse(final String s) {
 
-        for (Category category : values()) {
+        for (Category category : values())
             if (category.category_name.equals(s)) return category;
-        }
+
         throw new RuntimeException("undefined category: " + s);
     }
 

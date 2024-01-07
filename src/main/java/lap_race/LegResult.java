@@ -27,17 +27,12 @@ public class LegResult implements Comparable<LegResult> {
         return DNF ? Results.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
-    public String toString() {
-        return team.runners[leg_number-1] + "," + (DNF ? "DNF" : OverallResult.format(duration()));
-    }
-
     @Override
     public int compareTo(LegResult o) {
 
-        if (duration().equals(o.duration())) {
+        if (duration().equals(o.duration()))
             return results.getRecordedLegPosition(team.bib_number, leg_number).compareTo(results.getRecordedLegPosition(o.team.bib_number, leg_number));
-        }
-
-        return duration().compareTo(o.duration());
+        else
+            return duration().compareTo(o.duration());
     }
 }

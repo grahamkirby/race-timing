@@ -26,8 +26,8 @@ public class OutputCSV extends Output {
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
 
-            printOverallResultsCSVHeader(csv_writer);
-            printOverallResultsCSV(csv_writer);
+            printOverallResultsHeader(csv_writer);
+            printOverallResults(csv_writer);
         }
     }
 
@@ -38,38 +38,45 @@ public class OutputCSV extends Output {
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_csv_path))) {
 
-            printDetailedResultsCSVHeader(csv_writer);
-            printDetailedResultsCSV(csv_writer);
+            printDetailedResultsHeader(csv_writer);
+            printDetailedResults(csv_writer);
         }
     }
 
     @Override
-    void printLegResults(final int leg) throws IOException {
+    public void printLegResults(final int leg) throws IOException {
 
         final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv");
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
 
-            printLegResultsCSVHeader(leg, csv_writer);
-            printLegResultsCSV(getLegResults(leg), csv_writer);
+            printLegResultsHeader(csv_writer, leg);
+            printLegResults(csv_writer, getLegResults(leg));
         }
     }
 
-    private void printOverallResultsCSVHeader(final OutputStreamWriter writer) throws IOException {
+    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
     }
 
-    private void printOverallResultsCSV(final OutputStreamWriter writer) throws IOException {
+    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         for (int i = 0; i < results.overall_results.length; i++) {
 
-            if (!results.overall_results[i].dnf()) writer.append(String.valueOf(i + 1));
-            writer.append(",").append(String.valueOf(results.overall_results[i])).append("\n");
+            final OverallResult overall_result = results.overall_results[i];
+
+            if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
+
+            writer.append(",").
+                    append(String.valueOf(overall_result.team.bib_number)).append(",").
+                    append(overall_result.team.name).append(",").
+                    append(String.valueOf(overall_result.team.category)).append(",").
+                    append(overall_result.dnf() ? "DNF" : Output.format(overall_result.duration())).append("\n");
         }
     }
 
-    private void printDetailedResultsCSVHeader(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
@@ -81,83 +88,115 @@ public class OutputCSV extends Output {
         writer.append("Total\n");
     }
 
-    private void printDetailedResultsCSV(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        int position = 1;
+        for (int result_index = 0; result_index < results.overall_results.length; result_index++)
+            printDetailedResult(writer, result_index);
+    }
 
-        for (final OverallResult result : results.overall_results) {
+    private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-            final Team team = result.team;
-            boolean any_previous_leg_dnf = false;
+        final OverallResult result = results.overall_results[result_index];
 
-            if (!result.dnf()) writer.append(String.valueOf(position++));
+        if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
 
+        writer.append(",");
+        writer.append(String.valueOf(result.team.bib_number)).append(",");
+        writer.append(result.team.name).append(",");
+        writer.append(result.team.category.toString()).append(",");
+
+        printLegDetails(writer, result, result.team);
+
+        writer.append("\n");
+    }
+
+    private void printLegDetails(final OutputStreamWriter writer, final OverallResult result, final Team team) throws IOException {
+
+        boolean any_previous_leg_dnf = false;
+
+        for (int leg = 1; leg <= results.number_of_legs; leg++) {
+
+            final LegResult leg_result = result.leg_results[leg - 1];
+
+            writer.append(team.runners[leg-1]);
+            addMassStartAnnotation(writer, leg_result, leg);
             writer.append(",");
-            writer.append(String.valueOf(team.bib_number)).append(",");
-            writer.append(team.name).append(",");
-            writer.append(team.category.toString()).append(",");
+            writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration())).append(",");
+            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg)));
 
-            for (int leg = 1; leg <= results.number_of_legs; leg++) {
-
-                final LegResult leg_result = result.leg_results[leg-1];
-
-                writer.append(team.runners[leg-1]);
-                if (leg_result.in_mass_start) {
-                    int mass_start_leg = leg;
-                    while (!results.mass_start_legs[mass_start_leg-1]) {
-                        mass_start_leg++;
-                    }
-                    writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
-                }
-                writer.append(",");
-                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration())).append(",");
-                writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
-
-                if (leg < results.number_of_legs) writer.append(",");
-                if (leg_result.DNF) any_previous_leg_dnf = true;
-            }
-
-            writer.append("\n");
+            if (leg < results.number_of_legs) writer.append(",");
+            if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
 
-    private void printLegResultsCSVHeader(final int leg, final OutputStreamWriter writer) throws IOException {
+    private void printLegResultsHeader(final OutputStreamWriter writer, final int leg) throws IOException {
 
         writer.append("Pos,Runner");
         if (results.paired_legs[leg-1]) writer.append("s");
         writer.append(",Time\n");
     }
 
-    private void printLegResultsCSV(final LegResult[] leg_results, final OutputStreamWriter writer) throws IOException {
-
-        final int number_of_results = leg_results.length;
+    private void printLegResults(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
 
         // Deal with dead heats in legs 2-4.
-        for (int i = 0; i < number_of_results; i++) {
+        setPositionStrings(leg_results);
 
-            final LegResult result = leg_results[i];
-            if (result.leg_number == 1) {
-                result.position_string = String.valueOf(i + 1);
-            }
-            else {
-                int j = i;
+        for (final LegResult leg_result : leg_results)
+            printLegResult(writer, leg_result);
+    }
 
-                while (j + 1 < number_of_results && result.duration().equals(leg_results[j + 1].duration())) j++;
-                if (j > i) {
-                    for (int k = i; k <= j; k++)
-                        leg_results[k].position_string = i + 1 + "=";
-                    i = j;
-                } else
-                    result.position_string = String.valueOf(i + 1);
-            }
+    private static void printLegResult(final OutputStreamWriter writer, final LegResult leg_result) throws IOException {
+
+        if (!leg_result.DNF) {
+            writer.append(leg_result.position_string).append(",");
+            writer.append(leg_result.team.runners[leg_result.leg_number - 1]).append(",");
+            writer.append(format(leg_result.duration()));
+        }
+    }
+
+    private static void setPositionStrings(final LegResult[] leg_results) {
+
+        // Sets position strings for dead heats.
+        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
+
+        for (int result_index = 0; result_index < leg_results.length; result_index++) {
+
+            final LegResult result = leg_results[result_index];
+
+            if (result.leg_number == 1)
+                // No dead heats for leg 1; positions determined by order of recording.
+                result.position_string = String.valueOf(result_index + 1);
+
+            else
+                // Skip over any following results with the same times.
+                result_index = groupEqualDurationsAndReturnFollowingIndex(leg_results, result, result_index);
+        }
+    }
+
+    private static int groupEqualDurationsAndReturnFollowingIndex(final LegResult[] leg_results, final LegResult result, final int result_index) {
+
+        final int highest_index_with_same_duration = getHighestIndexWithSameDuration(leg_results, result, result_index);
+
+        if (highest_index_with_same_duration > result_index) {
+
+            // Record the same position for all the results with equal times.
+            for (int i = result_index; i <= highest_index_with_same_duration; i++)
+                leg_results[i].position_string = result_index + 1 + "=";
+        }
+        else {
+            result.position_string = String.valueOf(result_index + 1);
         }
 
-        for (final LegResult leg_result : leg_results) {
+        return highest_index_with_same_duration;
+    }
 
-            if (!leg_result.DNF) {
-                writer.append(leg_result.position_string).append(",");
-                writer.append(leg_result.toString()).append("\n");
-            }
-        }
+    private static int getHighestIndexWithSameDuration(final LegResult[] leg_results, final LegResult result, final int result_index) {
+
+        int highest_index_with_same_duration = result_index;
+
+        while (highest_index_with_same_duration + 1 < leg_results.length && result.duration().equals(leg_results[highest_index_with_same_duration + 1].duration()))
+            highest_index_with_same_duration++;
+
+        return highest_index_with_same_duration;
     }
 }

@@ -14,8 +14,4 @@ public class RawResult {
         bib_number = Integer.parseInt(elements[0]);
         recorded_finish_time = Results.parseTime(elements[1]);
     }
-
-    public String toString() {
-        return "bib: " + bib_number + ", time: " + recorded_finish_time;
-    }
 }
