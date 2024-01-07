@@ -1,11 +1,11 @@
 package lap_race;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
-import java.util.List;
 
 public class Results {
 
@@ -170,27 +170,29 @@ public class Results {
 
     private void setMassStartTimes(String[] mass_start_elapsed_times_strings) {
 
-        Duration previous_mass_start_time = null;
+        for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
+            setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
+    }
 
-        for (int leg_index = 0; leg_index < number_of_legs; leg_index++) {
+    private void setMassStartTime(final String time_as_string, final int leg_index) {
 
-            final String time_as_string = mass_start_elapsed_times_strings[leg_index];
+        final Duration mass_start_time = parseMassStartTime(time_as_string);
+        final Duration previous_mass_start_time = leg_index > 0 ? start_times_for_mass_starts[leg_index -1] : null;
 
-            Duration mass_start_time;
-            try {
-                mass_start_time = parseTime(time_as_string);
-            }
-            catch (Exception e) {
-                throw new RuntimeException("illegal mass start time: " + time_as_string);
-            }
+        if (massStartTimesOutOfOrder(previous_mass_start_time, mass_start_time))
+            throw new RuntimeException("illegal mass start time order");
 
-            if (massStartTimesOutOfOrder(previous_mass_start_time, mass_start_time))
-                throw new RuntimeException("illegal mass start time order");
-            else
-                previous_mass_start_time = mass_start_time;
+        start_times_for_mass_starts[leg_index] = mass_start_time;
+        mass_start_legs[leg_index] = !mass_start_time.equals(DUMMY_DURATION);
+    }
 
-            start_times_for_mass_starts[leg_index] = mass_start_time;
-            mass_start_legs[leg_index] = !mass_start_time.equals(DUMMY_DURATION);
+    private static Duration parseMassStartTime(final String time_as_string) {
+
+        try {
+            return parseTime(time_as_string);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal mass start time: " + time_as_string);
         }
     }
 
@@ -206,9 +208,8 @@ public class Results {
 
         for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--) {
 
-            if (start_times_for_mass_starts[leg_index].equals(parseTime(DUMMY_DURATION_STRING))) {
+            if (start_times_for_mass_starts[leg_index].equals(parseTime(DUMMY_DURATION_STRING)))
                 start_times_for_mass_starts[leg_index] = start_times_for_mass_starts[leg_index+1];
-            }
         }
     }
 
@@ -290,7 +291,7 @@ public class Results {
         // DNF cases where there is no recorded leg result are captured by the
         // default value of LegResult.DNF being true.
 
-        if (!dnf_legs_string.isBlank()) {
+        if (dnf_legs_string != null && !dnf_legs_string.isBlank()) {
 
             for (final String dnf_string : dnf_legs_string.split(",")) {
 
@@ -312,13 +313,9 @@ public class Results {
 
     private void fillLegStartTimes() {
 
-        for (final OverallResult result : overall_results) {
-
-            final LegResult[] leg_results = result.leg_results;
-
+        for (final OverallResult overall_result : overall_results)
             for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-                fillLegStartTime(leg_results, leg_index);
-        }
+                fillLegStartTime(overall_result.leg_results, leg_index);
     }
 
     private void fillLegStartTime(final LegResult[] leg_results, final int leg_index) {
@@ -388,12 +385,12 @@ public class Results {
 
     Integer getRecordedLegPosition(final int bib_number, final int leg_number) {
 
-        int count = 0;
+        int legs_completed = 0;
 
         for (int i = 0; i < raw_results.length; i++) {
             if (raw_results[i].bib_number == bib_number) {
-                count++;
-                if (count == leg_number) return i + 1;
+                legs_completed++;
+                if (legs_completed == leg_number) return i + 1;
             }
         }
 

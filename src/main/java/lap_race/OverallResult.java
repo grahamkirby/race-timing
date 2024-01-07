@@ -25,7 +25,6 @@ public class OverallResult implements Comparable<OverallResult> {
         for (final LegResult leg_result : leg_results) {
 
             if (leg_result.DNF) return Results.DUMMY_DURATION;
-
             overall = overall.plus(leg_result.duration());
         }
 
@@ -40,12 +39,12 @@ public class OverallResult implements Comparable<OverallResult> {
         return false;
     }
 
-    public String toString() {
-        return team.bib_number + "," + team.name + "," + team.category + "," + (dnf() ? "DNF" : format(duration()));
-    }
-
     @Override
     public int compareTo(final OverallResult o) {
+
+        // Sort in order of increasing overall team time.
+        // DNF results are sorted in increasing order of bib number.
+        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
 
         if (duration().equals(o.duration())) {
 
@@ -55,11 +54,5 @@ public class OverallResult implements Comparable<OverallResult> {
         }
 
         return duration().compareTo(o.duration());
-    }
-
-    public static String format(final Duration duration) {
-
-        final long s = duration.getSeconds();
-        return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
     }
 }

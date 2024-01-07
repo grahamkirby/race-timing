@@ -9,7 +9,7 @@ public class Team {
     final Category category;
     final String[] runners;
 
-    public Team(String[] elements) {
+    public Team(final String[] elements) {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
@@ -22,15 +22,5 @@ public class Team {
             throw new RuntimeException("illegal category for team: " + bib_number);
         }
         runners = Arrays.copyOfRange(elements, 3, elements.length);
-    }
-
-    public String toString() {
-
-        StringBuilder builder = new StringBuilder();
-        for (String runner : runners)  {
-            if (!builder.isEmpty()) builder.append("\t");
-            builder.append(runner);
-        }
-        return name + ", " + category + ": " + builder;
     }
 }

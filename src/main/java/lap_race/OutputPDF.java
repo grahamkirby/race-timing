@@ -5,7 +5,6 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -35,7 +34,7 @@ public class OutputPDF extends Output {
     }
 
     @Override
-    void printLegResults(int leg) {
+    public void printLegResults(int leg) {
 
         throw new UnsupportedOperationException();
     }
@@ -52,32 +51,34 @@ public class OutputPDF extends Output {
         document.open();
         document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
 
-        for (final Category category : CATEGORY_REPORT_ORDER) {
+        for (final Category category : CATEGORY_REPORT_ORDER)
+            printPrizes(category, document);
 
-            final String header = "Category: " + category;
-
-            final Paragraph category_header_paragraph = new Paragraph(48f, header, PDF_BOLD_UNDERLINED_FONT);
-            category_header_paragraph.setSpacingAfter(12);
-            document.add(category_header_paragraph);
-
-            final List<Team> category_prize_winners = results.prize_winners.get(category);
-
-            if (category_prize_winners.isEmpty())
-                document.add(new Paragraph("No results", PDF_ITALIC_FONT));
-
-            int position = 1;
-            for (final Team team : category_prize_winners) {
-
-                final OverallResult result = results.overall_results[results.findIndexOfTeamWithBibNumber(team.bib_number)];
-
-                final Paragraph paragraph = new Paragraph();
-                paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
-                paragraph.add(new Chunk(result.team.name, PDF_BOLD_FONT));
-                paragraph.add(new Chunk(" (" + result.team.category + ") ", PDF_FONT));
-                paragraph.add(new Chunk(OverallResult.format(result.duration()), PDF_FONT));
-                document.add(paragraph);
-            }
-        }
         document.close();
+    }
+
+    private void printPrizes(final Category category, final Document document) {
+
+        final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category, PDF_BOLD_UNDERLINED_FONT);
+        category_header_paragraph.setSpacingAfter(12);
+        document.add(category_header_paragraph);
+
+        final List<Team> category_prize_winners = results.prize_winners.get(category);
+
+        if (category_prize_winners.isEmpty())
+            document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+
+        int position = 1;
+        for (final Team team : category_prize_winners) {
+
+            final OverallResult result = results.overall_results[results.findIndexOfTeamWithBibNumber(team.bib_number)];
+
+            final Paragraph paragraph = new Paragraph();
+            paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
+            paragraph.add(new Chunk(result.team.name, PDF_BOLD_FONT));
+            paragraph.add(new Chunk(" (" + result.team.category + ") ", PDF_FONT));
+            paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
+            document.add(paragraph);
+        }
     }
 }

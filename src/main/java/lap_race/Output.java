@@ -1,12 +1,11 @@
 package lap_race;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 public abstract class Output {
 
@@ -26,12 +25,12 @@ public abstract class Output {
 
     final Results results;
 
+    String year;
     String race_name_for_results;
     String race_name_for_filenames;
     String overall_results_filename;
     String detailed_results_filename;
     String prizes_filename;
-    String year;
     Path output_directory_path;
 
     public Output(final Results results) {
@@ -83,14 +82,37 @@ public abstract class Output {
         for (int i = 0; i < leg_results.length; i++)
             leg_results[i] = results.overall_results[i].leg_results[leg-1];
 
+        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
+        // Ordering for DNF results doesn't matter since they're omitted in output.
+        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+        // OutputCSV.printLegResults deals with dead heats.
         Arrays.sort(leg_results);
+
         return leg_results;
+    }
+
+    void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
+
+        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
+        if (leg_result.in_mass_start) {
+
+            // Find the next mass start.
+            int mass_start_leg = leg;
+            while (!results.mass_start_legs[mass_start_leg-1])
+                mass_start_leg++;
+
+            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
+        }
+    }
+
+    public static String format(final Duration duration) {
+
+        final long s = duration.getSeconds();
+        return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
     }
 
     public abstract void printOverallResults() throws IOException;
     public abstract void printDetailedResults() throws IOException;
-
-    abstract void printLegResults(final int leg) throws IOException;
-
+    public abstract void printLegResults(final int leg) throws IOException;
     public abstract void printPrizes() throws IOException;
 }

@@ -24,9 +24,9 @@ public class OutputHTML extends Output {
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_html_path))) {
 
-            printOverallResultsHTMLHeader(html_writer);
-            printOverallResultsHTML(html_writer);
-            printOverallResultsHTMLFooter(html_writer);
+            printOverallResultsHeader(html_writer);
+            printOverallResults(html_writer);
+            printOverallResultsFooter(html_writer);
         }
     }
 
@@ -37,25 +37,25 @@ public class OutputHTML extends Output {
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_html_path))) {
 
-            printDetailedResultsHTMLHeader(html_writer);
-            printDetailedResultsHTML(html_writer);
-            printDetailedResultsHTMLFooter(html_writer);
+            printDetailedResultsHeader(html_writer);
+            printDetailedResults(html_writer);
+            printDetailedResultsFooter(html_writer);
         }
     }
 
-    void printLegResults(final int leg) throws IOException {
+    public void printLegResults(final int leg) throws IOException {
 
         final Path leg_results_html_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html");
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_html_path))) {
 
-            printLegResultsHTMLHeader(leg, html_writer);
-            printLegResultsHTML(getLegResults(leg), html_writer);
-            printLegResultsHTMLFooter(html_writer);
+            printLegResultsHeader(html_writer, leg);
+            printLegResults(html_writer, getLegResults(leg));
+            printLegResultsFooter(html_writer);
         }
     }
 
-    private void printOverallResultsHTMLHeader(final OutputStreamWriter writer) throws IOException {
+    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">
@@ -72,14 +72,14 @@ public class OutputHTML extends Output {
             """);
     }
 
-    private void printOverallResultsHTML(final OutputStreamWriter writer) throws IOException {
+    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
 
         for (final OverallResult result : results.overall_results) {
 
             writer.append("""
-                            <tr>
+                        <tr>
                             <td>""");
             writer.append(String.valueOf(position++));
             writer.append("""
@@ -87,24 +87,24 @@ public class OutputHTML extends Output {
                             <td>""");
             writer.append(String.valueOf(result.team.bib_number));
             writer.append("""
-                                </td>
-                                <td>""");
+                            </td>
+                            <td>""");
             writer.append(String.valueOf(result.team.name));
             writer.append("""
-                                </td>
-                                <td>""");
+                            </td>
+                            <td>""");
             writer.append(String.valueOf(result.team.category));
             writer.append("""
-                                </td>
-                                <td>""");
-            writer.append(OverallResult.format(result.duration()));
+                            </td>
+                            <td>""");
+            writer.append(format(result.duration()));
             writer.append("""
                             </td>
                         </tr>""");
         }
     }
 
-    private void printOverallResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
+    private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 </tbody>
@@ -112,7 +112,7 @@ public class OutputHTML extends Output {
             """);
     }
 
-    private void printDetailedResultsHTMLHeader(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">
@@ -142,63 +142,72 @@ public class OutputHTML extends Output {
             """);
     }
 
-    private void printDetailedResultsHTML(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        int position = 1;
+        for (int result_index = 0; result_index < results.overall_results.length; result_index++)
+            printDetailedResult(writer, result_index);
+    }
 
-        for (final OverallResult result : results.overall_results) {
+    private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-            final Team team = result.team;
-            boolean any_previous_leg_dnf = false;
+        final OverallResult result = results.overall_results[result_index];
 
-            writer.append("""
-                    <tr>
-                    <td>""");
-            if (!result.dnf()) writer.append(String.valueOf(position++));
-            writer.append("""
-                    </td>
-                    <td>""");
-            writer.append(String.valueOf(result.team.bib_number));
-            writer.append("""
-                    </td>
-                    <td>""");
-            writer.append(String.valueOf(result.team.name));
-            writer.append("""
-                    </td>
-                    <td>""");
-            writer.append(String.valueOf(result.team.category));
-            writer.append("""
-                    </td>""");
+        writer.append("""
+                <tr>
+                <td>""");
+        if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
+        writer.append("""
+                </td>
+                <td>""");
+        writer.append(String.valueOf(result.team.bib_number));
+        writer.append("""
+                </td>
+                <td>""");
+        writer.append(String.valueOf(result.team.name));
+        writer.append("""
+                </td>
+                <td>""");
+        writer.append(String.valueOf(result.team.category));
+        writer.append("""
+                </td>""");
 
-            for (int leg = 1; leg <= results.number_of_legs; leg++) {
+        printLegDetails(writer, result, result.team);
 
-                final LegResult leg_result = result.leg_results[leg - 1];
+        writer.append("""
+                </tr>""");
+    }
 
-                writer.append("""
-                    <td>""");
-                writer.append(team.runners[leg - 1]);
-                if (leg_result.in_mass_start)
-                    writer.append(" (M").append(String.valueOf(leg)).append(")");
-                writer.append("""
-                    </td>
-                    <td>""");
+    private void printLegDetails(OutputStreamWriter writer, OverallResult result, Team team) throws IOException {
 
-                writer.append(leg_result.DNF ? DNF_STRING : OverallResult.format(leg_result.duration()));
-                writer.append("""
-                    </td>
-                    <td>""");
-                writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : OverallResult.format(sumDurationsUpToLeg(result.leg_results, leg)));
-                writer.append("""
-                    </td>""");
-                if (leg_result.DNF) any_previous_leg_dnf = true;
-            }
+        boolean any_previous_leg_dnf = false;
+
+        for (int leg = 1; leg <= results.number_of_legs; leg++) {
+
+            final LegResult leg_result = result.leg_results[leg - 1];
 
             writer.append("""
-                    </tr>""");
+                <td>""");
+            writer.append(team.runners[leg - 1]);
+
+            addMassStartAnnotation(writer, leg_result, leg);
+
+            writer.append("""
+                </td>
+                <td>""");
+
+            writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration()));
+            writer.append("""
+                </td>
+                <td>""");
+            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg)));
+            writer.append("""
+                </td>""");
+
+            if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
 
-    private void printDetailedResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResultsFooter(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 </tbody>
@@ -206,7 +215,7 @@ public class OutputHTML extends Output {
             """);
     }
 
-    private void printLegResultsHTMLHeader(final int leg, final OutputStreamWriter writer) throws IOException {
+    private void printLegResultsHeader(final OutputStreamWriter writer, final int leg) throws IOException {
 
         writer.append("""
             <table class="fac-table">
@@ -227,7 +236,7 @@ public class OutputHTML extends Output {
             """);
     }
 
-    private void printLegResultsHTML(final LegResult[] leg_results, final OutputStreamWriter writer) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
 
         for (final LegResult leg_result : leg_results) {
 
@@ -243,18 +252,18 @@ public class OutputHTML extends Output {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(OverallResult.format(leg_result.duration()));
+                writer.append(format(leg_result.duration()));
                 writer.append("""
                                 </td>
                             </tr>""");
             }
         }
-    }    private void printLegResultsHTMLFooter(final OutputStreamWriter writer) throws IOException {
+    }
+    private void printLegResultsFooter(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 </tbody>
             </table>
             """);
     }
-
 }
