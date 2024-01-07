@@ -76,6 +76,17 @@ public abstract class Output {
         return total;
     }
 
+    LegResult[] getLegResults(final int leg) {
+
+        final LegResult[] leg_results = new LegResult[results.overall_results.length];
+
+        for (int i = 0; i < leg_results.length; i++)
+            leg_results[i] = results.overall_results[i].leg_results[leg-1];
+
+        Arrays.sort(leg_results);
+        return leg_results;
+    }
+
     public abstract void printOverallResults() throws IOException;
     public abstract void printDetailedResults() throws IOException;
 

@@ -51,7 +51,7 @@ public class OutputCSV extends Output {
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
 
             printLegResultsCSVHeader(leg, csv_writer);
-            printLegResultsCSV(results.getLegResults(leg), csv_writer);
+            printLegResultsCSV(getLegResults(leg), csv_writer);
         }
     }
 
