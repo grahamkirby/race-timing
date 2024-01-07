@@ -24,9 +24,9 @@ public class Results {
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
 
     public static final String DUMMY_DURATION_STRING = "23:59:59";
-    public static final Duration DUMMY_DURATION = RawResult.parseTime(DUMMY_DURATION_STRING);
+    public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
 
-    static final Duration ZERO_TIME = RawResult.parseTime("0:0");
+    static final Duration ZERO_TIME = parseTime("0:0");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -178,27 +178,35 @@ public class Results {
 
             Duration mass_start_time;
             try {
-                mass_start_time = RawResult.parseTime(time_as_string);
+                mass_start_time = parseTime(time_as_string);
             }
             catch (Exception e) {
                 throw new RuntimeException("illegal mass start time: " + time_as_string);
             }
 
+            if (massStartTimesOutOfOrder(previous_mass_start_time, mass_start_time))
+                throw new RuntimeException("illegal mass start time order");
+            else
+                previous_mass_start_time = mass_start_time;
+
             start_times_for_mass_starts[leg_index] = mass_start_time;
             mass_start_legs[leg_index] = !mass_start_time.equals(DUMMY_DURATION);
-
-            if (previous_mass_start_time != null && !previous_mass_start_time.equals(DUMMY_DURATION) && previous_mass_start_time.compareTo(start_times_for_mass_starts[leg_index]) > 0)
-                throw new RuntimeException("illegal mass start time order");
-
-            previous_mass_start_time = mass_start_time;
         }
+    }
+
+    private boolean massStartTimesOutOfOrder(final Duration previous_mass_start_time, final Duration current_mass_start_time) {
+
+        return previous_mass_start_time != null && !previous_mass_start_time.equals(DUMMY_DURATION) && previous_mass_start_time.compareTo(current_mass_start_time) > 0;
     }
 
     private void setEmptyMassStartTimes() {
 
+        // For legs 2 and above, if there is no mass start time configured, use the next actual mass start time.
+        // This covers the case where an early leg runner finishes after a mass start.
+
         for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--) {
 
-            if (start_times_for_mass_starts[leg_index].equals(RawResult.parseTime(DUMMY_DURATION_STRING))) {
+            if (start_times_for_mass_starts[leg_index].equals(parseTime(DUMMY_DURATION_STRING))) {
                 start_times_for_mass_starts[leg_index] = start_times_for_mass_starts[leg_index+1];
             }
         }
@@ -240,7 +248,7 @@ public class Results {
         final String[] split = individual_leg_starts_strings.split("/");
         final int bib_number = Integer.parseInt(split[0]);
         final int leg_number = Integer.parseInt(split[1]);
-        final Duration start_time = RawResult.parseTime(split[2]);
+        final Duration start_time = parseTime(split[2]);
 
         return new IndividualLegStart(bib_number, leg_number, start_time);
     }
@@ -263,18 +271,13 @@ public class Results {
 
         for (final RawResult raw_result : raw_results) {
 
-            try {
-                final int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
-                final OverallResult result = overall_results[team_index];
-                final LegResult[] leg_results = result.leg_results;
+            final int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
+            final OverallResult result = overall_results[team_index];
+            final LegResult[] leg_results = result.leg_results;
 
-                final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
-                leg_results[leg_index].finish_time = raw_result.recorded_finish_time;
-                leg_results[leg_index].DNF = false;
-            }
-            catch (RuntimeException e) {
-                throw new RuntimeException(e.getMessage() + raw_result.bib_number);
-            }
+            final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
+            leg_results[leg_index].finish_time = raw_result.recorded_finish_time;
+            leg_results[leg_index].DNF = false;
         }
     }
 
@@ -329,40 +332,13 @@ public class Results {
         // Null if no previous leg finish time was recorded: no time can be calculated for current leg so DNF.
 
         final Duration individual_start_time = getIndividualStartTime(leg_results, leg_index);
-        final Duration mass_start_time = start_times_for_mass_starts[leg_index];
+        final Duration leg_mass_start_time = start_times_for_mass_starts[leg_index];
         final Duration previous_runner_finish_time = leg_index > 0 ? leg_results[leg_index - 1].finish_time : null;
 
-        leg_results[leg_index].start_time = getLegStartTime(individual_start_time, mass_start_time, previous_runner_finish_time, leg_index);
+        leg_results[leg_index].start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_runner_finish_time, leg_index);
 
-        if (individual_start_time == null && leg_index > 0) {
-            leg_results[leg_index].in_mass_start = isInMassStart(mass_start_time, previous_runner_finish_time, leg_index);
-        }
-    }
-
-    private Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
-
-        if (individual_start_time != null) return individual_start_time;
-        if (leg_index == 0) return ZERO_TIME;
-
-        // No finish time recorded for previous runner, so we can't record a start time for this one.
-        // This leg result will be set to DNF by default.
-        if (previous_runner_finish_time == null) return null;
-
-        return mass_start_time.compareTo(previous_runner_finish_time) < 0 ? mass_start_time : previous_runner_finish_time;
-    }
-
-    private boolean isInMassStart(final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
-
-        if (previous_runner_finish_time == null) {
-
-            // Record this runner as starting in mass start if it's a mass start leg.
-            return mass_start_legs[leg_index];
-        }
-        else {
-
-            // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-            return mass_start_time.compareTo(previous_runner_finish_time) < 0;
-        }
+        // Record whether the runner started in a mass start.
+        leg_results[leg_index].in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_runner_finish_time, leg_index);
     }
 
     private Duration getIndividualStartTime(LegResult[] leg_results, int leg_index) {
@@ -374,11 +350,71 @@ public class Results {
         return null;
     }
 
+    private Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
+
+        // Individual leg time recorded for this runner.
+        if (individual_start_time != null) return individual_start_time;
+
+        // Leg 1 runners start at time zero if there's no individual time recorded.
+        if (leg_index == 0) return ZERO_TIME;
+
+        // No finish time recorded for previous runner, so we can't record a start time for this one.
+        // This leg result will be set to DNF by default.
+        if (previous_runner_finish_time == null) return null;
+
+        // Use the earlier of the mass start time and the previous runner's finish time.
+        return mass_start_time.compareTo(previous_runner_finish_time) < 0 ? mass_start_time : previous_runner_finish_time;
+    }
+
+    private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
+
+        // Not in mass start if there is an individually recorded time, or it's the first leg.
+        if (individual_start_time != null || leg_index == 0) return false;
+
+        // No previously record leg time, so record this runner as starting in mass start if it's a mass start leg.
+        if (previous_runner_finish_time == null) return mass_start_legs[leg_index];
+
+        // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
+        return mass_start_time.compareTo(previous_runner_finish_time) < 0;
+    }
+
     private void calculateResults() {
 
+        // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
+        // DNF results are sorted in increasing order of bib number.
+        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
         Arrays.sort(overall_results);
     }
 
+    Integer getRecordedLegPosition(final int bib_number, final int leg_number) {
+
+        int count = 0;
+
+        for (int i = 0; i < raw_results.length; i++) {
+            if (raw_results[i].bib_number == bib_number) {
+                count++;
+                if (count == leg_number) return i + 1;
+            }
+        }
+
+        return Integer.MAX_VALUE;
+    }
+
+    private int findIndexOfNextUnfilledLegResult(final LegResult[] leg_results) {
+
+        for (int i = 0; i < leg_results.length; i++)
+            if (leg_results[i].finish_time == null) return i;
+
+        throw new RuntimeException("surplus result recorded for team: " + leg_results[0].team.bib_number);
+    }
+
+    int findIndexOfTeamWithBibNumber(final int bib_number) {
+
+        for (int i = 0; i < overall_results.length; i++)
+            if (overall_results[i].team.bib_number == bib_number) return i;
+
+        throw new RuntimeException("unregistered team: " + bib_number);
+    }
     private void allocatePrizes() throws IOException {
 
         prizes.allocatePrizes();
@@ -408,49 +444,28 @@ public class Results {
         output_PDF.printPrizes();
     }
 
-    LegResult[] getLegResults(final int leg) {
+    static Duration parseTime(final String element) {
 
-        final LegResult[] leg_results = new LegResult[overall_results.length];
+        try {
+            final String[] parts = element.split(":");
+            final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
 
-        for (int i = 0; i < leg_results.length; i++)
-            leg_results[i] = overall_results[i].leg_results[leg-1];
-
-        Arrays.sort(leg_results);
-        return leg_results;
-    }
-
-    Integer getRecordedLegPosition(final int bib_number, final int leg_number) {
-
-        int count = 0;
-
-        for (int i = 0; i < raw_results.length; i++) {
-            if (raw_results[i].bib_number == bib_number) {
-                count++;
-                if (count == leg_number) return i + 1;
-            }
+            return Duration.parse(time_as_ISO);
         }
-
-        return Integer.MAX_VALUE;
+        catch (Exception e) {
+            throw new RuntimeException("illegal time: " + element);
+        }
     }
 
-    private Duration earlierOf(final Duration duration1, final Duration duration2) {
-
-        return duration1.compareTo(duration2) <= 0 ? duration1 : duration2;
+    static String hours(final String[] parts) {
+        return parts.length > 2 ? parts[0] + "H" : "";
     }
 
-    private int findIndexOfNextUnfilledLegResult(final LegResult[] leg_results) {
-
-        for (int i = 0; i < leg_results.length; i++)
-            if (leg_results[i].finish_time == null) return i;
-
-        throw new RuntimeException("surplus result recorded for team: ");
+    static String minutes(final String[] parts) {
+        return (parts.length > 2 ? parts[1] : parts[0]) + "M";
     }
 
-    int findIndexOfTeamWithBibNumber(final int bib_number) {
-
-        for (int i = 0; i < overall_results.length; i++)
-            if (overall_results[i].team.bib_number == bib_number) return i;
-
-        throw new RuntimeException("unregistered team: ");
+    static String seconds(final String[] parts) {
+        return (parts.length > 2 ? parts[2] : parts[1]) + "S";
     }
 }

@@ -50,7 +50,7 @@ public class OutputHTML extends Output {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_html_path))) {
 
             printLegResultsHTMLHeader(leg, html_writer);
-            printLegResultsHTML(results.getLegResults(leg), html_writer);
+            printLegResultsHTML(getLegResults(leg), html_writer);
             printLegResultsHTMLFooter(html_writer);
         }
     }
