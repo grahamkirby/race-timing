@@ -38,9 +38,9 @@ are awarded the prize in the higher position, and then the younger age category.
    9. MASS_START_ELAPSED_TIMES: mass start time for each leg
    10. DNF_LEGS: legs with recorded times but runners missed a checkpoint
    11. INDIVIDUAL_LEG_STARTS: any runners exceptionally starting at different times
-3. See file [race.config](/grahamkirby/race-timing/blob/main/src/main/resources/lap_race/devils_burdens/sample_config/race.config)
+3. See file [race.config](/src/main/resources/lap_race/devils_burdens/sample_config/race.config)
 for examples of required formats.
-4. Run the class [Results](/grahamkirby/race-timing/blob/main/src/main/java/lap_race/Results.java),
+4. Run the class [Results](/src/main/java/lap_race/Results.java),
 passing the path of the new configuration file as command line parameter.
 5. The results files will be created in the ```output``` sub-directory in CSV and HTML
 formats:
