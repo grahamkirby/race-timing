@@ -11,21 +11,14 @@ public class Results {
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
-    //  1. Create new copy of directory src/main/resources/lap_race/devils_burdens/sample_config.   //
-    //                                                                                              //
-    //  2. Edit WORKING_DIRECTORY property to location of new directory.                            //
-    //                                                                                              //
-    //  3. Update year and mass start times.                                                        //
-    //                                                                                              //
-    //  4. Run Results, passing path of config file as command line parameter.                      //
+    //  See README.md at the project root for details of how to configure and run this software.    //
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
 
-    public static final String DUMMY_DURATION_STRING = "23:59:59";
-    public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
-
+    static final String DUMMY_DURATION_STRING = "23:59:59";
+    static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     static final Duration ZERO_TIME = parseTime("0:0");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
