@@ -28,8 +28,8 @@ are awarded the prize in the higher position, and then the younger age category.
 1. Create a new copy of the directory ```src/main/resources/lap_race/devils_burdens/sample_config```.
 2. In the file ```race.config```, update properties as required:
    1. WORKING_DIRECTORY: the location of the new directory
-   2. ENTRIES_FILENAME: name of the file containing the race entries [[example format]](src/main/resources/lap_race/devils_burdens/sample_config/input/entries.txt)
-   3. RAW_RESULTS_FILENAME: name of the file containing the recorded times [[example format]](src/main/resources/lap_race/devils_burdens/sample_config/input/rawtimes.txt)
+   2. ENTRIES_FILENAME: name of the file containing the race entries
+   3. RAW_RESULTS_FILENAME: name of the file containing the recorded times
    4. YEAR: year of race
    5. NUMBER_OF_LAPS: 4 in current configuration of race
    6. PAIRED_LEGS: numbers of the legs that are run in pairs
@@ -38,8 +38,12 @@ are awarded the prize in the higher position, and then the younger age category.
    9. MASS_START_ELAPSED_TIMES: mass start time for each leg
    10. DNF_LEGS: legs with recorded times but runners missed a checkpoint
    11. INDIVIDUAL_LEG_STARTS: any runners exceptionally starting at different times
-3. See file [```race.config```](/src/main/resources/lap_race/devils_burdens/sample_config/race.config)
+3. See example file [```race.config```](/src/main/resources/lap_race/devils_burdens/sample_config/race.config)
 for examples of required formats.
+4. Copy the files containing race entries and raw results to the ```input``` sub-directory of the
+working directory.
+    * race entries: [[example format]](src/main/resources/lap_race/devils_burdens/sample_config/input/entries.txt)
+    * raw results: [[example format]](src/main/resources/lap_race/devils_burdens/sample_config/input/rawtimes.txt)
 4. Run the class [```Results```](/src/main/java/lap_race/Results.java),
 passing the path of the new configuration file as command line parameter.
 5. The results files will be created in the ```output``` sub-directory in CSV and HTML
