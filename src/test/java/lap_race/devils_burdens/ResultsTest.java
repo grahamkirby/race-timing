@@ -423,8 +423,7 @@ public class ResultsTest {
 
     private void configureTest(String test_resource_root) throws IOException {
 
-        //temp_directory = Files.createTempDirectory(null);
-        temp_directory = Paths.get("/Users/gnck/Desktop/temp");
+        temp_directory = Files.createTempDirectory(null);
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
