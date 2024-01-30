@@ -150,7 +150,7 @@ public class OutputCSV extends Output {
         if (!leg_result.DNF) {
             writer.append(leg_result.position_string).append(",");
             writer.append(leg_result.team.runners[leg_result.leg_number - 1]).append(",");
-            writer.append(format(leg_result.duration()));
+            writer.append(format(leg_result.duration())).append("\n");
         }
     }
 

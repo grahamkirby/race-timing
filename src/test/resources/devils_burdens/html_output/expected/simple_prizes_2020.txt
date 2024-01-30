@@ -12,7 +12,6 @@ Category: Open Senior
 
 1: Team 1 (Women Senior) 03:47:58
 2: Team 3 (Open Senior) 03:48:29
-3: Team 5 (Open Senior) 03:49:52
 
 
 Category: Women 40+

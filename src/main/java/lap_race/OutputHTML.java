@@ -81,7 +81,7 @@ public class OutputHTML extends Output {
             writer.append("""
                         <tr>
                             <td>""");
-            writer.append(String.valueOf(position++));
+            if (!result.dnf()) writer.append(String.valueOf(position++));
             writer.append("""
                             </td>
                             <td>""");
@@ -97,7 +97,7 @@ public class OutputHTML extends Output {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(format(result.duration()));
+            writer.append(result.dnf() ? DNF_STRING : format(result.duration()));
             writer.append("""
                             </td>
                         </tr>""");
@@ -222,8 +222,7 @@ public class OutputHTML extends Output {
                 <thead>
                     <tr>
                         <th>Pos</th>
-                        <th>Runner
-            """);
+                        <th>Runner""");
 
         if (results.paired_legs[leg-1]) writer.append("s");
 
