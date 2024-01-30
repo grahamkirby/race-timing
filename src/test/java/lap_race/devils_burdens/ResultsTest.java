@@ -290,11 +290,37 @@ public class ResultsTest {
         configureTest("unregistered_team");
 
         RuntimeException thrown = assertThrows(
-            RuntimeException.class,
-            () -> new Results(properties).processResults()
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
         );
 
         assertEquals("unregistered team: 4", thrown.getMessage());
+    }
+
+    @Test
+    public void duplicateTeamNumber() throws Exception {
+
+        configureTest("duplicate_team_number");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("duplicate team number: 3", thrown.getMessage());
+    }
+
+    @Test
+    public void duplicateTeamName() throws Exception {
+
+        configureTest("duplicate_team_name");
+
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> new Results(properties).processResults()
+        );
+
+        assertEquals("duplicate team name: Team 2", thrown.getMessage());
     }
 
     @Test

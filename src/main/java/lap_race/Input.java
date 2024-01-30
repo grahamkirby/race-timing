@@ -58,7 +58,30 @@ public class Input {
         if (team_elements.length != results.number_of_legs + 3)
             throw new RuntimeException("illegal composition for team: " + team_elements[0]);
 
+        final int bib_number = Integer.parseInt(team_elements[0]);
+        final String team_name = team_elements[1];
+
+        if (entriesAlreadyContain(entries, bib_number))
+            throw new RuntimeException("duplicate team number: " + bib_number);
+
+        if (entriesAlreadyContain(entries, team_name))
+            throw new RuntimeException("duplicate team name: " + team_name);
+
         entries[entry_index] = new Team(team_elements);
+    }
+
+    private boolean entriesAlreadyContain(final Team[] entries, final int bib_number) {
+
+        for (Team team : entries)
+            if (team != null && team.bib_number == bib_number) return true;
+        return false;
+    }
+
+    private boolean entriesAlreadyContain(final Team[] entries, final String team_name) {
+
+        for (Team team : entries)
+            if (team != null && team.name.equals(team_name)) return true;
+        return false;
     }
 
     RawResult[] loadRawResults() throws IOException {
