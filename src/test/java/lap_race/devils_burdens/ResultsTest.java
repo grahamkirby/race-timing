@@ -81,6 +81,12 @@ public class ResultsTest {
     }
 
     @Test
+    public void startOffset() throws Exception {
+
+        processingCompletes("start_offset");
+    }
+
+    @Test
     public void lastFewResultsNotRecorded() throws Exception {
 
         processingCompletes("last_few_results_not_recorded");

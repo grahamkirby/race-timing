@@ -19,7 +19,8 @@ public class Results {
 
     static final String DUMMY_DURATION_STRING = "23:59:59";
     static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
-    static final Duration ZERO_TIME = parseTime("0:0");
+    static final String ZERO_TIME_STRING = "0:0:0";
+    static final Duration ZERO_TIME = parseTime(ZERO_TIME_STRING);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,6 +53,7 @@ public class Results {
 
     boolean[] paired_legs;
     IndividualLegStart[] individual_leg_starts;
+    Duration start_offset;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -121,6 +123,7 @@ public class Results {
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
         dnf_legs_string = properties.getProperty("DNF_LEGS");
+        start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
     }
 
     private void configureHelpers() throws IOException {
@@ -270,7 +273,11 @@ public class Results {
             final LegResult[] leg_results = result.leg_results;
 
             final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
-            leg_results[leg_index].finish_time = raw_result.recorded_finish_time;
+
+            leg_results[leg_index].finish_time = raw_result.recorded_finish_time.plus(start_offset);
+
+            // Provisionally this leg is not DNF since a finish time was recorded.
+            // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
             leg_results[leg_index].DNF = false;
         }
     }
