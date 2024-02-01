@@ -105,6 +105,7 @@ public class Results {
         printDetailedResults();
         printLegResults();
         printPrizes();
+        printCombined();
     }
 
     private void configure() throws IOException {
@@ -439,6 +440,11 @@ public class Results {
 
         output_text.printPrizes();
         output_PDF.printPrizes();
+    }
+
+    private void printCombined() throws IOException {
+
+        ((OutputHTML)output_HTML).printCombined();
     }
 
     static Duration parseTime(final String element) {
