@@ -35,6 +35,8 @@ public class ResultsTest {
     @AfterEach
     public void tearDown() throws IOException {
 
+        // Disable this when debugging and you don't want the test results to be immediately deleted.
+
         FileManipulation.deleteDirectory(temp_directory);
     }
 
@@ -455,7 +457,10 @@ public class ResultsTest {
 
     private void configureTest(String test_resource_root) throws IOException {
 
+        // Swap these when debugging and you don't want the test results to be immediately deleted.
+
         temp_directory = Files.createTempDirectory(null);
+        // temp_directory = Paths.get("/Users/gnck/Desktop/temp");
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
