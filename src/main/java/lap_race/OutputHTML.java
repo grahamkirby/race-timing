@@ -3,6 +3,9 @@ package lap_race;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -119,7 +122,7 @@ public class OutputHTML extends Output {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(String.valueOf(result.team.name));
+            writer.append(htmlEncode(result.team.name));
             writer.append("""
                             </td>
                             <td>""");
@@ -203,7 +206,7 @@ public class OutputHTML extends Output {
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(String.valueOf(result.team.name));
+        writer.append(htmlEncode(result.team.name));
         writer.append("""
                 </td>
                 <td>""");
@@ -242,7 +245,7 @@ public class OutputHTML extends Output {
 
             writer.append("""
                 <td>""");
-            writer.append(team.runners[leg - 1]);
+            writer.append(htmlEncode(team.runners[leg - 1]));
 
             addMassStartAnnotation(writer, leg_result, leg);
 
@@ -294,7 +297,7 @@ public class OutputHTML extends Output {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(leg_result.team.runners[leg_result.leg_number-1]);
+                writer.append(htmlEncode(leg_result.team.runners[leg_result.leg_number-1]));
                 writer.append("""
                                 </td>
                                 <td>""");
@@ -305,11 +308,20 @@ public class OutputHTML extends Output {
             }
         }
     }
+
     private void printLegResultsFooter(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 </tbody>
             </table>
             """);
+    }
+
+    private String htmlEncode(String s) {
+
+        return s.replaceAll("è", "&egrave;").
+                replaceAll("é", "&eacute;").
+                replaceAll("ü", "&uuml;").
+                replaceAll("’", "&acute;");
     }
 }
