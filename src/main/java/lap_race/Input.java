@@ -3,6 +3,7 @@ package lap_race;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Input {
@@ -87,22 +88,35 @@ public class Input {
     RawResult[] loadRawResults() throws IOException {
 
         final List<String> lines = Files.readAllLines(raw_results_path);
-        final RawResult[] raw_results = new RawResult[lines.size()];
+        final List<RawResult> raw_results = new ArrayList<>();
 
-        for (int i = 0; i < raw_results.length; i++)
-            loadRawResult(raw_results, lines, i);
+        for (String line : lines)
+            loadRawResult(raw_results, line);
 
-        return raw_results;
+        return raw_results.toArray(new RawResult[0]);
     }
 
-    private static void loadRawResult(final RawResult[] raw_results, final List<String> lines, final int raw_result_index) {
+    private static void loadRawResult(final List<RawResult> raw_results, String line) {
 
-        final RawResult previous_result = raw_result_index > 0 ? raw_results[raw_result_index -1] : null;
-        final RawResult result = new RawResult(lines.get(raw_result_index));
+        int comment_start_index = line.indexOf("//");
+        if (comment_start_index > -1) line = line.substring(0, comment_start_index);
 
-        if (previous_result != null && previous_result.recorded_finish_time.compareTo(result.recorded_finish_time) > 0)
-            throw new RuntimeException("result " + (raw_result_index +1) + " out of order");
+        if (!line.isBlank()) {
 
-        raw_results[raw_result_index] = result;
+            RawResult result;
+            try {
+                result = new RawResult(line);
+            }
+            catch (NumberFormatException e) {
+                return;
+            }
+
+            final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
+
+            if (previous_result != null && previous_result.recorded_finish_time.compareTo(result.recorded_finish_time) > 0)
+                throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
+
+            raw_results.add(result);
+        }
     }
 }
