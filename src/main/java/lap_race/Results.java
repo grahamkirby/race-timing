@@ -38,6 +38,8 @@ public class Results {
     // time recorded but were declared DNF due to missing checkpoints.
     String dnf_legs_string;
 
+    String leg_times_swap_string;
+
     Team[] entries;
     RawResult[] raw_results;
     OverallResult[] overall_results;
@@ -124,10 +126,11 @@ public class Results {
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
         dnf_legs_string = properties.getProperty("DNF_LEGS");
+        leg_times_swap_string = getPropertyWithDefault("LEG_TIME_SWAPS", null);
         start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
     }
 
-    private void configureHelpers() throws IOException {
+    private void configureHelpers() {
 
         input = new Input(this);
 
@@ -281,6 +284,22 @@ public class Results {
             // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
             leg_results[leg_index].DNF = false;
         }
+
+        if (leg_times_swap_string != null) {
+            for (final String leg_time_swap_string : leg_times_swap_string.split(",")) {
+
+                final String[] swap = leg_time_swap_string.split("/");
+                final int bib_number = Integer.parseInt(swap[0]);
+                final int leg_number = Integer.parseInt(swap[1]);
+                final int leg_index = leg_number - 1;
+
+                final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
+
+                LegResult temp = result.leg_results[leg_index - 1];
+                result.leg_results[leg_index - 1] = result.leg_results[leg_index];
+                result.leg_results[leg_index] = temp;
+            }
+        }
     }
 
     private void fillDNFs() {
@@ -413,7 +432,7 @@ public class Results {
 
         throw new RuntimeException("unregistered team: " + bib_number);
     }
-    private void allocatePrizes() throws IOException {
+    private void allocatePrizes() {
 
         prizes.allocatePrizes();
     }
