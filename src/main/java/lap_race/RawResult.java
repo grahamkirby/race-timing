@@ -11,7 +11,9 @@ public class RawResult {
 
         final String[] elements = file_line.split("\t");
 
-        bib_number = Integer.parseInt(elements[0]);
+        final String bib_number_as_string = elements[0];
+
+        bib_number = Integer.parseInt(bib_number_as_string);
         recorded_finish_time = Results.parseTime(elements[1]);
     }
 }

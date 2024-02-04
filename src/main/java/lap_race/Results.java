@@ -447,7 +447,9 @@ public class Results {
         ((OutputHTML)output_HTML).printCombined();
     }
 
-    static Duration parseTime(final String element) {
+    static Duration parseTime(String element) {
+
+        element = element.strip();
 
         try {
             final String[] parts = element.split(":");
