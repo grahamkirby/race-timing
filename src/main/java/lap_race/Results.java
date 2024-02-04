@@ -295,9 +295,9 @@ public class Results {
 
                 final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
 
-                LegResult temp = result.leg_results[leg_index - 1];
-                result.leg_results[leg_index - 1] = result.leg_results[leg_index];
-                result.leg_results[leg_index] = temp;
+                final Duration temp = result.leg_results[leg_index - 1].finish_time;
+                result.leg_results[leg_index - 1].finish_time = result.leg_results[leg_index].finish_time;
+                result.leg_results[leg_index].finish_time = temp;
             }
         }
     }
@@ -459,6 +459,7 @@ public class Results {
 
         output_text.printPrizes();
         output_PDF.printPrizes();
+        output_HTML.printPrizes();
     }
 
     private void printCombined() throws IOException {

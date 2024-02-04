@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class OutputHTML extends Output {
 
@@ -16,9 +17,13 @@ public class OutputHTML extends Output {
     }
 
     @Override
-    public void printPrizes() {
+    public void printPrizes() throws IOException {
 
-        throw new UnsupportedOperationException();
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
+
+        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
+            printPrizes(html_writer);
+        }
     }
 
     @Override
@@ -58,6 +63,11 @@ public class OutputHTML extends Output {
 
             html_writer.append("""
                     <h3><strong>Results</strong></h3>
+                    """);
+
+            printPrizes(html_writer);
+
+            html_writer.append("""
                     <h4>Overall</h4>
                     """);
 
@@ -79,6 +89,38 @@ public class OutputHTML extends Output {
                 printLegResults(html_writer, leg_number);
             }
         }
+    }
+
+    private void printPrizes(OutputStreamWriter html_writer) throws IOException {
+
+        html_writer.append("<h4>Prizes</h4>\n");
+
+        for (final Category category : CATEGORY_REPORT_ORDER)
+            printPrizes(category, html_writer);
+    }
+
+    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+
+        writer.append("<p><strong>").append(String.valueOf(category)).append("</strong></p>\n");
+        writer.append("<ol>\n");
+
+        final List<Team> category_prize_winners = results.prize_winners.get(category);
+
+        if (category_prize_winners.isEmpty())
+            writer.append("No results\n");
+
+        int position = 1;
+        for (final Team team : category_prize_winners) {
+
+            final OverallResult result = results.overall_results[results.findIndexOfTeamWithBibNumber(team.bib_number)];
+
+            writer.append("<li>").
+                    append(result.team.name).append(" (").
+                    append(result.team.category.toString()).append(") ").
+                    append(format(result.duration())).append("</li>\n");
+        }
+
+        writer.append("</ol>\n\n");
     }
 
     private void printOverallResults(OutputStreamWriter html_writer) throws IOException {

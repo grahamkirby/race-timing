@@ -227,6 +227,12 @@ public class ResultsTest {
     }
 
     @Test
+    public void massStart_4_LegsSwapped() throws Exception {
+
+        processingCompletes("mass_start_4/legs_swapped");
+    }
+
+    @Test
     public void massStart_4_DNFLeg1() throws Exception {
 
         processingCompletes("mass_start_4/dnf_leg_1");
@@ -460,7 +466,7 @@ public class ResultsTest {
         // Swap these when debugging and you don't want the test results to be immediately deleted.
 
         temp_directory = Files.createTempDirectory(null);
-        // temp_directory = Paths.get("/Users/gnck/Desktop/temp");
+        //temp_directory = Paths.get("/Users/gnck/Desktop/temp");
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
