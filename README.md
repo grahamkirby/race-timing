@@ -38,7 +38,7 @@ are awarded the prize in the higher position, and then the younger age category.
    9. MASS_START_ELAPSED_TIMES: mass start time for each leg
    10. DNF_LEGS: legs with recorded times but runners missed a checkpoint
    11. INDIVIDUAL_LEG_STARTS: any runners exceptionally starting at different times
-3. See example file [```race.config```](/src/main/resources/lap_race/devils_burdens/sample_config/race.config)
+3. See example file [```race.config```](/lap_race/devils_burdens/sample_config/input/race.config)
 for examples of required formats.
 4. Copy the files containing race entries and raw results to the ```input``` sub-directory of the
 working directory.

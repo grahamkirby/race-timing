@@ -472,9 +472,9 @@ public class ResultsTest {
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
 
         Path resources_root = Paths.get("src/test/resources/devils_burdens/" + test_resource_root);
-        Path resources_config = resources_root.resolve("race.config");
         Path resources_inputs = resources_root.resolve("input");
         resources_expected_outputs = resources_root.resolve("expected");
+        Path resources_config = resources_inputs.resolve("config.txt");
 
         copyFilesBetweenDirectories(resources_inputs, temp_input_sub_directory);
 
