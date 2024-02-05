@@ -1,5 +1,7 @@
 # Any spaces within the working directory path should be escaped with a preceding backslash \.
-WORKING_DIRECTORY = /path/to/parent/directory/of/this/file
+# The working directory is the grandparent directory of this file, i.e. the directory containing
+# 'input' and 'output'.
+WORKING_DIRECTORY = /path/to/working/directory/
 
 ENTRIES_FILENAME = entries.txt
 RAW_RESULTS_FILENAME = rawtimes.txt
@@ -20,3 +22,7 @@ DNF_LEGS = 32/2,68/4
 # Comma-separated sequence of bib-number/leg-number/start-time for all legs that
 # have an individually recorded start time.
 INDIVIDUAL_LEG_STARTS = 2/1/0:10:00
+
+# Comma-separated sequence bib-number/leg-number for all legs where the runner finished
+# before the runner on the previous leg.
+LEG_TIME_SWAPS = 4/4
