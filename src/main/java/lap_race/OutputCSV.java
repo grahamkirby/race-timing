@@ -71,7 +71,7 @@ public class OutputCSV extends Output {
             writer.append(",").
                     append(String.valueOf(overall_result.team.bib_number)).append(",").
                     append(overall_result.team.name).append(",").
-                    append(String.valueOf(overall_result.team.category)).append(",").
+                    append(overall_result.team.category.shortName()).append(",").
                     append(overall_result.dnf() ? "DNF" : Output.format(overall_result.duration())).append("\n");
         }
     }
@@ -103,7 +103,7 @@ public class OutputCSV extends Output {
         writer.append(",");
         writer.append(String.valueOf(result.team.bib_number)).append(",");
         writer.append(result.team.name).append(",");
-        writer.append(result.team.category.toString()).append(",");
+        writer.append(result.team.category.shortName()).append(",");
 
         printLegDetails(writer, result, result.team);
 
@@ -138,7 +138,7 @@ public class OutputCSV extends Output {
 
     private void printLegResults(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
 
-        // Deal with dead heats in legs 2-4.
+        // Deal with dead heats in legs after the first.
         setPositionStrings(leg_results);
 
         for (final LegResult leg_result : leg_results)

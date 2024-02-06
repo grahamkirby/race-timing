@@ -12,16 +12,16 @@ public abstract class Output {
     public static final String DNF_STRING = "DNF";
 
     public static final List<Category> CATEGORY_REPORT_ORDER = Arrays.asList(
-            Category.FEMALE_SENIOR,
-            Category.OPEN_SENIOR,
-            Category.FEMALE_40,
-            Category.OPEN_40,
-            Category.FEMALE_50,
-            Category.OPEN_50,
-            Category.FEMALE_60,
-            Category.OPEN_60,
-            Category.MIXED_SENIOR,
-            Category.MIXED_40);
+            LapRaceCategory.FEMALE_SENIOR,
+            LapRaceCategory.OPEN_SENIOR,
+            LapRaceCategory.FEMALE_40,
+            LapRaceCategory.OPEN_40,
+            LapRaceCategory.FEMALE_50,
+            LapRaceCategory.OPEN_50,
+            LapRaceCategory.FEMALE_60,
+            LapRaceCategory.OPEN_60,
+            LapRaceCategory.MIXED_SENIOR,
+            LapRaceCategory.MIXED_40);
 
     final Results results;
 

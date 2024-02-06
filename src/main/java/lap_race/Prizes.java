@@ -25,7 +25,7 @@ public class Prizes {
 
     private void allocateFirstPrizes() {
 
-        for (final Category category : Category.values()) {
+        for (final Category category : LapRaceCategory.values()) {
 
             results.prize_winners.put(category, new ArrayList<>());
             allocateFirstPrize(category);
@@ -44,7 +44,7 @@ public class Prizes {
 
     private void allocateMinorPrizes() {
 
-        for (final Category category : Category.values())
+        for (final Category category : LapRaceCategory.values())
             allocateMinorPrizes(category);
     }
 
@@ -54,7 +54,7 @@ public class Prizes {
 
         for (final OverallResult result : results.overall_results) {
 
-            if (position > category.number_of_prizes) return;
+            if (position > category.numberOfPrizes()) return;
 
             if (prizeWinner(result, category)) {
                 results.prize_winners.get(category).add(result.team);
