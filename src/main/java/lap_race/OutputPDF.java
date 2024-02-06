@@ -59,7 +59,7 @@ public class OutputPDF extends Output {
 
     private void printPrizes(final Category category, final Document document) {
 
-        final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category, PDF_BOLD_UNDERLINED_FONT);
+        final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.shortName(), PDF_BOLD_UNDERLINED_FONT);
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
@@ -76,7 +76,7 @@ public class OutputPDF extends Output {
             final Paragraph paragraph = new Paragraph();
             paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
             paragraph.add(new Chunk(result.team.name, PDF_BOLD_FONT));
-            paragraph.add(new Chunk(" (" + result.team.category + ") ", PDF_FONT));
+            paragraph.add(new Chunk(" (" + result.team.category.shortName() + ") ", PDF_FONT));
             paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
             document.add(paragraph);
         }

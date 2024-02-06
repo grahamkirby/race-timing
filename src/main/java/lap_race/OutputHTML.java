@@ -3,11 +3,7 @@ package lap_race;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 public class OutputHTML extends Output {
@@ -101,7 +97,7 @@ public class OutputHTML extends Output {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        writer.append("<p><strong>").append(String.valueOf(category)).append("</strong></p>\n");
+        writer.append("<p><strong>").append(category.shortName()).append("</strong></p>\n");
         writer.append("<ol>\n");
 
         final List<Team> category_prize_winners = results.prize_winners.get(category);
@@ -116,7 +112,7 @@ public class OutputHTML extends Output {
 
             writer.append("<li>").
                     append(result.team.name).append(" (").
-                    append(result.team.category.toString()).append(") ").
+                    append(result.team.category.shortName()).append(") ").
                     append(format(result.duration())).append("</li>\n");
         }
 
@@ -168,7 +164,7 @@ public class OutputHTML extends Output {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(String.valueOf(result.team.category));
+            writer.append(result.team.category.shortName());
             writer.append("""
                             </td>
                             <td>""");
@@ -252,7 +248,7 @@ public class OutputHTML extends Output {
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(String.valueOf(result.team.category));
+        writer.append(result.team.category.shortName());
         writer.append("""
                 </td>""");
 
