@@ -1,9 +1,9 @@
 package lap_race.devils_burdens;
 
+import common.Race;
+import common.RaceTest;
 import lap_race.LapRace;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import uk.ac.standrews.cs.utilities.FileManipulation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,9 +13,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-public class LapRaceTest {
+public class LapRaceTest extends RaceTest {
 
     // To do: generate xls files.
 
@@ -25,538 +23,288 @@ public class LapRaceTest {
     // Data for full() and lastFewResultsNotRecorded() taken from actual
     // results in Devil's Burdens 2020.
 
-    Properties properties;
-    Path resources_expected_outputs;
-    Path temp_directory;
-    Path temp_output_sub_directory;
+    @Override
+    protected Race makeRace(Properties properties) throws IOException {
+        return new LapRace(properties);
+    }
 
-    @AfterEach
-    public void tearDown() throws IOException {
-
-        // Disable this when debugging and you don't want the test results to be immediately deleted.
-
-        FileManipulation.deleteDirectory(temp_directory);
+    @Override
+    protected String getResourcesPath() {
+        return "lap_race/devils_burdens/";
     }
 
     @Test
     public void simple() throws Exception {
-
-        processingCompletes("simple");
+        testExpectedCompletion("simple");
     }
 
     @Test
     public void legs3() throws Exception {
-
-        processingCompletes("legs_3");
+        testExpectedCompletion("legs_3");
     }
 
     @Test
     public void legs5() throws Exception {
-
-        processingCompletes("legs_5");
+        testExpectedCompletion("legs_5");
     }
 
     @Test
     public void topTwoResultsWomen() throws Exception {
-
-        processingCompletes("top_two_results_women");
+        testExpectedCompletion("top_two_results_women");
     }
 
     @Test
     public void deadHeats() throws Exception {
-
-        processingCompletes("dead_heats");
+        testExpectedCompletion("dead_heats");
     }
 
     @Test
     public void htmlOutput() throws Exception {
-
-        processingCompletes("html_output");
+        testExpectedCompletion("html_output");
     }
 
     @Test
     public void full() throws Exception {
-
-        processingCompletes("full");
+        testExpectedCompletion("full");
     }
 
     @Test
     public void startOffset() throws Exception {
-
-        processingCompletes("start_offset");
+        testExpectedCompletion("start_offset");
     }
 
     @Test
     public void lastFewResultsNotRecorded() throws Exception {
-
-        processingCompletes("last_few_results_not_recorded");
+        testExpectedCompletion("last_few_results_not_recorded");
     }
 
     @Test
     public void massStartNoneDNFLeg1() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_1");
+        testExpectedCompletion("mass_start_none/dnf_leg_1");
     }
 
     @Test
     public void massStartNoneDNFLeg1And2And3() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_1_2_3");
+        testExpectedCompletion("mass_start_none/dnf_leg_1_2_3");
     }
 
     @Test
     public void massStartNoneDNFButCompleted() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_1_2_3_4a");
+        testExpectedCompletion("mass_start_none/dnf_leg_1_2_3_4a");
     }
 
     @Test
     public void massStartNoneDNFNotCompleted() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_1_2_3_4b");
+        testExpectedCompletion("mass_start_none/dnf_leg_1_2_3_4b");
     }
 
     @Test
     public void massStartNoneDNFLeg2() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_2");
+        testExpectedCompletion("mass_start_none/dnf_leg_2");
     }
 
     @Test
     public void massStartNoneDNFLeg3() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_3");
+        testExpectedCompletion("mass_start_none/dnf_leg_3");
     }
 
     @Test
     public void massStartNoneDNFLeg4() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_4");
+        testExpectedCompletion("mass_start_none/dnf_leg_4");
     }
 
     @Test
     public void massStartNoneDNFLeg3And4NotCompleted() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_3_4a");
+        testExpectedCompletion("mass_start_none/dnf_leg_3_4a");
     }
 
     @Test
     public void massStartNoneDNFLeg3And4ButCompleted() throws Exception {
-
-        processingCompletes("mass_start_none/dnf_leg_3_4b");
+        testExpectedCompletion("mass_start_none/dnf_leg_3_4b");
     }
 
     @Test
     public void massStart_3_4_AllCompleted() throws Exception {
-
-        processingCompletes("mass_start_3_4/all_completed");
+        testExpectedCompletion("mass_start_3_4/all_completed");
     }
 
     @Test
     public void massStart_3_4_DNFLeg1() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_1");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_1");
     }
 
     @Test
     public void massStart_3_4_DNFLeg1And2And3() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_1_2_3");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_1_2_3");
     }
 
     @Test
     public void massStart_3_4_DNFButCompleted() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_1_2_3_4a");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
     public void massStart_3_4_DNFNotCompleted() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_1_2_3_4b");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
     public void massStart_3_4_DNFLeg2() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_2");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_2");
     }
 
     @Test
     public void massStart_3_4_DNFLeg3() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_3");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_3");
     }
 
     @Test
     public void massStart_3_4_DNFLeg3And4NoFinishes() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_3_4a");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_3_4a");
     }
 
     @Test
     public void massStart_3_4_DNFLeg3And4ButCompleted() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_3_4b");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_3_4b");
     }
 
     @Test
     public void massStart_3_4_DNFLeg4() throws Exception {
-
-        processingCompletes("mass_start_3_4/dnf_leg_4");
+        testExpectedCompletion("mass_start_3_4/dnf_leg_4");
     }
 
     @Test
     public void massStart_3_4_FirstLegFinishAfterMassStart3() throws Exception {
-
-        processingCompletes("mass_start_3_4/first_leg_finish_after_mass_start_3");
+        testExpectedCompletion("mass_start_3_4/first_leg_finish_after_mass_start_3");
     }
 
     @Test
     public void massStart_3_4_FirstLegFinishAfterMassStart4() throws Exception {
-
-        processingCompletes("mass_start_3_4/first_leg_finish_after_mass_start_4");
+        testExpectedCompletion("mass_start_3_4/first_leg_finish_after_mass_start_4");
     }
 
     @Test
     public void massStart_4_AllCompleted() throws Exception {
-
-        processingCompletes("mass_start_4/all_completed");
+        testExpectedCompletion("mass_start_4/all_completed");
     }
 
     @Test
     public void massStart_4_LegsSwapped() throws Exception {
-
-        processingCompletes("mass_start_4/legs_swapped");
+        testExpectedCompletion("mass_start_4/legs_swapped");
     }
 
     @Test
     public void massStart_4_DNFLeg1() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_1");
+        testExpectedCompletion("mass_start_4/dnf_leg_1");
     }
 
     @Test
     public void massStart_4_DNFLeg1And2And3() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_1_2_3");
+        testExpectedCompletion("mass_start_4/dnf_leg_1_2_3");
     }
 
     @Test
     public void massStart_4_DNFButCompleted() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_1_2_3_4a");
+        testExpectedCompletion("mass_start_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
     public void massStart_4_DNFNotCompleted() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_1_2_3_4b");
+        testExpectedCompletion("mass_start_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
     public void massStart_4_DNFLeg2() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_2");
+        testExpectedCompletion("mass_start_4/dnf_leg_2");
     }
 
     @Test
     public void massStart_4_DNFLeg3() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_3");
+        testExpectedCompletion("mass_start_4/dnf_leg_3");
     }
 
     @Test
     public void massStart_4_DNFLeg3And4NoFinishes() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_3_4a");
+        testExpectedCompletion("mass_start_4/dnf_leg_3_4a");
     }
 
     @Test
     public void massStart_4_DNFLeg3And4ButCompleted() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_3_4b");
+        testExpectedCompletion("mass_start_4/dnf_leg_3_4b");
     }
 
     @Test
     public void massStart_4_DNFLeg4() throws Exception {
-
-        processingCompletes("mass_start_4/dnf_leg_4");
+        testExpectedCompletion("mass_start_4/dnf_leg_4");
     }
 
     @Test
     public void individualRunnerStartTimeLeg1() throws Exception {
-
-        processingCompletes("individual_runner_start_time/leg_1");
+        testExpectedCompletion("individual_runner_start_time/leg_1");
     }
 
     @Test
     public void individualRunnerStartTimeLeg3() throws Exception {
-
-        processingCompletes("individual_runner_start_time/leg_3");
+        testExpectedCompletion("individual_runner_start_time/leg_3");
     }
 
     @Test
     public void unregisteredTeam() throws Exception {
-
-        configureTest("unregistered_team");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("unregistered team: 4", thrown.getMessage());
+        testExpectedException("unregistered_team", "unregistered team: 4");
     }
 
     @Test
     public void duplicateTeamNumber() throws Exception {
-
-        configureTest("duplicate_team_number");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("duplicate team number: 3", thrown.getMessage());
+        testExpectedException("duplicate_team_number", "duplicate team number: 3");
     }
 
     @Test
     public void duplicateTeamName() throws Exception {
-
-        configureTest("duplicate_team_name");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("duplicate team name: Team 2", thrown.getMessage());
+        testExpectedException("duplicate_team_name", "duplicate team name: Team 2");
     }
 
     @Test
     public void extraResult() throws Exception {
-
-        configureTest("extra_result");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("surplus result recorded for team: 2", thrown.getMessage());
+        testExpectedException("extra_result", "surplus result recorded for team: 2");
     }
 
     @Test
     public void illegalDNFTime() throws Exception {
-
-        configureTest("illegal_dnf_time");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("illegal DNF time", thrown.getMessage());
+        testExpectedException("illegal_dnf_time", "illegal DNF time");
     }
 
     @Test
     public void illegalMassStartTime() throws Exception {
-
-        configureTest("illegal_mass_start_time");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("illegal mass start time: XXX", thrown.getMessage());
+        testExpectedException("illegal_mass_start_time", "illegal mass start time: XXX");
     }
 
     @Test
     public void illegalRawTime() throws Exception {
-
-        configureTest("illegal_raw_time");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("illegal time: XXX", thrown.getMessage());
+        testExpectedException("illegal_raw_time", "illegal time: XXX");
     }
 
     @Test
     public void illegalMassStartTimeOrder() throws Exception {
-
-        configureTest("illegal_mass_start_time_order");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("illegal mass start time order", thrown.getMessage());
+        testExpectedException("illegal_mass_start_time_order", "illegal mass start time order");
     }
 
     @Test
     public void illegalCategory() throws Exception {
-
-        configureTest("illegal_category");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("illegal category for team: 3", thrown.getMessage());
+        testExpectedException("illegal_category", "illegal category for team: 3");
     }
 
     @Test
     public void illegalTeamComposition() throws Exception {
-
-        configureTest("illegal_team_composition");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("illegal composition for team: 3", thrown.getMessage());
+        testExpectedException("illegal_team_composition", "illegal composition for team: 3");
     }
 
     @Test
     public void switchedResult() throws Exception {
-
-        configureTest("switched_result");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("surplus result recorded for team: 2", thrown.getMessage());
+        testExpectedException("switched_result", "surplus result recorded for team: 2");
     }
 
     @Test
     public void resultsOutOfOrder() throws Exception {
-
-        configureTest("results_out_of_order");
-
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> new LapRace(properties).processResults()
-        );
-
-        assertEquals("result 15 out of order", thrown.getMessage());
-    }
-
-    private void processingCompletes(String configuration_name) throws Exception {
-
-        configureTest(configuration_name);
-        new LapRace(properties).processResults();
-        assertThatDirectoryContainsAllExpectedContent(resources_expected_outputs, temp_output_sub_directory);
-    }
-
-    private void configureTest(String test_resource_root) throws IOException {
-
-        // Swap these when debugging and you don't want the test results to be immediately deleted.
-
-        temp_directory = Files.createTempDirectory(null);
-        //temp_directory = Paths.get("/Users/gnck/Desktop/temp");
-
-        Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
-        temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
-
-        Path resources_root = Paths.get("src/test/resources/lap_race/devils_burdens/" + test_resource_root);
-        Path resources_inputs = resources_root.resolve("input");
-        resources_expected_outputs = resources_root.resolve("expected");
-        Path resources_config = resources_inputs.resolve("config.txt");
-
-        copyFilesBetweenDirectories(resources_inputs, temp_input_sub_directory);
-
-        properties = getProperties(resources_config);
-        properties.setProperty("WORKING_DIRECTORY", temp_directory.toString());
-    }
-
-    private static void copyFilesBetweenDirectories(Path source, Path destination) throws IOException {
-
-        try (Stream<Path> list = Files.list(source)) {
-            for (Iterator<Path> iterator = list.iterator(); iterator.hasNext(); ) {
-                Path file = iterator.next();
-                Files.copy(file, destination.resolve(file.getFileName()));
-            }
-        }
-    }
-
-    private static Properties getProperties(Path path) throws IOException {
-
-        try (FileInputStream in = new FileInputStream(path.toFile())) {
-            Properties properties = new Properties();
-            properties.load(in);
-            return properties;
-        }
-    }
-
-    private static void assertThatDirectoryContainsAllExpectedContent(final Path expected, final Path actual) throws IOException {
-
-        final Set<String> directory_listing_expected = getDirectoryEntries(expected);
-
-        for (final String file_name : directory_listing_expected) {
-
-            if (!file_name.equals(".DS_Store")) {
-
-                final Path path_expected = expected.resolve(file_name);
-                final Path path_actual = actual.resolve(file_name);
-
-                if (Files.isDirectory(path_expected)) {
-                    assertTrue(Files.isDirectory(path_actual));
-                    assertThatDirectoryContainsAllExpectedContent(path_expected, path_actual);
-                } else {
-                    assertFalse(Files.isDirectory(path_actual));
-                    assertThatFilesHaveSameContent(path_expected, path_actual);
-                }
-            }
-        }
-    }
-
-    private static Set<String> getDirectoryEntries(final Path directory) throws IOException {
-
-        final Set<String> directory_listing = new HashSet<>();
-
-        try (Stream<Path> entries = Files.list(directory)) {
-            for (Iterator<Path> iterator = entries.iterator(); iterator.hasNext(); ) {
-                final Path file = iterator.next();
-                directory_listing.add(file.getFileName().toString());
-            }
-        }
-
-        return directory_listing;
-    }
-
-    private static void assertThatFilesHaveSameContent(final Path path1, final Path path2) throws IOException {
-
-        byte[] expected = Files.readAllBytes(path1);
-        byte[] actual = Files.readAllBytes(path2);
-
-        if (!Arrays.equals(expected, actual) && !filesHaveSameContentIgnoreWhitespace(path1, path2))
-            fail("Files differ: " + path1 + ", " + path2);
-    }
-
-    private static boolean filesHaveSameContentIgnoreWhitespace(Path path1, Path path2) throws IOException {
-        String fileContent1 = getFileContent(path1);
-        String fileContent2 = getFileContent(path2);
-
-        if (!fileContent1.equals(fileContent2)) {
-            System.out.println("f1: " + fileContent1);
-            System.out.println("f2: " + fileContent2);
-        }
-        return fileContent1.equals(fileContent2);
-    }
-
-    private static String getFileContent(Path path) throws IOException {
-
-        return Files.readAllLines(path).stream().reduce((s1, s2) -> s1 + s2).orElseThrow().replaceAll("\t", "").replaceAll("\n", "").replaceAll(" ", "");
+        testExpectedException("results_out_of_order","result 15 out of order");
     }
 }
