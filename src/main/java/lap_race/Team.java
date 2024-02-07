@@ -1,5 +1,7 @@
 package lap_race;
 
+import common.Category;
+
 import java.util.Arrays;
 
 public class Team {

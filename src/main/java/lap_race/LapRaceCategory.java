@@ -1,5 +1,7 @@
 package lap_race;
 
+import common.Category;
+
 public enum LapRaceCategory implements Category {
 
     // Declared in order of decreasing generality.

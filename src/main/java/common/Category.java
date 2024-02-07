@@ -1,4 +1,4 @@
-package lap_race;
+package common;
 
 public interface Category {
 
