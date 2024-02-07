@@ -14,6 +14,6 @@ public class RawResult {
         final String bib_number_as_string = elements[0];
 
         bib_number = Integer.parseInt(bib_number_as_string);
-        recorded_finish_time = Results.parseTime(elements[1]);
+        recorded_finish_time = LapRace.parseTime(elements[1]);
     }
 }

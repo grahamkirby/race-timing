@@ -1,23 +1,21 @@
 package lap_race.devils_burdens;
 
-import lap_race.Results;
+import lap_race.LapRace;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import uk.ac.standrews.cs.utilities.FileManipulation;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ResultsTest {
+public class LapRaceTest {
 
     // To do: generate xls files.
 
@@ -305,7 +303,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("unregistered team: 4", thrown.getMessage());
@@ -318,7 +316,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("duplicate team number: 3", thrown.getMessage());
@@ -331,7 +329,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("duplicate team name: Team 2", thrown.getMessage());
@@ -344,7 +342,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("surplus result recorded for team: 2", thrown.getMessage());
@@ -357,7 +355,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("illegal DNF time", thrown.getMessage());
@@ -370,7 +368,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("illegal mass start time: XXX", thrown.getMessage());
@@ -383,7 +381,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("illegal time: XXX", thrown.getMessage());
@@ -396,7 +394,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("illegal mass start time order", thrown.getMessage());
@@ -409,7 +407,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("illegal category for team: 3", thrown.getMessage());
@@ -422,7 +420,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("illegal composition for team: 3", thrown.getMessage());
@@ -435,7 +433,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("surplus result recorded for team: 2", thrown.getMessage());
@@ -448,7 +446,7 @@ public class ResultsTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> new Results(properties).processResults()
+                () -> new LapRace(properties).processResults()
         );
 
         assertEquals("result 15 out of order", thrown.getMessage());
@@ -457,7 +455,7 @@ public class ResultsTest {
     private void processingCompletes(String configuration_name) throws Exception {
 
         configureTest(configuration_name);
-        new Results(properties).processResults();
+        new LapRace(properties).processResults();
         assertThatDirectoryContainsAllExpectedContent(resources_expected_outputs, temp_output_sub_directory);
     }
 

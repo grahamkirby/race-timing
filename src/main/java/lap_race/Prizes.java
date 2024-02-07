@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Prizes {
 
-    final Results results;
+    final LapRace results;
 
-    public Prizes(final Results results) {
+    public Prizes(final LapRace results) {
 
         this.results = results;
     }
@@ -34,7 +34,7 @@ public class Prizes {
 
     private void allocateFirstPrize(final Category category) {
 
-        for (final OverallResult result : results.overall_results) {
+        for (final TeamResult result : results.overall_results) {
             if (prizeWinner(result, category)) {
                 results.prize_winners.get(category).add(result.team);
                 return;
@@ -52,7 +52,7 @@ public class Prizes {
 
         int position = 2;
 
-        for (final OverallResult result : results.overall_results) {
+        for (final TeamResult result : results.overall_results) {
 
             if (position > category.numberOfPrizes()) return;
 
@@ -63,7 +63,7 @@ public class Prizes {
         }
     }
 
-    private boolean prizeWinner(final OverallResult result, final Category category) {
+    private boolean prizeWinner(final TeamResult result, final Category category) {
 
         return !result.dnf() && category.includes(result.team.category) && !alreadyWonPrize(result.team);
     }

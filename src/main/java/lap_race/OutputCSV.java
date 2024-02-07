@@ -9,7 +9,7 @@ public class OutputCSV extends Output {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
-    public OutputCSV(final Results results) {
+    public OutputCSV(final LapRace results) {
         super(results);
     }
 
@@ -62,9 +62,9 @@ public class OutputCSV extends Output {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < results.overall_results.length; i++) {
+        for (int i = 0; i < race.overall_results.length; i++) {
 
-            final OverallResult overall_result = results.overall_results[i];
+            final TeamResult overall_result = race.overall_results[i];
 
             if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
 
@@ -80,9 +80,9 @@ public class OutputCSV extends Output {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (int leg = 1; leg <= results.number_of_legs; leg++) {
+        for (int leg = 1; leg <= race.number_of_legs; leg++) {
             writer.append("Runners ").append(String.valueOf(leg)).append(",Leg ").append(String.valueOf(leg)).append(",");
-            if (leg < results.number_of_legs) writer.append("Split ").append(String.valueOf(leg)).append(",");
+            if (leg < race.number_of_legs) writer.append("Split ").append(String.valueOf(leg)).append(",");
         }
 
         writer.append("Total\n");
@@ -90,13 +90,13 @@ public class OutputCSV extends Output {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < results.overall_results.length; result_index++)
+        for (int result_index = 0; result_index < race.overall_results.length; result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final OverallResult result = results.overall_results[result_index];
+        final TeamResult result = race.overall_results[result_index];
 
         if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
 
@@ -110,11 +110,11 @@ public class OutputCSV extends Output {
         writer.append("\n");
     }
 
-    private void printLegDetails(final OutputStreamWriter writer, final OverallResult result, final Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final TeamResult result, final Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
-        for (int leg = 1; leg <= results.number_of_legs; leg++) {
+        for (int leg = 1; leg <= race.number_of_legs; leg++) {
 
             final LegResult leg_result = result.leg_results[leg - 1];
 
@@ -124,7 +124,7 @@ public class OutputCSV extends Output {
             writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration())).append(",");
             writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg)));
 
-            if (leg < results.number_of_legs) writer.append(",");
+            if (leg < race.number_of_legs) writer.append(",");
             if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
@@ -132,7 +132,7 @@ public class OutputCSV extends Output {
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg) throws IOException {
 
         writer.append("Pos,Runner");
-        if (results.paired_legs[leg-1]) writer.append("s");
+        if (race.paired_legs[leg-1]) writer.append("s");
         writer.append(",Time\n");
     }
 

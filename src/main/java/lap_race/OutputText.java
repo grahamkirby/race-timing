@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OutputText extends Output {
 
-    public OutputText(final Results results) {
+    public OutputText(final LapRace results) {
         super(results);
     }
 
@@ -52,7 +52,7 @@ public class OutputText extends Output {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        final List<Team> category_prize_winners = results.prize_winners.get(category);
+        final List<Team> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             writer.append("No results\n");
@@ -60,7 +60,7 @@ public class OutputText extends Output {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final OverallResult result = results.overall_results[results.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
 
             writer.append(String.valueOf(position++)).append(": ").
                     append(result.team.name).append(" (").

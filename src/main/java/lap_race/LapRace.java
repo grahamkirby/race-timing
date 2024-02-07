@@ -1,13 +1,14 @@
 package lap_race;
 
-import java.io.FileInputStream;
+import common.Race;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 
-public class Results {
+public class LapRace extends Race {
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -23,8 +24,6 @@ public class Results {
     static final Duration ZERO_TIME = parseTime(ZERO_TIME_STRING);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Properties properties;
 
     Input input;
     Output output_CSV, output_HTML, output_text, output_PDF;
@@ -42,7 +41,7 @@ public class Results {
 
     Team[] entries;
     RawResult[] raw_results;
-    OverallResult[] overall_results;
+    TeamResult[] overall_results;
     Map<Category, List<Team>> prize_winners = new HashMap<>();
 
     // Records for each leg whether there was a mass start.
@@ -59,15 +58,14 @@ public class Results {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public Results(final String config_file_path) throws IOException {
+    public LapRace(final String config_file_path) throws IOException {
 
-        this(readProperties(config_file_path));
+        super(config_file_path);
     }
 
-    public Results(final Properties properties) throws IOException {
+    public LapRace(final Properties properties) throws IOException {
 
-        this.properties = properties;
-        configure();
+        super(properties);
     }
 
     public static void main(String[] args) throws IOException {
@@ -77,21 +75,11 @@ public class Results {
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
         else {
-            new Results(args[0]).processResults();
+            new LapRace(args[0]).processResults();
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static Properties readProperties(final String config_file_path) throws IOException {
-
-        try (final FileInputStream in = new FileInputStream(config_file_path)) {
-
-            final Properties properties = new Properties();
-            properties.load(in);
-            return properties;
-        }
-    }
 
     public void processResults() throws IOException {
 
@@ -110,7 +98,8 @@ public class Results {
         printCombined();
     }
 
-    private void configure() throws IOException {
+    @Override
+    protected void configure() throws IOException {
 
         readProperties();
 
@@ -262,10 +251,10 @@ public class Results {
 
     private void initialiseResults() {
 
-        overall_results = new OverallResult[entries.length];
+        overall_results = new TeamResult[entries.length];
 
         for (int i = 0; i < overall_results.length; i++)
-            overall_results[i] = new OverallResult(entries[i], number_of_legs, this);
+            overall_results[i] = new TeamResult(entries[i], number_of_legs, this);
     }
 
     private void fillLegFinishTimes() {
@@ -273,7 +262,7 @@ public class Results {
         for (final RawResult raw_result : raw_results) {
 
             final int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
-            final OverallResult result = overall_results[team_index];
+            final TeamResult result = overall_results[team_index];
             final LegResult[] leg_results = result.leg_results;
 
             final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
@@ -293,7 +282,7 @@ public class Results {
                 final int leg_number = Integer.parseInt(swap[1]);
                 final int leg_index = leg_number - 1;
 
-                final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
+                final TeamResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
 
                 final Duration temp = result.leg_results[leg_index - 1].finish_time;
                 result.leg_results[leg_index - 1].finish_time = result.leg_results[leg_index].finish_time;
@@ -321,7 +310,7 @@ public class Results {
                     final int leg_number = Integer.parseInt(dnf[1]);
                     final int leg_index = leg_number - 1;
 
-                    final OverallResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
+                    final TeamResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
                     result.leg_results[leg_index].DNF = true;
                 }
                 catch (Exception e) {
@@ -333,7 +322,7 @@ public class Results {
 
     private void fillLegStartTimes() {
 
-        for (final OverallResult overall_result : overall_results)
+        for (final TeamResult overall_result : overall_results)
             for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
                 fillLegStartTime(overall_result.leg_results, leg_index);
     }

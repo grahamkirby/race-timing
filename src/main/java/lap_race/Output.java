@@ -23,7 +23,7 @@ public abstract class Output {
             LapRaceCategory.MIXED_SENIOR,
             LapRaceCategory.MIXED_40);
 
-    final Results results;
+    final LapRace race;
 
     String year;
     String race_name_for_results;
@@ -33,9 +33,9 @@ public abstract class Output {
     String prizes_filename;
     Path output_directory_path;
 
-    public Output(final Results results) {
+    public Output(final LapRace race) {
 
-        this.results = results;
+        this.race = race;
         configure();
     }
 
@@ -47,9 +47,9 @@ public abstract class Output {
 
     private void readProperties() {
 
-        race_name_for_results = results.properties.getProperty("RACE_NAME_FOR_RESULTS");
-        race_name_for_filenames = results.properties.getProperty("RACE_NAME_FOR_FILENAMES");
-        year = results.properties.getProperty("YEAR");
+        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
+        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
+        year = race.getProperties().getProperty("YEAR");
     }
 
     private void constructFilePaths() {
@@ -58,12 +58,12 @@ public abstract class Output {
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
 
-        output_directory_path = results.working_directory_path.resolve("output");
+        output_directory_path = race.working_directory_path.resolve("output");
     }
 
     public void printLegResults() throws IOException {
 
-        for (int leg = 1; leg <= results.number_of_legs; leg++)
+        for (int leg = 1; leg <= race.number_of_legs; leg++)
             printLegResults(leg);
     }
 
@@ -77,10 +77,10 @@ public abstract class Output {
 
     LegResult[] getLegResults(final int leg) {
 
-        final LegResult[] leg_results = new LegResult[results.overall_results.length];
+        final LegResult[] leg_results = new LegResult[race.overall_results.length];
 
         for (int i = 0; i < leg_results.length; i++)
-            leg_results[i] = results.overall_results[i].leg_results[leg-1];
+            leg_results[i] = race.overall_results[i].leg_results[leg-1];
 
         // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
         // Ordering for DNF results doesn't matter since they're omitted in output.
@@ -98,7 +98,7 @@ public abstract class Output {
 
             // Find the next mass start.
             int mass_start_leg = leg;
-            while (!results.mass_start_legs[mass_start_leg-1])
+            while (!race.mass_start_legs[mass_start_leg-1])
                 mass_start_leg++;
 
             writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
