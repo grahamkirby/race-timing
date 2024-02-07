@@ -2,13 +2,13 @@ package lap_race;
 
 import java.time.Duration;
 
-public class OverallResult implements Comparable<OverallResult> {
+public class TeamResult implements Comparable<TeamResult> {
 
     final Team team;
     final LegResult[] leg_results;
-    final Results results;
+    final LapRace results;
 
-    public OverallResult(final Team team, final int number_of_legs, final Results results) {
+    public TeamResult(final Team team, final int number_of_legs, final LapRace results) {
 
         this.team = team;
         this.results = results;
@@ -20,11 +20,11 @@ public class OverallResult implements Comparable<OverallResult> {
 
     public Duration duration() {
 
-        Duration overall = Results.ZERO_TIME;
+        Duration overall = LapRace.ZERO_TIME;
 
         for (final LegResult leg_result : leg_results) {
 
-            if (leg_result.DNF) return Results.DUMMY_DURATION;
+            if (leg_result.DNF) return LapRace.DUMMY_DURATION;
             overall = overall.plus(leg_result.duration());
         }
 
@@ -40,7 +40,7 @@ public class OverallResult implements Comparable<OverallResult> {
     }
 
     @Override
-    public int compareTo(final OverallResult o) {
+    public int compareTo(final TeamResult o) {
 
         // Sort in order of increasing overall team time.
         // DNF results are sorted in increasing order of bib number.

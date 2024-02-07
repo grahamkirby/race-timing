@@ -17,7 +17,7 @@ public class OutputPDF extends Output {
     private static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
     private static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
-    public OutputPDF(final Results results) {
+    public OutputPDF(final LapRace results) {
         super(results);
     }
 
@@ -63,7 +63,7 @@ public class OutputPDF extends Output {
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
-        final List<Team> category_prize_winners = results.prize_winners.get(category);
+        final List<Team> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
@@ -71,7 +71,7 @@ public class OutputPDF extends Output {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final OverallResult result = results.overall_results[results.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
 
             final Paragraph paragraph = new Paragraph();
             paragraph.add(new Chunk(position++ + ": ", PDF_FONT));

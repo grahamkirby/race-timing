@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Input {
 
-    final Results results;
+    final LapRace race;
 
     Path input_directory_path;
     Path entries_path;
@@ -16,9 +16,9 @@ public class Input {
     String entries_filename;
     String raw_results_filename;
 
-    public Input(final Results results) {
+    public Input(final LapRace race) {
 
-        this.results = results;
+        this.race = race;
         configure();
     }
 
@@ -30,13 +30,13 @@ public class Input {
 
     private void readProperties() {
 
-        entries_filename = results.properties.getProperty("ENTRIES_FILENAME");
-        raw_results_filename = results.properties.getProperty("RAW_RESULTS_FILENAME");
+        entries_filename = race.getProperties().getProperty("ENTRIES_FILENAME");
+        raw_results_filename = race.getProperties().getProperty("RAW_RESULTS_FILENAME");
     }
 
     private void constructFilePaths() {
 
-        input_directory_path = results.working_directory_path.resolve("input");
+        input_directory_path = race.working_directory_path.resolve("input");
         entries_path = input_directory_path.resolve(entries_filename);
         raw_results_path = input_directory_path.resolve(raw_results_filename);
     }
@@ -56,7 +56,7 @@ public class Input {
 
         final String[] team_elements = lines.get(entry_index).split("\t");
 
-        if (team_elements.length != results.number_of_legs + 3)
+        if (team_elements.length != race.number_of_legs + 3)
             throw new RuntimeException("illegal composition for team: " + team_elements[0]);
 
         final int bib_number = Integer.parseInt(team_elements[0]);

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OutputHTML extends Output {
 
-    public OutputHTML(final Results results) {
+    public OutputHTML(final LapRace results) {
         super(results);
     }
 
@@ -79,7 +79,7 @@ public class OutputHTML extends Output {
                     <p>M3: mass start leg 3<br />M4: mass start leg 4</p>
                     """);
 
-            for (int leg_number = 1; leg_number <= results.number_of_legs; leg_number++) {
+            for (int leg_number = 1; leg_number <= race.number_of_legs; leg_number++) {
 
                 html_writer.append("<p></p>\n<h4>Leg ").append(String.valueOf(leg_number)).append(" Results</h4>\n");
                 printLegResults(html_writer, leg_number);
@@ -100,7 +100,7 @@ public class OutputHTML extends Output {
         writer.append("<p><strong>").append(category.shortName()).append("</strong></p>\n");
         writer.append("<ol>\n");
 
-        final List<Team> category_prize_winners = results.prize_winners.get(category);
+        final List<Team> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             writer.append("No results\n");
@@ -108,7 +108,7 @@ public class OutputHTML extends Output {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final OverallResult result = results.overall_results[results.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
 
             writer.append("<li>").
                     append(result.team.name).append(" (").
@@ -147,7 +147,7 @@ public class OutputHTML extends Output {
 
         int position = 1;
 
-        for (final OverallResult result : results.overall_results) {
+        for (final TeamResult result : race.overall_results) {
 
             writer.append("""
                         <tr>
@@ -202,15 +202,15 @@ public class OutputHTML extends Output {
                                        <th>Category</th>
             """);
 
-        for (int leg_number = 1; leg_number <= results.number_of_legs; leg_number++) {
+        for (int leg_number = 1; leg_number <= race.number_of_legs; leg_number++) {
 
             writer.append("<th>Runner");
-            if (results.paired_legs[leg_number-1]) writer.append("s");
+            if (race.paired_legs[leg_number-1]) writer.append("s");
             writer.append(" ").append(String.valueOf(leg_number)).append("</th>");
 
             writer.append("<th>Leg ").append(String.valueOf(leg_number)).append("</th>");
 
-            if (leg_number < results.number_of_legs)
+            if (leg_number < race.number_of_legs)
                 writer.append("<th>Split ").append(String.valueOf(leg_number)).append("</th>");
             else
                 writer.append("<th>Total</th>");
@@ -225,13 +225,13 @@ public class OutputHTML extends Output {
 
     private void printDetailedResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < results.overall_results.length; result_index++)
+        for (int result_index = 0; result_index < race.overall_results.length; result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final OverallResult result = results.overall_results[result_index];
+        final TeamResult result = race.overall_results[result_index];
 
         writer.append("""
                 <tr>
@@ -273,11 +273,11 @@ public class OutputHTML extends Output {
         printLegResultsFooter(html_writer);
     }
 
-    private void printLegDetails(OutputStreamWriter writer, OverallResult result, Team team) throws IOException {
+    private void printLegDetails(OutputStreamWriter writer, TeamResult result, Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
-        for (int leg = 1; leg <= results.number_of_legs; leg++) {
+        for (int leg = 1; leg <= race.number_of_legs; leg++) {
 
             final LegResult leg_result = result.leg_results[leg - 1];
 
@@ -312,7 +312,7 @@ public class OutputHTML extends Output {
                         <th>Pos</th>
                         <th>Runner""");
 
-        if (results.paired_legs[leg-1]) writer.append("s");
+        if (race.paired_legs[leg-1]) writer.append("s");
 
         writer.append("""
             </th>

@@ -6,7 +6,7 @@ public class LegResult implements Comparable<LegResult> {
 
     final Team team;
     final int leg_number;
-    final Results results;
+    final LapRace results;
     boolean DNF;
     boolean in_mass_start;
     String position_string;
@@ -14,7 +14,7 @@ public class LegResult implements Comparable<LegResult> {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public LegResult(final Team team, final int leg_number, final Results results) {
+    public LegResult(final Team team, final int leg_number, final LapRace results) {
 
         this.team = team;
         this.leg_number = leg_number;
@@ -24,7 +24,7 @@ public class LegResult implements Comparable<LegResult> {
     }
 
     public Duration duration() {
-        return DNF ? Results.DUMMY_DURATION : finish_time.minus(start_time);
+        return DNF ? LapRace.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
     @Override
