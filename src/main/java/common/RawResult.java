@@ -1,4 +1,6 @@
-package lap_race;
+package common;
+
+import lap_race.LapRace;
 
 import java.time.Duration;
 
@@ -14,6 +16,14 @@ public class RawResult {
         final String bib_number_as_string = elements[0];
 
         bib_number = Integer.parseInt(bib_number_as_string);
-        recorded_finish_time = LapRace.parseTime(elements[1]);
+        recorded_finish_time = Race.parseTime(elements[1]);
+    }
+
+    public int getBibNumber() {
+        return bib_number;
+    }
+
+    public Duration getRecordedFinishTime() {
+        return recorded_finish_time;
     }
 }

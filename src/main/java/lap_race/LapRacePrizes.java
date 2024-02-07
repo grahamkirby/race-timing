@@ -1,13 +1,15 @@
 package lap_race;
 
+import common.Category;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Prizes {
+public class LapRacePrizes {
 
     final LapRace results;
 
-    public Prizes(final LapRace results) {
+    public LapRacePrizes(final LapRace results) {
 
         this.results = results;
     }

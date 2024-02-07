@@ -1,12 +1,14 @@
 package lap_race;
 
+import common.RawResult;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Input {
+public class LapRaceInput {
 
     final LapRace race;
 
@@ -16,7 +18,7 @@ public class Input {
     String entries_filename;
     String raw_results_filename;
 
-    public Input(final LapRace race) {
+    public LapRaceInput(final LapRace race) {
 
         this.race = race;
         configure();
@@ -36,7 +38,7 @@ public class Input {
 
     private void constructFilePaths() {
 
-        input_directory_path = race.working_directory_path.resolve("input");
+        input_directory_path = race.getWorkingDirectoryPath().resolve("input");
         entries_path = input_directory_path.resolve(entries_filename);
         raw_results_path = input_directory_path.resolve(raw_results_filename);
     }
@@ -113,7 +115,7 @@ public class Input {
 
             final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
 
-            if (previous_result != null && previous_result.recorded_finish_time.compareTo(result.recorded_finish_time) > 0)
+            if (previous_result != null && previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0)
                 throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
 
             raw_results.add(result);

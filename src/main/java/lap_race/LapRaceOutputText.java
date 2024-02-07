@@ -1,14 +1,16 @@
 package lap_race;
 
+import common.Category;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class OutputText extends Output {
+public class LapRaceOutputText extends LapRaceOutput {
 
-    public OutputText(final LapRace results) {
+    public LapRaceOutputText(final LapRace results) {
         super(results);
     }
 

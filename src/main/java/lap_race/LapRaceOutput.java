@@ -1,5 +1,7 @@
 package lap_race;
 
+import common.Category;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Path;
@@ -7,7 +9,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Output {
+public abstract class LapRaceOutput {
 
     public static final String DNF_STRING = "DNF";
 
@@ -33,7 +35,7 @@ public abstract class Output {
     String prizes_filename;
     Path output_directory_path;
 
-    public Output(final LapRace race) {
+    public LapRaceOutput(final LapRace race) {
 
         this.race = race;
         configure();
@@ -58,7 +60,7 @@ public abstract class Output {
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
 
-        output_directory_path = race.working_directory_path.resolve("output");
+        output_directory_path = race.getWorkingDirectoryPath().resolve("output");
     }
 
     public void printLegResults() throws IOException {

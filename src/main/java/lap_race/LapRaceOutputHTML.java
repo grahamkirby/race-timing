@@ -1,14 +1,16 @@
 package lap_race;
 
+import common.Category;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
-public class OutputHTML extends Output {
+public class LapRaceOutputHTML extends LapRaceOutput {
 
-    public OutputHTML(final LapRace results) {
+    public LapRaceOutputHTML(final LapRace results) {
         super(results);
     }
 

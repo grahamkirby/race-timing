@@ -2,6 +2,7 @@ package lap_race;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
+import common.Category;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class OutputPDF extends Output {
+public class LapRaceOutputPDF extends LapRaceOutput {
 
     private static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
     private static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
@@ -17,7 +18,7 @@ public class OutputPDF extends Output {
     private static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
     private static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
-    public OutputPDF(final LapRace results) {
+    public LapRaceOutputPDF(final LapRace results) {
         super(results);
     }
 

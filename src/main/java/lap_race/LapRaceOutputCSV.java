@@ -5,11 +5,11 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class OutputCSV extends Output {
+public class LapRaceOutputCSV extends LapRaceOutput {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
-    public OutputCSV(final LapRace results) {
+    public LapRaceOutputCSV(final LapRace results) {
         super(results);
     }
 
@@ -72,7 +72,7 @@ public class OutputCSV extends Output {
                     append(String.valueOf(overall_result.team.bib_number)).append(",").
                     append(overall_result.team.name).append(",").
                     append(overall_result.team.category.shortName()).append(",").
-                    append(overall_result.dnf() ? "DNF" : Output.format(overall_result.duration())).append("\n");
+                    append(overall_result.dnf() ? "DNF" : LapRaceOutput.format(overall_result.duration())).append("\n");
         }
     }
 

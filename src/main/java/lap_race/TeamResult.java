@@ -6,16 +6,16 @@ public class TeamResult implements Comparable<TeamResult> {
 
     final Team team;
     final LegResult[] leg_results;
-    final LapRace results;
+    final LapRace race;
 
-    public TeamResult(final Team team, final int number_of_legs, final LapRace results) {
+    public TeamResult(final Team team, final int number_of_legs, final LapRace race) {
 
         this.team = team;
-        this.results = results;
+        this.race = race;
         leg_results = new LegResult[number_of_legs];
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results[i] = new LegResult(team, i+1, results);
+            leg_results[i] = new LegResult(team, i+1, race);
     }
 
     public Duration duration() {
@@ -50,7 +50,10 @@ public class TeamResult implements Comparable<TeamResult> {
 
             if (dnf()) return Integer.compare(team.bib_number, o.team.bib_number);
 
-            return results.getRecordedLegPosition(team.bib_number, results.number_of_legs).compareTo(results.getRecordedLegPosition(o.team.bib_number, results.number_of_legs));
+            final int this_last_leg_position = race.getRecordedLegPosition(team.bib_number, race.number_of_legs);
+            final int other_last_leg_position = race.getRecordedLegPosition(o.team.bib_number, race.number_of_legs);
+
+            return Integer.compare(this_last_leg_position, other_last_leg_position);
         }
 
         return duration().compareTo(o.duration());

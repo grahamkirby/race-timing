@@ -1,9 +1,10 @@
 package lap_race;
 
+import common.Category;
 import common.Race;
+import common.RawResult;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
@@ -17,6 +18,7 @@ public class LapRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
+    private record ResultWithLegIndex(TeamResult result, int leg_index) {}
 
     static final String DUMMY_DURATION_STRING = "23:59:59";
     static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
@@ -25,11 +27,9 @@ public class LapRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Input input;
-    Output output_CSV, output_HTML, output_text, output_PDF;
-    Prizes prizes;
-
-    Path working_directory_path;
+    LapRaceInput input;
+    LapRaceOutput output_CSV, output_HTML, output_text, output_PDF;
+    LapRacePrizes prizes;
 
     int number_of_legs;
 
@@ -121,14 +121,14 @@ public class LapRace extends Race {
 
     private void configureHelpers() {
 
-        input = new Input(this);
+        input = new LapRaceInput(this);
 
-        output_CSV = new OutputCSV(this);
-        output_HTML = new OutputHTML(this);
-        output_text = new OutputText(this);
-        output_PDF = new OutputPDF(this);
+        output_CSV = new LapRaceOutputCSV(this);
+        output_HTML = new LapRaceOutputHTML(this);
+        output_text = new LapRaceOutputText(this);
+        output_PDF = new LapRaceOutputPDF(this);
 
-        prizes = new Prizes(this);
+        prizes = new LapRacePrizes(this);
     }
 
     private void configureInputData() throws IOException {
@@ -243,12 +243,6 @@ public class LapRace extends Race {
         return new IndividualLegStart(bib_number, leg_number, start_time);
     }
 
-    private String getPropertyWithDefault(final String property_key, final String default_value) {
-
-        final String value = properties.getProperty(property_key);
-        return value == null || value.isBlank() ? default_value : value;
-    }
-
     private void initialiseResults() {
 
         overall_results = new TeamResult[entries.length];
@@ -261,34 +255,52 @@ public class LapRace extends Race {
 
         for (final RawResult raw_result : raw_results) {
 
-            final int team_index = findIndexOfTeamWithBibNumber(raw_result.bib_number);
+            final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
             final TeamResult result = overall_results[team_index];
             final LegResult[] leg_results = result.leg_results;
 
             final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
 
-            leg_results[leg_index].finish_time = raw_result.recorded_finish_time.plus(start_offset);
+            leg_results[leg_index].finish_time = raw_result.getRecordedFinishTime().plus(start_offset);
 
             // Provisionally this leg is not DNF since a finish time was recorded.
             // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
             leg_results[leg_index].DNF = false;
         }
 
-        if (leg_times_swap_string != null) {
-            for (final String leg_time_swap_string : leg_times_swap_string.split(",")) {
+        if (leg_times_swap_string != null) swapLegTimes();
+    }
 
-                final String[] swap = leg_time_swap_string.split("/");
-                final int bib_number = Integer.parseInt(swap[0]);
-                final int leg_number = Integer.parseInt(swap[1]);
-                final int leg_index = leg_number - 1;
+    private void swapLegTimes() {
+        for (final String leg_time_swap : leg_times_swap_string.split(","))
+            swapLegTimes(leg_time_swap);
+    }
 
-                final TeamResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
+    private void swapLegTimes(final String leg_time_swap) {
 
-                final Duration temp = result.leg_results[leg_index - 1].finish_time;
-                result.leg_results[leg_index - 1].finish_time = result.leg_results[leg_index].finish_time;
-                result.leg_results[leg_index].finish_time = temp;
-            }
-        }
+        final ResultWithLegIndex result_with_leg = getResultWithLegIndex(leg_time_swap);
+
+        final LegResult[] leg_results = result_with_leg.result().leg_results;
+        final int leg_index = result_with_leg.leg_index();
+
+        final Duration temp = leg_results[leg_index - 1].finish_time;
+
+        leg_results[leg_index - 1].finish_time = leg_results[leg_index].finish_time;
+        leg_results[leg_index].finish_time = temp;
+    }
+
+    private ResultWithLegIndex getResultWithLegIndex(final String bib_and_leg) {
+
+        // String of form "bib-number/leg-number"
+
+        final String[] elements = bib_and_leg.split("/");
+        final int bib_number = Integer.parseInt(elements[0]);
+        final int leg_number = Integer.parseInt(elements[1]);
+        final int leg_index = leg_number - 1;
+
+        final TeamResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
+
+        return new ResultWithLegIndex(result, leg_index);
     }
 
     private void fillDNFs() {
@@ -305,13 +317,9 @@ public class LapRace extends Race {
             for (final String dnf_string : dnf_legs_string.split(",")) {
 
                 try {
-                    final String[] dnf = dnf_string.split("/");
-                    final int bib_number = Integer.parseInt(dnf[0]);
-                    final int leg_number = Integer.parseInt(dnf[1]);
-                    final int leg_index = leg_number - 1;
+                    final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
 
-                    final TeamResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
-                    result.leg_results[leg_index].DNF = true;
+                    result_with_leg.result.leg_results[result_with_leg.leg_index].DNF = true;
                 }
                 catch (Exception e) {
                     throw new RuntimeException("illegal DNF time");
@@ -392,12 +400,12 @@ public class LapRace extends Race {
         Arrays.sort(overall_results);
     }
 
-    Integer getRecordedLegPosition(final int bib_number, final int leg_number) {
+    int getRecordedLegPosition(final int bib_number, final int leg_number) {
 
         int legs_completed = 0;
 
         for (int i = 0; i < raw_results.length; i++) {
-            if (raw_results[i].bib_number == bib_number) {
+            if (raw_results[i].getBibNumber() == bib_number) {
                 legs_completed++;
                 if (legs_completed == leg_number) return i + 1;
             }
@@ -421,6 +429,7 @@ public class LapRace extends Race {
 
         throw new RuntimeException("unregistered team: " + bib_number);
     }
+
     private void allocatePrizes() {
 
         prizes.allocatePrizes();
@@ -453,33 +462,6 @@ public class LapRace extends Race {
 
     private void printCombined() throws IOException {
 
-        ((OutputHTML)output_HTML).printCombined();
-    }
-
-    static Duration parseTime(String element) {
-
-        element = element.strip();
-
-        try {
-            final String[] parts = element.split(":");
-            final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
-
-            return Duration.parse(time_as_ISO);
-        }
-        catch (Exception e) {
-            throw new RuntimeException("illegal time: " + element);
-        }
-    }
-
-    static String hours(final String[] parts) {
-        return parts.length > 2 ? parts[0] + "H" : "";
-    }
-
-    static String minutes(final String[] parts) {
-        return (parts.length > 2 ? parts[1] : parts[0]) + "M";
-    }
-
-    static String seconds(final String[] parts) {
-        return (parts.length > 2 ? parts[2] : parts[1]) + "S";
+        ((LapRaceOutputHTML)output_HTML).printCombined();
     }
 }
