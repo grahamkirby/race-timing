@@ -1,0 +1,112 @@
+1	6 Compasses 0 Clue	Open 50+	Gabriel McEwan	Samuel Barton & Stephen McEwan	Marc Gellatly & Sam Marrs	Jay Todd
+2	6 Squirrels Lost in the Mist	Open Senior	Mike Murdoch	Louise Provan & Andy Thom	Graeme Braid & Andy Cameron	Suzanne Lumsden
+3	Anster Haddies - Team 1	Open Senior	David Burgess	Eck Anderson & Lynne Herd	Tom Rainey & Ross Young	Will Gage
+4	Anster Haddies - Team 2	Mixed Senior	Tracy Knox	Pamela Cruickshanks & Debs Hay	Lynne Herd & Eck Anderson	Ross Young
+5	Ayrshire Tatties	Open 50+	John McCabe	Tommy Begley & Alasdair McCallum	David White & Mark Caldwell	Scott Mckendrick
+6	Beacon Runners - Beacon and Scrambled Legs	Mixed Senior	George Lees	Mike Chudleigh & Lisa Johnstone	Jenny Langridge & Mel Hindle	Petra O'Neill
+7	Beacon Runners - Beaconfused.com	Open Senior	Rory Watson	Bobby Summers & Dave Hogg	David Lyon & Garry Downie	Jamie Bethune
+8	Beacon Runners - Streaky Beacon	Women 40+	Lisa Johnstone	Debi Ives & Anna Graham	Trish Whitelaw & Hazel Williamson	Sonia Dean
+9	Benarty Blasters	Open 40+	Andy Jannetta	Nigel Fowler & Lisa Boyd	James Crozier & Kev Banks	Ian Poolman
+10	Braes o' Fife Mountaineering Club	Open Senior	Robert McMurray	Catherine McMurray & Heather Mack 	Vicky Ward & Matt Ward	Craig Henderson
+11	Carnegie Harriers	Open Senior	Gordon Henderson	Niall Patterson & Colin Reynolds	Charlotte Briggs & Sarah Marshall	Gordon Somerville
+12	Carnethy - Men's A	Open Senior	Alistair Masson	Eddie Narbett & Luke Fisher	Kieran Cooper & Csoban Balogh	Finn Lydon
+13	Carnethy - Men's B	Open Senior	Jamie Goodge	Colm Moran & Daniel Stansfield	Sasha Chepelin & Eoin Lennon	Joe Wright
+14	Carnethy - Men's C	Open Senior	Rodrigo Lara Molina	Ifan Oldfield & Iain Whiteside	Jack McKenna & Ben Laverick	Tomm Murtagh
+15	Carnethy - Men's D	Open Senior	Alan Konopka	Jonny Pritchard & Gareth Wheeler	Lewis MacAulay & Tom Lines	Duncan Moffat
+16	Carnethy - Mixed Senior	Mixed Senior	Laura Dozier	Dan Ashwood & Thomas Otton	Helen Fallas & Jasmin Paris	Sam Hooper
+17	Carnethy - Mixed Vets	Mixed 40+	Konrad Rawlik	Ken Fordyce & Sean Walker	Fionna Mackinnon & Joanne Anderson	Anne Craig
+18	Carnethy - MV40	Open 40+	Andy Macrae	Andy Fallas & Eliot Sedman	Mike Reid & Dessie Flanagan	Andy Lamont
+19	Carnethy - MV50	Open 50+	Alasdair Macdonald	Robin Galloway & Stewart Whitlie	Graeme Hall & Drew Sharkey	Mark Johnston
+20	Carnethy - MV60	Open 60+	Norman Brown	Gordon Cameron & Andy Spenceley	Neil Gilmore & Steven Fallon	Brian Howie
+21	Carnethy - Women 1	Women Senior	Ellen Crombie	Holly Page & Nancy Scott	Aoife McCavana & Eleanor Johnstone	Fiona Bunn
+22	Carnethy - Women 2	Women Senior	Jura MacMillan	Heidi Ross & Pippa Dakin	Esther Weil & Megan Priestley	Louise Adams
+23	Carnethy - Women 3	Women Senior	Lucy Haines	Paula Hofmann & Michelle Hetherington	Rosalind Heron & Lucy Ritchie	Roanne Lilley
+24	Choose Fife	Open Senior	Andy Cross	Ollie Goddard & Greg McInnes	Clive Roberts & Mhairi McInnes	John MacPherson
+25	Clydeside Orienteers 1	Open Senior	Dan Graves	Donald Petrie & Harry Butcher	Dave Robertson & Jay Roux	Simon Gardner
+26	Clydeside Orienteers 2	Mixed Senior	Liza Rekhtman	Kirsty Ryman & Alexandra Lennie	Clare Stansfield & Dan Barker	Jamie Milsom
+27	Cosmic Hillbashers	Open Senior	Annaelle Harris	Robert Jobling & Jason Williamson	Elaine Murdoch & Rory Macpherson	John Dalton
+28	Cosmic Hillbashers Snr	Open 50+	Marianne Lang	Richard Lang & Kevin Heath	Gillian Clunas & Anita Hamilton	John Lang
+29	Deeside Ladies 1	Women Senior	Katie Bain	Sally Wallis & Jill Stephen	CJ Irvine & Steph Provan	Kirsty Campbell
+30	Deeside Ladies 2	Women Senior	Laura Murray	Katie Henderson & Sam Rendall	Mabel Barclay & Lauren Anderson	Eilidh Campbell
+31	Deeside Ladies V50	Women 50+	Katja Neumann	Ruth Mackenzie & Lina Payne	Ros Baxter & Marie Entwistle	Sarah Dunn
+32	Deeside MV50	Open 50+	Alan Sealey	Graeme Anderson & Nick Mardall	Bob Sheridan & Steve Boyd	Drew Tivendale
+33	Deeside Old Boys	Open 60+	David Hirst	Alan Smith & David Croll	Charlie Ritchie & Jon Musgrave	Roger Coombs
+34	Deeside Young Bucks	Open 40+	Fergus Johnston	Peter Henry & Steven Yule	Craig Freshwater & Kevin Littlejohn	Stuart Pringle
+35	Double D and the CCIPs	Mixed Senior	David Webb	Philip Harrison & David Stevens	Carol Newman & Cat Wright	Ioana Moldovan
+36	Dundee Roadrunners Mixed V40+	Mixed 40+	Ruth Toller	David Miller & Michael Mitchell	Ali Gelly & Keith Gelly	Morag Taggart
+37	Dundee Roadrunners Open V40	Open 40+	Richard Toller	Arnaud Richard & Graham Rena	Sarah Young & Derek Arthur	Daniel Fields
+38	Dundee Roadrunners Open V50	Open 50+	Martin Rollo	Douglas Gillespie & Jim Morton	Paul Reed & John Rudd	John Mill
+39	Dundee Roadrunners Senior Men	Open Senior	Mat Hooper	Adam Hart & Ben Gibson	James O'Donnell & Sara Cali	Emanuel Corduneanu
+40	Dundee Roadrunners Senior Women	Women Senior	Fiona Callaghan	Fiona Canavan & Anwen Darlington	Alison McNeilly & Jennifer Massie	Eilidh Moir
+41	East Coast Runners	Mixed 40+	Keith Bonthrone	Michelle Johnstone & Hilary Lalande	Robert Sinclair & Ashleigh Sinclair	Angus Reid
+42	EFT Over the Hill?	Open 50+	Gwen Tivendale	Gill Smith & Adrian Wood	Ewen Sparks & Keiron Baillie 	Rebecca Trengove
+43	EFT The Not to be Tri-fled With	Open Senior	Harvey Rankin	Matt Young & Gary Paterson	Paul Stone & Vicki Stone	Maher McDonald
+44	EFT's Burdens	Open Senior	Thomas Roberts	Cameron MacLaren & Chris Nicoll	Alasdair Hood & Lorna Drummond	Alex Deedes
+45	Falkland Trail Runners - #2 Falkland Fail Runner	Open Senior	David Pease	Liam Mason & Martin Kirkbride	Phil McLaughlin & Phil Suttie	Ross McLaren
+46	Falkland Trail Runners - Squirrel Sisters	Women Senior	Jenny Priestley	Twig Barber & Abigail Wheel	Amy Westwall Tait & Lynn Stephen	Louise Lessels
+48	Felkour Squad	Open Senior	Ross Spalding	Fergus Roberts & James Espie	Sam Fisher & Alistair Thornton	Marc Austin
+49	Fife AC - Livin' on a Spare	Open 40+	Stephen Dickson	Rory Sandilands & Eric Lalande	Andy Harley & Paul Harkins	Andrew Neenan
+50	Forfar Road Runners - Lomonds to the Left of Me	Open Senior	Jonathan Hardman	Sarah Clark & Ron Milne	Susan Knight & Dave Mackay	Simon Dechant
+51	Forfar Road Runners - Lomonds to the Right	Mixed Senior	Hazel Robbie	Simon Dechant & Ann-Marie Black	Graeme Watson & Sarah Farquharson	Joe Welsh
+52	Forth Valley Orienteers	Open 40+	Helena Carey	Roger Goddard & Will Hensman	Jason Inman & Rob Truswell	Alice McDaid
+53	GTC Burdeners	Open 40+	Andrew Storey	Iain Fairbairn & Joe MacKenzie	Andrew Aitken & Paula Ryce	Simon Finch
+54	GTC Devils	Open 40+	Derek McDonald	Alan Robb & Andy Milne	Nic Philp & Ian Goldie	Wendi Duncan
+55	Highland Hill Runners (+ Iain Gilmour)	Open Senior	Rob Sinclair	Andrew Gilmour & Iain Gilmour	Luke Taylor & Ally Beaven	Chris Wilkinson
+56	Hunters Bog Trotters - Haven't Beered Today	Women Senior	Jaz Brown	Lizzie Wastnedge & Jess Husbands	Bex Harding & Sarah Alexis	Claire Ward
+57	Hunters Bog Trotters - Heather Bashing Technicians	Open Senior	Kai Hugtenberg	John Ockenden & Doug Tullie	Graeme Kafka & Dave Ward	Pete Gardener
+58	Hunters Bog Trotters - Heavily Burdened Trotters	Open Senior	Florent Weillaert	Aiden Belton Schure & Sam Lloyd	Wade Cormack & Jelmer Samplonius	Oleg Chepelin
+59	Hunters Bog Trotters - Heavy Beer-Drinking Trotters	Mixed Senior	Karel Vesely	Emma Smith & Janice Smith	Ivor Normand & Chris Walsh	Verity Hailey
+60	Hunters Bog Trotters - Hopefully Beating Trottettes	Open Senior	Dave Fulton	Pete McClelland & Andre Antunes	Stuart Mounce & Richard Dougal	Mark Osthemheimer
+61	Hunters Bog Trotters - Horrendously Bloodthirsty Trottettes	Women Senior	Morag McClelland	Eilis McKechnie & Vicki White	Claire Gordon & Connie Hurton	Mairi Eades
+62	Kinross Road Runners - A Cold Day in Hill	Mixed Senior	Stephanie Johnson	Benjamin Ross & Alex Reily	Millie Brown & Nicola Young	Munro Strachan
+63	Kinross Road Runners - Come Hill or High Water	Open Senior	Bartosz Burza	Matt Newton & Martin Hill	Andy Laycock & Euan Boyle	John Beveridge
+64	Kinross Road Runners - Highway to Hill	Open Senior	Stephen Freeland	Ally Sinclair & Zhivko Veskov Zhelyazkov	Frazer Munro & Michael Atkinson	Sandy Freck
+65	Kinross Road Runners - Hill Hath no Fury	Women 60+	Ann Malcolm	Alison Robertson & Anne MacIntyre	Linda Maceachan & Sarah Eaton	Judith Dobson
+66	Kinross Road Runners - Hills Angels	Women Senior	Kirsty Higgins	Gillian Lopez & Kirsty Gray	Hannah Lopez & Lynn Beveridge	Simone Young
+67	Kinross Road Runners - Hills Belles	Women Senior	Karen Birnie	Kerry Aitken & Claire Allison	Gillian Kemp & Lucy Fraser	Karen Ritchie
+68	Kinross Road Runners - When Hill Freezes Over	Mixed 40+	David Scott	Alan Kemp & Scott Strachan	Caroline Jones & Lorna MacDonald	Jillian Gordon
+69	Kirkcaldy Wizards - Some Team This	Mixed Senior	Lee Cessford	Cara Murdoch & Katarzyna Szafarz	Karen Richards & Neill Mitchell	Rob Justice
+70	Linlithgow AC - Dude Where's My Map	Mixed Senior	Kathryn Holm	Jennifer Douglas & Paul Dudchenko	Jill Horsburgh & Denise Tracey	Neil Anderson
+71	Linlithgow AC - Wrong Way José	Open Senior	Bryan Grome	John Redding & Sam O'Neill	Sarah Little & Liam Cavin	José Leon
+72	Lomond Hill Runners - Senior	Open 40+	David Cowan	Laurie Anderson & Tyler Stevenson	Fabienne Thompson & Andy Millar	Sarah Adam
+73	Lomond Hill Runners - Vet 50's	Open 50+	Cameron Watson	David Turner & Bruce Smith	Adrian Davis & John Smith	Gordon Pryde
+74	Moorfoot Runners	Open Senior	Hamish Parkinson	Daniel Lavin & Nigel Shekleton	Martin Quirke & Craig Walling	Colin Williams
+75	Musselburgh Devils	Open Senior	Sam Hanson	Charles Stable & Karl Zeiner	Paul Slifer & Kieran Gafney	Roddy Mackenzie
+76	Musselburgh Saints & Sinners	Mixed Senior	Suzanne Beattie	Gordon Eadie & Sarah Healey	Kat Brack & Adele Wadele	Mike Howard
+77	Ochil Hill Runners - Ochil Bauchles	Women 40+	Nicola Garside	Edel Mooney & Michelle Best	Laura Cox & Collette Ashworth	Hazel Dean
+78	Ochil Hill Runners - Roaring Forties	Open 40+	Andrew Davis	Steve Feltbower & Robin Wilkins	Bob Wiseman & David Wallace	Ian Tuck
+79	Ochil Hill Runners - We're Defo No Over the Hill	Open 50+	Philip Williamson	Nick Leslie & Al Preiss	Stuart Neilands & John Donnelly	Derek Ditty
+80	Ochil Hill Runners - What Hills has Fife?	Open 50+	Richard Coombs	Grant Baxter & Gary Fraser	Ewan Jack & James Ashworth	Stephan Scheuerl
+81	Ochils Senior Men	Open Senior	Rory Abernethy	Gregor Malcolm & Alastair Graves	Jack Taylor & Jonno Pybus	Alasdair McLeod
+82	Penicuik Harriers - Ladies	Mixed Senior	Adam Gray	Sadie Kemp & Jan Dawson	Lauren Johnson & Georgina McAllister	Gilly Marshall
+83	Penicuik Harriers - The Peni-Pensioners	Open 50+	Raymond Richford	Des Crowe & Stuart Sanderson	Duncan Ball & Rob Wilson	Julian Hall
+84	Perth Tri Club	Open Senior	Greig Farmer	Dexter Halley & Mark Cooper	John McLagan & Kyran McManus	Michael Ramsay
+85	PH Racing Club	Mixed Senior	Ben Hukins	Iain Wallace & Willie Rennie	Julie Menzies & Laura Ross	Gillian Wallace
+86	Psycho Skwerlz	Open Senior	Alex Priestly	Ross Docherty & Iain Wheel	Kevin Murray & Phil Rowe	Dave Clark
+87	Shettleston Harriers - All Stars	Mixed Senior	Ceana Heron	Bill Breckenridge & Alistair Pringle	Myrtle Breckenridge & Jamie Sutherland	Bryony Mcleod
+88	Shettleston Harriers - Mens A	Open Senior	Daniel Bradford	Robert Simpson & Fred Davies	Dan Dry & Joe Symonds	Calum Harrington Vogt
+89	Shettleston Harriers - Mens B	Open Senior	Paul Manson	Ross Cruickshanks & Andrew Shields	Angus Rodney & Donnie Buglas	Harry Pulham
+90	Shettleston Harriers - Mens Veterans	Open 40+	Iain Pender	John Conaghan & Matty Low	Luis Eisen & Chris Grant Pantry	Stephen Winter
+91	Shettleston Harriers - Women	Women Senior	Heather Simpson	Catherine J Macphail & Brogan Wallace	Tilly Hamilton & Zoe Barber	Tara Walker
+92	Stonehaven Running Club - Cats & Dogs	Mixed Senior	Scott Sell	Kate Robertson & Ruth Gordon	Ali Robertson & Maudene Goulos	Ann-Marie Yates
+93	Stonehaven Running Club - Dogs & Cats	Open Senior	Luke Connon	Rebecca Bryce & Dee Watters	Graham Ritchie & Neil Lindsay	Mark Macgillivray
+94	Stonehaven Running Club - Top Dogs	Open Senior	Lachlan Kirk	Ryan Gordon & Steven Watters	David Henderson & Steve Terwey	Calum Graham
+95	Strathearn Sitkas	Women 40+	Rachel Gallagher	Gill Dowse & Ruth Clark	Karen Best & Alison Ritchie	Monica Thomson
+96	Strathearn Springboks	Mixed 40+	Jenny Dallas	Iain Thomson & Andy Gallagher	Rowan Mestecky & Davide Dowz	Clare Martin
+97	Strathearn Squirrels	Open Senior	Rob Kinder	Ross McNaughton & Dave Dowse	Phill Mestecky & Dominic Mestecky	John Langley
+98	Strathearn Stags	Open Senior	Andrew Grant	Tom Harris & Ralph McInally	Jon Turnbull & Graeme Warren	Harris Pagett
+99	Strathearn Swans	Women Senior	Eilidh Dallas	Anna Macdonald & Tasha Myles	Sam Ferguson & Ali Cunningham	Hanna McInally
+100	The Estate Agents	Open Senior	Rory Muir	Andrew Ballantine & Craig Wilson	Colin Sinclair & Grant Wheatley	Neil Finnie
+101	TopS	Open Senior	Glenn Barclay	Ben Kinninmonth & Liam Hutson	Kevin Wallace & Thomas Gambino	Jamie Greig
+102	Turbo Turtles	Open Senior	Stuart Bucket	Gerhard Van Zyl & Simon Fox	Aidan O'Byrne & Tom Edmondson	Neil Miller
+103	Westies M40 A	Open 40+	Christopher McKiddie	Scott Henderson & Ian Collins	Rod Fleming & Chris Furse	Niall McAlinden
+104	Westies M50 A	Open 50+	David Atkin	David Calder & Andrew McBride	Manny Gorman & Brian Bonnyman	David Stakes
+105	Westies M50 B	Open 50+	Murdo MacLeod	John Quinn & Hamilton Semple	Andrew Fullwood & John Hamer	Ian Easton
+106	Westies M60 A	Open 60+	Damien Theaker	Don Reid & Marc Roper	David Dickson & Ian Thurlbeck	Michy Anderson
+107	Westies Men A	Open Senior	Andrew Douglas	Gregor Stewart & Sam Alexander	Stu Crutchfield & Craig Gallacher	Cameron Swanson
+108	Westies Men B	Open Senior	Chris Butler	Jamie Ferguson & Arran Horne	Daniel Williams & Ally MacIver	Kris Blake
+109	Westies Men C	Open Senior	Kal Sandhu	Michael Goodger & Joe Waite	Alwyn Poulter & Ally MacInnes	Ross Anderson
+110	Westies Women A	Women Senior	Helen Gordon	Ella Foreman & Ella Peters	Cat Hotchkiss & Ellie Stone	Holly Barwick
+111	Westies Women B	Women Senior	Jenn Ruddick	Meg Stuart & Sophie Philbrick	Gaby Macbeth & Rachel Findlay-Robinson	Clodagh Mangan
+112	Westies Women C	Women Senior	Emma Sommerville	Bex Beveridge & Caitlin Perring	Kirsten Mitchell & Kirsty Milton-Moir	Amanda Gibson
+113	Westies Women D	Women Senior	Chi My Ta	Gillian Irvine & Dianne Scott	Lynsey Munro & Nicola Dawson	Rachel Hunt

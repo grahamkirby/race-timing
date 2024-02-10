@@ -1,0 +1,24 @@
+WORKING_DIRECTORY = /Users/gnck/Documents/Personal/Sport/Running/Fife\ AC/races/Devil's\ Burdens/2024/devils_burdens_2024
+ENTRIES_FILENAME = entries.txt
+RAW_RESULTS_FILENAME = rawtimes.txt
+YEAR = 2024
+NUMBER_OF_LEGS = 4
+PAIRED_LEGS = 2,3
+RACE_NAME_FOR_RESULTS = Devil's Burdens
+RACE_NAME_FOR_FILENAMES = devils_burdens
+
+# Elapsed duration from start of leg 1 to mass start time for each leg.
+# 23:59:59 indicates no mass start.
+MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,02:42:33,03:34:50
+
+# Comma-separated sequence of bib-number/leg-number for all legs that have a time
+# recorded but the runners DNF'd the leg.
+DNF_LEGS = 85/2
+
+# Comma-separated sequence of bib-number/leg-number/start-time for all legs that
+# have an individually recorded start time.
+INDIVIDUAL_LEG_STARTS = 36/2/1:27:45,4/3/2:49:20,26/3/2:46:45,39/3/2:52:10,92/3/2:43:24,112/3/2:43:20
+
+# Comma-separated sequence bib-number/leg-number for all legs where the runner finished
+# before the runner on the previous leg.
+LEG_TIME_SWAPS = 36/4,65/4,76/4,105/4

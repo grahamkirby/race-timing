@@ -1,6 +1,10 @@
-package lap_race;
+package individual_race;
 
 import common.Category;
+import lap_race.LapRace;
+import lap_race.LapRaceCategory;
+import lap_race.Team;
+import lap_race.TeamResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -8,30 +12,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class LapRaceOutputText extends LapRaceOutput {
+public class IndividualRaceOutputText extends IndividualRaceOutput {
 
-    public LapRaceOutputText(final LapRace results) {
+    public IndividualRaceOutputText(final IndividualRace results) {
         super(results);
     }
 
     @Override
     public void printOverallResults() {
-
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void printDetailedResults() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printLegResults(int leg) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printCombined() throws IOException {
+    public void printCombined() {
         throw new UnsupportedOperationException();
     }
 
@@ -45,7 +38,7 @@ public class LapRaceOutputText extends LapRaceOutput {
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            for (final Category category : LapRaceCategory.getCategoriesInReportOrder())
+            for (final Category category : IndividualRaceCategory.getCategoriesInReportOrder())
                 printPrizes(category, writer);
         }
     }
@@ -57,19 +50,19 @@ public class LapRaceOutputText extends LapRaceOutput {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        final List<Team> category_prize_winners = race.prize_winners.get(category);
+        final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             writer.append("No results\n");
 
         int position = 1;
-        for (final Team team : category_prize_winners) {
+        for (final Runner runner : category_prize_winners) {
 
-            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
 
             writer.append(String.valueOf(position++)).append(": ").
-                    append(result.team.name).append(" (").
-                    append(result.team.category.shortName()).append(") ").
+                    append(result.runner.name).append(" (").
+                    append(result.runner.category.shortName()).append(") ").
                     append(format(result.duration())).append("\n");
         }
 

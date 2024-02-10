@@ -5,7 +5,6 @@ import common.Race;
 import common.RawResult;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 
@@ -20,11 +19,6 @@ public class LapRace extends Race {
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
     private record ResultWithLegIndex(TeamResult result, int leg_index) {}
 
-    static final String DUMMY_DURATION_STRING = "23:59:59";
-    static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
-    static final String ZERO_TIME_STRING = "0:0:0";
-    static final Duration ZERO_TIME = parseTime(ZERO_TIME_STRING);
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     LapRaceInput input;
@@ -33,14 +27,9 @@ public class LapRace extends Race {
 
     int number_of_legs;
 
-    // String read from configuration file specifying all the runners who did have a finish
-    // time recorded but were declared DNF due to missing checkpoints.
-    String dnf_legs_string;
-
     String leg_times_swap_string;
 
     Team[] entries;
-    RawResult[] raw_results;
     TeamResult[] overall_results;
     Map<Category, List<Team>> prize_winners = new HashMap<>();
 
@@ -110,11 +99,11 @@ public class LapRace extends Race {
         configureIndividualLegStarts();
     }
 
-    private void readProperties() {
+    protected void readProperties() {
 
-        working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
+        super.readProperties();
+
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
-        dnf_legs_string = properties.getProperty("DNF_LEGS");
         leg_times_swap_string = getPropertyWithDefault("LEG_TIME_SWAPS", null);
         start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
     }
@@ -312,9 +301,9 @@ public class LapRace extends Race {
         // DNF cases where there is no recorded leg result are captured by the
         // default value of LegResult.DNF being true.
 
-        if (dnf_legs_string != null && !dnf_legs_string.isBlank()) {
+        if (dnf_string != null && !dnf_string.isBlank()) {
 
-            for (final String dnf_string : dnf_legs_string.split(",")) {
+            for (final String dnf_string : dnf_string.split(",")) {
 
                 try {
                     final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
@@ -462,6 +451,6 @@ public class LapRace extends Race {
 
     private void printCombined() throws IOException {
 
-        ((LapRaceOutputHTML)output_HTML).printCombined();
+        output_HTML.printCombined();
     }
 }

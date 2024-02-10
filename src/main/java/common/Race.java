@@ -3,13 +3,26 @@ package common;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Properties;
 
 public abstract class Race {
 
+
+    protected static final String DUMMY_DURATION_STRING = "23:59:59";
+    public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
+    protected static final String ZERO_TIME_STRING = "0:0:0";
+    public static final Duration ZERO_TIME = parseTime(ZERO_TIME_STRING);
+
     protected Properties properties;
     protected Path working_directory_path;
+
+    // String read from configuration file specifying all the runners who did have a finish
+    // time recorded but were declared DNF.
+    protected String dnf_string;
+
+    protected RawResult[] raw_results;
 
     public Race(final String config_file_path) throws IOException {
 
@@ -40,6 +53,11 @@ public abstract class Race {
         }
     }
 
+    protected void readProperties() {
+        working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
+        dnf_string = properties.getProperty("DNF_LEGS");
+    }
+
     public Path getWorkingDirectoryPath() {
         return working_directory_path;
     }
@@ -49,6 +67,9 @@ public abstract class Race {
         final String value = properties.getProperty(property_key);
         return value == null || value.isBlank() ? default_value : value;
     }
+
+
+
 
     protected static Duration parseTime(String element) {
 

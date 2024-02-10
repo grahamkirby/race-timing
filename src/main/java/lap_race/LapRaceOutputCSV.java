@@ -15,7 +15,11 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
     @Override
     public void printPrizes() {
+        throw new UnsupportedOperationException();
+    }
 
+    @Override
+    public void printCombined() throws IOException {
         throw new UnsupportedOperationException();
     }
 

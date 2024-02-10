@@ -2,6 +2,9 @@ package lap_race;
 
 import common.Category;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum LapRaceCategory implements Category {
 
     // Declared in order of decreasing generality.
@@ -36,6 +39,20 @@ public enum LapRaceCategory implements Category {
 
         LapRaceCategory other = (LapRaceCategory) other_category;
         return compositionIncludes(other.composition) && minimum_age <= other.minimum_age;
+    }
+
+    public static List<Category> getCategoriesInReportOrder() {
+        return Arrays.asList(
+                FEMALE_SENIOR,
+                OPEN_SENIOR,
+                FEMALE_40,
+                OPEN_40,
+                FEMALE_50,
+                OPEN_50,
+                FEMALE_60,
+                OPEN_60,
+                MIXED_SENIOR,
+                MIXED_40);
     }
 
     private boolean compositionIncludes(final String other_composition) {

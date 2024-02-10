@@ -1,0 +1,113 @@
+1		6 Compasses 0 Clue				Open 50+
+2		6 Squirrels Lost in the Mist				Open Senior
+3		Anster Haddies - Team 1				Open Senior
+4		Anster Haddies - Team 2				Mixed Senior
+5		Ayrshire Tatties				Open 50+
+6		Beacon Runners - Beacon and Scrambled Legs				Mixed Senior
+7		Beacon Runners - Beaconfused.com				Open Senior
+8		Beacon Runners - Streaky Beacon				Women 40+
+9		Benarty Blasters				Open 40+
+10		Braes o' Fife Mountaineering Club				Mixed Senior
+11		Carnegie Harriers				Open Senior
+12		Carnethy - Men's A				Open Senior
+13		Carnethy - Men's B				Open Senior
+14		Carnethy - Men's C				Open Senior
+15		Carnethy - Men's D				Open Senior
+16		Carnethy - Mixed Senior				Mixed Senior
+17		Carnethy - Mixed Vets				Mixed 40+
+18		Carnethy - MV40				Open 40+
+19		Carnethy - MV50				Open 50+
+20		Carnethy - MV60				Open 60+
+21		Carnethy - Women 1				Women Senior
+22		Carnethy - Women 2				Women Senior
+23		Carnethy - Women 3				Women Senior
+24		Choose Fife				Open Senior
+25		Clydeside Orienteers 1				Open Senior
+26		Clydeside Orienteers 2				Mixed Senior
+27		Cosmic Hillbashers				Open Senior
+28		Cosmic Hillbashers Snr				Open 50+
+29		Deeside Ladies 1				Women Senior
+30		Deeside Ladies 2				Women Senior
+31		Deeside Ladies V50				Women 50+
+32		Deeside MV50				Open 50+
+33		Deeside Old Boys				Open 60+
+34		Deeside Young Bucks				Open 40+
+35		Double D and the CCIPs				Mixed Senior
+36		Dundee Roadrunners Mixed V40+				Mixed 40+
+37		Dundee Roadrunners Open V40				Open 40+
+38		Dundee Roadrunners Open V50				Open 50+
+39		Dundee Roadrunners Senior Men				Open Senior
+40		Dundee Roadrunners Senior Women				Women Senior
+41		East Coast Runners				Mixed 40+
+42		EFT Over the Hill?				Open 50+
+43		EFT The Not to be Tri-fled With				Open Senior
+44		EFT's Burdens				Open Senior
+45		Falkland Trail Runners - #2 Falkland Fail Runner				Open Senior
+46		Falkland Trail Runners - Squirrel Sisters				Women Senior
+47		Fearless Fifers				Women 40+
+48		Felkour Squad				Open Senior
+49		Fife AC - Livin' on a Spare				Open 40+
+50		Forfar Road Runners - Lomonds to the Left of Me				Open Senior
+51		Forfar Road Runners - Lomonds to the Right				Mixed Senior
+52		Forth Valley Orienteers				Open 40+
+53		GTC Burdeners				Open 40+
+54		GTC Devils				Open 40+
+55		Highland Hill Runners (+ Iain Gilmour)				Open Senior
+56		Hunters Bog Trotters - Haven't Beered Today				Women Senior
+57		Hunters Bog Trotters - Heather Bashing Technicians				Open Senior
+58		Hunters Bog Trotters - Heavily Burdened Trotters				Open Senior
+59		Hunters Bog Trotters - Heavy-Drinking Beer Team				Mixed Senior
+60		Hunters Bog Trotters - Hopefully Beating Trottettes				Open Senior
+61		Hunters Bog Trotters - Horrendously Bloodthirsty Trottettes				Women Senior
+62		Kinross Road Runners - A Cold Day in Hill				Mixed Senior
+63		Kinross Road Runners - Come Hill or High Water				Open Senior
+64		Kinross Road Runners - Highway to Hill				Open Senior
+65		Kinross Road Runners - Hill Hath no Fury				Women 60+
+66		Kinross Road Runners - Hills Angels				Women Senior
+67		Kinross Road Runners - Hills Belles				Women Senior
+68		Kinross Road Runners - When Hill Freezes Over				Mixed 40+
+69		Kirkcaldy Wizards - Some Team This				Mixed Senior
+70		Linlithgow AC - Dude Where's My Map				Mixed Senior
+71		Linlithgow AC - Wrong Way José				Open Senior
+72		Lomond Hill Runners - Senior				Open 40+
+73		Lomond Hill Runners - Vet 50's				Open 50+
+74		Moorfoot Runners				Open Senior
+75		Musselburgh Devils				Open Senior
+76		Musselburgh Saints & Sinners				Mixed Senior
+77		Ochil Hill Runners - Ochil Bauchles				Women 40+
+78		Ochil Hill Runners - Roaring Forties				Open 40+
+79		Ochil Hill Runners - We're Defo No Over the Hill				Open 50+
+80		Ochil Hill Runners - What Hills has Fife?				Open 50+
+81		Ochils Senior Men				Open Senior
+82		Penicuik Harriers - Ladies				Women Senior
+83		Penicuik Harriers - The Peni-Pensioners				Open 50+
+84		Perth Tri Club				Open Senior
+85		PH Racing Club				Mixed Senior
+86		Psycho Skwerlz				Open Senior
+87		Shettleston Harriers - All Stars				Open Senior
+88		Shettleston Harriers - Mens A				Open Senior
+89		Shettleston Harriers - Mens B				Open Senior
+90		Shettleston Harriers - Mens Veterans				Open 40+
+91		Shettleston Harriers - Women				Women Senior
+92		Stonehaven Running Club - Cats & Dogs				Mixed Senior
+93		Stonehaven Running Club - Dogs & Cats				Open Senior
+94		Stonehaven Running Club - Top Dogs				Open Senior
+95		Strathearn Sitkas				Women 40+
+96		Strathearn Springboks				Mixed 40+
+97		Strathearn Squirrels				Open Senior
+98		Strathearn Stags				Open Senior
+99		Strathearn Swans				Women Senior
+100		The Estate Agents				Open Senior
+101		TopS				Open Senior
+102		Turbo Turtles				Open Senior
+103		Westies M40 A				Open 40+
+104		Westies M50 A				Open 50+
+105		Westies M50 B				Open 50+
+106		Westies M60 A				Open 60+
+107		Westies Men A				Open Senior
+108		Westies Men B				Open Senior
+109		Westies Men C				Open Senior
+110		Westies Women A				Women Senior
+111		Westies Women B				Women Senior
+112		Westies Women C				Women Senior
+113		Westies Women D				Women Senior

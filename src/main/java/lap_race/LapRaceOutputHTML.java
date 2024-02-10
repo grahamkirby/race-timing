@@ -1,6 +1,7 @@
 package lap_race;
 
 import common.Category;
+import individual_race.IndividualRaceCategory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -93,7 +94,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
         html_writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : CATEGORY_REPORT_ORDER)
+        for (final Category category : LapRaceCategory.getCategoriesInReportOrder())
             printPrizes(category, html_writer);
     }
 
@@ -107,7 +108,6 @@ public class LapRaceOutputHTML extends LapRaceOutput {
         if (category_prize_winners.isEmpty())
             writer.append("No results\n");
 
-        int position = 1;
         for (final Team team : category_prize_winners) {
 
             final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];

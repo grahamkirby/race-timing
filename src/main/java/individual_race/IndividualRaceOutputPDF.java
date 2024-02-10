@@ -1,9 +1,11 @@
-package lap_race;
+package individual_race;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
-import individual_race.IndividualRaceCategory;
+import lap_race.LapRace;
+import lap_race.Team;
+import lap_race.TeamResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class LapRaceOutputPDF extends LapRaceOutput {
+public class IndividualRaceOutputPDF extends IndividualRaceOutput {
 
     private static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
     private static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
@@ -19,22 +21,12 @@ public class LapRaceOutputPDF extends LapRaceOutput {
     private static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
     private static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
-    public LapRaceOutputPDF(final LapRace results) {
+    public IndividualRaceOutputPDF(final IndividualRace results) {
         super(results);
     }
 
     @Override
     public void printOverallResults() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printDetailedResults() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printLegResults(int leg) {
         throw new UnsupportedOperationException();
     }
 
@@ -55,7 +47,7 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         document.open();
         document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
 
-        for (final Category category : LapRaceCategory.getCategoriesInReportOrder())
+        for (final Category category : IndividualRaceCategory.getCategoriesInReportOrder())
             printPrizes(category, document);
 
         document.close();
@@ -67,20 +59,20 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
-        final List<Team> category_prize_winners = race.prize_winners.get(category);
+        final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
 
         int position = 1;
-        for (final Team team : category_prize_winners) {
+        for (final Runner runner : category_prize_winners) {
 
-            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
 
             final Paragraph paragraph = new Paragraph();
             paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
-            paragraph.add(new Chunk(result.team.name, PDF_BOLD_FONT));
-            paragraph.add(new Chunk(" (" + result.team.category.shortName() + ") ", PDF_FONT));
+            paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
+            paragraph.add(new Chunk(" (" + result.runner.category.shortName() + ") ", PDF_FONT));
             paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
             document.add(paragraph);
         }
