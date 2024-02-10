@@ -65,7 +65,7 @@ public class LapRaceTest extends RaceTest {
 
     @Test
     public void full() throws Exception {
-        testExpectedCompletion("full");
+        testExpectedCompletion("actual_2020");
     }
 
     @Test
