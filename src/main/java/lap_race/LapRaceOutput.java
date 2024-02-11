@@ -30,9 +30,7 @@ public abstract class LapRaceOutput {
     String year;
     String race_name_for_results;
     String race_name_for_filenames;
-    String overall_results_filename;
-    String detailed_results_filename;
-    String prizes_filename;
+    String overall_results_filename, detailed_results_filename, prizes_filename, collated_times_filename;
     Path output_directory_path;
 
     public LapRaceOutput(final LapRace race) {
@@ -59,6 +57,7 @@ public abstract class LapRaceOutput {
         overall_results_filename = race_name_for_filenames + "_overall_" + year;
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
+        collated_times_filename = "times_collated";
 
         output_directory_path = race.getWorkingDirectoryPath().resolve("output");
     }

@@ -3,9 +3,6 @@ package individual_race;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
-import lap_race.LapRace;
-import lap_race.Team;
-import lap_race.TeamResult;
 
 import java.io.IOException;
 import java.io.OutputStream;

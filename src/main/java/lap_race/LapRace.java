@@ -85,6 +85,7 @@ public class LapRace extends Race {
         printLegResults();
         printPrizes();
         printCombined();
+        printCollatedTimes();
     }
 
     @Override
@@ -94,6 +95,7 @@ public class LapRace extends Race {
 
         configureHelpers();
         configureInputData();
+        configureInterpolatedTimes();
         configureMassStarts();
         configurePairedLegs();
         configureIndividualLegStarts();
@@ -124,6 +126,49 @@ public class LapRace extends Race {
 
         entries = input.loadEntries();
         raw_results = input.loadRawResults();
+    }
+
+    private void configureInterpolatedTimes() {
+
+        int raw_result_index = 0;
+        int previous_non_null_time_index;
+
+        while (raw_result_index < raw_results.length && raw_results[raw_result_index].getRecordedFinishTime() == null) raw_result_index++;
+
+        for (int i = 0; i < raw_result_index - 1; i++)
+            raw_results[i].setRecordedFinishTime(raw_results[raw_result_index].getRecordedFinishTime());
+
+        while (raw_result_index < raw_results.length) {
+
+            while (raw_result_index < raw_results.length && raw_results[raw_result_index].getRecordedFinishTime() != null) raw_result_index++;
+            previous_non_null_time_index = raw_result_index - 1;
+
+            while (raw_result_index < raw_results.length && raw_results[raw_result_index].getRecordedFinishTime() == null) raw_result_index++;
+
+            if (raw_result_index < raw_results.length) {
+                final int number_of_consecutive_null_times = raw_result_index - previous_non_null_time_index - 1;
+
+                System.out.println("number_of_consecutive_null_times: " + number_of_consecutive_null_times);
+                Duration time_step = raw_results[raw_result_index].getRecordedFinishTime().
+                        minus(raw_results[previous_non_null_time_index].getRecordedFinishTime()).
+                        dividedBy(number_of_consecutive_null_times + 1);
+
+                System.out.println("time before: " + raw_results[previous_non_null_time_index].getRecordedFinishTime());
+                System.out.println("time after: " + raw_results[raw_result_index].getRecordedFinishTime());
+                System.out.println("step: " + time_step);
+
+
+                for (int i = previous_non_null_time_index + 1; i < raw_result_index; i++) {
+                    raw_results[i].setRecordedFinishTime(raw_results[i - 1].getRecordedFinishTime().plus(time_step));
+                    raw_results[i].setInterpolatedTime(true);
+                }
+            }
+            else {
+                for (int i = previous_non_null_time_index + 1; i < raw_result_index; i++) {
+                    raw_results[i].setRecordedFinishTime(Race.DUMMY_DURATION);
+                }
+            }
+        }
     }
 
     private void configureMassStarts() {
@@ -257,26 +302,35 @@ public class LapRace extends Race {
             leg_results[leg_index].DNF = false;
         }
 
-        if (leg_times_swap_string != null) swapLegTimes();
+//        if (leg_times_swap_string != null) swapLegTimes();
+
+
+
+        for (TeamResult team_result : overall_results) {
+            Arrays.sort(team_result.leg_results, Comparator.comparingInt(o -> o.leg_number));
+
+            for (int i = 0; i < team_result.leg_results.length; i++)
+                team_result.leg_results[i].leg_number = i+1;
+        }
     }
 
-    private void swapLegTimes() {
-        for (final String leg_time_swap : leg_times_swap_string.split(","))
-            swapLegTimes(leg_time_swap);
-    }
-
-    private void swapLegTimes(final String leg_time_swap) {
-
-        final ResultWithLegIndex result_with_leg = getResultWithLegIndex(leg_time_swap);
-
-        final LegResult[] leg_results = result_with_leg.result().leg_results;
-        final int leg_index = result_with_leg.leg_index();
-
-        final Duration temp = leg_results[leg_index - 1].finish_time;
-
-        leg_results[leg_index - 1].finish_time = leg_results[leg_index].finish_time;
-        leg_results[leg_index].finish_time = temp;
-    }
+//    private void swapLegTimes() {
+//        for (final String leg_time_swap : leg_times_swap_string.split(","))
+//            swapLegTimes(leg_time_swap);
+//    }
+//
+//    private void swapLegTimes(final String leg_time_swap) {
+//
+//        final ResultWithLegIndex result_with_leg = getResultWithLegIndex(leg_time_swap);
+//
+//        final LegResult[] leg_results = result_with_leg.result().leg_results;
+//        final int leg_index = result_with_leg.leg_index();
+//
+//        final Duration temp = leg_results[leg_index - 1].finish_time;
+//
+//        leg_results[leg_index - 1].finish_time = leg_results[leg_index].finish_time;
+//        leg_results[leg_index].finish_time = temp;
+//    }
 
     private ResultWithLegIndex getResultWithLegIndex(final String bib_and_leg) {
 
@@ -450,7 +504,10 @@ public class LapRace extends Race {
     }
 
     private void printCombined() throws IOException {
-
         output_HTML.printCombined();
+    }
+
+    private void printCollatedTimes() throws IOException {
+        ((LapRaceOutputText)output_text).printCollatedTimes();
     }
 }

@@ -15,7 +15,7 @@ public class TeamResult implements Comparable<TeamResult> {
         leg_results = new LegResult[number_of_legs];
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results[i] = new LegResult(team, i+1, race);
+            leg_results[i] = new LegResult(team, race);
     }
 
     public Duration duration() {

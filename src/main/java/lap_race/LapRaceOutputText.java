@@ -1,12 +1,15 @@
 package lap_race;
 
 import common.Category;
+import common.RawResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LapRaceOutputText extends LapRaceOutput {
 
@@ -16,7 +19,6 @@ public class LapRaceOutputText extends LapRaceOutput {
 
     @Override
     public void printOverallResults() {
-
         throw new UnsupportedOperationException();
     }
 
@@ -74,5 +76,59 @@ public class LapRaceOutputText extends LapRaceOutput {
         }
 
         writer.append("\n\n");
+    }
+
+    public void printCollatedTimes() throws IOException {
+
+        final Path collated_times_text_path = output_directory_path.resolve(collated_times_filename + ".txt");
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(collated_times_text_path))) {
+
+            Map<Integer, Integer> leg_finished_count = new HashMap<>();
+
+            for (int i = 0; i < race.getRawResults().length; i++) {
+
+                if (i == race.input.getNumberOfRawResults()) {
+                    writer.append("""
+
+                            // Remaining times from paper recording sheet only.
+
+                            """);
+                }
+
+                RawResult raw_result = race.getRawResults()[i];
+
+                final int bib_number = raw_result.getBibNumber();
+                final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
+
+                writer.append(String.valueOf(bib_number)).
+                        append("\t").
+                        append(format(raw_result.getRecordedFinishTime()));
+
+                StringBuilder comment = new StringBuilder();
+
+                if (raw_result.getLegNumber() > 0) {
+                    writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
+                    if (legs_already_finished >= raw_result.getLegNumber()) {
+                        comment.append("Leg ").
+                                append(raw_result.getLegNumber()).
+                                append(" finisher was runner ").
+                                append(legs_already_finished + 1).
+                                append(" to finish for team.");
+                    }
+                }
+
+                if (raw_result.isInterpolatedTime())
+                    comment.append("Interpolated time.");
+
+                if (!comment.isEmpty()) {
+                    writer.append("\t// ").append(comment);
+                }
+
+                leg_finished_count.put(bib_number, legs_already_finished + 1);
+
+                writer.append("\n");
+            }
+        }
     }
 }

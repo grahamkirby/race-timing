@@ -54,6 +54,7 @@ public abstract class Race {
     }
 
     protected void readProperties() {
+
         working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
         dnf_string = properties.getProperty("DNF_LEGS");
     }
@@ -62,14 +63,15 @@ public abstract class Race {
         return working_directory_path;
     }
 
+    public RawResult[] getRawResults() {
+        return raw_results;
+    }
+
     protected String getPropertyWithDefault(final String property_key, final String default_value) {
 
         final String value = properties.getProperty(property_key);
         return value == null || value.isBlank() ? default_value : value;
     }
-
-
-
 
     protected static Duration parseTime(String element) {
 
