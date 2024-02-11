@@ -1,5 +1,6 @@
 package lap_race;
 
+import common.MissingTimeException;
 import common.RawResult;
 
 import java.io.IOException;
@@ -12,11 +13,10 @@ public class LapRaceInput {
 
     final LapRace race;
 
-    Path input_directory_path;
-    Path entries_path;
-    Path raw_results_path;
-    String entries_filename;
-    String raw_results_filename;
+    Path input_directory_path, entries_path, raw_results_path, paper_results_path;
+    String entries_filename, raw_results_filename, paper_results_filename;
+
+    int number_of_raw_results;
 
     public LapRaceInput(final LapRace race) {
 
@@ -34,6 +34,7 @@ public class LapRaceInput {
 
         entries_filename = race.getProperties().getProperty("ENTRIES_FILENAME");
         raw_results_filename = race.getProperties().getProperty("RAW_RESULTS_FILENAME");
+        paper_results_filename = race.getProperties().getProperty("PAPER_RESULTS_FILENAME");
     }
 
     private void constructFilePaths() {
@@ -41,6 +42,7 @@ public class LapRaceInput {
         input_directory_path = race.getWorkingDirectoryPath().resolve("input");
         entries_path = input_directory_path.resolve(entries_filename);
         raw_results_path = input_directory_path.resolve(raw_results_filename);
+        paper_results_path = input_directory_path.resolve(paper_results_filename);
     }
 
     Team[] loadEntries() throws IOException {
@@ -89,13 +91,21 @@ public class LapRaceInput {
 
     RawResult[] loadRawResults() throws IOException {
 
-        final List<String> lines = Files.readAllLines(raw_results_path);
         final List<RawResult> raw_results = new ArrayList<>();
 
-        for (String line : lines)
+        for (String line : Files.readAllLines(raw_results_path))
+            loadRawResult(raw_results, line);
+
+        number_of_raw_results = raw_results.size();
+
+        for (String line : Files.readAllLines(paper_results_path))
             loadRawResult(raw_results, line);
 
         return raw_results.toArray(new RawResult[0]);
+    }
+
+    int getNumberOfRawResults() {
+        return number_of_raw_results;
     }
 
     private static void loadRawResult(final List<RawResult> raw_results, String line) {
@@ -115,7 +125,7 @@ public class LapRaceInput {
 
             final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
 
-            if (previous_result != null && previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0)
+            if (result.getRecordedFinishTime() != null && previous_result != null && previous_result.getRecordedFinishTime() != null && previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0)
                 throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
 
             raw_results.add(result);

@@ -23,12 +23,20 @@ public abstract class RaceTest {
     protected abstract Race makeRace(Properties properties) throws IOException;
     protected abstract String getResourcesPath();
 
+    @AfterEach
+    public void tearDown() throws IOException {
+
+        // Disable this when debugging and you don't want the test results to be immediately deleted.
+
+        //FileManipulation.deleteDirectory(temp_directory);
+    }
+
     protected void configureTest(String test_resource_root) throws IOException {
 
         // Swap these when debugging and you don't want the test results to be immediately deleted.
 
-        temp_directory = Files.createTempDirectory(null);
-        //temp_directory = Paths.get("/Users/gnck/Desktop/temp");
+        //temp_directory = Files.createTempDirectory(null);
+        temp_directory = Paths.get("/Users/gnck/Desktop/temp");
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
@@ -61,14 +69,6 @@ public abstract class RaceTest {
             properties.load(in);
             return properties;
         }
-    }
-
-    @AfterEach
-    public void tearDown() throws IOException {
-
-        // Disable this when debugging and you don't want the test results to be immediately deleted.
-
-        FileManipulation.deleteDirectory(temp_directory);
     }
 
     public void testExpectedException(String configuration_name, String expected_error_message) throws Exception {

@@ -5,7 +5,7 @@ import java.time.Duration;
 public class LegResult implements Comparable<LegResult> {
 
     final Team team;
-    final int leg_number;
+    int leg_number;
     final LapRace race;
     boolean DNF;
     boolean in_mass_start;
@@ -14,10 +14,9 @@ public class LegResult implements Comparable<LegResult> {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public LegResult(final Team team, final int leg_number, final LapRace race) {
+    public LegResult(final Team team, final LapRace race) {
 
         this.team = team;
-        this.leg_number = leg_number;
         this.race = race;
         this.DNF = true;
         this.in_mass_start = false;
