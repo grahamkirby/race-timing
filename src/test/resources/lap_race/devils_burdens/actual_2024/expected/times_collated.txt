@@ -52,18 +52,14 @@
 49	00:53:15
 72	00:53:19
 106	00:53:23
-
-64	00:53:24  // Not recorded on phone, 84 on recording sheet but inconsistent with result 3 minutes earlier
-10	00:53:25  // Not recorded on phone, number guessed from DNF teams
-
+64	00:53:24		// Time but not bib number recorded electronically. Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so guessed bib number 64 from DNF teams.
+10	00:53:25		// Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
 11	00:53:28
 52	00:53:31
 19	00:54:03
 5	00:54:08
 35	00:54:10
-
-53	00:54:15  // Not recorded on phone, number guessed from DNF teams
-
+53	00:54:15		// Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
 24	00:54:17
 83	00:54:21
 27	00:54:26
@@ -71,9 +67,7 @@
 23	00:55:30
 33	00:55:32
 40	00:55:36
-
-79	00:55:37  // Not recorded on phone, number guessed from DNF teams
-
+79	00:55:37		// Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
 91	00:55:39
 111	00:55:44
 77	00:55:57
@@ -392,16 +386,16 @@
 
 // Remaining times from paper recording sheet only.
 
-72	04:13:30	// Time interpolated.
-93	04:14:00	// Time interpolated.
-105	04:14:30	// Time interpolated.
-6	04:15:00	// Time interpolated.
+72	04:13:33	// Interpolated time.
+93	04:14:01	// Interpolated time.
+105	04:14:29	// Interpolated time.
+6	04:14:57	// Interpolated time.
 70	04:15:25
-2	04:15:30	// Time interpolated.
-5	04:15:35	// Time interpolated.
-23	04:15:40	// Time interpolated.
-3	04:15:45	// Time interpolated.
-41	04:16:00	// Time interpolated.
+2	04:15:32	// Interpolated time.
+5	04:15:39	// Interpolated time.
+23	04:15:46	// Interpolated time.
+3	04:15:53	// Interpolated time.
+41	04:16:00	// Interpolated time.
 95	04:16:07
 70	04:16:25
 45	04:17:02
@@ -418,7 +412,7 @@
 40	04:18:30	// Not recorded, time reverse engineered from submitted leg time.
 36	04:18:32	// Leg 4, not recorded, time reverse engineered from submitted leg time.
 11	04:18:40	// Only on recording sheet, looks like 110. Time interpolated.
-39	04:18:50	// Time interpolated.
+39	04:18:51	// Interpolated time.
 28	04:19:01
 31	04:19:03	// Not recorded, time reverse engineered from submitted strava trace.
 95	04:19:08

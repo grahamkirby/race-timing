@@ -7,9 +7,10 @@ import java.time.Duration;
 public class RawResult {
 
     // Leg number is optional, depending on whether it was recorded on paper sheet.
-    final int bib_number, leg_number;
+    Integer bib_number, leg_number;
     Duration recorded_finish_time;  // Relative to start of leg 1.
     boolean interpolated_time = false;
+    String comment = "";
 
     public RawResult(final String file_line) {
 
@@ -18,13 +19,17 @@ public class RawResult {
         final String bib_number_as_string = elements[0];
         final String time_as_string = elements[1];
 
-        bib_number = Integer.parseInt(bib_number_as_string);
+        bib_number = bib_number_as_string.equals("?") ? null : Integer.parseInt(bib_number_as_string);
         recorded_finish_time = time_as_string.equals("?") ? null : Race.parseTime(time_as_string);
-        leg_number = elements.length > 2 ? Integer.parseInt(elements[2]) : 0;
+        leg_number = elements.length <= 2 ? 0 : Integer.parseInt(elements[2]);
     }
 
-    public int getBibNumber() {
+    public Integer getBibNumber() {
         return bib_number;
+    }
+
+    public void setBibNumber(Integer bib_number) {
+        this.bib_number = bib_number;
     }
 
     public Duration getRecordedFinishTime() {
@@ -43,7 +48,15 @@ public class RawResult {
         this.interpolated_time = interpolated_time;
     }
 
-    public int getLegNumber() {
+    public String getComment() {
+        return comment;
+    }
+
+    public void appendComment(String comment) {
+        this.comment = this.comment + comment;
+    }
+
+    public Integer getLegNumber() {
         return leg_number;
     }
 }

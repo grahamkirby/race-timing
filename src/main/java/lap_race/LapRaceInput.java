@@ -13,8 +13,8 @@ public class LapRaceInput {
 
     final LapRace race;
 
-    Path input_directory_path, entries_path, raw_results_path, paper_results_path;
-    String entries_filename, raw_results_filename, paper_results_filename;
+    Path input_directory_path, entries_path, raw_results_path, paper_results_path, annotations_path;
+    String entries_filename, raw_results_filename, paper_results_filename, annotations_filename;
 
     int number_of_raw_results;
 
@@ -35,6 +35,7 @@ public class LapRaceInput {
         entries_filename = race.getProperties().getProperty("ENTRIES_FILENAME");
         raw_results_filename = race.getProperties().getProperty("RAW_RESULTS_FILENAME");
         paper_results_filename = race.getProperties().getProperty("PAPER_RESULTS_FILENAME");
+        annotations_filename = race.getProperties().getProperty("ANNOTATIONS_FILENAME");
     }
 
     private void constructFilePaths() {
@@ -42,7 +43,8 @@ public class LapRaceInput {
         input_directory_path = race.getWorkingDirectoryPath().resolve("input");
         entries_path = input_directory_path.resolve(entries_filename);
         raw_results_path = input_directory_path.resolve(raw_results_filename);
-        paper_results_path = input_directory_path.resolve(paper_results_filename);
+        paper_results_path = paper_results_filename == null ? null : input_directory_path.resolve(paper_results_filename);
+        annotations_path = annotations_filename == null ? null : input_directory_path.resolve(annotations_filename);
     }
 
     Team[] loadEntries() throws IOException {
@@ -98,8 +100,9 @@ public class LapRaceInput {
 
         number_of_raw_results = raw_results.size();
 
-        for (String line : Files.readAllLines(paper_results_path))
-            loadRawResult(raw_results, line);
+        if (paper_results_path != null)
+            for (String line : Files.readAllLines(paper_results_path))
+                loadRawResult(raw_results, line);
 
         return raw_results.toArray(new RawResult[0]);
     }
@@ -123,12 +126,39 @@ public class LapRaceInput {
                 return;
             }
 
+            if (result.getBibNumber() == null && result.getRecordedFinishTime() != null)
+                result.appendComment("Time but not bib number recorded electronically.");
+
             final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
 
             if (result.getRecordedFinishTime() != null && previous_result != null && previous_result.getRecordedFinishTime() != null && previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0)
                 throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
 
             raw_results.add(result);
+        }
+    }
+
+    public void loadTimeAnnotations(RawResult[] raw_results) throws IOException {
+
+        if (annotations_path != null) {
+
+            List<String> lines = Files.readAllLines(annotations_path);
+
+            int index1 = lines.indexOf("Missing bib numbers:") + 2;
+            if (index1 > 1) {
+                while (index1 < lines.size() && !lines.get(index1).isEmpty()) {
+                    String[] elements = lines.get(index1).split("\t");
+                    int position = Integer.parseInt(elements[0]);
+                    int bib_number = Integer.parseInt(elements[1]);
+                    String comment = elements[2];
+
+                    RawResult raw_result = raw_results[position - 1];
+                    raw_result.setBibNumber(bib_number);
+                    raw_result.appendComment(comment);
+
+                    index1++;
+                }
+            }
         }
     }
 }

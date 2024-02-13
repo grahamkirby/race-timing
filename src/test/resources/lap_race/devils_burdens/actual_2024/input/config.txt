@@ -2,6 +2,7 @@ WORKING_DIRECTORY = /Users/gnck/Documents/Personal/Sport/Running/Fife\ AC/races/
 ENTRIES_FILENAME = entries.txt
 RAW_RESULTS_FILENAME = times_original.txt
 PAPER_RESULTS_FILENAME = times_additional_from_paper.txt
+ANNOTATIONS_FILENAME = times_annotations.txt
 YEAR = 2024
 NUMBER_OF_LEGS = 4
 PAIRED_LEGS = 2,3

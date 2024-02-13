@@ -76,6 +76,16 @@ public class LapRaceTest extends RaceTest {
     }
 
     @Test
+    public void interpolatedRawTimes() throws Exception {
+        testExpectedCompletion("interpolated_raw_times");
+    }
+
+    @Test
+    public void guessedMissingBibNumbers() throws Exception {
+        testExpectedCompletion("guessed_missing_bib_numbers");
+    }
+
+    @Test
     public void lastFewResultsNotRecorded() throws Exception {
         testExpectedCompletion("last_few_results_not_recorded");
     }
