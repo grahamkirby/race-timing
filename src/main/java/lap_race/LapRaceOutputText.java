@@ -98,18 +98,19 @@ public class LapRaceOutputText extends LapRaceOutput {
 
                 RawResult raw_result = race.getRawResults()[i];
 
-                final int bib_number = raw_result.getBibNumber();
+                final Integer bib_number = raw_result.getBibNumber();
                 final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
 
-                writer.append(String.valueOf(bib_number)).
+                writer.append(bib_number != null ? String.valueOf(bib_number) : "?").
                         append("\t").
-                        append(format(raw_result.getRecordedFinishTime()));
+                        append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
 
-                StringBuilder comment = new StringBuilder();
+                StringBuilder comment = new StringBuilder(raw_result.getComment());
 
                 if (raw_result.getLegNumber() > 0) {
                     writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
                     if (legs_already_finished >= raw_result.getLegNumber()) {
+                        if (!comment.isEmpty()) comment.append(" ");
                         comment.append("Leg ").
                                 append(raw_result.getLegNumber()).
                                 append(" finisher was runner ").
@@ -118,11 +119,9 @@ public class LapRaceOutputText extends LapRaceOutput {
                     }
                 }
 
-                if (raw_result.isInterpolatedTime())
-                    comment.append("Interpolated time.");
-
                 if (!comment.isEmpty()) {
-                    writer.append("\t// ").append(comment);
+                    if (raw_result.getLegNumber() == 0) writer.append("\t");
+                    writer.append("\t# ").append(comment);
                 }
 
                 leg_finished_count.put(bib_number, legs_already_finished + 1);

@@ -1,0 +1,6 @@
+Missing bib numbers:
+Position	Bib Number	Comment
+55	64	Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so guessed bib number 64 from DNF teams.
+56	10	Bib number not recorded on paper. Guessed bib number from DNF teams.
+62	53	Bib number not recorded on paper. Guessed bib number from DNF teams.
+70	79	Bib number not recorded on paper. Guessed bib number from DNF teams.
