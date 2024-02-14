@@ -52,14 +52,14 @@
 49	00:53:15
 72	00:53:19
 106	00:53:23
-64	00:53:24		// Time but not bib number recorded electronically. Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so guessed bib number 64 from DNF teams.
-10	00:53:25		// Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
+79	00:53:24		# Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so ignored. Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
+64	00:53:25		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
 11	00:53:28
 52	00:53:31
 19	00:54:03
 5	00:54:08
 35	00:54:10
-53	00:54:15		// Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
+53	00:54:15		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
 24	00:54:17
 83	00:54:21
 27	00:54:26
@@ -67,7 +67,7 @@
 23	00:55:30
 33	00:55:32
 40	00:55:36
-79	00:55:37		// Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
+10	00:55:37		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
 91	00:55:39
 111	00:55:44
 77	00:55:57
@@ -212,8 +212,7 @@
 93	02:40:04
 76	02:40:23
 95	02:41:07
-75	?		// 75 recorded on paper in this position.
-14	02:41:10
+14	02:41:10		# 75 on recording sheet before 14, but no electronic record.
 37	02:42:04
 96	02:42:10
 10	02:43:03
@@ -382,20 +381,17 @@
 111	04:12:45
 30	04:12:47
 8	04:13:03
-44	04:13:06
-
-// Remaining times from paper recording sheet only.
-
-72	04:13:33	// Interpolated time.
-93	04:14:01	// Interpolated time.
-105	04:14:29	// Interpolated time.
-6	04:14:57	// Interpolated time.
+44	04:13:06		# Remaining times from paper recording sheet only.
+72	04:13:33		# Time not recorded. Time interpolated.
+93	04:14:01		# Time not recorded. Time interpolated.
+105	04:14:29		# Time not recorded. Time interpolated.
+6	04:14:57		# Time not recorded. Time interpolated.
 70	04:15:25
-2	04:15:32	// Interpolated time.
-5	04:15:39	// Interpolated time.
-23	04:15:46	// Interpolated time.
-3	04:15:53	// Interpolated time.
-41	04:16:00	// Interpolated time.
+2	04:15:32		# Time not recorded. Time interpolated.
+5	04:15:39		# Time not recorded. Time interpolated.
+23	04:15:46		# Time not recorded. Time interpolated.
+3	04:15:53		# Time not recorded. Time interpolated.
+41	04:16:00		# Time not recorded. Time interpolated.
 95	04:16:07
 70	04:16:25
 45	04:17:02
@@ -406,29 +402,28 @@
 69	04:18:05
 50	04:18:16
 51	04:18:16
-112	04:18:22	// Seems unlikely that this and following time are correct, so probably missing an earlier finish for 112.
-112	04:18:28	// Not recorded, time reverse engineered from submitted strava trace.
+112	04:18:22		# Seems unlikely that this and following time are correct, so probably missing an earlier finish for 112.
+112	04:18:28		# Time not recorded. Time reverse engineered from submitted Strava trace.
 76	04:18:30
-40	04:18:30	// Not recorded, time reverse engineered from submitted leg time.
-36	04:18:32	// Leg 4, not recorded, time reverse engineered from submitted leg time.
-11	04:18:40	// Only on recording sheet, looks like 110. Time interpolated.
-39	04:18:51	// Interpolated time.
+40	04:18:30		# Time not recorded. Time reverse engineered from submitted leg time.
+36	04:18:32
+11	04:18:40		# Only on recording sheet, looks like 110. Time interpolated.
+39	04:18:51		# Time not recorded. Time interpolated.
 28	04:19:01
 31	04:19:03	// Not recorded, time reverse engineered from submitted strava trace.
 95	04:19:08
-            // 104 on recording sheet in this position, but runner says their time was 49.30.
-10	04:19:30
+10	04:19:30		# 104 on recording sheet in this position, but runner says their time was 49.30.
 7	04:19:45
 38	04:20:06
 67	04:20:43
 26	04:21:50
-36	04:22:07	3	// Leg 3 finisher was runner 4 to finish for team.
-105	04:22:15	3	// Leg 3 finisher was runner 4 to finish for team.
+36	04:22:07	3	# Leg 3 finisher was runner 4 to finish for team.
+105	04:22:15	3	# Leg 3 finisher was runner 4 to finish for team.
 42	04:22:21
 56	04:22:35
 84	04:22:41
 2	04:22:49
-76	04:23:04	3	// Leg 3 finisher was runner 4 to finish for team.
+76	04:23:04	3	# Leg 3 finisher was runner 4 to finish for team.
 17	04:23:04
 8	04:23:35
 65	04:23:40
@@ -450,4 +445,4 @@
 113	04:35:20
 66	04:40:04
 26	04:49:54
-65	04:50:16	3	// Leg 3 finisher was runner 4 to finish for team.
+65	04:50:16	3	# Leg 3 finisher was runner 4 to finish for team.

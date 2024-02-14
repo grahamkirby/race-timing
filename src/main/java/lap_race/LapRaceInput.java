@@ -1,6 +1,6 @@
 package lap_race;
 
-import common.MissingTimeException;
+import common.Race;
 import common.RawResult;
 
 import java.io.IOException;
@@ -126,8 +126,8 @@ public class LapRaceInput {
                 return;
             }
 
-            if (result.getBibNumber() == null && result.getRecordedFinishTime() != null)
-                result.appendComment("Time but not bib number recorded electronically.");
+//            if (result.getBibNumber() == null && result.getRecordedFinishTime() != null)
+//                result.appendComment("Time but not bib number recorded electronically.");
 
             final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
 
@@ -144,19 +144,22 @@ public class LapRaceInput {
 
             List<String> lines = Files.readAllLines(annotations_path);
 
-            int index1 = lines.indexOf("Missing bib numbers:") + 2;
-            if (index1 > 1) {
-                while (index1 < lines.size() && !lines.get(index1).isEmpty()) {
-                    String[] elements = lines.get(index1).split("\t");
-                    int position = Integer.parseInt(elements[0]);
-                    int bib_number = Integer.parseInt(elements[1]);
-                    String comment = elements[2];
+            for (int line_index = 1; line_index < lines.size(); line_index++) {
 
+                String[] elements = lines.get(line_index).split("\t");
+
+                if (elements[0].equals("Update")) {
+
+                    final int position = Integer.parseInt(elements[1]);
                     RawResult raw_result = raw_results[position - 1];
-                    raw_result.setBibNumber(bib_number);
-                    raw_result.appendComment(comment);
 
-                    index1++;
+                    if (elements[2].equals("?")) raw_result.setBibNumber(null);
+                    else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
+
+                    if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);
+                    else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(Race.parseTime(elements[3]));
+
+                    if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
                 }
             }
         }
