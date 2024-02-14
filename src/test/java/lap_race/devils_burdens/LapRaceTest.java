@@ -81,8 +81,13 @@ public class LapRaceTest extends RaceTest {
     }
 
     @Test
-    public void guessedMissingBibNumbers() throws Exception {
-        testExpectedCompletion("guessed_missing_bib_numbers");
+    public void guessedMissingBibNumbersA() throws Exception {
+        testExpectedCompletion("guessed_missing_bib_numbers_a");
+    }
+
+    @Test
+    public void guessedMissingBibNumbersB() throws Exception {
+        testExpectedCompletion("guessed_missing_bib_numbers_b");
     }
 
     @Test

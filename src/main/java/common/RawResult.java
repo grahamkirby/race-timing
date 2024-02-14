@@ -53,7 +53,8 @@ public class RawResult {
     }
 
     public void appendComment(String comment) {
-        this.comment = this.comment + comment;
+        if (!this.comment.isEmpty()) this.comment += " ";
+        this.comment += comment;
     }
 
     public Integer getLegNumber() {

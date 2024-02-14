@@ -1,6 +1,10 @@
-Missing bib numbers:
-Position	Bib Number	Comment
-55	64	Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so guessed bib number 64 from DNF teams.
-56	10	Bib number not recorded on paper. Guessed bib number from DNF teams.
-62	53	Bib number not recorded on paper. Guessed bib number from DNF teams.
-70	79	Bib number not recorded on paper. Guessed bib number from DNF teams.
+Action	Position	Bib Number	Time	Comment
+Update	55			Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so ignored.
+Update	215			75 on recording sheet before 14, but no electronic record.
+Update	405			Seems unlikely that this and following time are correct, so probably missing an earlier finish for 112.
+Update	406		04:18:28	Time not recorded. Time reverse engineered from submitted Strava trace.
+Update	408		04:18:30	Time not recorded. Time reverse engineered from submitted leg time.
+Update	410			Only on recording sheet, looks like 110.
+Update	413		04:19:03	Time not recorded. Time reverse engineered from submitted Strava trace.
+Update	415			104 on recording sheet in this position, but runner says their time was 49.30.
+Update	430		04:24:20	Time estimated based on runner's information.

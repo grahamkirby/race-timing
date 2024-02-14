@@ -142,10 +142,7 @@ public class LapRace extends Race {
             raw_results[i].setRecordedFinishTime(raw_results[raw_result_index].getRecordedFinishTime());
             raw_results[i].setInterpolatedTime(true);
 
-            final String existing_comment = raw_results[i].getComment();
-            String comment = "";
-            if (!existing_comment.isEmpty()) comment = " ";
-            comment += "Time not recorded. No basis for interpolation so set to first recorded time.";
+            String comment = "Time not recorded. No basis for interpolation so set to first recorded time.";
             raw_results[i].appendComment(comment);
         }
 
@@ -168,10 +165,7 @@ public class LapRace extends Race {
                     raw_results[i].setInterpolatedTime(true);
 
 
-                    final String existing_comment = raw_results[i].getComment();
-                    String comment = "";
-                    if (!existing_comment.isEmpty()) comment = " ";
-                    comment += "Time not recorded. Time interpolated.";
+                    String comment = "Time not recorded. Time interpolated.";
                     raw_results[i].appendComment(comment);
                 }
             }
@@ -180,11 +174,7 @@ public class LapRace extends Race {
                     raw_results[i].setRecordedFinishTime(raw_results[previous_non_null_time_index].getRecordedFinishTime());
                     raw_results[i].setInterpolatedTime(true);
 
-
-                    final String existing_comment = raw_results[i].getComment();
-                    String comment = "";
-                    if (!existing_comment.isEmpty()) comment = " ";
-                    comment += "Time not recorded. No basis for interpolation so set to last recorded time.";
+                    String comment = "Time not recorded. No basis for interpolation so set to last recorded time.";
                     raw_results[i].appendComment(comment);
                 }
             }
@@ -195,31 +185,39 @@ public class LapRace extends Race {
 
         record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
 
-        int position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
-        while (position_of_first_missing_bib_number > 0) {
+        if (raw_results.length != entries.length * number_of_legs) {
 
-            TeamSummaryAtPosition[] summaries = new TeamSummaryAtPosition[entries.length];
-            for (int i = 0; i < summaries.length; i++) {
-
-                int bib_number = entries[i].bib_number;
-                int finishes_before = getNumberOfTeamFinishesBefore(position_of_first_missing_bib_number, bib_number);
-                int finishes_after = getNumberOfTeamFinishesAfter(position_of_first_missing_bib_number, bib_number);
-                Duration previous_finish_time = getPreviousTeamFinishTime(position_of_first_missing_bib_number, bib_number);
-                Duration next_finish_time = getNextTeamFinishTime(position_of_first_missing_bib_number, bib_number);
-                summaries[i] = new TeamSummaryAtPosition(bib_number, finishes_before, finishes_after, previous_finish_time, next_finish_time);
+            for (int i = 0; i < raw_results.length; i++) {
+                if (raw_results[i].getBibNumber() == null) raw_results[i].appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
             }
-
-            Arrays.sort(summaries, Comparator.comparing(o -> o.previous_finish));
-            Arrays.sort(summaries, Comparator.comparing(o -> o.next_finish));
-            Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_after));
-            Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_before));
-
-            raw_results[position_of_first_missing_bib_number - 1].setBibNumber(summaries[0].team_number);
-            raw_results[position_of_first_missing_bib_number - 1].appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.");
-
-            position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
         }
+        else {
 
+            int position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
+            while (position_of_first_missing_bib_number > 0) {
+
+                TeamSummaryAtPosition[] summaries = new TeamSummaryAtPosition[entries.length];
+                for (int i = 0; i < summaries.length; i++) {
+
+                    int bib_number = entries[i].bib_number;
+                    int finishes_before = getNumberOfTeamFinishesBefore(position_of_first_missing_bib_number, bib_number);
+                    int finishes_after = getNumberOfTeamFinishesAfter(position_of_first_missing_bib_number, bib_number);
+                    Duration previous_finish_time = getPreviousTeamFinishTime(position_of_first_missing_bib_number, bib_number);
+                    Duration next_finish_time = getNextTeamFinishTime(position_of_first_missing_bib_number, bib_number);
+                    summaries[i] = new TeamSummaryAtPosition(bib_number, finishes_before, finishes_after, previous_finish_time, next_finish_time);
+                }
+
+                Arrays.sort(summaries, Comparator.comparing(o -> o.previous_finish));
+                Arrays.sort(summaries, Comparator.comparing(o -> o.next_finish));
+                Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_after));
+                Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_before));
+
+                raw_results[position_of_first_missing_bib_number - 1].setBibNumber(summaries[0].team_number);
+                raw_results[position_of_first_missing_bib_number - 1].appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.");
+
+                position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
+            }
+        }
     }
 
     private int getNumberOfTeamFinishesBefore(int position, int bib_number) {

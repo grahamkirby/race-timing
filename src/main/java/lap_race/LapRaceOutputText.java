@@ -88,15 +88,10 @@ public class LapRaceOutputText extends LapRaceOutput {
 
             for (int i = 0; i < race.getRawResults().length; i++) {
 
-                if (i == race.input.getNumberOfRawResults()) {
-                    writer.append("""
-
-                            // Remaining times from paper recording sheet only.
-
-                            """);
-                }
-
                 RawResult raw_result = race.getRawResults()[i];
+
+                if (i == race.input.getNumberOfRawResults() - 1)
+                    raw_result.appendComment("Remaining times from paper recording sheet only.");
 
                 final Integer bib_number = raw_result.getBibNumber();
                 final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
@@ -110,7 +105,6 @@ public class LapRaceOutputText extends LapRaceOutput {
                 if (raw_result.getLegNumber() > 0) {
                     writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
                     if (legs_already_finished >= raw_result.getLegNumber()) {
-                        if (!comment.isEmpty()) comment.append(" ");
                         comment.append("Leg ").
                                 append(raw_result.getLegNumber()).
                                 append(" finisher was runner ").
