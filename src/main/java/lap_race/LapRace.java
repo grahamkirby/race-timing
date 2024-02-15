@@ -107,7 +107,7 @@ public class LapRace extends Race {
         super.readProperties();
 
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
-        leg_times_swap_string = getPropertyWithDefault("LEG_TIME_SWAPS", null);
+        //leg_times_swap_string = getPropertyWithDefault("LEG_TIME_SWAPS", null);
         start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
     }
 
@@ -402,6 +402,11 @@ public class LapRace extends Race {
                 // Provisionally this leg is not DNF since a finish time was recorded.
                 // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
                 leg_results[leg_index].DNF = false;
+
+                if (raw_result.getLegNumber() == null)
+                    leg_results[leg_index].leg_number = leg_index + 1;
+                else
+                    leg_results[leg_index].leg_number = raw_result.getLegNumber();
             }
         }
 

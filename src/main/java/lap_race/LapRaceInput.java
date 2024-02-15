@@ -113,7 +113,7 @@ public class LapRaceInput {
 
     private static void loadRawResult(final List<RawResult> raw_results, String line) {
 
-        int comment_start_index = line.indexOf("//");
+        int comment_start_index = line.indexOf("#");
         if (comment_start_index > -1) line = line.substring(0, comment_start_index);
 
         if (!line.isBlank()) {

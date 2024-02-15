@@ -90,7 +90,7 @@ public class LapRaceOutputText extends LapRaceOutput {
 
                 RawResult raw_result = race.getRawResults()[i];
 
-                if (i == race.input.getNumberOfRawResults() - 1)
+                if (i == race.input.getNumberOfRawResults() - 1 && race.input.getNumberOfRawResults() < race.getRawResults().length)
                     raw_result.appendComment("Remaining times from paper recording sheet only.");
 
                 final Integer bib_number = raw_result.getBibNumber();

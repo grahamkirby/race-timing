@@ -28,15 +28,15 @@ public abstract class RaceTest {
 
         // Disable this when debugging and you don't want the test results to be immediately deleted.
 
-        //FileManipulation.deleteDirectory(temp_directory);
+        FileManipulation.deleteDirectory(temp_directory);
     }
 
     protected void configureTest(String test_resource_root) throws IOException {
 
         // Swap these when debugging and you don't want the test results to be immediately deleted.
 
-        //temp_directory = Files.createTempDirectory(null);
-        temp_directory = Paths.get("/Users/gnck/Desktop/temp");
+        temp_directory = Files.createTempDirectory(null);
+        //temp_directory = Paths.get("/Users/gnck/Desktop/temp");
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
@@ -136,6 +136,7 @@ public abstract class RaceTest {
     }
 
     private static boolean filesHaveSameContentIgnoreWhitespace(Path path1, Path path2) throws IOException {
+
         String fileContent1 = getFileContent(path1);
         String fileContent2 = getFileContent(path2);
 
