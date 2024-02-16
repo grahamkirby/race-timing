@@ -31,20 +31,20 @@ public abstract class RaceTest {
         FileManipulation.deleteDirectory(temp_directory);
     }
 
-    protected void configureTest(String test_resource_root) throws IOException {
+    protected void configureTest(final String test_resource_root) throws IOException {
 
         // Swap these when debugging and you don't want the test results to be immediately deleted.
 
         //temp_directory = Files.createTempDirectory(null);
         temp_directory = Paths.get("/Users/gnck/Desktop/temp");
 
-        Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
+        final Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
 
-        Path resources_root = Paths.get("src/test/resources/" + getResourcesPath() + test_resource_root);
-        Path resources_inputs = resources_root.resolve("input");
+        final Path resources_root = Paths.get("src/test/resources/" + getResourcesPath() + test_resource_root);
+        final Path resources_inputs = resources_root.resolve("input");
         resources_expected_outputs = resources_root.resolve("expected");
-        Path resources_config = resources_inputs.resolve("config.txt");
+        final Path resources_config = resources_inputs.resolve("config.txt");
 
         copyFilesBetweenDirectories(resources_inputs, temp_input_sub_directory);
 
@@ -52,26 +52,28 @@ public abstract class RaceTest {
         properties.setProperty("WORKING_DIRECTORY", temp_directory.toString());
     }
 
-    private static void copyFilesBetweenDirectories(Path source, Path destination) throws IOException {
+    private static void copyFilesBetweenDirectories(final Path source, final Path destination) throws IOException {
 
-        try (Stream<Path> list = Files.list(source)) {
-            for (Iterator<Path> iterator = list.iterator(); iterator.hasNext(); ) {
+        try (final Stream<Path> list = Files.list(source)) {
+
+            for (final Iterator<Path> iterator = list.iterator(); iterator.hasNext(); ) {
                 Path file = iterator.next();
                 Files.copy(file, destination.resolve(file.getFileName()));
             }
         }
     }
 
-    private static Properties getProperties(Path path) throws IOException {
+    private static Properties getProperties(final Path path) throws IOException {
 
-        try (FileInputStream in = new FileInputStream(path.toFile())) {
+        try (final FileInputStream in = new FileInputStream(path.toFile())) {
+
             Properties properties = new Properties();
             properties.load(in);
             return properties;
         }
     }
 
-    public void testExpectedException(String configuration_name, String expected_error_message) throws Exception {
+    public void testExpectedException(final String configuration_name, final String expected_error_message) throws Exception {
 
         configureTest(configuration_name);
 
@@ -83,7 +85,7 @@ public abstract class RaceTest {
         assertEquals(expected_error_message, thrown.getMessage());
     }
 
-    protected void testExpectedCompletion(String configuration_name) throws Exception {
+    protected void testExpectedCompletion(final String configuration_name) throws Exception {
 
         configureTest(configuration_name);
         makeRace(properties).processResults();
@@ -96,7 +98,7 @@ public abstract class RaceTest {
 
         for (final String file_name : directory_listing_expected) {
 
-            if (!file_name.equals(".DS_Store")) {
+            if (!fileInExpectedDirectoryShouldBeIgnored(file_name)) {
 
                 final Path path_expected = expected.resolve(file_name);
                 final Path path_actual = actual.resolve(file_name);
@@ -106,7 +108,7 @@ public abstract class RaceTest {
                     assertThatDirectoryContainsAllExpectedContent(path_expected, path_actual);
                 } else {
                     assertFalse(Files.isDirectory(path_actual));
-                    assertThatFilesHaveSameContent(path_expected, path_actual);
+                    assertThatFilesHaveSameContentIgnoringWhitespace(path_expected, path_actual);
                 }
             }
         }
@@ -116,39 +118,37 @@ public abstract class RaceTest {
 
         final Set<String> directory_listing = new HashSet<>();
 
-        try (Stream<Path> entries = Files.list(directory)) {
-            for (Iterator<Path> iterator = entries.iterator(); iterator.hasNext(); ) {
-                final Path file = iterator.next();
-                directory_listing.add(file.getFileName().toString());
+        try (final Stream<Path> entries = Files.list(directory)) {
+            for (final Iterator<Path> iterator = entries.iterator(); iterator.hasNext();) {
+
+                directory_listing.add(iterator.next().getFileName().toString());
             }
         }
 
         return directory_listing;
     }
 
-    private static void assertThatFilesHaveSameContent(final Path path1, final Path path2) throws IOException {
+    private static void assertThatFilesHaveSameContentIgnoringWhitespace(final Path path1, final Path path2) throws IOException {
 
-        byte[] expected = Files.readAllBytes(path1);
-        byte[] actual = Files.readAllBytes(path2);
+        final String file_content1 = removeWhiteSpace(getFileContent(path1));
+        final String file_content2 = removeWhiteSpace(getFileContent(path2));
 
-        if (!Arrays.equals(expected, actual) && !filesHaveSameContentIgnoreWhitespace(path1, path2))
+        if (!file_content1.equals(file_content2))
             fail("Files differ: " + path1 + ", " + path2);
     }
 
-    private static boolean filesHaveSameContentIgnoreWhitespace(Path path1, Path path2) throws IOException {
+    private static String getFileContent(final Path path) throws IOException {
 
-        String fileContent1 = getFileContent(path1);
-        String fileContent2 = getFileContent(path2);
-
-        if (!fileContent1.equals(fileContent2)) {
-            System.out.println("f1: " + fileContent1);
-            System.out.println("f2: " + fileContent2);
-        }
-        return fileContent1.equals(fileContent2);
+        return Files.readAllLines(path).stream().reduce((s1, s2) -> s1 + s2).orElseThrow();
     }
 
-    private static String getFileContent(Path path) throws IOException {
+    private static String removeWhiteSpace(final String s) {
 
-        return Files.readAllLines(path).stream().reduce((s1, s2) -> s1 + s2).orElseThrow().replaceAll("\t", "").replaceAll("\n", "").replaceAll(" ", "");
+        return s.replaceAll("\t", "").replaceAll("\n", "").replaceAll(" ", "");
+    }
+
+    private static boolean fileInExpectedDirectoryShouldBeIgnored(final String file_name) {
+
+        return file_name.equals(".DS_Store");
     }
 }
