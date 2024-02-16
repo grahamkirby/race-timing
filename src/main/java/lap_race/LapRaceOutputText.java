@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +124,39 @@ public class LapRaceOutputText extends LapRaceOutput {
 
                 writer.append("\n");
             }
+
+            List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
+
+            for (Team team : race.entries) {
+
+                int legs_finished = leg_finished_count.getOrDefault(team.bib_number, 0);
+                for (int i = 0; i < race.number_of_legs - legs_finished; i++)
+                    bib_numbers_with_missing_times.add(team.bib_number);
+            }
+
+            bib_numbers_with_missing_times.sort(Integer::compareTo);
+
+            List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
+
+            for (int i = 0; i < race.getRawResults().length; i++) {
+
+                if (race.getRawResults()[i].getBibNumber() == null)
+                    times_with_missing_bib_numbers.add(race.getRawResults()[i].getRecordedFinishTime());
+            }
+
+            if (!bib_numbers_with_missing_times.isEmpty()) {
+
+                writer.append("\nDiscrepancies:\n-------------\n\nBib numbers with missing times: ");
+                for (int i = 0; i < bib_numbers_with_missing_times.size(); i++) {
+                    if (i > 0) writer.append(", ");
+                    writer.append(String.valueOf(bib_numbers_with_missing_times.get(i)));
+                }
+
+                writer.append("\n\nTimes with missing bib numbers:\n\n");
+                for (Duration timesWithMissingBibNumber : times_with_missing_bib_numbers)
+                    writer.append(format(timesWithMissingBibNumber)).append("\n");
+            }
+
         }
     }
 }

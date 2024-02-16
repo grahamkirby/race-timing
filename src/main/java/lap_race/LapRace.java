@@ -220,6 +220,7 @@ public class LapRace extends Race {
         }
     }
 
+
     private int getNumberOfTeamFinishesBefore(int position, int bib_number) {
 
         int count = 0;
