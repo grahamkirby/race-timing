@@ -35,8 +35,8 @@ public abstract class RaceTest {
 
         // Swap these when debugging and you don't want the test results to be immediately deleted.
 
-        temp_directory = Files.createTempDirectory(null);
-        //temp_directory = Paths.get("/Users/gnck/Desktop/temp");
+        //temp_directory = Files.createTempDirectory(null);
+        temp_directory = Paths.get("/Users/gnck/Desktop/temp");
 
         Path temp_input_sub_directory = Files.createDirectories(temp_directory.resolve("input"));
         temp_output_sub_directory = Files.createDirectories(temp_directory.resolve("output"));
