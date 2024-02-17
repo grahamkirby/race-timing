@@ -9,7 +9,6 @@ public class RawResult {
     // Leg number is optional, depending on whether it was recorded on paper sheet.
     Integer bib_number, leg_number;
     Duration recorded_finish_time;  // Relative to start of leg 1.
-    boolean interpolated_time = false;
     String comment = "";
 
     public RawResult(final String file_line) {
@@ -28,7 +27,7 @@ public class RawResult {
         return bib_number;
     }
 
-    public void setBibNumber(Integer bib_number) {
+    public void setBibNumber(final Integer bib_number) {
         this.bib_number = bib_number;
     }
 
@@ -36,23 +35,15 @@ public class RawResult {
         return recorded_finish_time;
     }
 
-    public void setRecordedFinishTime(Duration finish_time) {
+    public void setRecordedFinishTime(final Duration finish_time) {
         recorded_finish_time = finish_time;
-    }
-
-    public boolean isInterpolatedTime() {
-        return interpolated_time;
-    }
-
-    public void setInterpolatedTime(boolean interpolated_time) {
-        this.interpolated_time = interpolated_time;
     }
 
     public String getComment() {
         return comment;
     }
 
-    public void appendComment(String comment) {
+    public void appendComment(final String comment) {
         if (!this.comment.isEmpty()) this.comment += " ";
         this.comment += comment;
     }

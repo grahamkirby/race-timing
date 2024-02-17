@@ -119,10 +119,8 @@ public abstract class RaceTest {
         final Set<String> directory_listing = new HashSet<>();
 
         try (final Stream<Path> entries = Files.list(directory)) {
-            for (final Iterator<Path> iterator = entries.iterator(); iterator.hasNext();) {
-
+            for (final Iterator<Path> iterator = entries.iterator(); iterator.hasNext();)
                 directory_listing.add(iterator.next().getFileName().toString());
-            }
         }
 
         return directory_listing;

@@ -13,18 +13,6 @@ public abstract class LapRaceOutput {
 
     public static final String DNF_STRING = "DNF";
 
-//    public static final List<Category> CATEGORY_REPORT_ORDER = Arrays.asList(
-//            LapRaceCategory.FEMALE_SENIOR,
-//            LapRaceCategory.OPEN_SENIOR,
-//            LapRaceCategory.FEMALE_40,
-//            LapRaceCategory.OPEN_40,
-//            LapRaceCategory.FEMALE_50,
-//            LapRaceCategory.OPEN_50,
-//            LapRaceCategory.FEMALE_60,
-//            LapRaceCategory.OPEN_60,
-//            LapRaceCategory.MIXED_SENIOR,
-//            LapRaceCategory.MIXED_40);
-
     final LapRace race;
 
     String year;

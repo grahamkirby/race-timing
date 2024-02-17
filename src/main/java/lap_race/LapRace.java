@@ -27,8 +27,6 @@ public class LapRace extends Race {
 
     int number_of_legs;
 
-    String leg_times_swap_string;
-
     Team[] entries;
     TeamResult[] overall_results;
     Map<Category, List<Team>> prize_winners = new HashMap<>();
@@ -140,7 +138,6 @@ public class LapRace extends Race {
 
         for (int i = 0; i < raw_result_index; i++) {
             raw_results[i].setRecordedFinishTime(raw_results[raw_result_index].getRecordedFinishTime());
-            raw_results[i].setInterpolatedTime(true);
 
             String comment = "Time not recorded. No basis for interpolation so set to first recorded time.";
             raw_results[i].appendComment(comment);
@@ -162,7 +159,7 @@ public class LapRace extends Race {
 
                 for (int i = previous_non_null_time_index + 1; i < raw_result_index; i++) {
                     raw_results[i].setRecordedFinishTime(raw_results[i - 1].getRecordedFinishTime().plus(time_step));
-                    raw_results[i].setInterpolatedTime(true);
+//                    raw_results[i].setInterpolatedTime(true);
 
 
                     String comment = "Time not recorded. Time interpolated.";
@@ -172,7 +169,7 @@ public class LapRace extends Race {
             else {
                 for (int i = previous_non_null_time_index + 1; i < raw_result_index; i++) {
                     raw_results[i].setRecordedFinishTime(raw_results[previous_non_null_time_index].getRecordedFinishTime());
-                    raw_results[i].setInterpolatedTime(true);
+//                    raw_results[i].setInterpolatedTime(true);
 
                     String comment = "Time not recorded. No basis for interpolation so set to last recorded time.";
                     raw_results[i].appendComment(comment);
