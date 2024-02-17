@@ -27,7 +27,7 @@ public class LegResult implements Comparable<LegResult> {
     }
 
     @Override
-    public int compareTo(LegResult o) {
+    public int compareTo(final LegResult o) {
 
         // Where the time is the same, use the recording order.
         if (duration().equals(o.duration())) {

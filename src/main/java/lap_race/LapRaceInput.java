@@ -41,10 +41,11 @@ public class LapRaceInput {
     private void constructFilePaths() {
 
         input_directory_path = race.getWorkingDirectoryPath().resolve("input");
+
         entries_path = input_directory_path.resolve(entries_filename);
         raw_results_path = input_directory_path.resolve(raw_results_filename);
-        paper_results_path = paper_results_filename == null ? null : input_directory_path.resolve(paper_results_filename);
-        annotations_path = annotations_filename == null ? null : input_directory_path.resolve(annotations_filename);
+        paper_results_path = paper_results_filename != null ? input_directory_path.resolve(paper_results_filename) : null;
+        annotations_path = annotations_filename != null ? input_directory_path.resolve(annotations_filename): null;
     }
 
     Team[] loadEntries() throws IOException {
@@ -81,6 +82,7 @@ public class LapRaceInput {
 
         for (Team team : entries)
             if (team != null && team.bib_number == bib_number) return true;
+
         return false;
     }
 
@@ -88,6 +90,7 @@ public class LapRaceInput {
 
         for (Team team : entries)
             if (team != null && team.name.equals(team_name)) return true;
+
         return false;
     }
 
@@ -95,13 +98,13 @@ public class LapRaceInput {
 
         final List<RawResult> raw_results = new ArrayList<>();
 
-        for (String line : Files.readAllLines(raw_results_path))
+        for (final String line : Files.readAllLines(raw_results_path))
             loadRawResult(raw_results, line);
 
         number_of_raw_results = raw_results.size();
 
         if (paper_results_path != null)
-            for (String line : Files.readAllLines(paper_results_path))
+            for (final String line : Files.readAllLines(paper_results_path))
                 loadRawResult(raw_results, line);
 
         return raw_results.toArray(new RawResult[0]);
@@ -113,55 +116,66 @@ public class LapRaceInput {
 
     private static void loadRawResult(final List<RawResult> raw_results, String line) {
 
-        int comment_start_index = line.indexOf("#");
+        final int comment_start_index = line.indexOf("#");
         if (comment_start_index > -1) line = line.substring(0, comment_start_index);
 
         if (!line.isBlank()) {
 
-            RawResult result;
             try {
-                result = new RawResult(line);
+                final RawResult result = new RawResult(line);
+
+                checkOrdering(raw_results, result);
+                raw_results.add(result);
             }
-            catch (NumberFormatException e) {
-                return;
+            catch (NumberFormatException ignored) {
             }
-
-//            if (result.getBibNumber() == null && result.getRecordedFinishTime() != null)
-//                result.appendComment("Time but not bib number recorded electronically.");
-
-            final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
-
-            if (result.getRecordedFinishTime() != null && previous_result != null && previous_result.getRecordedFinishTime() != null && previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0)
-                throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
-
-            raw_results.add(result);
         }
+    }
+
+    private static void checkOrdering(List<RawResult> raw_results, RawResult result) {
+
+        final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
+
+        if (resultsAreOutOfOrder(result, previous_result))
+            throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
+    }
+
+    private static boolean resultsAreOutOfOrder(RawResult result, RawResult previous_result) {
+
+        return result.getRecordedFinishTime() != null &&
+                previous_result != null && previous_result.getRecordedFinishTime() != null &&
+                previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0;
     }
 
     public void loadTimeAnnotations(RawResult[] raw_results) throws IOException {
 
         if (annotations_path != null) {
 
-            List<String> lines = Files.readAllLines(annotations_path);
+            final List<String> lines = Files.readAllLines(annotations_path);
 
+            // Skip header line.
             for (int line_index = 1; line_index < lines.size(); line_index++) {
 
-                String[] elements = lines.get(line_index).split("\t");
+                final String[] elements = lines.get(line_index).split("\t");
 
-                if (elements[0].equals("Update")) {
-
-                    final int position = Integer.parseInt(elements[1]);
-                    RawResult raw_result = raw_results[position - 1];
-
-                    if (elements[2].equals("?")) raw_result.setBibNumber(null);
-                    else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
-
-                    if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);
-                    else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(Race.parseTime(elements[3]));
-
-                    if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
-                }
+                // May add insertion option later.
+                if (elements[0].equals("Update"))
+                    updateResult(raw_results, elements);
             }
         }
+    }
+
+    private static void updateResult(RawResult[] raw_results, String[] elements) {
+
+        final int position = Integer.parseInt(elements[1]);
+        final RawResult raw_result = raw_results[position - 1];
+
+        if (elements[2].equals("?")) raw_result.setBibNumber(null);
+        else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
+
+        if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);
+        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(Race.parseTime(elements[3]));
+
+        if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
     }
 }
