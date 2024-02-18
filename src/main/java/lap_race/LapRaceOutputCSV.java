@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class LapRaceOutputCSV extends LapRaceOutput {
 
-    public static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
+    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
     public LapRaceOutputCSV(final LapRace results) {
         super(results);
@@ -48,14 +48,14 @@ public class LapRaceOutputCSV extends LapRaceOutput {
     }
 
     @Override
-    public void printLegResults(final int leg) throws IOException {
+    public void printLegResults(final int leg_number) throws IOException {
 
-        final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv");
+        final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg_number + "_" + year + ".csv");
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
 
-            printLegResultsHeader(csv_writer, leg);
-            printLegResults(csv_writer, getLegResults(leg));
+            printLegResultsHeader(csv_writer, leg_number);
+            printLegResults(csv_writer, getLegResults(leg_number));
         }
     }
 
@@ -84,9 +84,10 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (int leg = 1; leg <= race.number_of_legs; leg++) {
-            writer.append("Runners ").append(String.valueOf(leg)).append(",Leg ").append(String.valueOf(leg)).append(",");
-            if (leg < race.number_of_legs) writer.append("Split ").append(String.valueOf(leg)).append(",");
+        for (int leg_number = 1; leg_number <= race.number_of_legs; leg_number++) {
+
+            writer.append("Runners ").append(String.valueOf(leg_number)).append(",Leg ").append(String.valueOf(leg_number)).append(",");
+            if (leg_number < race.number_of_legs) writer.append("Split ").append(String.valueOf(leg_number)).append(",");
         }
 
         writer.append("Total\n");
@@ -118,25 +119,26 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         boolean any_previous_leg_dnf = false;
 
-        for (int leg = 1; leg <= race.number_of_legs; leg++) {
+        for (int leg_number = 1; leg_number <= race.number_of_legs; leg_number++) {
 
-            final LegResult leg_result = result.leg_results[leg - 1];
+            final LegResult leg_result = result.leg_results[leg_number - 1];
 
-            writer.append(team.runners[leg-1]);
-            addMassStartAnnotation(writer, leg_result, leg);
+            writer.append(team.runners[leg_number-1]);
+            addMassStartAnnotation(writer, leg_result, leg_number);
+
             writer.append(",");
             writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration())).append(",");
-            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg)));
+            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg_number)));
 
-            if (leg < race.number_of_legs) writer.append(",");
+            if (leg_number < race.number_of_legs) writer.append(",");
             if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
 
-    private void printLegResultsHeader(final OutputStreamWriter writer, final int leg) throws IOException {
+    private void printLegResultsHeader(final OutputStreamWriter writer, final int leg_number) throws IOException {
 
         writer.append("Pos,Runner");
-        if (race.paired_legs[leg-1]) writer.append("s");
+        if (race.paired_legs[leg_number-1]) writer.append("s");
         writer.append(",Time\n");
     }
 
@@ -181,15 +183,14 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameDuration(leg_results, result, result_index);
 
-        if (highest_index_with_same_duration > result_index) {
+        if (highest_index_with_same_duration > result_index)
 
             // Record the same position for all the results with equal times.
             for (int i = result_index; i <= highest_index_with_same_duration; i++)
                 leg_results[i].position_string = result_index + 1 + "=";
-        }
-        else {
+
+        else
             result.position_string = String.valueOf(result_index + 1);
-        }
 
         return highest_index_with_same_duration;
     }
@@ -198,7 +199,9 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         int highest_index_with_same_duration = result_index;
 
-        while (highest_index_with_same_duration + 1 < leg_results.length && result.duration().equals(leg_results[highest_index_with_same_duration + 1].duration()))
+        while (highest_index_with_same_duration + 1 < leg_results.length &&
+                result.duration().equals(leg_results[highest_index_with_same_duration + 1].duration()))
+
             highest_index_with_same_duration++;
 
         return highest_index_with_same_duration;

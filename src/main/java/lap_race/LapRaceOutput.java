@@ -64,12 +64,12 @@ public abstract class LapRaceOutput {
         return total;
     }
 
-    LegResult[] getLegResults(final int leg) {
+    LegResult[] getLegResults(final int leg_number) {
 
         final LegResult[] leg_results = new LegResult[race.overall_results.length];
 
         for (int i = 0; i < leg_results.length; i++)
-            leg_results[i] = race.overall_results[i].leg_results[leg-1];
+            leg_results[i] = race.overall_results[i].leg_results[leg_number-1];
 
         // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
         // Ordering for DNF results doesn't matter since they're omitted in output.

@@ -35,7 +35,7 @@ public class LapRaceOutputText extends LapRaceOutput {
     }
 
     @Override
-    public void printCombined() throws IOException {
+    public void printCombined() {
         throw new UnsupportedOperationException();
     }
 
@@ -57,14 +57,18 @@ public class LapRaceOutputText extends LapRaceOutput {
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final String header = "Category: " + category.shortName();
+        final List<Team> category_prize_winners = race.prize_winners.get(category);
 
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        final List<Team> category_prize_winners = race.prize_winners.get(category);
-
         if (category_prize_winners.isEmpty())
             writer.append("No results\n");
+
+        printPrizes(category_prize_winners, writer);
+    }
+
+    private void printPrizes(List<Team> category_prize_winners, OutputStreamWriter writer) throws IOException {
 
         int position = 1;
         for (final Team team : category_prize_winners) {
@@ -80,83 +84,124 @@ public class LapRaceOutputText extends LapRaceOutput {
         writer.append("\n\n");
     }
 
-    public void printCollatedTimes() throws IOException {
+    public void printCollatedResults() throws IOException {
 
         final Path collated_times_text_path = output_directory_path.resolve(collated_times_filename + ".txt");
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(collated_times_text_path))) {
 
-            Map<Integer, Integer> leg_finished_count = new HashMap<>();
+            final Map<Integer, Integer> leg_finished_count = printResults(writer);
+            final List<Duration> times_with_missing_bib_numbers = getTimesWithMissingBibNumbers();
+            final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(leg_finished_count);
 
-            for (int i = 0; i < race.getRawResults().length; i++) {
-
-                RawResult raw_result = race.getRawResults()[i];
-
-                if (i == race.input.getNumberOfRawResults() - 1 && race.input.getNumberOfRawResults() < race.getRawResults().length)
-                    raw_result.appendComment("Remaining times from paper recording sheet only.");
-
-                final Integer bib_number = raw_result.getBibNumber();
-                final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
-
-                writer.append(bib_number != null ? String.valueOf(bib_number) : "?").
-                        append("\t").
-                        append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
-
-                StringBuilder comment = new StringBuilder(raw_result.getComment());
-
-                if (raw_result.getLegNumber() > 0) {
-                    writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
-                    if (legs_already_finished >= raw_result.getLegNumber()) {
-                        comment.append("Leg ").
-                                append(raw_result.getLegNumber()).
-                                append(" finisher was runner ").
-                                append(legs_already_finished + 1).
-                                append(" to finish for team.");
-                    }
-                }
-
-                if (!comment.isEmpty()) {
-                    if (raw_result.getLegNumber() == 0) writer.append("\t");
-                    writer.append("\t# ").append(comment);
-                }
-
-                leg_finished_count.put(bib_number, legs_already_finished + 1);
-
-                writer.append("\n");
-            }
-
-            List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
-
-            for (Team team : race.entries) {
-
-                int legs_finished = leg_finished_count.getOrDefault(team.bib_number, 0);
-                for (int i = 0; i < race.number_of_legs - legs_finished; i++)
-                    bib_numbers_with_missing_times.add(team.bib_number);
-            }
-
-            bib_numbers_with_missing_times.sort(Integer::compareTo);
-
-            List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
-
-            for (int i = 0; i < race.getRawResults().length; i++) {
-
-                if (race.getRawResults()[i].getBibNumber() == null)
-                    times_with_missing_bib_numbers.add(race.getRawResults()[i].getRecordedFinishTime());
-            }
-
-            if (!bib_numbers_with_missing_times.isEmpty()) {
-
-                writer.append("\nDiscrepancies:\n-------------\n\nBib numbers with missing times: ");
-                for (int i = 0; i < bib_numbers_with_missing_times.size(); i++) {
-                    if (i > 0) writer.append(", ");
-                    writer.append(String.valueOf(bib_numbers_with_missing_times.get(i)));
-                }
-
-                writer.append("\n\nTimes with missing bib numbers:\n\n");
-                for (Duration timesWithMissingBibNumber : times_with_missing_bib_numbers)
-                    writer.append(format(timesWithMissingBibNumber)).append("\n");
-            }
-
+            if (!bib_numbers_with_missing_times.isEmpty())
+                printDiscrepancies(bib_numbers_with_missing_times, times_with_missing_bib_numbers, writer);
         }
+    }
+
+    private Map<Integer, Integer> printResults(final OutputStreamWriter writer) throws IOException {
+
+        final Map<Integer, Integer> leg_finished_count = new HashMap<>();
+
+        for (int i = 0; i < race.getRawResults().length; i++) {
+
+            final RawResult raw_result = race.getRawResults()[i];
+            final boolean last_electronically_recorded_result = i == race.input.getNumberOfRawResults() - 1;
+
+            if (last_electronically_recorded_result && race.input.getNumberOfRawResults() < race.getRawResults().length)
+                raw_result.appendComment("Remaining times from paper recording sheet only.");
+
+            printResult(raw_result, leg_finished_count, writer);
+        }
+
+        return leg_finished_count;
+    }
+
+    private List<Duration> getTimesWithMissingBibNumbers() {
+
+        final List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
+
+        for (final RawResult raw_result : race.getRawResults()) {
+
+            if (raw_result.getBibNumber() == null)
+                times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());
+        }
+
+        return times_with_missing_bib_numbers;
+    }
+
+    private List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
+
+        final List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
+
+        for (final Team team : race.entries) {
+
+            final int number_of_legs_finished = leg_finished_count.getOrDefault(team.bib_number, 0);
+
+            for (int i = 0; i < race.number_of_legs - number_of_legs_finished; i++)
+                bib_numbers_with_missing_times.add(team.bib_number);
+        }
+
+        return bib_numbers_with_missing_times;
+    }
+
+    private static void printDiscrepancies(final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers, final OutputStreamWriter writer) throws IOException {
+
+        bib_numbers_with_missing_times.sort(Integer::compareTo);
+
+        writer.append("\nDiscrepancies:\n-------------\n\nBib numbers with missing times: ");
+
+        boolean first = true;
+        for (final int bib_number : bib_numbers_with_missing_times) {
+            if (!first) writer.append(", ");
+            first = false;
+            writer.append(String.valueOf(bib_number));
+        }
+
+        writer.append("\n\nTimes with missing bib numbers:\n\n");
+
+        for (final Duration time : times_with_missing_bib_numbers)
+            writer.append(format(time)).append("\n");
+    }
+
+    private void printResult(final RawResult raw_result, final Map<Integer, Integer> leg_finished_count, final OutputStreamWriter writer) throws IOException {
+
+        final Integer bib_number = raw_result.getBibNumber();
+
+        final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
+        leg_finished_count.put(bib_number, legs_already_finished + 1);
+
+        printBibNumberAndTime(raw_result, bib_number, writer);
+        printLegNumber(raw_result, legs_already_finished, writer);
+        printComment(raw_result, writer);
+    }
+
+    private static void printBibNumberAndTime(final RawResult raw_result, final Integer bib_number, final OutputStreamWriter writer) throws IOException {
+
+        writer.append(bib_number != null ? String.valueOf(bib_number) : "?").
+                append("\t").
+                append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
+    }
+
+    private static void printLegNumber(final RawResult raw_result, final int legs_already_finished, final OutputStreamWriter writer) throws IOException {
+
+        if (raw_result.getLegNumber() > 0) {
+
+            writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
+
+            if (legs_already_finished >= raw_result.getLegNumber())
+                raw_result.appendComment("Leg "+ raw_result.getLegNumber() + " finisher was runner " + (legs_already_finished + 1) + " to finish for team.");
+        }
+    }
+
+    private static void printComment(final RawResult raw_result, final OutputStreamWriter writer) throws IOException {
+
+        if (!raw_result.getComment().isEmpty()) {
+
+            if (raw_result.getLegNumber() == 0) writer.append("\t");
+            writer.append("\t# ").append(raw_result.getComment());
+        }
+
+        writer.append("\n");
     }
 }
