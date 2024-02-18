@@ -10,8 +10,8 @@ import java.util.Properties;
 public abstract class Race {
 
     protected static final String DUMMY_DURATION_STRING = "23:59:59";
-    public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     protected static final String ZERO_TIME_STRING = "0:0:0";
+    public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     public static final Duration ZERO_TIME = parseTime(ZERO_TIME_STRING);
 
     protected Properties properties;

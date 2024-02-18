@@ -18,6 +18,7 @@ public class LapRace extends Race {
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
     private record ResultWithLegIndex(TeamResult result, int leg_index) {}
+    private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,7 +106,6 @@ public class LapRace extends Race {
         super.readProperties();
 
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
-        //leg_times_swap_string = getPropertyWithDefault("LEG_TIME_SWAPS", null);
         start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
     }
 
@@ -131,141 +131,200 @@ public class LapRace extends Race {
 
     private void interpolateMissingTimes() {
 
+        final int index_of_first_result_with_recorded_time = getIndexOfFirstResultWithRecordedTime();
+
+        setTimesForResultsBeforeFirstRecordedTime(index_of_first_result_with_recorded_time);
+        setTimesForResultsAfterFirstRecordedTime(index_of_first_result_with_recorded_time);
+    }
+
+    private int getIndexOfFirstResultWithRecordedTime() {
+
         int raw_result_index = 0;
-        int previous_non_null_time_index;
-
         while (raw_result_index < raw_results.length && raw_results[raw_result_index].getRecordedFinishTime() == null) raw_result_index++;
+        return raw_result_index;
+    }
 
-        for (int i = 0; i < raw_result_index; i++) {
-            raw_results[i].setRecordedFinishTime(raw_results[raw_result_index].getRecordedFinishTime());
+    private void setTimesForResultsAfterFirstRecordedTime(final int index_of_first_result_with_recorded_time) {
 
-            String comment = "Time not recorded. No basis for interpolation so set to first recorded time.";
-            raw_results[i].appendComment(comment);
+        int i = index_of_first_result_with_recorded_time;
+
+        while (i < raw_results.length) {
+
+            while (i < raw_results.length && raw_results[i].getRecordedFinishTime() != null) i++;
+            final int missing_times_start_index = i - 1;
+
+            while (i < raw_results.length && raw_results[i].getRecordedFinishTime() == null) i++;
+            final int missing_times_end_index = i;
+
+            setTimesForResultsAfterFirstRecordedTime(missing_times_start_index, missing_times_end_index);
         }
+    }
 
-        while (raw_result_index < raw_results.length) {
+    private void setTimesForResultsAfterFirstRecordedTime(final int missing_times_start_index, final int missing_times_end_index) {
 
-            while (raw_result_index < raw_results.length && raw_results[raw_result_index].getRecordedFinishTime() != null) raw_result_index++;
-            previous_non_null_time_index = raw_result_index - 1;
+        if (missing_times_end_index < raw_results.length)
+            interpolateTimes(missing_times_start_index, missing_times_end_index);
 
-            while (raw_result_index < raw_results.length && raw_results[raw_result_index].getRecordedFinishTime() == null) raw_result_index++;
+        else
+            setTimesForResultsAfterLastRecordedTime(missing_times_start_index);
+    }
 
-            if (raw_result_index < raw_results.length) {
-                final int number_of_consecutive_null_times = raw_result_index - previous_non_null_time_index - 1;
+    private void interpolateTimes(final int missing_times_start_index, final int missing_times_end_index) {
 
-                Duration time_step = raw_results[raw_result_index].getRecordedFinishTime().
-                        minus(raw_results[previous_non_null_time_index].getRecordedFinishTime()).
-                        dividedBy(number_of_consecutive_null_times + 1);
+        final Duration start_time = raw_results[missing_times_start_index].getRecordedFinishTime();
+        final Duration end_time = raw_results[missing_times_end_index].getRecordedFinishTime();
 
-                for (int i = previous_non_null_time_index + 1; i < raw_result_index; i++) {
-                    raw_results[i].setRecordedFinishTime(raw_results[i - 1].getRecordedFinishTime().plus(time_step));
-//                    raw_results[i].setInterpolatedTime(true);
+        final int number_of_steps = missing_times_end_index - missing_times_start_index;
+        final Duration time_step = end_time.minus(start_time).dividedBy(number_of_steps);
 
+        interpolateTimes(missing_times_start_index, missing_times_end_index, time_step);
+    }
 
-                    String comment = "Time not recorded. Time interpolated.";
-                    raw_results[i].appendComment(comment);
-                }
-            }
-            else {
-                for (int i = previous_non_null_time_index + 1; i < raw_result_index; i++) {
-                    raw_results[i].setRecordedFinishTime(raw_results[previous_non_null_time_index].getRecordedFinishTime());
-//                    raw_results[i].setInterpolatedTime(true);
+    private void setTimesForResultsBeforeFirstRecordedTime(final int index_of_first_result_with_recorded_time) {
 
-                    String comment = "Time not recorded. No basis for interpolation so set to last recorded time.";
-                    raw_results[i].appendComment(comment);
-                }
-            }
+        final Duration first_recorded_time = raw_results[index_of_first_result_with_recorded_time].getRecordedFinishTime();
+
+        for (int i = 0; i < index_of_first_result_with_recorded_time; i++) {
+
+            raw_results[i].setRecordedFinishTime(first_recorded_time);
+            raw_results[i].appendComment("Time not recorded. No basis for interpolation so set to first recorded time.");
+        }
+    }
+
+    private void interpolateTimes(final int missing_times_start_index, final int missing_times_end_index, final Duration time_step) {
+
+        for (int i = missing_times_start_index + 1; i < missing_times_end_index; i++) {
+
+            final Duration previous_finish_time = raw_results[i - 1].getRecordedFinishTime();
+
+            raw_results[i].setRecordedFinishTime(previous_finish_time.plus(time_step));
+            raw_results[i].appendComment("Time not recorded. Time interpolated.");
+        }
+    }
+
+    private void setTimesForResultsAfterLastRecordedTime(final int missing_times_start_index) {
+
+        final Duration last_recorded_time = raw_results[missing_times_start_index].getRecordedFinishTime();
+
+        for (int i = missing_times_start_index + 1; i < raw_results.length; i++) {
+
+            raw_results[i].setRecordedFinishTime(last_recorded_time);
+            raw_results[i].appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
         }
     }
 
     private void guessMissingBibNumbers() {
 
-        record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
+        // Missing bib numbers are only guessed if a full set of finish times has been recorded,
+        // i.e. all runners have finished.
 
-        if (raw_results.length != entries.length * number_of_legs) {
+        if (raw_results.length != entries.length * number_of_legs)
+            recordCommentsForNonGuessedResults();
+        else
+            guessMissingBibNumbersWithAllTimesRecorded();
+    }
 
-            for (int i = 0; i < raw_results.length; i++) {
-                if (raw_results[i].getBibNumber() == null) raw_results[i].appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
-            }
-        }
-        else {
+   private void guessMissingBibNumbersWithAllTimesRecorded() {
 
-            int position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
-            while (position_of_first_missing_bib_number > 0) {
+        int position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
+        while (position_of_first_missing_bib_number > 0) {
 
-                TeamSummaryAtPosition[] summaries = new TeamSummaryAtPosition[entries.length];
-                for (int i = 0; i < summaries.length; i++) {
+            final TeamSummaryAtPosition[] summaries = new TeamSummaryAtPosition[entries.length];
 
-                    int bib_number = entries[i].bib_number;
-                    int finishes_before = getNumberOfTeamFinishesBefore(position_of_first_missing_bib_number, bib_number);
-                    int finishes_after = getNumberOfTeamFinishesAfter(position_of_first_missing_bib_number, bib_number);
-                    Duration previous_finish_time = getPreviousTeamFinishTime(position_of_first_missing_bib_number, bib_number);
-                    Duration next_finish_time = getNextTeamFinishTime(position_of_first_missing_bib_number, bib_number);
-                    summaries[i] = new TeamSummaryAtPosition(bib_number, finishes_before, finishes_after, previous_finish_time, next_finish_time);
-                }
+            summariseCurrentState(summaries, position_of_first_missing_bib_number);
+            sort(summaries);
 
-                Arrays.sort(summaries, Comparator.comparing(o -> o.previous_finish));
-                Arrays.sort(summaries, Comparator.comparing(o -> o.next_finish));
-                Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_after));
-                Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_before));
+            raw_results[position_of_first_missing_bib_number - 1].setBibNumber(summaries[0].team_number);
+            raw_results[position_of_first_missing_bib_number - 1].appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.");
 
-                raw_results[position_of_first_missing_bib_number - 1].setBibNumber(summaries[0].team_number);
-                raw_results[position_of_first_missing_bib_number - 1].appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.");
-
-                position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
-            }
+            position_of_first_missing_bib_number = getPositionOfFirstMissingBibNumber();
         }
     }
 
+    private void sort(final TeamSummaryAtPosition[] summaries) {
 
-    private int getNumberOfTeamFinishesBefore(int position, int bib_number) {
+        Arrays.sort(summaries, Comparator.comparing(o -> o.previous_finish));
+        Arrays.sort(summaries, Comparator.comparing(o -> o.next_finish));
+        Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_after));
+        Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_before));
+    }
+
+    private void summariseCurrentState(final TeamSummaryAtPosition[] summaries, final int position_of_first_missing_bib_number) {
+
+        for (int i = 0; i < summaries.length; i++) {
+
+            final int bib_number = entries[i].bib_number;
+            final int finishes_before = getNumberOfTeamFinishesBefore(position_of_first_missing_bib_number, bib_number);
+            final int finishes_after = getNumberOfTeamFinishesAfter(position_of_first_missing_bib_number, bib_number);
+
+            final Duration previous_finish_time = getPreviousTeamFinishTime(position_of_first_missing_bib_number, bib_number);
+            final Duration next_finish_time = getNextTeamFinishTime(position_of_first_missing_bib_number, bib_number);
+
+            summaries[i] = new TeamSummaryAtPosition(bib_number, finishes_before, finishes_after, previous_finish_time, next_finish_time);
+        }
+    }
+
+    private void recordCommentsForNonGuessedResults() {
+
+        for (final RawResult rawResult : raw_results)
+            if (rawResult.getBibNumber() == null)
+                rawResult.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
+    }
+
+    private int getNumberOfTeamFinishesBefore(final int starting_index, final int bib_number) {
 
         int count = 0;
-        for (int i = position - 1; i > 0; i--) {
-            Integer bibNumber = raw_results[i - 1].getBibNumber();
-            if (bibNumber != null && bibNumber == bib_number) count++;
+        for (int i = starting_index - 1; i > 0; i--) {
+
+            final Integer result_bib_number = raw_results[i - 1].getBibNumber();
+            if (result_bib_number != null && result_bib_number == bib_number) count++;
         }
 
         return count;
     }
 
-    private int getNumberOfTeamFinishesAfter(int position, int bib_number) {
+    private int getNumberOfTeamFinishesAfter(final int starting_index, final int bib_number) {
 
         int count = 0;
-        for (int i = position + 1; i <= raw_results.length; i++) {
-            Integer bibNumber = raw_results[i - 1].getBibNumber();
-            if (bibNumber != null && bibNumber == bib_number) count++;
+        for (int i = starting_index + 1; i <= raw_results.length; i++) {
+
+            final Integer result_bib_number = raw_results[i - 1].getBibNumber();
+            if (result_bib_number != null && result_bib_number == bib_number) count++;
         }
 
         return count;
     }
 
-    private Duration getPreviousTeamFinishTime(int position, int bib_number) {
+    private Duration getPreviousTeamFinishTime(final int starting_index, final int bib_number) {
 
-        for (int i = position - 1; i > 0; i--) {
-            Integer bibNumber = raw_results[i - 1].getBibNumber();
-            if (bibNumber != null && raw_results[i - 1].getBibNumber() == bib_number) return raw_results[i - 1].getRecordedFinishTime();
+        for (int i = starting_index - 1; i > 0; i--) {
+
+            final RawResult result = raw_results[i - 1];
+            final Integer result_bib_number = result.getBibNumber();
+
+            if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();
         }
 
         return ZERO_TIME;
     }
 
-    private Duration getNextTeamFinishTime(int position, int bib_number) {
+    private Duration getNextTeamFinishTime(final int starting_index, final int bib_number) {
 
-        for (int i = position + 1; i <= raw_results.length; i++) {
-            Integer bibNumber = raw_results[i - 1].getBibNumber();
-            if (bibNumber != null && raw_results[i - 1].getBibNumber() == bib_number) return raw_results[i - 1].getRecordedFinishTime();
+        for (int i = starting_index + 1; i <= raw_results.length; i++) {
+
+            final RawResult result = raw_results[i - 1];
+            final Integer result_bib_number = result.getBibNumber();
+
+            if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();
         }
 
         return ZERO_TIME;
     }
-
 
     private int getPositionOfFirstMissingBibNumber() {
 
-        for (int i = 0; i < raw_results.length; i++) {
+        for (int i = 0; i < raw_results.length; i++)
             if (raw_results[i].getBibNumber() == null) return i + 1;
-        }
 
         return 0;
     }
@@ -290,7 +349,7 @@ public class LapRace extends Race {
         // Example: MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,23:59:59,2:36:00
     }
 
-    private void setMassStartTimes(String[] mass_start_elapsed_times_strings) {
+    private void setMassStartTimes(final String[] mass_start_elapsed_times_strings) {
 
         for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
             setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
@@ -330,7 +389,7 @@ public class LapRace extends Race {
 
         for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--) {
 
-            if (start_times_for_mass_starts[leg_index].equals(parseTime(DUMMY_DURATION_STRING)))
+            if (start_times_for_mass_starts[leg_index].equals(DUMMY_DURATION))
                 start_times_for_mass_starts[leg_index] = start_times_for_mass_starts[leg_index+1];
         }
     }
@@ -366,7 +425,7 @@ public class LapRace extends Race {
         }
     }
 
-    private static IndividualLegStart getIndividualLegStart(String individual_leg_starts_strings) {
+    private static IndividualLegStart getIndividualLegStart(final String individual_leg_starts_strings) {
 
         final String[] split = individual_leg_starts_strings.split("/");
         final int bib_number = Integer.parseInt(split[0]);
@@ -386,57 +445,48 @@ public class LapRace extends Race {
 
     private void fillLegFinishTimes() {
 
-        for (final RawResult raw_result : raw_results) {
+        recordLegResults();
+        sortLegResults();
+    }
 
-            if (raw_result.getBibNumber() != null) {
-                final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
-                final TeamResult result = overall_results[team_index];
-                final LegResult[] leg_results = result.leg_results;
+    private void recordLegResults() {
 
-                final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
+        for (final RawResult raw_result : raw_results)
+            if (raw_result.getBibNumber() != null)
+                recordLegResult(raw_result);
+    }
 
-                leg_results[leg_index].finish_time = raw_result.getRecordedFinishTime().plus(start_offset);
+    private void recordLegResult(final RawResult raw_result) {
 
-                // Provisionally this leg is not DNF since a finish time was recorded.
-                // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
-                leg_results[leg_index].DNF = false;
+        final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
+        final TeamResult result = overall_results[team_index];
+        final LegResult[] leg_results = result.leg_results;
 
-                if (raw_result.getLegNumber() == null)
-                    leg_results[leg_index].leg_number = leg_index + 1;
-                else
-                    leg_results[leg_index].leg_number = raw_result.getLegNumber();
-            }
-        }
+        final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
 
-//        if (leg_times_swap_string != null) swapLegTimes();
+        leg_results[leg_index].finish_time = raw_result.getRecordedFinishTime().plus(start_offset);
 
+        // Provisionally this leg is not DNF since a finish time was recorded.
+        // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
+        leg_results[leg_index].DNF = false;
 
+        // Check for an explicitly recorded leg number.
+        if (raw_result.getLegNumber() == null)
+            leg_results[leg_index].leg_number = leg_index + 1;
+        else
+            leg_results[leg_index].leg_number = raw_result.getLegNumber();
+    }
 
-        for (TeamResult team_result : overall_results) {
+    private void sortLegResults() {
+
+        for (final TeamResult team_result : overall_results) {
+
             Arrays.sort(team_result.leg_results, Comparator.comparingInt(o -> o.leg_number));
 
             for (int i = 0; i < team_result.leg_results.length; i++)
                 team_result.leg_results[i].leg_number = i+1;
         }
     }
-
-//    private void swapLegTimes() {
-//        for (final String leg_time_swap : leg_times_swap_string.split(","))
-//            swapLegTimes(leg_time_swap);
-//    }
-//
-//    private void swapLegTimes(final String leg_time_swap) {
-//
-//        final ResultWithLegIndex result_with_leg = getResultWithLegIndex(leg_time_swap);
-//
-//        final LegResult[] leg_results = result_with_leg.result().leg_results;
-//        final int leg_index = result_with_leg.leg_index();
-//
-//        final Duration temp = leg_results[leg_index - 1].finish_time;
-//
-//        leg_results[leg_index - 1].finish_time = leg_results[leg_index].finish_time;
-//        leg_results[leg_index].finish_time = temp;
-//    }
 
     private ResultWithLegIndex getResultWithLegIndex(final String bib_and_leg) {
 
@@ -494,7 +544,7 @@ public class LapRace extends Race {
         // Time of the relevant mass start if that was earlier that previous leg finish.
         // Null if no previous leg finish time was recorded: no time can be calculated for current leg so DNF.
 
-        final Duration individual_start_time = getIndividualStartTime(leg_results, leg_index);
+        final Duration individual_start_time = getIndividualStartTime(leg_results[leg_index], leg_index);
         final Duration leg_mass_start_time = start_times_for_mass_starts[leg_index];
         final Duration previous_runner_finish_time = leg_index > 0 ? leg_results[leg_index - 1].finish_time : null;
 
@@ -504,10 +554,10 @@ public class LapRace extends Race {
         leg_results[leg_index].in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_runner_finish_time, leg_index);
     }
 
-    private Duration getIndividualStartTime(LegResult[] leg_results, int leg_index) {
+    private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
-        for (IndividualLegStart individual_leg_start : individual_leg_starts)
-            if (individual_leg_start.bib_number == leg_results[leg_index].team.bib_number && individual_leg_start.leg_number == leg_index + 1)
+        for (final IndividualLegStart individual_leg_start : individual_leg_starts)
+            if (individual_leg_start.bib_number == leg_result.team.bib_number && individual_leg_start.leg_number == leg_index + 1)
                 return individual_leg_start.start_time;
 
         return null;
@@ -614,6 +664,6 @@ public class LapRace extends Race {
     }
 
     private void printCollatedTimes() throws IOException {
-        ((LapRaceOutputText)output_text).printCollatedTimes();
+        ((LapRaceOutputText)output_text).printCollatedResults();
     }
 }
