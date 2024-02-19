@@ -72,12 +72,10 @@ public abstract class Race {
         return value == null || value.isBlank() ? default_value : value;
     }
 
-    public static Duration parseTime(String element) {
-
-        element = element.strip();
+    public static Duration parseTime(final String element) {
 
         try {
-            final String[] parts = element.split(":");
+            final String[] parts = element.strip().split(":");
             final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
 
             return Duration.parse(time_as_ISO);
