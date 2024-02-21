@@ -10,6 +10,7 @@ import java.util.Comparator;
 public class LapRaceMissingData {
 
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
+    private record ContiguousSequence(int start_index, int end_index) {}
 
     private final LapRace race;
 
@@ -32,10 +33,14 @@ public class LapRaceMissingData {
         // Missing bib numbers are only guessed if a full set of finish times has been recorded,
         // i.e. all runners have finished.
 
-        if (race.getRawResults().length != race.entries.length * race.number_of_legs)
-            recordCommentsForNonGuessedResults();
-        else
+        if (timesRecordedForAllRunners())
             guessMissingBibNumbersWithAllTimesRecorded();
+        else
+            recordCommentsForNonGuessedResults();
+    }
+
+    private boolean timesRecordedForAllRunners() {
+        return race.getRawResults().length == race.entries.length * race.number_of_legs;
     }
 
     private int getIndexOfFirstResultWithRecordedTime() {
@@ -62,40 +67,51 @@ public class LapRaceMissingData {
 
         while (i < race.getRawResults().length) {
 
-            while (i < race.getRawResults().length && race.getRawResults()[i].getRecordedFinishTime() != null) i++;
-            final int missing_times_start_index = i - 1;
+            final ContiguousSequence sequence = getNextContiguousSequenceWithMissingTimes(i);
+            interpolateTimesForContiguousSequence(sequence);
 
-            while (i < race.getRawResults().length && race.getRawResults()[i].getRecordedFinishTime() == null) i++;
-            final int missing_times_end_index = i;
-
-            setTimesForResultsAfterFirstRecordedTime(missing_times_start_index, missing_times_end_index);
+            i = sequence.end_index + 1;
         }
     }
 
-    private void setTimesForResultsAfterFirstRecordedTime(final int missing_times_start_index, final int missing_times_end_index) {
+    private ContiguousSequence getNextContiguousSequenceWithMissingTimes(final int search_start_index) {
 
-        if (missing_times_end_index < race.getRawResults().length)
-            interpolateTimes(missing_times_start_index, missing_times_end_index);
+        int i = search_start_index;
+
+        while (i < race.getRawResults().length && race.getRawResults()[i].getRecordedFinishTime() != null) i++;
+        final int missing_times_start_index = i;
+
+        while (i < race.getRawResults().length && race.getRawResults()[i].getRecordedFinishTime() == null) i++;
+        final int missing_times_end_index = i - 1;
+
+        return new ContiguousSequence(missing_times_start_index, missing_times_end_index);
+    }
+
+    private void interpolateTimesForContiguousSequence(final ContiguousSequence sequence) {
+
+        if (!isLastResult(sequence.end_index)) {
+
+            final Duration start_time = race.getRawResults()[sequence.start_index - 1].getRecordedFinishTime();
+            final Duration end_time = race.getRawResults()[sequence.end_index + 1].getRecordedFinishTime();
+
+            final int number_of_steps = sequence.end_index - sequence.start_index + 2;
+            final Duration time_step = end_time.minus(start_time).dividedBy(number_of_steps);
+
+            interpolateTimes(sequence, time_step);
+        }
 
         else
-            // Results after the last recorded time get the last recorded time.
-            setTimesForResultsAfterLastRecordedTime(missing_times_start_index);
+            // For results after the last recorded time, use the last recorded time.
+            setTimesForResultsAfterLastRecordedTime(sequence.start_index);
     }
 
-    private void interpolateTimes(final int missing_times_start_index, final int missing_times_end_index) {
-
-        final Duration start_time = race.getRawResults()[missing_times_start_index].getRecordedFinishTime();
-        final Duration end_time = race.getRawResults()[missing_times_end_index].getRecordedFinishTime();
-
-        final int number_of_steps = missing_times_end_index - missing_times_start_index;
-        final Duration time_step = end_time.minus(start_time).dividedBy(number_of_steps);
-
-        interpolateTimes(missing_times_start_index, missing_times_end_index, time_step);
+    private boolean isLastResult(final int end_index) {
+        return end_index == race.getRawResults().length - 1;
     }
 
-    private void interpolateTimes(final int missing_times_start_index, final int missing_times_end_index, final Duration time_step) {
+    private void interpolateTimes(final ContiguousSequence sequence, final Duration time_step) {
 
-        for (int i = missing_times_start_index + 1; i < missing_times_end_index; i++) {
+        for (int i = sequence.start_index; i <= sequence.end_index; i++) {
 
             final Duration previous_finish_time = race.getRawResults()[i - 1].getRecordedFinishTime();
 
@@ -106,9 +122,9 @@ public class LapRaceMissingData {
 
     private void setTimesForResultsAfterLastRecordedTime(final int missing_times_start_index) {
 
-        final Duration last_recorded_time = race.getRawResults()[missing_times_start_index].getRecordedFinishTime();
+        final Duration last_recorded_time = race.getRawResults()[missing_times_start_index - 1].getRecordedFinishTime();
 
-        for (int i = missing_times_start_index + 1; i < race.getRawResults().length; i++) {
+        for (int i = missing_times_start_index; i < race.getRawResults().length; i++) {
 
             race.getRawResults()[i].setRecordedFinishTime(last_recorded_time);
             race.getRawResults()[i].appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
