@@ -1,8 +1,20 @@
+# Any spaces within the working directory path should be escaped with a preceding backslash \.
+# The working directory is the grandparent directory of this file, i.e. the directory containing
+# 'input' and 'output'.
 WORKING_DIRECTORY = /Users/gnck/Documents/Personal/Sport/Running/Fife\ AC/races/Devil's\ Burdens/2024/devils_burdens_2024
+
+# Name of file containing race entries.
 ENTRIES_FILENAME = entries.txt
+
+# Name of file containing raw results.
 RAW_RESULTS_FILENAME = times_original.txt
+
+# Name of file containing results from paper records (optional).
 PAPER_RESULTS_FILENAME = times_additional_from_paper.txt
+
+# Name of file containing additional annotations (optional).
 ANNOTATIONS_FILENAME = times_annotations.txt
+
 YEAR = 2024
 NUMBER_OF_LEGS = 4
 PAIRED_LEGS = 2,3
