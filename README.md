@@ -26,7 +26,7 @@ are awarded the prize in the higher position, and then the younger age category.
 ## Running the software ##
 
 1. Create a new copy of the directory [```src/main/resources/lap_race/devils_burdens/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/lap_race/devils_burdens/sample_config).
-2. In the file ```input/race.config```, update properties as required:
+2. In the file ```input/config.txt```, update properties as required:
    1. WORKING_DIRECTORY: the location of the new directory
    2. ENTRIES_FILENAME: name of the file containing the race entries
    3. RAW_RESULTS_FILENAME: name of the file containing the recorded times
@@ -38,7 +38,7 @@ are awarded the prize in the higher position, and then the younger age category.
    9. MASS_START_ELAPSED_TIMES: mass start time for each leg
    10. DNF_LEGS: legs with recorded times but runners missed a checkpoint
    11. INDIVIDUAL_LEG_STARTS: any runners exceptionally starting at different times
-3. See example file [```race.config```](/lap_race/devils_burdens/sample_config/input/race.config)
+3. See example file [```config.txt```](src/main/resources/lap_race/devils_burdens/sample_config/input/config.txt)
 for examples of required formats.
 4. Copy the files containing race entries and raw results to the ```input``` sub-directory of the
 working directory.
