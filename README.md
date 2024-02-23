@@ -25,7 +25,7 @@ are awarded the prize in the higher position, and then the younger age category.
 
 ## Running the software ##
 
-1. Create a new copy of the directory [```src/main/resources/lap_race/devils_burdens/sample_config```](tree/main/src/main/resources/lap_race/devils_burdens/sample_config).
+1. Create a new copy of the directory [```src/main/resources/lap_race/devils_burdens/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/lap_race/devils_burdens/sample_config).
 2. In the file ```input/race.config```, update properties as required:
    1. WORKING_DIRECTORY: the location of the new directory
    2. ENTRIES_FILENAME: name of the file containing the race entries
