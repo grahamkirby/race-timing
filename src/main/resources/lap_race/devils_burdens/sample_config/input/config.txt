@@ -3,9 +3,19 @@
 # 'input' and 'output'.
 WORKING_DIRECTORY = /path/to/working/directory/
 
+# Name of file containing race entries.
 ENTRIES_FILENAME = entries.txt
-RAW_RESULTS_FILENAME = rawtimes.txt
-YEAR = 2020
+
+# Name of file containing raw results.
+RAW_RESULTS_FILENAME = times_original.txt
+
+# Name of file containing results from paper records (optional).
+PAPER_RESULTS_FILENAME = times_additional_from_paper.txt
+
+# Name of file containing additional annotations (optional).
+ANNOTATIONS_FILENAME = times_annotations.txt
+
+YEAR = 2024
 NUMBER_OF_LEGS = 4
 PAIRED_LEGS = 2,3
 RACE_NAME_FOR_RESULTS = Devil's Burdens
@@ -22,7 +32,3 @@ DNF_LEGS = 32/2,68/4
 # Comma-separated sequence of bib-number/leg-number/start-time for all legs that
 # have an individually recorded start time.
 INDIVIDUAL_LEG_STARTS = 2/1/0:10:00
-
-# Comma-separated sequence bib-number/leg-number for all legs where the runner finished
-# before the runner on the previous leg.
-LEG_TIME_SWAPS = 4/4

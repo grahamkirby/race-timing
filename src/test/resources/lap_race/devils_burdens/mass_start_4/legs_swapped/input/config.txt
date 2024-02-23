@@ -14,6 +14,3 @@ MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,23:59:59,2:36:00
 # recorded but the runners DNF'd the leg.
 DNF_LEGS =
 
-# Comma-separated sequence bib-number/leg-number for all legs where the runner finished
-# before the runner on the previous leg.
-LEG_TIME_SWAPS = 4/4
