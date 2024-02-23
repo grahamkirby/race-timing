@@ -44,7 +44,7 @@ for examples of required formats.
 working directory.
     * example format for race entries: [```entries.txt```](src/main/resources/lap_race/devils_burdens/sample_config/input/entries.txt)
     * example format for raw results: [```rawtimes.txt```](src/main/resources/lap_race/devils_burdens/sample_config/input/rawtimes.txt)
-4. Run the class [```Results```](/src/main/java/lap_race/Results.java),
+4. Run the class [```LapRace```](src/main/java/lap_race/LapRace.java),
 passing the path of the new configuration file as command line parameter (surrounded by double
 quotes, no escaping of spaces).
 5. The results files will be created in the ```output``` sub-directory in CSV and HTML
