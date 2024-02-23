@@ -18,7 +18,6 @@ public class LapRace extends Race {
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
     private record ResultWithLegIndex(TeamResult result, int leg_index) {}
-//    private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,7 +88,7 @@ public class LapRace extends Race {
         fillLegFinishTimes();
         fillDNFs();
         fillLegStartTimes();
-        calculateResults();
+        sortOverallResults();
         allocatePrizes();
 
         printOverallResults();
@@ -277,25 +276,23 @@ public class LapRace extends Race {
 
         leg_results[leg_index].finish_time = raw_result.getRecordedFinishTime().plus(start_offset);
 
+        // Leg number will be zero in most cases, unless explicitly recorded in raw results.
+        leg_results[leg_index].leg_number = raw_result.getLegNumber();
+
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
         leg_results[leg_index].DNF = false;
-
-        // Check for an explicitly recorded leg number.
-        if (raw_result.getLegNumber() == null)
-            leg_results[leg_index].leg_number = leg_index + 1;
-        else
-            leg_results[leg_index].leg_number = raw_result.getLegNumber();
     }
 
     private void sortLegResults() {
 
         for (final TeamResult team_result : overall_results) {
 
+            // Sort by explicitly recorded leg number.
             Arrays.sort(team_result.leg_results, Comparator.comparingInt(o -> o.leg_number));
 
-            for (int i = 0; i < team_result.leg_results.length; i++)
-                team_result.leg_results[i].leg_number = i+1;
+            for (int leg_index = 0; leg_index < team_result.leg_results.length; leg_index++)
+                team_result.leg_results[leg_index].leg_number = leg_index+1;
         }
     }
 
@@ -322,19 +319,20 @@ public class LapRace extends Race {
         // DNF cases where there is no recorded leg result are captured by the
         // default value of LegResult.DNF being true.
 
-        if (dnf_string != null && !dnf_string.isBlank()) {
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(","))
+                fillDNF(individual_dnf_string);
+    }
 
-            for (final String dnf_string : dnf_string.split(",")) {
+    private void fillDNF(final String dnf_string) {
 
-                try {
-                    final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
+        try {
+            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
 
-                    result_with_leg.result.leg_results[result_with_leg.leg_index].DNF = true;
-                }
-                catch (Exception e) {
-                    throw new RuntimeException("illegal DNF time");
-                }
-            }
+            result_with_leg.result.leg_results[result_with_leg.leg_index].DNF = true;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal DNF time");
         }
     }
 
@@ -357,12 +355,12 @@ public class LapRace extends Race {
 
         final Duration individual_start_time = getIndividualStartTime(leg_results[leg_index], leg_index);
         final Duration leg_mass_start_time = start_times_for_mass_starts[leg_index];
-        final Duration previous_runner_finish_time = leg_index > 0 ? leg_results[leg_index - 1].finish_time : null;
+        final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results[leg_index - 1].finish_time : null;
 
-        leg_results[leg_index].start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_runner_finish_time, leg_index);
+        leg_results[leg_index].start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
 
         // Record whether the runner started in a mass start.
-        leg_results[leg_index].in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_runner_finish_time, leg_index);
+        leg_results[leg_index].in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
     }
 
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
@@ -374,7 +372,7 @@ public class LapRace extends Race {
         return null;
     }
 
-    private Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
+    private Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time, final int leg_index) {
 
         // Individual leg time recorded for this runner.
         if (individual_start_time != null) return individual_start_time;
@@ -384,10 +382,10 @@ public class LapRace extends Race {
 
         // No finish time recorded for previous runner, so we can't record a start time for this one.
         // This leg result will be set to DNF by default.
-        if (previous_runner_finish_time == null) return null;
+        if (previous_team_member_finish_time == null) return null;
 
         // Use the earlier of the mass start time and the previous runner's finish time.
-        return mass_start_time.compareTo(previous_runner_finish_time) < 0 ? mass_start_time : previous_runner_finish_time;
+        return mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
@@ -402,7 +400,7 @@ public class LapRace extends Race {
         return mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
-    private void calculateResults() {
+    private void sortOverallResults() {
 
         // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
         // DNF results are sorted in increasing order of bib number.
