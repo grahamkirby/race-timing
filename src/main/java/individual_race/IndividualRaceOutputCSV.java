@@ -1,10 +1,5 @@
 package individual_race;
 
-import lap_race.LapRace;
-import lap_race.LegResult;
-import lap_race.Team;
-import lap_race.TeamResult;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -56,6 +51,7 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
             writer.append(",").
                     append(String.valueOf(overall_result.runner.bib_number)).append(",").
                     append(overall_result.runner.name).append(",").
+                    append(IndividualRace.normaliseClubName(overall_result.runner.club)).append(",").
                     append(overall_result.runner.category.shortName()).append(",").
                     append(overall_result.dnf() ? "DNF" : IndividualRaceOutput.format(overall_result.duration())).append("\n");
         }

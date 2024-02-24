@@ -19,12 +19,35 @@ public class IndividualRace extends Race {
     Result[] overall_results;
     Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
+    static Map<String, String> normalised_club_names = new HashMap<>();
+
+    static {
+        normalised_club_names.put("", "Unatt.");
+        normalised_club_names.put("Unattached", "Unatt.");
+        normalised_club_names.put("None", "Unatt.");
+        normalised_club_names.put("Fife Athletic Club", "Fife AC");
+        normalised_club_names.put("Dundee HH", "Dundee Hawkhill Harriers");
+        normalised_club_names.put("Leven Las Vegas", "Leven Las Vegas RC");
+        normalised_club_names.put("Haddies", "Anster Haddies");
+        normalised_club_names.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
+        normalised_club_names.put("DRR", "Dundee Road Runners");
+        normalised_club_names.put("Perth RR", "Perth Road Runners");
+        normalised_club_names.put("DHH", "Dundee Hawkhill Harriers");
+        normalised_club_names.put("Carnegie H", "Carnegie Harriers");
+        normalised_club_names.put("Dundee RR", "Dundee Road Runners");
+    }
+
     public IndividualRace(final String config_file_path) throws IOException {
         super(config_file_path);
     }
 
     public IndividualRace(final Properties properties) throws IOException {
         super(properties);
+    }
+
+    public static String normaliseClubName(final String club) {
+
+        return normalised_club_names.getOrDefault(club, club);
     }
 
     @Override

@@ -45,7 +45,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final String header = "Category: " + category.shortName();
+        final String header = "Category: " + category.longName();
 
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
@@ -62,7 +62,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
 
             writer.append(String.valueOf(position++)).append(": ").
                     append(result.runner.name).append(" (").
-                    append(result.runner.category.shortName()).append(") ").
+                    append(IndividualRace.normaliseClubName(result.runner.club)).append(") ").
                     append(format(result.duration())).append("\n");
         }
 

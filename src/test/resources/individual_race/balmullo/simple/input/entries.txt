@@ -8,11 +8,11 @@
 8	Martin King	PH Racing	M40
 9	Philip O’Donohue	Carnegie H	M50
 10	Nina Joan Fiona Walker	Carnegie Harriers	FS
-11	Rhys Müllar	Dundee Hawkhill	M80
-12	Leo McKenzie	Dundee HH	M70
+11	Rhys Müllar	Dundee Hawkhill	M70+
+12	Leo McKenzie	Dundee HH	M70+
 13	Neil MacDonald	DRR	M60
 14	Lena K. Maclean	DHH	F40
-15	Cayla Duncan	Dundee Hawkhill Harriers	F70
+15	Cayla Duncan	Dundee Hawkhill Harriers	F70+
 16	Amé MacDonald	Unattached	FU20
 17	Regan Millar	FTR	M50
 18	Hubert Gray	Falkland Trail Runners	M50
