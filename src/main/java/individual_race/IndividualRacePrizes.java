@@ -1,10 +1,6 @@
 package individual_race;
 
 import common.Category;
-import lap_race.LapRace;
-import lap_race.LapRaceCategory;
-import lap_race.Team;
-import lap_race.TeamResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,59 +10,30 @@ public class IndividualRacePrizes {
     final IndividualRace results;
 
     public IndividualRacePrizes(final IndividualRace results) {
-
         this.results = results;
     }
 
     public void allocatePrizes() {
 
-        // Allocate first prize in each category first, in decreasing order of category breadth.
-        // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
-        // prize in open category.
-        allocateFirstPrizes();
-
-        // Now consider other prizes (only available in senior categories).
-        allocateMinorPrizes();
+        for (final Category category : IndividualRaceCategory.values())
+            results.prize_winners.put(category, getPrizeWinners(category));
     }
 
-    private void allocateFirstPrizes() {
+    private List<Runner> getPrizeWinners(final Category category) {
 
-        for (final Category category : LapRaceCategory.values()) {
+        final List<Runner> prize_winners = new ArrayList<>();
 
-            results.prize_winners.put(category, new ArrayList<>());
-            allocateFirstPrize(category);
-        }
-    }
-
-    private void allocateFirstPrize(final Category category) {
-
-        for (final Result result : results.overall_results) {
-            if (prizeWinner(result, category)) {
-                results.prize_winners.get(category).add(result.runner);
-                return;
-            }
-        }
-    }
-
-    private void allocateMinorPrizes() {
-
-        for (final Category category : LapRaceCategory.values())
-            allocateMinorPrizes(category);
-    }
-
-    private void allocateMinorPrizes(final Category category) {
-
-        int position = 2;
+        int position = 1;
 
         for (final Result result : results.overall_results) {
 
-            if (position > category.numberOfPrizes()) return;
+            if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
-            if (prizeWinner(result, category)) {
-                results.prize_winners.get(category).add(result.runner);
+                prize_winners.add(result.runner);
                 position++;
             }
         }
+        return prize_winners;
     }
 
     private boolean prizeWinner(final Result result, final Category category) {
