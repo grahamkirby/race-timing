@@ -52,26 +52,29 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
 
     private void printPrizes(final Category category, final Document document) {
 
-        final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.shortName(), PDF_BOLD_UNDERLINED_FONT);
-        category_header_paragraph.setSpacingAfter(12);
-        document.add(category_header_paragraph);
-
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
-        if (category_prize_winners.isEmpty())
-            document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+        if (category_prize_winners != null) {
+            final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.shortName(), PDF_BOLD_UNDERLINED_FONT);
+            category_header_paragraph.setSpacingAfter(12);
+            document.add(category_header_paragraph);
 
-        int position = 1;
-        for (final Runner runner : category_prize_winners) {
 
-            final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
+            if (category_prize_winners.isEmpty())
+                document.add(new Paragraph("No results", PDF_ITALIC_FONT));
 
-            final Paragraph paragraph = new Paragraph();
-            paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
-            paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
-            paragraph.add(new Chunk(" (" + result.runner.category.shortName() + ") ", PDF_FONT));
-            paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
-            document.add(paragraph);
+            int position = 1;
+            for (final Runner runner : category_prize_winners) {
+
+                final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
+
+                final Paragraph paragraph = new Paragraph();
+                paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
+                paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
+                paragraph.add(new Chunk(" (" + result.runner.category.shortName() + ") ", PDF_FONT));
+                paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
+                document.add(paragraph);
+            }
         }
     }
 }

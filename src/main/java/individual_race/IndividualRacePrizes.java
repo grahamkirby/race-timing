@@ -3,20 +3,25 @@ package individual_race;
 import common.Category;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IndividualRacePrizes {
 
-    final IndividualRace results;
+    final IndividualRace race;
 
-    public IndividualRacePrizes(final IndividualRace results) {
-        this.results = results;
+    public IndividualRacePrizes(final IndividualRace race) {
+        this.race = race;
     }
 
     public void allocatePrizes() {
 
-        for (final Category category : IndividualRaceCategory.values())
-            results.prize_winners.put(category, getPrizeWinners(category));
+        List<IndividualRaceCategory> categories = new ArrayList<>(Arrays.asList(IndividualRaceCategory.values()));
+        if (!race.open_category)
+            categories.remove(IndividualRaceCategory.OPEN_SENIOR);
+
+        for (final Category category : categories)
+            race.prize_winners.put(category, getPrizeWinners(category));
     }
 
     private List<Runner> getPrizeWinners(final Category category) {
@@ -25,7 +30,7 @@ public class IndividualRacePrizes {
 
         int position = 1;
 
-        for (final Result result : results.overall_results) {
+        for (final Result result : race.overall_results) {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
@@ -43,7 +48,7 @@ public class IndividualRacePrizes {
 
     private boolean alreadyWonPrize(final Runner runner) {
 
-        for (List<Runner> winners : results.prize_winners.values())
+        for (List<Runner> winners : race.prize_winners.values())
             if (winners.contains(runner)) return true;
 
         return false;
