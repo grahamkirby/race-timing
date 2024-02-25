@@ -5,6 +5,7 @@ import common.Race;
 import common.RawResult;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class IndividualRace extends Race {
@@ -18,6 +19,8 @@ public class IndividualRace extends Race {
     Runner[] entries;
     Result[] overall_results;
     Map<Category, List<Runner>> prize_winners = new HashMap<>();
+
+    boolean open_category;
 
     static Map<String, String> normalised_club_names = new HashMap<>();
 
@@ -43,6 +46,7 @@ public class IndividualRace extends Race {
 
     public IndividualRace(final Properties properties) throws IOException {
         super(properties);
+        System.out.println("7: " + open_category);
     }
 
     public static String normaliseClubName(final String club) {
@@ -53,21 +57,33 @@ public class IndividualRace extends Race {
     @Override
     protected void configure() throws IOException {
 
+        System.out.println("1: " + open_category);
         readProperties();
 
         configureHelpers();
         configureInputData();
+        System.out.println("2: " + open_category);
+    }
+
+    protected void readProperties() {
+
+        System.out.println("3: " + open_category);
+        super.readProperties();
+        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "false"));
+        System.out.println("4: " + open_category);
     }
 
     @Override
     public void processResults() throws IOException {
 
+        System.out.println("5: " + open_category);
         initialiseResults();
 
         fillFinishTimes();
         fillDNFs();
         calculateResults();
         allocatePrizes();
+        System.out.println("6: " + open_category);
 
         printOverallResults();
         printPrizes();
@@ -192,6 +208,6 @@ public class IndividualRace extends Race {
 
     private void printCombined() throws IOException {
 
-        ((IndividualRaceOutputHTML)output_HTML).printCombined();
+        output_HTML.printCombined();
     }
 }

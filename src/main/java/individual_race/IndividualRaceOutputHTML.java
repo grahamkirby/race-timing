@@ -68,26 +68,27 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        writer.append("<p><strong>").append(category.shortName()).append("</strong></p>\n");
-        writer.append("<ol>\n");
-
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
-        if (category_prize_winners.isEmpty())
-            writer.append("No results\n");
+        if (category_prize_winners != null) {
+            writer.append("<p><strong>").append(category.shortName()).append("</strong></p>\n");
+            writer.append("<ol>\n");
 
-        int position = 1;
-        for (final Runner runner : category_prize_winners) {
+            if (category_prize_winners.isEmpty())
+                writer.append("No results\n");
 
-            final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
+            for (final Runner runner : category_prize_winners) {
 
-            writer.append("<li>").
-                    append(result.runner.name).append(" (").
-                    append(result.runner.category.shortName()).append(") ").
-                    append(format(result.duration())).append("</li>\n");
+                final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
+
+                writer.append("<li>").
+                        append(result.runner.name).append(" (").
+                        append(result.runner.category.shortName()).append(") ").
+                        append(format(result.duration())).append("</li>\n");
+            }
+
+            writer.append("</ol>\n\n");
         }
-
-        writer.append("</ol>\n\n");
     }
 
     private void printOverallResults(OutputStreamWriter html_writer) throws IOException {

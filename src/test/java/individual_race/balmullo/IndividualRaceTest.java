@@ -14,6 +14,11 @@ public class IndividualRaceTest extends RaceTest {
         testExpectedCompletion("simple");
     }
 
+    @Test
+    public void openCategory() throws Exception {
+        testExpectedCompletion("open_category");
+    }
+
     @Override
     protected Race makeRace(Properties properties) throws IOException {
         return new IndividualRace(properties);

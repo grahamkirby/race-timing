@@ -14,8 +14,8 @@ import java.util.List;
 
 public class IndividualRaceOutputText extends IndividualRaceOutput {
 
-    public IndividualRaceOutputText(final IndividualRace results) {
-        super(results);
+    public IndividualRaceOutputText(final IndividualRace race) {
+        super(race);
     }
 
     @Override
@@ -45,27 +45,30 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final String header = "Category: " + category.longName();
-
-        writer.append(header).append("\n");
-        writer.append("-".repeat(header.length())).append("\n\n");
-
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
-        if (category_prize_winners.isEmpty())
-            writer.append("No results\n");
+        if (category_prize_winners != null) {
 
-        int position = 1;
-        for (final Runner runner : category_prize_winners) {
+            final String header = "Category: " + category.longName();
 
-            final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
+            writer.append(header).append("\n");
+            writer.append("-".repeat(header.length())).append("\n\n");
 
-            writer.append(String.valueOf(position++)).append(": ").
-                    append(result.runner.name).append(" (").
-                    append(IndividualRace.normaliseClubName(result.runner.club)).append(") ").
-                    append(format(result.duration())).append("\n");
+            if (category_prize_winners.isEmpty())
+                writer.append("No results\n");
+
+            int position = 1;
+            for (final Runner runner : category_prize_winners) {
+
+                final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
+
+                writer.append(String.valueOf(position++)).append(": ").
+                        append(result.runner.name).append(" (").
+                        append(IndividualRace.normaliseClubName(result.runner.club)).append(") ").
+                        append(format(result.duration())).append("\n");
+            }
+
+            writer.append("\n\n");
         }
-
-        writer.append("\n\n");
     }
 }
