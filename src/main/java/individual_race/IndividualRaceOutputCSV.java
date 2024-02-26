@@ -46,14 +46,16 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
             final Result overall_result = race.overall_results[i];
 
-            if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
+            if (!overall_result.dnf()) {
+                writer.append(String.valueOf(i + 1));
 
-            writer.append(",").
-                    append(String.valueOf(overall_result.runner.bib_number)).append(",").
-                    append(overall_result.runner.name).append(",").
-                    append(IndividualRace.normaliseClubName(overall_result.runner.club)).append(",").
-                    append(overall_result.runner.category.shortName()).append(",").
-                    append(overall_result.dnf() ? "DNF" : IndividualRaceOutput.format(overall_result.duration())).append("\n");
+                writer.append(",").
+                        append(String.valueOf(overall_result.runner.bib_number)).append(",").
+                        append(overall_result.runner.name).append(",").
+                        append(IndividualRace.normaliseClubName(overall_result.runner.club)).append(",").
+                        append(overall_result.runner.category.shortName()).append(",").
+                        append(overall_result.dnf() ? "DNF" : IndividualRaceOutput.format(overall_result.duration())).append("\n");
+            }
         }
     }
 }

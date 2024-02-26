@@ -30,7 +30,6 @@ public abstract class Race {
 
     public Race(final Properties properties) throws IOException {
 
-        System.out.println("Super 1: ");
         this.properties = properties;
         configure();
     }
