@@ -64,8 +64,8 @@ public class IndividualRaceInput {
             throw new RuntimeException("illegal composition for runner: " + runner_elements[0]);
 
         final int bib_number = Integer.parseInt(runner_elements[0]);
-        final String runner_name = runner_elements[1];
-        final String club = runner_elements[3];
+        final String runner_name = runner_elements[1] = runner_elements[1].strip();
+        final String club = runner_elements[2] = runner_elements[2].strip();
 
         if (entriesAlreadyContain(entries, bib_number))
             throw new RuntimeException("duplicate runner number: " + bib_number);

@@ -15,6 +15,11 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
+    public void actual2023() throws Exception {
+        testExpectedCompletion("actual_2023");
+    }
+
+    @Test
     public void openCategory() throws Exception {
         testExpectedCompletion("open_category");
     }

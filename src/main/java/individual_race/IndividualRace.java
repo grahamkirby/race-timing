@@ -46,7 +46,6 @@ public class IndividualRace extends Race {
 
     public IndividualRace(final Properties properties) throws IOException {
         super(properties);
-        System.out.println("7: " + open_category);
     }
 
     public static String normaliseClubName(final String club) {
@@ -57,33 +56,27 @@ public class IndividualRace extends Race {
     @Override
     protected void configure() throws IOException {
 
-        System.out.println("1: " + open_category);
         readProperties();
 
         configureHelpers();
         configureInputData();
-        System.out.println("2: " + open_category);
     }
 
     protected void readProperties() {
 
-        System.out.println("3: " + open_category);
         super.readProperties();
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "false"));
-        System.out.println("4: " + open_category);
     }
 
     @Override
     public void processResults() throws IOException {
 
-        System.out.println("5: " + open_category);
         initialiseResults();
 
         fillFinishTimes();
         fillDNFs();
         calculateResults();
         allocatePrizes();
-        System.out.println("6: " + open_category);
 
         printOverallResults();
         printPrizes();
