@@ -64,8 +64,8 @@ public class IndividualRaceInput {
             throw new RuntimeException("illegal composition for runner: " + runner_elements[0]);
 
         final int bib_number = Integer.parseInt(runner_elements[0]);
-        final String runner_name = runner_elements[1] = runner_elements[1].strip();
-        final String club = runner_elements[2] = runner_elements[2].strip();
+        final String runner_name = runner_elements[1] = cleanName(runner_elements[1]);
+        final String club = runner_elements[2] = cleanName(runner_elements[2]);
 
         if (entriesAlreadyContain(entries, bib_number))
             throw new RuntimeException("duplicate runner number: " + bib_number);
@@ -74,6 +74,12 @@ public class IndividualRaceInput {
             throw new RuntimeException("duplicate runner: " + runner_name + ", " + club);
 
         entries[entry_index] = new Runner(runner_elements);
+    }
+
+    private String cleanName(String name) {
+
+        while (name.contains("  ")) name = name.replaceAll(" {2}", " ");
+        return name.strip();
     }
 
     private boolean entriesAlreadyContain(final Runner[] entries, final int bib_number) {
