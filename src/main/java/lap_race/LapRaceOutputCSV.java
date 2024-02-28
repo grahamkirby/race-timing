@@ -68,7 +68,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         for (int i = 0; i < race.overall_results.length; i++) {
 
-            final TeamResult overall_result = race.overall_results[i];
+            final LapRaceResult overall_result = race.overall_results[i];
 
             if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
 
@@ -101,7 +101,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final TeamResult result = race.overall_results[result_index];
+        final LapRaceResult result = race.overall_results[result_index];
 
         if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
 
@@ -115,7 +115,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
         writer.append("\n");
     }
 
-    private void printLegDetails(final OutputStreamWriter writer, final TeamResult result, final Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final LapRaceResult result, final Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 

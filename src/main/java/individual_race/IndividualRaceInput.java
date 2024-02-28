@@ -45,10 +45,10 @@ public class IndividualRaceInput {
         raw_results_path = input_directory_path.resolve(raw_results_filename);
     }
 
-    Runner[] loadEntries() throws IOException {
+    IndividualRaceEntry[] loadEntries() throws IOException {
 
         final List<String> lines = Files.readAllLines(entries_path);
-        final Runner[] entries = new Runner[lines.size()];
+        final IndividualRaceEntry[] entries = new IndividualRaceEntry[lines.size()];
 
         for (int i = 0; i < entries.length; i++)
             loadEntry(entries, lines, i);
@@ -56,7 +56,7 @@ public class IndividualRaceInput {
         return entries;
     }
 
-    private void loadEntry(final Runner[] entries, final List<String> lines, final int entry_index) {
+    private void loadEntry(final IndividualRaceEntry[] entries, final List<String> lines, final int entry_index) {
 
         final String[] runner_elements = lines.get(entry_index).split("\t");
 
@@ -73,7 +73,7 @@ public class IndividualRaceInput {
         if (entriesAlreadyContain(entries, runner_name, club))
             throw new RuntimeException("duplicate runner: " + runner_name + ", " + club);
 
-        entries[entry_index] = new Runner(runner_elements);
+        entries[entry_index] = new IndividualRaceEntry(runner_elements);
     }
 
     private String cleanName(String name) {
@@ -82,17 +82,17 @@ public class IndividualRaceInput {
         return name.strip();
     }
 
-    private boolean entriesAlreadyContain(final Runner[] entries, final int bib_number) {
+    private boolean entriesAlreadyContain(final IndividualRaceEntry[] entries, final int bib_number) {
 
-        for (Runner runner : entries)
-            if (runner != null && runner.bib_number == bib_number) return true;
+        for (IndividualRaceEntry entry : entries)
+            if (entry != null && entry.bib_number == bib_number) return true;
         return false;
     }
 
-    private boolean entriesAlreadyContain(final Runner[] entries, final String runner_name, final String club) {
+    private boolean entriesAlreadyContain(final IndividualRaceEntry[] entries, final String runner_name, final String club) {
 
-        for (Runner runner : entries)
-            if (runner != null && runner.name.equals(runner_name) && runner.club.equals(club)) return true;
+        for (IndividualRaceEntry entry : entries)
+            if (entry != null && entry.runner.name().equals(runner_name) && entry.runner.club().equals(club)) return true;
         return false;
     }
 

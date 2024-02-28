@@ -3,7 +3,6 @@ package lap_race;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
-import individual_race.IndividualRaceCategory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -75,7 +74,7 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final LapRaceResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
 
             final Paragraph paragraph = new Paragraph();
             paragraph.add(new Chunk(position++ + ": ", PDF_FONT));

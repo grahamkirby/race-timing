@@ -1,10 +1,6 @@
 package individual_race;
 
 import common.Category;
-import lap_race.LapRace;
-import lap_race.LapRaceCategory;
-import lap_race.Team;
-import lap_race.TeamResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -45,7 +41,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = race.prize_winners.get(category);
+        final List<IndividualRaceEntry> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners != null) {
 
@@ -58,13 +54,13 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
                 writer.append("No results\n");
 
             int position = 1;
-            for (final Runner runner : category_prize_winners) {
+            for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final Result result = race.overall_results[race.findIndexOfRunnerWithBibNumber(runner.bib_number)];
+                final IndividualRaceResult result = race.overall_results[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append(String.valueOf(position++)).append(": ").
-                        append(result.runner.name).append(" (").
-                        append(IndividualRace.normaliseClubName(result.runner.club)).append(") ").
+                        append(result.entry.runner.name()).append(" (").
+                        append(IndividualRace.normaliseClubName(result.entry.runner.club())).append(") ").
                         append(format(result.duration())).append("\n");
             }
 
