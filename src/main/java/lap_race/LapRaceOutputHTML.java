@@ -1,7 +1,6 @@
 package lap_race;
 
 import common.Category;
-import individual_race.IndividualRaceCategory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -110,7 +109,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
         for (final Team team : category_prize_winners) {
 
-            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final LapRaceResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
 
             writer.append("<li>").
                     append(result.team.name).append(" (").
@@ -149,7 +148,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
         int position = 1;
 
-        for (final TeamResult result : race.overall_results) {
+        for (final LapRaceResult result : race.overall_results) {
 
             writer.append("""
                         <tr>
@@ -233,7 +232,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final TeamResult result = race.overall_results[result_index];
+        final LapRaceResult result = race.overall_results[result_index];
 
         writer.append("""
                 <tr>
@@ -275,7 +274,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
         printLegResultsFooter(html_writer);
     }
 
-    private void printLegDetails(OutputStreamWriter writer, TeamResult result, Team team) throws IOException {
+    private void printLegDetails(OutputStreamWriter writer, LapRaceResult result, Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 

@@ -5,20 +5,25 @@ import common.Race;
 import common.RawResult;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class IndividualRace extends Race {
 
     // TODO variable number of prizes per category; open prizes in addition to gender categories; non-binary category; optional team prizes, by cumulative positions and times
 
+    ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
+    //                                                                                              //
+    //  See README.md at the project root for details of how to configure and run this software.    //
+    //                                                                                              //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     IndividualRaceInput input;
     IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     IndividualRacePrizes prizes;
 
-    Runner[] entries;
-    Result[] overall_results;
-    Map<Category, List<Runner>> prize_winners = new HashMap<>();
+    IndividualRaceEntry[] entries;
+    IndividualRaceResult[] overall_results;
+    Map<Category, List<IndividualRaceEntry>> prize_winners = new HashMap<>();
 
     boolean open_category;
 
@@ -40,6 +45,8 @@ public class IndividualRace extends Race {
         normalised_club_names.put("Dundee RR", "Dundee Road Runners");
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public IndividualRace(final String config_file_path) throws IOException {
         super(config_file_path);
     }
@@ -48,10 +55,18 @@ public class IndividualRace extends Race {
         super(properties);
     }
 
-    public static String normaliseClubName(final String club) {
+    public static void main(String[] args) throws IOException {
 
-        return normalised_club_names.getOrDefault(club, club);
+        // Path to configuration file should be first argument.
+
+        if (args.length < 1)
+            System.out.println("usage: java Results <config file path>");
+        else {
+            new IndividualRace(args[0]).processResults();
+        }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected void configure() throws IOException {
@@ -60,12 +75,6 @@ public class IndividualRace extends Race {
 
         configureHelpers();
         configureInputData();
-    }
-
-    protected void readProperties() {
-
-        super.readProperties();
-        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "false"));
     }
 
     @Override
@@ -81,6 +90,14 @@ public class IndividualRace extends Race {
         printOverallResults();
         printPrizes();
         printCombined();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void readProperties() {
+
+        super.readProperties();
+        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "false"));
     }
 
     private void configureHelpers() {
@@ -103,10 +120,10 @@ public class IndividualRace extends Race {
 
     private void initialiseResults() {
 
-        overall_results = new Result[entries.length];
+        overall_results = new IndividualRaceResult[entries.length];
 
         for (int i = 0; i < overall_results.length; i++)
-            overall_results[i] = new Result(entries[i], this);
+            overall_results[i] = new IndividualRaceResult(entries[i], this);
     }
 
     private void fillFinishTimes() {
@@ -114,7 +131,7 @@ public class IndividualRace extends Race {
         for (final RawResult raw_result : raw_results) {
 
             final int runner_index = findIndexOfRunnerWithBibNumber(raw_result.getBibNumber());
-            final Result result = overall_results[runner_index];
+            final IndividualRaceResult result = overall_results[runner_index];
 
             result.finish_time = raw_result.getRecordedFinishTime();
 
@@ -137,7 +154,7 @@ public class IndividualRace extends Race {
             for (final String dnf_string : dnf_string.split(",")) {
 
                 try {
-                    final Result result = getResultWithIndex(dnf_string);
+                    final IndividualRaceResult result = getResultWithIndex(dnf_string);
                     result.DNF = true;
                 }
                 catch (Exception e) {
@@ -147,7 +164,7 @@ public class IndividualRace extends Race {
         }
     }
 
-    private Result getResultWithIndex(final String bib) {
+    private IndividualRaceResult getResultWithIndex(final String bib) {
 
         final int bib_number = Integer.parseInt(bib);
 
@@ -157,7 +174,7 @@ public class IndividualRace extends Race {
     int findIndexOfRunnerWithBibNumber(final int bib_number) {
 
         for (int i = 0; i < overall_results.length; i++)
-            if (overall_results[i].runner.bib_number == bib_number) return i;
+            if (overall_results[i].entry.bib_number == bib_number) return i;
 
         throw new RuntimeException("unregistered team: " + bib_number);
     }
@@ -179,6 +196,11 @@ public class IndividualRace extends Race {
         }
 
         return Integer.MAX_VALUE;
+    }
+
+    public static String normaliseClubName(final String club) {
+
+        return normalised_club_names.getOrDefault(club, club);
     }
 
     private void allocatePrizes() {

@@ -73,7 +73,7 @@ public class LapRaceOutputText extends LapRaceOutput {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final TeamResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final LapRaceResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
 
             writer.append(String.valueOf(position++)).append(": ").
                     append(result.team.name).append(" (").

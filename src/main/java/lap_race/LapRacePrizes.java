@@ -36,7 +36,7 @@ public class LapRacePrizes {
 
     private void allocateFirstPrize(final Category category) {
 
-        for (final TeamResult result : results.overall_results) {
+        for (final LapRaceResult result : results.overall_results) {
             if (prizeWinner(result, category)) {
                 results.prize_winners.get(category).add(result.team);
                 return;
@@ -54,7 +54,7 @@ public class LapRacePrizes {
 
         int position = 2;
 
-        for (final TeamResult result : results.overall_results) {
+        for (final LapRaceResult result : results.overall_results) {
 
             if (position > category.numberOfPrizes()) return;
 
@@ -65,7 +65,7 @@ public class LapRacePrizes {
         }
     }
 
-    private boolean prizeWinner(final TeamResult result, final Category category) {
+    private boolean prizeWinner(final LapRaceResult result, final Category category) {
 
         return !result.dnf() && category.includes(result.team.category) && !alreadyWonPrize(result.team);
     }
