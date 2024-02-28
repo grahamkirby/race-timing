@@ -1,9 +1,11 @@
 package series_race;
 
 import common.Race;
-import individual_race.IndividualRace;
+import individual_race.*;
+import lap_race.LapRaceInput;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class SeriesRace extends Race {
@@ -14,7 +16,12 @@ public class SeriesRace extends Race {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    SeriesRaceInput input;
+
     IndividualRace[] races;
+    SeriesRaceResult[] overall_results;
+
+    int minimum_number_of_races;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,15 +51,72 @@ public class SeriesRace extends Race {
 
         readProperties();
 
-
+        configureHelpers();
+        configureInputData();
     }
 
     @Override
     public void processResults() throws IOException {
 
+        initialiseResults();
+
+        calculateResults();
+        allocatePrizes();
+
+        printOverallResults();
+        printPrizes();
+        printCombined();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    protected void readProperties() {
 
+        super.readProperties();
+        minimum_number_of_races = Integer.parseInt(properties.getProperty("MINIMUM_NUMBER_OF_RACES"));
+    }
+
+    private void configureHelpers() {
+
+        input = new SeriesRaceInput(this);
+
+    }
+
+    private void configureInputData() throws IOException {
+
+        races = input.loadSeriesRaces();
+    }
+
+    private void initialiseResults() {
+
+        // scores =
+    }
+
+    private void calculateResults() {
+
+        // Check dead heats.
+
+        // Arrays.sort(overall_results);
+
+    }
+
+    private void allocatePrizes() {
+
+
+    }
+
+    private void printOverallResults() throws IOException {
+
+
+    }
+
+    private void printPrizes() throws IOException {
+
+
+    }
+
+    private void printCombined() throws IOException {
+
+
+    }
 }
