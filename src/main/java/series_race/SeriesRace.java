@@ -2,10 +2,8 @@ package series_race;
 
 import common.Race;
 import individual_race.*;
-import lap_race.LapRaceInput;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
 public class SeriesRace extends Race {
@@ -89,34 +87,65 @@ public class SeriesRace extends Race {
 
     private void initialiseResults() {
 
-        // scores =
+        Runner[] combined_runners = getCombinedRunners();
+        overall_results = new SeriesRaceResult[combined_runners.length];
+    }
+
+    private Runner[] getCombinedRunners() {
+
+        Set<Runner> runners = new HashSet<>();
+
+        for (final IndividualRace individual_race : races)
+            for (final IndividualRaceResult result : individual_race.getOverallResults())
+                runners.add(result.entry.runner);
+
+        return runners.toArray(new Runner[0]);
     }
 
     private void calculateResults() {
 
         // Check dead heats.
 
-        // Arrays.sort(overall_results);
+        final Runner[] combined_runners = getCombinedRunners();
 
+        for (int i = 0; i < overall_results.length; i++)
+            overall_results[i] = getOverallResult(combined_runners[i]);
+
+        Arrays.sort(overall_results);
+    }
+
+    private SeriesRaceResult getOverallResult(final Runner runner) {
+
+        final SeriesRaceResult result = new SeriesRaceResult(runner, this);
+
+        for (int i = 0; i < races.length; i++) {
+
+            IndividualRace individual_race = races[i];
+
+            if (individual_race != null)
+                result.scores[i] = calculateRaceScore(individual_race, runner);
+        }
+
+        return result;
+    }
+
+    private int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+        return 0;
     }
 
     private void allocatePrizes() {
-
 
     }
 
     private void printOverallResults() throws IOException {
 
-
     }
 
     private void printPrizes() throws IOException {
 
-
     }
 
     private void printCombined() throws IOException {
-
 
     }
 }

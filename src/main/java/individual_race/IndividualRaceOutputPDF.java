@@ -65,7 +65,7 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
             int position = 1;
             for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.overall_results[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
+                final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 final Paragraph paragraph = new Paragraph();
                 paragraph.add(new Chunk(position++ + ": ", PDF_FONT));

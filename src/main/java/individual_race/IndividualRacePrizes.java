@@ -30,7 +30,7 @@ public class IndividualRacePrizes {
 
         int position = 1;
 
-        for (final IndividualRaceResult result : race.overall_results) {
+        for (final IndividualRaceResult result : race.getOverallResults()) {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 

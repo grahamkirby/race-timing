@@ -22,7 +22,7 @@ public class IndividualRace extends Race {
     IndividualRacePrizes prizes;
 
     IndividualRaceEntry[] entries;
-    IndividualRaceResult[] overall_results;
+    private IndividualRaceResult[] overall_results;
     Map<Category, List<IndividualRaceEntry>> prize_winners = new HashMap<>();
 
     boolean open_category;
@@ -176,7 +176,7 @@ public class IndividualRace extends Race {
         for (int i = 0; i < overall_results.length; i++)
             if (overall_results[i].entry.bib_number == bib_number) return i;
 
-        throw new RuntimeException("unregistered team: " + bib_number);
+        throw new RuntimeException("unregistered bib number: " + bib_number);
     }
 
     private void calculateResults() {
@@ -224,5 +224,9 @@ public class IndividualRace extends Race {
     private void printCombined() throws IOException {
 
         output_HTML.printCombined();
+    }
+
+    public IndividualRaceResult[] getOverallResults() {
+        return overall_results;
     }
 }

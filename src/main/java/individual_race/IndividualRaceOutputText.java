@@ -56,7 +56,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
             int position = 1;
             for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.overall_results[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
+                final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append(String.valueOf(position++)).append(": ").
                         append(result.entry.runner.name()).append(" (").

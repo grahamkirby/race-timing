@@ -35,11 +35,6 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
         return total;
     }
 
-    private int cappedScore() {
-
-        return completed() ? totalScore() : Integer.MIN_VALUE;
-    }
-
     private boolean completed() {
 
         return numberCompleted() >= race.minimum_number_of_races;
@@ -58,9 +53,19 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
     @Override
     public int compareTo(SeriesRaceResult o) {
 
-        if (cappedScore() == o.cappedScore())
-            return runner.name().compareTo(o.runner.name());
+        if (completed() && !o.completed()) return -1;
 
-        return Integer.compare(cappedScore(), o.cappedScore());
+        if (!completed() && o.completed()) return 1;
+
+        if (totalScore() > o.totalScore()) return -1;
+
+        if (totalScore() < o.totalScore()) return 1;
+
+        return getSurname(runner.name()).compareTo(getSurname(o.runner.name()));
+    }
+
+    private String getSurname(String name) {
+
+        return name.split(" ")[1];
     }
 }
