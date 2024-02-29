@@ -42,9 +42,9 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < race.overall_results.length; i++) {
+        for (int i = 0; i < race.getOverallResults().length; i++) {
 
-            final IndividualRaceResult overall_result = race.overall_results[i];
+            final IndividualRaceResult overall_result = race.getOverallResults()[i];
 
             if (!overall_result.dnf()) {
                 writer.append(String.valueOf(i + 1));
