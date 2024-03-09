@@ -1,6 +1,0 @@
-YEAR = 2023
-RACE_NAME_FOR_RESULTS = Midweek Series
-RACE_NAME_FOR_FILENAMES = midweek
-
-RACES = ../individual_race/st_andrews/actual_2023/input/config.txt:../individual_race/balmullo/actual_2023/input/config.txt:::
-MINIMUM_NUMBER_OF_RACES = 4

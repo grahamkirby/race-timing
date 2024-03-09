@@ -6,6 +6,7 @@ import lap_race.LapRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Properties;
 
 public class LapRaceTest extends RaceTest {
@@ -21,8 +22,8 @@ public class LapRaceTest extends RaceTest {
     // TODO test all combinations of out of order laps
 
     @Override
-    protected Race makeRace(Properties properties) throws IOException {
-        return new LapRace(properties);
+    protected Race makeRace(final Path config_file_path) throws IOException {
+        return new LapRace(config_file_path);
     }
 
     @Override

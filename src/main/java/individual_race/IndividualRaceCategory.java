@@ -83,4 +83,6 @@ public enum IndividualRaceCategory implements Category {
     public int numberOfPrizes() {
         return number_of_prizes;
     }
+
+    public String getGender() { return gender; }
 }

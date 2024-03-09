@@ -5,6 +5,8 @@ import common.Race;
 import common.RawResult;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 
@@ -46,13 +48,13 @@ public class LapRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public LapRace(final String config_file_path) throws IOException {
+    public LapRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
-    public LapRace(final Properties properties) throws IOException {
-        super(properties);
-    }
+//    public LapRace(final Properties properties) throws IOException {
+//        super(properties);
+//    }
 
     public static void main(String[] args) throws IOException {
 
@@ -61,7 +63,7 @@ public class LapRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
         else {
-            new LapRace(args[0]).processResults();
+            new LapRace(Paths.get(args[0])).processResults();
         }
     }
 

@@ -4,6 +4,8 @@ import common.Race;
 import individual_race.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class SeriesRace extends Race {
@@ -15,6 +17,7 @@ public class SeriesRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     SeriesRaceInput input;
+    SeriesRaceOutput output_CSV;
 
     IndividualRace[] races;
     SeriesRaceResult[] overall_results;
@@ -23,12 +26,8 @@ public class SeriesRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public SeriesRace(String config_file_path) throws IOException {
+    public SeriesRace(Path config_file_path) throws IOException {
         super(config_file_path);
-    }
-
-    public SeriesRace(final Properties properties) throws IOException {
-        super(properties);
     }
 
     public static void main(String[] args) throws IOException {
@@ -38,7 +37,7 @@ public class SeriesRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
         else {
-            new SeriesRace(args[0]).processResults();
+            new SeriesRace(Paths.get(args[0])).processResults();
         }
     }
 
@@ -78,6 +77,7 @@ public class SeriesRace extends Race {
 
         input = new SeriesRaceInput(this);
 
+        output_CSV = new SeriesRaceOutputCSV(this);
     }
 
     private void configureInputData() throws IOException {
@@ -87,19 +87,33 @@ public class SeriesRace extends Race {
 
     private void initialiseResults() {
 
-        Runner[] combined_runners = getCombinedRunners();
-        overall_results = new SeriesRaceResult[combined_runners.length];
+        overall_results = new SeriesRaceResult[getCombinedRunners().length];
     }
 
     private Runner[] getCombinedRunners() {
 
-        Set<Runner> runners = new HashSet<>();
+        final Set<Runner> runners = new HashSet<>();
 
         for (final IndividualRace individual_race : races)
-            for (final IndividualRaceResult result : individual_race.getOverallResults())
-                runners.add(result.entry.runner);
+            if (individual_race != null)
+                for (final IndividualRaceResult result : individual_race.getOverallResults()) {
+                    if (!isDuplicate(result, runners))
+                        runners.add(result.entry.runner);
+                }
 
         return runners.toArray(new Runner[0]);
+    }
+
+    private boolean isDuplicate(IndividualRaceResult result, Set<Runner> runners) {
+
+        String result_name = result.entry.runner.name();
+        String result_club = result.entry.runner.club();
+
+        for (Runner runner : runners) {
+            if (result_name.equals(runner.name()) && result_club.equals(runner.club())) return true;
+            if (result_name.equals(runner.name()) && result_club.equals("?")) return true;
+        }
+        return false;
     }
 
     private void calculateResults() {
@@ -120,7 +134,7 @@ public class SeriesRace extends Race {
 
         for (int i = 0; i < races.length; i++) {
 
-            IndividualRace individual_race = races[i];
+            final IndividualRace individual_race = races[i];
 
             if (individual_race != null)
                 result.scores[i] = calculateRaceScore(individual_race, runner);
@@ -130,7 +144,24 @@ public class SeriesRace extends Race {
     }
 
     private int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+
+        int score = 200;
+
+        final String gender = getGender(runner);
+
+        for (IndividualRaceResult result : individual_race.getOverallResults()) {
+
+            final Runner result_runner = result.entry.runner;
+
+            if (result_runner.equals(runner)) return Math.max(score, 0);
+            if (gender.equals(getGender(result_runner))) score--;
+        }
+
         return 0;
+    }
+
+    private static String getGender(final Runner runner) {
+        return ((IndividualRaceCategory) runner.category()).getGender();
     }
 
     private void allocatePrizes() {
@@ -139,6 +170,7 @@ public class SeriesRace extends Race {
 
     private void printOverallResults() throws IOException {
 
+        output_CSV.printOverallResults();
     }
 
     private void printPrizes() throws IOException {
@@ -147,5 +179,9 @@ public class SeriesRace extends Race {
 
     private void printCombined() throws IOException {
 
+    }
+
+    public SeriesRaceResult[] getOverallResults() {
+        return overall_results;
     }
 }

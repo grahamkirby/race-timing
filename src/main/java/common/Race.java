@@ -14,8 +14,8 @@ public abstract class Race {
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     public static final Duration ZERO_TIME = parseTime(ZERO_TIME_STRING);
 
-    protected Properties properties;
-    protected Path working_directory_path;
+    protected final Properties properties;
+    private final Path working_directory_path;
 
     // String read from configuration file specifying all the runners who did have a finish
     // time recorded but were declared DNF.
@@ -23,14 +23,10 @@ public abstract class Race {
 
     protected RawResult[] raw_results;
 
-    public Race(final String config_file_path) throws IOException {
+    public Race(final Path config_file_path) throws IOException {
 
-        this(readProperties(config_file_path));
-    }
-
-    public Race(final Properties properties) throws IOException {
-
-        this.properties = properties;
+        working_directory_path = config_file_path.getParent().getParent();
+        properties = readProperties(config_file_path);
         configure();
     }
 
@@ -42,9 +38,9 @@ public abstract class Race {
         return properties;
     }
 
-    protected static Properties readProperties(final String config_file_path) throws IOException {
+    private static Properties readProperties(final Path config_file_path) throws IOException {
 
-        try (final FileInputStream in = new FileInputStream(config_file_path)) {
+        try (final FileInputStream in = new FileInputStream(config_file_path.toString())) {
 
             final Properties properties = new Properties();
             properties.load(in);
@@ -53,8 +49,6 @@ public abstract class Race {
     }
 
     protected void readProperties() {
-
-        working_directory_path = Paths.get(properties.getProperty("WORKING_DIRECTORY"));
         dnf_string = properties.getProperty("DNF_LEGS");
     }
 

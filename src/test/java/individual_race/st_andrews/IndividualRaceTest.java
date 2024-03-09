@@ -5,7 +5,7 @@ import common.RaceTest;
 import individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
-import java.util.*;
+import java.nio.file.Path;
 
 public class IndividualRaceTest extends RaceTest {
 
@@ -36,12 +36,12 @@ public class IndividualRaceTest extends RaceTest {
 
     @Test
     public void resultsOutOfOrder() throws Exception {
-        testExpectedException("results_out_of_order","result 15 out of order");
+        testExpectedException("results_out_of_order", "result 15 out of order");
     }
 
     @Override
-    protected Race makeRace(Properties properties) throws IOException {
-        return new IndividualRace(properties);
+    protected Race makeRace(final Path config_file_path) throws IOException {
+        return new IndividualRace(config_file_path);
     }
 
     @Override
