@@ -47,7 +47,8 @@ public abstract class LapRaceOutput {
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
         collated_times_filename = "times_collated";
 
-        output_directory_path = race.getWorkingDirectoryPath().resolve("output");
+        Path workingDirectoryPath = race.getWorkingDirectoryPath();
+        output_directory_path = workingDirectoryPath.resolve("output");
     }
 
     public void printLegResults() throws IOException {

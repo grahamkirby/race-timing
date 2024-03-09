@@ -48,4 +48,17 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.gaul</groupId>
+                <artifactId>modernizer-maven-plugin</artifactId>
+                <version>2.7.0</version>
+                <configuration>
+                    <javaVersion>8</javaVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -13,13 +13,13 @@ public class IndividualRaceEntry {
         // Expected format: "1" "John Smith"	"Fife AC"	"MS"
 
         String name, club;
-        Category category;
+        IndividualRaceCategory category;
 
         try {
             bib_number = Integer.parseInt(elements[0]);
             name = elements[1];
             club = elements[2];
-            category = IndividualRaceCategory.parse(elements[3]);
+            category = (IndividualRaceCategory) IndividualRaceCategory.parse(elements[3]);
 
             runner = new Runner(name, club, category);
         }

@@ -6,7 +6,7 @@ import static common.Race.DUMMY_DURATION;
 
 public class IndividualRaceResult implements Comparable<IndividualRaceResult> {
 
-    public final IndividualRaceEntry entry;
+    public IndividualRaceEntry entry;
 
     final IndividualRace race;
     boolean DNF;
@@ -15,7 +15,7 @@ public class IndividualRaceResult implements Comparable<IndividualRaceResult> {
 
     public IndividualRaceResult(final IndividualRaceEntry entry, final IndividualRace race) {
 
-        this.entry = entry;
+//        this.entry = entry;
         this.race = race;
         this.DNF = true;
     }

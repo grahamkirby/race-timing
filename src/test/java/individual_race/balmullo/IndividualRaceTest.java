@@ -5,6 +5,7 @@ import common.RaceTest;
 import individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class IndividualRaceTest extends RaceTest {
@@ -24,9 +25,13 @@ public class IndividualRaceTest extends RaceTest {
         testExpectedCompletion("open_category");
     }
 
-    @Override
-    protected Race makeRace(Properties properties) throws IOException {
-        return new IndividualRace(properties);
+//    @Override
+//    protected Race makeRace(Properties properties) throws IOException {
+//        return new IndividualRace(properties);
+//    }
+
+    protected Race makeRace(final Path config_file_path) throws IOException {
+        return new IndividualRace(config_file_path);
     }
 
     @Override

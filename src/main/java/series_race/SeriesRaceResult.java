@@ -15,6 +15,7 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
 
     final int[] scores;
     final SeriesRace race;
+    String position_string;
 
     public SeriesRaceResult(final Runner runner, final SeriesRace race) {
 
@@ -25,7 +26,7 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
         Arrays.fill(scores, -1);
     }
 
-    private int totalScore() {
+    public int totalScore() {
 
         int total = 0;
         for (int score : scores)
@@ -35,7 +36,7 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
         return total;
     }
 
-    private boolean completed() {
+    public boolean completed() {
 
         return numberCompleted() >= race.minimum_number_of_races;
     }
@@ -51,7 +52,7 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
     }
 
     @Override
-    public int compareTo(SeriesRaceResult o) {
+    public int compareTo(final SeriesRaceResult o) {
 
         if (completed() && !o.completed()) return -1;
 
@@ -64,8 +65,8 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
         return getSurname(runner.name()).compareTo(getSurname(o.runner.name()));
     }
 
-    private String getSurname(String name) {
-
-        return name.split(" ")[1];
+    private String getSurname(final String name) {
+        final String[] names = name.split(" ");
+        return names[names.length - 1];
     }
 }

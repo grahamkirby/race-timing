@@ -5,6 +5,8 @@ import common.Race;
 import common.RawResult;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class IndividualRace extends Race {
@@ -47,12 +49,8 @@ public class IndividualRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IndividualRace(final String config_file_path) throws IOException {
+    public IndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
-    }
-
-    public IndividualRace(final Properties properties) throws IOException {
-        super(properties);
     }
 
     public static void main(String[] args) throws IOException {
@@ -62,7 +60,7 @@ public class IndividualRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
         else {
-            new IndividualRace(args[0]).processResults();
+            new IndividualRace(Paths.get(args[0])).processResults();
         }
     }
 
@@ -80,6 +78,11 @@ public class IndividualRace extends Race {
     @Override
     public void processResults() throws IOException {
 
+        processResults(true);
+    }
+
+    public void processResults(boolean output_results) throws IOException {
+
         initialiseResults();
 
         fillFinishTimes();
@@ -87,9 +90,11 @@ public class IndividualRace extends Race {
         calculateResults();
         allocatePrizes();
 
-        printOverallResults();
-        printPrizes();
-        printCombined();
+        if (output_results) {
+            printOverallResults();
+            printPrizes();
+            printCombined();
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +125,7 @@ public class IndividualRace extends Race {
 
     private void initialiseResults() {
 
-        overall_results = new IndividualRaceResult[entries.length];
+        overall_results = new IndividualRaceResult[raw_results.length];
 
         for (int i = 0; i < overall_results.length; i++)
             overall_results[i] = new IndividualRaceResult(entries[i], this);
@@ -128,11 +133,12 @@ public class IndividualRace extends Race {
 
     private void fillFinishTimes() {
 
-        for (final RawResult raw_result : raw_results) {
+        for (int results_index = 0; results_index < raw_results.length; results_index++) {
 
-            final int runner_index = findIndexOfRunnerWithBibNumber(raw_result.getBibNumber());
-            final IndividualRaceResult result = overall_results[runner_index];
+            final RawResult raw_result = raw_results[results_index];
+            final IndividualRaceResult result = overall_results[results_index];
 
+            result.entry = findEntryWithBibNumber(raw_result.getBibNumber());
             result.finish_time = raw_result.getRecordedFinishTime();
 
             // Provisionally this leg is not DNF since a finish time was recorded.
@@ -175,6 +181,13 @@ public class IndividualRace extends Race {
 
         for (int i = 0; i < overall_results.length; i++)
             if (overall_results[i].entry.bib_number == bib_number) return i;
+
+        throw new RuntimeException("unregistered bib number: " + bib_number);
+    }
+
+    IndividualRaceEntry findEntryWithBibNumber(final int bib_number) {
+
+        for (IndividualRaceEntry entry : entries) if (entry.bib_number == bib_number) return entry;
 
         throw new RuntimeException("unregistered bib number: " + bib_number);
     }

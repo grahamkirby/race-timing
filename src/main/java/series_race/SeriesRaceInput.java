@@ -27,7 +27,6 @@ public class SeriesRaceInput {
     private void configure() {
 
         readProperties();
-
     }
 
     private void readProperties() {
@@ -37,11 +36,9 @@ public class SeriesRaceInput {
 
     private Path[] readRaceConfigPaths() {
 
-        String races_string = race.getProperties().getProperty("RACES");
+        final String[] race_strings = race.getProperties().getProperty("RACES").split(":", -1);
 
-        String[] race_strings = races_string.split(":", -1);
-
-        Path[] race_paths = new Path[race_strings.length];
+        final Path[] race_paths = new Path[race_strings.length];
 
         for (int i = 0; i < race_paths.length; i++)
             race_paths[i] = Paths.get(race_strings[i]);
@@ -49,9 +46,25 @@ public class SeriesRaceInput {
         return race_paths;
     }
 
+    public IndividualRace[] loadSeriesRaces() throws IOException {
 
+        final IndividualRace[] races = new IndividualRace[race_config_paths.length];
 
-    public IndividualRace[] loadSeriesRaces() {
-        return null;
+        for (int i = 0; i < races.length; i++) {
+
+            final Path relative_path = race_config_paths[i];
+
+            if (!relative_path.toString().isEmpty()) {
+
+                final Path individual_race_path = race.getWorkingDirectoryPath().resolve(relative_path);
+
+                IndividualRace individual_race = new IndividualRace(individual_race_path);
+                individual_race.processResults(false);
+
+                races[i] = individual_race;
+            }
+        }
+
+        return races;
     }
 }
