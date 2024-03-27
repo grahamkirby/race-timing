@@ -78,8 +78,8 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
                 final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append("<li>").
-                        append(result.entry.runner.name()).append(" (").
-                        append(result.entry.runner.category().shortName()).append(") ").
+                        append(result.entry.runner.name).append(" (").
+                        append(result.entry.runner.category.shortName()).append(") ").
                         append(format(result.duration())).append("</li>\n");
             }
 
@@ -128,11 +128,11 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.entry.runner.name()));
+            writer.append(htmlEncode(result.entry.runner.name));
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.entry.runner.category().shortName());
+            writer.append(result.entry.runner.category.shortName());
             writer.append("""
                             </td>
                             <td>""");

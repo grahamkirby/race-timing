@@ -69,8 +69,8 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
 
                 final Paragraph paragraph = new Paragraph();
                 paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
-                paragraph.add(new Chunk(result.entry.runner.name(), PDF_BOLD_FONT));
-                paragraph.add(new Chunk(" (" + result.entry.runner.category().shortName() + ") ", PDF_FONT));
+                paragraph.add(new Chunk(result.entry.runner.name, PDF_BOLD_FONT));
+                paragraph.add(new Chunk(" (" + result.entry.runner.category.shortName() + ") ", PDF_FONT));
                 paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
                 document.add(paragraph);
             }

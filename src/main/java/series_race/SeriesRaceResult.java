@@ -1,13 +1,10 @@
 package series_race;
 
 import individual_race.IndividualRace;
-import individual_race.IndividualRaceEntry;
+import individual_race.IndividualRaceResult;
 import individual_race.Runner;
 
-import java.time.Duration;
 import java.util.Arrays;
-
-import static common.Race.DUMMY_DURATION;
 
 public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
 
@@ -44,6 +41,20 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
     private int numberCompleted() {
 
         int count = 0;
+
+        for (IndividualRace individual_race : race.races) {
+            if (individual_race != null)
+                for (IndividualRaceResult result : individual_race.getOverallResults()) {
+                    if (result.entry.runner.equals(runner)) count++;
+                }
+        }
+
+        return count;
+    }
+
+    private int numberCompleted2() {
+
+        int count = 0;
         for (int score : scores)
             if (score > -1)
                 count++;
@@ -62,10 +73,17 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
 
         if (totalScore() < o.totalScore()) return 1;
 
-        return getSurname(runner.name()).compareTo(getSurname(o.runner.name()));
+        int last_name_comparison = getLastName(runner.name).compareTo(getLastName(o.runner.name));
+
+        return last_name_comparison != 0 ? last_name_comparison : getFirstName(runner.name).compareTo(getFirstName(o.runner.name));
     }
 
-    private String getSurname(final String name) {
+    private String getFirstName(final String name) {
+        final String[] names = name.split(" ");
+        return names[0];
+    }
+
+    private String getLastName(final String name) {
         final String[] names = name.split(" ");
         return names[names.length - 1];
     }

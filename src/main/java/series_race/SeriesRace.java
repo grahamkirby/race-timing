@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class SeriesRace extends Race {
+    public static final int MAX_RACE_SCORE = 200;
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -83,6 +85,58 @@ public class SeriesRace extends Race {
     private void configureInputData() throws IOException {
 
         races = input.loadSeriesRaces();
+
+        Set<String> runner_names = getRunnerNames(races);
+        for (String runner_name : runner_names) {
+            List<String> clubs_for_runner = getClubsForRunner(runner_name);
+            List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
+            int number_of_defined_clubs = defined_clubs.size();
+            int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
+            if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0) {
+                String defined_club = defined_clubs.get(0);
+
+                for (IndividualRace race : races) {
+                    if (race != null)
+                        for (IndividualRaceResult result : race.getOverallResults()) {
+                            Runner runner = result.entry.runner;
+                            if (runner.name.equals(runner_name) && runner.club.equals("?")) {
+                                runner.club = defined_club;
+                            }
+                        }
+                }
+            }
+        }
+        int x = 3;
+    }
+
+    private List<String> getDefinedClubs(List<String> clubsForRunner) {
+        return clubsForRunner.stream().filter(club -> !club.equals("?")).toList();
+    }
+
+    private List<String> getClubsForRunner(String runner_name) {
+        Set<String> clubs = new HashSet<>();
+        for (IndividualRace race : races) {
+            if (race != null)
+                for (IndividualRaceResult result : race.getOverallResults()) {
+                    Runner runner = result.entry.runner;
+                    if (runner.name.equals(runner_name)) clubs.add(runner.club);
+                }
+        }
+
+        return clubs.stream().toList();
+    }
+
+    private Set<String> getRunnerNames(IndividualRace[] races) {
+        Set<String> names = new HashSet<>();
+        for (IndividualRace race : races) {
+            if (race != null)
+                for (IndividualRaceResult result : race.getOverallResults()) {
+                    Runner runner = result.entry.runner;
+                    names.add(runner.name);
+                }
+        }
+
+        return names;
     }
 
     private void initialiseResults() {
@@ -106,12 +160,12 @@ public class SeriesRace extends Race {
 
     private boolean isDuplicate(IndividualRaceResult result, Set<Runner> runners) {
 
-        String result_name = result.entry.runner.name();
-        String result_club = result.entry.runner.club();
+        final String result_name = result.entry.runner.name;
+        final String result_club = result.entry.runner.club;
 
-        for (Runner runner : runners) {
-            if (result_name.equals(runner.name()) && result_club.equals(runner.club())) return true;
-            if (result_name.equals(runner.name()) && result_club.equals("?")) return true;
+        for (final Runner runner : runners) {
+            if (result_name.equals(runner.name) && result_club.equals(runner.club)) return true;
+            //if (result_name.equals(runner.name) && (result_club.equals("?") || runner.club.equals("?"))) return true;
         }
         return false;
     }
@@ -145,7 +199,7 @@ public class SeriesRace extends Race {
 
     private int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
-        int score = 200;
+        int score = MAX_RACE_SCORE;
 
         final String gender = getGender(runner);
 
@@ -161,7 +215,7 @@ public class SeriesRace extends Race {
     }
 
     private static String getGender(final Runner runner) {
-        return ((IndividualRaceCategory) runner.category()).getGender();
+        return ((IndividualRaceCategory) runner.category).getGender();
     }
 
     private void allocatePrizes() {
