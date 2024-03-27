@@ -65,7 +65,7 @@ public class IndividualRaceInput {
 
         final int bib_number = Integer.parseInt(runner_elements[0]);
         final String runner_name = runner_elements[1] = cleanName(runner_elements[1]);
-        final String club = runner_elements[2] = cleanName(runner_elements[2]);
+        final String club = runner_elements[2] = IndividualRace.normaliseClubName(cleanName(runner_elements[2]));
 
         if (entriesAlreadyContain(entries, bib_number))
             throw new RuntimeException("duplicate runner number: " + bib_number);
@@ -92,7 +92,7 @@ public class IndividualRaceInput {
     private boolean entriesAlreadyContain(final IndividualRaceEntry[] entries, final String runner_name, final String club) {
 
         for (IndividualRaceEntry entry : entries)
-            if (entry != null && entry.runner.name().equals(runner_name) && entry.runner.club().equals(club)) return true;
+            if (entry != null && entry.runner.name.equals(runner_name) && entry.runner.club.equals(club)) return true;
         return false;
     }
 

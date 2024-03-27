@@ -43,7 +43,7 @@ public class IndividualRacePrizes {
 
     private boolean prizeWinner(final IndividualRaceResult result, final Category category) {
 
-        return !result.dnf() && category.includes(result.entry.runner.category()) && !alreadyWonPrize(result.entry);
+        return !result.dnf() && category.includes(result.entry.runner.category) && !alreadyWonPrize(result.entry);
     }
 
     private boolean alreadyWonPrize(final IndividualRaceEntry entry) {

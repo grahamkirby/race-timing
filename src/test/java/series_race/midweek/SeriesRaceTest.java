@@ -30,4 +30,14 @@ public class SeriesRaceTest extends RaceTest {
     public void completed_2() throws Exception {
         testExpectedCompletion("actual_2023/completed_2");
     }
+
+    @Test
+    public void completed_3() throws Exception {
+        testExpectedCompletion("actual_2023/completed_3");
+    }
+
+    @Test
+    public void completed_4() throws Exception {
+        testExpectedCompletion("actual_2023/completed_4");
+    }
 }

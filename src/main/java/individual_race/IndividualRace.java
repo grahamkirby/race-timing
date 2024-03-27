@@ -34,10 +34,12 @@ public class IndividualRace extends Race {
     static {
         normalised_club_names.put("", "Unatt.");
         normalised_club_names.put("Unattached", "Unatt.");
+        normalised_club_names.put("U/A", "Unatt.");
         normalised_club_names.put("None", "Unatt.");
         normalised_club_names.put("Fife Athletic Club", "Fife AC");
         normalised_club_names.put("Dundee HH", "Dundee Hawkhill Harriers");
         normalised_club_names.put("Leven Las Vegas", "Leven Las Vegas RC");
+        normalised_club_names.put("Leven Las Vegas Running Club", "Leven Las Vegas RC");
         normalised_club_names.put("Haddies", "Anster Haddies");
         normalised_club_names.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
         normalised_club_names.put("DRR", "Dundee Road Runners");
@@ -45,6 +47,7 @@ public class IndividualRace extends Race {
         normalised_club_names.put("DHH", "Dundee Hawkhill Harriers");
         normalised_club_names.put("Carnegie H", "Carnegie Harriers");
         normalised_club_names.put("Dundee RR", "Dundee Road Runners");
+        normalised_club_names.put("Recreational Running", "Recreational Runners");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

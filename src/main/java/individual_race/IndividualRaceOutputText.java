@@ -59,8 +59,9 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
                 final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append(String.valueOf(position++)).append(": ").
-                        append(result.entry.runner.name()).append(" (").
-                        append(IndividualRace.normaliseClubName(result.entry.runner.club())).append(") ").
+                        append(result.entry.runner.name).append(" (").
+                        //append(IndividualRace.normaliseClubName(result.entry.runner.club)).append(") ").
+                        append(result.entry.runner.club).append(") ").
                         append(format(result.duration())).append("\n");
             }
 
