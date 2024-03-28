@@ -30,7 +30,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 29,Matthew Beaney,Dundee Road Runners,MS,0,192,192,384,N
 30=,Fiona Canavan,Dundee Road Runners,FS,195,188,0,383,N
 30=,Louise Lessels,Falkland Trail Runners,F40,0,191,192,383,N
-32,Bryan McLaren,Leven Las Vegas Running Club,MS,0,194,188,382,N
+32,Bryan McLaren,Leven Las Vegas RC,MS,0,194,188,382,N
 33,Jonathan Millar,Carnegie Harriers,MS,192,0,189,381,N
 34,Tony Martin,Falkland Trail Runners,M70+,188,0,186,374,N
 35=,Margaret Martin,Fife AC,F60,0,184,189,373,N
@@ -50,11 +50,11 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 48=,Carolann Kinnear,Recreational Runners,F40,165,176,0,341,N
 50,Margaret Robertson,Dundee Road Runners,F70+,166,174,0,340,N
 51,David Dunleavey,Unatt.,M60,0,171,167,338,N
-52,Lorraine Hands,Recreational Running,F40,164,173,0,337,N
+52,Lorraine Hands,Recreational Runners,F40,164,173,0,337,N
 53,John Wilmot,Falkland Trail Runners,M70+,166,165,0,331,N
 54=,John Mill,Dundee Road Runners,M50,0,168,162,330,N
 54=,Paul Reed,Dundee Road Runners,M40,165,0,165,330,N
-56=,Jeff Taylor,Leven Las Vegas Running Club,M50,0,163,163,326,N
+56=,Jeff Taylor,Leven Las Vegas RC,M50,0,163,163,326,N
 56=,Grant Whytock,Dundee Road Runners,M50,168,158,0,326,N
 58,Huw Watkins,STAART,MS,0,166,158,324,N
 59,Richard Cleary,Dundee Road Runners,M50,163,0,159,322,N
@@ -139,7 +139,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 138=,Lyle Allan,?,M60,0,170,0,170,N
 138=,Katrina Johnston,?,F40,0,170,0,170,N
 138=,Eugenie Verney,Dundee Road Runners,F60,170,0,0,170,N
-141=,Kim Dickson,Recreational Running,F50,169,0,0,169,N
+141=,Kim Dickson,Recreational Runners,F50,169,0,0,169,N
 141=,Rosemary Lee,?,F60,0,169,0,169,N
 141=,Allen Marr,?,M60,0,169,0,169,N
 141=,Stuart Williamson,Fife AC,M50,0,0,169,169,N
