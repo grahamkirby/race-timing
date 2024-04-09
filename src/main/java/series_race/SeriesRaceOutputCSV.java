@@ -59,13 +59,17 @@ public class SeriesRaceOutputCSV extends SeriesRaceOutput {
 
         for (final SeriesRaceResult overall_result : series_results) {
 
-            writer.append(overall_result.position_string);
+            int number_of_races_completed = 0;
+            for (Race r : race.races)
+                if (r != null) number_of_races_completed++;
+
+            if (number_of_races_completed < race.races.length || overall_result.completed())
+                writer.append(overall_result.position_string);
 
             writer.append(",").
                     append(overall_result.runner.name).append(",").
-                    //append(IndividualRace.normaliseClubName(overall_result.runner.club)).append(",").
                     append(overall_result.runner.club).append(",").
-                    append(overall_result.runner.category.shortName()).append(",");
+                    append(overall_result.runner.category.getShortName()).append(",");
 
             for (final int score : overall_result.scores)
                 if (score >= 0) writer.append(String.valueOf(score)).append(",");

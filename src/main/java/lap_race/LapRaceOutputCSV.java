@@ -75,7 +75,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
             writer.append(",").
                     append(String.valueOf(overall_result.team.bib_number)).append(",").
                     append(overall_result.team.name).append(",").
-                    append(overall_result.team.category.shortName()).append(",").
+                    append(overall_result.team.category.getLongName()).append(",").
                     append(overall_result.dnf() ? "DNF" : LapRaceOutput.format(overall_result.duration())).append("\n");
         }
     }
@@ -108,7 +108,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
         writer.append(",");
         writer.append(String.valueOf(result.team.bib_number)).append(",");
         writer.append(result.team.name).append(",");
-        writer.append(result.team.category.shortName()).append(",");
+        writer.append(result.team.category.getLongName()).append(",");
 
         printLegDetails(writer, result, result.team);
 

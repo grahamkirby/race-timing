@@ -34,7 +34,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            for (final Category category : IndividualRaceCategory.getCategoriesInReportOrder())
+            for (final Category category : race.categories_in_report_order)
                 printPrizes(category, writer);
         }
     }
@@ -45,7 +45,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
 
         if (category_prize_winners != null) {
 
-            final String header = "Category: " + category.longName();
+            final String header = "Category: " + category.getLongName();
 
             writer.append(header).append("\n");
             writer.append("-".repeat(header.length())).append("\n\n");

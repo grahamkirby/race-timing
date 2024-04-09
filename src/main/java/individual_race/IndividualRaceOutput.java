@@ -1,16 +1,8 @@
 package individual_race;
 
-import common.Category;
-import lap_race.LapRace;
-import lap_race.LapRaceCategory;
-import lap_race.LegResult;
-
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class IndividualRaceOutput {
 

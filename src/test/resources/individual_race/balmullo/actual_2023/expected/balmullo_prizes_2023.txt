@@ -1,20 +1,32 @@
 Balmullo Trail Race Results 2023
 ============================
 
+Category: Women Open
+--------------------
+
+1: Rhona Van Rensburg (Fife AC) 00:35:23
+2: Charlotte Roper (Unatt.) 00:35:31
+3: Hannah Tippetts (Dundee Road Runners) 00:36:05
+
+
+Category: Men Open
+------------------
+
+1: Ben Kinninmonth (Fife AC) 00:30:59
+2: Patrick O'Hare (Fife AC) 00:31:00
+3: Marcus Sheridan (Dundee Road Runners) 00:31:16
+
+
 Category: Women Senior
 ----------------------
 
-1: Charlotte Roper (Unatt.) 00:35:31
-2: Hannah Tippetts (Dundee Road Runners) 00:36:05
-3: Anwen Darlington (Dundee Road Runners) 00:36:59
+1: Anwen Darlington (Dundee Road Runners) 00:36:59
 
 
 Category: Men Senior
 --------------------
 
-1: Ben Kinninmonth (Fife AC) 00:30:59
-2: Patrick O'Hare (Fife AC) 00:31:00
-3: Marcus Sheridan (Dundee Road Runners) 00:31:16
+1: Adam Hart (Dundee Road Runners) 00:32:16
 
 
 Category: Women Junior
@@ -44,7 +56,7 @@ Category: Men 40-49
 Category: Women 50-59
 ---------------------
 
-1: Rhona Van Rensburg (Fife AC) 00:35:23
+1: Alison Cunningham (Strathearn Harriers) 00:41:05
 
 
 Category: Men 50-59

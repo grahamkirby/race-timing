@@ -73,7 +73,7 @@ public class IndividualRaceInput {
         if (entriesAlreadyContain(entries, runner_name, club))
             throw new RuntimeException("duplicate runner: " + runner_name + ", " + club);
 
-        entries[entry_index] = new IndividualRaceEntry(runner_elements);
+        entries[entry_index] = new IndividualRaceEntry(runner_elements, race);
     }
 
     private String cleanName(String name) {

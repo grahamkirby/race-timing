@@ -44,7 +44,7 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
         document.open();
         document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
 
-        for (final Category category : IndividualRaceCategory.getCategoriesInReportOrder())
+        for (final Category category : race.categories_in_report_order)
             printPrizes(category, document);
 
         document.close();
@@ -55,7 +55,7 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
         final List<IndividualRaceEntry> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners != null) {
-            final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.shortName(), PDF_BOLD_UNDERLINED_FONT);
+            final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.getShortName(), PDF_BOLD_UNDERLINED_FONT);
             category_header_paragraph.setSpacingAfter(12);
             document.add(category_header_paragraph);
 
@@ -70,7 +70,7 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
                 final Paragraph paragraph = new Paragraph();
                 paragraph.add(new Chunk(position++ + ": ", PDF_FONT));
                 paragraph.add(new Chunk(result.entry.runner.name, PDF_BOLD_FONT));
-                paragraph.add(new Chunk(" (" + result.entry.runner.category.shortName() + ") ", PDF_FONT));
+                paragraph.add(new Chunk(" (" + result.entry.runner.category.getShortName() + ") ", PDF_FONT));
                 paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
                 document.add(paragraph);
             }

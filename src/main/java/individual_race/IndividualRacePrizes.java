@@ -16,12 +16,12 @@ public class IndividualRacePrizes {
 
     public void allocatePrizes() {
 
-        List<IndividualRaceCategory> categories = new ArrayList<>(Arrays.asList(IndividualRaceCategory.values()));
-        if (!race.open_category)
-            categories.remove(IndividualRaceCategory.OPEN_SENIOR);
+//        List<Category> categories = IndividualRaceCategories.getCategoriesInDecreasingGeneralityOrder(race.open_category, race.open_prizes, race.category_prizes);
 
-        for (final Category category : categories)
-            race.prize_winners.put(category, getPrizeWinners(category));
+        for (final Category category : race.categories_in_decreasing_generality_order) {
+            List<IndividualRaceEntry> prizeWinners = getPrizeWinners(category);
+            race.prize_winners.put(category, prizeWinners);
+        }
     }
 
     private List<IndividualRaceEntry> getPrizeWinners(final Category category) {
@@ -43,7 +43,7 @@ public class IndividualRacePrizes {
 
     private boolean prizeWinner(final IndividualRaceResult result, final Category category) {
 
-        return !result.dnf() && category.includes(result.entry.runner.category) && !alreadyWonPrize(result.entry);
+        return !result.dnf() && IndividualRaceCategories.includes(category, result.entry.runner.category) && !alreadyWonPrize(result.entry);
     }
 
     private boolean alreadyWonPrize(final IndividualRaceEntry entry) {

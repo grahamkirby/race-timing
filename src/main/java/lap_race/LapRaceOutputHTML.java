@@ -10,8 +10,8 @@ import java.util.List;
 
 public class LapRaceOutputHTML extends LapRaceOutput {
 
-    public LapRaceOutputHTML(final LapRace results) {
-        super(results);
+    public LapRaceOutputHTML(final LapRace race) {
+        super(race);
     }
 
     @Override
@@ -93,13 +93,13 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
         html_writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : LapRaceCategory.getCategoriesInReportOrder())
+        for (final Category category : race.categories_in_report_order)
             printPrizes(category, html_writer);
     }
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        writer.append("<p><strong>").append(category.shortName()).append("</strong></p>\n");
+        writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
         writer.append("<ol>\n");
 
         final List<Team> category_prize_winners = race.prize_winners.get(category);
@@ -113,7 +113,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
             writer.append("<li>").
                     append(result.team.name).append(" (").
-                    append(result.team.category.shortName()).append(") ").
+                    append(result.team.category.getLongName()).append(") ").
                     append(format(result.duration())).append("</li>\n");
         }
 
@@ -165,7 +165,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.team.category.shortName());
+            writer.append(result.team.category.getLongName());
             writer.append("""
                             </td>
                             <td>""");
@@ -249,7 +249,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(result.team.category.shortName());
+        writer.append(result.team.category.getLongName());
         writer.append("""
                 </td>""");
 
