@@ -26,6 +26,20 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
     public int totalScore() {
 
         int total = 0;
+
+        int[] sorted_scores = scores.clone();
+        Arrays.sort(sorted_scores);
+        for (int i = 0; i < race.minimum_number_of_races; i++) {
+            int score = sorted_scores[sorted_scores.length - 1 - i];
+            if (score > -1) total += score;
+        }
+
+        return total;
+    }
+
+    public int totalScore2() {
+
+        int total = 0;
         for (int score : scores)
             if (score > -1)
                 total += score;
@@ -48,16 +62,6 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
                     if (result.entry.runner.equals(runner)) count++;
                 }
         }
-
-        return count;
-    }
-
-    private int numberCompleted2() {
-
-        int count = 0;
-        for (int score : scores)
-            if (score > -1)
-                count++;
 
         return count;
     }

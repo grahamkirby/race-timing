@@ -7,11 +7,11 @@ import java.util.List;
 
 public class LapRacePrizes {
 
-    final LapRace results;
+    final LapRace race;
 
-    public LapRacePrizes(final LapRace results) {
+    public LapRacePrizes(final LapRace race) {
 
-        this.results = results;
+        this.race = race;
     }
 
     public void allocatePrizes() {
@@ -27,18 +27,18 @@ public class LapRacePrizes {
 
     private void allocateFirstPrizes() {
 
-        for (final Category category : LapRaceCategory.values()) {
+        for (final Category category : race.categories_in_decreasing_generality_order) {
 
-            results.prize_winners.put(category, new ArrayList<>());
+            race.prize_winners.put(category, new ArrayList<>());
             allocateFirstPrize(category);
         }
     }
 
     private void allocateFirstPrize(final Category category) {
 
-        for (final LapRaceResult result : results.overall_results) {
+        for (final LapRaceResult result : race.overall_results) {
             if (prizeWinner(result, category)) {
-                results.prize_winners.get(category).add(result.team);
+                race.prize_winners.get(category).add(result.team);
                 return;
             }
         }
@@ -46,7 +46,7 @@ public class LapRacePrizes {
 
     private void allocateMinorPrizes() {
 
-        for (final Category category : LapRaceCategory.values())
+        for (final Category category : race.categories_in_decreasing_generality_order)
             allocateMinorPrizes(category);
     }
 
@@ -54,12 +54,12 @@ public class LapRacePrizes {
 
         int position = 2;
 
-        for (final LapRaceResult result : results.overall_results) {
+        for (final LapRaceResult result : race.overall_results) {
 
             if (position > category.numberOfPrizes()) return;
 
             if (prizeWinner(result, category)) {
-                results.prize_winners.get(category).add(result.team);
+                race.prize_winners.get(category).add(result.team);
                 position++;
             }
         }
@@ -67,12 +67,12 @@ public class LapRacePrizes {
 
     private boolean prizeWinner(final LapRaceResult result, final Category category) {
 
-        return !result.dnf() && category.includes(result.team.category) && !alreadyWonPrize(result.team);
+        return !result.dnf() && LapRaceCategories.includes(category, result.team.category) && !alreadyWonPrize(result.team);
     }
 
     private boolean alreadyWonPrize(final Team team) {
 
-        for (List<Team> winners : results.prize_winners.values())
+        for (List<Team> winners : race.prize_winners.values())
             if (winners.contains(team)) return true;
 
         return false;

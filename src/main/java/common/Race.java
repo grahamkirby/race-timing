@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.List;
 import java.util.Properties;
 
 public abstract class Race {
@@ -23,6 +24,11 @@ public abstract class Race {
 
     protected RawResult[] raw_results;
 
+    public List<Category> categories_in_decreasing_generality_order, categories_in_report_order;
+
+    public boolean open_category;
+    public int open_prizes, category_prizes;
+
     public Race(final Path config_file_path) throws IOException {
 
         working_directory_path = config_file_path.getParent().getParent();
@@ -31,6 +37,8 @@ public abstract class Race {
     }
 
     protected abstract void configure() throws IOException;
+
+    protected abstract void configureCategories();
 
     public abstract void processResults() throws IOException;
 
@@ -48,8 +56,24 @@ public abstract class Race {
         }
     }
 
+    public Category lookupCategory(final String short_name) {
+
+        for (Category category : categories_in_decreasing_generality_order) {
+            if (category.getShortName().equals(short_name)) return category;
+        }
+
+        throw new RuntimeException("Category not found: " + short_name);
+    }
+
+    abstract protected int getDefaultOpenPrizes();
+    abstract protected int getDefaultCategoryPrizes();
+
     protected void readProperties() {
+
         dnf_string = properties.getProperty("DNF_LEGS");
+        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
     }
 
     public Path getWorkingDirectoryPath() {

@@ -3,6 +3,7 @@ package lap_race;
 import common.Category;
 import common.Race;
 import common.RawResult;
+import individual_race.IndividualRaceCategories;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -75,6 +76,7 @@ public class LapRace extends Race {
         readProperties();
 
         configureHelpers();
+        configureCategories();
         configureInputData();
         configureMassStarts();
         configurePairedLegs();
@@ -102,6 +104,16 @@ public class LapRace extends Race {
         printCollatedTimes();
     }
 
+    @Override
+    protected int getDefaultOpenPrizes() {
+        return 3;
+    }
+
+    @Override
+    protected int getDefaultCategoryPrizes() {
+        return 1;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
@@ -123,6 +135,12 @@ public class LapRace extends Race {
 
         missing_data = new LapRaceMissingData(this);
         prizes = new LapRacePrizes(this);
+    }
+
+    protected void configureCategories() {
+
+        categories_in_decreasing_generality_order = LapRaceCategories.getCategoriesInDecreasingGeneralityOrder(open_prizes, category_prizes);
+        categories_in_report_order = LapRaceCategories.getCategoriesInReportOrder(open_prizes, category_prizes);
     }
 
     private void configureInputData() throws IOException {

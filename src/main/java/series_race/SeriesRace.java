@@ -1,5 +1,6 @@
 package series_race;
 
+import common.Category;
 import common.Race;
 import individual_race.*;
 
@@ -7,10 +8,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class SeriesRace extends Race {
-    public static final int MAX_RACE_SCORE = 200;
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -18,11 +17,17 @@ public class SeriesRace extends Race {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static final int MAX_RACE_SCORE = 200;
+    private static final String DEFAULT_OPEN_PRIZES = "3";
+    private static final String DEFAULT_CATEGORY_PRIZES = "1";
+
     SeriesRaceInput input;
-    SeriesRaceOutput output_CSV;
+    SeriesRaceOutput output_CSV, output_text;
+    SeriesRacePrizes prizes;
 
     IndividualRace[] races;
     SeriesRaceResult[] overall_results;
+    Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
     int minimum_number_of_races;
 
@@ -48,10 +53,20 @@ public class SeriesRace extends Race {
     @Override
     protected void configure() throws IOException {
 
+        open_prizes = 3;
+        category_prizes = 3;
+
         readProperties();
 
         configureHelpers();
+        configureCategories();
         configureInputData();
+    }
+
+    protected void configureCategories() {
+
+        categories_in_decreasing_generality_order = SeriesRaceCategories.getCategoriesInDecreasingGeneralityOrder(open_category, open_prizes, category_prizes);
+        categories_in_report_order = SeriesRaceCategories.getCategoriesInReportOrder(open_category, open_prizes, category_prizes);
     }
 
     @Override
@@ -67,6 +82,16 @@ public class SeriesRace extends Race {
         printCombined();
     }
 
+    @Override
+    protected int getDefaultOpenPrizes() {
+        return 3;
+    }
+
+    @Override
+    protected int getDefaultCategoryPrizes() {
+        return 3;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
@@ -80,6 +105,9 @@ public class SeriesRace extends Race {
         input = new SeriesRaceInput(this);
 
         output_CSV = new SeriesRaceOutputCSV(this);
+        output_text = new SeriesRaceOutputText(this);
+
+        prizes = new SeriesRacePrizes(this);
     }
 
     private void configureInputData() throws IOException {
@@ -106,7 +134,6 @@ public class SeriesRace extends Race {
                 }
             }
         }
-        int x = 3;
     }
 
     private List<String> getDefinedClubs(List<String> clubsForRunner) {
@@ -165,7 +192,6 @@ public class SeriesRace extends Race {
 
         for (final Runner runner : runners) {
             if (result_name.equals(runner.name) && result_club.equals(runner.club)) return true;
-            //if (result_name.equals(runner.name) && (result_club.equals("?") || runner.club.equals("?"))) return true;
         }
         return false;
     }
@@ -215,11 +241,12 @@ public class SeriesRace extends Race {
     }
 
     private static String getGender(final Runner runner) {
-        return ((IndividualRaceCategory) runner.category).getGender();
+        return runner.category.getGender();
     }
 
     private void allocatePrizes() {
 
+        prizes.allocatePrizes();
     }
 
     private void printOverallResults() throws IOException {
@@ -229,6 +256,7 @@ public class SeriesRace extends Race {
 
     private void printPrizes() throws IOException {
 
+        output_text.printPrizes();
     }
 
     private void printCombined() throws IOException {
@@ -237,5 +265,13 @@ public class SeriesRace extends Race {
 
     public SeriesRaceResult[] getOverallResults() {
         return overall_results;
+    }
+
+    public int findIndexOfRunner(Runner runner) {
+
+        for (int i = 0; i < overall_results.length; i++) {
+            if (runner.equals(overall_results[i].runner)) return i;
+        }
+        return -1;
     }
 }

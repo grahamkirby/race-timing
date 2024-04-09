@@ -1,5 +1,5 @@
-1	Team 1	Women Senior	John Smith	Hailey Dickson:) & Alix Crawford	Rhys Müllar & Paige Thompson
-2	Team 2	Open 50+	Bartosz Thomson	John Smith & Zuzanna Miller-Ford	Leo McKenzie & Henry Muir
-3	Team 3	Open Senior	JackBruce	Martin King & Leland Donaldson	Neil MacDonald & Myles  Christie
-4	Team 4	Women 50+	Sofia O'Connor	Philip O’Donohue & Hasan Robertson	Lena K. Maclean & Isabel Ritchie
-5	Team 5	Open Senior	Clark O' Connor	Nina Joan Fiona Walker & Hope Christie	Cayla Duncan & Scott Kelly
+1	Team 1	WS	John Smith	Hailey Dickson:) & Alix Crawford	Rhys Müllar & Paige Thompson
+2	Team 2	O50	Bartosz Thomson	John Smith & Zuzanna Miller-Ford	Leo McKenzie & Henry Muir
+3	Team 3	OS	JackBruce	Martin King & Leland Donaldson	Neil MacDonald & Myles  Christie
+4	Team 4	W50	Sofia O'Connor	Philip O’Donohue & Hasan Robertson	Lena K. Maclean & Isabel Ritchie
+5	Team 5	OS	Clark O' Connor	Nina Joan Fiona Walker & Hope Christie	Cayla Duncan & Scott Kelly

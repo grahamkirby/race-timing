@@ -75,7 +75,7 @@ public class LapRaceInput {
         if (entriesAlreadyContain(entries, team_name))
             throw new RuntimeException("duplicate team name: " + team_name);
 
-        entries[entry_index] = new Team(team_elements);
+        entries[entry_index] = new Team(team_elements, race);
     }
 
     private boolean entriesAlreadyContain(final Team[] entries, final int bib_number) {

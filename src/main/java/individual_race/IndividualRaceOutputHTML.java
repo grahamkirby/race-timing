@@ -10,8 +10,8 @@ import java.util.List;
 
 public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
-    public IndividualRaceOutputHTML(final IndividualRace results) {
-        super(results);
+    public IndividualRaceOutputHTML(final IndividualRace race) {
+        super(race);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
         html_writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : IndividualRaceCategory.getCategoriesInReportOrder())
+        for (final Category category : race.categories_in_report_order)
             printPrizes(category, html_writer);
     }
 
@@ -67,7 +67,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         final List<IndividualRaceEntry> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners != null) {
-            writer.append("<p><strong>").append(category.shortName()).append("</strong></p>\n");
+            writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
             writer.append("<ol>\n");
 
             if (category_prize_winners.isEmpty())
@@ -79,7 +79,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
                 writer.append("<li>").
                         append(result.entry.runner.name).append(" (").
-                        append(result.entry.runner.category.shortName()).append(") ").
+                        append(result.entry.runner.category.getShortName()).append(") ").
                         append(format(result.duration())).append("</li>\n");
             }
 
@@ -132,7 +132,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.entry.runner.category.shortName());
+            writer.append(result.entry.runner.category.getShortName());
             writer.append("""
                             </td>
                             <td>""");

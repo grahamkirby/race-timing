@@ -52,9 +52,8 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
                 writer.append(",").
                         append(String.valueOf(overall_result.entry.bib_number)).append(",").
                         append(overall_result.entry.runner.name).append(",").
-                        //append(IndividualRace.normaliseClubName(overall_result.entry.runner.club)).append(",").
                         append(overall_result.entry.runner.club).append(",").
-                        append(overall_result.entry.runner.category.shortName()).append(",").
+                        append(overall_result.entry.runner.category.getShortName()).append(",").
                         append(overall_result.dnf() ? "DNF" : IndividualRaceOutput.format(overall_result.duration())).append("\n");
             }
         }

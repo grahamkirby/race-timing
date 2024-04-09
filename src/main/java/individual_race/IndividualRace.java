@@ -11,13 +11,14 @@ import java.util.*;
 
 public class IndividualRace extends Race {
 
-    // TODO variable number of prizes per category; open prizes in addition to gender categories; non-binary category; optional team prizes, by cumulative positions and times
+    // TODO open prizes in addition to gender categories; non-binary category; optional team prizes, by cumulative positions and times
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
     //  See README.md at the project root for details of how to configure and run this software.    //
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     IndividualRaceInput input;
     IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
@@ -26,8 +27,6 @@ public class IndividualRace extends Race {
     IndividualRaceEntry[] entries;
     private IndividualRaceResult[] overall_results;
     Map<Category, List<IndividualRaceEntry>> prize_winners = new HashMap<>();
-
-    boolean open_category;
 
     static Map<String, String> normalised_club_names = new HashMap<>();
 
@@ -75,6 +74,7 @@ public class IndividualRace extends Race {
         readProperties();
 
         configureHelpers();
+        configureCategories();
         configureInputData();
     }
 
@@ -82,6 +82,16 @@ public class IndividualRace extends Race {
     public void processResults() throws IOException {
 
         processResults(true);
+    }
+
+    @Override
+    protected int getDefaultOpenPrizes() {
+        return 3;
+    }
+
+    @Override
+    protected int getDefaultCategoryPrizes() {
+        return 1;
     }
 
     public void processResults(boolean output_results) throws IOException {
@@ -105,7 +115,6 @@ public class IndividualRace extends Race {
     protected void readProperties() {
 
         super.readProperties();
-        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "false"));
     }
 
     private void configureHelpers() {
@@ -118,6 +127,12 @@ public class IndividualRace extends Race {
         output_PDF = new IndividualRaceOutputPDF(this);
 
         prizes = new IndividualRacePrizes(this);
+    }
+
+    protected void configureCategories() {
+
+        categories_in_decreasing_generality_order = IndividualRaceCategories.getCategoriesInDecreasingGeneralityOrder(open_category, open_prizes, category_prizes);
+        categories_in_report_order = IndividualRaceCategories.getCategoriesInReportOrder(open_category, open_prizes, category_prizes);
     }
 
     private void configureInputData() throws IOException {

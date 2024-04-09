@@ -49,14 +49,14 @@ public class LapRaceOutputText extends LapRaceOutput {
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            for (final Category category : LapRaceCategory.getCategoriesInReportOrder())
+            for (final Category category : race.categories_in_report_order)
                 printPrizes(category, writer);
         }
     }
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final String header = "Category: " + category.shortName();
+        final String header = "Category: " + category.getLongName();
         final List<Team> category_prize_winners = race.prize_winners.get(category);
 
         writer.append(header).append("\n");
@@ -77,7 +77,7 @@ public class LapRaceOutputText extends LapRaceOutput {
 
             writer.append(String.valueOf(position++)).append(": ").
                     append(result.team.name).append(" (").
-                    append(result.team.category.shortName()).append(") ").
+                    append(result.team.category.getLongName()).append(") ").
                     append(format(result.duration())).append("\n");
         }
 
