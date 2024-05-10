@@ -13,7 +13,7 @@ Category: Men Open
 ------------------
 
 1: Ben Kinninmonth (Fife AC) 796
-2: Ben Hukins (PH Racing Club) 785
+2: Ben Hukins (PH Racing) 785
 3: Adam Hart (Dundee Road Runners) 784
 
 
@@ -68,7 +68,7 @@ Category: Women 50-59
 Category: Men 50-59
 -------------------
 
-1: Iain Wallace (PH Racing Club) 750
+1: Iain Wallace (PH Racing) 750
 2: Jim Morton (Dundee Road Runners) 733
 3: Will Gage (Anster Haddies) 693
 
