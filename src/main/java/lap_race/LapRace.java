@@ -35,6 +35,8 @@ public class LapRace extends Race {
     LapRaceResult[] overall_results;
     Map<Category, List<Team>> prize_winners = new HashMap<>();
 
+    private int senior_prizes, category_prizes;
+
     // Records for each leg whether there was a mass start.
     boolean[] mass_start_legs;
 
@@ -104,12 +106,10 @@ public class LapRace extends Race {
         printCollatedTimes();
     }
 
-    @Override
-    protected int getDefaultOpenPrizes() {
+    protected int getDefaultSeniorPrizes() {
         return 3;
     }
 
-    @Override
     protected int getDefaultCategoryPrizes() {
         return 1;
     }
@@ -122,6 +122,8 @@ public class LapRace extends Race {
 
         number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
         start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
+        senior_prizes = Integer.parseInt(getPropertyWithDefault("SENIOR_PRIZES", String.valueOf(getDefaultSeniorPrizes())));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
     }
 
     private void configureHelpers() {
@@ -139,8 +141,7 @@ public class LapRace extends Race {
 
     protected void configureCategories() {
 
-        categories_in_decreasing_generality_order = LapRaceCategories.getCategoriesInDecreasingGeneralityOrder(open_prizes, category_prizes);
-        categories_in_report_order = LapRaceCategories.getCategoriesInReportOrder(open_prizes, category_prizes);
+        categories = new LapRaceCategories(senior_prizes, category_prizes);
     }
 
     private void configureInputData() throws IOException {

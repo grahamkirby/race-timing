@@ -19,7 +19,6 @@ public class IndividualRace extends Race {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     IndividualRaceInput input;
     IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     IndividualRacePrizes prizes;
@@ -27,6 +26,9 @@ public class IndividualRace extends Race {
     IndividualRaceEntry[] entries;
     private IndividualRaceResult[] overall_results;
     Map<Category, List<IndividualRaceEntry>> prize_winners = new HashMap<>();
+
+    public boolean open_category;
+    public int open_prizes, category_prizes;
 
     static Map<String, String> normalised_club_names = new HashMap<>();
 
@@ -43,6 +45,9 @@ public class IndividualRace extends Race {
         normalised_club_names.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
         normalised_club_names.put("DRR", "Dundee Road Runners");
         normalised_club_names.put("Perth RR", "Perth Road Runners");
+        normalised_club_names.put("Kinross RR", "Kinross Road Runners");
+        normalised_club_names.put("Falkland TR", "Falkland Trail Runners");
+        normalised_club_names.put("PH Racing Club", "PH Racing");
         normalised_club_names.put("DHH", "Dundee Hawkhill Harriers");
         normalised_club_names.put("Carnegie H", "Carnegie Harriers");
         normalised_club_names.put("Dundee RR", "Dundee Road Runners");
@@ -54,6 +59,10 @@ public class IndividualRace extends Race {
     public IndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
+
+//    public IndividualRace(final Path config_file_path, Categories categories) throws IOException {
+//        super(config_file_path, categories);
+//    }
 
     public static void main(String[] args) throws IOException {
 
@@ -73,8 +82,8 @@ public class IndividualRace extends Race {
 
         readProperties();
 
-        configureHelpers();
         configureCategories();
+        configureHelpers();
         configureInputData();
     }
 
@@ -84,12 +93,10 @@ public class IndividualRace extends Race {
         processResults(true);
     }
 
-    @Override
     protected int getDefaultOpenPrizes() {
         return 3;
     }
 
-    @Override
     protected int getDefaultCategoryPrizes() {
         return 1;
     }
@@ -115,6 +122,15 @@ public class IndividualRace extends Race {
     protected void readProperties() {
 
         super.readProperties();
+
+        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
+    }
+
+    private void configureCategories() {
+
+        categories = new IndividualRaceCategories(open_category, open_prizes, category_prizes);
     }
 
     private void configureHelpers() {
@@ -127,12 +143,6 @@ public class IndividualRace extends Race {
         output_PDF = new IndividualRaceOutputPDF(this);
 
         prizes = new IndividualRacePrizes(this);
-    }
-
-    protected void configureCategories() {
-
-        categories_in_decreasing_generality_order = IndividualRaceCategories.getCategoriesInDecreasingGeneralityOrder(open_category, open_prizes, category_prizes);
-        categories_in_report_order = IndividualRaceCategories.getCategoriesInReportOrder(open_category, open_prizes, category_prizes);
     }
 
     private void configureInputData() throws IOException {

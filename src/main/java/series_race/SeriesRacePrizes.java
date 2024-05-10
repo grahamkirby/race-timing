@@ -17,7 +17,7 @@ public class SeriesRacePrizes {
 
     public void allocatePrizes() {
 
-        for (final Category category : race.categories_in_decreasing_generality_order)
+        for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder())
             race.prize_winners.put(category, getPrizeWinners(category));
     }
 
@@ -40,7 +40,7 @@ public class SeriesRacePrizes {
 
     private boolean prizeWinner(final SeriesRaceResult result, final Category category) {
 
-        boolean includes = SeriesRaceCategories.includes(category, result.runner.category);
+        boolean includes = race.categories.includes(category, result.runner.category);
         boolean b = alreadyWonPrize(result.runner);
         return result.completed() && includes && !b;
     }
