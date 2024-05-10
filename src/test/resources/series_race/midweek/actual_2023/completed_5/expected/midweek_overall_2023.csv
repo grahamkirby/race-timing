@@ -2,7 +2,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 1,Rhona Van Rensburg,Fife AC,F50,200,200,0,200,200,800,Y
 2,Ben Kinninmonth,Fife AC,MS,198,0,199,199,200,796,Y
 3,Hannah Tippetts,Dundee Road Runners,FS,196,196,197,0,198,787,Y
-4,Ben Hukins,PH Racing Club,M40,197,200,200,0,188,785,Y
+4,Ben Hukins,PH Racing,M40,197,200,200,0,188,785,Y
 5,Adam Hart,Dundee Road Runners,MS,196,197,195,0,196,784,Y
 6=,James Barnet,Dundee Road Runners,MS,195,196,193,0,194,778,Y
 6=,Fiona Callaghan,Dundee Road Runners,FS,192,194,195,195,194,778,Y
@@ -12,7 +12,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 11,Jonathan Millar,Carnegie Harriers,MS,192,0,189,194,187,762,Y
 12,Hilary Ritchie,Fife AC,F60,185,193,190,190,185,758,Y
 13,Pamela Cruickshanks,Anster Haddies,F50,188,185,188,191,0,752,Y
-14,Iain Wallace,PH Racing Club,M50,191,191,187,0,181,750,Y
+14,Iain Wallace,PH Racing,M50,191,191,187,0,181,750,Y
 15,Thomas Robertson,Fife AC,MU20,187,187,177,191,178,743,Y
 16,Bryan McLaren,Leven Las Vegas RC,MS,0,194,188,192,161,735,Y
 17,Jim Morton,Dundee Road Runners,M50,180,183,182,188,170,733,Y
@@ -115,7 +115,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 ,Mark Harris,Fife AC,M50,0,195,0,0,0,195,N
 ,Fergus Ingledew,Fife AC,MS,0,0,0,0,195,195,N
 ,Jamie Anderson,Anster Haddies,MU20,194,0,0,0,0,194,N
-,Sarah Paterson,PH Racing Club,FS,0,0,194,0,0,194,N
+,Sarah Paterson,PH Racing,FS,0,0,194,0,0,194,N
 ,Cameron Watson,Lomond Hill Runners,M50,0,0,194,0,0,194,N
 ,Joe Brown,Unatt.,MS,0,0,0,0,193,193,N
 ,Sophia Lapper,Dundee Road Runners,FS,193,0,0,0,0,193,N
