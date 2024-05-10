@@ -22,12 +22,15 @@ public class SeriesRace extends Race {
     private static final String DEFAULT_CATEGORY_PRIZES = "1";
 
     SeriesRaceInput input;
-    SeriesRaceOutput output_CSV, output_text;
+    SeriesRaceOutput output_CSV, output_HTML, output_text;
     SeriesRacePrizes prizes;
 
     IndividualRace[] races;
     SeriesRaceResult[] overall_results;
     Map<Category, List<Runner>> prize_winners = new HashMap<>();
+
+    public boolean open_category;
+    public int open_prizes, category_prizes;
 
     int minimum_number_of_races;
 
@@ -53,9 +56,6 @@ public class SeriesRace extends Race {
     @Override
     protected void configure() throws IOException {
 
-        open_prizes = 3;
-        category_prizes = 3;
-
         readProperties();
 
         configureHelpers();
@@ -65,8 +65,7 @@ public class SeriesRace extends Race {
 
     protected void configureCategories() {
 
-        categories_in_decreasing_generality_order = SeriesRaceCategories.getCategoriesInDecreasingGeneralityOrder(open_category, open_prizes, category_prizes);
-        categories_in_report_order = SeriesRaceCategories.getCategoriesInReportOrder(open_category, open_prizes, category_prizes);
+        categories = new IndividualRaceCategories(open_category, open_prizes, category_prizes);
     }
 
     @Override
@@ -82,12 +81,10 @@ public class SeriesRace extends Race {
         printCombined();
     }
 
-    @Override
     protected int getDefaultOpenPrizes() {
         return 3;
     }
 
-    @Override
     protected int getDefaultCategoryPrizes() {
         return 3;
     }
@@ -98,6 +95,10 @@ public class SeriesRace extends Race {
 
         super.readProperties();
         minimum_number_of_races = Integer.parseInt(properties.getProperty("MINIMUM_NUMBER_OF_RACES"));
+
+        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
     }
 
     private void configureHelpers() {
@@ -105,6 +106,7 @@ public class SeriesRace extends Race {
         input = new SeriesRaceInput(this);
 
         output_CSV = new SeriesRaceOutputCSV(this);
+        output_HTML = new SeriesRaceOutputHTML(this);
         output_text = new SeriesRaceOutputText(this);
 
         prizes = new SeriesRacePrizes(this);
@@ -252,6 +254,7 @@ public class SeriesRace extends Race {
     private void printOverallResults() throws IOException {
 
         output_CSV.printOverallResults();
+        output_HTML.printOverallResults();
     }
 
     private void printPrizes() throws IOException {

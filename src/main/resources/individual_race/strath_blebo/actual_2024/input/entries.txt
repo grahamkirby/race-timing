@@ -1,0 +1,109 @@
+101	David Aitken 	Dundee Road Runners	M50
+102	Eric Anderson	Anster Haddies	M50
+103	Simon Anetts	Fife AC	M Sen
+104	David Baird	Dundee Road Runners	M Sen
+105	Gary Barker	Fife AC	M60
+106	Graeme Barker	Fife AC	M Sen
+107	Olivia Batho-Samblás	Dundee Road Runners	F Sen
+108	Mark Bell	Dundee Road Runners	M40
+109	Karen Birnie	Kinross Road Runners	F60
+110	John Bryceland	Dundee Road Runners	M50
+111	David  Burgess	Anster Haddies	M50
+112	Fiona Canavan	Dundee Road Runners	F Sen
+113	Lisa Chan	STAART	F Sen
+114	Jacqueline  Cook 	Falkland Trail Runners 	F40
+115	Emanuel  Corduneanu 	Dundee Road Runners	M Sen
+116	Pamela Cruickshanks	Anster Haddies 	F50
+117	Ailsa Cruickshanks	Fife AC	F Sen
+118	Jock Dryburgh	RunSum Running Kirkcaldy	M60
+119	Daniel  Fields	Dundee Road Runners	M40
+120	Malcolm Forbes	Dundee Road Runners	M60
+121	Simon Fox	Fife AC	M60
+122	Will Gage	Anster Haddies	M50
+123	Orla Gage	Anster Haddies	FU20
+124	Jane Gatherer	Falkland Trail Runners	F50
+125	Alison Gelly	Dundee Road Runners 	F50
+126	Phillip  Gillespie 	Dundee Road Runners	M50
+127	Tom Gough	Fife AC	M Sen
+128	Jeff Gunnell		M60
+129	Paul Harkins	Fife AC	M40
+130	Andy Harley	Fife AC	M40
+131	Adam Hart	Dundee Road Runners AC	M Sen
+132	Dominic Hughes	Dundee Road Runners	M Sen
+133	Scott Hutchison	STAART	M Sen
+134	John Kinninmonth	RunSum Running Kirkcaldy	M60
+135	Ben Kinninmonth 	Fife AC	M Sen
+136	Nessie  Kirkbride	Falkland Trail Runners	F60
+137	Mairi Littleson	Dundee Road Runners	F Sen
+138	Hannah Lopez	Kinross Road Runners	F Sen
+139	Iain  Luke	Dundee Road Runners	M70
+140	John MacPherson	Fife AC	M40
+141	Keren Macpherson	Fife AC	F50
+142	Vince MacPherson 	Fife AC	M40
+143	Steven Maloney	Dundee Road Runners 	M40
+144	Rhonda Manning	Dundee Hawkhill Harriers	F50
+145	Tony Martin	Falkland Trail Runners 	M70
+146	Margaret Martin	Fife AC	F60
+147	Ross McArthur	Falkland Trail Runners 	M Sen
+148	Josh McKay	Dundee Road Runners	M Sen
+149	Kenneth McLeod	Fife AC	M40
+150	Alison  McNeilly	Dundee Road Runners	F40
+151	Bethan McRobbie		F Sen
+152	Jonathan Millar	Carnegie Harriers	M40
+153	David Miller	Dundee Road Runners 	M50
+154	Michael  Mitchell 	Dundee Road Runners 	M50
+155	Stuart Murray		M Sen
+156	Eric Nachman	Falkland Trail Runners 	M70
+157	Jane  O'Donnell 	Dundee Road Runners 	F40
+158	David Pease	Falkland Trail Runners 	M60
+159	Gary Pirie	PH Racing Club 	M50
+160	Alex  Priestley	Falkland Trail Runners	M Sen
+161	Gordon Pryde	Lomond Hill Runners	M60
+162	Tom Rainey	Anster Haddies	M40
+163	Paul Reed	Dundee Road Runners	M50
+164	Michael Reilly	Anster Haddies	M40
+165	Graham Rena	Dundee Road Runners	M50
+166	Willie Rennie	PH Racing Club	M50
+167	Laura Robertson 	Falkland Trail Runners 	F50
+168	Martin Rollo	Dundee Road Runners	M50
+169	Michael Royden	Dundee Roadrunners	M50
+170	Ruth Sharp		F Sen
+171	Jason Sharp		M40
+172	Gary Shaw	Anster Haddies	M40
+173	Arron Small	Dundee Road Runners	M Sen
+174	Lynne Stephen	Fife AC	F60
+175	Jamie  Stewart 	Dundee Road Runners 	M40
+176	Christopher  Sturrock 	Running Machines 	M Sen
+177	Mercè Torres	Fife AC	F40
+178	Rhona  Van Rensburg 	Fife AC	F50
+179	Hendrik  Van Rensburg 	Fife AC	M50
+180	Iain Wallace	PH Racing 	M50
+181	David Webster	Dundee Road Runners	M Sen
+182	Grant  Whytock 	Dundee Road Runners	M50
+183	Dominic  Williams 	Dundee Road Runners	M Sen
+184	Chris Wilson		M40
+185	Simone Young	Kinross Road Runners	F50
+188	Hilary Ritchie	Fife AC	F60
+187	Jocelyn Scott	Fife AC	F70
+186	Heather Anderson	Fife AC	F40
+189	Jamie  Anderson	Anster Haddies	MU20
+190	Sandra Gartener	Falkland Trail Runners	F50
+191	John Mill	Dundee Road Runners	M60
+192	Sean Kenyon	Unatt.	M50
+193	Matt Buck	Dundee Road Runners	M Sen
+194	Debz Hay	Anster Haddies	F50
+195	Ann Malcolm	Kinross Road Runners	F60
+196	John Wilmot	Falkland Trail Runners	M70
+197	Ann Davidson	Falkland Trail Runners	F60
+198	Fiona Callaghan	Dundee Road Runners	F Sen
+199	Jennifer Massie	Dundee Road Runners	F40
+200	Rory Sandilands	Fife AC	M40
+100	Bill Gillan	Recreational Running	M70
+99	Philip Suttie	Falkland Trail Runners	M40
+93	Alice Hall	Anster Haddies	F60
+94	Yvonne Dehn	Anster Haddies	F Sen
+95	Lee Cessford	Falkland Trail Runners	M40
+97	Lynne Herd	Anster Haddies	F40
+98	Ewan Lumsden	Anster Haddies	M40
+96	Dave Clark	Falkland Trail Runners	M50
+92	John Lee	Falkland Trail Runners	M60

@@ -27,7 +27,7 @@ public class LapRacePrizes {
 
     private void allocateFirstPrizes() {
 
-        for (final Category category : race.categories_in_decreasing_generality_order) {
+        for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder()) {
 
             race.prize_winners.put(category, new ArrayList<>());
             allocateFirstPrize(category);
@@ -46,7 +46,7 @@ public class LapRacePrizes {
 
     private void allocateMinorPrizes() {
 
-        for (final Category category : race.categories_in_decreasing_generality_order)
+        for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder())
             allocateMinorPrizes(category);
     }
 
@@ -67,7 +67,7 @@ public class LapRacePrizes {
 
     private boolean prizeWinner(final LapRaceResult result, final Category category) {
 
-        return !result.dnf() && LapRaceCategories.includes(category, result.team.category) && !alreadyWonPrize(result.team);
+        return !result.dnf() && race.categories.includes(category, result.team.category) && !alreadyWonPrize(result.team);
     }
 
     private boolean alreadyWonPrize(final Team team) {

@@ -93,7 +93,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
         html_writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : race.categories_in_report_order)
+        for (final Category category : race.categories.getCategoriesInReportOrder())
             printPrizes(category, html_writer);
     }
 

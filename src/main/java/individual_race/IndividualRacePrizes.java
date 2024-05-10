@@ -18,7 +18,7 @@ public class IndividualRacePrizes {
 
 //        List<Category> categories = IndividualRaceCategories.getCategoriesInDecreasingGeneralityOrder(race.open_category, race.open_prizes, race.category_prizes);
 
-        for (final Category category : race.categories_in_decreasing_generality_order) {
+        for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder()) {
             List<IndividualRaceEntry> prizeWinners = getPrizeWinners(category);
             race.prize_winners.put(category, prizeWinners);
         }
@@ -43,7 +43,7 @@ public class IndividualRacePrizes {
 
     private boolean prizeWinner(final IndividualRaceResult result, final Category category) {
 
-        return !result.dnf() && IndividualRaceCategories.includes(category, result.entry.runner.category) && !alreadyWonPrize(result.entry);
+        return !result.dnf() && race.categories.includes(category, result.entry.runner.category) && !alreadyWonPrize(result.entry);
     }
 
     private boolean alreadyWonPrize(final IndividualRaceEntry entry) {

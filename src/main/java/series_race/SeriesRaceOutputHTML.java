@@ -1,6 +1,7 @@
-package individual_race;
+package series_race;
 
 import common.Category;
+import individual_race.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,9 +9,9 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
-public class IndividualRaceOutputHTML extends IndividualRaceOutput {
+public class SeriesRaceOutputHTML extends SeriesRaceOutput {
 
-    public IndividualRaceOutputHTML(final IndividualRace race) {
+    public SeriesRaceOutputHTML(final SeriesRace race) {
         super(race);
     }
 
@@ -64,7 +65,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<IndividualRaceEntry> category_prize_winners = race.prize_winners.get(category);
+        final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
@@ -73,14 +74,16 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
 
-            for (final IndividualRaceEntry entry : category_prize_winners) {
+            for (final Runner entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
+                int indexOfRunner = race.findIndexOfRunner(entry);
+                SeriesRaceResult overallResult = race.getOverallResults()[indexOfRunner];
+                int score = overallResult.totalScore();
 
                 writer.append("<li>").
-                        append(result.entry.runner.name).append(" (").
-                        append(result.entry.runner.category.getShortName()).append(") ").
-                        append(format(result.duration())).append("</li>\n");
+                        append(entry.name).append(" (").
+                        append(entry.category.getShortName()).append(") ").
+                        append(String.valueOf(score)).append("</li>\n");
             }
 
             writer.append("</ol>\n\n");
@@ -101,10 +104,20 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
                                <thead>
                                    <tr>
                                        <th>Pos</th>
-                                       <th>No</th>
-                                       <th>Team</th>
+                                       <th>Runner</th>
                                        <th>Category</th>
+                                       <th>Club</th>
+            """);
+
+        for (int i = 0; i < race.races.length; i++) {
+            if (race.races[i] != null) {
+                writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
+            }
+        }
+
+        writer.append("""
                                        <th>Total</th>
+                                       <th>Completed</th>
                                    </tr>
                                </thead>
                                <tbody>
@@ -115,31 +128,45 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
         int position = 1;
 
-        for (final IndividualRaceResult result : race.getOverallResults()) {
+        for (final SeriesRaceResult result : race.getOverallResults()) {
 
             writer.append("""
                         <tr>
-                            <td>""");
-            if (!result.dnf()) writer.append(String.valueOf(position++));
+                        <td>""");
+//            writer.append(String.valueOf(position++));
+            writer.append(result.position_string);
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(String.valueOf(result.entry.bib_number));
+            writer.append(htmlEncode(result.runner.name));
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.entry.runner.name));
+            writer.append(result.runner.category.getShortName());
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.entry.runner.category.getShortName());
+            writer.append(result.runner.club);
+            writer.append("""
+                            </td>
+                            """);
+            for (int i = 0; i < result.scores.length; i++) {
+                if (result.scores[i] >= 0) {
+                    writer.append("<td>").append(String.valueOf(result.scores[i])).append("</td>\n");
+                }
+            }
+
+            writer.append("""
+                            <td>""");
+            writer.append(String.valueOf(result.totalScore()));
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.dnf() ? DNF_STRING : format(result.duration()));
+            writer.append(result.completed() ? "Y" : "N");
             writer.append("""
-                            </td>
-                        </tr>""");
+                        </td>
+                        </tr>
+                        """);
         }
     }
 
@@ -154,6 +181,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
     private String htmlEncode(String s) {
 
         return s.replaceAll("è", "&egrave;").
+                replaceAll("á", "&aacute;").
                 replaceAll("é", "&eacute;").
                 replaceAll("ü", "&uuml;").
                 replaceAll("’", "&acute;");

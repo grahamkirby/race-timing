@@ -35,7 +35,7 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            for (final Category category : race.categories_in_report_order)
+            for (final Category category : race.categories.getCategoriesInReportOrder())
                 printPrizes(category, writer);
         }
     }

@@ -54,7 +54,7 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         document.open();
         document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
 
-        for (final Category category : race.categories_in_report_order)
+        for (final Category category : race.categories.getCategoriesInReportOrder())
             printPrizes(category, document);
 
         document.close();
