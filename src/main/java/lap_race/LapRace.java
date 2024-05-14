@@ -3,7 +3,6 @@ package lap_race;
 import common.Category;
 import common.Race;
 import common.RawResult;
-import individual_race.IndividualRaceCategories;
 
 import java.io.IOException;
 import java.nio.file.Path;
