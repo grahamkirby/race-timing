@@ -1,0 +1,6 @@
+YEAR = 2023
+RACE_NAME_FOR_RESULTS = Minitour of Fife
+RACE_NAME_FOR_FILENAMES = minitour
+
+RACES = input/race1/input/config.txt:::
+MINIMUM_NUMBER_OF_RACES = 5

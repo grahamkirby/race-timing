@@ -1,15 +1,18 @@
-package series_race;
+package minitour;
 
 import common.Category;
 import common.Race;
-import individual_race.*;
+import individual_race.IndividualRace;
+import individual_race.IndividualRaceResult;
+import individual_race.Runner;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.*;
 
-public class SeriesRace extends Race {
+public class MinitourRace extends Race {
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -17,24 +20,19 @@ public class SeriesRace extends Race {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final int MAX_RACE_SCORE = 200;
-
-    SeriesRaceInput input;
-    SeriesRaceOutput output_CSV, output_HTML, output_text;
-    SeriesRacePrizes prizes;
+    MinitourRaceInput input;
+    MinitourRaceOutput output_CSV, output_HTML, output_text;
+    MinitourRacePrizes prizes;
 
     IndividualRace[] races;
-    SeriesRaceResult[] overall_results;
+    MinitourRaceResult[] overall_results;
     Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
-    public boolean open_category;
-    public int open_prizes, category_prizes;
-
-    int minimum_number_of_races;
+    public int category_prizes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public SeriesRace(Path config_file_path) throws IOException {
+    public MinitourRace(Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -45,14 +43,16 @@ public class SeriesRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
         else {
-            new SeriesRace(Paths.get(args[0])).processResults();
+            MinitourRace minitourRace = new MinitourRace(Paths.get(args[0]));
+            minitourRace.configure();
+            minitourRace.processResults();
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void configure() throws IOException {
+    public void configure() throws IOException {
 
         readProperties();
 
@@ -63,7 +63,7 @@ public class SeriesRace extends Race {
 
     protected void configureCategories() {
 
-        categories = new SeniorRaceCategories(open_category, open_prizes, category_prizes);
+        categories = new JuniorRaceCategories(category_prizes);
     }
 
     @Override
@@ -79,10 +79,6 @@ public class SeriesRace extends Race {
         printCombined();
     }
 
-    protected int getDefaultOpenPrizes() {
-        return 3;
-    }
-
     protected int getDefaultCategoryPrizes() {
         return 3;
     }
@@ -92,83 +88,29 @@ public class SeriesRace extends Race {
     protected void readProperties() {
 
         super.readProperties();
-        minimum_number_of_races = Integer.parseInt(properties.getProperty("MINIMUM_NUMBER_OF_RACES"));
-
-        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
         category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
     }
 
     private void configureHelpers() {
 
-        input = new SeriesRaceInput(this);
+        input = new MinitourRaceInput(this);
 
-        output_CSV = new SeriesRaceOutputCSV(this);
-        output_HTML = new SeriesRaceOutputHTML(this);
-        output_text = new SeriesRaceOutputText(this);
+        output_CSV = new MinitourRaceOutputCSV(this);
+        output_HTML = new MinitourRaceOutputHTML(this);
+        output_text = new MinitourRaceOutputText(this);
 
-        prizes = new SeriesRacePrizes(this);
+        prizes = new MinitourRacePrizes(this);
     }
 
     private void configureInputData() throws IOException {
 
-        races = input.loadSeriesRaces();
+        races = input.loadMinitourRaces();
 
-        Set<String> runner_names = getRunnerNames(races);
-        for (String runner_name : runner_names) {
-            List<String> clubs_for_runner = getClubsForRunner(runner_name);
-            List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
-            int number_of_defined_clubs = defined_clubs.size();
-            int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
-            if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0) {
-                String defined_club = defined_clubs.get(0);
-
-                for (IndividualRace race : races) {
-                    if (race != null)
-                        for (IndividualRaceResult result : race.getOverallResults()) {
-                            Runner runner = result.entry.runner;
-                            if (runner.name.equals(runner_name) && runner.club.equals("?")) {
-                                runner.club = defined_club;
-                            }
-                        }
-                }
-            }
-        }
-    }
-
-    private List<String> getDefinedClubs(List<String> clubsForRunner) {
-        return clubsForRunner.stream().filter(club -> !club.equals("?")).toList();
-    }
-
-    private List<String> getClubsForRunner(String runner_name) {
-        Set<String> clubs = new HashSet<>();
-        for (IndividualRace race : races) {
-            if (race != null)
-                for (IndividualRaceResult result : race.getOverallResults()) {
-                    Runner runner = result.entry.runner;
-                    if (runner.name.equals(runner_name)) clubs.add(runner.club);
-                }
-        }
-
-        return clubs.stream().toList();
-    }
-
-    private Set<String> getRunnerNames(IndividualRace[] races) {
-        Set<String> names = new HashSet<>();
-        for (IndividualRace race : races) {
-            if (race != null)
-                for (IndividualRaceResult result : race.getOverallResults()) {
-                    Runner runner = result.entry.runner;
-                    names.add(runner.name);
-                }
-        }
-
-        return names;
     }
 
     private void initialiseResults() {
 
-        overall_results = new SeriesRaceResult[getCombinedRunners().length];
+        overall_results = new MinitourRaceResult[getCombinedRunners().length];
     }
 
     private Runner[] getCombinedRunners() {
@@ -208,40 +150,31 @@ public class SeriesRace extends Race {
         Arrays.sort(overall_results);
     }
 
-    private SeriesRaceResult getOverallResult(final Runner runner) {
+    private MinitourRaceResult getOverallResult(final Runner runner) {
 
-        final SeriesRaceResult result = new SeriesRaceResult(runner, this);
+        final MinitourRaceResult result = new MinitourRaceResult(runner, this);
 
         for (int i = 0; i < races.length; i++) {
 
             final IndividualRace individual_race = races[i];
 
             if (individual_race != null)
-                result.scores[i] = calculateRaceScore(individual_race, runner);
+                result.times[i] = getRaceTime(individual_race, runner);
         }
 
         return result;
     }
 
-    private int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
-
-        int score = MAX_RACE_SCORE;
-
-        final String gender = getGender(runner);
+    private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
 
         for (IndividualRaceResult result : individual_race.getOverallResults()) {
 
             final Runner result_runner = result.entry.runner;
 
-            if (result_runner.equals(runner)) return Math.max(score, 0);
-            if (gender.equals(getGender(result_runner))) score--;
+            if (result_runner.equals(runner)) return result.duration();
         }
 
-        return 0;
-    }
-
-    private static String getGender(final Runner runner) {
-        return runner.category.getGender();
+        return null;
     }
 
     private void allocatePrizes() {
@@ -264,7 +197,7 @@ public class SeriesRace extends Race {
 
     }
 
-    public SeriesRaceResult[] getOverallResults() {
+    public MinitourRaceResult[] getOverallResults() {
         return overall_results;
     }
 

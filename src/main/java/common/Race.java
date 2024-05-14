@@ -26,16 +26,12 @@ public abstract class Race {
 
     public Categories categories;
 
-//    public boolean open_category;
-//    public int open_prizes, category_prizes;
-
     public Race(final Path config_file_path) throws IOException {
 
         working_directory_path = config_file_path.getParent().getParent();
         properties = readProperties(config_file_path);
-//        this.categories = categories;
 
-        configure();
+//        configure();
     }
 
     protected abstract void configure() throws IOException;

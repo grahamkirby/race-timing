@@ -1,8 +1,10 @@
 package individual_race;
 
+import common.Categories;
 import common.Category;
 import common.Race;
 import common.RawResult;
+import minitour.JuniorRaceCategories;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -11,7 +13,7 @@ import java.util.*;
 
 public class IndividualRace extends Race {
 
-    // TODO open prizes in addition to gender categories; non-binary category; optional team prizes, by cumulative positions and times
+    // TODO non-binary category; optional team prizes, by cumulative positions and times
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -27,6 +29,7 @@ public class IndividualRace extends Race {
     private IndividualRaceResult[] overall_results;
     Map<Category, List<IndividualRaceEntry>> prize_winners = new HashMap<>();
 
+    private boolean senior_race;
     public boolean open_category;
     public int open_prizes, category_prizes;
 
@@ -61,7 +64,8 @@ public class IndividualRace extends Race {
     }
 
 //    public IndividualRace(final Path config_file_path, Categories categories) throws IOException {
-//        super(config_file_path, categories);
+//        super(config_file_path);
+//        this.categories = categories;
 //    }
 
     public static void main(String[] args) throws IOException {
@@ -71,14 +75,16 @@ public class IndividualRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
         else {
-            new IndividualRace(Paths.get(args[0])).processResults();
+            IndividualRace individualRace = new IndividualRace(Paths.get(args[0]));
+            individualRace.configure();
+            individualRace.processResults();
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void configure() throws IOException {
+    public void configure() throws IOException {
 
         readProperties();
 
@@ -123,6 +129,7 @@ public class IndividualRace extends Race {
 
         super.readProperties();
 
+        senior_race = Boolean.parseBoolean(getPropertyWithDefault("SENIOR_RACE", "true"));
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
         open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
         category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
@@ -130,8 +137,12 @@ public class IndividualRace extends Race {
 
     private void configureCategories() {
 
-        categories = new IndividualRaceCategories(open_category, open_prizes, category_prizes);
+        categories = senior_race ? new SeniorRaceCategories(open_category, open_prizes, category_prizes) : new JuniorRaceCategories(category_prizes);
     }
+//
+//    public void setCategories(Categories categories) {
+//        this.categories = categories;
+//    }
 
     private void configureHelpers() {
 

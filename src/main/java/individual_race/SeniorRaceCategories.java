@@ -6,11 +6,11 @@ import common.Category;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IndividualRaceCategories implements Categories {
+public class SeniorRaceCategories implements Categories {
 
     List<Category> categories_in_decreasing_generality_order = new ArrayList<>();
 
-    public IndividualRaceCategories(boolean open_category, int open_prizes, int category_prizes) {
+    public SeniorRaceCategories(boolean open_category, int open_prizes, int category_prizes) {
 
         if (open_category) {
             categories_in_decreasing_generality_order.add(new Category("Women Open", "WO", "Women", 0, open_prizes));

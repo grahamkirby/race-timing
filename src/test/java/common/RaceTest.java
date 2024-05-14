@@ -20,7 +20,7 @@ public abstract class RaceTest {
     private Path temp_output_directory;
 
     // When enabled, test results are retained on the desktop.
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final String DEBUG_FILES_LOCATION = "/Users/gnck/Desktop/temp";
 
     protected abstract Race makeRace(Path config_file_path) throws IOException;
