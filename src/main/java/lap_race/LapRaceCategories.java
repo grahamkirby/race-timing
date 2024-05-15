@@ -3,13 +3,7 @@ package lap_race;
 import common.Categories;
 import common.Category;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class LapRaceCategories implements Categories {
-
-    List<Category> categories_in_decreasing_generality_order = new ArrayList<>();
-    List<Category> categories_in_report_order = new ArrayList<>();
+public class LapRaceCategories extends Categories {
 
     public LapRaceCategories(int senior_prizes, int category_prizes) {
 
@@ -37,17 +31,7 @@ public class LapRaceCategories implements Categories {
         categories_in_report_order.add(new Category("Mixed 40+", "M40", "Mixed", 40, category_prizes));
     }
 
-    // Defines the order of iteration when allocating prizes.
-    public List<Category> getCategoriesInDecreasingGeneralityOrder() {
-
-        return categories_in_decreasing_generality_order;
-    }
-
-    public List<Category> getCategoriesInReportOrder() {
-
-        return categories_in_report_order;
-    }
-
+    @Override
     public boolean includes(final Category first_category, final Category second_category) {
 
         return genderIncludes(first_category.getGender(), second_category.getGender()) && first_category.getMinimumAge() <= second_category.getMinimumAge();

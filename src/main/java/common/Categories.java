@@ -1,15 +1,31 @@
 package common;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface Categories {
+public abstract class Categories {
+
+    protected List<Category> categories_in_decreasing_generality_order = new ArrayList<>();
+    protected List<Category> categories_in_report_order = new ArrayList<>();
 
     // Defines the order of iteration when allocating prizes.
-    List<Category> getCategoriesInDecreasingGeneralityOrder();
+    public List<Category> getCategoriesInDecreasingGeneralityOrder() {
 
-    List<Category> getCategoriesInReportOrder();
+        return categories_in_decreasing_generality_order;
+    }
 
-    Category getCategory(String category_short_name);
+    public List<Category> getCategoriesInReportOrder() {
 
-    boolean includes(Category first_category, Category second_category);
+        return categories_in_report_order;
+    }
+
+    public Category getCategory(String category_short_name) {
+
+        for (Category category : categories_in_decreasing_generality_order)
+            if (category.getShortName().equals(category_short_name)) return category;
+
+        throw new RuntimeException("unknown category: " + category_short_name);
+    }
+
+    public abstract boolean includes(Category first_category, Category second_category);
 }
