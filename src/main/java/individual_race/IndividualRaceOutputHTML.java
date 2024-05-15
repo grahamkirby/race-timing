@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
+import static common.Race.format;
 import static series_race.SeriesRaceOutputHTML.htmlEncode;
 
 public class IndividualRaceOutputHTML extends IndividualRaceOutput {
@@ -77,7 +78,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
             for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
+                final IndividualRaceResult result = race.getOverallResults()[race.findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append("<li>").
                         append(result.entry.runner.name).append(" (").

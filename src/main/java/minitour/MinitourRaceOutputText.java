@@ -1,6 +1,7 @@
 package minitour;
 
 import common.Category;
+import common.Race;
 import individual_race.IndividualRace;
 import individual_race.Runner;
 
@@ -63,7 +64,7 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
                 writer.append(String.valueOf(position++)).append(": ").
                         append(runner.name).append(" (").
                         append(runner.club).append(") ").
-                        append(format(result.duration())).append("\n");
+                        append(Race.format(result.duration())).append("\n");
             }
 
             writer.append("\n\n");

@@ -54,18 +54,16 @@ public class LapRace extends Race {
         super(config_file_path);
     }
 
-//    public LapRace(final Properties properties) throws IOException {
-//        super(properties);
-//    }
-
     public static void main(String[] args) throws IOException {
 
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java Results <config file path>");
+            System.out.println("usage: java LapRace <config file path>");
         else {
-            new LapRace(Paths.get(args[0])).processResults();
+            LapRace lapRace = new LapRace(Paths.get(args[0]));
+            lapRace.configure();
+            lapRace.processResults();
         }
     }
 
@@ -79,6 +77,7 @@ public class LapRace extends Race {
         configureHelpers();
         configureCategories();
         configureInputData();
+
         configureMassStarts();
         configurePairedLegs();
         configureIndividualLegStarts();

@@ -5,6 +5,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static common.Race.format;
+
 public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time";
@@ -54,7 +56,7 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
                         append(overall_result.entry.runner.name).append(",").
                         append(overall_result.entry.runner.club).append(",").
                         append(overall_result.entry.runner.category.getShortName()).append(",").
-                        append(overall_result.dnf() ? "DNF" : IndividualRaceOutput.format(overall_result.duration())).append("\n");
+                        append(overall_result.dnf() ? "DNF" : format(overall_result.duration())).append("\n");
             }
         }
     }

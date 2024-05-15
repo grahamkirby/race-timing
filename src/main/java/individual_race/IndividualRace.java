@@ -3,7 +3,8 @@ package individual_race;
 import common.Category;
 import common.Race;
 import common.RawResult;
-import minitour.JuniorRaceCategories;
+import common.SeniorRaceCategories;
+import common.JuniorRaceCategories;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,47 +33,18 @@ public class IndividualRace extends Race {
     public boolean open_category;
     public int open_prizes, category_prizes;
 
-    static Map<String, String> normalised_club_names = new HashMap<>();
-
-    static {
-        normalised_club_names.put("", "Unatt.");
-        normalised_club_names.put("Unattached", "Unatt.");
-        normalised_club_names.put("U/A", "Unatt.");
-        normalised_club_names.put("None", "Unatt.");
-        normalised_club_names.put("Fife Athletic Club", "Fife AC");
-        normalised_club_names.put("Dundee HH", "Dundee Hawkhill Harriers");
-        normalised_club_names.put("Leven Las Vegas", "Leven Las Vegas RC");
-        normalised_club_names.put("Leven Las Vegas Running Club", "Leven Las Vegas RC");
-        normalised_club_names.put("Haddies", "Anster Haddies");
-        normalised_club_names.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
-        normalised_club_names.put("DRR", "Dundee Road Runners");
-        normalised_club_names.put("Perth RR", "Perth Road Runners");
-        normalised_club_names.put("Kinross RR", "Kinross Road Runners");
-        normalised_club_names.put("Falkland TR", "Falkland Trail Runners");
-        normalised_club_names.put("PH Racing Club", "PH Racing");
-        normalised_club_names.put("DHH", "Dundee Hawkhill Harriers");
-        normalised_club_names.put("Carnegie H", "Carnegie Harriers");
-        normalised_club_names.put("Dundee RR", "Dundee Road Runners");
-        normalised_club_names.put("Recreational Running", "Recreational Runners");
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public IndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
-//    public IndividualRace(final Path config_file_path, Categories categories) throws IOException {
-//        super(config_file_path);
-//        this.categories = categories;
-//    }
-
     public static void main(String[] args) throws IOException {
 
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java Results <config file path>");
+            System.out.println("usage: java IndividualRace <config file path>");
         else {
             IndividualRace individualRace = new IndividualRace(Paths.get(args[0]));
             individualRace.configure();
@@ -87,8 +59,8 @@ public class IndividualRace extends Race {
 
         readProperties();
 
-        configureCategories();
         configureHelpers();
+        configureCategories();
         configureInputData();
     }
 
@@ -138,10 +110,6 @@ public class IndividualRace extends Race {
 
         categories = senior_race ? new SeniorRaceCategories(open_category, open_prizes, category_prizes) : new JuniorRaceCategories(category_prizes);
     }
-//
-//    public void setCategories(Categories categories) {
-//        this.categories = categories;
-//    }
 
     private void configureHelpers() {
 
@@ -195,11 +163,10 @@ public class IndividualRace extends Race {
 
         if (dnf_string != null && !dnf_string.isBlank()) {
 
-            for (final String dnf_string : dnf_string.split(",")) {
+            for (final String bib_number : dnf_string.split(",")) {
 
                 try {
-                    final IndividualRaceResult result = getResultWithIndex(dnf_string);
-                    result.DNF = true;
+                    getResultWithBibNumber(Integer.parseInt(bib_number)).DNF = true;
                 }
                 catch (Exception e) {
                     throw new RuntimeException("illegal DNF time");
@@ -208,26 +175,32 @@ public class IndividualRace extends Race {
         }
     }
 
-    public IndividualRaceResult getResultWithIndex(final String bib) {
+    public IndividualRaceResult getResultWithBibNumber(final int bib_number) {
 
-        final int bib_number = Integer.parseInt(bib);
-
-        return overall_results[findIndexOfRunnerWithBibNumber(bib_number)];
+        return overall_results[findResultsIndexOfRunnerWithBibNumber(bib_number)];
     }
 
-    int findIndexOfRunnerWithBibNumber(final int bib_number) {
+    int findResultsIndexOfRunnerWithBibNumber(final int bib_number) {
 
         for (int i = 0; i < overall_results.length; i++)
-            if (overall_results[i].entry.bib_number == bib_number) return i;
+            if (overall_results[i].entry.bib_number == bib_number)
+                return i;
 
         throw new RuntimeException("unregistered bib number: " + bib_number);
     }
 
     IndividualRaceEntry findEntryWithBibNumber(final int bib_number) {
 
-        for (IndividualRaceEntry entry : entries) if (entry.bib_number == bib_number) return entry;
+        for (IndividualRaceEntry entry : entries)
+            if (entry.bib_number == bib_number)
+                return entry;
 
         throw new RuntimeException("unregistered bib number: " + bib_number);
+    }
+
+    public Category findCategory(int bib_number) {
+
+        return findEntryWithBibNumber(bib_number).runner.category;
     }
 
     private void calculateResults() {
@@ -247,11 +220,6 @@ public class IndividualRace extends Race {
         }
 
         return Integer.MAX_VALUE;
-    }
-
-    public static String normaliseClubName(final String club) {
-
-        return normalised_club_names.getOrDefault(club, club);
     }
 
     private void allocatePrizes() {

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static common.Race.format;
+
 public class LapRaceOutputText extends LapRaceOutput {
 
     public LapRaceOutputText(final LapRace results) {

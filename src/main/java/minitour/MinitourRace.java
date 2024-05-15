@@ -1,6 +1,7 @@
 package minitour;
 
 import common.Category;
+import common.JuniorRaceCategories;
 import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
@@ -11,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class MinitourRace extends Race {
@@ -43,7 +43,7 @@ public class MinitourRace extends Race {
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java Results <config file path>");
+            System.out.println("usage: java MinitourRace <config file path>");
         else {
             MinitourRace minitourRace = new MinitourRace(Paths.get(args[0]));
             minitourRace.configure();
@@ -107,7 +107,6 @@ public class MinitourRace extends Race {
     private void configureInputData() throws IOException {
 
         races = input.loadMinitourRaces();
-
     }
 
     private void initialiseResults() {
@@ -169,12 +168,8 @@ public class MinitourRace extends Race {
 
     private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
 
-        for (IndividualRaceResult result : individual_race.getOverallResults()) {
-
-            final Runner result_runner = result.entry.runner;
-
-            if (result_runner.equals(runner)) return result.duration();
-        }
+        for (IndividualRaceResult result : individual_race.getOverallResults())
+            if (result.entry.runner.equals(runner)) return result.duration();
 
         return null;
     }
@@ -191,12 +186,10 @@ public class MinitourRace extends Race {
     }
 
     private void printPrizes() throws IOException {
-
         output_text.printPrizes();
     }
 
     private void printCombined() throws IOException {
-
         output_HTML.printCombined();
     }
 

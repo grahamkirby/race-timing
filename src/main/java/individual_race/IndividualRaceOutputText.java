@@ -1,6 +1,7 @@
 package individual_race;
 
 import common.Category;
+import common.Race;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -56,13 +57,13 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
             int position = 1;
             for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
+                final IndividualRaceResult result = race.getOverallResults()[race.findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append(String.valueOf(position++)).append(": ").
                         append(result.entry.runner.name).append(" (").
                         //append(IndividualRace.normaliseClubName(result.entry.runner.club)).append(") ").
                         append(result.entry.runner.club).append(") ").
-                        append(format(result.duration())).append("\n");
+                        append(Race.format(result.duration())).append("\n");
             }
 
             writer.append("\n\n");

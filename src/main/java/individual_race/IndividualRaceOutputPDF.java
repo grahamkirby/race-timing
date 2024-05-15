@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static common.Race.format;
+
 public class IndividualRaceOutputPDF extends IndividualRaceOutput {
 
     private static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
@@ -65,7 +67,7 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
             int position = 1;
             for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.getOverallResults()[race.findIndexOfRunnerWithBibNumber(entry.bib_number)];
+                final IndividualRaceResult result = race.getOverallResults()[race.findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 final Paragraph paragraph = new Paragraph();
                 paragraph.add(new Chunk(position++ + ": ", PDF_FONT));

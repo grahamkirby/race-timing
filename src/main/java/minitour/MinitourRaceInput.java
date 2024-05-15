@@ -3,8 +3,6 @@ package minitour;
 import common.Category;
 import common.RawResult;
 import individual_race.IndividualRace;
-import individual_race.IndividualRaceEntry;
-import individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,13 +10,27 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static common.Race.parseTime;
 
 public class MinitourRaceInput {
+
+    private record SelfTimedRun(int bib_number, int race_number) {}
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    static private final List<String> SECOND_WAVE_CATEGORY_NAMES = Arrays.asList("FU9", "MU9", "FU11", "MU11");
 
     final MinitourRace race;
 
     Path[] race_config_paths;
+    private String[] start_offsets;
+    private SelfTimedRun[] self_timed_runs;
 
+    private int time_trial_race_number;
+    private int time_trial_runners_per_wave;
+    private Duration time_trial_inter_wave_interval;
 
     public MinitourRaceInput(final MinitourRace race) {
 
@@ -34,11 +46,15 @@ public class MinitourRaceInput {
     private void readProperties() {
 
         race_config_paths = readRaceConfigPaths();
+        start_offsets = readStartOffsets();
+        self_timed_runs = readSelfTimedRuns();
+
+        readTimeTrialProperties();
     }
 
     private Path[] readRaceConfigPaths() {
 
-        final String[] race_strings = race.getProperties().getProperty("RACES").split(":", -1);
+        final String[] race_strings = race.getProperties().getProperty("RACES").split(",", -1);
 
         final Path[] race_paths = new Path[race_strings.length];
 
@@ -48,12 +64,35 @@ public class MinitourRaceInput {
         return race_paths;
     }
 
-    private List<String> second_wave_category_names = Arrays.asList("FU9", "MU9", "FU11", "MU11");
+    private String[] readStartOffsets() {
+
+        return race.getProperties().getProperty("RACE_START_OFFSETS").split(",", -1);
+    }
+
+    private SelfTimedRun[] readSelfTimedRuns() {
+
+        String[] selfTimeds = race.getProperties().getProperty("SELF_TIMED").split(",", -1);
+
+        Stream<SelfTimedRun> selfTimedRunStream = Arrays.stream(selfTimeds).map(s -> {
+            String[] parts = s.split("/", -1);
+            return new SelfTimedRun(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        });
+
+        return selfTimedRunStream.toList().toArray(new SelfTimedRun[0]);
+    }
+
+    private void readTimeTrialProperties() {
+
+        String[] parts = race.getProperties().getProperty("TIME_TRIAL").split("/", -1);
+
+        time_trial_race_number = Integer.parseInt(parts[0]);
+        time_trial_runners_per_wave = Integer.parseInt(parts[1]);
+        time_trial_inter_wave_interval = parseTime(parts[2]);
+    }
 
     public IndividualRace[] loadMinitourRaces() throws IOException {
 
         final IndividualRace[] races = new IndividualRace[race_config_paths.length];
-
 
         for (int i = 0; i < races.length; i++) {
 
@@ -68,9 +107,7 @@ public class MinitourRaceInput {
 
                 for (RawResult raw_result : individual_race.getRawResults()) {
 
-                    int bibNumber = raw_result.getBibNumber();
-
-                    Duration start_offset = getStartOffset(individual_race, i+1, bibNumber);
+                    final Duration start_offset = getStartOffset(individual_race, i+1, raw_result.getBibNumber());
 
                     raw_result.recorded_finish_time = raw_result.recorded_finish_time.minus(start_offset);
                 }
@@ -84,31 +121,28 @@ public class MinitourRaceInput {
         return races;
     }
 
-    private String[] start_offsets = {"00:00:00", "00:01:45", "00:01:00", "00:00:00", "00:02:00"};
+    private boolean selfTimed(int bib_number, int race_number) {
 
-    private boolean selfTimed(int race_number, int bib_number) {
+        for (SelfTimedRun self_timed_run : self_timed_runs) {
+            if (self_timed_run.bib_number == bib_number && self_timed_run.race_number == race_number) return true;
+        }
 
-        return race_number == 4 && bib_number == 23;
+        return false;
     }
 
     private Duration getStartOffset(IndividualRace individual_race, int race_number, int bib_number) {
 
-        if (selfTimed(race_number, bib_number)) return Duration.ZERO;
+        if (selfTimed(bib_number, race_number)) return Duration.ZERO;
 
-        if (race_number == 4) return IndividualRace.parseTime("00:00:30").multipliedBy((bib_number-1)/4);
+        if (race_number == time_trial_race_number) return time_trial_inter_wave_interval.multipliedBy((bib_number-1)/time_trial_runners_per_wave);
 
-        Category category = null;
-        for (IndividualRaceEntry entry2 : individual_race.entries) {
-            if (entry2.bib_number == bib_number) {
-                category = entry2.runner.category;
-            }
-        }
-
-
-        if (second_wave_category_names.contains(category.getShortName())) {
-            return IndividualRace.parseTime(start_offsets[race_number-1]);
-        }
+        if (categoryInSecondWave(individual_race.findCategory(bib_number)))
+            return parseTime(start_offsets[race_number-1]);
 
         return IndividualRace.ZERO_TIME;
+    }
+
+    private static boolean categoryInSecondWave(Category category) {
+        return SECOND_WAVE_CATEGORY_NAMES.contains(category.getShortName());
     }
 }

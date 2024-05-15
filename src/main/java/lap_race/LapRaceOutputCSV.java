@@ -5,6 +5,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static common.Race.format;
+
 public class LapRaceOutputCSV extends LapRaceOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
@@ -76,7 +78,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
                     append(String.valueOf(overall_result.team.bib_number)).append(",").
                     append(overall_result.team.name).append(",").
                     append(overall_result.team.category.getLongName()).append(",").
-                    append(overall_result.dnf() ? "DNF" : LapRaceOutput.format(overall_result.duration())).append("\n");
+                    append(overall_result.dnf() ? "DNF" : format(overall_result.duration())).append("\n");
         }
     }
 

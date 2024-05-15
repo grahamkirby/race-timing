@@ -2,5 +2,13 @@ YEAR = 2023
 RACE_NAME_FOR_RESULTS = Minitour of Fife
 RACE_NAME_FOR_FILENAMES = minitour
 
-RACES = input/race1/input/config.txt:::
-MINIMUM_NUMBER_OF_RACES = 5
+RACES = input/race1/input/config.txt,,,,
+
+RACE_START_OFFSETS = 00:00:00,00:01:45,00:01:00,00:00:00,00:02:00
+
+# Comma-separated sequence of bib-number/race-number for self-timed runs
+# (which should not have start offsets applied).
+SELF_TIMED = 23/4
+
+# Details of time-trial race: race-number/runners-per-wave/inter-wave-interval.
+TIME_TRIAL = 4/4/00:00:30

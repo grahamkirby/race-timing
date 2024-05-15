@@ -12,6 +12,8 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
+import static common.Race.format;
+
 public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
@@ -79,9 +81,9 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
                         append(overall_result.runner.category.getShortName()).append(",");
 
                 for (final Duration time : overall_result.times)
-                    if (time != null) writer.append(IndividualRaceOutput.format(time)).append(",");
+                    if (time != null) writer.append(format(time)).append(",");
 
-                writer.append(IndividualRaceOutput.format(overall_result.duration())).
+                writer.append(format(overall_result.duration())).
                         append("\n");
 
         }
