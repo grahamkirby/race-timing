@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static common.Race.format;
+
 public class LapRaceOutputPDF extends LapRaceOutput {
 
     private static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);

@@ -39,9 +39,7 @@ public class MinitourRacePrizes {
 
     private boolean prizeWinner(final MinitourRaceResult result, final Category category) {
 
-        boolean includes = race.categories.includes(category, result.runner.category);
-        boolean b = alreadyWonPrize(result.runner);
-        return result.completed() && includes && !b;
+        return result.completed() && race.categories.includes(category, result.runner.category) && !alreadyWonPrize(result.runner);
     }
 
     private boolean alreadyWonPrize(final Runner entry) {

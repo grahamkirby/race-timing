@@ -3,9 +3,9 @@ package common;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public abstract class Race {
@@ -17,6 +17,30 @@ public abstract class Race {
 
     protected final Properties properties;
     private final Path working_directory_path;
+
+    static Map<String, String> NORMALISED_CLUB_NAMES = new HashMap<>();
+
+    static {
+        NORMALISED_CLUB_NAMES.put("", "Unatt.");
+        NORMALISED_CLUB_NAMES.put("Unattached", "Unatt.");
+        NORMALISED_CLUB_NAMES.put("U/A", "Unatt.");
+        NORMALISED_CLUB_NAMES.put("None", "Unatt.");
+        NORMALISED_CLUB_NAMES.put("Fife Athletic Club", "Fife AC");
+        NORMALISED_CLUB_NAMES.put("Dundee HH", "Dundee Hawkhill Harriers");
+        NORMALISED_CLUB_NAMES.put("Leven Las Vegas", "Leven Las Vegas RC");
+        NORMALISED_CLUB_NAMES.put("Leven Las Vegas Running Club", "Leven Las Vegas RC");
+        NORMALISED_CLUB_NAMES.put("Haddies", "Anster Haddies");
+        NORMALISED_CLUB_NAMES.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
+        NORMALISED_CLUB_NAMES.put("DRR", "Dundee Road Runners");
+        NORMALISED_CLUB_NAMES.put("Perth RR", "Perth Road Runners");
+        NORMALISED_CLUB_NAMES.put("Kinross RR", "Kinross Road Runners");
+        NORMALISED_CLUB_NAMES.put("Falkland TR", "Falkland Trail Runners");
+        NORMALISED_CLUB_NAMES.put("PH Racing Club", "PH Racing");
+        NORMALISED_CLUB_NAMES.put("DHH", "Dundee Hawkhill Harriers");
+        NORMALISED_CLUB_NAMES.put("Carnegie H", "Carnegie Harriers");
+        NORMALISED_CLUB_NAMES.put("Dundee RR", "Dundee Road Runners");
+        NORMALISED_CLUB_NAMES.put("Recreational Running", "Recreational Runners");
+    }
 
     // String read from configuration file specifying all the runners who did have a finish
     // time recorded but were declared DNF.
@@ -30,8 +54,6 @@ public abstract class Race {
 
         working_directory_path = config_file_path.getParent().getParent();
         properties = readProperties(config_file_path);
-
-//        configure();
     }
 
     protected abstract void configure() throws IOException;
@@ -61,15 +83,9 @@ public abstract class Race {
         throw new RuntimeException("Category not found: " + short_name);
     }
 
-//    abstract protected int getDefaultOpenPrizes();
-//    abstract protected int getDefaultCategoryPrizes();
-
     protected void readProperties() {
 
         dnf_string = properties.getProperty("DNF_LEGS");
-//        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-//        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
-//        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
     }
 
     public Path getWorkingDirectoryPath() {
@@ -97,6 +113,17 @@ public abstract class Race {
         catch (Exception e) {
             throw new RuntimeException("illegal time: " + element);
         }
+    }
+
+    public static String format(final Duration duration) {
+
+        final long s = duration.getSeconds();
+        return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+    }
+
+    public static String normaliseClubName(final String club) {
+
+        return NORMALISED_CLUB_NAMES.getOrDefault(club, club);
     }
 
     static String hours(final String[] parts) {

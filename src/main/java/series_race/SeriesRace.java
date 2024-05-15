@@ -2,6 +2,7 @@ package series_race;
 
 import common.Category;
 import common.Race;
+import common.SeniorRaceCategories;
 import individual_race.*;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class SeriesRace extends Race {
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java Results <config file path>");
+            System.out.println("usage: java SeriesRace <config file path>");
         else {
             SeriesRace seriesRace = new SeriesRace(Paths.get(args[0]));
             seriesRace.configure();

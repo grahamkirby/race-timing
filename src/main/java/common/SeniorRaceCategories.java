@@ -1,10 +1,4 @@
-package individual_race;
-
-import common.Categories;
-import common.Category;
-
-import java.util.ArrayList;
-import java.util.List;
+package common;
 
 public class SeniorRaceCategories extends Categories {
 

@@ -1,6 +1,7 @@
 package lap_race;
 
 import common.Category;
+import common.Race;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
+import static common.Race.format;
 import static series_race.SeriesRaceOutputHTML.htmlEncode;
 
 public class LapRaceOutputHTML extends LapRaceOutput {

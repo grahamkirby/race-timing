@@ -53,12 +53,6 @@ public abstract class IndividualRaceOutput {
         int x = 2;
     }
 
-    public static String format(final Duration duration) {
-
-        final long s = duration.getSeconds();
-        return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
-    }
-
     public abstract void printOverallResults() throws IOException;
     public abstract void printPrizes() throws IOException;
     public abstract void printCombined() throws IOException;
