@@ -197,6 +197,7 @@ public class MinitourRace extends Race {
 
     private void printCombined() throws IOException {
 
+        output_HTML.printCombined();
     }
 
     public MinitourRaceResult[] getOverallResults() {
@@ -205,7 +206,7 @@ public class MinitourRace extends Race {
 
     public MinitourRaceResult[] getOverallResults(List<Category> categories_required) {
 
-        return Stream.of(overall_results).filter(minitourRaceResult -> categories_required.contains(minitourRaceResult.runner.category)).toList().toArray(new MinitourRaceResult[0]);
+        return Stream.of(overall_results).filter(minitourRaceResult -> minitourRaceResult.completedAllRacesSoFar() && categories_required.contains(minitourRaceResult.runner.category)).toList().toArray(new MinitourRaceResult[0]);
     }
 
     public int findIndexOfRunner(Runner runner) {

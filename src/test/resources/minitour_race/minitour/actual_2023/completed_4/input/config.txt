@@ -1,6 +1,6 @@
 YEAR = 2023
-RACE_NAME_FOR_RESULTS = Midweek Series
-RACE_NAME_FOR_FILENAMES = midweek
+RACE_NAME_FOR_RESULTS = Minitour of Fife
+RACE_NAME_FOR_FILENAMES = minitour
 
-RACES = input/st_andrews/input/config.txt:input/strath_blebo/input/config.txt:input/tarvit/input/config.txt:input/dunnikier/input/config.txt:
-MINIMUM_NUMBER_OF_RACES = 4
+RACES = input/race1/input/config.txt:input/race2/input/config.txt:input/race3/input/config.txt:input/race4/input/config.txt
+MINIMUM_NUMBER_OF_RACES = 5

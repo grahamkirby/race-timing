@@ -1,0 +1,84 @@
+1	Beinn Anderson	East Fife Triathlon Club	MU15
+2	Luca Anderson	Anster Haddies	MU13
+3	Rob Anderson	East Fife Triathlon Club	MU11
+4	Liam Black	Cupar and District Swimming Club	MU18
+5	Lola Rowan Bowditch	Strathkinness Primary School	FU9
+6	Poppy Lyra Bowditch	Strathkinness Primary School	FU11
+7	Arthur Broadhurst	Unatt.	MU9
+8	Fergus Broadhurst	Unatt.	MU11
+9	Robbie Bunch	Unatt.	MU13
+10	Rachel Coggle	Craigrothie Primary School	FU11
+11	Edward Cooper	Bell Baxter School	MU15
+12	Oliver Cooper	Unatt.	MU18
+13	Cameron Dickson	East Fife Triathlon Club	MU15
+14	Lewis Dickson	Unatt.	MU13
+15	Alfie Edwards	East Fife Triathlon Club	MU11
+16	Ronan Emmerson	Unatt.	MU18
+17	Phoebe Fleetham	St Leonard's Running Club	FU13
+18	Fergus Fyfe	Unatt.	MU13
+19	Isla Fyfe	Unatt.	FU13
+20	Kitty Fyfe	Unatt.	FU11
+21	Orla Gage	Anster Haddies	FU15
+22	Hannah Graham	Unatt.	FU13
+23	Heather Graham	Ceres Primary School	FU9
+24	Logan Graham	Fife Athletic Club	MU15
+25	Tori Graham	Wormit Runners	FU15
+26	Declan Greer	Unatt.	MU11
+27	Elle Greer	Unatt.	FU15
+28	Adam Harvie	Bell Baxter School	MU13
+29	Eden Hislop	Unatt.	MU13
+30	Iona Hislop	Unatt.	FU9
+31	Fynn Ingram	Castlehill Primary School	MU11
+32	Fearne Jarrett	Dundee Hawkhill Harriers	FU13
+33	Francesca Jarrett	Dundee Hawkhill Harriers	FU11
+34	Gabriella Jarrett	Dundee Hawkhill Harriers	FU11
+35	Imogen Jarrett	Dundee Hawkhill Harriers	FU15
+36	Isla Kinnaird	Fife Athletic Club	FU13
+37	Murray Kinnaird	Fife Athletic Club	MU11
+38	Nico Kitching	Letham Primary School	MU9
+39	Vienna Kitching	Letham Primary School	FU11
+40	Eliza König	Fife Athletic Club	FU18
+41	Lewis Laws	Unatt.	MU13
+42	Richard Laws	Unatt.	MU18
+43	Steven Laws	Unatt.	MU18
+44	Angus Logan	Unatt.	MU9
+45	Nellie Luxford	Unatt.	FU15
+46	Jaden Mackay	PH Racing	MU13
+47	Arya McIntyre	Fife Athletic Club	FU11
+48	Arwen McKelvie	East Fife Triathlon Club	FU9
+49	Lewis McKelvie	East Fife Triathlon Club	MU11
+50	Lyle McKelvie	East Fife Triathlon Club	MU13
+51	Alice Sophie Metayer	Unatt.	FU11
+52	Leonie Helena Metayer	Unatt.	FU9
+53	Edward Mifsud	East Fife Triathlon Club	MU15
+54	Tom Mifsud	East Fife Triathlon Club	MU18
+55	William Mifsud	East Fife Triathlon Club	MU11
+56	Cameron Milne	Unatt.	MU9
+57	Theo Milne-Akermo	Unatt.	MU13
+58	Jack Milne-Akermo	Unatt.	MU11
+59	Magnus Niven	Fife Athletic Club	MU13
+60	Rowan O’Hare	Letham Primary School	MU13
+61	Isaac Pates	Unatt.	MU9
+62	Euan Patrick	Unatt.	MU13
+63	Bertran Penacchio Torres	Fife Athletic Club	MU13
+64	Anna Purves	Fife Athletic Club	FU11
+65	Atholl Reid	Unatt.	MU11
+66	Harriet Reid	East Fife Triathlon Club	FU13
+67	Logan Reilly	Anster Haddies	MU15
+68	Sam Reynolds	Unatt.	MU11
+69	Thomas Robertson	East Fife Triathlon Club	MU18
+70	Bella Rodden	East Fife Triathlon Club	FU15
+71	Cameron Seeley	East Fife Triathlon Club	MU11
+72	Ruairi Seeley	East Fife Triathlon Club	MU9
+73	Joey Smith	Unatt.	MU13
+74	Amelia Stephen	Fife Athletic Club	FU11
+75	Noah Stone	Unatt.	MU9
+76	Ruaridh Stone	Unatt.	MU11
+77	Cillian Sweeney	Unatt.	MU13
+78	Finlay Torkington	Fife Athletic Club	MU13
+79	Jasper Torkington	Fife Athletic Club	MU13
+80	Anna Torrance	Unatt.	FU13
+81	Fraser Whittingham	Fife Athletic Club	MU11
+82	Lewis Whittingham	Fife Athletic Club	MU15
+83	Amelie Wild	Unatt.	FU9
+84	Frida Young	East Fife Triathlon Club	FU13

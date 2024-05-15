@@ -17,6 +17,8 @@ public abstract class IndividualRaceOutput {
     String prizes_filename;
     Path output_directory_path;
 
+    String alternative_output_directory_path;
+
     public IndividualRaceOutput(final IndividualRace race) {
 
         this.race = race;
@@ -34,6 +36,7 @@ public abstract class IndividualRaceOutput {
         race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
         race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
         year = race.getProperties().getProperty("YEAR");
+        alternative_output_directory_path = race.getProperties().getProperty("ALTERNATIVE_OUTPUT_DIRECTORY");
     }
 
     private void constructFilePaths() {
@@ -41,7 +44,13 @@ public abstract class IndividualRaceOutput {
         overall_results_filename = race_name_for_filenames + "_overall_" + year;
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
 
-        output_directory_path = race.getWorkingDirectoryPath().resolve("output");
+        if (alternative_output_directory_path == null) {
+            output_directory_path = race.getWorkingDirectoryPath().resolve("output");
+        }
+        else {
+            output_directory_path = race.getWorkingDirectoryPath().resolve(alternative_output_directory_path);
+        }
+        int x = 2;
     }
 
     public static String format(final Duration duration) {

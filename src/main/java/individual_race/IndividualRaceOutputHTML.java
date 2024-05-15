@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
+import static series_race.SeriesRaceOutputHTML.htmlEncode;
+
 public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
     public IndividualRaceOutputHTML(final IndividualRace race) {
@@ -149,13 +151,5 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
                 </tbody>
             </table>
             """);
-    }
-
-    private String htmlEncode(String s) {
-
-        return s.replaceAll("è", "&egrave;").
-                replaceAll("é", "&eacute;").
-                replaceAll("ü", "&uuml;").
-                replaceAll("’", "&acute;");
     }
 }

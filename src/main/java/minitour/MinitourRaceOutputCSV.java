@@ -70,16 +70,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
         for (final MinitourRaceResult overall_result : series_results) {
 
-            boolean completed_all_races_so_far = true;
-            for (int i = 0; i < race.races.length; i++) {
-                if (race.races[i] != null && overall_result.times[i] == null) {
-                    completed_all_races_so_far = false;
-                    break;
-                }
-            }
 
-
-            if (completed_all_races_so_far) {
                 writer.append(overall_result.position_string);
 
                 writer.append(",").
@@ -92,11 +83,11 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
                 writer.append(IndividualRaceOutput.format(overall_result.duration())).
                         append("\n");
-            }
+
         }
     }
 
-    private static void setPositionStrings(final MinitourRaceResult[] series_results) {
+    static void setPositionStrings(final MinitourRaceResult[] series_results) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".

@@ -5,7 +5,7 @@ import common.Race;
 
 public class IndividualRaceEntry {
 
-    int bib_number = 0;
+    public int bib_number = 0;
     public final Runner runner;
 
     public IndividualRaceEntry(final String[] elements, Race race) {

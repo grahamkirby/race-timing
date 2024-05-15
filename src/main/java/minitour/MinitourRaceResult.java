@@ -32,7 +32,7 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
         for (final Duration time : times) {
 
             if (time != null)
-            overall = overall.plus(time);
+                overall = overall.plus(time);
         }
 
         return overall;
@@ -55,6 +55,16 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
         }
 
         return count;
+    }
+
+    public boolean completedAllRacesSoFar() {
+
+        for (int i = 0; i < race.races.length; i++) {
+            if (race.races[i] != null && times[i] == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
