@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class MinitourRace extends Race {
 
@@ -199,6 +201,11 @@ public class MinitourRace extends Race {
 
     public MinitourRaceResult[] getOverallResults() {
         return overall_results;
+    }
+
+    public MinitourRaceResult[] getOverallResults(List<Category> categories_required) {
+
+        return Stream.of(overall_results).filter(minitourRaceResult -> categories_required.contains(minitourRaceResult.runner.category)).toList().toArray(new MinitourRaceResult[0]);
     }
 
     public int findIndexOfRunner(Runner runner) {

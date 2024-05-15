@@ -6,9 +6,7 @@ import common.Category;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeniorRaceCategories implements Categories {
-
-    List<Category> categories_in_decreasing_generality_order = new ArrayList<>();
+public class SeniorRaceCategories extends Categories {
 
     public SeniorRaceCategories(boolean open_category, int open_prizes, int category_prizes) {
 
@@ -30,17 +28,7 @@ public class SeniorRaceCategories implements Categories {
         categories_in_decreasing_generality_order.add(new Category("Women 70+", "F70+","Women", 70, category_prizes));
         categories_in_decreasing_generality_order.add(new Category("Men 70+", "M70+","Men", 70, category_prizes));
 
-    }
-
-    // Defines the order of iteration when allocating prizes.
-    @Override
-    public List<Category> getCategoriesInDecreasingGeneralityOrder() {
-        return categories_in_decreasing_generality_order;
-    }
-
-    @Override
-    public List<Category> getCategoriesInReportOrder() {
-        return categories_in_decreasing_generality_order;
+        categories_in_report_order.addAll(categories_in_decreasing_generality_order);
     }
 
     @Override

@@ -56,6 +56,10 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         printOverallResults(writer, Arrays.asList(race.categories.getCategory("FU9"), race.categories.getCategory("MU9")));
+        printOverallResults(writer, Arrays.asList(race.categories.getCategory("FU11"), race.categories.getCategory("MU11")));
+        printOverallResults(writer, Arrays.asList(race.categories.getCategory("FU13"), race.categories.getCategory("MU13")));
+        printOverallResults(writer, Arrays.asList(race.categories.getCategory("FU15"), race.categories.getCategory("MU15")));
+        printOverallResults(writer, Arrays.asList(race.categories.getCategory("FU18"), race.categories.getCategory("MU18")));
     }
 
     private void printOverallResults(final OutputStreamWriter writer, List<Category> result_categories) throws IOException {

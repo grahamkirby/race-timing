@@ -59,6 +59,7 @@ public class SeriesRaceInput {
                 final Path individual_race_path = race.getWorkingDirectoryPath().resolve(relative_path);
 
                 IndividualRace individual_race = new IndividualRace(individual_race_path);
+                individual_race.configure();
                 individual_race.processResults(false);
 
                 races[i] = individual_race;

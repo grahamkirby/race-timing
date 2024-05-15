@@ -45,14 +45,16 @@ public class SeriesRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java Results <config file path>");
         else {
-            new SeriesRace(Paths.get(args[0])).processResults();
+            SeriesRace seriesRace = new SeriesRace(Paths.get(args[0]));
+            seriesRace.configure();
+            seriesRace.processResults();
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void configure() throws IOException {
+    public void configure() throws IOException {
 
         readProperties();
 

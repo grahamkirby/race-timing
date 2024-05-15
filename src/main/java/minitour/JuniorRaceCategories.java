@@ -6,9 +6,7 @@ import common.Category;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JuniorRaceCategories implements Categories {
-
-    List<Category> categories_in_decreasing_generality_order = new ArrayList<>();
+public class JuniorRaceCategories extends Categories {
 
     public JuniorRaceCategories(int category_prizes) {
 
@@ -22,16 +20,8 @@ public class JuniorRaceCategories implements Categories {
         categories_in_decreasing_generality_order.add(new Category("Male Under 15", "MU15", "Male", 13, category_prizes));
         categories_in_decreasing_generality_order.add(new Category("Female Under 18", "FU18", "Female", 15, category_prizes));
         categories_in_decreasing_generality_order.add(new Category("Male Under 18", "MU18", "Male", 15, category_prizes));
-    }
 
-    public List<Category> getCategoriesInDecreasingGeneralityOrder() {
-
-        return categories_in_decreasing_generality_order;
-    }
-
-    public List<Category> getCategoriesInReportOrder() {
-
-        return categories_in_decreasing_generality_order;
+        categories_in_report_order.addAll(categories_in_decreasing_generality_order);
     }
 
     public boolean includes(final Category first_category, final Category second_category) {

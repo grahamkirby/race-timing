@@ -20,7 +20,7 @@ public abstract class RaceTest {
     private Path temp_output_directory;
 
     // When enabled, test results are retained on the desktop.
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final String DEBUG_FILES_LOCATION = "/Users/gnck/Desktop/temp";
 
     protected abstract Race makeRace(Path config_file_path) throws IOException;
@@ -54,16 +54,24 @@ public abstract class RaceTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                () -> makeRace(config_file_path).processResults()
+                this::getaVoid
         );
 
         assertEquals(expected_error_message, thrown.getMessage());
     }
 
+    private void getaVoid() throws IOException {
+        Race race = makeRace(config_file_path);
+        race.configure();
+        race.processResults();
+    }
+
     protected void testExpectedCompletion(final String configuration_name) throws Exception {
 
         configureTest(configuration_name);
-        makeRace(config_file_path).processResults();
+        Race race = makeRace(config_file_path);
+        race.configure();
+        race.processResults();
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, temp_output_directory);
     }
 
