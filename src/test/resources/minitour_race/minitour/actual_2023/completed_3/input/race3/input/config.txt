@@ -1,0 +1,12 @@
+ENTRIES_FILENAME = ../../entries.txt
+RAW_RESULTS_FILENAME = rawtimes.txt
+YEAR = 2023
+RACE_NAME_FOR_RESULTS = Race 3
+RACE_NAME_FOR_FILENAMES = race3
+SENIOR_RACE = false
+
+# Comma-separated sequence of bib-numbers for any runners that have a time
+# recorded but they DNF'd.
+DNF_LEGS =
+
+ALTERNATIVE_OUTPUT_DIRECTORY = ../../output

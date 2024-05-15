@@ -178,12 +178,13 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
             """);
     }
 
-    private String htmlEncode(String s) {
+    public static String htmlEncode(String s) {
 
         return s.replaceAll("è", "&egrave;").
                 replaceAll("á", "&aacute;").
                 replaceAll("é", "&eacute;").
                 replaceAll("ü", "&uuml;").
+                replaceAll("ö", "&ouml;").
                 replaceAll("’", "&acute;");
     }
 }

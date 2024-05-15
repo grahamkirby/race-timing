@@ -1,6 +1,5 @@
 package individual_race;
 
-import common.Categories;
 import common.Category;
 import common.Race;
 import common.RawResult;
@@ -25,7 +24,7 @@ public class IndividualRace extends Race {
     IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     IndividualRacePrizes prizes;
 
-    IndividualRaceEntry[] entries;
+    public IndividualRaceEntry[] entries;
     private IndividualRaceResult[] overall_results;
     Map<Category, List<IndividualRaceEntry>> prize_winners = new HashMap<>();
 
@@ -209,7 +208,7 @@ public class IndividualRace extends Race {
         }
     }
 
-    private IndividualRaceResult getResultWithIndex(final String bib) {
+    public IndividualRaceResult getResultWithIndex(final String bib) {
 
         final int bib_number = Integer.parseInt(bib);
 
@@ -260,7 +259,7 @@ public class IndividualRace extends Race {
         prizes.allocatePrizes();
     }
 
-    private void printOverallResults() throws IOException {
+    public void printOverallResults() throws IOException {
 
         output_CSV.printOverallResults();
         output_HTML.printOverallResults();

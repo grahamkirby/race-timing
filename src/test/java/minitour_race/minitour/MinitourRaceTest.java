@@ -27,4 +27,24 @@ public class MinitourRaceTest extends RaceTest {
     public void completed_1() throws Exception {
         testExpectedCompletion("actual_2023/completed_1");
     }
+
+    @Test
+    public void completed_2() throws Exception {
+        testExpectedCompletion("actual_2023/completed_2");
+    }
+
+    @Test
+    public void completed_3() throws Exception {
+        testExpectedCompletion("actual_2023/completed_3");
+    }
+
+    @Test
+    public void completed_4() throws Exception {
+        testExpectedCompletion("actual_2023/completed_4");
+    }
+
+    @Test
+    public void completed_5() throws Exception {
+        testExpectedCompletion("actual_2023/completed_5");
+    }
 }

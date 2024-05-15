@@ -8,7 +8,7 @@ public class RawResult {
 
     // Leg number is optional, depending on whether it was recorded on paper sheet.
     Integer bib_number, leg_number;
-    Duration recorded_finish_time;  // Relative to start of leg 1.
+    public Duration recorded_finish_time;  // Relative to start of leg 1.
     String comment = "";
 
     public RawResult(final String file_line) {
