@@ -25,6 +25,7 @@ public class SeriesRace extends Race {
     SeriesRacePrizes prizes;
 
     IndividualRace[] races;
+    Runner[] combined_runners;
     SeriesRaceResult[] overall_results;
     Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
@@ -169,14 +170,11 @@ public class SeriesRace extends Race {
 
     private void initialiseResults() {
 
-        overall_results = new SeriesRaceResult[getCombinedRunners(races).length];
+        combined_runners = getCombinedRunners(races);
+        overall_results = new SeriesRaceResult[combined_runners.length];
     }
 
     private void calculateResults() {
-
-        // Check dead heats.
-
-        final Runner[] combined_runners = getCombinedRunners(races);
 
         for (int i = 0; i < overall_results.length; i++)
             overall_results[i] = getOverallResult(combined_runners[i]);
