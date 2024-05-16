@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class MinitourRace extends Race {
+    public static final int DEFAULT_CATEGORY_PRIZES = 3;
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -27,6 +28,7 @@ public class MinitourRace extends Race {
     MinitourRacePrizes prizes;
 
     IndividualRace[] races;
+    Runner[] combined_runners;
     MinitourRaceResult[] overall_results;
     Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
@@ -61,12 +63,7 @@ public class MinitourRace extends Race {
         configureInputData();
     }
 
-    protected void configureCategories() {
-
-        categories = new JuniorRaceCategories(category_prizes);
-    }
-
-    @Override
+     @Override
     public void processResults() throws IOException {
 
         initialiseResults();
@@ -79,16 +76,12 @@ public class MinitourRace extends Race {
         printCombined();
     }
 
-    protected int getDefaultCategoryPrizes() {
-        return 3;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
 
         super.readProperties();
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(DEFAULT_CATEGORY_PRIZES)));
     }
 
     private void configureHelpers() {
@@ -102,6 +95,11 @@ public class MinitourRace extends Race {
         prizes = new MinitourRacePrizes(this);
     }
 
+    protected void configureCategories() {
+
+        categories = new JuniorRaceCategories(category_prizes);
+    }
+
     private void configureInputData() throws IOException {
 
         races = input.loadMinitourRaces();
@@ -109,18 +107,16 @@ public class MinitourRace extends Race {
 
     private void initialiseResults() {
 
-        overall_results = new MinitourRaceResult[getCombinedRunners(races).length];
+        combined_runners = getCombinedRunners(races);
+        overall_results = new MinitourRaceResult[combined_runners.length];
     }
 
     private void calculateResults() {
 
-        // Check dead heats.
-
-        final Runner[] combined_runners = getCombinedRunners(races);
-
         for (int i = 0; i < overall_results.length; i++)
             overall_results[i] = getOverallResult(combined_runners[i]);
 
+        // Ordering defined in MinitourRaceResult: sort by time then by runner name.
         Arrays.sort(overall_results);
     }
 
