@@ -13,9 +13,7 @@ public class MinitourRaceTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        MinitourRace minitourRace = new MinitourRace(config_file_path);
-        minitourRace.configure();
-        return minitourRace;
+        return new MinitourRace(config_file_path);
     }
 
     @Override

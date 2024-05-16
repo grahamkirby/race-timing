@@ -46,9 +46,7 @@ public class SeriesRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java SeriesRace <config file path>");
         else {
-            SeriesRace seriesRace = new SeriesRace(Paths.get(args[0]));
-            seriesRace.configure();
-            seriesRace.processResults();
+            new SeriesRace(Paths.get(args[0])).processResults();
         }
     }
 
@@ -171,39 +169,14 @@ public class SeriesRace extends Race {
 
     private void initialiseResults() {
 
-        overall_results = new SeriesRaceResult[getCombinedRunners().length];
-    }
-
-    private Runner[] getCombinedRunners() {
-
-        final Set<Runner> runners = new HashSet<>();
-
-        for (final IndividualRace individual_race : races)
-            if (individual_race != null)
-                for (final IndividualRaceResult result : individual_race.getOverallResults()) {
-                    if (!isDuplicate(result, runners))
-                        runners.add(result.entry.runner);
-                }
-
-        return runners.toArray(new Runner[0]);
-    }
-
-    private boolean isDuplicate(IndividualRaceResult result, Set<Runner> runners) {
-
-        final String result_name = result.entry.runner.name;
-        final String result_club = result.entry.runner.club;
-
-        for (final Runner runner : runners) {
-            if (result_name.equals(runner.name) && result_club.equals(runner.club)) return true;
-        }
-        return false;
+        overall_results = new SeriesRaceResult[getCombinedRunners(races).length];
     }
 
     private void calculateResults() {
 
         // Check dead heats.
 
-        final Runner[] combined_runners = getCombinedRunners();
+        final Runner[] combined_runners = getCombinedRunners(races);
 
         for (int i = 0; i < overall_results.length; i++)
             overall_results[i] = getOverallResult(combined_runners[i]);

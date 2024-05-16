@@ -24,9 +24,7 @@ public class SeriesRaceTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        SeriesRace seriesRace = new SeriesRace(config_file_path);
-        seriesRace.configure();
-        return seriesRace;
+        return new SeriesRace(config_file_path);
     }
 
     @Override

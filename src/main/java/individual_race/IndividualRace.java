@@ -46,9 +46,7 @@ public class IndividualRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java IndividualRace <config file path>");
         else {
-            IndividualRace individualRace = new IndividualRace(Paths.get(args[0]));
-            individualRace.configure();
-            individualRace.processResults();
+            new IndividualRace(Paths.get(args[0])).processResults();
         }
     }
 
@@ -134,7 +132,7 @@ public class IndividualRace extends Race {
         overall_results = new IndividualRaceResult[raw_results.length];
 
         for (int i = 0; i < overall_results.length; i++)
-            overall_results[i] = new IndividualRaceResult(entries[i], this);
+            overall_results[i] = new IndividualRaceResult(this);
     }
 
     private void fillFinishTimes() {

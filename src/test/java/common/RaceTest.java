@@ -54,24 +54,17 @@ public abstract class RaceTest {
 
         RuntimeException thrown = assertThrows(
                 RuntimeException.class,
-                this::getaVoid
+                () -> makeRace(config_file_path).processResults()
         );
 
         assertEquals(expected_error_message, thrown.getMessage());
     }
 
-    private void getaVoid() throws IOException {
-        Race race = makeRace(config_file_path);
-        race.configure();
-        race.processResults();
-    }
-
     protected void testExpectedCompletion(final String configuration_name) throws Exception {
 
         configureTest(configuration_name);
-        Race race = makeRace(config_file_path);
-        race.configure();
-        race.processResults();
+        makeRace(config_file_path).processResults();
+
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, temp_output_directory);
     }
 

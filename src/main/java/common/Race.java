@@ -1,12 +1,14 @@
 package common;
 
+import individual_race.IndividualRace;
+import individual_race.IndividualRaceResult;
+import individual_race.Runner;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public abstract class Race {
 
@@ -54,6 +56,8 @@ public abstract class Race {
 
         working_directory_path = config_file_path.getParent().getParent();
         properties = readProperties(config_file_path);
+
+        configure();
     }
 
     protected abstract void configure() throws IOException;
@@ -102,6 +106,31 @@ public abstract class Race {
         return value == null || value.isBlank() ? default_value : value;
     }
 
+    public static Runner[] getCombinedRunners(IndividualRace[] races1) {
+
+        final Set<Runner> runners = new HashSet<>();
+
+        for (final IndividualRace individual_race : races1)
+            if (individual_race != null)
+                for (final IndividualRaceResult result : individual_race.getOverallResults()) {
+                    if (!isDuplicate(result, runners))
+                        runners.add(result.entry.runner);
+                }
+
+        return runners.toArray(new Runner[0]);
+    }
+
+    private static boolean isDuplicate(IndividualRaceResult result, Set<Runner> runners) {
+
+        final String result_name = result.entry.runner.name;
+        final String result_club = result.entry.runner.club;
+
+        for (final Runner runner : runners) {
+            if (result_name.equals(runner.name) && result_club.equals(runner.club)) return true;
+        }
+        return false;
+    }
+
     public static Duration parseTime(final String element) {
 
         try {
@@ -124,6 +153,15 @@ public abstract class Race {
     public static String normaliseClubName(final String club) {
 
         return NORMALISED_CLUB_NAMES.getOrDefault(club, club);
+    }
+
+    public static String getFirstName(final String name) {
+        return name.split(" ")[0];
+    }
+
+    public static String getLastName(final String name) {
+        final String[] names = name.split(" ");
+        return names[names.length - 1];
     }
 
     static String hours(final String[] parts) {
