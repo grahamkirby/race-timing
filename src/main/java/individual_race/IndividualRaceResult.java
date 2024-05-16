@@ -13,9 +13,8 @@ public class IndividualRaceResult implements Comparable<IndividualRaceResult> {
 
     Duration finish_time; // Relative to start of leg 1.
 
-    public IndividualRaceResult(final IndividualRaceEntry entry, final IndividualRace race) {
+    public IndividualRaceResult(final IndividualRace race) {
 
-//        this.entry = entry;
         this.race = race;
         this.DNF = true;
     }

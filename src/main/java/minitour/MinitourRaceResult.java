@@ -1,5 +1,6 @@
 package minitour;
 
+import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import individual_race.Runner;
@@ -47,11 +48,10 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
 
         int count = 0;
 
-        for (IndividualRace individual_race : race.races) {
+        for (final IndividualRace individual_race : race.races) {
             if (individual_race != null)
-                for (IndividualRaceResult result : individual_race.getOverallResults()) {
+                for (final IndividualRaceResult result : individual_race.getOverallResults())
                     if (result.entry.runner.equals(runner)) count++;
-                }
         }
 
         return count;
@@ -59,11 +59,10 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
 
     public boolean completedAllRacesSoFar() {
 
-        for (int i = 0; i < race.races.length; i++) {
-            if (race.races[i] != null && times[i] == null) {
+        for (int i = 0; i < race.races.length; i++)
+            if (race.races[i] != null && times[i] == null)
                 return false;
-            }
-        }
+
         return true;
     }
 
@@ -78,18 +77,8 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
 
         if (duration().compareTo(o.duration()) > 0) return 1;
 
-        int last_name_comparison = getLastName(runner.name).compareTo(getLastName(o.runner.name));
+        int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
 
-        return last_name_comparison != 0 ? last_name_comparison : getFirstName(runner.name).compareTo(getFirstName(o.runner.name));
-    }
-
-    private String getFirstName(final String name) {
-        final String[] names = name.split(" ");
-        return names[0];
-    }
-
-    private String getLastName(final String name) {
-        final String[] names = name.split(" ");
-        return names[names.length - 1];
+        return last_name_comparison != 0 ? last_name_comparison : Race.getFirstName(runner.name).compareTo(Race.getFirstName(o.runner.name));
     }
 }

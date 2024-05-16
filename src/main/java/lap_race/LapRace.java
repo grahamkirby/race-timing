@@ -61,9 +61,7 @@ public class LapRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java LapRace <config file path>");
         else {
-            LapRace lapRace = new LapRace(Paths.get(args[0]));
-            lapRace.configure();
-            lapRace.processResults();
+            new LapRace(Paths.get(args[0])).processResults();
         }
     }
 
