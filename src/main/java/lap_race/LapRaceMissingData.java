@@ -244,7 +244,7 @@ public class LapRaceMissingData {
             if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();
         }
 
-        return Race.ZERO_TIME;
+        return Duration.ZERO;
     }
 
     private Duration getNextTeamFinishTime(final int starting_index, final int bib_number) {
@@ -257,6 +257,6 @@ public class LapRaceMissingData {
             if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();
         }
 
-        return Race.ZERO_TIME;
+        return Duration.ZERO;
     }
 }

@@ -20,7 +20,7 @@ public class LapRaceResult implements Comparable<LapRaceResult> {
 
     public Duration duration() {
 
-        Duration overall = LapRace.ZERO_TIME;
+        Duration overall = Duration.ZERO;
 
         for (final LegResult leg_result : leg_results) {
 

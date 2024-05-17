@@ -28,7 +28,7 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
 
     public Duration duration() {
 
-        Duration overall = LapRace.ZERO_TIME;
+        Duration overall = Duration.ZERO;
 
         for (final Duration time : times) {
 

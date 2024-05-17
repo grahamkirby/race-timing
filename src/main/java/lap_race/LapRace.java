@@ -398,7 +398,7 @@ public class LapRace extends Race {
         if (individual_start_time != null) return individual_start_time;
 
         // Leg 1 runners start at time zero if there's no individual time recorded.
-        if (leg_index == 0) return ZERO_TIME;
+        if (leg_index == 0) return Duration.ZERO;
 
         // No finish time recorded for previous runner, so we can't record a start time for this one.
         // This leg result will be set to DNF by default.
