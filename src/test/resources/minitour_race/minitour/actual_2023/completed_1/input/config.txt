@@ -4,7 +4,7 @@ RACE_NAME_FOR_FILENAMES = minitour
 
 RACES = input/race1/input/config.txt,,,,
 
-RACE_START_OFFSETS = 00:00:00,00:01:45,00:01:00,00:00:00,00:02:00
+WAVE_START_OFFSETS = 00:00:00,00:01:45,00:01:00,00:00:00,00:02:00
 
 # Comma-separated sequence of bib-number/race-number for self-timed runs
 # (which should not have start offsets applied).

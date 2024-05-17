@@ -2,7 +2,6 @@ package minitour;
 
 import common.Category;
 import individual_race.IndividualRace;
-import individual_race.IndividualRaceOutput;
 import individual_race.IndividualRaceResult;
 import individual_race.Runner;
 
@@ -225,7 +224,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer, List<Category> result_categories) throws IOException {
 
-        final MinitourRaceResult[] series_results = race.getOverallResults(result_categories);
+        final MinitourRaceResult[] series_results = race.getCompletedResultsByCategory(result_categories);
 
         setPositionStrings(series_results);
 

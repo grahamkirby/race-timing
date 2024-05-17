@@ -15,7 +15,6 @@ public abstract class Race {
     protected static final String DUMMY_DURATION_STRING = "23:59:59";
     protected static final String ZERO_TIME_STRING = "0:0:0";
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
-    public static final Duration ZERO_TIME = parseTime(ZERO_TIME_STRING);
 
     protected final Properties properties;
     private final Path working_directory_path;

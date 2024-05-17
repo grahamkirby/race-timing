@@ -166,16 +166,16 @@ public class MinitourRace extends Race {
         return overall_results;
     }
 
-    public MinitourRaceResult[] getOverallResults(List<Category> categories_required) {
+    public MinitourRaceResult[] getCompletedResultsByCategory(List<Category> categories_required) {
 
         return Stream.of(overall_results).filter(minitourRaceResult -> minitourRaceResult.completedAllRacesSoFar() && categories_required.contains(minitourRaceResult.runner.category)).toList().toArray(new MinitourRaceResult[0]);
     }
 
     public int findIndexOfRunner(Runner runner) {
 
-        for (int i = 0; i < overall_results.length; i++) {
+        for (int i = 0; i < overall_results.length; i++)
             if (runner.equals(overall_results[i].runner)) return i;
-        }
-        return -1;
+
+        throw new RuntimeException("Runner not found: " + runner.name);
     }
 }
