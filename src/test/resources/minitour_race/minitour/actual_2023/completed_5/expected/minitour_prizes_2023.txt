@@ -45,8 +45,8 @@ Category: Male Under 13
 -----------------------
 
 1: Luca Anderson (Anster Haddies) 01:12:42
-2: Euan Patrick (Unatt.) 01:20:06
-3: Bertran Penacchio Torres (Fife AC) 01:20:13
+2=: Euan Patrick (Unatt.) 01:20:13
+2=: Bertran Penacchio Torres (Fife AC) 01:20:13
 
 
 Category: Female Under 15

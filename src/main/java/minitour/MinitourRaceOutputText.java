@@ -44,30 +44,36 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
+        final String header = "Category: " + category.getLongName();
+
+        writer.append(header).append("\n");
+        writer.append("-".repeat(header.length())).append("\n\n");
+
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
-        if (category_prize_winners != null) {
+        if (category_prize_winners.isEmpty())
+            writer.append("No results\n");
 
-            final String header = "Category: " + category.getLongName();
-
-            writer.append(header).append("\n");
-            writer.append("-".repeat(header.length())).append("\n\n");
-
-            if (category_prize_winners.isEmpty())
-                writer.append("No results\n");
-
-            int position = 1;
-            for (final Runner runner : category_prize_winners) {
-
-                final MinitourRaceResult result = race.getOverallResults()[race.findIndexOfRunner(runner)];
-
-                writer.append(String.valueOf(position++)).append(": ").
-                        append(runner.name).append(" (").
-                        append(runner.club).append(") ").
-                        append(Race.format(result.duration())).append("\n");
+        final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
+        for (int i = 0; i < category_prize_winners.size(); i++) {
+            for (MinitourRaceResult result : race.overall_results) {
+                if (result.runner.equals(category_prize_winners.get(i))) {
+                    category_prize_winner_results[i] = result;
+                    break;
+                }
             }
-
-            writer.append("\n\n");
         }
+
+        setPositionStrings(category_prize_winner_results);
+
+        for (final MinitourRaceResult result : category_prize_winner_results) {
+
+            writer.append(String.valueOf(result.position_string)).append(": ").
+                    append(result.runner.name).append(" (").
+                    append(result.runner.club).append(") ").
+                    append(Race.format(result.duration())).append("\n");
+        }
+
+        writer.append("\n\n");
     }
 }
