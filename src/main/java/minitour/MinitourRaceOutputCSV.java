@@ -68,19 +68,19 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
         final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
         final MinitourRaceResult[] category_results = race.getCompletedResultsByCategory(category_list);
 
-        setPositionStrings(category_results);
+        printResults(writer, category_results, this::printPrizeWinner);
+    }
 
-        for (final MinitourRaceResult overall_result : category_results) {
+    private void printPrizeWinner(OutputStreamWriter writer, MinitourRaceResult overall_result) throws IOException {
 
-            writer.append(overall_result.position_string).append(",").
-                    append(overall_result.runner.name).append(",").
-                    append(overall_result.runner.club).append(",").
-                    append(overall_result.runner.category.getShortName()).append(",");
+        writer.append(overall_result.position_string).append(",").
+                append(overall_result.runner.name).append(",").
+                append(overall_result.runner.club).append(",").
+                append(overall_result.runner.category.getShortName()).append(",");
 
-            for (final Duration time : overall_result.times)
-                if (time != null) writer.append(format(time)).append(",");
+        for (final Duration time : overall_result.times)
+            if (time != null) writer.append(format(time)).append(",");
 
-            writer.append(format(overall_result.duration())).append("\n");
-        }
+        writer.append(format(overall_result.duration())).append("\n");
     }
 }

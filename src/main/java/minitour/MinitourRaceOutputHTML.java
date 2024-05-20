@@ -150,6 +150,9 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
+        writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
+        writer.append("<ul>\n");
+
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
         final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
@@ -162,21 +165,15 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
             }
         }
 
-        setPositionStrings(category_prize_winner_results);
-
-        writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
-        writer.append("<ul>\n");
+        printResults(writer, category_prize_winner_results, this::printPrizeWinner);
 
         if (category_prize_winners.isEmpty())
             writer.append("No results\n");
-        else
-            for (final MinitourRaceResult result : category_prize_winner_results)
-                print_prize_winner(writer, result);
 
         writer.append("</ul>\n\n");
     }
 
-    private void print_prize_winner(final OutputStreamWriter writer, final MinitourRaceResult result) throws IOException {
+    private void printPrizeWinner(final OutputStreamWriter writer, final MinitourRaceResult result) throws IOException {
 
         final Duration time = race.getOverallResults()[race.findIndexOfRunner(result.runner)].duration();
 
