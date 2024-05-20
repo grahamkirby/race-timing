@@ -6,6 +6,7 @@ import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import individual_race.Runner;
+import lap_race.LapRaceOutputPDF;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,7 +25,7 @@ public class MinitourRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     MinitourRaceInput input;
-    MinitourRaceOutput output_CSV, output_HTML, output_text;
+    MinitourRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     MinitourRacePrizes prizes;
 
     IndividualRace[] races;
@@ -91,6 +92,7 @@ public class MinitourRace extends Race {
         output_CSV = new MinitourRaceOutputCSV(this);
         output_HTML = new MinitourRaceOutputHTML(this);
         output_text = new MinitourRaceOutputText(this);
+        output_PDF = new MinitourRaceOutputPDF(this);
 
         prizes = new MinitourRacePrizes(this);
     }
@@ -155,6 +157,9 @@ public class MinitourRace extends Race {
     }
 
     private void printPrizes() throws IOException {
+
+        output_PDF.printPrizes();
+        output_HTML.printPrizes();
         output_text.printPrizes();
     }
 

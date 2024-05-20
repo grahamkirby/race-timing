@@ -483,16 +483,18 @@ public class LapRace extends Race {
 
     private void printPrizes() throws IOException {
 
-        output_text.printPrizes();
         output_PDF.printPrizes();
         output_HTML.printPrizes();
+        output_text.printPrizes();
     }
 
     private void printCombined() throws IOException {
+
         output_HTML.printCombined();
     }
 
     private void printCollatedTimes() throws IOException {
+
         ((LapRaceOutputText)output_text).printCollatedResults();
     }
 }

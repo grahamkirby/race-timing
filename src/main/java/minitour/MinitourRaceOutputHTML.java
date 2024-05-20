@@ -152,28 +152,38 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
-        if (category_prize_winners != null) {
-
-            writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
-            writer.append("<ol>\n");
-
-            if (category_prize_winners.isEmpty())
-                writer.append("No results\n");
-            else
-                for (final Runner entry : category_prize_winners)
-                    print_prize_winner(writer, entry);
-
-            writer.append("</ol>\n\n");
+        final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
+        for (int i = 0; i < category_prize_winners.size(); i++) {
+            for (MinitourRaceResult result : race.overall_results) {
+                if (result.runner.equals(category_prize_winners.get(i))) {
+                    category_prize_winner_results[i] = result;
+                    break;
+                }
+            }
         }
+
+        setPositionStrings(category_prize_winner_results);
+
+        writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
+        writer.append("<ul>\n");
+
+        if (category_prize_winners.isEmpty())
+            writer.append("No results\n");
+        else
+            for (final MinitourRaceResult result : category_prize_winner_results)
+                print_prize_winner(writer, result);
+
+        writer.append("</ul>\n\n");
     }
 
-    private void print_prize_winner(final OutputStreamWriter writer, final Runner entry) throws IOException {
+    private void print_prize_winner(final OutputStreamWriter writer, final MinitourRaceResult result) throws IOException {
 
-        final Duration time = race.getOverallResults()[race.findIndexOfRunner(entry)].duration();
+        final Duration time = race.getOverallResults()[race.findIndexOfRunner(result.runner)].duration();
 
         writer.append("<li>").
-                append(htmlEncode(entry.name)).append(" (").
-                append(entry.category.getShortName()).append(") ").
+                append(result.position_string).append(" ").
+                append(htmlEncode(result.runner.name)).append(" (").
+                append(result.runner.category.getShortName()).append(") ").
                 append(format(time)).append("</li>\n");
     }
 
@@ -231,11 +241,11 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer, final List<Category> result_categories) throws IOException {
 
-        final MinitourRaceResult[] series_results = race.getCompletedResultsByCategory(result_categories);
+        final MinitourRaceResult[] category_results = race.getCompletedResultsByCategory(result_categories);
 
-        setPositionStrings(series_results);
+        setPositionStrings(category_results);
 
-        for (final MinitourRaceResult result : series_results) {
+        for (final MinitourRaceResult result : category_results) {
 
             writer.append("""
                         <tr>
