@@ -1,6 +1,7 @@
 package minitour;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 
 public abstract class MinitourRaceOutput {
@@ -84,6 +85,18 @@ public abstract class MinitourRaceOutput {
             highest_index_with_same_result++;
 
         return highest_index_with_same_result;
+    }
+
+    void printResults(OutputStreamWriter writer, MinitourRaceResult[] category_prize_winner_results, ResultPrinter printer) throws IOException {
+
+        setPositionStrings(category_prize_winner_results);
+
+        for (final MinitourRaceResult result : category_prize_winner_results)
+            printer.printResult(writer, result);
+    }
+
+    interface ResultPrinter {
+        void printResult(OutputStreamWriter writer, MinitourRaceResult result) throws IOException;
     }
 
     public abstract void printOverallResults() throws IOException;
