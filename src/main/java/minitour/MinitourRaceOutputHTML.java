@@ -153,22 +153,9 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
         writer.append("<ul>\n");
 
-        final List<Runner> category_prize_winners = race.prize_winners.get(category);
-
-        final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
-        for (int i = 0; i < category_prize_winners.size(); i++) {
-            for (MinitourRaceResult result : race.overall_results) {
-                if (result.runner.equals(category_prize_winners.get(i))) {
-                    category_prize_winner_results[i] = result;
-                    break;
-                }
-            }
-        }
+        final MinitourRaceResult[] category_prize_winner_results = getMinitourRaceResults(category);
 
         printResults(writer, category_prize_winner_results, this::printPrizeWinner);
-
-        if (category_prize_winners.isEmpty())
-            writer.append("No results\n");
 
         writer.append("</ul>\n\n");
     }
