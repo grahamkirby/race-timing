@@ -50,6 +50,7 @@ public abstract class MinitourRaceOutput {
     }
 
     MinitourRaceResult[] getMinitourRaceResults(Category category) {
+
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
 
         final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
@@ -64,7 +65,7 @@ public abstract class MinitourRaceOutput {
         return category_prize_winner_results;
     }
 
-    static void setPositionStrings(final MinitourRaceResult[] series_results) {
+     private void setPositionStrings(final MinitourRaceResult[] series_results) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -78,7 +79,7 @@ public abstract class MinitourRaceOutput {
         }
     }
 
-    private static int groupEqualResultsAndReturnFollowingIndex(final MinitourRaceResult[] leg_results, final MinitourRaceResult result, final int result_index) {
+    private int groupEqualResultsAndReturnFollowingIndex(final MinitourRaceResult[] leg_results, final MinitourRaceResult result, final int result_index) {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameResult(leg_results, result, result_index);
 
@@ -94,7 +95,7 @@ public abstract class MinitourRaceOutput {
         return highest_index_with_same_duration;
     }
 
-    private static int getHighestIndexWithSameResult(final MinitourRaceResult[] leg_results, final MinitourRaceResult result, final int result_index) {
+    private int getHighestIndexWithSameResult(final MinitourRaceResult[] leg_results, final MinitourRaceResult result, final int result_index) {
 
         int highest_index_with_same_result = result_index;
 
@@ -106,19 +107,20 @@ public abstract class MinitourRaceOutput {
         return highest_index_with_same_result;
     }
 
-    void printResults(OutputStreamWriter writer, MinitourRaceResult[] category_prize_winner_results, ResultPrinter printer) throws IOException {
+    void printResults(MinitourRaceResult[] category_prize_winner_results, ResultPrinter printer) throws IOException {
 
         setPositionStrings(category_prize_winner_results);
 
         for (final MinitourRaceResult result : category_prize_winner_results)
-            printer.printResult(writer, result);
+            printer.printResult(result);
 
         if (category_prize_winner_results.length == 0)
-            writer.append("No results\n");
+            printer.printNoResults();
     }
 
     interface ResultPrinter {
-        void printResult(OutputStreamWriter writer, MinitourRaceResult result) throws IOException;
+        void printResult(MinitourRaceResult result) throws IOException;
+        void printNoResults() throws IOException;
     }
 
     public abstract void printOverallResults() throws IOException;
