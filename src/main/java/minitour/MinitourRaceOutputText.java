@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
+
+import static common.Race.format;
+import static series_race.SeriesRaceOutputHTML.htmlEncode;
 
 public class MinitourRaceOutputText extends MinitourRaceOutput {
 
@@ -49,31 +53,16 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        final List<Runner> category_prize_winners = race.prize_winners.get(category);
-
-        if (category_prize_winners.isEmpty())
-            writer.append("No results\n");
-
-        final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
-        for (int i = 0; i < category_prize_winners.size(); i++) {
-            for (MinitourRaceResult result : race.overall_results) {
-                if (result.runner.equals(category_prize_winners.get(i))) {
-                    category_prize_winner_results[i] = result;
-                    break;
-                }
-            }
-        }
-
-        setPositionStrings(category_prize_winner_results);
-
-        for (final MinitourRaceResult result : category_prize_winner_results) {
-
-            writer.append(String.valueOf(result.position_string)).append(": ").
-                    append(result.runner.name).append(" (").
-                    append(result.runner.club).append(") ").
-                    append(Race.format(result.duration())).append("\n");
-        }
+        printResults(writer, getMinitourRaceResults(category), this::printPrizeWinner);
 
         writer.append("\n\n");
+    }
+
+    private void printPrizeWinner(final OutputStreamWriter writer, final MinitourRaceResult result) throws IOException {
+
+        writer.append(String.valueOf(result.position_string)).append(": ").
+                append(result.runner.name).append(" (").
+                append(result.runner.club).append(") ").
+                append(Race.format(result.duration())).append("\n");
     }
 }
