@@ -3,6 +3,7 @@ package minitour;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
+import common.Race;
 import individual_race.Runner;
 import lap_race.LapRace;
 import lap_race.LapRaceOutput;
@@ -11,6 +12,7 @@ import lap_race.Team;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -57,16 +59,13 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
         document.close();
     }
 
-    private void printPrizes(final Category category, final Document document) {
+    private void printPrizes(final Category category, final Document document) throws IOException {
 
         final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.getShortName(), PDF_BOLD_UNDERLINED_FONT);
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
-
-        if (category_prize_winners.isEmpty())
-            document.add(new Paragraph("No results", PDF_ITALIC_FONT));
 
         final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
         for (int i = 0; i < category_prize_winners.size(); i++) {
@@ -78,16 +77,23 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
             }
         }
 
-        setPositionStrings(category_prize_winner_results);
+        printResults(getMinitourRaceResults(category), new ResultPrinter() {
 
-        for (final MinitourRaceResult result : category_prize_winner_results) {
+            @Override
+            public void printResult(MinitourRaceResult result) throws IOException {
+                final Paragraph paragraph = new Paragraph();
+                paragraph.add(new Chunk(result.position_string + ": ", PDF_FONT));
+                paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
+                paragraph.add(new Chunk(" (" + result.runner.category.getShortName() + ") ", PDF_FONT));
+                paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
+                document.add(paragraph);
+            }
 
-            final Paragraph paragraph = new Paragraph();
-            paragraph.add(new Chunk(result.position_string + ": ", PDF_FONT));
-            paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
-            paragraph.add(new Chunk(" (" + result.runner.category.getShortName() + ") ", PDF_FONT));
-            paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
-            document.add(paragraph);
-        }
+            @Override
+            public void printNoResults() throws IOException {
+                document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+
+            }
+        });
     }
 }
