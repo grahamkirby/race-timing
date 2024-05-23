@@ -68,26 +68,28 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
         final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
         final MinitourRaceResult[] category_results = race.getCompletedResultsByCategory(category_list);
 
-        printResults(category_results, new ResultPrinter() {
+        printResults(category_results, new ResultPrinterCSV(writer));
+    }
 
-            @Override
-            public void printResult(MinitourRaceResult result) throws IOException {
-                writer.append(result.position_string).append(",").
-                        append(result.runner.name).append(",").
-                        append(result.runner.club).append(",").
-                        append(result.runner.category.getShortName()).append(",");
+    record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
 
-                for (final Duration time : result.times)
-                    if (time != null) writer.append(format(time)).append(",");
+        @Override
+        public void printResult(final MinitourRaceResult result) throws IOException {
 
-                writer.append(format(result.duration())).append("\n");
-            }
+            writer.append(result.position_string).append(",").
+                    append(result.runner.name).append(",").
+                    append(result.runner.club).append(",").
+                    append(result.runner.category.getShortName()).append(",");
 
-            @Override
-            public void printNoResults() throws IOException {
-                writer.append("No results\n");
+            for (final Duration time : result.times)
+                if (time != null) writer.append(format(time)).append(",");
 
-            }
-        });
+            writer.append(format(result.duration())).append("\n");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+            writer.append("No results\n");
+        }
     }
 }

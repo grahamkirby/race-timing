@@ -65,35 +65,27 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
-        final List<Runner> category_prize_winners = race.prize_winners.get(category);
+        printResults(getMinitourRaceResults(category), new ResultPrinterPDF(document));
+    }
 
-        final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
-        for (int i = 0; i < category_prize_winners.size(); i++) {
-            for (MinitourRaceResult result : race.overall_results) {
-                if (result.runner.equals(category_prize_winners.get(i))) {
-                    category_prize_winner_results[i] = result;
-                    break;
-                }
-            }
+    record ResultPrinterPDF(Document document) implements ResultPrinter {
+
+        @Override
+        public void printResult(final MinitourRaceResult result) {
+
+            final Paragraph paragraph = new Paragraph();
+
+            paragraph.add(new Chunk(result.position_string + ": ", PDF_FONT));
+            paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
+            paragraph.add(new Chunk(" (" + result.runner.category.getShortName() + ") ", PDF_FONT));
+            paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
+
+            document.add(paragraph);
         }
 
-        printResults(getMinitourRaceResults(category), new ResultPrinter() {
-
-            @Override
-            public void printResult(MinitourRaceResult result) throws IOException {
-                final Paragraph paragraph = new Paragraph();
-                paragraph.add(new Chunk(result.position_string + ": ", PDF_FONT));
-                paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
-                paragraph.add(new Chunk(" (" + result.runner.category.getShortName() + ") ", PDF_FONT));
-                paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
-                document.add(paragraph);
-            }
-
-            @Override
-            public void printNoResults() throws IOException {
-                document.add(new Paragraph("No results", PDF_ITALIC_FONT));
-
-            }
-        });
+        @Override
+        public void printNoResults() throws IOException {
+            document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+        }
     }
 }
