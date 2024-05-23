@@ -2,18 +2,11 @@ package minitour;
 
 import common.Category;
 import common.Race;
-import individual_race.IndividualRace;
-import individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.util.List;
-
-import static common.Race.format;
-import static series_race.SeriesRaceOutputHTML.htmlEncode;
 
 public class MinitourRaceOutputText extends MinitourRaceOutput {
 
@@ -53,7 +46,7 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        printResults(getMinitourRaceResults(category), new ResultPrinterText(writer));
+        printResults(getMinitourRacePrizeResults(category), new ResultPrinterText(writer));
 
         writer.append("\n\n");
     }

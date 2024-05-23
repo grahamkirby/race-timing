@@ -152,7 +152,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
         writer.append("<ul>\n");
 
-        final MinitourRaceResult[] category_prize_winner_results = getMinitourRaceResults(category);
+        final MinitourRaceResult[] category_prize_winner_results = getMinitourRacePrizeResults(category);
 
         printResults(category_prize_winner_results, new ResultPrinterHTML(race, writer));
 

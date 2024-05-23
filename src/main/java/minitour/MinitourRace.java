@@ -13,9 +13,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class MinitourRace extends Race {
+
     public static final int DEFAULT_CATEGORY_PRIZES = 3;
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
@@ -37,19 +39,18 @@ public class MinitourRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public MinitourRace(Path config_file_path) throws IOException {
+    public MinitourRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
 
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
             System.out.println("usage: java MinitourRace <config file path>");
-        else {
+        else
             new MinitourRace(Paths.get(args[0])).processResults();
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,16 +165,20 @@ public class MinitourRace extends Race {
     }
 
     private void printCombined() throws IOException {
+
         output_HTML.printCombined();
     }
 
     public MinitourRaceResult[] getOverallResults() {
+
         return overall_results;
     }
 
     public MinitourRaceResult[] getCompletedResultsByCategory(List<Category> categories_required) {
 
-        return Stream.of(overall_results).filter(minitourRaceResult -> minitourRaceResult.completedAllRacesSoFar() && categories_required.contains(minitourRaceResult.runner.category)).toList().toArray(new MinitourRaceResult[0]);
+        final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> minitourRaceResult.completedAllRacesSoFar() && categories_required.contains(minitourRaceResult.runner.category);
+
+        return Stream.of(overall_results).filter(category_filter).toArray(MinitourRaceResult[]:: new);
     }
 
     public int findIndexOfRunner(Runner runner) {

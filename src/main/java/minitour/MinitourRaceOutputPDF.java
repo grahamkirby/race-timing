@@ -3,19 +3,11 @@ package minitour;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
-import common.Race;
-import individual_race.Runner;
-import lap_race.LapRace;
-import lap_race.LapRaceOutput;
-import lap_race.LapRaceResult;
-import lap_race.Team;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import static common.Race.format;
 
@@ -65,7 +57,7 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
-        printResults(getMinitourRaceResults(category), new ResultPrinterPDF(document));
+        printResults(getMinitourRacePrizeResults(category), new ResultPrinterPDF(document));
     }
 
     record ResultPrinterPDF(Document document) implements ResultPrinter {
