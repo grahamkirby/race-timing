@@ -1,10 +1,8 @@
 package minitour;
 
 import common.Category;
-import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
-import individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -156,29 +154,12 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
         final MinitourRaceResult[] category_prize_winner_results = getMinitourRaceResults(category);
 
-        printResults(category_prize_winner_results, new ResultPrinter() {
-
-            @Override
-            public void printResult(MinitourRaceResult result) throws IOException {
-                final Duration time = race.getOverallResults()[race.findIndexOfRunner(result.runner)].duration();
-
-                writer.append("<li>").
-                        append(result.position_string).append(" ").
-                        append(htmlEncode(result.runner.name)).append(" (").
-                        append(result.runner.category.getShortName()).append(") ").
-                        append(format(time)).append("</li>\n");
-            }
-
-            @Override
-            public void printNoResults() throws IOException {
-
-                writer.append("No results\n");
-
-            }
-        });
+        printResults(category_prize_winner_results, new ResultPrinterHTML(race, writer));
 
         writer.append("</ul>\n\n");
     }
+
+
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
@@ -218,11 +199,9 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < race.races.length; i++) {
-            if (race.races[i] != null) {
+        for (int i = 0; i < race.races.length; i++)
+            if (race.races[i] != null)
                 writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
-            }
-        }
 
         writer.append("""
                                        <th>Total</th>
@@ -234,49 +213,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer, final List<Category> result_categories) throws IOException {
 
-        final MinitourRaceResult[] category_results = race.getCompletedResultsByCategory(result_categories);
-
-        printResults(category_results, new ResultPrinter() {
-
-            @Override
-            public void printResult(MinitourRaceResult result) throws IOException {
-
-                writer.append("""
-                        <tr>
-                            <td>""");
-                writer.append(result.position_string);
-                writer.append("""
-                            </td>
-                            <td>""");
-                writer.append(htmlEncode(result.runner.name));
-                writer.append("""
-                            </td>
-                            <td>""");
-                writer.append(result.runner.category.getShortName());
-                writer.append("""
-                            </td>
-                            <td>""");
-                writer.append(result.runner.club);
-                writer.append("""
-                            </td>""");
-                for (int i = 0; i < result.times.length; i++) {
-                    if (result.times[i] != null) {
-                        writer.append("<td>").append(format(result.times[i])).append("</td>\n");
-                    }
-                }
-                writer.append("""
-                            <td>""");
-                writer.append(format(result.duration()));
-                writer.append("""
-                            </td>
-                        </tr>""");
-            }
-
-            @Override
-            public void printNoResults() throws IOException {
-                writer.append("No results\n");
-            }
-        });
+        printResults(race.getCompletedResultsByCategory(result_categories), new OverallResultPrinterHTML(writer));
     }
 
     private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
@@ -285,5 +222,68 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                 </tbody>
             </table>
             """);
+    }
+
+    record OverallResultPrinterHTML(OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final MinitourRaceResult result) throws IOException {
+
+            writer.append("""
+                    <tr>
+                        <td>""");
+            writer.append(result.position_string);
+            writer.append("""
+                        </td>
+                        <td>""");
+            writer.append(htmlEncode(result.runner.name));
+            writer.append("""
+                        </td>
+                        <td>""");
+            writer.append(result.runner.category.getShortName());
+            writer.append("""
+                        </td>
+                        <td>""");
+            writer.append(result.runner.club);
+            writer.append("""
+                        </td>""");
+
+            for (int i = 0; i < result.times.length; i++)
+                if (result.times[i] != null)
+                    writer.append("<td>").append(format(result.times[i])).append("</td>\n");
+
+            writer.append("""
+                        <td>""");
+            writer.append(format(result.duration()));
+            writer.append("""
+                        </td>
+                    </tr>""");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+            writer.append("No results\n");
+        }
+    }
+
+    record ResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(MinitourRaceResult result) throws IOException {
+
+            final Duration time = race.getOverallResults()[race.findIndexOfRunner(result.runner)].duration();
+
+            writer.append("<li>").
+                    append(result.position_string).append(" ").
+                    append(htmlEncode(result.runner.name)).append(" (").
+                    append(result.runner.category.getShortName()).append(") ").
+                    append(format(time)).append("</li>\n");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            writer.append("No results\n");
+        }
     }
 }

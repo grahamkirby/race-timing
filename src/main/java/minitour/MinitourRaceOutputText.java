@@ -53,22 +53,25 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        printResults(getMinitourRaceResults(category), new ResultPrinter() {
-
-            @Override
-            public void printResult(MinitourRaceResult result) throws IOException {
-                writer.append(String.valueOf(result.position_string)).append(": ").
-                        append(result.runner.name).append(" (").
-                        append(result.runner.club).append(") ").
-                        append(Race.format(result.duration())).append("\n");
-            }
-
-            @Override
-            public void printNoResults() throws IOException {
-                writer.append("No results\n");
-            }
-        });
+        printResults(getMinitourRaceResults(category), new ResultPrinterText(writer));
 
         writer.append("\n\n");
+    }
+
+    record ResultPrinterText(OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final MinitourRaceResult result) throws IOException {
+
+            writer.append(result.position_string).append(": ").
+                    append(result.runner.name).append(" (").
+                    append(result.runner.club).append(") ").
+                    append(Race.format(result.duration())).append("\n");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+            writer.append("No results\n");
+        }
     }
 }
