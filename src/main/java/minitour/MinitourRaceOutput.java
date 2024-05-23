@@ -4,7 +4,6 @@ import common.Category;
 import individual_race.Runner;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -49,23 +48,23 @@ public abstract class MinitourRaceOutput {
         output_directory_path = race.getWorkingDirectoryPath().resolve("output");
     }
 
-    MinitourRaceResult[] getMinitourRaceResults(Category category) {
+    MinitourRaceResult[] getMinitourRacePrizeResults(final Category category) {
 
         final List<Runner> category_prize_winners = race.prize_winners.get(category);
-
         final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
-        for (int i = 0; i < category_prize_winners.size(); i++) {
-            for (MinitourRaceResult result : race.overall_results) {
+
+        for (int i = 0; i < category_prize_winners.size(); i++)
+            for (final MinitourRaceResult result : race.overall_results) {
                 if (result.runner.equals(category_prize_winners.get(i))) {
                     category_prize_winner_results[i] = result;
                     break;
                 }
             }
-        }
+
         return category_prize_winner_results;
     }
 
-     private void setPositionStrings(final MinitourRaceResult[] series_results) {
+    private void setPositionStrings(final MinitourRaceResult[] series_results) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
