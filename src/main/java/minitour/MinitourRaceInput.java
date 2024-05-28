@@ -79,7 +79,12 @@ public class MinitourRaceInput {
             return new SelfTimedRun(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
         };
 
-        final String[] self_timed_strings = race.getProperties().getProperty("SELF_TIMED").split(",", -1);
+        final String self_timed_string = race.getProperties().getProperty("SELF_TIMED");
+
+        if (self_timed_string == null)
+            return new SelfTimedRun[0];
+
+        final String[] self_timed_strings = self_timed_string.split(",", -1);
 
         return Arrays.stream(self_timed_strings).map(extract_run_function).toArray(SelfTimedRun[]::new);
     }
