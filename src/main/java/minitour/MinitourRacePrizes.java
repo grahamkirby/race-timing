@@ -44,7 +44,7 @@ public class MinitourRacePrizes {
 
     private boolean alreadyWonPrize(final Runner entry) {
 
-        for (List<Runner> winners : race.prize_winners.values())
+        for (final List<Runner> winners : race.prize_winners.values())
             if (winners.contains(entry)) return true;
 
         return false;

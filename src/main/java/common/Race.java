@@ -105,11 +105,11 @@ public abstract class Race {
         return value == null || value.isBlank() ? default_value : value;
     }
 
-    public static Runner[] getCombinedRunners(IndividualRace[] races1) {
+    public static Runner[] getCombinedRunners(IndividualRace[] individual_races) {
 
         final Set<Runner> runners = new HashSet<>();
 
-        for (final IndividualRace individual_race : races1)
+        for (final IndividualRace individual_race : individual_races)
             if (individual_race != null)
                 for (final IndividualRaceResult result : individual_race.getOverallResults()) {
                     if (!isDuplicate(result, runners))
