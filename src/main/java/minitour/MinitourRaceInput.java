@@ -4,6 +4,7 @@ import common.Category;
 import common.Race;
 import common.RawResult;
 import individual_race.IndividualRace;
+import individual_race.IndividualRaceEntry;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -134,17 +135,25 @@ public class MinitourRaceInput {
         if (runnerIsSelfTimed(race_number, bib_number))
             return Duration.ZERO;
 
-        // This assumes that time-trial runners are assigned to waves in order of bib number.
-        if (raceIsTimeTrial(race_number)) {
-
-            final int wave_number = (bib_number - 1) / time_trial_runners_per_wave;
-            return time_trial_inter_wave_interval.multipliedBy(wave_number);
-        }
+        if (raceIsTimeTrial(race_number))
+            return getTimeTrialOffset(bib_number);
 
         if (runnerIsInSecondWave(individual_race, bib_number))
             return wave_start_offsets[race_number-1];
 
         return Duration.ZERO;
+    }
+
+    private Duration getTimeTrialOffset(int bib_number) {
+
+        // This assumes that time-trial runners are assigned to waves in order of bib number, with incomplete waves if there are any gaps in bib numbers.
+
+        final int wave_number = runnerIndexInBibOrder(bib_number) / time_trial_runners_per_wave;
+        return time_trial_inter_wave_interval.multipliedBy(wave_number);
+    }
+
+    private int runnerIndexInBibOrder(int bib_number) {
+        return bib_number - 1;
     }
 
     private boolean raceIsTimeTrial(int race_number) {
