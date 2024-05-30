@@ -6,7 +6,7 @@
 6	Ollie Barrable	Fife Athletic Club	MU11
 7	Isla Beere	Strathkinness Primary School	FU9
 8	Lola Rowan Bowditch	Strathkinness Primary School	FU9
-9	Orla Boyd-Thorpe	Dundee Hawkhill Harriers	FU11
+9	Eden Hall	Unatt.	FU11
 10	Freya Brown	Fife Athletic Club	FU9
 11	Eilidh Christie	Unatt.	FU11
 12	Penny Coulston	Unatt.	FU11

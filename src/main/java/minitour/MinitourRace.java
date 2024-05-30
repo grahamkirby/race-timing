@@ -175,7 +175,8 @@ public class MinitourRace extends Race {
 
     public MinitourRaceResult[] getCompletedResultsByCategory(List<Category> categories_required) {
 
-        final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> minitourRaceResult.completedAllRacesSoFar() && categories_required.contains(minitourRaceResult.runner.category);
+//        final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> minitourRaceResult.completedAllRacesSoFar() && categories_required.contains(minitourRaceResult.runner.category);
+        final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> categories_required.contains(minitourRaceResult.runner.category);
 
         return Stream.of(overall_results).filter(category_filter).toArray(MinitourRaceResult[]:: new);
     }

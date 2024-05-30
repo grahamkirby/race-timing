@@ -53,14 +53,14 @@ public abstract class MinitourRaceOutput extends RaceOutput {
         return category_prize_winner_results;
     }
 
-    void printResults(final MinitourRaceResult[] category_prize_winner_results, final ResultPrinter printer) throws IOException {
+    void printResults(final MinitourRaceResult[] results, final ResultPrinter printer) throws IOException {
 
-        setPositionStrings(category_prize_winner_results);
+        setPositionStrings(results);
 
-        for (final MinitourRaceResult result : category_prize_winner_results)
+        for (final MinitourRaceResult result : results)
             printer.printResult(result);
 
-        if (category_prize_winner_results.length == 0)
+        if (results.length == 0)
             printer.printNoResults();
     }
 
