@@ -1,14 +1,13 @@
 package series_race;
 
+import com.lowagie.text.Document;
+import common.Category;
 import common.Race;
-import individual_race.IndividualRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class SeriesRaceOutputCSV extends SeriesRaceOutput {
 
@@ -20,6 +19,11 @@ public class SeriesRaceOutputCSV extends SeriesRaceOutput {
 
     @Override
     public void printPrizes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -44,38 +48,44 @@ public class SeriesRaceOutputCSV extends SeriesRaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (final Race individual_race : race.races)
+        for (final Race individual_race : ((SeriesRace)race).races)
             if (individual_race != null)
-                writer.append(",").append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
+                writer.append(",").
+                        append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
 
         writer.append(",Total,Completed\n");
     }
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final SeriesRaceResult[] series_results = race.getOverallResults();
+        final SeriesRaceResult[] series_results = ((SeriesRace)race).getOverallResults();
 
         setPositionStrings(series_results);
 
         for (final SeriesRaceResult overall_result : series_results) {
 
             int number_of_races_completed = 0;
-            for (Race r : race.races)
+            for (Race r : ((SeriesRace)race).races)
                 if (r != null) number_of_races_completed++;
 
-            if (number_of_races_completed < race.races.length || overall_result.completed())
+            if (number_of_races_completed < ((SeriesRace)race).races.length || overall_result.completed())
                 writer.append(overall_result.position_string);
 
             writer.append(",").
-                    append(overall_result.runner.name).append(",").
-                    append(overall_result.runner.club).append(",").
-                    append(overall_result.runner.category.getShortName()).append(",");
+                    append(overall_result.runner.name).
+                    append(",").
+                    append(overall_result.runner.club).
+                    append(",").
+                    append(overall_result.runner.category.getShortName()).
+                    append(",");
 
             for (final int score : overall_result.scores)
                 if (score >= 0) writer.append(String.valueOf(score)).append(",");
 
-            writer.append(String.valueOf(overall_result.totalScore())).append(",").
-                    append(overall_result.completed() ? "Y" : "N").append("\n");
+            writer.append(String.valueOf(overall_result.totalScore())).
+                    append(",").
+                    append(overall_result.completed() ? "Y" : "N").
+                    append("\n");
         }
     }
 

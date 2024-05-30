@@ -2,7 +2,6 @@ package common;
 
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
-import individual_race.Runner;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -99,7 +98,7 @@ public abstract class Race {
         return raw_results;
     }
 
-    protected String getPropertyWithDefault(final String property_key, final String default_value) {
+    public String getPropertyWithDefault(final String property_key, final String default_value) {
 
         final String value = properties.getProperty(property_key);
         return value == null || value.isBlank() ? default_value : value;
@@ -141,12 +140,6 @@ public abstract class Race {
         catch (Exception e) {
             throw new RuntimeException("illegal time: " + element);
         }
-    }
-
-    public static String format(final Duration duration) {
-
-        final long s = duration.getSeconds();
-        return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
     }
 
     public static String normaliseClubName(final String club) {

@@ -1,24 +1,10 @@
 package lap_race;
 
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
-import static common.Race.format;
-
 public class LapRaceOutputPDF extends LapRaceOutput {
-
-    private static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
-    private static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-    private static final Font PDF_BOLD_UNDERLINED_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, Font.DEFAULTSIZE, Font.UNDERLINE);
-    private static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
-    private static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
     public LapRaceOutputPDF(final LapRace results) {
         super(results);
@@ -44,31 +30,13 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void printPrizes() throws IOException {
-
-        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
-        final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
-
-        final Document document = new Document();
-        PdfWriter.getInstance(document, pdf_file_output_stream);
-
-        document.open();
-        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
-
-        for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, document);
-
-        document.close();
-    }
-
-    private void printPrizes(final Category category, final Document document) {
+    public void printPrizes(final Category category, final Document document) {
 
         final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.getShortName(), PDF_BOLD_UNDERLINED_FONT);
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
-        final List<Team> category_prize_winners = race.prize_winners.get(category);
+        final List<Team> category_prize_winners = ((LapRace)race).prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
@@ -76,7 +44,7 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final LapRaceResult result = race.overall_results[race.findIndexOfTeamWithBibNumber(team.bib_number)];
+            final LapRaceResult result = ((LapRace)race).overall_results[((LapRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
 
             final Paragraph paragraph = new Paragraph();
             paragraph.add(new Chunk(position++ + ": ", PDF_FONT));

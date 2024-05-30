@@ -1,5 +1,6 @@
 package minitour;
 
+import com.lowagie.text.Document;
 import common.Category;
 import common.Race;
 
@@ -39,6 +40,11 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         }
     }
 
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final String header = "Category: " + category.getLongName();
@@ -59,7 +65,7 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
             writer.append(result.position_string).append(": ").
                     append(result.runner.name).append(" (").
                     append(result.runner.club).append(") ").
-                    append(Race.format(result.duration())).append("\n");
+                    append(format(result.duration())).append("\n");
         }
 
         @Override

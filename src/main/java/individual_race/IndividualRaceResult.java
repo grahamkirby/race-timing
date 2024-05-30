@@ -27,6 +27,7 @@ public class IndividualRaceResult implements Comparable<IndividualRaceResult> {
 
         return DNF;
     }
+
     @Override
     public int compareTo(IndividualRaceResult o) {
 

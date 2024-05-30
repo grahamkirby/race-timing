@@ -1,11 +1,12 @@
 package lap_race;
 
+import com.lowagie.text.Document;
+import common.Category;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static common.Race.format;
 
 public class LapRaceOutputCSV extends LapRaceOutput {
 
@@ -17,6 +18,12 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
     @Override
     public void printPrizes() {
+        throw new UnsupportedOperationException();
+    }
+
+
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -68,9 +75,9 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < race.overall_results.length; i++) {
+        for (int i = 0; i < ((LapRace)race).overall_results.length; i++) {
 
-            final LapRaceResult overall_result = race.overall_results[i];
+            final LapRaceResult overall_result = ((LapRace)race).overall_results[i];
 
             if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
 
@@ -86,10 +93,10 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (int leg_number = 1; leg_number <= race.number_of_legs; leg_number++) {
+        for (int leg_number = 1; leg_number <= ((LapRace)race).number_of_legs; leg_number++) {
 
             writer.append("Runners ").append(String.valueOf(leg_number)).append(",Leg ").append(String.valueOf(leg_number)).append(",");
-            if (leg_number < race.number_of_legs) writer.append("Split ").append(String.valueOf(leg_number)).append(",");
+            if (leg_number < ((LapRace)race).number_of_legs) writer.append("Split ").append(String.valueOf(leg_number)).append(",");
         }
 
         writer.append("Total\n");
@@ -97,13 +104,13 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < race.overall_results.length; result_index++)
+        for (int result_index = 0; result_index < ((LapRace)race).overall_results.length; result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final LapRaceResult result = race.overall_results[result_index];
+        final LapRaceResult result = ((LapRace)race).overall_results[result_index];
 
         if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
 
@@ -121,7 +128,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         boolean any_previous_leg_dnf = false;
 
-        for (int leg_number = 1; leg_number <= race.number_of_legs; leg_number++) {
+        for (int leg_number = 1; leg_number <= ((LapRace)race).number_of_legs; leg_number++) {
 
             final LegResult leg_result = result.leg_results[leg_number - 1];
 
@@ -132,7 +139,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
             writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration())).append(",");
             writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg_number)));
 
-            if (leg_number < race.number_of_legs) writer.append(",");
+            if (leg_number < ((LapRace)race).number_of_legs) writer.append(",");
             if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
@@ -140,7 +147,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg_number) throws IOException {
 
         writer.append("Pos,Runner");
-        if (race.paired_legs[leg_number-1]) writer.append("s");
+        if (((LapRace)race).paired_legs[leg_number-1]) writer.append("s");
         writer.append(",Time\n");
     }
 

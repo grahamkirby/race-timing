@@ -1,29 +1,20 @@
 package lap_race;
 
-import common.Category;
+import common.RaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.List;
 
-public abstract class LapRaceOutput {
+public abstract class LapRaceOutput extends RaceOutput {
 
-    public static final String DNF_STRING = "DNF";
-
-    final LapRace race;
-
-    String year;
-    String race_name_for_results;
-    String race_name_for_filenames;
-    String overall_results_filename, detailed_results_filename, prizes_filename, collated_times_filename;
-    Path output_directory_path;
+    String detailed_results_filename, collated_times_filename;
 
     public LapRaceOutput(final LapRace race) {
 
-        this.race = race;
+        super(race);
         configure();
     }
 
@@ -53,7 +44,7 @@ public abstract class LapRaceOutput {
 
     public void printLegResults() throws IOException {
 
-        for (int leg = 1; leg <= race.number_of_legs; leg++)
+        for (int leg = 1; leg <= ((LapRace)race).number_of_legs; leg++)
             printLegResults(leg);
     }
 
@@ -67,10 +58,10 @@ public abstract class LapRaceOutput {
 
     LegResult[] getLegResults(final int leg_number) {
 
-        final LegResult[] leg_results = new LegResult[race.overall_results.length];
+        final LegResult[] leg_results = new LegResult[((LapRace)race).overall_results.length];
 
         for (int i = 0; i < leg_results.length; i++)
-            leg_results[i] = race.overall_results[i].leg_results[leg_number-1];
+            leg_results[i] = ((LapRace)race).overall_results[i].leg_results[leg_number-1];
 
         // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
         // Ordering for DNF results doesn't matter since they're omitted in output.
@@ -88,7 +79,7 @@ public abstract class LapRaceOutput {
 
             // Find the next mass start.
             int mass_start_leg = leg;
-            while (!race.mass_start_legs[mass_start_leg-1])
+            while (!((LapRace)race).mass_start_legs[mass_start_leg-1])
                 mass_start_leg++;
 
             writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
@@ -98,6 +89,5 @@ public abstract class LapRaceOutput {
     public abstract void printOverallResults() throws IOException;
     public abstract void printDetailedResults() throws IOException;
     public abstract void printLegResults(final int leg) throws IOException;
-    public abstract void printPrizes() throws IOException;
     public abstract void printCombined() throws IOException;
 }

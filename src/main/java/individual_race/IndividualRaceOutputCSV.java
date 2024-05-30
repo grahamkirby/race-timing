@@ -1,11 +1,12 @@
 package individual_race;
 
+import com.lowagie.text.Document;
+import common.Category;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static common.Race.format;
 
 public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
@@ -17,6 +18,11 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
     @Override
     public void printPrizes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -44,9 +50,9 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < race.getOverallResults().length; i++) {
+        for (int i = 0; i < ((IndividualRace)race).getOverallResults().length; i++) {
 
-            final IndividualRaceResult overall_result = race.getOverallResults()[i];
+            final IndividualRaceResult overall_result = ((IndividualRace)race).getOverallResults()[i];
 
             if (!overall_result.dnf()) {
                 writer.append(String.valueOf(i + 1));

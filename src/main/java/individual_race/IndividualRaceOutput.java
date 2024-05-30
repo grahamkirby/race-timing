@@ -1,27 +1,29 @@
 package individual_race;
 
+import common.RaceOutput;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 
-public abstract class IndividualRaceOutput {
+public abstract class IndividualRaceOutput extends RaceOutput {
 
-    public static final String DNF_STRING = "DNF";
-
-    final IndividualRace race;
-
-    String year;
-    String race_name_for_results;
-    String race_name_for_filenames;
-    String overall_results_filename;
-    String prizes_filename;
-    Path output_directory_path;
+//    public static final String DNF_STRING = "DNF";
+//
+//    final IndividualRace race;
+//
+//    String year;
+//    String race_name_for_results;
+//    String race_name_for_filenames;
+//    String overall_results_filename;
+//    String prizes_filename;
+//    Path output_directory_path;
 
     String alternative_output_directory_path;
 
     public IndividualRaceOutput(final IndividualRace race) {
 
-        this.race = race;
+        super(race);
         configure();
     }
 
@@ -54,6 +56,6 @@ public abstract class IndividualRaceOutput {
     }
 
     public abstract void printOverallResults() throws IOException;
-    public abstract void printPrizes() throws IOException;
+//    public abstract void printPrizes() throws IOException;
     public abstract void printCombined() throws IOException;
 }

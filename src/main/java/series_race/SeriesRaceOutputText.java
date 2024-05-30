@@ -1,7 +1,8 @@
 package series_race;
 
+import com.lowagie.text.Document;
 import common.Category;
-import individual_race.*;
+import common.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -42,7 +43,7 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = race.prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((SeriesRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
 
@@ -57,7 +58,7 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
             int position = 1;
             for (final Runner runner : category_prize_winners) {
 
-                final SeriesRaceResult result = race.getOverallResults()[race.findIndexOfRunner(runner)];
+                final SeriesRaceResult result = ((SeriesRace)race).getOverallResults()[((SeriesRace)race).findIndexOfRunner(runner)];
 
                 writer.append(String.valueOf(position++)).append(": ").
                         append(runner.name).append(" (").
@@ -67,5 +68,10 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
 
             writer.append("\n\n");
         }
+    }
+
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
+        throw new UnsupportedOperationException();
     }
 }
