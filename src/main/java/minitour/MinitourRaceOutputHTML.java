@@ -247,7 +247,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
             writer.append("""
                     <tr>
                         <td>""").
-                    append(result.position_string).
+                    append(result.completedAllRacesSoFar() ? result.position_string : "-").
                     append("""
                         </td>
                         <td>""").
@@ -263,15 +263,21 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                     append("""
                         </td>""");
 
+
             for (int i = 0; i < result.times.length; i++)
                 if (result.times[i] != null)
                     writer.append("<td>").
                             append(format(result.times[i])).
                             append("</td>\n");
+                else
+                    if (result.raceHasTakenPlace(i + 1))
+                        writer.append("<td>").
+                                append("-").
+                                append("</td>\n");
 
             writer.append("""
                         <td>""").
-                    append(format(result.duration())).
+                    append(result.completedAllRacesSoFar() ? format(result.duration()) : "-").
                     append("""
                         </td>
                     </tr>""");

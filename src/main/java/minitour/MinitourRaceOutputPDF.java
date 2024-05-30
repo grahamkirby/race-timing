@@ -40,7 +40,7 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
             paragraph.add(new Chunk(result.position_string + ": ", PDF_FONT));
             paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
-            paragraph.add(new Chunk(" (" + result.runner.category.getShortName() + ") ", PDF_FONT));
+            paragraph.add(new Chunk(" (" + MinitourRace.normaliseClubName(result.runner.club) + ") ", PDF_FONT));
             paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
 
             document.add(paragraph);

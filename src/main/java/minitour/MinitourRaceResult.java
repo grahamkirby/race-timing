@@ -41,6 +41,14 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
         return numberCompleted() == race.races.length;
     }
 
+    public boolean allRacesTakenPlace() {
+        return race.races[race.races.length - 1] != null;
+    }
+
+    public boolean raceHasTakenPlace(int race_number) {
+        return race.races[race_number - 1] != null;
+    }
+
     private int numberCompleted() {
 
         int count = 0;
@@ -70,9 +78,15 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
 
         if (!completed() && o.completed()) return 1;
 
-        if (duration().compareTo(o.duration()) < 0) return -1;
+        if (completedAllRacesSoFar() && !o.completedAllRacesSoFar()) return -1;
 
-        if (duration().compareTo(o.duration()) > 0) return 1;
+        if (!completedAllRacesSoFar() && o.completedAllRacesSoFar()) return 1;
+
+        if (completedAllRacesSoFar()) {
+            if (duration().compareTo(o.duration()) < 0) return -1;
+
+            if (duration().compareTo(o.duration()) > 0) return 1;
+        }
 
         int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
 
