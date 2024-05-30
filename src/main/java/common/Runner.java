@@ -1,6 +1,4 @@
-package individual_race;
-
-import common.Category;
+package common;
 
 public class Runner {
 

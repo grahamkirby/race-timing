@@ -1,7 +1,5 @@
 package common;
 
-import lap_race.LapRace;
-
 import java.time.Duration;
 
 public class RawResult {

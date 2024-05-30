@@ -1,5 +1,6 @@
 package minitour;
 
+import com.lowagie.text.Document;
 import common.Category;
 import common.Race;
 
@@ -11,8 +12,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
-import static common.Race.format;
-
 public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
@@ -23,6 +22,11 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
     @Override
     public void printPrizes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -47,7 +51,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (final Race individual_race : race.races)
+        for (final Race individual_race : ((MinitourRace)race).races)
             if (individual_race != null)
                 writer.append(",").append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
 
@@ -66,7 +70,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
     private void printCategoryResults(final OutputStreamWriter writer, final String... category_names) throws IOException {
 
         final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
-        final MinitourRaceResult[] category_results = race.getCompletedResultsByCategory(category_list);
+        final MinitourRaceResult[] category_results = ((MinitourRace)race).getCompletedResultsByCategory(category_list);
 
         printResults(category_results, new ResultPrinterCSV(writer));
     }

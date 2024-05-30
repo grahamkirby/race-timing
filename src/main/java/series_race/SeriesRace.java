@@ -2,6 +2,7 @@ package series_race;
 
 import common.Category;
 import common.Race;
+import common.Runner;
 import common.SeniorRaceCategories;
 import individual_race.*;
 

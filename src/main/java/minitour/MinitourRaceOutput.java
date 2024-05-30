@@ -1,28 +1,17 @@
 package minitour;
 
 import common.Category;
-import individual_race.Runner;
+import common.RaceOutput;
+import common.Runner;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
-public abstract class MinitourRaceOutput {
-
-    public static final String DNF_STRING = "DNF";
-
-    final MinitourRace race;
-
-    String year;
-    String race_name_for_results;
-    String race_name_for_filenames;
-    String overall_results_filename;
-    String prizes_filename;
-    Path output_directory_path;
+public abstract class MinitourRaceOutput extends RaceOutput {
 
     public MinitourRaceOutput(final MinitourRace race) {
 
-        this.race = race;
+        super(race);
         configure();
     }
 
@@ -50,11 +39,11 @@ public abstract class MinitourRaceOutput {
 
     MinitourRaceResult[] getMinitourRacePrizeResults(final Category category) {
 
-        final List<Runner> category_prize_winners = race.prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((MinitourRace)race).prize_winners.get(category);
         final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
 
         for (int i = 0; i < category_prize_winners.size(); i++)
-            for (final MinitourRaceResult result : race.overall_results) {
+            for (final MinitourRaceResult result : ((MinitourRace)race).overall_results) {
                 if (result.runner.equals(category_prize_winners.get(i))) {
                     category_prize_winner_results[i] = result;
                     break;
@@ -62,6 +51,17 @@ public abstract class MinitourRaceOutput {
             }
 
         return category_prize_winner_results;
+    }
+
+    void printResults(final MinitourRaceResult[] category_prize_winner_results, final ResultPrinter printer) throws IOException {
+
+        setPositionStrings(category_prize_winner_results);
+
+        for (final MinitourRaceResult result : category_prize_winner_results)
+            printer.printResult(result);
+
+        if (category_prize_winner_results.length == 0)
+            printer.printNoResults();
     }
 
     private void setPositionStrings(final MinitourRaceResult[] series_results) {
@@ -106,23 +106,12 @@ public abstract class MinitourRaceOutput {
         return highest_index_with_same_result;
     }
 
-    void printResults(MinitourRaceResult[] category_prize_winner_results, ResultPrinter printer) throws IOException {
-
-        setPositionStrings(category_prize_winner_results);
-
-        for (final MinitourRaceResult result : category_prize_winner_results)
-            printer.printResult(result);
-
-        if (category_prize_winner_results.length == 0)
-            printer.printNoResults();
-    }
-
     interface ResultPrinter {
         void printResult(MinitourRaceResult result) throws IOException;
         void printNoResults() throws IOException;
     }
 
     public abstract void printOverallResults() throws IOException;
-    public abstract void printPrizes() throws IOException;
+//    public abstract void printPrizes() throws IOException;
     public abstract void printCombined() throws IOException;
 }

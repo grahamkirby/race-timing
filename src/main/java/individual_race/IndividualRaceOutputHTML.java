@@ -1,5 +1,6 @@
 package individual_race;
 
+import com.lowagie.text.Document;
 import common.Category;
 
 import java.io.IOException;
@@ -7,9 +8,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
-
-import static common.Race.format;
-import static series_race.SeriesRaceOutputHTML.htmlEncode;
 
 public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
@@ -25,6 +23,11 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printPrizes(html_writer);
         }
+    }
+
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -57,7 +60,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         }
     }
 
-    private void printPrizes(OutputStreamWriter html_writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter html_writer) throws IOException {
 
         html_writer.append("<h4>Prizes</h4>\n");
 
@@ -67,7 +70,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<IndividualRaceEntry> category_prize_winners = race.prize_winners.get(category);
+        final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
@@ -78,7 +81,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
             for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.getOverallResults()[race.findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
+                final IndividualRaceResult result = ((IndividualRace)race).getOverallResults()[((IndividualRace)race).findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append("<li>").
                         append(result.entry.runner.name).append(" (").
@@ -90,7 +93,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         }
     }
 
-    private void printOverallResults(OutputStreamWriter html_writer) throws IOException {
+    private void printOverallResults(final OutputStreamWriter html_writer) throws IOException {
 
         printOverallResultsHeader(html_writer);
         printOverallResultsBody(html_writer);
@@ -118,7 +121,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
         int position = 1;
 
-        for (final IndividualRaceResult result : race.getOverallResults()) {
+        for (final IndividualRaceResult result : ((IndividualRace)race).getOverallResults()) {
 
             writer.append("""
                         <tr>

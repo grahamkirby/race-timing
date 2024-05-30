@@ -3,7 +3,7 @@ package series_race;
 import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
-import individual_race.Runner;
+import common.Runner;
 
 import java.util.Arrays;
 

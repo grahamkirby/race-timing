@@ -5,8 +5,7 @@ import common.JuniorRaceCategories;
 import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
-import individual_race.Runner;
-import lap_race.LapRaceOutputPDF;
+import common.Runner;
 
 import java.io.IOException;
 import java.nio.file.Path;

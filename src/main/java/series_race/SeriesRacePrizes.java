@@ -1,10 +1,9 @@
 package series_race;
 
 import common.Category;
-import individual_race.*;
+import common.Runner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SeriesRacePrizes {

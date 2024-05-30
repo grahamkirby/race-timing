@@ -1,7 +1,7 @@
 package minitour;
 
 import common.Category;
-import individual_race.Runner;
+import common.Runner;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,8 @@
 package series_race;
 
+import com.lowagie.text.Document;
 import common.Category;
-import individual_race.*;
+import common.Runner;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,6 +24,11 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printPrizes(html_writer);
         }
+    }
+
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -65,25 +71,30 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = race.prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((SeriesRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
-            writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
-            writer.append("<ol>\n");
+            writer.append("<p><strong>").
+                    append(category.getShortName()).
+                    append("</strong></p>\n").
+                    append("<ol>\n");
 
             if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
 
             for (final Runner entry : category_prize_winners) {
 
-                int indexOfRunner = race.findIndexOfRunner(entry);
-                SeriesRaceResult overallResult = race.getOverallResults()[indexOfRunner];
+                int indexOfRunner = ((SeriesRace)race).findIndexOfRunner(entry);
+                SeriesRaceResult overallResult = ((SeriesRace)race).getOverallResults()[indexOfRunner];
                 int score = overallResult.totalScore();
 
                 writer.append("<li>").
-                        append(entry.name).append(" (").
-                        append(entry.category.getShortName()).append(") ").
-                        append(String.valueOf(score)).append("</li>\n");
+                        append(entry.name).
+                        append(" (").
+                        append(entry.category.getShortName()).
+                        append(") ").
+                        append(String.valueOf(score)).
+                        append("</li>\n");
             }
 
             writer.append("</ol>\n\n");
@@ -109,9 +120,11 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < race.races.length; i++) {
-            if (race.races[i] != null) {
-                writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
+        for (int i = 0; i < ((SeriesRace)race).races.length; i++) {
+            if (((SeriesRace)race).races[i] != null) {
+                writer.append("<th>Race ").
+                        append(String.valueOf(i + 1)).
+                        append("</th>\n");
             }
         }
 
@@ -126,44 +139,37 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        int position = 1;
-
-        for (final SeriesRaceResult result : race.getOverallResults()) {
+        for (final SeriesRaceResult result : ((SeriesRace)race).getOverallResults()) {
 
             writer.append("""
                         <tr>
-                        <td>""");
-//            writer.append(String.valueOf(position++));
-            writer.append(result.position_string);
-            writer.append("""
+                        <td>""").
+                    append(result.position_string).
+                    append("""
                             </td>
-                            <td>""");
-            writer.append(htmlEncode(result.runner.name));
-            writer.append("""
+                            <td>""").
+                    append(htmlEncode(result.runner.name)).append("""
                             </td>
-                            <td>""");
-            writer.append(result.runner.category.getShortName());
-            writer.append("""
+                            <td>""").
+                    append(result.runner.category.getShortName()).append("""
                             </td>
-                            <td>""");
-            writer.append(result.runner.club);
-            writer.append("""
+                            <td>""").
+                    append(result.runner.club).append("""
                             </td>
                             """);
-            for (int i = 0; i < result.scores.length; i++) {
-                if (result.scores[i] >= 0) {
+
+            for (int i = 0; i < result.scores.length; i++)
+                if (result.scores[i] >= 0)
                     writer.append("<td>").append(String.valueOf(result.scores[i])).append("</td>\n");
-                }
-            }
 
             writer.append("""
-                            <td>""");
-            writer.append(String.valueOf(result.totalScore()));
-            writer.append("""
+                            <td>""").
+                    append(String.valueOf(result.totalScore())).
+                    append("""
                             </td>
-                            <td>""");
-            writer.append(result.completed() ? "Y" : "N");
-            writer.append("""
+                            <td>""").
+                    append(result.completed() ? "Y" : "N").
+                    append("""
                         </td>
                         </tr>
                         """);
@@ -176,15 +182,5 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
                 </tbody>
             </table>
             """);
-    }
-
-    public static String htmlEncode(String s) {
-
-        return s.replaceAll("è", "&egrave;").
-                replaceAll("á", "&aacute;").
-                replaceAll("é", "&eacute;").
-                replaceAll("ü", "&uuml;").
-                replaceAll("ö", "&ouml;").
-                replaceAll("’", "&acute;");
     }
 }

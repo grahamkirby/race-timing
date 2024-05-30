@@ -3,12 +3,9 @@ package minitour;
 import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
-import individual_race.Runner;
-import lap_race.LapRace;
-import lap_race.LegResult;
+import common.Runner;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
 

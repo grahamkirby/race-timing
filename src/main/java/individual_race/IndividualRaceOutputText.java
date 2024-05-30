@@ -1,7 +1,7 @@
 package individual_race;
 
+import com.lowagie.text.Document;
 import common.Category;
-import common.Race;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -40,9 +40,14 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
         }
     }
 
+    @Override
+    protected void printPrizes(Category category, Document document) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<IndividualRaceEntry> category_prize_winners = race.prize_winners.get(category);
+        final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
 
@@ -57,13 +62,12 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
             int position = 1;
             for (final IndividualRaceEntry entry : category_prize_winners) {
 
-                final IndividualRaceResult result = race.getOverallResults()[race.findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
+                final IndividualRaceResult result = ((IndividualRace)race).getOverallResults()[((IndividualRace)race).findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append(String.valueOf(position++)).append(": ").
                         append(result.entry.runner.name).append(" (").
-                        //append(IndividualRace.normaliseClubName(result.entry.runner.club)).append(") ").
                         append(result.entry.runner.club).append(") ").
-                        append(Race.format(result.duration())).append("\n");
+                        append(format(result.duration())).append("\n");
             }
 
             writer.append("\n\n");

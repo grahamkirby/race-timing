@@ -187,7 +187,18 @@ public class IndividualRace extends Race {
         throw new RuntimeException("unregistered bib number: " + bib_number);
     }
 
-    IndividualRaceEntry findEntryWithBibNumber(final int bib_number) {
+    public int getRecordedPosition(final int bib_number) {
+
+        for (int i = 0; i < raw_results.length; i++) {
+            if (raw_results[i].getBibNumber() == bib_number) {
+                return i + 1;
+            }
+        }
+
+        return Integer.MAX_VALUE;
+    }
+
+    private IndividualRaceEntry findEntryWithBibNumber(final int bib_number) {
 
         for (IndividualRaceEntry entry : entries)
             if (entry.bib_number == bib_number)
@@ -207,17 +218,6 @@ public class IndividualRace extends Race {
         // DNF results are sorted in increasing order of bib number.
         // Where two runners have the same recorded time, the order in which they were recorded is preserved.
         Arrays.sort(overall_results);
-    }
-
-    int getRecordedPosition(final int bib_number) {
-
-        for (int i = 0; i < raw_results.length; i++) {
-            if (raw_results[i].getBibNumber() == bib_number) {
-                return i + 1;
-            }
-        }
-
-        return Integer.MAX_VALUE;
     }
 
     private void allocatePrizes() {
