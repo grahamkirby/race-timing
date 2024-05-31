@@ -229,7 +229,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer, final List<Category> result_categories) throws IOException {
 
-        printResults(((Minitour)race).getCompletedResultsByCategory(result_categories), new OverallResultPrinterHTML(writer));
+        printResults(((Minitour)race).getResultsByCategory(result_categories), new OverallResultPrinterHTML(writer));
     }
 
     private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {

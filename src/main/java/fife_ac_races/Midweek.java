@@ -57,7 +57,6 @@ public class Midweek extends SeriesRace {
 
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
         open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
     }
 
     @Override
@@ -105,6 +104,46 @@ public class Midweek extends SeriesRace {
         }
     }
 
+    @Override
+    public void initialiseResults() {
+
+        super.initialiseResults();
+        overall_results = new SeriesRaceResult[combined_runners.length];
+    }
+
+    @Override
+    public void calculateResults() {
+
+        for (int i = 0; i < overall_results.length; i++)
+            overall_results[i] = getOverallResult(combined_runners[i]);
+
+        Arrays.sort(overall_results);
+    }
+
+    @Override
+    public void allocatePrizes() {
+
+        prizes.allocatePrizes();
+    }
+
+    @Override
+    public void printOverallResults() throws IOException {
+
+        output_CSV.printOverallResults();
+        output_HTML.printOverallResults();
+    }
+
+    @Override
+    public void printPrizes() throws IOException {
+
+        output_text.printPrizes();
+    }
+
+    @Override
+    public void printCombined() throws IOException {
+
+    }
+
     private List<String> getDefinedClubs(List<String> clubsForRunner) {
         return clubsForRunner.stream().filter(club -> !club.equals("?")).toList();
     }
@@ -133,22 +172,6 @@ public class Midweek extends SeriesRace {
         }
 
         return names;
-    }
-
-    @Override
-    public void initialiseResults() {
-
-        combined_runners = getCombinedRunners(races);
-        overall_results = new SeriesRaceResult[combined_runners.length];
-    }
-
-    @Override
-    public void calculateResults() {
-
-        for (int i = 0; i < overall_results.length; i++)
-            overall_results[i] = getOverallResult(combined_runners[i]);
-
-        Arrays.sort(overall_results);
     }
 
     private SeriesRaceResult getOverallResult(final Runner runner) {
@@ -185,30 +208,6 @@ public class Midweek extends SeriesRace {
 
     private static String getGender(final Runner runner) {
         return runner.category.getGender();
-    }
-
-    @Override
-    public void allocatePrizes() {
-
-        prizes.allocatePrizes();
-    }
-
-    @Override
-    public void printOverallResults() throws IOException {
-
-        output_CSV.printOverallResults();
-        output_HTML.printOverallResults();
-    }
-
-    @Override
-    public void printPrizes() throws IOException {
-
-        output_text.printPrizes();
-    }
-
-    @Override
-    public void printCombined() throws IOException {
-
     }
 
     public SeriesRaceResult[] getOverallResults() {

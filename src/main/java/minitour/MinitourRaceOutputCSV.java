@@ -71,7 +71,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
     private void printCategoryResults(final OutputStreamWriter writer, final String... category_names) throws IOException {
 
         final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
-        final MinitourRaceResult[] category_results = ((Minitour)race).getCompletedResultsByCategory(category_list);
+        final MinitourRaceResult[] category_results = ((Minitour)race).getResultsByCategory(category_list);
 
         printResults(category_results, new ResultPrinterCSV(writer));
     }
