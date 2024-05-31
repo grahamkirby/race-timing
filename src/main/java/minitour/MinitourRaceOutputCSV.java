@@ -80,15 +80,15 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
         @Override
         public void printResult(final MinitourRaceResult result) throws IOException {
 
-            writer.append(result.position_string).append(",").
+            writer.append(result.completedAllRacesSoFar() ? result.position_string : "-").append(",").
                     append(result.runner.name).append(",").
                     append(result.runner.club).append(",").
                     append(result.runner.category.getShortName()).append(",");
 
             for (final Duration time : result.times)
-                if (time != null) writer.append(format(time)).append(",");
+                writer.append(time != null ? format(time) : "-").append(",");
 
-            writer.append(format(result.duration())).append("\n");
+            writer.append(result.completedAllRacesSoFar() ? format(result.duration()) : "-").append("\n");
         }
 
         @Override
