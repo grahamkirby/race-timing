@@ -302,7 +302,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                     append(" ").
                     append(htmlEncode(result.runner.name)).
                     append(" (").
-                    append(result.runner.category.getShortName()).
+                    append(IndividualRace.normaliseClubName(result.runner.club)).
                     append(") ").
                     append(format(time)).
                     append("</li>\n");
