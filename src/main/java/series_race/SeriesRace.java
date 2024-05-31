@@ -48,11 +48,23 @@ public abstract class SeriesRace extends Race {
         configureInputData();
     }
 
+
+
+    public void initialiseResults() {
+
+        combined_runners = getCombinedRunners(races);
+    }
+
+    protected void readProperties() {
+
+        super.readProperties();
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
+    }
+
     public abstract void configureHelpers();
     public abstract void configureCategories();
     public abstract void configureInputData() throws IOException;
 
-    public abstract void initialiseResults() throws IOException;
     public abstract void calculateResults() throws IOException;
     public abstract void allocatePrizes() throws IOException;
     public abstract void printOverallResults() throws IOException;

@@ -1,5 +1,7 @@
 package series_race;
 
+import common.Race;
+import common.RaceInput;
 import fife_ac_races.Midweek;
 import individual_race.IndividualRace;
 
@@ -7,40 +9,30 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class SeriesRaceInput {
-
-    final Midweek race;
-
-    Path[] race_config_paths;
-
+public class SeriesRaceInput extends RaceInput {
 
     public SeriesRaceInput(final Midweek race) {
 
-        this.race = race;
-        configure();
+        super(race);
     }
 
-    private void configure() {
-
-        readProperties();
-    }
-
-    private void readProperties() {
-
-        race_config_paths = readRaceConfigPaths();
-    }
-
-    private Path[] readRaceConfigPaths() {
-
-        final String[] race_strings = race.getProperties().getProperty("RACES").split(":", -1);
-
-        final Path[] race_paths = new Path[race_strings.length];
-
-        for (int i = 0; i < race_paths.length; i++)
-            race_paths[i] = Paths.get(race_strings[i]);
-
-        return race_paths;
-    }
+//    @Override
+//    public void readProperties() {
+//
+//        race_config_paths = readRaceConfigPaths();
+//    }
+//
+//    private Path[] readRaceConfigPaths() {
+//
+//        final String[] race_strings = race.getProperties().getProperty("RACES").split(":", -1);
+//
+//        final Path[] race_paths = new Path[race_strings.length];
+//
+//        for (int i = 0; i < race_paths.length; i++)
+//            race_paths[i] = Paths.get(race_strings[i]);
+//
+//        return race_paths;
+//    }
 
     public IndividualRace[] loadSeriesRaces() throws IOException {
 

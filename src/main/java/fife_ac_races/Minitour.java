@@ -50,12 +50,6 @@ public class Minitour extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void readProperties() {
-
-        super.readProperties();
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(DEFAULT_CATEGORY_PRIZES)));
-    }
-
     @Override
     public void configureHelpers() {
 
@@ -84,7 +78,7 @@ public class Minitour extends SeriesRace {
     @Override
     public void initialiseResults() {
 
-        combined_runners = getCombinedRunners(races);
+        super.initialiseResults();
         overall_results = new MinitourRaceResult[combined_runners.length];
     }
 
@@ -96,29 +90,6 @@ public class Minitour extends SeriesRace {
 
         // Ordering defined in MinitourRaceResult: sort by time then by runner name.
         Arrays.sort(overall_results);
-    }
-
-    private MinitourRaceResult getOverallResult(final Runner runner) {
-
-        final MinitourRaceResult result = new MinitourRaceResult(runner, this);
-
-        for (int i = 0; i < races.length; i++) {
-
-            final IndividualRace individual_race = races[i];
-
-            if (individual_race != null)
-                result.times[i] = getRaceTime(individual_race, runner);
-        }
-
-        return result;
-    }
-
-    private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
-
-        for (IndividualRaceResult result : individual_race.getOverallResults())
-            if (result.entry.runner.equals(runner)) return result.duration();
-
-        return null;
     }
 
     @Override
@@ -148,14 +119,36 @@ public class Minitour extends SeriesRace {
         output_HTML.printCombined();
     }
 
+    private MinitourRaceResult getOverallResult(final Runner runner) {
+
+        final MinitourRaceResult result = new MinitourRaceResult(runner, this);
+
+        for (int i = 0; i < races.length; i++) {
+
+            final IndividualRace individual_race = races[i];
+
+            if (individual_race != null)
+                result.times[i] = getRaceTime(individual_race, runner);
+        }
+
+        return result;
+    }
+
+    private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
+
+        for (IndividualRaceResult result : individual_race.getOverallResults())
+            if (result.entry.runner.equals(runner)) return result.duration();
+
+        return null;
+    }
+
     public MinitourRaceResult[] getOverallResults() {
 
         return overall_results;
     }
 
-    public MinitourRaceResult[] getCompletedResultsByCategory(List<Category> categories_required) {
+    public MinitourRaceResult[] getResultsByCategory(List<Category> categories_required) {
 
-//        final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> minitourRaceResult.completedAllRacesSoFar() && categories_required.contains(minitourRaceResult.runner.category);
         final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> categories_required.contains(minitourRaceResult.runner.category);
 
         return Stream.of(overall_results).filter(category_filter).toArray(MinitourRaceResult[]:: new);
