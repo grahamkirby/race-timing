@@ -1,4 +1,4 @@
-package lap_race;
+package relay_race;
 
 import com.lowagie.text.Document;
 import common.Category;
@@ -9,9 +9,9 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
-public class LapRaceOutputHTML extends LapRaceOutput {
+public class RelayRaceOutputHTML extends RelayRaceOutput {
 
-    public LapRaceOutputHTML(final LapRace race) {
+    public RelayRaceOutputHTML(final RelayRace race) {
         super(race);
     }
 
@@ -87,7 +87,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
                     <p>M3: mass start leg 3<br />M4: mass start leg 4</p>
                     """);
 
-            for (int leg_number = 1; leg_number <= ((LapRace)race).number_of_legs; leg_number++) {
+            for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
                 html_writer.append("<p></p>\n<h4>Leg ").append(String.valueOf(leg_number)).append(" Results</h4>\n");
                 printLegResults(html_writer, leg_number);
@@ -108,14 +108,14 @@ public class LapRaceOutputHTML extends LapRaceOutput {
         writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
         writer.append("<ol>\n");
 
-        final List<Team> category_prize_winners = ((LapRace)race).prize_winners.get(category);
+        final List<Team> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             writer.append("No results\n");
 
         for (final Team team : category_prize_winners) {
 
-            final LapRaceResult result = ((LapRace)race).overall_results[((LapRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
+            final RelayRaceResult result = ((RelayRace)race).overall_results[((RelayRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
 
             writer.append("<li>").
                     append(result.team.name).append(" (").
@@ -154,7 +154,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
         int position = 1;
 
-        for (final LapRaceResult result : ((LapRace)race).overall_results) {
+        for (final RelayRaceResult result : ((RelayRace)race).overall_results) {
 
             writer.append("""
                         <tr>
@@ -209,15 +209,15 @@ public class LapRaceOutputHTML extends LapRaceOutput {
                                        <th>Category</th>
             """);
 
-        for (int leg_number = 1; leg_number <= ((LapRace)race).number_of_legs; leg_number++) {
+        for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
             writer.append("<th>Runner");
-            if (((LapRace)race).paired_legs[leg_number-1]) writer.append("s");
+            if (((RelayRace)race).paired_legs[leg_number-1]) writer.append("s");
             writer.append(" ").append(String.valueOf(leg_number)).append("</th>");
 
             writer.append("<th>Leg ").append(String.valueOf(leg_number)).append("</th>");
 
-            if (leg_number < ((LapRace)race).number_of_legs)
+            if (leg_number < ((RelayRace)race).number_of_legs)
                 writer.append("<th>Split ").append(String.valueOf(leg_number)).append("</th>");
             else
                 writer.append("<th>Total</th>");
@@ -232,13 +232,13 @@ public class LapRaceOutputHTML extends LapRaceOutput {
 
     private void printDetailedResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < ((LapRace)race).overall_results.length; result_index++)
+        for (int result_index = 0; result_index < ((RelayRace)race).overall_results.length; result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final LapRaceResult result = ((LapRace)race).overall_results[result_index];
+        final RelayRaceResult result = ((RelayRace)race).overall_results[result_index];
 
         writer.append("""
                 <tr>
@@ -280,13 +280,13 @@ public class LapRaceOutputHTML extends LapRaceOutput {
         printLegResultsFooter(html_writer);
     }
 
-    private void printLegDetails(OutputStreamWriter writer, LapRaceResult result, Team team) throws IOException {
+    private void printLegDetails(OutputStreamWriter writer, RelayRaceResult result, Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
-        for (int leg = 1; leg <= ((LapRace)race).number_of_legs; leg++) {
+        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++) {
 
-            final LegResult leg_result = result.leg_results[leg - 1];
+            final RelayResult leg_result = result.leg_results[leg - 1];
 
             writer.append("""
                 <td>""");
@@ -319,7 +319,7 @@ public class LapRaceOutputHTML extends LapRaceOutput {
                         <th>Pos</th>
                         <th>Runner""");
 
-        if (((LapRace)race).paired_legs[leg-1]) writer.append("s");
+        if (((RelayRace)race).paired_legs[leg-1]) writer.append("s");
 
         writer.append("""
             </th>
@@ -330,9 +330,9 @@ public class LapRaceOutputHTML extends LapRaceOutput {
             """);
     }
 
-    private void printLegResultsBody(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
+    private void printLegResultsBody(final OutputStreamWriter writer, final RelayResult[] leg_results) throws IOException {
 
-        for (final LegResult leg_result : leg_results) {
+        for (final RelayResult leg_result : leg_results) {
 
             if (!leg_result.DNF) {
                 writer.append("""

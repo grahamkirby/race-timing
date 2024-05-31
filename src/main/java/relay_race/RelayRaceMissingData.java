@@ -1,20 +1,19 @@
-package lap_race;
+package relay_race;
 
-import common.Race;
 import common.RawResult;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class LapRaceMissingData {
+public class RelayRaceMissingData {
 
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
     private record ContiguousSequence(int start_index, int end_index) {}
 
-    private final LapRace race;
+    private final RelayRace race;
 
-    public LapRaceMissingData(LapRace race) {
+    public RelayRaceMissingData(RelayRace race) {
         this.race = race;
     }
 

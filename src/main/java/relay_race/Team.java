@@ -1,4 +1,4 @@
-package lap_race;
+package relay_race;
 
 import common.Category;
 import common.Race;

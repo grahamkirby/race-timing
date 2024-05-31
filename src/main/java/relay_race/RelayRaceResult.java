@@ -1,30 +1,30 @@
-package lap_race;
+package relay_race;
 
 import java.time.Duration;
 
-public class LapRaceResult implements Comparable<LapRaceResult> {
+public class RelayRaceResult implements Comparable<RelayRaceResult> {
 
     final Team team;
-    final LegResult[] leg_results;
-    final LapRace race;
+    final RelayResult[] leg_results;
+    final RelayRace race;
 
-    public LapRaceResult(final Team team, final int number_of_legs, final LapRace race) {
+    public RelayRaceResult(final Team team, final int number_of_legs, final RelayRace race) {
 
         this.team = team;
         this.race = race;
-        leg_results = new LegResult[number_of_legs];
+        leg_results = new RelayResult[number_of_legs];
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results[i] = new LegResult(team, race);
+            leg_results[i] = new RelayResult(team, race);
     }
 
     public Duration duration() {
 
         Duration overall = Duration.ZERO;
 
-        for (final LegResult leg_result : leg_results) {
+        for (final RelayResult leg_result : leg_results) {
 
-            if (leg_result.DNF) return LapRace.DUMMY_DURATION;
+            if (leg_result.DNF) return RelayRace.DUMMY_DURATION;
             overall = overall.plus(leg_result.duration());
         }
 
@@ -33,14 +33,14 @@ public class LapRaceResult implements Comparable<LapRaceResult> {
 
     public boolean dnf() {
 
-        for (final LegResult leg_result : leg_results)
+        for (final RelayResult leg_result : leg_results)
             if (leg_result.DNF) return true;
 
         return false;
     }
 
     @Override
-    public int compareTo(final LapRaceResult o) {
+    public int compareTo(final RelayRaceResult o) {
 
         // Sort in order of increasing overall team time.
         // DNF results are sorted in increasing order of bib number.

@@ -1,15 +1,15 @@
-package lap_race;
+package relay_race;
 
 import common.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LapRacePrizes {
+public class RelayRacePrizes {
 
-    final LapRace race;
+    final RelayRace race;
 
-    public LapRacePrizes(final LapRace race) {
+    public RelayRacePrizes(final RelayRace race) {
 
         this.race = race;
     }
@@ -36,7 +36,7 @@ public class LapRacePrizes {
 
     private void allocateFirstPrize(final Category category) {
 
-        for (final LapRaceResult result : race.overall_results) {
+        for (final RelayRaceResult result : race.overall_results) {
             if (prizeWinner(result, category)) {
                 race.prize_winners.get(category).add(result.team);
                 return;
@@ -54,7 +54,7 @@ public class LapRacePrizes {
 
         int position = 2;
 
-        for (final LapRaceResult result : race.overall_results) {
+        for (final RelayRaceResult result : race.overall_results) {
 
             if (position > category.numberOfPrizes()) return;
 
@@ -65,7 +65,7 @@ public class LapRacePrizes {
         }
     }
 
-    private boolean prizeWinner(final LapRaceResult result, final Category category) {
+    private boolean prizeWinner(final RelayRaceResult result, final Category category) {
 
         return !result.dnf() && race.categories.includes(category, result.team.category) && !alreadyWonPrize(result.team);
     }

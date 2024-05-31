@@ -1,12 +1,12 @@
-package lap_race;
+package relay_race;
 
 import com.lowagie.text.*;
 import common.Category;
 import java.util.List;
 
-public class LapRaceOutputPDF extends LapRaceOutput {
+public class RelayRaceOutputPDF extends RelayRaceOutput {
 
-    public LapRaceOutputPDF(final LapRace results) {
+    public RelayRaceOutputPDF(final RelayRace results) {
         super(results);
     }
 
@@ -36,7 +36,7 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
 
-        final List<Team> category_prize_winners = ((LapRace)race).prize_winners.get(category);
+        final List<Team> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
         if (category_prize_winners.isEmpty())
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
@@ -44,7 +44,7 @@ public class LapRaceOutputPDF extends LapRaceOutput {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final LapRaceResult result = ((LapRace)race).overall_results[((LapRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
+            final RelayRaceResult result = ((RelayRace)race).overall_results[((RelayRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
 
             final Paragraph paragraph = new Paragraph();
             paragraph.add(new Chunk(position++ + ": ", PDF_FONT));

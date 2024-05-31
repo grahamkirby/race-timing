@@ -1,4 +1,4 @@
-package lap_race;
+package relay_race;
 
 import com.lowagie.text.Document;
 import common.Category;
@@ -8,11 +8,11 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class LapRaceOutputCSV extends LapRaceOutput {
+public class RelayRaceOutputCSV extends RelayRaceOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
-    public LapRaceOutputCSV(final LapRace results) {
+    public RelayRaceOutputCSV(final RelayRace results) {
         super(results);
     }
 
@@ -75,9 +75,9 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < ((LapRace)race).overall_results.length; i++) {
+        for (int i = 0; i < ((RelayRace)race).overall_results.length; i++) {
 
-            final LapRaceResult overall_result = ((LapRace)race).overall_results[i];
+            final RelayRaceResult overall_result = ((RelayRace)race).overall_results[i];
 
             if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
 
@@ -93,10 +93,10 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (int leg_number = 1; leg_number <= ((LapRace)race).number_of_legs; leg_number++) {
+        for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
             writer.append("Runners ").append(String.valueOf(leg_number)).append(",Leg ").append(String.valueOf(leg_number)).append(",");
-            if (leg_number < ((LapRace)race).number_of_legs) writer.append("Split ").append(String.valueOf(leg_number)).append(",");
+            if (leg_number < ((RelayRace)race).number_of_legs) writer.append("Split ").append(String.valueOf(leg_number)).append(",");
         }
 
         writer.append("Total\n");
@@ -104,13 +104,13 @@ public class LapRaceOutputCSV extends LapRaceOutput {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < ((LapRace)race).overall_results.length; result_index++)
+        for (int result_index = 0; result_index < ((RelayRace)race).overall_results.length; result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final LapRaceResult result = ((LapRace)race).overall_results[result_index];
+        final RelayRaceResult result = ((RelayRace)race).overall_results[result_index];
 
         if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
 
@@ -124,13 +124,13 @@ public class LapRaceOutputCSV extends LapRaceOutput {
         writer.append("\n");
     }
 
-    private void printLegDetails(final OutputStreamWriter writer, final LapRaceResult result, final Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
-        for (int leg_number = 1; leg_number <= ((LapRace)race).number_of_legs; leg_number++) {
+        for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
-            final LegResult leg_result = result.leg_results[leg_number - 1];
+            final RelayResult leg_result = result.leg_results[leg_number - 1];
 
             writer.append(team.runners[leg_number-1]);
             addMassStartAnnotation(writer, leg_result, leg_number);
@@ -139,7 +139,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
             writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration())).append(",");
             writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg_number)));
 
-            if (leg_number < ((LapRace)race).number_of_legs) writer.append(",");
+            if (leg_number < ((RelayRace)race).number_of_legs) writer.append(",");
             if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
@@ -147,20 +147,20 @@ public class LapRaceOutputCSV extends LapRaceOutput {
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg_number) throws IOException {
 
         writer.append("Pos,Runner");
-        if (((LapRace)race).paired_legs[leg_number-1]) writer.append("s");
+        if (((RelayRace)race).paired_legs[leg_number-1]) writer.append("s");
         writer.append(",Time\n");
     }
 
-    private void printLegResults(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final RelayResult[] leg_results) throws IOException {
 
         // Deal with dead heats in legs after the first.
         setPositionStrings(leg_results);
 
-        for (final LegResult leg_result : leg_results)
+        for (final RelayResult leg_result : leg_results)
             printLegResult(writer, leg_result);
     }
 
-    private static void printLegResult(final OutputStreamWriter writer, final LegResult leg_result) throws IOException {
+    private static void printLegResult(final OutputStreamWriter writer, final RelayResult leg_result) throws IOException {
 
         if (!leg_result.DNF) {
             writer.append(leg_result.position_string).append(",");
@@ -169,14 +169,14 @@ public class LapRaceOutputCSV extends LapRaceOutput {
         }
     }
 
-    private static void setPositionStrings(final LegResult[] leg_results) {
+    private static void setPositionStrings(final RelayResult[] leg_results) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
 
         for (int result_index = 0; result_index < leg_results.length; result_index++) {
 
-            final LegResult result = leg_results[result_index];
+            final RelayResult result = leg_results[result_index];
 
             if (result.leg_number == 1)
                 // No dead heats for leg 1; positions determined by order of recording.
@@ -188,7 +188,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
         }
     }
 
-    private static int groupEqualDurationsAndReturnFollowingIndex(final LegResult[] leg_results, final LegResult result, final int result_index) {
+    private static int groupEqualDurationsAndReturnFollowingIndex(final RelayResult[] leg_results, final RelayResult result, final int result_index) {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameDuration(leg_results, result, result_index);
 
@@ -204,7 +204,7 @@ public class LapRaceOutputCSV extends LapRaceOutput {
         return highest_index_with_same_duration;
     }
 
-    private static int getHighestIndexWithSameDuration(final LegResult[] leg_results, final LegResult result, final int result_index) {
+    private static int getHighestIndexWithSameDuration(final RelayResult[] leg_results, final RelayResult result, final int result_index) {
 
         int highest_index_with_same_duration = result_index;
 

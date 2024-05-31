@@ -1,13 +1,12 @@
-package lap_race.devils_burdens;
+package relay_race.devils_burdens;
 
 import common.Race;
 import common.RaceTest;
-import lap_race.LapRace;
+import relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Properties;
 
 public class LapRaceTest extends RaceTest {
 
@@ -23,12 +22,12 @@ public class LapRaceTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        return new LapRace(config_file_path);
+        return new RelayRace(config_file_path);
     }
 
     @Override
     protected String getResourcesPath() {
-        return "lap_race/devils_burdens/";
+        return "relay_race/devils_burdens/";
     }
 
     @Test

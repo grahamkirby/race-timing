@@ -25,7 +25,7 @@ are awarded the prize in the higher position, and then the younger age category.
 
 ## Running the software ##
 
-1. Create a new copy of the directory [```src/main/resources/lap_race/devils_burdens/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/lap_race/devils_burdens/sample_config).
+1. Create a new copy of the directory [```src/main/resources/relay_race/devils_burdens/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/lap_race/devils_burdens/sample_config).
 2. In the file ```input/config.txt```, update properties as required:
    1. WORKING_DIRECTORY: the location of the new directory
    2. ENTRIES_FILENAME: name of the file containing the race entries
@@ -38,13 +38,13 @@ are awarded the prize in the higher position, and then the younger age category.
    9. MASS_START_ELAPSED_TIMES: mass start time for each leg
    10. DNF_LEGS: legs with recorded times but runners missed a checkpoint
    11. INDIVIDUAL_LEG_STARTS: any runners exceptionally starting at different times
-3. See example file [```config.txt```](src/main/resources/lap_race/devils_burdens/sample_config/input/config.txt)
+3. See example file [```config.txt```](src/main/resources/relay_race/devils_burdens/sample_config/input/config.txt)
 for examples of required formats.
 4. Copy the files containing race entries and raw results to the ```input``` sub-directory of the
 working directory.
-    * example format for race entries: [```entries.txt```](src/main/resources/lap_race/devils_burdens/sample_config/input/entries.txt)
-    * example format for raw results: [```rawtimes.txt```](src/main/resources/lap_race/devils_burdens/sample_config/input/rawtimes.txt)
-4. Run the class [```LapRace```](src/main/java/lap_race/LapRace.java),
+    * example format for race entries: [```entries.txt```](src/main/resources/relay_race/devils_burdens/sample_config/input/entries.txt)
+    * example format for raw results: [```rawtimes.txt```](src/main/resources/relay_race/devils_burdens/sample_config/input/rawtimes.txt)
+4. Run the class [```LapRace```](src/main/java/relay_race/LapRace.java),
 passing the path of the new configuration file as command line parameter (surrounded by double
 quotes, no escaping of spaces).
 5. The results files will be created in the ```output``` sub-directory in CSV and HTML

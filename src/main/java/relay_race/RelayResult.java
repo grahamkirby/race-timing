@@ -1,12 +1,12 @@
-package lap_race;
+package relay_race;
 
 import java.time.Duration;
 
-public class LegResult implements Comparable<LegResult> {
+public class RelayResult implements Comparable<RelayResult> {
 
     final Team team;
     int leg_number;
-    final LapRace race;
+    final RelayRace race;
     boolean DNF;
     boolean in_mass_start;
     String position_string;
@@ -14,7 +14,7 @@ public class LegResult implements Comparable<LegResult> {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public LegResult(final Team team, final LapRace race) {
+    public RelayResult(final Team team, final RelayRace race) {
 
         this.team = team;
         this.race = race;
@@ -23,11 +23,11 @@ public class LegResult implements Comparable<LegResult> {
     }
 
     public Duration duration() {
-        return DNF ? LapRace.DUMMY_DURATION : finish_time.minus(start_time);
+        return DNF ? RelayRace.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
     @Override
-    public int compareTo(final LegResult o) {
+    public int compareTo(final RelayResult o) {
 
         // Where the time is the same, use the recording order.
         if (duration().equals(o.duration())) {

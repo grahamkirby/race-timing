@@ -1,4 +1,4 @@
-package lap_race;
+package relay_race;
 
 import common.RaceOutput;
 
@@ -8,11 +8,11 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
 
-public abstract class LapRaceOutput extends RaceOutput {
+public abstract class RelayRaceOutput extends RaceOutput {
 
     String detailed_results_filename, collated_times_filename;
 
-    public LapRaceOutput(final LapRace race) {
+    public RelayRaceOutput(final RelayRace race) {
 
         super(race);
         configure();
@@ -44,11 +44,11 @@ public abstract class LapRaceOutput extends RaceOutput {
 
     public void printLegResults() throws IOException {
 
-        for (int leg = 1; leg <= ((LapRace)race).number_of_legs; leg++)
+        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
             printLegResults(leg);
     }
 
-    Duration sumDurationsUpToLeg(final LegResult[] leg_results, final int leg) {
+    Duration sumDurationsUpToLeg(final RelayResult[] leg_results, final int leg) {
 
         Duration total = leg_results[0].duration();
         for (int i = 1; i < leg; i++)
@@ -56,12 +56,12 @@ public abstract class LapRaceOutput extends RaceOutput {
         return total;
     }
 
-    LegResult[] getLegResults(final int leg_number) {
+    RelayResult[] getLegResults(final int leg_number) {
 
-        final LegResult[] leg_results = new LegResult[((LapRace)race).overall_results.length];
+        final RelayResult[] leg_results = new RelayResult[((RelayRace)race).overall_results.length];
 
         for (int i = 0; i < leg_results.length; i++)
-            leg_results[i] = ((LapRace)race).overall_results[i].leg_results[leg_number-1];
+            leg_results[i] = ((RelayRace)race).overall_results[i].leg_results[leg_number-1];
 
         // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
         // Ordering for DNF results doesn't matter since they're omitted in output.
@@ -72,14 +72,14 @@ public abstract class LapRaceOutput extends RaceOutput {
         return leg_results;
     }
 
-    void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
+    void addMassStartAnnotation(final OutputStreamWriter writer, final RelayResult leg_result, final int leg) throws IOException {
 
         // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
         if (leg_result.in_mass_start) {
 
             // Find the next mass start.
             int mass_start_leg = leg;
-            while (!((LapRace)race).mass_start_legs[mass_start_leg-1])
+            while (!((RelayRace)race).mass_start_legs[mass_start_leg-1])
                 mass_start_leg++;
 
             writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
