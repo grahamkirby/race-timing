@@ -3,13 +3,14 @@ package minitour;
 import common.Category;
 import common.RaceOutput;
 import common.Runner;
+import fife_ac_races.Minitour;
 
 import java.io.IOException;
 import java.util.List;
 
 public abstract class MinitourRaceOutput extends RaceOutput {
 
-    public MinitourRaceOutput(final MinitourRace race) {
+    public MinitourRaceOutput(final Minitour race) {
 
         super(race);
         configure();
@@ -39,11 +40,11 @@ public abstract class MinitourRaceOutput extends RaceOutput {
 
     MinitourRaceResult[] getMinitourRacePrizeResults(final Category category) {
 
-        final List<Runner> category_prize_winners = ((MinitourRace)race).prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((Minitour)race).prize_winners.get(category);
         final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
 
         for (int i = 0; i < category_prize_winners.size(); i++)
-            for (final MinitourRaceResult result : ((MinitourRace)race).overall_results) {
+            for (final MinitourRaceResult result : ((Minitour)race).overall_results) {
                 if (result.runner.equals(category_prize_winners.get(i))) {
                     category_prize_winner_results[i] = result;
                     break;

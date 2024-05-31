@@ -1,11 +1,12 @@
-package minitour;
+package fife_ac_races;
 
 import common.Category;
 import common.JuniorRaceCategories;
-import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import common.Runner;
+import minitour.*;
+import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class MinitourRace extends Race {
+public class Minitour extends SeriesRace {
 
     public static final int DEFAULT_CATEGORY_PRIZES = 3;
 
@@ -29,16 +30,16 @@ public class MinitourRace extends Race {
     MinitourRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     MinitourRacePrizes prizes;
 
-    IndividualRace[] races;
+    public IndividualRace[] races;
     Runner[] combined_runners;
-    MinitourRaceResult[] overall_results;
-    Map<Category, List<Runner>> prize_winners = new HashMap<>();
+    public MinitourRaceResult[] overall_results;
+    public Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
     public int category_prizes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public MinitourRace(final Path config_file_path) throws IOException {
+    public Minitour(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -49,7 +50,7 @@ public class MinitourRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java MinitourRace <config file path>");
         else
-            new MinitourRace(Paths.get(args[0])).processResults();
+            new Minitour(Paths.get(args[0])).processResults();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

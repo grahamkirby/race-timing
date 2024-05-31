@@ -2,15 +2,16 @@ package minitour;
 
 import common.Category;
 import common.Runner;
+import fife_ac_races.Minitour;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MinitourRacePrizes {
 
-    final MinitourRace race;
+    final Minitour race;
 
-    public MinitourRacePrizes(final MinitourRace race) {
+    public MinitourRacePrizes(final Minitour race) {
         this.race = race;
     }
 

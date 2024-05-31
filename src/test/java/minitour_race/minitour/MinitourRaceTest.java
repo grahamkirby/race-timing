@@ -2,9 +2,8 @@ package minitour_race.minitour;
 
 import common.Race;
 import common.RaceTest;
-import minitour.MinitourRace;
+import fife_ac_races.Minitour;
 import org.junit.jupiter.api.Test;
-import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,7 +12,7 @@ public class MinitourRaceTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        return new MinitourRace(config_file_path);
+        return new Minitour(config_file_path);
     }
 
     @Override

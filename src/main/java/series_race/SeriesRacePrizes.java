@@ -2,15 +2,16 @@ package series_race;
 
 import common.Category;
 import common.Runner;
+import fife_ac_races.Midweek;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SeriesRacePrizes {
 
-    final SeriesRace race;
+    final Midweek race;
 
-    public SeriesRacePrizes(final SeriesRace race) {
+    public SeriesRacePrizes(final Midweek race) {
         this.race = race;
     }
 

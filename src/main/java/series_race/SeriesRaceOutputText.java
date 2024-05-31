@@ -3,6 +3,7 @@ package series_race;
 import com.lowagie.text.Document;
 import common.Category;
 import common.Runner;
+import fife_ac_races.Midweek;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class SeriesRaceOutputText extends SeriesRaceOutput {
 
-    public SeriesRaceOutputText(final SeriesRace race) {
+    public SeriesRaceOutputText(final Midweek race) {
         super(race);
     }
 
@@ -43,7 +44,7 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = ((SeriesRace)race).prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((Midweek)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
 
@@ -58,7 +59,7 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
             int position = 1;
             for (final Runner runner : category_prize_winners) {
 
-                final SeriesRaceResult result = ((SeriesRace)race).getOverallResults()[((SeriesRace)race).findIndexOfRunner(runner)];
+                final SeriesRaceResult result = ((Midweek)race).getOverallResults()[((Midweek)race).findIndexOfRunner(runner)];
 
                 writer.append(String.valueOf(position++)).append(": ").
                         append(runner.name).append(" (").

@@ -3,6 +3,7 @@ package minitour;
 import com.lowagie.text.Document;
 import common.Category;
 import common.Race;
+import fife_ac_races.Minitour;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -16,7 +17,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
 
-    public MinitourRaceOutputCSV(final MinitourRace race) {
+    public MinitourRaceOutputCSV(final Minitour race) {
         super(race);
     }
 
@@ -51,7 +52,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (final Race individual_race : ((MinitourRace)race).races)
+        for (final Race individual_race : ((Minitour)race).races)
             if (individual_race != null)
                 writer.append(",").append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
 
@@ -70,7 +71,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
     private void printCategoryResults(final OutputStreamWriter writer, final String... category_names) throws IOException {
 
         final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
-        final MinitourRaceResult[] category_results = ((MinitourRace)race).getCompletedResultsByCategory(category_list);
+        final MinitourRaceResult[] category_results = ((Minitour)race).getCompletedResultsByCategory(category_list);
 
         printResults(category_results, new ResultPrinterCSV(writer));
     }

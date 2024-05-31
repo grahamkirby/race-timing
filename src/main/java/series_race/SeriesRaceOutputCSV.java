@@ -3,6 +3,7 @@ package series_race;
 import com.lowagie.text.Document;
 import common.Category;
 import common.Race;
+import fife_ac_races.Midweek;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -13,7 +14,7 @@ public class SeriesRaceOutputCSV extends SeriesRaceOutput {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
 
-    public SeriesRaceOutputCSV(final SeriesRace race) {
+    public SeriesRaceOutputCSV(final Midweek race) {
         super(race);
     }
 
@@ -48,7 +49,7 @@ public class SeriesRaceOutputCSV extends SeriesRaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (final Race individual_race : ((SeriesRace)race).races)
+        for (final Race individual_race : ((Midweek)race).races)
             if (individual_race != null)
                 writer.append(",").
                         append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
@@ -58,17 +59,17 @@ public class SeriesRaceOutputCSV extends SeriesRaceOutput {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final SeriesRaceResult[] series_results = ((SeriesRace)race).getOverallResults();
+        final SeriesRaceResult[] series_results = ((Midweek)race).getOverallResults();
 
         setPositionStrings(series_results);
 
         for (final SeriesRaceResult overall_result : series_results) {
 
             int number_of_races_completed = 0;
-            for (Race r : ((SeriesRace)race).races)
+            for (Race r : ((Midweek)race).races)
                 if (r != null) number_of_races_completed++;
 
-            if (number_of_races_completed < ((SeriesRace)race).races.length || overall_result.completed())
+            if (number_of_races_completed < ((Midweek)race).races.length || overall_result.completed())
                 writer.append(overall_result.position_string);
 
             writer.append(",").

@@ -1,11 +1,13 @@
 package series_race;
 
 import common.RaceOutput;
+import fife_ac_races.Midweek;
+
 import java.io.IOException;
 
 public abstract class SeriesRaceOutput extends RaceOutput {
 
-    public SeriesRaceOutput(final SeriesRace race) {
+    public SeriesRaceOutput(final Midweek race) {
 
         super(race);
         configure();

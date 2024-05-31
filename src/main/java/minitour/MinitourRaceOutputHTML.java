@@ -2,6 +2,7 @@ package minitour;
 
 import com.lowagie.text.Document;
 import common.Category;
+import fife_ac_races.Minitour;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 
 public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
-    public MinitourRaceOutputHTML(final MinitourRace race) {
+    public MinitourRaceOutputHTML(final Minitour race) {
         super(race);
     }
 
@@ -47,7 +48,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     public void printCombined() throws IOException {
 
-        for (int i = 1; i <= ((MinitourRace)race).races.length; i++)
+        for (int i = 1; i <= ((Minitour)race).races.length; i++)
             printRace(i);
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
@@ -66,7 +67,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printRace(final int race_number) throws IOException {
 
-        final IndividualRace individual_race = ((MinitourRace)race).races[race_number - 1];
+        final IndividualRace individual_race = ((Minitour)race).races[race_number - 1];
 
         if (individual_race != null) {
 
@@ -170,7 +171,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
         final MinitourRaceResult[] category_prize_winner_results = getMinitourRacePrizeResults(category);
 
-        printResults(category_prize_winner_results, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
+        printResults(category_prize_winner_results, new PrizeResultPrinterHTML(((Minitour)race), writer));
 
         writer.append("</ul>\n\n");
     }
@@ -214,8 +215,8 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < ((MinitourRace)race).races.length; i++)
-            if (((MinitourRace)race).races[i] != null)
+        for (int i = 0; i < ((Minitour)race).races.length; i++)
+            if (((Minitour)race).races[i] != null)
                 writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
 
         writer.append("""
@@ -228,7 +229,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer, final List<Category> result_categories) throws IOException {
 
-        printResults(((MinitourRace)race).getCompletedResultsByCategory(result_categories), new OverallResultPrinterHTML(writer));
+        printResults(((Minitour)race).getCompletedResultsByCategory(result_categories), new OverallResultPrinterHTML(writer));
     }
 
     private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
@@ -290,7 +291,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         }
     }
 
-    record PrizeResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
+    record PrizeResultPrinterHTML(Minitour race, OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
         public void printResult(MinitourRaceResult result) throws IOException {
