@@ -30,12 +30,7 @@ public class Minitour extends SeriesRace {
     MinitourRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     MinitourRacePrizes prizes;
 
-    public IndividualRace[] races;
-    Runner[] combined_runners;
     public MinitourRaceResult[] overall_results;
-    public Map<Category, List<Runner>> prize_winners = new HashMap<>();
-
-    public int category_prizes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,38 +50,14 @@ public class Minitour extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void configure() throws IOException {
-
-        readProperties();
-
-        configureHelpers();
-        configureCategories();
-        configureInputData();
-    }
-
-     @Override
-    public void processResults() throws IOException {
-
-        initialiseResults();
-
-        calculateResults();
-        allocatePrizes();
-
-        printOverallResults();
-        printPrizes();
-        printCombined();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     protected void readProperties() {
 
         super.readProperties();
         category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(DEFAULT_CATEGORY_PRIZES)));
     }
 
-    private void configureHelpers() {
+    @Override
+    public void configureHelpers() {
 
         input = new MinitourRaceInput(this);
 
@@ -98,23 +69,27 @@ public class Minitour extends SeriesRace {
         prizes = new MinitourRacePrizes(this);
     }
 
-    protected void configureCategories() {
+    @Override
+    public void configureCategories() {
 
         categories = new JuniorRaceCategories(category_prizes);
     }
 
-    private void configureInputData() throws IOException {
+    @Override
+    public void configureInputData() throws IOException {
 
         races = input.loadMinitourRaces();
     }
 
-    private void initialiseResults() {
+    @Override
+    public void initialiseResults() {
 
         combined_runners = getCombinedRunners(races);
         overall_results = new MinitourRaceResult[combined_runners.length];
     }
 
-    private void calculateResults() {
+    @Override
+    public void calculateResults() {
 
         for (int i = 0; i < overall_results.length; i++)
             overall_results[i] = getOverallResult(combined_runners[i]);
@@ -146,25 +121,29 @@ public class Minitour extends SeriesRace {
         return null;
     }
 
-    private void allocatePrizes() {
+    @Override
+    public void allocatePrizes() {
 
         prizes.allocatePrizes();
     }
 
-    private void printOverallResults() throws IOException {
+    @Override
+    public void printOverallResults() throws IOException {
 
         output_CSV.printOverallResults();
         output_HTML.printOverallResults();
     }
 
-    private void printPrizes() throws IOException {
+    @Override
+    public void printPrizes() throws IOException {
 
         output_PDF.printPrizes();
         output_HTML.printPrizes();
         output_text.printPrizes();
     }
 
-    private void printCombined() throws IOException {
+    @Override
+    public void printCombined() throws IOException {
 
         output_HTML.printCombined();
     }

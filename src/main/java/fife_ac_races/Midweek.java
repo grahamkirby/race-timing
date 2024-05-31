@@ -1,6 +1,5 @@
 package fife_ac_races;
 
-import common.Category;
 import common.Runner;
 import common.SeniorRaceCategories;
 import individual_race.*;
@@ -25,13 +24,10 @@ public class Midweek extends SeriesRace {
     SeriesRaceOutput output_CSV, output_HTML, output_text;
     SeriesRacePrizes prizes;
 
-    public IndividualRace[] races;
-    Runner[] combined_runners;
     SeriesRaceResult[] overall_results;
-    public Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
     public boolean open_category;
-    public int open_prizes, category_prizes;
+    public int open_prizes;
 
     public int minimum_number_of_races;
 
@@ -54,55 +50,18 @@ public class Midweek extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void configure() throws IOException {
-
-        readProperties();
-
-        configureHelpers();
-        configureCategories();
-        configureInputData();
-    }
-
-    protected void configureCategories() {
-
-        categories = new SeniorRaceCategories(open_category, open_prizes, category_prizes);
-    }
-
-    @Override
-    public void processResults() throws IOException {
-
-        initialiseResults();
-
-        calculateResults();
-        allocatePrizes();
-
-        printOverallResults();
-        printPrizes();
-        printCombined();
-    }
-
-    protected int getDefaultOpenPrizes() {
-        return 3;
-    }
-
-    protected int getDefaultCategoryPrizes() {
-        return 3;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     protected void readProperties() {
 
         super.readProperties();
         minimum_number_of_races = Integer.parseInt(properties.getProperty("MINIMUM_NUMBER_OF_RACES"));
 
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
     }
 
-    private void configureHelpers() {
+    @Override
+    public void configureHelpers() {
 
         input = new SeriesRaceInput(this);
 
@@ -113,7 +72,14 @@ public class Midweek extends SeriesRace {
         prizes = new SeriesRacePrizes(this);
     }
 
-    private void configureInputData() throws IOException {
+    @Override
+    public void configureCategories() {
+
+        categories = new SeniorRaceCategories(open_category, open_prizes, category_prizes);
+    }
+
+    @Override
+    public void configureInputData() throws IOException {
 
         races = input.loadSeriesRaces();
 
@@ -169,13 +135,15 @@ public class Midweek extends SeriesRace {
         return names;
     }
 
-    private void initialiseResults() {
+    @Override
+    public void initialiseResults() {
 
         combined_runners = getCombinedRunners(races);
         overall_results = new SeriesRaceResult[combined_runners.length];
     }
 
-    private void calculateResults() {
+    @Override
+    public void calculateResults() {
 
         for (int i = 0; i < overall_results.length; i++)
             overall_results[i] = getOverallResult(combined_runners[i]);
@@ -219,23 +187,27 @@ public class Midweek extends SeriesRace {
         return runner.category.getGender();
     }
 
-    private void allocatePrizes() {
+    @Override
+    public void allocatePrizes() {
 
         prizes.allocatePrizes();
     }
 
-    private void printOverallResults() throws IOException {
+    @Override
+    public void printOverallResults() throws IOException {
 
         output_CSV.printOverallResults();
         output_HTML.printOverallResults();
     }
 
-    private void printPrizes() throws IOException {
+    @Override
+    public void printPrizes() throws IOException {
 
         output_text.printPrizes();
     }
 
-    private void printCombined() throws IOException {
+    @Override
+    public void printCombined() throws IOException {
 
     }
 
