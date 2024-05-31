@@ -1,4 +1,4 @@
-package lap_race;
+package relay_race;
 
 import common.Category;
 import common.Race;
@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 
-public class LapRace extends Race {
+public class RelayRace extends Race {
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -19,19 +19,19 @@ public class LapRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
-    private record ResultWithLegIndex(LapRaceResult result, int leg_index) {}
+    private record ResultWithLegIndex(RelayRaceResult result, int leg_index) {}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LapRaceInput input;
-    private LapRaceOutput output_CSV, output_HTML, output_text, output_PDF;
-    private LapRaceMissingData missing_data;
-    private LapRacePrizes prizes;
+    RelayRaceInput input;
+    private RelayRaceOutput output_CSV, output_HTML, output_text, output_PDF;
+    private RelayRaceMissingData missing_data;
+    private RelayRacePrizes prizes;
 
     int number_of_legs;
 
     Team[] entries;
-    LapRaceResult[] overall_results;
+    RelayRaceResult[] overall_results;
     Map<Category, List<Team>> prize_winners = new HashMap<>();
 
     private int senior_prizes, category_prizes;
@@ -50,7 +50,7 @@ public class LapRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public LapRace(final Path config_file_path) throws IOException {
+    public RelayRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -61,7 +61,7 @@ public class LapRace extends Race {
         if (args.length < 1)
             System.out.println("usage: java LapRace <config file path>");
         else {
-            new LapRace(Paths.get(args[0])).processResults();
+            new RelayRace(Paths.get(args[0])).processResults();
         }
     }
 
@@ -124,20 +124,20 @@ public class LapRace extends Race {
 
     private void configureHelpers() {
 
-        input = new LapRaceInput(this);
+        input = new RelayRaceInput(this);
 
-        output_CSV = new LapRaceOutputCSV(this);
-        output_HTML = new LapRaceOutputHTML(this);
-        output_text = new LapRaceOutputText(this);
-        output_PDF = new LapRaceOutputPDF(this);
+        output_CSV = new RelayRaceOutputCSV(this);
+        output_HTML = new RelayRaceOutputHTML(this);
+        output_text = new RelayRaceOutputText(this);
+        output_PDF = new RelayRaceOutputPDF(this);
 
-        missing_data = new LapRaceMissingData(this);
-        prizes = new LapRacePrizes(this);
+        missing_data = new RelayRaceMissingData(this);
+        prizes = new RelayRacePrizes(this);
     }
 
     protected void configureCategories() {
 
-        categories = new LapRaceCategories(senior_prizes, category_prizes);
+        categories = new RelayRaceCategories(senior_prizes, category_prizes);
     }
 
     private void configureInputData() throws IOException {
@@ -267,10 +267,10 @@ public class LapRace extends Race {
 
     private void initialiseResults() {
 
-        overall_results = new LapRaceResult[entries.length];
+        overall_results = new RelayRaceResult[entries.length];
 
         for (int i = 0; i < overall_results.length; i++)
-            overall_results[i] = new LapRaceResult(entries[i], number_of_legs, this);
+            overall_results[i] = new RelayRaceResult(entries[i], number_of_legs, this);
     }
 
     private void fillLegFinishTimes() {
@@ -289,8 +289,8 @@ public class LapRace extends Race {
     private void recordLegResult(final RawResult raw_result) {
 
         final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
-        final LapRaceResult result = overall_results[team_index];
-        final LegResult[] leg_results = result.leg_results;
+        final RelayRaceResult result = overall_results[team_index];
+        final RelayResult[] leg_results = result.leg_results;
 
         final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
 
@@ -306,7 +306,7 @@ public class LapRace extends Race {
 
     private void sortLegResults() {
 
-        for (final LapRaceResult team_result : overall_results) {
+        for (final RelayRaceResult team_result : overall_results) {
 
             // Sort by explicitly recorded leg number.
             Arrays.sort(team_result.leg_results, Comparator.comparingInt(o -> o.leg_number));
@@ -325,7 +325,7 @@ public class LapRace extends Race {
         final int leg_number = Integer.parseInt(elements[1]);
         final int leg_index = leg_number - 1;
 
-        final LapRaceResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
+        final RelayRaceResult result = overall_results[findIndexOfTeamWithBibNumber(bib_number)];
 
         return new ResultWithLegIndex(result, leg_index);
     }
@@ -358,12 +358,12 @@ public class LapRace extends Race {
 
     private void fillLegStartTimes() {
 
-        for (final LapRaceResult overall_result : overall_results)
+        for (final RelayRaceResult overall_result : overall_results)
             for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
                 fillLegStartTime(overall_result.leg_results, leg_index);
     }
 
-    private void fillLegStartTime(final LegResult[] leg_results, final int leg_index) {
+    private void fillLegStartTime(final RelayResult[] leg_results, final int leg_index) {
 
         // Possible cases:
 
@@ -383,7 +383,7 @@ public class LapRace extends Race {
         leg_results[leg_index].in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
     }
 
-    private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
+    private Duration getIndividualStartTime(final RelayResult leg_result, final int leg_index) {
 
         for (final IndividualLegStart individual_leg_start : individual_leg_starts)
             if (individual_leg_start.bib_number == leg_result.team.bib_number && individual_leg_start.leg_number == leg_index + 1)
@@ -442,7 +442,7 @@ public class LapRace extends Race {
         return Integer.MAX_VALUE;
     }
 
-    private int findIndexOfNextUnfilledLegResult(final LegResult[] leg_results) {
+    private int findIndexOfNextUnfilledLegResult(final RelayResult[] leg_results) {
 
         for (int i = 0; i < leg_results.length; i++)
             if (leg_results[i].finish_time == null) return i;
@@ -495,6 +495,6 @@ public class LapRace extends Race {
 
     private void printCollatedTimes() throws IOException {
 
-        ((LapRaceOutputText)output_text).printCollatedResults();
+        ((RelayRaceOutputText)output_text).printCollatedResults();
     }
 }

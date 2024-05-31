@@ -1,8 +1,6 @@
 package individual_race;
 
 import common.RawResult;
-import lap_race.LapRace;
-import lap_race.Team;
 
 import java.io.IOException;
 import java.nio.file.Files;

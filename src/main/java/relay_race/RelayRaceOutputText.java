@@ -1,4 +1,4 @@
-package lap_race;
+package relay_race;
 
 import com.lowagie.text.Document;
 import common.Category;
@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LapRaceOutputText extends LapRaceOutput {
+public class RelayRaceOutputText extends RelayRaceOutput {
 
-    public LapRaceOutputText(final LapRace results) {
+    public RelayRaceOutputText(final RelayRace results) {
         super(results);
     }
 
@@ -63,7 +63,7 @@ public class LapRaceOutputText extends LapRaceOutput {
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final String header = "Category: " + category.getLongName();
-        final List<Team> category_prize_winners = ((LapRace)race).prize_winners.get(category);
+        final List<Team> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
@@ -79,7 +79,7 @@ public class LapRaceOutputText extends LapRaceOutput {
         int position = 1;
         for (final Team team : category_prize_winners) {
 
-            final LapRaceResult result = ((LapRace)race).overall_results[((LapRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
+            final RelayRaceResult result = ((RelayRace)race).overall_results[((RelayRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
 
             writer.append(String.valueOf(position++)).append(": ").
                     append(result.team.name).append(" (").
@@ -112,9 +112,9 @@ public class LapRaceOutputText extends LapRaceOutput {
         for (int i = 0; i < race.getRawResults().length; i++) {
 
             final RawResult raw_result = race.getRawResults()[i];
-            final boolean last_electronically_recorded_result = i == ((LapRace)race).input.getNumberOfRawResults() - 1;
+            final boolean last_electronically_recorded_result = i == ((RelayRace)race).input.getNumberOfRawResults() - 1;
 
-            if (last_electronically_recorded_result && ((LapRace)race).input.getNumberOfRawResults() < race.getRawResults().length)
+            if (last_electronically_recorded_result && ((RelayRace)race).input.getNumberOfRawResults() < race.getRawResults().length)
                 raw_result.appendComment("Remaining times from paper recording sheet only.");
 
             printResult(raw_result, leg_finished_count, writer);
@@ -140,11 +140,11 @@ public class LapRaceOutputText extends LapRaceOutput {
 
         final List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
 
-        for (final Team team : ((LapRace)race).entries) {
+        for (final Team team : ((RelayRace)race).entries) {
 
             final int number_of_legs_finished = leg_finished_count.getOrDefault(team.bib_number, 0);
 
-            for (int i = 0; i < ((LapRace)race).number_of_legs - number_of_legs_finished; i++)
+            for (int i = 0; i < ((RelayRace)race).number_of_legs - number_of_legs_finished; i++)
                 bib_numbers_with_missing_times.add(team.bib_number);
         }
 

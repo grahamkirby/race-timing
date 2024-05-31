@@ -1,4 +1,4 @@
-package lap_race;
+package relay_race;
 
 import common.Race;
 import common.RawResult;
@@ -9,16 +9,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LapRaceInput {
+public class RelayRaceInput {
 
-    final LapRace race;
+    final RelayRace race;
 
     Path input_directory_path, entries_path, raw_results_path, paper_results_path, annotations_path;
     String entries_filename, raw_results_filename, paper_results_filename, annotations_filename;
 
     int number_of_raw_results;
 
-    public LapRaceInput(final LapRace race) {
+    public RelayRaceInput(final RelayRace race) {
 
         this.race = race;
         configure();

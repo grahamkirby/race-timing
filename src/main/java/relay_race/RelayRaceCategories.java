@@ -1,11 +1,11 @@
-package lap_race;
+package relay_race;
 
 import common.Categories;
 import common.Category;
 
-public class LapRaceCategories extends Categories {
+public class RelayRaceCategories extends Categories {
 
-    public LapRaceCategories(int senior_prizes, int category_prizes) {
+    public RelayRaceCategories(int senior_prizes, int category_prizes) {
 
         categories_in_decreasing_generality_order.add(new Category("Open Senior", "OS", "Open", 15, senior_prizes));
         categories_in_decreasing_generality_order.add(new Category("Mixed Senior", "MS", "Mixed", 15, category_prizes));
