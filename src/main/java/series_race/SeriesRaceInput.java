@@ -1,24 +1,20 @@
 package series_race;
 
-import common.RawResult;
+import fife_ac_races.Midweek;
 import individual_race.IndividualRace;
-import individual_race.IndividualRaceEntry;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SeriesRaceInput {
 
-    final SeriesRace race;
+    final Midweek race;
 
     Path[] race_config_paths;
 
 
-    public SeriesRaceInput(final SeriesRace race) {
+    public SeriesRaceInput(final Midweek race) {
 
         this.race = race;
         configure();

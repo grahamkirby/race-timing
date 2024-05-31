@@ -1,6 +1,7 @@
 package series_race;
 
 import common.Race;
+import fife_ac_races.Midweek;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import common.Runner;
@@ -9,13 +10,13 @@ import java.util.Arrays;
 
 public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
 
-    final Runner runner;
+    public final Runner runner;
 
-    final int[] scores;
-    final SeriesRace race;
+    public final int[] scores;
+    final Midweek race;
     String position_string;
 
-    public SeriesRaceResult(final Runner runner, final SeriesRace race) {
+    public SeriesRaceResult(final Runner runner, final Midweek race) {
 
         this.runner = runner;
         this.race = race;

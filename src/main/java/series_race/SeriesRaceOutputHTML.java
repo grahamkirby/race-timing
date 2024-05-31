@@ -3,6 +3,7 @@ package series_race;
 import com.lowagie.text.Document;
 import common.Category;
 import common.Runner;
+import fife_ac_races.Midweek;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class SeriesRaceOutputHTML extends SeriesRaceOutput {
 
-    public SeriesRaceOutputHTML(final SeriesRace race) {
+    public SeriesRaceOutputHTML(final Midweek race) {
         super(race);
     }
 
@@ -71,7 +72,7 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = ((SeriesRace)race).prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((Midweek)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").
@@ -84,8 +85,8 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
 
             for (final Runner entry : category_prize_winners) {
 
-                int indexOfRunner = ((SeriesRace)race).findIndexOfRunner(entry);
-                SeriesRaceResult overallResult = ((SeriesRace)race).getOverallResults()[indexOfRunner];
+                int indexOfRunner = ((Midweek)race).findIndexOfRunner(entry);
+                SeriesRaceResult overallResult = ((Midweek)race).getOverallResults()[indexOfRunner];
                 int score = overallResult.totalScore();
 
                 writer.append("<li>").
@@ -120,8 +121,8 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < ((SeriesRace)race).races.length; i++) {
-            if (((SeriesRace)race).races[i] != null) {
+        for (int i = 0; i < ((Midweek)race).races.length; i++) {
+            if (((Midweek)race).races[i] != null) {
                 writer.append("<th>Race ").
                         append(String.valueOf(i + 1)).
                         append("</th>\n");
@@ -139,7 +140,7 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        for (final SeriesRaceResult result : ((SeriesRace)race).getOverallResults()) {
+        for (final SeriesRaceResult result : ((Midweek)race).getOverallResults()) {
 
             writer.append("""
                         <tr>

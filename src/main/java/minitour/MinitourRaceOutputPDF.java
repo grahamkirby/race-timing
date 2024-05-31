@@ -2,12 +2,13 @@ package minitour;
 
 import com.lowagie.text.*;
 import common.Category;
+import fife_ac_races.Minitour;
 
 import java.io.IOException;
 
 public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
-    public MinitourRaceOutputPDF(final MinitourRace results) {
+    public MinitourRaceOutputPDF(final Minitour results) {
         super(results);
     }
 
@@ -40,7 +41,7 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
             paragraph.add(new Chunk(result.position_string + ": ", PDF_FONT));
             paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
-            paragraph.add(new Chunk(" (" + MinitourRace.normaliseClubName(result.runner.club) + ") ", PDF_FONT));
+            paragraph.add(new Chunk(" (" + Minitour.normaliseClubName(result.runner.club) + ") ", PDF_FONT));
             paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
 
             document.add(paragraph);

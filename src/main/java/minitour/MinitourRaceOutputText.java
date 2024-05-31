@@ -2,7 +2,7 @@ package minitour;
 
 import com.lowagie.text.Document;
 import common.Category;
-import common.Race;
+import fife_ac_races.Minitour;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 public class MinitourRaceOutputText extends MinitourRaceOutput {
 
-    public MinitourRaceOutputText(final MinitourRace race) {
+    public MinitourRaceOutputText(final Minitour race) {
         super(race);
     }
 

@@ -3,6 +3,7 @@ package minitour;
 import common.Category;
 import common.Race;
 import common.RawResult;
+import fife_ac_races.Minitour;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class MinitourRaceInput {
 
     private static final List<String> SECOND_WAVE_CATEGORY_NAMES = Arrays.asList("FU9", "MU9", "FU11", "MU11");
 
-    private final MinitourRace race;
+    private final Minitour race;
 
     private Path[] race_config_paths;
     private Duration[] wave_start_offsets;
@@ -34,7 +35,7 @@ public class MinitourRaceInput {
     private int time_trial_runners_per_wave;
     private Duration time_trial_inter_wave_interval;
 
-    public MinitourRaceInput(final MinitourRace race) {
+    public MinitourRaceInput(final Minitour race) {
 
         this.race = race;
         configure();
