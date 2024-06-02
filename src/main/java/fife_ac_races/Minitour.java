@@ -72,7 +72,7 @@ public class Minitour extends SeriesRace {
     @Override
     public void configureInputData() throws IOException {
 
-        races = input.loadMinitourRaces();
+        races = input.loadRaces();
     }
 
     @Override

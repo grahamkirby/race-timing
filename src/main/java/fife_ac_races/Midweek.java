@@ -80,7 +80,7 @@ public class Midweek extends SeriesRace {
     @Override
     public void configureInputData() throws IOException {
 
-        races = input.loadSeriesRaces();
+        races = input.loadRaces();
 
         Set<String> runner_names = getRunnerNames(races);
         for (String runner_name : runner_names) {

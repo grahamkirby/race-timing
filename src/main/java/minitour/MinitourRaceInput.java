@@ -4,7 +4,6 @@ import common.Category;
 import common.Race;
 import common.RaceInput;
 import common.RawResult;
-import fife_ac_races.Minitour;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
@@ -38,7 +37,8 @@ public class MinitourRaceInput extends RaceInput {
         super(race);
     }
 
-    @Override public void readProperties() {
+    @Override
+    public void readProperties() {
 
         super.readProperties();
         race_config_paths = readRaceConfigPaths();
@@ -46,6 +46,12 @@ public class MinitourRaceInput extends RaceInput {
         self_timed_runs = readSelfTimedRuns();
 
         readTimeTrialProperties();
+    }
+
+    @Override
+    protected void configureIndividualRace(final IndividualRace individual_race, final int race_number) {
+
+        applyRunnerStartOffsets(individual_race, race_number);
     }
 
     private Path[] readRaceConfigPaths() {
@@ -79,9 +85,9 @@ public class MinitourRaceInput extends RaceInput {
         return extractConfigFromPropertyStrings(self_timed_strings, extract_run_function, SelfTimedRun[]::new);
     }
 
-    private <T> T[] extractConfigFromPropertyStrings(String[] strings, Function<String, T> mapper, IntFunction<T[]> array_element_initializer) {
+    private <T> T[] extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper, IntFunction<T[]> array_element_initializer) {
 
-        String[] non_empty_strings = strings.length == 1 && strings[0].isEmpty() ? new String[0] : strings;
+        final String[] non_empty_strings = strings.length == 1 && strings[0].isEmpty() ? new String[0] : strings;
         return Arrays.stream(non_empty_strings).map(mapper).toArray(array_element_initializer);
     }
 
@@ -94,33 +100,7 @@ public class MinitourRaceInput extends RaceInput {
         time_trial_inter_wave_interval = parseTime(parts[2]);
     }
 
-    public IndividualRace[] loadMinitourRaces() throws IOException {
-
-        final IndividualRace[] races = new IndividualRace[race_config_paths.length];
-
-        for (int i = 0; i < races.length; i++) {
-
-            final Path relative_path = race_config_paths[i];
-
-            if (!relative_path.toString().isEmpty())
-                races[i] = getIndividualRace(relative_path, i + 1);
-        }
-
-        return races;
-    }
-
-    private IndividualRace getIndividualRace(final Path relative_path, final int race_number) throws IOException {
-
-        final Path individual_race_path = race.getWorkingDirectoryPath().resolve(relative_path);
-        final IndividualRace individual_race = new IndividualRace(individual_race_path);
-
-        applyRunnerStartOffsets(individual_race, race_number);
-        individual_race.processResults(false);
-
-        return individual_race;
-    }
-
-    private void applyRunnerStartOffsets(IndividualRace individual_race, int race_number) {
+    private void applyRunnerStartOffsets(final IndividualRace individual_race, final int race_number) {
 
         for (final RawResult raw_result : individual_race.getRawResults()) {
 
@@ -143,7 +123,7 @@ public class MinitourRaceInput extends RaceInput {
         return Duration.ZERO;
     }
 
-    private Duration getTimeTrialOffset(int bib_number) {
+    private Duration getTimeTrialOffset(final int bib_number) {
 
         // This assumes that time-trial runners are assigned to waves in order of bib number, with incomplete waves if there are any gaps in bib numbers.
 
