@@ -1,6 +1,7 @@
 package minitour;
 
 import common.Category;
+import common.Race;
 import common.RaceOutput;
 import common.Runner;
 import fife_ac_races.Minitour;
@@ -10,32 +11,9 @@ import java.util.List;
 
 public abstract class MinitourRaceOutput extends RaceOutput {
 
-    public MinitourRaceOutput(final Minitour race) {
+    public MinitourRaceOutput(final Race race) {
 
         super(race);
-        configure();
-    }
-
-    private void configure() {
-
-        readProperties();
-        constructFilePaths();
-    }
-
-    private void readProperties() {
-
-        year = race.getProperties().getProperty("YEAR");
-
-        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
-        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
-    }
-
-    private void constructFilePaths() {
-
-        overall_results_filename = race_name_for_filenames + "_overall_" + year;
-        prizes_filename = race_name_for_filenames + "_prizes_" + year;
-
-        output_directory_path = race.getWorkingDirectoryPath().resolve("output");
     }
 
     MinitourRaceResult[] getMinitourRacePrizeResults(final Category category) {
@@ -111,8 +89,4 @@ public abstract class MinitourRaceOutput extends RaceOutput {
         void printResult(MinitourRaceResult result) throws IOException;
         void printNoResults() throws IOException;
     }
-
-    public abstract void printOverallResults() throws IOException;
-//    public abstract void printPrizes() throws IOException;
-    public abstract void printCombined() throws IOException;
 }

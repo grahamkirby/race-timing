@@ -1,6 +1,5 @@
 package minitour;
 
-import com.lowagie.text.Document;
 import common.Category;
 import common.Race;
 import fife_ac_races.Minitour;
@@ -15,25 +14,8 @@ import java.util.List;
 
 public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
-    public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
-
-    public MinitourRaceOutputCSV(final Minitour race) {
+    public MinitourRaceOutputCSV(final Race race) {
         super(race);
-    }
-
-    @Override
-    public void printPrizes() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printCombined() throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -48,7 +30,8 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
         }
     }
 
-    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
@@ -59,7 +42,8 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
         writer.append(",Total\n");
     }
 
-    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         printCategoryResults(writer, "FU9", "MU9");
         printCategoryResults(writer, "FU11", "MU11");

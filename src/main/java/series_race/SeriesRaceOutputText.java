@@ -1,7 +1,8 @@
 package series_race;
 
-import com.lowagie.text.Document;
 import common.Category;
+import common.Race;
+import common.RaceOutput;
 import common.Runner;
 import fife_ac_races.Midweek;
 
@@ -11,9 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class SeriesRaceOutputText extends SeriesRaceOutput {
+public class SeriesRaceOutputText extends RaceOutput {
 
-    public SeriesRaceOutputText(final Midweek race) {
+    public SeriesRaceOutputText(final Race race) {
         super(race);
     }
 
@@ -24,6 +25,16 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
 
     @Override
     public void printCombined() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -69,10 +80,5 @@ public class SeriesRaceOutputText extends SeriesRaceOutput {
 
             writer.append("\n\n");
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 }

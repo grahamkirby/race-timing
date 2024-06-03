@@ -1,6 +1,5 @@
 package relay_race;
 
-import com.lowagie.text.Document;
 import common.Category;
 import common.RawResult;
 
@@ -36,6 +35,16 @@ public class RelayRaceOutputText extends RelayRaceOutput {
     }
 
     @Override
+    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void printCombined() {
         throw new UnsupportedOperationException();
     }
@@ -53,11 +62,6 @@ public class RelayRaceOutputText extends RelayRaceOutput {
             for (final Category category : race.categories.getCategoriesInReportOrder())
                 printPrizes(category, writer);
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {

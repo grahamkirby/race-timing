@@ -1,6 +1,5 @@
 package minitour;
 
-import com.lowagie.text.Document;
 import common.Category;
 import fife_ac_races.Minitour;
 import individual_race.IndividualRace;
@@ -29,11 +28,6 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printPrizes(html_writer);
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -95,9 +89,9 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         printRaceCategories(html_writer, category_results, combined_categories_title);
     }
 
-    private void printRaceCategories(final OutputStreamWriter html_writer, final IndividualRaceResult[] category_results, final String combined_categories_title) throws IOException {
+    private void printRaceCategories(final OutputStreamWriter writer, final IndividualRaceResult[] category_results, final String combined_categories_title) throws IOException {
 
-        html_writer.append("<h4>").
+        writer.append("<h4>").
                 append(combined_categories_title).
                 append("</h4>\n").
                 append("""
@@ -114,27 +108,27 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                                    <tbody>
                 """);
 
-        printRaceCategories(html_writer, category_results);
+        printRaceCategories(writer, category_results);
 
-        html_writer.append("""
+        writer.append("""
                     </tbody>
                 </table>
                 """);
     }
 
-    private static void printRaceCategories(final OutputStreamWriter html_writer, final IndividualRaceResult[] category_results) throws IOException {
+    private static void printRaceCategories(final OutputStreamWriter writer, final IndividualRaceResult[] category_results) throws IOException {
 
         int position = 1;
 
         for (final IndividualRaceResult result : category_results) {
 
-            html_writer.append("""
+            writer.append("""
                     <tr>
                         <td>""");
 
-            if (!result.dnf()) html_writer.append(String.valueOf(position++));
+            if (!result.dnf()) writer.append(String.valueOf(position++));
 
-            html_writer.append("""
+            writer.append("""
                     </td>
                     <td>""").
             append(String.valueOf(result.entry.bib_number)).
@@ -156,12 +150,12 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         }
     }
 
-    private void printPrizes(final OutputStreamWriter html_writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
-        html_writer.append("<h4>Prizes</h4>\n");
+        writer.append("<h4>Prizes</h4>\n");
 
         for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, html_writer);
+            printPrizes(category, writer);
     }
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
@@ -176,7 +170,8 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         writer.append("</ul>\n\n");
     }
 
-    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         writer.append("<h4>Overall Results</h4>\n");
 
@@ -203,7 +198,8 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         return Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
     }
 
-    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">

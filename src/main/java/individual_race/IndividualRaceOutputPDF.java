@@ -3,6 +3,8 @@ package individual_race;
 import com.lowagie.text.*;
 import common.Category;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class IndividualRaceOutputPDF extends IndividualRaceOutput {
@@ -13,6 +15,16 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
 
     @Override
     public void printOverallResults() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
         throw new UnsupportedOperationException();
     }
 

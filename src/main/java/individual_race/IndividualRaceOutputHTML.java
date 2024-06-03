@@ -1,6 +1,5 @@
 package individual_race;
 
-import com.lowagie.text.Document;
 import common.Category;
 
 import java.io.IOException;
@@ -23,11 +22,6 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printPrizes(html_writer);
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -93,14 +87,16 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         }
     }
 
-    private void printOverallResults(final OutputStreamWriter html_writer) throws IOException {
+    @Override
+    protected void printOverallResults(final OutputStreamWriter html_writer) throws IOException {
 
         printOverallResultsHeader(html_writer);
         printOverallResultsBody(html_writer);
         printOverallResultsFooter(html_writer);
     }
 
-    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">

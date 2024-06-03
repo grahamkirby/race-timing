@@ -1,51 +1,20 @@
 package series_race;
 
-import com.lowagie.text.Document;
-import common.Category;
 import common.Race;
+import common.RaceOutput;
 import fife_ac_races.Midweek;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
-public class SeriesRaceOutputCSV extends SeriesRaceOutput {
+public class SeriesRaceOutputCSV extends RaceOutput {
 
-    public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
-
-    public SeriesRaceOutputCSV(final Midweek race) {
+    public SeriesRaceOutputCSV(final Race race) {
         super(race);
     }
 
     @Override
-    public void printPrizes() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printCombined() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printOverallResults() throws IOException {
-
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
-
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
-
-            printOverallResultsHeader(csv_writer);
-            printOverallResults(csv_writer);
-        }
-    }
-
-    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
@@ -57,7 +26,8 @@ public class SeriesRaceOutputCSV extends SeriesRaceOutput {
         writer.append(",Total,Completed\n");
     }
 
-    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         final SeriesRaceResult[] series_results = ((Midweek)race).getOverallResults();
 

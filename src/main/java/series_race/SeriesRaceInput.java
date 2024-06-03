@@ -2,7 +2,6 @@ package series_race;
 
 import common.Race;
 import common.RaceInput;
-import fife_ac_races.Midweek;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
