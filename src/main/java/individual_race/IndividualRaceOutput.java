@@ -33,7 +33,7 @@ public abstract class IndividualRaceOutput extends RaceOutput {
         constructFilePaths();
     }
 
-    private void readProperties() {
+    protected void readProperties() {
 
         race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
         race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
@@ -41,7 +41,7 @@ public abstract class IndividualRaceOutput extends RaceOutput {
         alternative_output_directory_path = race.getProperties().getProperty("ALTERNATIVE_OUTPUT_DIRECTORY");
     }
 
-    private void constructFilePaths() {
+    protected void constructFilePaths() {
 
         overall_results_filename = race_name_for_filenames + "_overall_" + year;
         prizes_filename = race_name_for_filenames + "_prizes_" + year;

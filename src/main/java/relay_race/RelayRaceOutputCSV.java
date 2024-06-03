@@ -1,8 +1,5 @@
 package relay_race;
 
-import com.lowagie.text.Document;
-import common.Category;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -18,12 +15,6 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
     @Override
     public void printPrizes() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -68,12 +59,14 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
         }
     }
 
-    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
     }
 
-    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         for (int i = 0; i < ((RelayRace)race).overall_results.length; i++) {
 

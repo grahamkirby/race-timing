@@ -2,14 +2,15 @@ package minitour;
 
 import com.lowagie.text.*;
 import common.Category;
-import fife_ac_races.Minitour;
+import common.Race;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
-    public MinitourRaceOutputPDF(final Minitour results) {
-        super(results);
+    public MinitourRaceOutputPDF(final Race race) {
+        super(race);
     }
 
     @Override
@@ -19,6 +20,16 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
     @Override
     public void printCombined() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -41,14 +52,14 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
             paragraph.add(new Chunk(result.position_string + ": ", PDF_FONT));
             paragraph.add(new Chunk(result.runner.name, PDF_BOLD_FONT));
-            paragraph.add(new Chunk(" (" + Minitour.normaliseClubName(result.runner.club) + ") ", PDF_FONT));
+            paragraph.add(new Chunk(" (" + Race.normaliseClubName(result.runner.club) + ") ", PDF_FONT));
             paragraph.add(new Chunk(format(result.duration()), PDF_FONT));
 
             document.add(paragraph);
         }
 
         @Override
-        public void printNoResults() throws IOException {
+        public void printNoResults() {
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
         }
     }

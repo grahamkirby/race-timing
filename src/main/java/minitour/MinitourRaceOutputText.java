@@ -1,8 +1,7 @@
 package minitour;
 
-import com.lowagie.text.Document;
 import common.Category;
-import fife_ac_races.Minitour;
+import common.Race;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -11,7 +10,7 @@ import java.nio.file.Path;
 
 public class MinitourRaceOutputText extends MinitourRaceOutput {
 
-    public MinitourRaceOutputText(final Minitour race) {
+    public MinitourRaceOutputText(final Race race) {
         super(race);
     }
 
@@ -22,6 +21,16 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
 
     @Override
     public void printCombined() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -38,11 +47,6 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
             for (final Category category : race.categories.getCategoriesInReportOrder())
                 printPrizes(category, writer);
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {

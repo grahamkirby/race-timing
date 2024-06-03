@@ -1,5 +1,6 @@
 package fife_ac_races;
 
+import common.RaceOutput;
 import common.Runner;
 import common.SeniorRaceCategories;
 import individual_race.*;
@@ -21,7 +22,7 @@ public class Midweek extends SeriesRace {
     public static final int MAX_RACE_SCORE = 200;
 
     SeriesRaceInput input;
-    SeriesRaceOutput output_CSV, output_HTML, output_text;
+    RaceOutput output_CSV, output_HTML, output_text;
     SeriesRacePrizes prizes;
 
     SeriesRaceResult[] overall_results;

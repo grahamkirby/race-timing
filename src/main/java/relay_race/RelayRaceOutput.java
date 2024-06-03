@@ -24,14 +24,14 @@ public abstract class RelayRaceOutput extends RaceOutput {
         constructFilePaths();
     }
 
-    private void readProperties() {
+    protected void readProperties() {
 
         race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
         race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
         year = race.getProperties().getProperty("YEAR");
     }
 
-    private void constructFilePaths() {
+    protected void constructFilePaths() {
 
         overall_results_filename = race_name_for_filenames + "_overall_" + year;
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year;

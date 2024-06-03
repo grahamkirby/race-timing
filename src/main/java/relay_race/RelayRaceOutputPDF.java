@@ -2,6 +2,9 @@ package relay_race;
 
 import com.lowagie.text.*;
 import common.Category;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class RelayRaceOutputPDF extends RelayRaceOutput {
@@ -12,6 +15,16 @@ public class RelayRaceOutputPDF extends RelayRaceOutput {
 
     @Override
     public void printOverallResults() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
         throw new UnsupportedOperationException();
     }
 

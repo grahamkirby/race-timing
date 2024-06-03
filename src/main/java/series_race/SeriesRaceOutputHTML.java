@@ -2,6 +2,7 @@ package series_race;
 
 import com.lowagie.text.Document;
 import common.Category;
+import common.RaceOutput;
 import common.Runner;
 import fife_ac_races.Midweek;
 
@@ -11,7 +12,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
-public class SeriesRaceOutputHTML extends SeriesRaceOutput {
+public class SeriesRaceOutputHTML extends RaceOutput {
 
     public SeriesRaceOutputHTML(final Midweek race) {
         super(race);
@@ -102,14 +103,16 @@ public class SeriesRaceOutputHTML extends SeriesRaceOutput {
         }
     }
 
-    private void printOverallResults(OutputStreamWriter html_writer) throws IOException {
+    @Override
+    protected void printOverallResults(OutputStreamWriter html_writer) throws IOException {
 
         printOverallResultsHeader(html_writer);
         printOverallResultsBody(html_writer);
         printOverallResultsFooter(html_writer);
     }
 
-    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">

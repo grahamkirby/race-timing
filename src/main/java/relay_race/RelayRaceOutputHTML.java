@@ -1,6 +1,5 @@
 package relay_race;
 
-import com.lowagie.text.Document;
 import common.Category;
 
 import java.io.IOException;
@@ -23,11 +22,6 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printPrizes(html_writer);
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -95,12 +89,12 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
         }
     }
 
-    private void printPrizes(OutputStreamWriter html_writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
-        html_writer.append("<h4>Prizes</h4>\n");
+        writer.append("<h4>Prizes</h4>\n");
 
         for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, html_writer);
+            printPrizes(category, writer);
     }
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
@@ -126,14 +120,16 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
         writer.append("</ol>\n\n");
     }
 
-    private void printOverallResults(OutputStreamWriter html_writer) throws IOException {
+    @Override
+    protected void printOverallResults(OutputStreamWriter writer) throws IOException {
 
-        printOverallResultsHeader(html_writer);
-        printOverallResultsBody(html_writer);
-        printOverallResultsFooter(html_writer);
+        printOverallResultsHeader(writer);
+        printOverallResultsBody(writer);
+        printOverallResultsFooter(writer);
     }
 
-    private void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">

@@ -21,6 +21,16 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
     }
 
     @Override
+    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void printCombined() {
         throw new UnsupportedOperationException();
     }
