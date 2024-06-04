@@ -1,5 +1,6 @@
-package fife_ac_races;
+package fife_ac_races.midweek;
 
+import common.RaceInput;
 import common.RaceOutput;
 import common.Runner;
 import common.SeniorRaceCategories;
@@ -11,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class Midweek extends SeriesRace {
+public class MidweekRace extends SeriesRace {
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -21,11 +22,9 @@ public class Midweek extends SeriesRace {
 
     public static final int MAX_RACE_SCORE = 200;
 
-    SeriesRaceInput input;
-    RaceOutput output_CSV, output_HTML, output_text;
-    SeriesRacePrizes prizes;
+    MidweekRacePrizes prizes;
 
-    SeriesRaceResult[] overall_results;
+    MidweekRaceResult[] overall_results;
 
     public boolean open_category;
     public int open_prizes;
@@ -34,7 +33,7 @@ public class Midweek extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public Midweek(Path config_file_path) throws IOException {
+    public MidweekRace(Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -45,7 +44,7 @@ public class Midweek extends SeriesRace {
         if (args.length < 1)
             System.out.println("usage: java SeriesRace <config file path>");
         else {
-            new Midweek(Paths.get(args[0])).processResults();
+            new MidweekRace(Paths.get(args[0])).processResults();
         }
     }
 
@@ -63,13 +62,13 @@ public class Midweek extends SeriesRace {
     @Override
     public void configureHelpers() {
 
-        input = new SeriesRaceInput(this);
+        input = new MidweekRaceInput(this);
 
-        output_CSV = new SeriesRaceOutputCSV(this);
-        output_HTML = new SeriesRaceOutputHTML(this);
-        output_text = new SeriesRaceOutputText(this);
+        output_CSV = new MidweekRaceOutputCSV(this);
+        output_HTML = new MidweekRaceOutputHTML(this);
+        output_text = new MidweekRaceOutputText(this);
 
-        prizes = new SeriesRacePrizes(this);
+        prizes = new MidweekRacePrizes(this);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class Midweek extends SeriesRace {
     public void initialiseResults() {
 
         super.initialiseResults();
-        overall_results = new SeriesRaceResult[combined_runners.length];
+        overall_results = new MidweekRaceResult[combined_runners.length];
     }
 
     @Override
@@ -175,9 +174,9 @@ public class Midweek extends SeriesRace {
         return names;
     }
 
-    private SeriesRaceResult getOverallResult(final Runner runner) {
+    private MidweekRaceResult getOverallResult(final Runner runner) {
 
-        final SeriesRaceResult result = new SeriesRaceResult(runner, this);
+        final MidweekRaceResult result = new MidweekRaceResult(runner, this);
 
         for (int i = 0; i < races.length; i++) {
 
@@ -211,7 +210,7 @@ public class Midweek extends SeriesRace {
         return runner.category.getGender();
     }
 
-    public SeriesRaceResult[] getOverallResults() {
+    public MidweekRaceResult[] getOverallResults() {
         return overall_results;
     }
 

@@ -40,6 +40,18 @@ public abstract class RaceOutput {
         configure();
     }
 
+    protected abstract void printOverallResultsHeader(OutputStreamWriter  csv_writer) throws IOException;
+    protected abstract void printOverallResults(OutputStreamWriter  csv_writer) throws IOException;
+
+    protected void printPrizes(Category category, Document document) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+
+    public void printCombined() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
     private void configure() {
 
         readProperties();
@@ -57,34 +69,6 @@ public abstract class RaceOutput {
         }
     }
 
-    protected abstract void printOverallResultsHeader(OutputStreamWriter  csv_writer) throws IOException;
-    protected abstract void printOverallResults(OutputStreamWriter  csv_writer) throws IOException;
-
-    protected void constructFilePaths() {
-
-        overall_results_filename = race_name_for_filenames + "_overall_" + year;
-        prizes_filename = race_name_for_filenames + "_prizes_" + year;
-
-        output_directory_path = race.getWorkingDirectoryPath().resolve("output");
-    }
-
-    protected void readProperties() {
-
-        year = race.getProperties().getProperty("YEAR");
-
-        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
-        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
-    }
-
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public void printCombined() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
     public void printPrizes() throws IOException {
 
         final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
@@ -100,6 +84,22 @@ public abstract class RaceOutput {
             printPrizes(category, document);
 
         document.close();
+    }
+
+    protected void constructFilePaths() {
+
+        overall_results_filename = race_name_for_filenames + "_overall_" + year;
+        prizes_filename = race_name_for_filenames + "_prizes_" + year;
+
+        output_directory_path = race.getWorkingDirectoryPath().resolve("output");
+    }
+
+    protected void readProperties() {
+
+        year = race.getProperties().getProperty("YEAR");
+
+        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
+        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
     }
 
     public static String htmlEncode(String s) {

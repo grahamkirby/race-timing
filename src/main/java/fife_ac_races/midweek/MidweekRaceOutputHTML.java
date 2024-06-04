@@ -1,10 +1,9 @@
-package series_race;
+package fife_ac_races.midweek;
 
-import com.lowagie.text.Document;
 import common.Category;
+import common.Race;
 import common.RaceOutput;
 import common.Runner;
-import fife_ac_races.Midweek;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,9 +11,9 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
-public class SeriesRaceOutputHTML extends RaceOutput {
+public class MidweekRaceOutputHTML extends RaceOutput {
 
-    public SeriesRaceOutputHTML(final Midweek race) {
+    public MidweekRaceOutputHTML(final Race race) {
         super(race);
     }
 
@@ -26,11 +25,6 @@ public class SeriesRaceOutputHTML extends RaceOutput {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printPrizes(html_writer);
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -73,7 +67,7 @@ public class SeriesRaceOutputHTML extends RaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = ((Midweek)race).prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").
@@ -86,8 +80,8 @@ public class SeriesRaceOutputHTML extends RaceOutput {
 
             for (final Runner entry : category_prize_winners) {
 
-                int indexOfRunner = ((Midweek)race).findIndexOfRunner(entry);
-                SeriesRaceResult overallResult = ((Midweek)race).getOverallResults()[indexOfRunner];
+                int indexOfRunner = ((MidweekRace)race).findIndexOfRunner(entry);
+                MidweekRaceResult overallResult = ((MidweekRace)race).getOverallResults()[indexOfRunner];
                 int score = overallResult.totalScore();
 
                 writer.append("<li>").
@@ -124,8 +118,8 @@ public class SeriesRaceOutputHTML extends RaceOutput {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < ((Midweek)race).races.length; i++) {
-            if (((Midweek)race).races[i] != null) {
+        for (int i = 0; i < ((MidweekRace)race).races.length; i++) {
+            if (((MidweekRace)race).races[i] != null) {
                 writer.append("<th>Race ").
                         append(String.valueOf(i + 1)).
                         append("</th>\n");
@@ -143,7 +137,7 @@ public class SeriesRaceOutputHTML extends RaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        for (final SeriesRaceResult result : ((Midweek)race).getOverallResults()) {
+        for (final MidweekRaceResult result : ((MidweekRace)race).getOverallResults()) {
 
             writer.append("""
                         <tr>

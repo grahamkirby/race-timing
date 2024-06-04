@@ -1,4 +1,4 @@
-package minitour;
+package fife_ac_races.minitour;
 
 import common.Category;
 import common.Race;
@@ -6,7 +6,6 @@ import common.RaceInput;
 import common.RawResult;
 import individual_race.IndividualRace;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;

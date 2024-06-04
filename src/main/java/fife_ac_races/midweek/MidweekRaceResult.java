@@ -1,22 +1,21 @@
-package series_race;
+package fife_ac_races.midweek;
 
 import common.Race;
-import fife_ac_races.Midweek;
+import common.Runner;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
-import common.Runner;
 
 import java.util.Arrays;
 
-public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
+public class MidweekRaceResult implements Comparable<MidweekRaceResult> {
 
     public final Runner runner;
 
     public final int[] scores;
-    final Midweek race;
-    String position_string;
+    final MidweekRace race;
+    public String position_string;
 
-    public SeriesRaceResult(final Runner runner, final Midweek race) {
+    public MidweekRaceResult(final Runner runner, final MidweekRace race) {
 
         this.runner = runner;
         this.race = race;
@@ -59,7 +58,7 @@ public class SeriesRaceResult implements Comparable<SeriesRaceResult> {
     }
 
     @Override
-    public int compareTo(final SeriesRaceResult o) {
+    public int compareTo(final MidweekRaceResult o) {
 
         if (completed() && !o.completed()) return -1;
 

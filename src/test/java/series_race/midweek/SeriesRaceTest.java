@@ -3,7 +3,7 @@ package series_race.midweek;
 import common.Race;
 import common.RaceTest;
 import org.junit.jupiter.api.Test;
-import fife_ac_races.Midweek;
+import fife_ac_races.midweek.MidweekRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,7 +23,7 @@ public class SeriesRaceTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        return new Midweek(config_file_path);
+        return new MidweekRace(config_file_path);
     }
 
     @Override

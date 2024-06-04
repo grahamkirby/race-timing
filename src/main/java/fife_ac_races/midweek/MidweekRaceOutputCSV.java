@@ -1,45 +1,39 @@
-package series_race;
+package fife_ac_races.midweek;
 
 import common.Race;
-import common.RaceOutput;
-import fife_ac_races.Midweek;
+import series_race.SeriesRace;
+import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class SeriesRaceOutputCSV extends RaceOutput {
+public class MidweekRaceOutputCSV extends SeriesRaceOutput {
 
-    public SeriesRaceOutputCSV(final Race race) {
+    public MidweekRaceOutputCSV(final SeriesRace race) {
         super(race);
     }
 
     @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
-        writer.append(OVERALL_RESULTS_HEADER);
-
-        for (final Race individual_race : ((Midweek)race).races)
-            if (individual_race != null)
-                writer.append(",").
-                        append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
-
+        super.printOverallResultsHeader(writer);
         writer.append(",Total,Completed\n");
     }
 
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final SeriesRaceResult[] series_results = ((Midweek)race).getOverallResults();
+        final MidweekRaceResult[] series_results = ((MidweekRace)race).getOverallResults();
 
         setPositionStrings(series_results);
 
-        for (final SeriesRaceResult overall_result : series_results) {
+        for (final MidweekRaceResult overall_result : series_results) {
 
             int number_of_races_completed = 0;
-            for (Race r : ((Midweek)race).races)
+            for (Race r : race.races)
                 if (r != null) number_of_races_completed++;
 
-            if (number_of_races_completed < ((Midweek)race).races.length || overall_result.completed())
+            if (number_of_races_completed < race.races.length || overall_result.completed())
                 writer.append(overall_result.position_string);
 
             writer.append(",").
@@ -60,21 +54,21 @@ public class SeriesRaceOutputCSV extends RaceOutput {
         }
     }
 
-    private static void setPositionStrings(final SeriesRaceResult[] series_results) {
+    private static void setPositionStrings(final MidweekRaceResult[] series_results) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
 
         for (int result_index = 0; result_index < series_results.length; result_index++) {
 
-            final SeriesRaceResult result = series_results[result_index];
+            final MidweekRaceResult result = series_results[result_index];
 
             // Skip over any following results with the same times.
             result_index = groupEqualScoresAndReturnFollowingIndex(series_results, result, result_index);
         }
     }
 
-    private static int groupEqualScoresAndReturnFollowingIndex(final SeriesRaceResult[] leg_results, final SeriesRaceResult result, final int result_index) {
+    private static int groupEqualScoresAndReturnFollowingIndex(final MidweekRaceResult[] leg_results, final MidweekRaceResult result, final int result_index) {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameScore(leg_results, result, result_index);
 
@@ -90,7 +84,7 @@ public class SeriesRaceOutputCSV extends RaceOutput {
         return highest_index_with_same_duration;
     }
 
-    private static int getHighestIndexWithSameScore(final SeriesRaceResult[] leg_results, final SeriesRaceResult result, final int result_index) {
+    private static int getHighestIndexWithSameScore(final MidweekRaceResult[] leg_results, final MidweekRaceResult result, final int result_index) {
 
         int highest_index_with_same_score = result_index;
 

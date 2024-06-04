@@ -1,7 +1,7 @@
-package minitour;
+package fife_ac_races.minitour;
 
 import common.Category;
-import common.Race;
+import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 public class MinitourRaceOutputText extends MinitourRaceOutput {
 
-    public MinitourRaceOutputText(final Race race) {
+    public MinitourRaceOutputText(final SeriesRace race) {
         super(race);
     }
 
