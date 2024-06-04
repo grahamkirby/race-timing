@@ -30,6 +30,7 @@ public class MinitourRace extends SeriesRace {
 
     public MinitourRace(final Path config_file_path) throws IOException {
         super(config_file_path);
+        minimum_number_of_races = races.length;
     }
 
     public static void main(final String[] args) throws IOException {

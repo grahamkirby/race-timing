@@ -16,6 +16,7 @@ public abstract class SeriesRace extends Race {
     public Map<Category, List<Runner>> prize_winners = new HashMap<>();
 
     public int category_prizes;
+    public int minimum_number_of_races;
 
     protected RaceInput input;
     protected RaceOutput output_CSV, output_HTML, output_text, output_PDF;

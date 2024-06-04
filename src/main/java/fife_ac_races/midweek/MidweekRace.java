@@ -29,7 +29,7 @@ public class MidweekRace extends SeriesRace {
     public boolean open_category;
     public int open_prizes;
 
-    public int minimum_number_of_races;
+//    public int minimum_number_of_races;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
