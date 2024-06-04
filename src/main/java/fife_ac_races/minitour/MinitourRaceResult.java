@@ -4,22 +4,18 @@ import common.Race;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import common.Runner;
+import series_race.SeriesRaceResult;
 
 import java.time.Duration;
 
-public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
-
-    public final Runner runner;
+public class MinitourRaceResult extends SeriesRaceResult {
 
     public final Duration[] times;
-    final MinitourRace race;
     String position_string;
 
     public MinitourRaceResult(final Runner runner, final MinitourRace race) {
 
-        this.runner = runner;
-        this.race = race;
-
+        super(runner, race);
         times = new Duration[race.races.length];
     }
 
@@ -36,30 +32,9 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
         return overall;
     }
 
-    public boolean completed() {
-
-        return numberCompleted() == race.races.length;
-    }
-
-    public boolean allRacesTakenPlace() {
-        return race.races[race.races.length - 1] != null;
-    }
-
     public boolean raceHasTakenPlace(int race_number) {
+
         return race.races[race_number - 1] != null;
-    }
-
-    private int numberCompleted() {
-
-        int count = 0;
-
-        for (final IndividualRace individual_race : race.races) {
-            if (individual_race != null)
-                for (final IndividualRaceResult result : individual_race.getOverallResults())
-                    if (result.entry.runner.equals(runner)) count++;
-        }
-
-        return count;
     }
 
     public boolean completedAllRacesSoFar() {
@@ -72,24 +47,25 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
     }
 
     @Override
-    public int compareTo(final MinitourRaceResult o) {
+    public int comparePerformanceTo(SeriesRaceResult o) {
+        return duration().compareTo(((MinitourRaceResult)o).duration());
+    }
 
-        if (completed() && !o.completed()) return -1;
+    @Override
+    public int compareTo(final SeriesRaceResult o) {
 
-        if (!completed() && o.completed()) return 1;
+        int compare_completion = compareCompletion(o);
+        if (compare_completion != 0) return compare_completion;
 
         if (completedAllRacesSoFar() && !o.completedAllRacesSoFar()) return -1;
-
         if (!completedAllRacesSoFar() && o.completedAllRacesSoFar()) return 1;
 
         if (completedAllRacesSoFar()) {
-            if (duration().compareTo(o.duration()) < 0) return -1;
 
-            if (duration().compareTo(o.duration()) > 0) return 1;
+            int compare_performance = comparePerformanceTo(o);
+            if (compare_performance != 0) return compare_performance;
         }
 
-        int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
-
-        return last_name_comparison != 0 ? last_name_comparison : Race.getFirstName(runner.name).compareTo(Race.getFirstName(o.runner.name));
+        return compareRunnerName(o);
     }
 }

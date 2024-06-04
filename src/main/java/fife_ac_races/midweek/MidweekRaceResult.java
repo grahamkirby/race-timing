@@ -2,23 +2,21 @@ package fife_ac_races.midweek;
 
 import common.Race;
 import common.Runner;
+import fife_ac_races.minitour.MinitourRaceResult;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
+import series_race.SeriesRaceResult;
 
 import java.util.Arrays;
 
-public class MidweekRaceResult implements Comparable<MidweekRaceResult> {
-
-    public final Runner runner;
+public class MidweekRaceResult extends SeriesRaceResult {
 
     public final int[] scores;
-    final MidweekRace race;
     public String position_string;
 
     public MidweekRaceResult(final Runner runner, final MidweekRace race) {
 
-        this.runner = runner;
-        this.race = race;
+        super(runner, race);
 
         scores = new int[race.races.length];
         Arrays.fill(scores, -1);
@@ -38,38 +36,25 @@ public class MidweekRaceResult implements Comparable<MidweekRaceResult> {
         return total;
     }
 
-    public boolean completed() {
-
-        return numberCompleted() >= race.minimum_number_of_races;
-    }
-
-    private int numberCompleted() {
-
-        int count = 0;
-
-        for (IndividualRace individual_race : race.races) {
-            if (individual_race != null)
-                for (IndividualRaceResult result : individual_race.getOverallResults()) {
-                    if (result.entry.runner.equals(runner)) count++;
-                }
-        }
-
-        return count;
+    @Override
+    public boolean completedAllRacesSoFar() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public int compareTo(final MidweekRaceResult o) {
+    public int comparePerformanceTo(SeriesRaceResult o) {
+        return -Integer.compare(totalScore(), ((MidweekRaceResult) o).totalScore());
+    }
 
-        if (completed() && !o.completed()) return -1;
+    @Override
+    public int compareTo(final SeriesRaceResult o) {
 
-        if (!completed() && o.completed()) return 1;
+        int compare_completion = compareCompletion(o);
+        if (compare_completion != 0) return compare_completion;
 
-        if (totalScore() > o.totalScore()) return -1;
+        int compare_performance = comparePerformanceTo(o);
+        if (compare_performance != 0) return compare_performance;
 
-        if (totalScore() < o.totalScore()) return 1;
-
-        int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
-
-        return last_name_comparison != 0 ? last_name_comparison : Race.getFirstName(runner.name).compareTo(Race.getFirstName(o.runner.name));
+        return compareRunnerName(o);
     }
 }
