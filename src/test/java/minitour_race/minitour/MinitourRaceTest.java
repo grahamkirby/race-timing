@@ -2,7 +2,7 @@ package minitour_race.minitour;
 
 import common.Race;
 import common.RaceTest;
-import fife_ac_races.Minitour;
+import fife_ac_races.minitour.MinitourRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ public class MinitourRaceTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        return new Minitour(config_file_path);
+        return new MinitourRace(config_file_path);
     }
 
     @Override

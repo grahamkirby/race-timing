@@ -1,7 +1,6 @@
-package minitour;
+package fife_ac_races.minitour;
 
 import common.Race;
-import fife_ac_races.Minitour;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import common.Runner;
@@ -13,10 +12,10 @@ public class MinitourRaceResult implements Comparable<MinitourRaceResult> {
     public final Runner runner;
 
     public final Duration[] times;
-    final Minitour race;
+    final MinitourRace race;
     String position_string;
 
-    public MinitourRaceResult(final Runner runner, final Minitour race) {
+    public MinitourRaceResult(final Runner runner, final MinitourRace race) {
 
         this.runner = runner;
         this.race = race;

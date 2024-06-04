@@ -1,8 +1,6 @@
 package series_race;
 
-import common.Category;
-import common.Race;
-import common.Runner;
+import common.*;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
@@ -19,6 +17,8 @@ public abstract class SeriesRace extends Race {
 
     public int category_prizes;
 
+    protected RaceInput input;
+    protected RaceOutput output_CSV, output_HTML, output_text, output_PDF;
 
     public SeriesRace(Path config_file_path) throws IOException {
         super(config_file_path);
@@ -47,8 +47,6 @@ public abstract class SeriesRace extends Race {
         configureCategories();
         configureInputData();
     }
-
-
 
     public void initialiseResults() {
 

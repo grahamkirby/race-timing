@@ -1,15 +1,16 @@
-package minitour;
+package fife_ac_races.minitour;
 
 import com.lowagie.text.*;
 import common.Category;
 import common.Race;
+import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
-    public MinitourRaceOutputPDF(final Race race) {
+    public MinitourRaceOutputPDF(final SeriesRace race) {
         super(race);
     }
 

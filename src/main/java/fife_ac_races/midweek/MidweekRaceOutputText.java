@@ -1,10 +1,9 @@
-package series_race;
+package fife_ac_races.midweek;
 
 import common.Category;
 import common.Race;
 import common.RaceOutput;
 import common.Runner;
-import fife_ac_races.Midweek;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -12,9 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class SeriesRaceOutputText extends RaceOutput {
+public class MidweekRaceOutputText extends RaceOutput {
 
-    public SeriesRaceOutputText(final Race race) {
+    public MidweekRaceOutputText(final Race race) {
         super(race);
     }
 
@@ -55,7 +54,7 @@ public class SeriesRaceOutputText extends RaceOutput {
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = ((Midweek)race).prize_winners.get(category);
+        final List<Runner> category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
 
@@ -70,7 +69,7 @@ public class SeriesRaceOutputText extends RaceOutput {
             int position = 1;
             for (final Runner runner : category_prize_winners) {
 
-                final SeriesRaceResult result = ((Midweek)race).getOverallResults()[((Midweek)race).findIndexOfRunner(runner)];
+                final MidweekRaceResult result = ((MidweekRace)race).getOverallResults()[((MidweekRace)race).findIndexOfRunner(runner)];
 
                 writer.append(String.valueOf(position++)).append(": ").
                         append(runner.name).append(" (").
