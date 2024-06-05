@@ -9,6 +9,7 @@ public abstract class SeriesRaceResult implements Comparable<SeriesRaceResult> {
 
     public final Runner runner;
     protected final SeriesRace race;
+    public String position_string;
 
     public SeriesRaceResult(final Runner runner, final SeriesRace race) {
 
@@ -35,17 +36,24 @@ public abstract class SeriesRaceResult implements Comparable<SeriesRaceResult> {
         return count;
     }
 
-    protected int compareRunnerName(SeriesRaceResult o) {
-
-        final int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
-        return last_name_comparison != 0 ? last_name_comparison : Race.getFirstName(runner.name).compareTo(Race.getFirstName(o.runner.name));
-    }
-
-    protected int compareCompletion(SeriesRaceResult o) {
+    protected int compareCompletionTo(SeriesRaceResult o) {
 
         if (completed() && !o.completed()) return -1;
         if (!completed() && o.completed()) return 1;
         return 0;
+    }
+
+    protected int compareCompletionSoFarTo(SeriesRaceResult o) {
+
+        if (completedAllRacesSoFar() && !o.completedAllRacesSoFar()) return -1;
+        if (!completedAllRacesSoFar() && o.completedAllRacesSoFar()) return 1;
+        return 0;
+    }
+
+    protected int compareRunnerNameTo(SeriesRaceResult o) {
+
+        final int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
+        return last_name_comparison != 0 ? last_name_comparison : Race.getFirstName(runner.name).compareTo(Race.getFirstName(o.runner.name));
     }
 
     protected abstract int comparePerformanceTo(SeriesRaceResult other);
