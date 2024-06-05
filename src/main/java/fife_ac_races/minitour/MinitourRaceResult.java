@@ -1,8 +1,5 @@
 package fife_ac_races.minitour;
 
-import common.Race;
-import individual_race.IndividualRace;
-import individual_race.IndividualRaceResult;
 import common.Runner;
 import series_race.SeriesRaceResult;
 
@@ -11,7 +8,6 @@ import java.time.Duration;
 public class MinitourRaceResult extends SeriesRaceResult {
 
     public final Duration[] times;
-    String position_string;
 
     public MinitourRaceResult(final Runner runner, final MinitourRace race) {
 
@@ -19,7 +15,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
         times = new Duration[race.races.length];
     }
 
-    public Duration duration() {
+    protected Duration duration() {
 
         Duration overall = Duration.ZERO;
 
@@ -54,18 +50,18 @@ public class MinitourRaceResult extends SeriesRaceResult {
     @Override
     public int compareTo(final SeriesRaceResult o) {
 
-        int compare_completion = compareCompletion(o);
+        final int compare_completion = compareCompletionTo(o);
         if (compare_completion != 0) return compare_completion;
 
-        if (completedAllRacesSoFar() && !o.completedAllRacesSoFar()) return -1;
-        if (!completedAllRacesSoFar() && o.completedAllRacesSoFar()) return 1;
+        final int compare_completion_so_far = compareCompletionSoFarTo(o);
+        if (compare_completion_so_far != 0) return compare_completion_so_far;
 
         if (completedAllRacesSoFar()) {
 
-            int compare_performance = comparePerformanceTo(o);
+            final int compare_performance = comparePerformanceTo(o);
             if (compare_performance != 0) return compare_performance;
         }
 
-        return compareRunnerName(o);
+        return compareRunnerNameTo(o);
     }
 }
