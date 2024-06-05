@@ -17,7 +17,6 @@
 117	David Dunleavey	Stratheden	M60
 118	Duncan Edward	Dundee Road Runners	M40
 119	Mark Feely	Anster Allsorts	M50
-120	Karen Forsyth	Carnegie Harriers	F40
 121	Simon Fox	Fife AC	M60
 122	Orla Gage	Anster Haddies	FU20
 123	Will Gage	Anster Haddies	M50
@@ -44,7 +43,6 @@
 144	John MacPherson	Fife AC	M40
 145	Keren Macpherson	Fife AC	F50
 146	Ann Malcolm	Kinross Road Runners	F60
-147	Rhonda Manning	Dundee Hawkhill Harriers	F50
 148	Margaret Martin	Fife AC	F60
 149	Tony Martin	Falkland Trail Runners	M70+
 150	Ross McArthur	Falkland Trail Runners	MS
@@ -92,3 +90,29 @@
 193	Greg Wilson	Kirkcaldy Wizards	M40
 194	Tania Wilson	Falkland Trail Runners	F60
 195	Simone Young	Kinross Road Runners	F50
+2	Jamie Anderson	Anster Haddies	MU20
+96	Dave Clark	Falkland Trail Runners	M40
+30	David Webster	Dundee Road Runners	MS
+31	Philip Suttie	Falkland Trail Runners	MS
+32	Debz Hay	Anster Haddies	F50
+34	Matt Newton	Kinross Road Runners	M50
+35	Graham Rena	Dundee Road Runners	M50
+36	Daniel Fields	Dundee Road Runners	M40
+41	Jenny Gilbertson	Falkland Trail Runners	FS
+45	Simon Anetts	Fife AC	MS
+46	Paul Harkins	Fife AC	M40
+57	Jennifer Massie	Dundee Road Runners	F40
+59	Tracy Knox	Anster Haddies	F60
+60	Ewan McAdam	Fife AC	MU20
+64	Jennifer Cruickshanks	Fife AC	FS
+65	Karen Forsyth	Carnegie Harriers	F40
+66	Rhonda Manning	Dundee Hawkhill Harriers	F50
+82	Lee Cessford	Falkland Trail Runners	M40
+83	Jane O'Donnell	Dundee Road Runners	F40
+84	Bill Gillan	Recreational Running	M70+
+86	Scott Hutchison	STAART	MS
+87	Sean Kenyon	Unatt.	M50
+89	Amy Westwell	Falkland Trail Runners	FS
+90	Clive Roberts	Fife AC	M60
+91	Will Grewar	Unatt.	MS
+92	Chris Sturrock	Unatt.	MS

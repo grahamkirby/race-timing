@@ -1,6 +1,7 @@
 package individual_race;
 
 import common.Category;
+import common.Race;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -68,7 +69,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
-            writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
+            writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
             writer.append("<ol>\n");
 
             if (category_prize_winners.isEmpty())
@@ -79,8 +80,8 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
                 final IndividualRaceResult result = ((IndividualRace)race).getOverallResults()[((IndividualRace)race).findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
 
                 writer.append("<li>").
-                        append(result.entry.runner.name).append(" (").
-                        append(result.entry.runner.category.getShortName()).append(") ").
+                        append(htmlEncode(result.entry.runner.name)).append(" (").
+                        append(Race.normaliseClubName(result.entry.runner.club)).append(") ").
                         append(format(result.duration())).append("</li>\n");
             }
 
@@ -105,9 +106,10 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
                                    <tr>
                                        <th>Pos</th>
                                        <th>No</th>
-                                       <th>Team</th>
-                                       <th>Category</th>
-                                       <th>Total</th>
+                                       <th>Runner</th>
+                                       <th>Club</th>
+                                       <th>Cat</th>
+                                       <th>Time</th>
                                    </tr>
                                </thead>
                                <tbody>
@@ -132,6 +134,10 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
                             </td>
                             <td>""");
             writer.append(htmlEncode(result.entry.runner.name));
+            writer.append("""
+                            </td>
+                            <td>""");
+            writer.append(Race.normaliseClubName(result.entry.runner.club));
             writer.append("""
                             </td>
                             <td>""");
