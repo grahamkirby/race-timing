@@ -44,6 +44,7 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
         }
     }
 
+    @Override
     public void printLegResults(final int leg) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html"));
@@ -53,6 +54,7 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
         }
     }
 
+    @Override
     public void printCombined() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));

@@ -34,6 +34,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
         }
     }
 
+    @Override
     public void printCombined() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));

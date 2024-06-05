@@ -1,10 +1,13 @@
 package individual_race;
 
 import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class IndividualRaceOutputPDF extends IndividualRaceOutput {
@@ -13,24 +16,21 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
         super(results);
     }
 
-    @Override
-    public void printOverallResults() {
-        throw new UnsupportedOperationException();
-    }
+    public void printPrizes() throws IOException {
 
-    @Override
-    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
+        final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
 
-    @Override
-    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+        final Document document = new Document();
+        PdfWriter.getInstance(document, pdf_file_output_stream);
 
-    @Override
-    public void printCombined() {
-        throw new UnsupportedOperationException();
+        document.open();
+        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
+
+        for (final Category category : race.categories.getCategoriesInReportOrder())
+            printPrizes(category, document);
+
+        document.close();
     }
 
     public void printPrizes(final Category category, final Document document) {

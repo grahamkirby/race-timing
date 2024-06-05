@@ -86,8 +86,7 @@ public abstract class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    public abstract void printOverallResults() throws IOException;
-    public abstract void printDetailedResults() throws IOException;
-    public abstract void printLegResults(final int leg) throws IOException;
-    public abstract void printCombined() throws IOException;
+    public void printLegResults(int leg) throws IOException {
+        throw new UnsupportedOperationException();
+    }
 }

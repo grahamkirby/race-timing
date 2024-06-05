@@ -16,26 +16,6 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
     }
 
     @Override
-    public void printOverallResults() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printCombined() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void printPrizes() throws IOException {
 
         final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");
@@ -48,11 +28,6 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
             for (final Category category : race.categories.getCategoriesInReportOrder())
                 printPrizes(category, writer);
         }
-    }
-
-    @Override
-    protected void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {

@@ -20,36 +20,6 @@ public class RelayRaceOutputText extends RelayRaceOutput {
     }
 
     @Override
-    public void printOverallResults() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printDetailedResults() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printLegResults(int leg) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void printOverallResultsHeader(OutputStreamWriter csv_writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void printOverallResults(OutputStreamWriter csv_writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printCombined() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void printPrizes() throws IOException {
 
         final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");

@@ -39,6 +39,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         }
     }
 
+    @Override
     public void printCombined() throws IOException {
 
         for (int i = 1; i <= ((MinitourRace)race).races.length; i++)

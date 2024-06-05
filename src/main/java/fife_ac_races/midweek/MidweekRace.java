@@ -1,7 +1,5 @@
 package fife_ac_races.midweek;
 
-import common.RaceInput;
-import common.RaceOutput;
 import common.Runner;
 import common.SeniorRaceCategories;
 import individual_race.*;

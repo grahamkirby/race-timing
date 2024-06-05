@@ -44,6 +44,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     @Override
     public int comparePerformanceTo(SeriesRaceResult o) {
+
         return duration().compareTo(((MinitourRaceResult)o).duration());
     }
 
