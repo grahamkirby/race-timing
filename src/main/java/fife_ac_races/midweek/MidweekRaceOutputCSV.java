@@ -6,11 +6,24 @@ import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class MidweekRaceOutputCSV extends SeriesRaceOutput {
 
     public MidweekRaceOutputCSV(final SeriesRace race) {
         super(race);
+    }
+
+    public void printOverallResults() throws IOException {
+
+        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
+
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
+
+            printOverallResultsHeader(csv_writer);
+            printOverallResults(csv_writer);
+        }
     }
 
     @Override

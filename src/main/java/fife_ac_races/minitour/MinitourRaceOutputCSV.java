@@ -5,6 +5,8 @@ import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +15,17 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
 
     public MinitourRaceOutputCSV(final SeriesRace race) {
         super(race);
+    }
+
+    public void printOverallResults() throws IOException {
+
+        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
+
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
+
+            printOverallResultsHeader(csv_writer);
+            printOverallResults(csv_writer);
+        }
     }
 
     @Override

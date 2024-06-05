@@ -14,16 +14,6 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
     }
 
     @Override
-    public void printPrizes() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void printCombined() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void printOverallResults() throws IOException {
 
         final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");

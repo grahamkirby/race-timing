@@ -16,12 +16,8 @@ public class IndividualRacePrizes {
 
     public void allocatePrizes() {
 
-//        List<Category> categories = IndividualRaceCategories.getCategoriesInDecreasingGeneralityOrder(race.open_category, race.open_prizes, race.category_prizes);
-
-        for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder()) {
-            List<IndividualRaceEntry> prizeWinners = getPrizeWinners(category);
-            race.prize_winners.put(category, prizeWinners);
-        }
+        for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder())
+            race.prize_winners.put(category, getPrizeWinners(category));
     }
 
     private List<IndividualRaceEntry> getPrizeWinners(final Category category) {
