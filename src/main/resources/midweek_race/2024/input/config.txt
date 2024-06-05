@@ -1,0 +1,6 @@
+YEAR = 2024
+RACE_NAME_FOR_RESULTS = Midweek Series
+RACE_NAME_FOR_FILENAMES = midweek
+
+RACES = ../../individual_race/st_andrews/2024/input/config.txt:../../individual_race/strath_blebo/2024/input/config.txt:../../individual_race/hill_of_tarvit/2024/input/config.txt:
+MINIMUM_NUMBER_OF_RACES = 4
