@@ -17,6 +17,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
         super(race);
     }
 
+    @Override
     public void printOverallResults() throws IOException {
 
         final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
