@@ -1,6 +1,7 @@
 package individual_race;
 
 import common.RaceResult;
+import fife_ac_races.midweek.MidweekRaceResult;
 
 import java.time.Duration;
 
@@ -37,5 +38,10 @@ public class IndividualRaceResult extends RaceResult {
         }
         else
             return duration().compareTo(o.duration());
+    }
+
+    @Override
+    public int compareTo2(RaceResult other) {
+        return duration().compareTo(((IndividualRaceResult) other).duration());
     }
 }

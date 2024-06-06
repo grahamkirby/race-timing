@@ -2,6 +2,7 @@ package fife_ac_races.minitour;
 
 import common.RaceResult;
 import common.Runner;
+import fife_ac_races.midweek.MidweekRaceResult;
 import series_race.SeriesRaceResult;
 
 import java.time.Duration;
@@ -67,5 +68,10 @@ public class MinitourRaceResult extends SeriesRaceResult {
         }
 
         return compareRunnerNameTo(o);
+    }
+
+    @Override
+    public int compareTo2(RaceResult other) {
+        return duration().compareTo(((MinitourRaceResult) other).duration());
     }
 }

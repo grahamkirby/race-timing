@@ -1,6 +1,7 @@
 package fife_ac_races.minitour;
 
 import common.Category;
+import common.RaceResult;
 import common.Runner;
 import series_race.SeriesRace;
 import series_race.SeriesRaceOutput;
@@ -31,32 +32,32 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
         return category_prize_winner_results;
     }
 
-    protected void printResults(final MinitourRaceResult[] results, final ResultPrinter printer) throws IOException {
+    protected void printResults(final RaceResult[] results, final ResultPrinter printer) throws IOException {
 
         setPositionStrings(results);
 
-        for (final MinitourRaceResult result : results)
+        for (final RaceResult result : results)
             printer.printResult(result);
 
         if (results.length == 0)
             printer.printNoResults();
     }
 
-    private void setPositionStrings(final MinitourRaceResult[] series_results) {
+    private void setPositionStrings(final RaceResult[] series_results) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
 
         for (int result_index = 0; result_index < series_results.length; result_index++) {
 
-            final MinitourRaceResult result = series_results[result_index];
+            final RaceResult result = series_results[result_index];
 
             // Skip over any following results with the same times.
             result_index = groupEqualResultsAndReturnFollowingIndex(series_results, result, result_index);
         }
     }
 
-    private int groupEqualResultsAndReturnFollowingIndex(final MinitourRaceResult[] leg_results, final MinitourRaceResult result, final int result_index) {
+    private int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] leg_results, final RaceResult result, final int result_index) {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameResult(leg_results, result, result_index);
 
@@ -72,12 +73,13 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
         return highest_index_with_same_duration;
     }
 
-    private int getHighestIndexWithSameResult(final MinitourRaceResult[] leg_results, final MinitourRaceResult result, final int result_index) {
+    private int getHighestIndexWithSameResult(final RaceResult[] leg_results, final RaceResult result, final int result_index) {
 
         int highest_index_with_same_result = result_index;
 
         while (highest_index_with_same_result + 1 < leg_results.length &&
-                result.duration().equals(leg_results[highest_index_with_same_result + 1].duration()))
+//                result.duration().equals(leg_results[highest_index_with_same_result + 1].duration()))
+            result.compareTo2(leg_results[highest_index_with_same_result + 1]) == 0)
 
             highest_index_with_same_result++;
 
@@ -85,7 +87,7 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
     }
 
     public interface ResultPrinter {
-        void printResult(MinitourRaceResult result) throws IOException;
+        void printResult(RaceResult result) throws IOException;
         void printNoResults() throws IOException;
     }
 }

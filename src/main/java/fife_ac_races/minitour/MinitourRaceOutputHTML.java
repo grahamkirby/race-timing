@@ -1,6 +1,7 @@
 package fife_ac_races.minitour;
 
 import common.Category;
+import common.RaceResult;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 
@@ -227,8 +228,9 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
     record OverallResultPrinterHTML(OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
-        public void printResult(final MinitourRaceResult result) throws IOException {
+        public void printResult(final RaceResult r) throws IOException {
 
+            MinitourRaceResult result = (MinitourRaceResult)r;
             writer.append("""
                     <tr>
                         <td>""").
@@ -278,7 +280,9 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
     record PrizeResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
-        public void printResult(MinitourRaceResult result) throws IOException {
+        public void printResult(RaceResult r) throws IOException {
+
+            MinitourRaceResult result = (MinitourRaceResult)r;
 
             final Duration time = race.getOverallResults()[race.findIndexOfRunner(result.runner)].duration();
 
