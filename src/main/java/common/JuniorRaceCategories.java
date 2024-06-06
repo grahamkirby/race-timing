@@ -20,7 +20,7 @@ public class JuniorRaceCategories extends Categories {
 
     public boolean includes(final Category first_category, final Category second_category) {
 
-        // Only the open categories include any other categories.
+        // No category includes another.
         return first_category.equals(second_category);
     }
 }

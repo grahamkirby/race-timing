@@ -20,8 +20,8 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
 
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printPrizes(html_writer);
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printPrizes(writer);
         }
     }
 
@@ -30,8 +30,8 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
 
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printOverallResults(html_writer);
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printOverallResults(writer);
         }
     }
 

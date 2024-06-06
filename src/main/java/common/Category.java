@@ -38,10 +38,12 @@ public final class Category {
         return number_of_prizes;
     }
 
+    @Override
     public boolean equals(final Object obj) {
-        return obj instanceof Category && short_name.equals(((Category) obj).short_name);
+        return obj instanceof Category other && short_name.equals(other.short_name);
     }
 
+    @Override
     public int hashCode() {
         return short_name.hashCode();
     }

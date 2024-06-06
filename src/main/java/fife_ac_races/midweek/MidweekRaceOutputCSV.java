@@ -43,7 +43,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
         for (final MidweekRaceResult overall_result : series_results) {
 
             int number_of_races_completed = 0;
-            for (Race r : race.races)
+            for (final Race r : race.races)
                 if (r != null) number_of_races_completed++;
 
             if (number_of_races_completed < race.races.length || overall_result.completed())
