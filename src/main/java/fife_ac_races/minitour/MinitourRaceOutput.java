@@ -84,7 +84,7 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
         return highest_index_with_same_result;
     }
 
-    interface ResultPrinter {
+    public interface ResultPrinter {
         void printResult(MinitourRaceResult result) throws IOException;
         void printNoResults() throws IOException;
     }
