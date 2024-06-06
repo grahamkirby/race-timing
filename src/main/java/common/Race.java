@@ -18,29 +18,7 @@ public abstract class Race {
     protected final Properties properties;
     private final Path working_directory_path;
 
-    static Map<String, String> NORMALISED_CLUB_NAMES = new HashMap<>();
 
-    static {
-        NORMALISED_CLUB_NAMES.put("", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("Unattached", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("U/A", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("None", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("Fife Athletic Club", "Fife AC");
-        NORMALISED_CLUB_NAMES.put("Dundee HH", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("Leven Las Vegas", "Leven Las Vegas RC");
-        NORMALISED_CLUB_NAMES.put("Leven Las Vegas Running Club", "Leven Las Vegas RC");
-        NORMALISED_CLUB_NAMES.put("Haddies", "Anster Haddies");
-        NORMALISED_CLUB_NAMES.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("DRR", "Dundee Road Runners");
-        NORMALISED_CLUB_NAMES.put("Perth RR", "Perth Road Runners");
-        NORMALISED_CLUB_NAMES.put("Kinross RR", "Kinross Road Runners");
-        NORMALISED_CLUB_NAMES.put("Falkland TR", "Falkland Trail Runners");
-        NORMALISED_CLUB_NAMES.put("PH Racing Club", "PH Racing");
-        NORMALISED_CLUB_NAMES.put("DHH", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("Carnegie H", "Carnegie Harriers");
-        NORMALISED_CLUB_NAMES.put("Dundee RR", "Dundee Road Runners");
-        NORMALISED_CLUB_NAMES.put("Recreational Running", "Recreational Runners");
-    }
 
     // String read from configuration file specifying all the runners who did have a finish
     // time recorded but were declared DNF.
@@ -140,11 +118,6 @@ public abstract class Race {
         catch (Exception e) {
             throw new RuntimeException("illegal time: " + element);
         }
-    }
-
-    public static String normaliseClubName(final String club) {
-
-        return NORMALISED_CLUB_NAMES.getOrDefault(club, club);
     }
 
     public static String getFirstName(final String name) {

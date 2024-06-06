@@ -99,7 +99,7 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
             printPrizes(category, writer);
     }
 
-    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
         writer.append("<ol>\n");

@@ -1,13 +1,10 @@
 package individual_race;
 
+import com.lowagie.text.Document;
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfWriter;
 import common.Category;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 public class IndividualRaceOutputPDF extends IndividualRaceOutput {
@@ -16,23 +13,13 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
         super(results);
     }
 
+    @Override
     public void printPrizes() throws IOException {
 
-        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
-        final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
-
-        final Document document = new Document();
-        PdfWriter.getInstance(document, pdf_file_output_stream);
-
-        document.open();
-        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
-
-        for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, document);
-
-        document.close();
+        printPrizesPDF();
     }
 
+    @Override
     public void printPrizes(final Category category, final Document document) {
 
         final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);

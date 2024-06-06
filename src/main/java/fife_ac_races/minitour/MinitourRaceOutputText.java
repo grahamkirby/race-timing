@@ -29,7 +29,7 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         }
     }
 
-    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final String header = "Category: " + category.getLongName();
 

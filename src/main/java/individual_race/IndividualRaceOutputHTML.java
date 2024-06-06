@@ -18,11 +18,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
     @Override
     public void printPrizes() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printPrizes(writer);
-        }
+        printPrizesHTML();
     }
 
     @Override
@@ -64,7 +60,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             printPrizes(category, html_writer);
     }
 
-    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
@@ -81,7 +77,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
                 writer.append("<li>").
                         append(htmlEncode(result.entry.runner.name)).append(" (").
-                        append(Race.normaliseClubName(result.entry.runner.club)).append(") ").
+                        append(normaliseClubName(result.entry.runner.club)).append(") ").
                         append(format(result.duration())).append("</li>\n");
             }
 
@@ -137,7 +133,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(Race.normaliseClubName(result.entry.runner.club));
+            writer.append(normaliseClubName(result.entry.runner.club));
             writer.append("""
                             </td>
                             <td>""");

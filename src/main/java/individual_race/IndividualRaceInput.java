@@ -1,5 +1,7 @@
 package individual_race;
 
+import common.Race;
+import common.RaceOutput;
 import common.RawResult;
 
 import java.io.IOException;
@@ -63,7 +65,7 @@ public class IndividualRaceInput {
 
         final int bib_number = Integer.parseInt(runner_elements[0]);
         final String runner_name = runner_elements[1] = cleanName(runner_elements[1]);
-        final String club = runner_elements[2] = IndividualRace.normaliseClubName(cleanName(runner_elements[2]));
+        final String club = runner_elements[2] = RaceOutput.normaliseClubName(cleanName(runner_elements[2]));
 
         if (entriesAlreadyContain(entries, bib_number))
             throw new RuntimeException("duplicate runner number: " + bib_number);
