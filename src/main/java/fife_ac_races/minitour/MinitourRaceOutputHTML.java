@@ -22,11 +22,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
     @Override
     public void printPrizes() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
-
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printPrizes(html_writer);
-        }
+        printPrizesHTML();
     }
 
     @Override
@@ -53,7 +49,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                     <h3><strong>Results</strong></h3>
                     """);
 
-            printPrizes(html_writer);
+            printPrizesHTML(html_writer);
 
             printOverallResults(html_writer);
         }
@@ -150,15 +146,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         }
     }
 
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("<h4>Prizes</h4>\n");
-
-        for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, writer);
-    }
-
-    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
         writer.append("<ul>\n");
@@ -299,7 +287,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                     append(" ").
                     append(htmlEncode(result.runner.name)).
                     append(" (").
-                    append(IndividualRace.normaliseClubName(result.runner.club)).
+                    append(normaliseClubName(result.runner.club)).
                     append(") ").
                     append(format(time)).
                     append("</li>\n");

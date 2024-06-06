@@ -48,6 +48,10 @@ public abstract class RelayRaceOutput extends RaceOutput {
             printLegResults(leg);
     }
 
+    public void printLegResults(int leg) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
     Duration sumDurationsUpToLeg(final RelayResult[] leg_results, final int leg) {
 
         Duration total = leg_results[0].duration();
@@ -84,9 +88,5 @@ public abstract class RelayRaceOutput extends RaceOutput {
 
             writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
         }
-    }
-
-    public void printLegResults(int leg) throws IOException {
-        throw new UnsupportedOperationException();
     }
 }

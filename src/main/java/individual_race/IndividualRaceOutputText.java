@@ -30,7 +30,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
         }
     }
 
-    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 

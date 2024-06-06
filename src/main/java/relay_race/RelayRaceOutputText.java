@@ -34,7 +34,7 @@ public class RelayRaceOutputText extends RelayRaceOutput {
         }
     }
 
-    private void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final String header = "Category: " + category.getLongName();
         final List<Team> category_prize_winners = ((RelayRace)race).prize_winners.get(category);

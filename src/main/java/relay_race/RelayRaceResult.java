@@ -42,13 +42,15 @@ public class RelayRaceResult implements Comparable<RelayRaceResult> {
     @Override
     public int compareTo(final RelayRaceResult o) {
 
-        // Sort in order of increasing overall team time.
         // DNF results are sorted in increasing order of bib number.
+        // Otherwise sort in order of increasing overall team time.
         // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
 
-        if (duration().equals(o.duration())) {
+        if (!dnf() && o.dnf()) return -1;
+        if (dnf() && !o.dnf()) return 1;
+        if (dnf() && o.dnf()) return Integer.compare(team.bib_number, o.team.bib_number);
 
-            if (dnf()) return Integer.compare(team.bib_number, o.team.bib_number);
+        if (duration().equals(o.duration())) {
 
             final int this_last_leg_position = race.getRecordedLegPosition(team.bib_number, race.number_of_legs);
             final int other_last_leg_position = race.getRecordedLegPosition(o.team.bib_number, race.number_of_legs);
