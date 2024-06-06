@@ -8,4 +8,6 @@ public abstract class RaceResult implements Comparable<RaceResult> {
     protected RaceResult(Race race) {
         this.race = race;
     }
+
+    public abstract int compareTo2(RaceResult other);
 }

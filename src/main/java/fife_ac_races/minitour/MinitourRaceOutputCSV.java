@@ -1,6 +1,7 @@
 package fife_ac_races.minitour;
 
 import common.Category;
+import common.RaceResult;
 import series_race.SeriesRace;
 
 import java.io.IOException;
@@ -57,8 +58,9 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
     record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
-        public void printResult(final MinitourRaceResult result) throws IOException {
+        public void printResult(final RaceResult r) throws IOException {
 
+            MinitourRaceResult result = (MinitourRaceResult) r;
             writer.append(result.completedAllRacesSoFar() ? result.position_string : "-").append(",").
                     append(result.runner.name).append(",").
                     append(result.runner.club).append(",").

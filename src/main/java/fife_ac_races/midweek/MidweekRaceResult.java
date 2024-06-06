@@ -57,4 +57,9 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
         return compareRunnerNameTo(o);
     }
+
+    @Override
+    public int compareTo2(RaceResult other) {
+        return Integer.compare(totalScore(), ((MidweekRaceResult) other).totalScore());
+    }
 }
