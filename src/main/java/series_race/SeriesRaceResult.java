@@ -1,25 +1,24 @@
 package series_race;
 
 import common.Race;
+import common.RaceResult;
 import common.Runner;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 
-public abstract class SeriesRaceResult implements Comparable<SeriesRaceResult> {
+public abstract class SeriesRaceResult extends RaceResult {
 
     public final Runner runner;
-    protected final SeriesRace race;
-    public String position_string;
 
     public SeriesRaceResult(final Runner runner, final SeriesRace race) {
 
+        super(race);
         this.runner = runner;
-        this.race = race;
     }
 
     public boolean completed() {
 
-        return numberCompleted() >= race.minimum_number_of_races;
+        return numberCompleted() >= ((SeriesRace)race).minimum_number_of_races;
     }
 
     public abstract boolean completedAllRacesSoFar();
@@ -27,7 +26,7 @@ public abstract class SeriesRaceResult implements Comparable<SeriesRaceResult> {
 
         int count = 0;
 
-        for (final IndividualRace individual_race : race.races) {
+        for (final IndividualRace individual_race : ((SeriesRace)race).races) {
             if (individual_race != null)
                 for (final IndividualRaceResult result : individual_race.getOverallResults())
                     if (result.entry.runner.equals(runner)) count++;

@@ -1,5 +1,6 @@
 package fife_ac_races.midweek;
 
+import common.RaceResult;
 import common.Runner;
 import series_race.SeriesRaceResult;
 
@@ -23,7 +24,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
         int[] sorted_scores = scores.clone();
         Arrays.sort(sorted_scores);
-        for (int i = 0; i < race.minimum_number_of_races; i++) {
+        for (int i = 0; i < ((MidweekRace)race).minimum_number_of_races; i++) {
             int score = sorted_scores[sorted_scores.length - 1 - i];
             if (score > -1) total += score;
         }
@@ -44,7 +45,9 @@ public class MidweekRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int compareTo(final SeriesRaceResult o) {
+    public int compareTo(final RaceResult other) {
+
+        MidweekRaceResult o = (MidweekRaceResult) other;
 
         final int compare_completion = compareCompletionTo(o);
         if (compare_completion != 0) return compare_completion;
