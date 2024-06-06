@@ -121,7 +121,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             writer.append("""
                         <tr>
                             <td>""");
-            if (!result.dnf()) writer.append(String.valueOf(position++));
+            if (!result.DNF) writer.append(String.valueOf(position++));
             writer.append("""
                             </td>
                             <td>""");
@@ -141,7 +141,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.dnf() ? DNF_STRING : format(result.duration()));
+            writer.append(result.DNF ? DNF_STRING : format(result.duration()));
             writer.append("""
                             </td>
                         </tr>""");

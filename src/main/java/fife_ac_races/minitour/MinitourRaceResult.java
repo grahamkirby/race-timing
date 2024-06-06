@@ -1,5 +1,6 @@
 package fife_ac_races.minitour;
 
+import common.RaceResult;
 import common.Runner;
 import series_race.SeriesRaceResult;
 
@@ -30,13 +31,13 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     public boolean raceHasTakenPlace(int race_number) {
 
-        return race.races[race_number - 1] != null;
+        return ((MinitourRace)race).races[race_number - 1] != null;
     }
 
     public boolean completedAllRacesSoFar() {
 
-        for (int i = 0; i < race.races.length; i++)
-            if (race.races[i] != null && times[i] == null)
+        for (int i = 0; i < ((MinitourRace)race).races.length; i++)
+            if (((MinitourRace)race).races[i] != null && times[i] == null)
                 return false;
 
         return true;
@@ -49,7 +50,9 @@ public class MinitourRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int compareTo(final SeriesRaceResult o) {
+    public int compareTo(final RaceResult other) {
+
+        MinitourRaceResult o = (MinitourRaceResult) other;
 
         final int compare_completion = compareCompletionTo(o);
         if (compare_completion != 0) return compare_completion;

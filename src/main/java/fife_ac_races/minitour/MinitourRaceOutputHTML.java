@@ -122,7 +122,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
                     <tr>
                         <td>""");
 
-            if (!result.dnf()) writer.append(String.valueOf(position++));
+            if (!result.DNF) writer.append(String.valueOf(position++));
 
             writer.append("""
                     </td>
@@ -139,7 +139,7 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
             append("""
                     </td>
                     <td>""").
-            append(result.dnf() ? DNF_STRING : format(result.duration())).
+            append(result.DNF ? DNF_STRING : format(result.duration())).
             append("""
                         </td>
                     </tr>""");
