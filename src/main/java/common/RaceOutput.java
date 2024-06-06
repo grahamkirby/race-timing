@@ -1,5 +1,6 @@
 package common;
 
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
@@ -131,8 +132,6 @@ public abstract class RaceOutput {
             printPrizes(category, html_writer);
     }
 
-
-
     public void printPrizesPDF() throws IOException {
 
         final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
@@ -148,6 +147,25 @@ public abstract class RaceOutput {
             printPrizes(category, document);
 
         document.close();
+    }
+
+    public static void printPrizePDF(Document document, String positionString, String name, String detail, Duration duration) {
+
+        final Paragraph paragraph = new Paragraph();
+
+        paragraph.add(new com.lowagie.text.Chunk(positionString + ": ", PDF_FONT));
+        paragraph.add(new Chunk(name, PDF_BOLD_FONT));
+        paragraph.add(new Chunk(" (" + detail + ") ", PDF_FONT));
+        paragraph.add(new Chunk(format(duration), PDF_FONT));
+
+        document.add(paragraph);
+    }
+
+    public static void addCategoryHeader(Category category, Document document) {
+
+        final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.getLongName(), PDF_BOLD_UNDERLINED_FONT);
+        category_header_paragraph.setSpacingAfter(12);
+        document.add(category_header_paragraph);
     }
 
     public static String normaliseClubName(final String club) {
