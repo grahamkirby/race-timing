@@ -18,6 +18,11 @@ import java.util.Map;
 
 public abstract class RaceOutput {
 
+    public interface ResultPrinter {
+        void printResult(RaceResult result) throws IOException;
+        void printNoResults() throws IOException;
+    }
+
     protected static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
     protected static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
     protected static final Font PDF_BOLD_UNDERLINED_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, Font.DEFAULTSIZE, Font.UNDERLINE);
@@ -67,9 +72,28 @@ public abstract class RaceOutput {
         configure();
     }
 
-    public void printOverallResults() throws IOException {
-        throw new UnsupportedOperationException();
+    protected void printResults(final RaceResult[] results, final ResultPrinter printer) throws IOException {
+
+        setPositionStrings(results);
+
+        for (final RaceResult result : results)
+            printer.printResult(result);
+
+        if (results.length == 0)
+            printer.printNoResults();
     }
+
+    public void printOverallResults() throws IOException {
+
+        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
+
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
+
+            printOverallResultsHeader(csv_writer);
+            printOverallResults(csv_writer);
+        }
+    }
+
     public void printDetailedResults() throws IOException {
         throw new UnsupportedOperationException();
     }
