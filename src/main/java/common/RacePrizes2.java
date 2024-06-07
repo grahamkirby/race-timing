@@ -1,14 +1,13 @@
 package common;
 
 import series_race.SeriesRace;
+import series_race.SeriesRaceResult;
 
-import java.util.List;
-
-public abstract class RacePrizes {
+public abstract class RacePrizes2 {
 
     protected SeriesRace race;
 
-    public RacePrizes(final SeriesRace race) {
+    public RacePrizes2(final SeriesRace race) {
         this.race = race;
     }
 
@@ -20,12 +19,13 @@ public abstract class RacePrizes {
 
     protected boolean notYetWonPrize(final Runner entry) {
 
-        for (List<Runner> winners : race.prize_winners.values())
-            if (winners.contains(entry)) return false;
+        for (RaceResult[] winners : race.prize_winners.values())
+            for (RaceResult res : winners) {
+                if (((SeriesRaceResult) res).runner.equals(entry)) return false;
+            }
 
         return true;
     }
 
-    protected abstract List<Runner> getPrizeWinners(final Category category);
-
+    protected abstract RaceResult[] getPrizeWinners(final Category category);
 }

@@ -1,13 +1,13 @@
 package fife_ac_races.minitour;
 
 import common.Category;
-import common.RacePrizes;
-import common.Runner;
+import common.RacePrizes2;
+import common.RaceResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MinitourRacePrizes extends RacePrizes {
+public class MinitourRacePrizes extends RacePrizes2 {
 
     final MinitourRace race;
 
@@ -16,9 +16,9 @@ public class MinitourRacePrizes extends RacePrizes {
         this.race = race;
     }
 
-    protected List<Runner> getPrizeWinners(final Category category) {
+    protected RaceResult[] getPrizeWinners(final Category category) {
 
-        final List<Runner> prize_winners = new ArrayList<>();
+        final List<RaceResult> prize_winners = new ArrayList<>();
 
         int position = 1;
 
@@ -26,11 +26,11 @@ public class MinitourRacePrizes extends RacePrizes {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
-                prize_winners.add(result.runner);
+                prize_winners.add(result);
                 position++;
             }
         }
-        return prize_winners;
+        return prize_winners.toArray(new RaceResult[0]);
     }
 
     private boolean prizeWinner(final MinitourRaceResult result, final Category category) {
