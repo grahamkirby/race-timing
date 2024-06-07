@@ -43,48 +43,48 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
             printer.printNoResults();
     }
 
-    private void setPositionStrings(final RaceResult[] series_results) {
-
-        // Sets position strings for dead heats.
-        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
-
-        for (int result_index = 0; result_index < series_results.length; result_index++) {
-
-            final RaceResult result = series_results[result_index];
-
-            // Skip over any following results with the same times.
-            result_index = groupEqualResultsAndReturnFollowingIndex(series_results, result, result_index);
-        }
-    }
-
-    private int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] leg_results, final RaceResult result, final int result_index) {
-
-        final int highest_index_with_same_duration = getHighestIndexWithSameResult(leg_results, result, result_index);
-
-        if (highest_index_with_same_duration > result_index)
-
-            // Record the same position for all the results with equal times.
-            for (int i = result_index; i <= highest_index_with_same_duration; i++)
-                leg_results[i].position_string = result_index + 1 + "=";
-
-        else
-            result.position_string = String.valueOf(result_index + 1);
-
-        return highest_index_with_same_duration;
-    }
-
-    private int getHighestIndexWithSameResult(final RaceResult[] leg_results, final RaceResult result, final int result_index) {
-
-        int highest_index_with_same_result = result_index;
-
-        while (highest_index_with_same_result + 1 < leg_results.length &&
-//                result.duration().equals(leg_results[highest_index_with_same_result + 1].duration()))
-            result.compareTo2(leg_results[highest_index_with_same_result + 1]) == 0)
-
-            highest_index_with_same_result++;
-
-        return highest_index_with_same_result;
-    }
+//    private void setPositionStrings(final RaceResult[] series_results) {
+//
+//        // Sets position strings for dead heats.
+//        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
+//
+//        for (int result_index = 0; result_index < series_results.length; result_index++) {
+//
+//            final RaceResult result = series_results[result_index];
+//
+//            // Skip over any following results with the same times.
+//            result_index = groupEqualResultsAndReturnFollowingIndex(series_results, result, result_index);
+//        }
+//    }
+//
+//    private int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] leg_results, final RaceResult result, final int result_index) {
+//
+//        final int highest_index_with_same_duration = getHighestIndexWithSameResult(leg_results, result, result_index);
+//
+//        if (highest_index_with_same_duration > result_index)
+//
+//            // Record the same position for all the results with equal times.
+//            for (int i = result_index; i <= highest_index_with_same_duration; i++)
+//                leg_results[i].position_string = result_index + 1 + "=";
+//
+//        else
+//            result.position_string = String.valueOf(result_index + 1);
+//
+//        return highest_index_with_same_duration;
+//    }
+//
+//    private int getHighestIndexWithSameResult(final RaceResult[] leg_results, final RaceResult result, final int result_index) {
+//
+//        int highest_index_with_same_result = result_index;
+//
+//        while (highest_index_with_same_result + 1 < leg_results.length &&
+////                result.duration().equals(leg_results[highest_index_with_same_result + 1].duration()))
+//            result.compareTo2(leg_results[highest_index_with_same_result + 1]) == 0)
+//
+//            highest_index_with_same_result++;
+//
+//        return highest_index_with_same_result;
+//    }
 
     public interface ResultPrinter {
         void printResult(RaceResult result) throws IOException;
