@@ -13,7 +13,7 @@ public abstract class SeriesRace extends Race {
 
     public IndividualRace[] races;
     public Runner[] combined_runners;
-    public Map<Category, List<Runner>> prize_winners = new HashMap<>();
+    public Map<Category, RaceResult[]> prize_winners = new HashMap<>();
 
     public int category_prizes;
     public int minimum_number_of_races;

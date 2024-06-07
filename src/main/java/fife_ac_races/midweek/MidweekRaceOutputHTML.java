@@ -3,13 +3,12 @@ package fife_ac_races.midweek;
 import common.Category;
 import common.Race;
 import common.RaceOutput;
-import common.Runner;
+import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.util.List;
 
 public class MidweekRaceOutputHTML extends RaceOutput {
 
@@ -55,7 +54,7 @@ public class MidweekRaceOutputHTML extends RaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<Runner> category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
+        final RaceResult[] category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").
@@ -63,19 +62,19 @@ public class MidweekRaceOutputHTML extends RaceOutput {
                     append("</strong></p>\n").
                     append("<ol>\n");
 
-            if (category_prize_winners.isEmpty())
+            if (category_prize_winners.length == 0)
                 writer.append("No results\n");
 
-            for (final Runner entry : category_prize_winners) {
+            for (final RaceResult entry : category_prize_winners) {
 
-                int indexOfRunner = ((MidweekRace)race).findIndexOfRunner(entry);
-                MidweekRaceResult overallResult = ((MidweekRace)race).getOverallResults()[indexOfRunner];
+//                int indexOfRunner = ((MidweekRace)race).findIndexOfRunner(entry);
+                MidweekRaceResult overallResult = ((MidweekRaceResult)entry);
                 int score = overallResult.totalScore();
 
                 writer.append("<li>").
-                        append(entry.name).
+                        append(overallResult.runner.name).
                         append(" (").
-                        append(entry.category.getShortName()).
+                        append(overallResult.runner.category.getShortName()).
                         append(") ").
                         append(String.valueOf(score)).
                         append("</li>\n");
