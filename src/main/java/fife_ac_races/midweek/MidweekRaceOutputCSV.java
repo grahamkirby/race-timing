@@ -66,46 +66,4 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
                     append("\n");
         }
     }
-
-    private static void setPositionStrings(final MidweekRaceResult[] series_results) {
-
-        // Sets position strings for dead heats.
-        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
-
-        for (int result_index = 0; result_index < series_results.length; result_index++) {
-
-            final MidweekRaceResult result = series_results[result_index];
-
-            // Skip over any following results with the same times.
-            result_index = groupEqualScoresAndReturnFollowingIndex(series_results, result, result_index);
-        }
-    }
-
-    private static int groupEqualScoresAndReturnFollowingIndex(final MidweekRaceResult[] leg_results, final MidweekRaceResult result, final int result_index) {
-
-        final int highest_index_with_same_duration = getHighestIndexWithSameScore(leg_results, result, result_index);
-
-        if (highest_index_with_same_duration > result_index)
-
-            // Record the same position for all the results with equal times.
-            for (int i = result_index; i <= highest_index_with_same_duration; i++)
-                leg_results[i].position_string = result_index + 1 + "=";
-
-        else
-            result.position_string = String.valueOf(result_index + 1);
-
-        return highest_index_with_same_duration;
-    }
-
-    private static int getHighestIndexWithSameScore(final MidweekRaceResult[] leg_results, final MidweekRaceResult result, final int result_index) {
-
-        int highest_index_with_same_score = result_index;
-
-        while (highest_index_with_same_score + 1 < leg_results.length &&
-                result.totalScore() == leg_results[highest_index_with_same_score + 1].totalScore())
-
-            highest_index_with_same_score++;
-
-        return highest_index_with_same_score;
-    }
 }

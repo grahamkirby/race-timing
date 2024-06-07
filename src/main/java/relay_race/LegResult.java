@@ -2,7 +2,7 @@ package relay_race;
 
 import java.time.Duration;
 
-public class RelayResult implements Comparable<RelayResult> {
+public class LegResult implements Comparable<LegResult> {//extends RaceResult {
 
     final Team team;
     int leg_number;
@@ -14,7 +14,7 @@ public class RelayResult implements Comparable<RelayResult> {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public RelayResult(final Team team, final RelayRace race) {
+    public LegResult(final Team team, final RelayRace race) {
 
         this.team = team;
         this.race = race;
@@ -26,8 +26,8 @@ public class RelayResult implements Comparable<RelayResult> {
         return DNF ? RelayRace.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
-    @Override
-    public int compareTo(final RelayResult o) {
+//    @Override
+    public int compareTo(final LegResult o) {
 
         // Where the time is the same, use the recording order.
         if (duration().equals(o.duration())) {

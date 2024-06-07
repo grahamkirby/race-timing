@@ -284,7 +284,7 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++) {
 
-            final RelayResult leg_result = result.leg_results[leg - 1];
+            final LegResult leg_result = result.leg_results[leg - 1];
 
             writer.append("""
                 <td>""");
@@ -328,9 +328,9 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
             """);
     }
 
-    private void printLegResultsBody(final OutputStreamWriter writer, final RelayResult[] leg_results) throws IOException {
+    private void printLegResultsBody(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
 
-        for (final RelayResult leg_result : leg_results) {
+        for (final LegResult leg_result : leg_results) {
 
             if (!leg_result.DNF) {
                 writer.append("""

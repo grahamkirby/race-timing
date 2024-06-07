@@ -5,24 +5,24 @@ import java.time.Duration;
 public class RelayRaceResult implements Comparable<RelayRaceResult> {
 
     final Team team;
-    final RelayResult[] leg_results;
+    final LegResult[] leg_results;
     final RelayRace race;
 
     public RelayRaceResult(final Team team, final int number_of_legs, final RelayRace race) {
 
         this.team = team;
         this.race = race;
-        leg_results = new RelayResult[number_of_legs];
+        leg_results = new LegResult[number_of_legs];
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results[i] = new RelayResult(team, race);
+            leg_results[i] = new LegResult(team, race);
     }
 
     public Duration duration() {
 
         Duration overall = Duration.ZERO;
 
-        for (final RelayResult leg_result : leg_results) {
+        for (final LegResult leg_result : leg_results) {
 
             if (leg_result.DNF) return RelayRace.DUMMY_DURATION;
             overall = overall.plus(leg_result.duration());
@@ -33,7 +33,7 @@ public class RelayRaceResult implements Comparable<RelayRaceResult> {
 
     public boolean dnf() {
 
-        for (final RelayResult leg_result : leg_results)
+        for (final LegResult leg_result : leg_results)
             if (leg_result.DNF) return true;
 
         return false;

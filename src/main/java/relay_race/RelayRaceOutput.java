@@ -52,7 +52,7 @@ public abstract class RelayRaceOutput extends RaceOutput {
         throw new UnsupportedOperationException();
     }
 
-    Duration sumDurationsUpToLeg(final RelayResult[] leg_results, final int leg) {
+    Duration sumDurationsUpToLeg(final LegResult[] leg_results, final int leg) {
 
         Duration total = leg_results[0].duration();
         for (int i = 1; i < leg; i++)
@@ -60,9 +60,9 @@ public abstract class RelayRaceOutput extends RaceOutput {
         return total;
     }
 
-    RelayResult[] getLegResults(final int leg_number) {
+    LegResult[] getLegResults(final int leg_number) {
 
-        final RelayResult[] leg_results = new RelayResult[((RelayRace)race).overall_results.length];
+        final LegResult[] leg_results = new LegResult[((RelayRace)race).overall_results.length];
 
         for (int i = 0; i < leg_results.length; i++)
             leg_results[i] = ((RelayRace)race).overall_results[i].leg_results[leg_number-1];
@@ -76,7 +76,7 @@ public abstract class RelayRaceOutput extends RaceOutput {
         return leg_results;
     }
 
-    void addMassStartAnnotation(final OutputStreamWriter writer, final RelayResult leg_result, final int leg) throws IOException {
+    void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
 
         // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
         if (leg_result.in_mass_start) {

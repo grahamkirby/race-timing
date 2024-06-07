@@ -290,7 +290,7 @@ public class RelayRace extends Race {
 
         final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
         final RelayRaceResult result = overall_results[team_index];
-        final RelayResult[] leg_results = result.leg_results;
+        final LegResult[] leg_results = result.leg_results;
 
         final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
 
@@ -363,7 +363,7 @@ public class RelayRace extends Race {
                 fillLegStartTime(overall_result.leg_results, leg_index);
     }
 
-    private void fillLegStartTime(final RelayResult[] leg_results, final int leg_index) {
+    private void fillLegStartTime(final LegResult[] leg_results, final int leg_index) {
 
         // Possible cases:
 
@@ -383,7 +383,7 @@ public class RelayRace extends Race {
         leg_results[leg_index].in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
     }
 
-    private Duration getIndividualStartTime(final RelayResult leg_result, final int leg_index) {
+    private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
         for (final IndividualLegStart individual_leg_start : individual_leg_starts)
             if (individual_leg_start.bib_number == leg_result.team.bib_number && individual_leg_start.leg_number == leg_index + 1)
@@ -442,7 +442,7 @@ public class RelayRace extends Race {
         return Integer.MAX_VALUE;
     }
 
-    private int findIndexOfNextUnfilledLegResult(final RelayResult[] leg_results) {
+    private int findIndexOfNextUnfilledLegResult(final LegResult[] leg_results) {
 
         for (int i = 0; i < leg_results.length; i++)
             if (leg_results[i].finish_time == null) return i;
