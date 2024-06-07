@@ -203,7 +203,7 @@ public abstract class RaceOutput {
         }
     }
 
-    protected int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] results, final RaceResult result, final int result_index) {
+    public int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] results, final RaceResult result, final int result_index) {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameResult(results, result, result_index);
 
@@ -219,13 +219,13 @@ public abstract class RaceOutput {
         return highest_index_with_same_duration;
     }
 
-    protected int getHighestIndexWithSameResult(final RaceResult[] results, final RaceResult result, final int result_index) {
+    public int getHighestIndexWithSameResult(final RaceResult[] results, final RaceResult result, final int result_index) {
 
         int highest_index_with_same_result = result_index;
 
         while (highest_index_with_same_result + 1 < results.length &&
 //                result.duration().equals(results[highest_index_with_same_result + 1].duration()))
-                result.compareTo2(results[highest_index_with_same_result + 1]) == 0)
+                result.comparePerformanceTo(results[highest_index_with_same_result + 1]) == 0)
 
             highest_index_with_same_result++;
 
