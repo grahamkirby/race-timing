@@ -26,7 +26,10 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        printResults(getMinitourRacePrizeResults(category), new ResultPrinterText(writer));
+        final RaceResult[] results = getMinitourRacePrizeResults(category);
+
+        setPositionStrings(results, true);
+        printResults(results, new ResultPrinterText(writer));
 
         writer.append("\n\n");
     }
@@ -36,7 +39,7 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            MinitourRaceResult result = (MinitourRaceResult) r;
+            final MinitourRaceResult result = (MinitourRaceResult) r;
 
             writer.append(result.position_string).append(": ").
                     append(result.runner.name).append(" (").

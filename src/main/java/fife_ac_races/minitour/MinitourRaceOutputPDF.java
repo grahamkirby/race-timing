@@ -25,7 +25,10 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
         addCategoryHeader(category, document);
 
-        printResults(getMinitourRacePrizeResults(category), new ResultPrinterPDF(document));
+        RaceResult[] results = getMinitourRacePrizeResults(category);
+
+        setPositionStrings(results, true);
+        printResults(results, new ResultPrinterPDF(document));
     }
 
     record ResultPrinterPDF(Document document) implements ResultPrinter {
@@ -34,7 +37,7 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
         public void printResult(final RaceResult r) {
 
             MinitourRaceResult result = (MinitourRaceResult) r;
-            printPrizePDF(document, result.position_string, ((MinitourRaceResult)result).runner.name, normaliseClubName(result.runner.club), result.duration());
+            printPrizePDF(document, result.position_string, result.runner.name, normaliseClubName(result.runner.club), result.duration());
         }
 
         @Override
