@@ -1,17 +1,19 @@
 package relay_race;
 
+import common.Race;
+import common.RaceResult;
+
 import java.time.Duration;
 
-public class RelayRaceResult implements Comparable<RelayRaceResult> {
+public class RelayRaceResult extends RaceResult {
 
     final Team team;
     final LegResult[] leg_results;
-    final RelayRace race;
 
-    public RelayRaceResult(final Team team, final int number_of_legs, final RelayRace race) {
+    public RelayRaceResult(final Team team, final int number_of_legs, final Race race) {
 
+        super(race);
         this.team = team;
-        this.race = race;
         leg_results = new LegResult[number_of_legs];
 
         for (int i = 0; i < number_of_legs; i++)
@@ -40,7 +42,9 @@ public class RelayRaceResult implements Comparable<RelayRaceResult> {
     }
 
     @Override
-    public int compareTo(final RelayRaceResult o) {
+    public int compareTo(final RaceResult other) {
+
+        RelayRaceResult o = (RelayRaceResult) other;
 
         // DNF results are sorted in increasing order of bib number.
         // Otherwise sort in order of increasing overall team time.
@@ -52,12 +56,17 @@ public class RelayRaceResult implements Comparable<RelayRaceResult> {
 
         if (duration().equals(o.duration())) {
 
-            final int this_last_leg_position = race.getRecordedLegPosition(team.bib_number, race.number_of_legs);
-            final int other_last_leg_position = race.getRecordedLegPosition(o.team.bib_number, race.number_of_legs);
+            final int this_last_leg_position = ((RelayRace)race).getRecordedLegPosition(team.bib_number, ((RelayRace)race).number_of_legs);
+            final int other_last_leg_position = ((RelayRace)race).getRecordedLegPosition(o.team.bib_number, ((RelayRace)race).number_of_legs);
 
             return Integer.compare(this_last_leg_position, other_last_leg_position);
         }
 
         return duration().compareTo(o.duration());
+    }
+
+    @Override
+    public int comparePerformanceTo(RaceResult other) {
+        throw new UnsupportedOperationException();
     }
 }
