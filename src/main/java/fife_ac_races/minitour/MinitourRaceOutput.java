@@ -1,12 +1,10 @@
 package fife_ac_races.minitour;
 
 import common.Category;
-import common.RaceResult;
 import common.Runner;
 import series_race.SeriesRace;
 import series_race.SeriesRaceOutput;
 
-import java.io.IOException;
 import java.util.List;
 
 public abstract class MinitourRaceOutput extends SeriesRaceOutput {
@@ -18,7 +16,7 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
 
     MinitourRaceResult[] getMinitourRacePrizeResults(final Category category) {
 
-        final List<Runner> category_prize_winners = ((MinitourRace)race).prize_winners.get(category);
+        final List<Runner> category_prize_winners = race.prize_winners.get(category);
         final MinitourRaceResult[] category_prize_winner_results = new MinitourRaceResult[category_prize_winners.size()];
 
         for (int i = 0; i < category_prize_winners.size(); i++)
@@ -32,19 +30,19 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
         return category_prize_winner_results;
     }
 
-    protected void printResults(final RaceResult[] results, final ResultPrinter printer) throws IOException {
+//    protected void printResults(final RaceResult[] results, final ResultPrinter printer) throws IOException {
+//
+//        setPositionStrings(results);
+//
+//        for (final RaceResult result : results)
+//            printer.printResult(result);
+//
+//        if (results.length == 0)
+//            printer.printNoResults();
+//    }
 
-        setPositionStrings(results);
-
-        for (final RaceResult result : results)
-            printer.printResult(result);
-
-        if (results.length == 0)
-            printer.printNoResults();
-    }
-
-    public interface ResultPrinter {
-        void printResult(RaceResult result) throws IOException;
-        void printNoResults() throws IOException;
-    }
+//    public interface ResultPrinter {
+//        void printResult(RaceResult result) throws IOException;
+//        void printNoResults() throws IOException;
+//    }
 }

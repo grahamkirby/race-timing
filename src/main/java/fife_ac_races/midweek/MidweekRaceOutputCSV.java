@@ -1,29 +1,18 @@
 package fife_ac_races.midweek;
 
 import common.Race;
+import common.RaceResult;
+import fife_ac_races.minitour.MinitourRaceResult;
 import series_race.SeriesRace;
 import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class MidweekRaceOutputCSV extends SeriesRaceOutput {
 
     public MidweekRaceOutputCSV(final SeriesRace race) {
         super(race);
-    }
-
-    public void printOverallResults() throws IOException {
-
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
-
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
-
-            printOverallResultsHeader(csv_writer);
-            printOverallResults(csv_writer);
-        }
     }
 
     @Override
@@ -36,34 +25,46 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final MidweekRaceResult[] series_results = ((MidweekRace)race).getOverallResults();
+        printResults(((MidweekRace)race).getOverallResults(), new ResultPrinterCSV(race, writer));
+    }
 
-        setPositionStrings(series_results);
+    private record ResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {
 
-        for (final MidweekRaceResult overall_result : series_results) {
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
 
-            int number_of_races_completed = 0;
-            for (final Race r : race.races)
-                if (r != null) number_of_races_completed++;
+            final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            if (number_of_races_completed < race.races.length || overall_result.completed())
-                writer.append(overall_result.position_string);
+            if (getNumberOfRacesCompleted() < ((MidweekRace)race).races.length || result.completed())
+                writer.append(result.position_string);
 
             writer.append(",").
-                    append(overall_result.runner.name).
+                    append(result.runner.name).
                     append(",").
-                    append(overall_result.runner.club).
+                    append(result.runner.club).
                     append(",").
-                    append(overall_result.runner.category.getShortName()).
+                    append(result.runner.category.getShortName()).
                     append(",");
 
-            for (final int score : overall_result.scores)
+            for (final int score : result.scores)
                 if (score >= 0) writer.append(String.valueOf(score)).append(",");
 
-            writer.append(String.valueOf(overall_result.totalScore())).
+            writer.append(String.valueOf(result.totalScore())).
                     append(",").
-                    append(overall_result.completed() ? "Y" : "N").
+                    append(result.completed() ? "Y" : "N").
                     append("\n");
+        }
+
+        private int getNumberOfRacesCompleted() {
+
+            int number_of_races_completed = 0;
+            for (final Race individual_race : ((MidweekRace)race).races)
+                if (individual_race != null) number_of_races_completed++;
+            return number_of_races_completed;
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
         }
     }
 }
