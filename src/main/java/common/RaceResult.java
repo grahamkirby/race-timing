@@ -9,5 +9,5 @@ public abstract class RaceResult implements Comparable<RaceResult> {
         this.race = race;
     }
 
-    public abstract int compareTo2(RaceResult other);
+    public abstract int comparePerformanceTo(RaceResult other);
 }

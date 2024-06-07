@@ -22,6 +22,7 @@ public abstract class SeriesRaceResult extends RaceResult {
     }
 
     public abstract boolean completedAllRacesSoFar();
+
     protected int numberCompleted() {
 
         int count = 0;
@@ -54,6 +55,4 @@ public abstract class SeriesRaceResult extends RaceResult {
         final int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
         return last_name_comparison != 0 ? last_name_comparison : Race.getFirstName(runner.name).compareTo(Race.getFirstName(o.runner.name));
     }
-
-    protected abstract int comparePerformanceTo(SeriesRaceResult other);
 }

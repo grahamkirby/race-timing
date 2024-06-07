@@ -45,7 +45,15 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
 
             printLegResultsHeader(csv_writer, leg_number);
-            printLegResults(csv_writer, getLegResults(leg_number));
+            LegResult[] leg_results = getLegResults(leg_number);
+
+            // Deal with dead heats in legs after the first.
+            if (leg_number == 1)
+                setPositionStringsForLeg1(leg_results);
+            else
+                setPositionStrings(leg_results);
+
+            printLegResults(csv_writer, leg_results);
         }
     }
 
@@ -136,14 +144,11 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
     private void printLegResults(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
 
-        // Deal with dead heats in legs after the first.
-        setPositionStrings(leg_results);
-
         for (final LegResult leg_result : leg_results)
             printLegResult(writer, leg_result);
     }
 
-    private static void printLegResult(final OutputStreamWriter writer, final LegResult leg_result) throws IOException {
+    private void printLegResult(final OutputStreamWriter writer, final LegResult leg_result) throws IOException {
 
         if (!leg_result.DNF) {
             writer.append(leg_result.position_string).append(",");
@@ -152,50 +157,11 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
         }
     }
 
-    private static void setPositionStrings(final LegResult[] leg_results) {
-
-        // Sets position strings for dead heats.
-        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
+    private void setPositionStringsForLeg1(final LegResult[] leg_results) {
 
         for (int result_index = 0; result_index < leg_results.length; result_index++) {
 
-            final LegResult result = leg_results[result_index];
-
-            if (result.leg_number == 1)
-                // No dead heats for leg 1; positions determined by order of recording.
-                result.position_string = String.valueOf(result_index + 1);
-
-            else
-                // Skip over any following results with the same times.
-                result_index = groupEqualDurationsAndReturnFollowingIndex(leg_results, result, result_index);
+            leg_results[result_index].position_string = String.valueOf(result_index + 1);
         }
-    }
-
-    private static int groupEqualDurationsAndReturnFollowingIndex(final LegResult[] leg_results, final LegResult result, final int result_index) {
-
-        final int highest_index_with_same_duration = getHighestIndexWithSameDuration(leg_results, result, result_index);
-
-        if (highest_index_with_same_duration > result_index)
-
-            // Record the same position for all the results with equal times.
-            for (int i = result_index; i <= highest_index_with_same_duration; i++)
-                leg_results[i].position_string = result_index + 1 + "=";
-
-        else
-            result.position_string = String.valueOf(result_index + 1);
-
-        return highest_index_with_same_duration;
-    }
-
-    private static int getHighestIndexWithSameDuration(final LegResult[] leg_results, final LegResult result, final int result_index) {
-
-        int highest_index_with_same_duration = result_index;
-
-        while (highest_index_with_same_duration + 1 < leg_results.length &&
-                result.duration().equals(leg_results[highest_index_with_same_duration + 1].duration()))
-
-            highest_index_with_same_duration++;
-
-        return highest_index_with_same_duration;
     }
 }

@@ -1,7 +1,6 @@
 package individual_race;
 
 import common.Category;
-import common.Race;
 
 import java.io.IOException;
 import java.io.OutputStream;
