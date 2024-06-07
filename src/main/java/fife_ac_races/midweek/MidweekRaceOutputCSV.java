@@ -25,7 +25,10 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        printResults(((MidweekRace)race).getOverallResults(), new ResultPrinterCSV(race, writer));
+        final RaceResult[] results = ((MidweekRace) race).getOverallResults();
+
+        setPositionStrings(results, true);
+        printResults(results, new ResultPrinterCSV(race, writer));
     }
 
     private record ResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {

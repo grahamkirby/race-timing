@@ -29,20 +29,4 @@ public abstract class MinitourRaceOutput extends SeriesRaceOutput {
 
         return category_prize_winner_results;
     }
-
-//    protected void printResults(final RaceResult[] results, final ResultPrinter printer) throws IOException {
-//
-//        setPositionStrings(results);
-//
-//        for (final RaceResult result : results)
-//            printer.printResult(result);
-//
-//        if (results.length == 0)
-//            printer.printNoResults();
-//    }
-
-//    public interface ResultPrinter {
-//        void printResult(RaceResult result) throws IOException;
-//        void printNoResults() throws IOException;
-//    }
 }

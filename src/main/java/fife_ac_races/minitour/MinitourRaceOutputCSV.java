@@ -36,9 +36,10 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
     private void printCategoryResults(final OutputStreamWriter writer, final String... category_names) throws IOException {
 
         final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
-        final MinitourRaceResult[] category_results = ((MinitourRace)race).getResultsByCategory(category_list);
+        final RaceResult[] results = ((MinitourRace)race).getResultsByCategory(category_list);
 
-        printResults(category_results, new ResultPrinterCSV(writer));
+        setPositionStrings(results, true);
+        printResults(results, new ResultPrinterCSV(writer));
     }
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {

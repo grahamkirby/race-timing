@@ -152,9 +152,10 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
         writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
         writer.append("<ul>\n");
 
-        final MinitourRaceResult[] category_prize_winner_results = getMinitourRacePrizeResults(category);
+        final RaceResult[] results = getMinitourRacePrizeResults(category);
 
-        printResults(category_prize_winner_results, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
+        setPositionStrings(results, true);
+        printResults(results, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
 
         writer.append("</ul>\n\n");
     }
@@ -214,7 +215,10 @@ public class MinitourRaceOutputHTML extends MinitourRaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer, final List<Category> result_categories) throws IOException {
 
-        printResults(((MinitourRace)race).getResultsByCategory(result_categories), new OverallResultPrinterHTML(writer));
+        final RaceResult[] results = ((MinitourRace) race).getResultsByCategory(result_categories);
+
+        setPositionStrings(results, true);
+        printResults(results, new OverallResultPrinterHTML(writer));
     }
 
     private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {

@@ -45,13 +45,11 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
 
             printLegResultsHeader(csv_writer, leg_number);
-            LegResult[] leg_results = getLegResults(leg_number);
+
+            final LegResult[] leg_results = getLegResults(leg_number);
 
             // Deal with dead heats in legs after the first.
-            if (leg_number == 1)
-                setPositionStringsForLeg1(leg_results);
-            else
-                setPositionStrings(leg_results);
+            setPositionStrings(leg_results, leg_number > 1);
 
             printLegResults(csv_writer, leg_results);
         }
@@ -154,14 +152,6 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
             writer.append(leg_result.position_string).append(",");
             writer.append(leg_result.team.runners[leg_result.leg_number - 1]).append(",");
             writer.append(format(leg_result.duration())).append("\n");
-        }
-    }
-
-    private void setPositionStringsForLeg1(final LegResult[] leg_results) {
-
-        for (int result_index = 0; result_index < leg_results.length; result_index++) {
-
-            leg_results[result_index].position_string = String.valueOf(result_index + 1);
         }
     }
 }

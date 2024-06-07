@@ -74,8 +74,6 @@ public abstract class RaceOutput {
 
     protected void printResults(final RaceResult[] results, final ResultPrinter printer) throws IOException {
 
-        setPositionStrings(results);
-
         for (final RaceResult result : results)
             printer.printResult(result);
 
@@ -227,7 +225,7 @@ public abstract class RaceOutput {
         return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
     }
 
-    protected void setPositionStrings(final RaceResult[] results) {
+    protected void setPositionStrings(final RaceResult[] results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -236,12 +234,15 @@ public abstract class RaceOutput {
 
             final RaceResult result = results[result_index];
 
-            // Skip over any following results with the same times.
-            result_index = groupEqualResultsAndReturnFollowingIndex(results, result, result_index);
+            if (allow_equal_positions)
+                // Skip over any following results with the same times.
+                result_index = groupEqualResultsAndReturnFollowingIndex(results, result, result_index);
+            else
+                result.position_string = String.valueOf(result_index + 1);
         }
     }
 
-    public int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] results, final RaceResult result, final int result_index) {
+    private int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] results, final RaceResult result, final int result_index) {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameResult(results, result, result_index);
 
@@ -257,17 +258,13 @@ public abstract class RaceOutput {
         return highest_index_with_same_duration;
     }
 
-    public int getHighestIndexWithSameResult(final RaceResult[] results, final RaceResult result, final int result_index) {
+    private int getHighestIndexWithSameResult(final RaceResult[] results, final RaceResult result, final int result_index) {
 
         int highest_index_with_same_result = result_index;
 
-        while (highest_index_with_same_result + 1 < results.length &&
-//                result.duration().equals(results[highest_index_with_same_result + 1].duration()))
-                result.comparePerformanceTo(results[highest_index_with_same_result + 1]) == 0)
-
+        while (highest_index_with_same_result + 1 < results.length && result.comparePerformanceTo(results[highest_index_with_same_result + 1]) == 0)
             highest_index_with_same_result++;
 
         return highest_index_with_same_result;
     }
-
 }
