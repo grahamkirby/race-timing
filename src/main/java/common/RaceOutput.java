@@ -161,6 +161,20 @@ public abstract class RaceOutput {
         document.add(paragraph);
     }
 
+    public void printPrizesText() throws IOException {
+
+        final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
+
+            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
+            writer.append("============================").append("\n\n");
+
+            for (final Category category : race.categories.getCategoriesInReportOrder())
+                printPrizes(category, writer);
+        }
+    }
+
     public static void addCategoryHeader(Category category, Document document) {
 
         final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.getLongName(), PDF_BOLD_UNDERLINED_FONT);

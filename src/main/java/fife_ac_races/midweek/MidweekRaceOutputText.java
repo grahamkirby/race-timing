@@ -20,16 +20,7 @@ public class MidweekRaceOutputText extends RaceOutput {
     @Override
     public void printPrizes() throws IOException {
 
-        final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
-
-            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
-            writer.append("============================").append("\n\n");
-
-            for (final Category category : race.categories.getCategoriesInReportOrder())
-                printPrizes(category, writer);
-        }
+        printPrizesText();
     }
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {

@@ -1,5 +1,6 @@
 package relay_race;
 
+import common.Race;
 import common.RaceResult;
 
 import java.time.Duration;
@@ -14,7 +15,7 @@ public class LegResult extends RaceResult {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public LegResult(final Team team, final RelayRace race) {
+    public LegResult(final Team team, final Race race) {
 
         super(race);
         this.team = team;
