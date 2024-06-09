@@ -1,12 +1,12 @@
 package relay_race;
 
 import common.Category;
+import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.util.List;
 
 public class RelayRaceOutputHTML extends RelayRaceOutput {
 
@@ -104,19 +104,20 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
         writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
         writer.append("<ol>\n");
 
-        final List<Team> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
+        final RaceResult[] category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
-        if (category_prize_winners.isEmpty())
+        if (category_prize_winners == null)
             writer.append("No results\n");
+        else {
+            for (final RaceResult team : category_prize_winners) {
 
-        for (final Team team : category_prize_winners) {
+                final RelayRaceResult result = ((RelayRaceResult) team);
 
-            final RelayRaceResult result = ((RelayRace)race).overall_results[((RelayRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
-
-            writer.append("<li>").
-                    append(result.team.name).append(" (").
-                    append(result.team.category.getLongName()).append(") ").
-                    append(format(result.duration())).append("</li>\n");
+                writer.append("<li>").
+                        append(result.team.name).append(" (").
+                        append(result.team.category.getLongName()).append(") ").
+                        append(format(result.duration())).append("</li>\n");
+            }
         }
 
         writer.append("</ol>\n\n");

@@ -1,6 +1,7 @@
 package relay_race;
 
 import common.Category;
+import common.RaceResult;
 import common.RawResult;
 
 import java.io.IOException;
@@ -28,31 +29,31 @@ public class RelayRaceOutputText extends RelayRaceOutput {
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final String header = "Category: " + category.getLongName();
-        final List<Team> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
+        final RaceResult[] category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        if (category_prize_winners.isEmpty())
+        if (category_prize_winners == null)
             writer.append("No results\n");
+        else
+            printPrizes(category_prize_winners, writer);
 
-        printPrizes(category_prize_winners, writer);
+        writer.append("\n\n");
     }
 
-    private void printPrizes(List<Team> category_prize_winners, OutputStreamWriter writer) throws IOException {
+    private void printPrizes(RaceResult[] category_prize_winners, OutputStreamWriter writer) throws IOException {
 
         int position = 1;
-        for (final Team team : category_prize_winners) {
+        for (final RaceResult res : category_prize_winners) {
 
-            final RelayRaceResult result = ((RelayRace)race).overall_results[((RelayRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
+            final RelayRaceResult result = ((RelayRaceResult)res);
 
             writer.append(String.valueOf(position++)).append(": ").
                     append(result.team.name).append(" (").
                     append(result.team.category.getLongName()).append(") ").
                     append(format(result.duration())).append("\n");
         }
-
-        writer.append("\n\n");
     }
 
     public void printCollatedResults() throws IOException {

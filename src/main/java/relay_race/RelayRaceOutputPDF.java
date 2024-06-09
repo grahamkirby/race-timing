@@ -3,9 +3,9 @@ package relay_race;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import common.Category;
+import common.RaceResult;
 
 import java.io.IOException;
-import java.util.List;
 
 public class RelayRaceOutputPDF extends RelayRaceOutput {
 
@@ -24,17 +24,18 @@ public class RelayRaceOutputPDF extends RelayRaceOutput {
 
         addCategoryHeader(category, document);
 
-        final List<Team> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
+        final RaceResult[] category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
-        if (category_prize_winners.isEmpty())
+        if (category_prize_winners == null)
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+        else {
+            int position = 1;
+            for (final RaceResult team : category_prize_winners) {
 
-        int position = 1;
-        for (final Team team : category_prize_winners) {
+                final RelayRaceResult result = ((RelayRaceResult) team);
 
-            final RelayRaceResult result = ((RelayRace)race).overall_results[((RelayRace)race).findIndexOfTeamWithBibNumber(team.bib_number)];
-
-            printPrizePDF(document, String.valueOf(position++), result.team.name, result.team.category.getLongName(), result.duration());
+                printPrizePDF(document, String.valueOf(position++), result.team.name, result.team.category.getLongName(), result.duration());
+            }
         }
     }
 }
