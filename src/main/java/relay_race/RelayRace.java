@@ -2,6 +2,7 @@ package relay_race;
 
 import common.Category;
 import common.Race;
+import common.RaceResult;
 import common.RawResult;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class RelayRace extends Race {
 
     Team[] entries;
     RelayRaceResult[] overall_results;
-    Map<Category, List<Team>> prize_winners = new HashMap<>();
+    Map<Category, RaceResult[]> prize_winners = new HashMap<>();
 
     private int senior_prizes, category_prizes;
 
