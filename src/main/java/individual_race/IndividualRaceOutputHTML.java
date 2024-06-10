@@ -1,12 +1,12 @@
 package individual_race;
 
 import common.Category;
+import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.util.List;
 
 public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
@@ -61,24 +61,24 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
+        final RaceResult[] category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
             writer.append("<ol>\n");
 
-            if (category_prize_winners.isEmpty())
+            if (category_prize_winners.length == 0)
                 writer.append("No results\n");
+            else
+                for (final RaceResult entry : category_prize_winners) {
 
-            for (final IndividualRaceEntry entry : category_prize_winners) {
+                    final IndividualRaceResult result = ((IndividualRaceResult)entry);
 
-                final IndividualRaceResult result = ((IndividualRace)race).getOverallResults()[((IndividualRace)race).findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
-
-                writer.append("<li>").
-                        append(htmlEncode(result.entry.runner.name)).append(" (").
-                        append(normaliseClubName(result.entry.runner.club)).append(") ").
-                        append(format(result.duration())).append("</li>\n");
-            }
+                    writer.append("<li>").
+                            append(htmlEncode(result.entry.runner.name)).append(" (").
+                            append(normaliseClubName(result.entry.runner.club)).append(") ").
+                            append(format(result.duration())).append("</li>\n");
+                }
 
             writer.append("</ol>\n\n");
         }

@@ -48,10 +48,10 @@ public class RelayRaceInput {
         annotations_path = annotations_filename != null ? input_directory_path.resolve(annotations_filename): null;
     }
 
-    Team[] loadEntries() throws IOException {
+    public RelayRaceEntry[] loadEntries() throws IOException {
 
         final List<String> lines = Files.readAllLines(entries_path);
-        final Team[] entries = new Team[lines.size()];
+        final RelayRaceEntry[] entries = new RelayRaceEntry[lines.size()];
 
         for (int i = 0; i < entries.length; i++)
             loadEntry(entries, lines, i);
@@ -59,7 +59,7 @@ public class RelayRaceInput {
         return entries;
     }
 
-    private void loadEntry(final Team[] entries, final List<String> lines, final int entry_index) {
+    private void loadEntry(final RelayRaceEntry[] entries, final List<String> lines, final int entry_index) {
 
         final String[] team_elements = lines.get(entry_index).split("\t");
 
@@ -75,21 +75,21 @@ public class RelayRaceInput {
         if (entriesAlreadyContain(entries, team_name))
             throw new RuntimeException("duplicate team name: " + team_name);
 
-        entries[entry_index] = new Team(team_elements, race);
+        entries[entry_index] = new RelayRaceEntry(team_elements, race);
     }
 
-    private boolean entriesAlreadyContain(final Team[] entries, final int bib_number) {
+    private boolean entriesAlreadyContain(final RelayRaceEntry[] entries, final int bib_number) {
 
-        for (Team team : entries)
-            if (team != null && team.bib_number == bib_number) return true;
+        for (RelayRaceEntry entry : entries)
+            if (entry != null && entry.bib_number == bib_number) return true;
 
         return false;
     }
 
-    private boolean entriesAlreadyContain(final Team[] entries, final String team_name) {
+    private boolean entriesAlreadyContain(final RelayRaceEntry[] entries, final String team_name) {
 
-        for (Team team : entries)
-            if (team != null && team.name.equals(team_name)) return true;
+        for (RelayRaceEntry entry : entries)
+            if (entry != null && entry.team.name.equals(team_name)) return true;
 
         return false;
     }

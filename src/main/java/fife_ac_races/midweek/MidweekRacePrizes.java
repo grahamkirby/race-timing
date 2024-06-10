@@ -1,13 +1,13 @@
 package fife_ac_races.midweek;
 
 import common.Category;
-import common.RacePrizes2;
+import common.RacePrizes;
 import common.RaceResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MidweekRacePrizes extends RacePrizes2 {
+public class MidweekRacePrizes extends RacePrizes {
 
     final MidweekRace race;
 

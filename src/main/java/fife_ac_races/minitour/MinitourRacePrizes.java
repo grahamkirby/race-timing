@@ -1,13 +1,13 @@
 package fife_ac_races.minitour;
 
 import common.Category;
-import common.RacePrizes2;
+import common.RacePrizes;
 import common.RaceResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MinitourRacePrizes extends RacePrizes2 {
+public class MinitourRacePrizes extends RacePrizes {
 
     final MinitourRace race;
 

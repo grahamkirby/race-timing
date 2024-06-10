@@ -7,17 +7,17 @@ import java.time.Duration;
 
 public class RelayRaceResult extends RaceResult {
 
-    final Team team;
+    public final RelayRaceEntry entry;
     final LegResult[] leg_results;
 
-    public RelayRaceResult(final Team team, final int number_of_legs, final Race race) {
+    public RelayRaceResult(final RelayRaceEntry entry, final int number_of_legs, final Race race) {
 
         super(race);
-        this.team = team;
+        this.entry = entry;
         leg_results = new LegResult[number_of_legs];
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results[i] = new LegResult(team, race);
+            leg_results[i] = new LegResult(entry, race);
     }
 
     public Duration duration() {
@@ -52,12 +52,12 @@ public class RelayRaceResult extends RaceResult {
 
         if (!dnf() && o.dnf()) return -1;
         if (dnf() && !o.dnf()) return 1;
-        if (dnf() && o.dnf()) return Integer.compare(team.bib_number, o.team.bib_number);
+        if (dnf() && o.dnf()) return Integer.compare(entry.bib_number, o.entry.bib_number);
 
         if (duration().equals(o.duration())) {
 
-            final int this_last_leg_position = ((RelayRace)race).getRecordedLegPosition(team.bib_number, ((RelayRace)race).number_of_legs);
-            final int other_last_leg_position = ((RelayRace)race).getRecordedLegPosition(o.team.bib_number, ((RelayRace)race).number_of_legs);
+            final int this_last_leg_position = ((RelayRace)race).getRecordedLegPosition(entry.bib_number, ((RelayRace)race).number_of_legs);
+            final int other_last_leg_position = ((RelayRace)race).getRecordedLegPosition(o.entry.bib_number, ((RelayRace)race).number_of_legs);
 
             return Integer.compare(this_last_leg_position, other_last_leg_position);
         }

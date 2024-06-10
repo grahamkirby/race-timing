@@ -50,8 +50,8 @@ public class RelayRaceOutputText extends RelayRaceOutput {
             final RelayRaceResult result = ((RelayRaceResult)res);
 
             writer.append(String.valueOf(position++)).append(": ").
-                    append(result.team.name).append(" (").
-                    append(result.team.category.getLongName()).append(") ").
+                    append(result.entry.team.name).append(" (").
+                    append(result.entry.team.category.getLongName()).append(") ").
                     append(format(result.duration())).append("\n");
         }
     }
@@ -106,12 +106,12 @@ public class RelayRaceOutputText extends RelayRaceOutput {
 
         final List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
 
-        for (final Team team : ((RelayRace)race).entries) {
+        for (final RelayRaceEntry entry : ((RelayRace)race).entries) {
 
-            final int number_of_legs_finished = leg_finished_count.getOrDefault(team.bib_number, 0);
+            final int number_of_legs_finished = leg_finished_count.getOrDefault(entry.bib_number, 0);
 
             for (int i = 0; i < ((RelayRace)race).number_of_legs - number_of_legs_finished; i++)
-                bib_numbers_with_missing_times.add(team.bib_number);
+                bib_numbers_with_missing_times.add(entry.bib_number);
         }
 
         return bib_numbers_with_missing_times;

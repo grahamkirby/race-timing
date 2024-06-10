@@ -114,8 +114,8 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
                 final RelayRaceResult result = ((RelayRaceResult) team);
 
                 writer.append("<li>").
-                        append(result.team.name).append(" (").
-                        append(result.team.category.getLongName()).append(") ").
+                        append(result.entry.team.name).append(" (").
+                        append(result.entry.team.category.getLongName()).append(") ").
                         append(format(result.duration())).append("</li>\n");
             }
         }
@@ -162,15 +162,15 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(String.valueOf(result.team.bib_number));
+            writer.append(String.valueOf(result.entry.bib_number));
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.team.name));
+            writer.append(htmlEncode(result.entry.team.name));
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.team.category.getLongName());
+            writer.append(result.entry.team.category.getLongName());
             writer.append("""
                             </td>
                             <td>""");
@@ -246,19 +246,19 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(String.valueOf(result.team.bib_number));
+        writer.append(String.valueOf(result.entry.bib_number));
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(htmlEncode(result.team.name));
+        writer.append(htmlEncode(result.entry.team.name));
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(result.team.category.getLongName());
+        writer.append(result.entry.team.category.getLongName());
         writer.append("""
                 </td>""");
 
-        printLegDetails(writer, result, result.team);
+        printLegDetails(writer, result, result.entry.team);
 
         writer.append("""
                 </tr>""");
@@ -341,7 +341,7 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(htmlEncode(leg_result.team.runners[leg_result.leg_number-1]));
+                writer.append(htmlEncode(leg_result.entry.team.runners[leg_result.leg_number-1]));
                 writer.append("""
                                 </td>
                                 <td>""");

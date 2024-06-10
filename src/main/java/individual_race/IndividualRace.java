@@ -1,15 +1,13 @@
 package individual_race;
 
-import common.Category;
-import common.Race;
-import common.RawResult;
-import common.SeniorRaceCategories;
-import common.JuniorRaceCategories;
+import common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IndividualRace extends Race {
 
@@ -27,7 +25,7 @@ public class IndividualRace extends Race {
 
     public IndividualRaceEntry[] entries;
     private IndividualRaceResult[] overall_results;
-    Map<Category, List<IndividualRaceEntry>> prize_winners = new HashMap<>();
+    Map<Category, RaceResult[]> prize_winners = new HashMap<>();
 
     private boolean senior_race;
     public boolean open_category;

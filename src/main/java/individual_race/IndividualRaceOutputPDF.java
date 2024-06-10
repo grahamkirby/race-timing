@@ -1,11 +1,11 @@
 package individual_race;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.*;
+import com.lowagie.text.Paragraph;
 import common.Category;
+import common.RaceResult;
 
 import java.io.IOException;
-import java.util.List;
 
 public class IndividualRaceOutputPDF extends IndividualRaceOutput {
 
@@ -24,17 +24,18 @@ public class IndividualRaceOutputPDF extends IndividualRaceOutput {
 
         addCategoryHeader(category, document);
 
-        final List<IndividualRaceEntry> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
+        final RaceResult[] category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
-        if (category_prize_winners.isEmpty())
+        if (category_prize_winners == null)
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+        else {
+            int position = 1;
+            for (final RaceResult entry : category_prize_winners) {
 
-        int position = 1;
-        for (final IndividualRaceEntry entry : category_prize_winners) {
+                final IndividualRaceResult result = ((IndividualRaceResult) entry);
 
-            final IndividualRaceResult result = ((IndividualRace)race).getOverallResults()[((IndividualRace)race).findResultsIndexOfRunnerWithBibNumber(entry.bib_number)];
-
-            printPrizePDF(document, String.valueOf(position++), result.entry.runner.name, normaliseClubName(result.entry.runner.club), result.duration());
+                printPrizePDF(document, String.valueOf(position++), result.entry.runner.name, normaliseClubName(result.entry.runner.club), result.duration());
+            }
         }
     }
 }

@@ -67,7 +67,7 @@ public class RelayRacePrizes {
 
     private boolean prizeWinner(final RelayRaceResult result, final Category category) {
 
-        return !result.dnf() && race.categories.includes(category, result.team.category) && !alreadyWonPrize(result.team);
+        return !result.dnf() && race.categories.includes(category, result.entry.team.category) && !alreadyWonPrize(result.entry.team);
     }
 
     private boolean alreadyWonPrize(final Team team) {
@@ -75,7 +75,7 @@ public class RelayRacePrizes {
         for (RaceResult[] winners : race.prize_winners.values())
 
             for (RaceResult result : winners)
-                if (((RelayRaceResult)result).team.equals(team))
+                if (((RelayRaceResult)result).entry.team.equals(team))
                     return true;
 
         return false;
