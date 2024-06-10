@@ -31,7 +31,7 @@ public class RelayRace extends Race {
 
     int number_of_legs;
 
-    Team[] entries;
+    RelayRaceEntry[] entries;
     RelayRaceResult[] overall_results;
     Map<Category, RaceResult[]> prize_winners = new HashMap<>();
 
@@ -387,7 +387,7 @@ public class RelayRace extends Race {
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
         for (final IndividualLegStart individual_leg_start : individual_leg_starts)
-            if (individual_leg_start.bib_number == leg_result.team.bib_number && individual_leg_start.leg_number == leg_index + 1)
+            if (individual_leg_start.bib_number == leg_result.entry.bib_number && individual_leg_start.leg_number == leg_index + 1)
                 return individual_leg_start.start_time;
 
         return null;
@@ -448,13 +448,13 @@ public class RelayRace extends Race {
         for (int i = 0; i < leg_results.length; i++)
             if (leg_results[i].finish_time == null) return i;
 
-        throw new RuntimeException("surplus result recorded for team: " + leg_results[0].team.bib_number);
+        throw new RuntimeException("surplus result recorded for team: " + leg_results[0].entry.bib_number);
     }
 
     int findIndexOfTeamWithBibNumber(final int bib_number) {
 
         for (int i = 0; i < overall_results.length; i++)
-            if (overall_results[i].team.bib_number == bib_number) return i;
+            if (overall_results[i].entry.bib_number == bib_number) return i;
 
         throw new RuntimeException("unregistered team: " + bib_number);
     }

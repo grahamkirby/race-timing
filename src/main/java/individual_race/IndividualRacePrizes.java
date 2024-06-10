@@ -1,12 +1,14 @@
 package individual_race;
 
 import common.Category;
+import common.RaceResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class IndividualRacePrizes {
+
+    // TODO rationalise with RelayRacePrizes
 
     final IndividualRace race;
 
@@ -20,9 +22,9 @@ public class IndividualRacePrizes {
             race.prize_winners.put(category, getPrizeWinners(category));
     }
 
-    private List<IndividualRaceEntry> getPrizeWinners(final Category category) {
+    private RaceResult[] getPrizeWinners(final Category category) {
 
-        final List<IndividualRaceEntry> prize_winners = new ArrayList<>();
+        final List<RaceResult> prize_winners = new ArrayList<>();
 
         int position = 1;
 
@@ -30,11 +32,11 @@ public class IndividualRacePrizes {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
-                prize_winners.add(result.entry);
+                prize_winners.add(result);
                 position++;
             }
         }
-        return prize_winners;
+        return prize_winners.toArray(new RaceResult[0]);
     }
 
     private boolean prizeWinner(final IndividualRaceResult result, final Category category) {
@@ -44,8 +46,10 @@ public class IndividualRacePrizes {
 
     private boolean alreadyWonPrize(final IndividualRaceEntry entry) {
 
-        for (List<IndividualRaceEntry> winners : race.prize_winners.values())
-            if (winners.contains(entry)) return true;
+        for (RaceResult[] winners : race.prize_winners.values())
+            for (RaceResult result : winners)
+                if (((IndividualRaceResult)result).entry.equals(entry))
+                    return true;
 
         return false;
     }

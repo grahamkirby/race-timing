@@ -3,11 +3,11 @@ package common;
 import series_race.SeriesRace;
 import series_race.SeriesRaceResult;
 
-public abstract class RacePrizes2 {
+public abstract class RacePrizes {
 
     protected SeriesRace race;
 
-    public RacePrizes2(final SeriesRace race) {
+    public RacePrizes(final SeriesRace race) {
         this.race = race;
     }
 
