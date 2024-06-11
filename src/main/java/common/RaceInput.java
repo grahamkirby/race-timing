@@ -5,12 +5,14 @@ import individual_race.IndividualRace;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class RaceInput {
 
     public final Race race;
 
-    public Path[] race_config_paths;
+    public List<Path> race_config_paths;
 
     public RaceInput(final Race race) {
 
@@ -28,29 +30,30 @@ public abstract class RaceInput {
         race_config_paths = readRaceConfigPaths();
     }
 
-    private Path[] readRaceConfigPaths() {
+    private List<Path> readRaceConfigPaths() {
 
         final String[] race_strings = race.getProperties().getProperty("RACES").split(":", -1);
 
-        final Path[] race_paths = new Path[race_strings.length];
+        final List<Path> race_paths = new ArrayList<>();
 
-        for (int i = 0; i < race_paths.length; i++)
-            race_paths[i] = Paths.get(race_strings[i]);
+        for (final String race_string : race_strings)
+            race_paths.add(Paths.get(race_string));
 
         return race_paths;
     }
 
-    public IndividualRace[] loadRaces() throws IOException {
+    public List<IndividualRace> loadRaces() throws IOException {
 
-        final IndividualRace[] races = new IndividualRace[race_config_paths.length];
+        final List<IndividualRace> races = new ArrayList<>();
 
-        for (int i = 0; i < races.length; i++) {
+        for (int i = 0; i < race_config_paths.size(); i++) {
 
-            final Path relative_path = race_config_paths[i];
+            final Path relative_path = race_config_paths.get(i);
 
             if (!relative_path.toString().isEmpty())
-                races[i] = getIndividualRace(relative_path, i + 1);
-
+                races.add(getIndividualRace(relative_path, i + 1));
+            else
+                races.add(null);
         }
 
         return races;

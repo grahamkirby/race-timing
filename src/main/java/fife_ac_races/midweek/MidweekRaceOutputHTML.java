@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.util.List;
 
 public class MidweekRaceOutputHTML extends RaceOutput {
 
@@ -54,7 +55,7 @@ public class MidweekRaceOutputHTML extends RaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final RaceResult[] category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").
@@ -62,21 +63,19 @@ public class MidweekRaceOutputHTML extends RaceOutput {
                     append("</strong></p>\n").
                     append("<ol>\n");
 
-            if (category_prize_winners.length == 0)
+            if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
 
             for (final RaceResult entry : category_prize_winners) {
 
-//                int indexOfRunner = ((MidweekRace)race).findIndexOfRunner(entry);
-                MidweekRaceResult overallResult = ((MidweekRaceResult)entry);
-                int score = overallResult.totalScore();
+                final MidweekRaceResult result = ((MidweekRaceResult)entry);
 
                 writer.append("<li>").
-                        append(overallResult.runner.name).
+                        append(result.runner.name).
                         append(" (").
-                        append(overallResult.runner.category.getShortName()).
+                        append(result.runner.category.getShortName()).
                         append(") ").
-                        append(String.valueOf(score)).
+                        append(String.valueOf(result.totalScore())).
                         append("</li>\n");
             }
 
@@ -105,8 +104,8 @@ public class MidweekRaceOutputHTML extends RaceOutput {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < ((MidweekRace)race).races.length; i++) {
-            if (((MidweekRace)race).races[i] != null) {
+        for (int i = 0; i < ((MidweekRace)race).races.size(); i++) {
+            if (((MidweekRace)race).races.get(i) != null) {
                 writer.append("<th>Race ").
                         append(String.valueOf(i + 1)).
                         append("</th>\n");
@@ -143,9 +142,9 @@ public class MidweekRaceOutputHTML extends RaceOutput {
                             </td>
                             """);
 
-            for (int i = 0; i < result.scores.length; i++)
-                if (result.scores[i] >= 0)
-                    writer.append("<td>").append(String.valueOf(result.scores[i])).append("</td>\n");
+            for (int i = 0; i < result.scores.size(); i++)
+                if (result.scores.get(i) >= 0)
+                    writer.append("<td>").append(String.valueOf(result.scores.get(i))).append("</td>\n");
 
             writer.append("""
                             <td>""").

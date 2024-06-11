@@ -2,12 +2,12 @@ package fife_ac_races.midweek;
 
 import common.Race;
 import common.RaceResult;
-import fife_ac_races.minitour.MinitourRaceResult;
 import series_race.SeriesRace;
 import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 public class MidweekRaceOutputCSV extends SeriesRaceOutput {
 
@@ -25,7 +25,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final RaceResult[] results = ((MidweekRace) race).getOverallResults();
+        final List<? extends RaceResult> results = ((MidweekRace) race).getOverallResults();
 
         setPositionStrings(results, true);
         printResults(results, new ResultPrinterCSV(race, writer));
@@ -38,7 +38,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            if (getNumberOfRacesCompleted() < ((MidweekRace)race).races.length || result.completed())
+            if (getNumberOfRacesCompleted() < ((MidweekRace)race).races.size() || result.completed())
                 writer.append(result.position_string);
 
             writer.append(",").

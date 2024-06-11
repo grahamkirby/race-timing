@@ -3,6 +3,8 @@ package common;
 import series_race.SeriesRace;
 import series_race.SeriesRaceResult;
 
+import java.util.List;
+
 public abstract class RacePrizes {
 
     protected SeriesRace race;
@@ -19,7 +21,7 @@ public abstract class RacePrizes {
 
     protected boolean notYetWonPrize(final Runner entry) {
 
-        for (RaceResult[] winners : race.prize_winners.values())
+        for (List<RaceResult> winners : race.prize_winners.values())
             for (RaceResult res : winners) {
                 if (((SeriesRaceResult) res).runner.equals(entry)) return false;
             }
@@ -27,5 +29,5 @@ public abstract class RacePrizes {
         return true;
     }
 
-    protected abstract RaceResult[] getPrizeWinners(final Category category);
+    protected abstract List<RaceResult> getPrizeWinners(final Category category);
 }

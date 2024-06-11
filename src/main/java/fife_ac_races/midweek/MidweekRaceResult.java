@@ -4,28 +4,32 @@ import common.RaceResult;
 import common.Runner;
 import series_race.SeriesRaceResult;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MidweekRaceResult extends SeriesRaceResult {
 
-    public final int[] scores;
+    public final List<Integer> scores;
 
     public MidweekRaceResult(final Runner runner, final MidweekRace race) {
 
         super(runner, race);
 
-        scores = new int[race.races.length];
-        Arrays.fill(scores, -1);
+        scores = new ArrayList<>();
+        for (int i = 0; i < race.races.size(); i++) {
+            scores.add(-1);
+        }
     }
 
     protected int totalScore() {
 
         int total = 0;
 
-        int[] sorted_scores = scores.clone();
-        Arrays.sort(sorted_scores);
+        final List<Integer> sorted_scores = new ArrayList<>(scores);
+        sorted_scores.sort(Integer::compareTo);
+
         for (int i = 0; i < ((MidweekRace)race).minimum_number_of_races; i++) {
-            int score = sorted_scores[sorted_scores.length - 1 - i];
+            final int score = sorted_scores.get(sorted_scores.size() - 1 - i);
             if (score > -1) total += score;
         }
 

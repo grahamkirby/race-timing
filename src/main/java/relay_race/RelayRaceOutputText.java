@@ -29,7 +29,7 @@ public class RelayRaceOutputText extends RelayRaceOutput {
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
         final String header = "Category: " + category.getLongName();
-        final RaceResult[] category_prize_winners = ((RelayRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
@@ -42,7 +42,7 @@ public class RelayRaceOutputText extends RelayRaceOutput {
         writer.append("\n\n");
     }
 
-    private void printPrizes(RaceResult[] category_prize_winners, OutputStreamWriter writer) throws IOException {
+    private void printPrizes(List<RaceResult> category_prize_winners, OutputStreamWriter writer) throws IOException {
 
         int position = 1;
         for (final RaceResult res : category_prize_winners) {
@@ -75,12 +75,12 @@ public class RelayRaceOutputText extends RelayRaceOutput {
 
         final Map<Integer, Integer> leg_finished_count = new HashMap<>();
 
-        for (int i = 0; i < race.getRawResults().length; i++) {
+        for (int i = 0; i < race.getRawResults().size(); i++) {
 
-            final RawResult raw_result = race.getRawResults()[i];
+            final RawResult raw_result = race.getRawResults().get(i);
             final boolean last_electronically_recorded_result = i == ((RelayRace)race).input.getNumberOfRawResults() - 1;
 
-            if (last_electronically_recorded_result && ((RelayRace)race).input.getNumberOfRawResults() < race.getRawResults().length)
+            if (last_electronically_recorded_result && ((RelayRace)race).input.getNumberOfRawResults() < race.getRawResults().size())
                 raw_result.appendComment("Remaining times from paper recording sheet only.");
 
             printResult(raw_result, leg_finished_count, writer);

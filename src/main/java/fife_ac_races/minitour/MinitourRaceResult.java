@@ -5,39 +5,42 @@ import common.Runner;
 import series_race.SeriesRaceResult;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MinitourRaceResult extends SeriesRaceResult {
 
-    public final Duration[] times;
+    public final List<Duration> times;
 
     public MinitourRaceResult(final Runner runner, final MinitourRace race) {
 
         super(runner, race);
-        times = new Duration[race.races.length];
+
+        times = new ArrayList<>();
+        for (int i = 0; i < race.races.size(); i++)
+            times.add(null);
     }
 
     protected Duration duration() {
 
         Duration overall = Duration.ZERO;
 
-        for (final Duration time : times) {
-
+        for (final Duration time : times)
             if (time != null)
                 overall = overall.plus(time);
-        }
 
         return overall;
     }
 
     public boolean raceHasTakenPlace(int race_number) {
 
-        return ((MinitourRace)race).races[race_number - 1] != null;
+        return ((MinitourRace)race).races.get(race_number - 1) != null;
     }
 
     public boolean completedAllRacesSoFar() {
 
-        for (int i = 0; i < ((MinitourRace)race).races.length; i++)
-            if (((MinitourRace)race).races[i] != null && times[i] == null)
+        for (int i = 0; i < ((MinitourRace)race).races.size(); i++)
+            if (((MinitourRace)race).races.get(i) != null && times.get(i) == null)
                 return false;
 
         return true;
@@ -46,7 +49,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
     @Override
     public int compareTo(final RaceResult other) {
 
-        MinitourRaceResult o = (MinitourRaceResult) other;
+        final MinitourRaceResult o = (MinitourRaceResult) other;
 
         final int compare_completion = compareCompletionTo(o);
         if (compare_completion != 0) return compare_completion;

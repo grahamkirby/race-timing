@@ -3,6 +3,9 @@ package relay_race;
 import common.Category;
 import common.RaceResult;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RelayRacePrizes {
 
     final RelayRace race;
@@ -29,7 +32,9 @@ public class RelayRacePrizes {
 
             for (final RelayRaceResult result : race.overall_results) {
                 if (prizeWinner(result, category)) {
-                    race.prize_winners.put(category, new RaceResult[]{result});
+                    List<RaceResult> result1 = new ArrayList<>();
+                    result1.add(result);
+                    race.prize_winners.put(category, result1);
                     break;
                 }
             }
@@ -51,18 +56,10 @@ public class RelayRacePrizes {
             if (position > category.numberOfPrizes()) return;
 
             if (prizeWinner(result, category)) {
-                race.prize_winners.put(category, appendToArray(race.prize_winners.get(category), result));
+                race.prize_winners.get(category).add(result);
                 position++;
             }
         }
-    }
-
-    private static RaceResult[] appendToArray(final RaceResult[] existing_results, final RaceResult result) {
-
-        final RaceResult[] new_results = new RaceResult[existing_results.length + 1];
-        System.arraycopy(existing_results, 0, new_results, 0, existing_results.length);
-        new_results[new_results.length - 1] = result;
-        return new_results;
     }
 
     private boolean prizeWinner(final RelayRaceResult result, final Category category) {
@@ -72,9 +69,9 @@ public class RelayRacePrizes {
 
     private boolean alreadyWonPrize(final Team team) {
 
-        for (RaceResult[] winners : race.prize_winners.values())
+        for (final List<RaceResult> winners : race.prize_winners.values())
 
-            for (RaceResult result : winners)
+            for (final RaceResult result : winners)
                 if (((RelayRaceResult)result).entry.team.equals(team))
                     return true;
 

@@ -3,8 +3,9 @@ package relay_race;
 import common.RawResult;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class RelayRaceMissingData {
 
@@ -39,24 +40,24 @@ public class RelayRaceMissingData {
     }
 
     private boolean timesRecordedForAllRunners() {
-        return race.getRawResults().length == race.entries.length * race.number_of_legs;
+        return race.getRawResults().size() == race.entries.size() * race.number_of_legs;
     }
 
     private int getIndexOfFirstResultWithRecordedTime() {
 
         int raw_result_index = 0;
-        while (raw_result_index < race.getRawResults().length && race.getRawResults()[raw_result_index].getRecordedFinishTime() == null) raw_result_index++;
+        while (raw_result_index < race.getRawResults().size() && race.getRawResults().get(raw_result_index).getRecordedFinishTime() == null) raw_result_index++;
         return raw_result_index;
     }
 
     private void setTimesForResultsBeforeFirstRecordedTime(final int index_of_first_result_with_recorded_time) {
 
-        final Duration first_recorded_time = race.getRawResults()[index_of_first_result_with_recorded_time].getRecordedFinishTime();
+        final Duration first_recorded_time = race.getRawResults().get(index_of_first_result_with_recorded_time).getRecordedFinishTime();
 
         for (int i = 0; i < index_of_first_result_with_recorded_time; i++) {
 
-            race.getRawResults()[i].setRecordedFinishTime(first_recorded_time);
-            race.getRawResults()[i].appendComment("Time not recorded. No basis for interpolation so set to first recorded time.");
+            race.getRawResults().get(i).setRecordedFinishTime(first_recorded_time);
+            race.getRawResults().get(i).appendComment("Time not recorded. No basis for interpolation so set to first recorded time.");
         }
     }
 
@@ -64,7 +65,7 @@ public class RelayRaceMissingData {
 
         int i = index_of_first_result_with_recorded_time;
 
-        while (i < race.getRawResults().length) {
+        while (i < race.getRawResults().size()) {
 
             final ContiguousSequence sequence = getNextContiguousSequenceWithMissingTimes(i);
             interpolateTimesForContiguousSequence(sequence);
@@ -77,10 +78,10 @@ public class RelayRaceMissingData {
 
         int i = search_start_index;
 
-        while (i < race.getRawResults().length && race.getRawResults()[i].getRecordedFinishTime() != null) i++;
+        while (i < race.getRawResults().size() && race.getRawResults().get(i).getRecordedFinishTime() != null) i++;
         final int missing_times_start_index = i;
 
-        while (i < race.getRawResults().length && race.getRawResults()[i].getRecordedFinishTime() == null) i++;
+        while (i < race.getRawResults().size() && race.getRawResults().get(i).getRecordedFinishTime() == null) i++;
         final int missing_times_end_index = i - 1;
 
         return new ContiguousSequence(missing_times_start_index, missing_times_end_index);
@@ -90,8 +91,8 @@ public class RelayRaceMissingData {
 
         if (!isLastResult(sequence.end_index)) {
 
-            final Duration start_time = race.getRawResults()[sequence.start_index - 1].getRecordedFinishTime();
-            final Duration end_time = race.getRawResults()[sequence.end_index + 1].getRecordedFinishTime();
+            final Duration start_time = race.getRawResults().get(sequence.start_index - 1).getRecordedFinishTime();
+            final Duration end_time = race.getRawResults().get(sequence.end_index + 1).getRecordedFinishTime();
 
             final int number_of_steps = sequence.end_index - sequence.start_index + 2;
             final Duration time_step = end_time.minus(start_time).dividedBy(number_of_steps);
@@ -105,28 +106,28 @@ public class RelayRaceMissingData {
     }
 
     private boolean isLastResult(final int end_index) {
-        return end_index == race.getRawResults().length - 1;
+        return end_index == race.getRawResults().size() - 1;
     }
 
     private void interpolateTimes(final ContiguousSequence sequence, final Duration time_step) {
 
         for (int i = sequence.start_index; i <= sequence.end_index; i++) {
 
-            final Duration previous_finish_time = race.getRawResults()[i - 1].getRecordedFinishTime();
+            final Duration previous_finish_time = race.getRawResults().get(i - 1).getRecordedFinishTime();
 
-            race.getRawResults()[i].setRecordedFinishTime(previous_finish_time.plus(time_step));
-            race.getRawResults()[i].appendComment("Time not recorded. Time interpolated.");
+            race.getRawResults().get(i).setRecordedFinishTime(previous_finish_time.plus(time_step));
+            race.getRawResults().get(i).appendComment("Time not recorded. Time interpolated.");
         }
     }
 
     private void setTimesForResultsAfterLastRecordedTime(final int missing_times_start_index) {
 
-        final Duration last_recorded_time = race.getRawResults()[missing_times_start_index - 1].getRecordedFinishTime();
+        final Duration last_recorded_time = race.getRawResults().get(missing_times_start_index - 1).getRecordedFinishTime();
 
-        for (int i = missing_times_start_index; i < race.getRawResults().length; i++) {
+        for (int i = missing_times_start_index; i < race.getRawResults().size(); i++) {
 
-            race.getRawResults()[i].setRecordedFinishTime(last_recorded_time);
-            race.getRawResults()[i].appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
+            race.getRawResults().get(i).setRecordedFinishTime(last_recorded_time);
+            race.getRawResults().get(i).appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
         }
     }
 
@@ -142,7 +143,7 @@ public class RelayRaceMissingData {
         int position_of_missing_bib_number = getPositionOfNextMissingBibNumber();
         while (position_of_missing_bib_number > 0) {
 
-            final RawResult result_with_missing_number = race.getRawResults()[position_of_missing_bib_number - 1];
+            final RawResult result_with_missing_number = race.getRawResults().get(position_of_missing_bib_number - 1);
             final int guessed_number = guessTeamNumber(position_of_missing_bib_number);
 
             result_with_missing_number.setBibNumber(guessed_number);
@@ -154,8 +155,8 @@ public class RelayRaceMissingData {
 
     private int getPositionOfNextMissingBibNumber() {
 
-        for (int i = 0; i < race.getRawResults().length; i++)
-            if (race.getRawResults()[i].getBibNumber() == null) return i + 1;
+        for (int i = 0; i < race.getRawResults().size(); i++)
+            if (race.getRawResults().get(i).getBibNumber() == null) return i + 1;
 
         return 0;
     }
@@ -169,7 +170,7 @@ public class RelayRaceMissingData {
         // Get summary of each team's state at the point of this position being recorded,
         // in terms of how many of the team's runners finished before and after this position,
         // and the team's previous and next finish times.
-        final TeamSummaryAtPosition[] summaries = summarise(position);
+        final List<TeamSummaryAtPosition> summaries = summarise(position);
 
         // Sort the summaries by: number of previous finishes, then number of subsequent
         // finishes, then time of subsequent finish, then time of previous finish.
@@ -177,15 +178,15 @@ public class RelayRaceMissingData {
 
         // Guess the team with the fewest previous finishes, using the other attributes
         // described above as tie-breaks.
-        return summaries[0].team_number;
+        return summaries.get(0).team_number;
     }
 
-    private TeamSummaryAtPosition[] summarise(final int position) {
+    private List<TeamSummaryAtPosition> summarise(final int position) {
 
-        final TeamSummaryAtPosition[] summaries = new TeamSummaryAtPosition[race.entries.length];
+        final List<TeamSummaryAtPosition> summaries = new ArrayList<>();
 
-        for (int i = 0; i < summaries.length; i++)
-            summaries[i] = summarise(position, race.entries[i].bib_number);
+        for (final RelayRaceEntry entry : race.entries)
+            summaries.add(summarise(position, entry.bib_number));
 
         return summaries;
     }
@@ -201,12 +202,12 @@ public class RelayRaceMissingData {
         return new TeamSummaryAtPosition(bib_number, finishes_before, finishes_after, previous_finish_time, next_finish_time);
     }
 
-    private void sort(final TeamSummaryAtPosition[] summaries) {
+    private void sort(final List<TeamSummaryAtPosition> summaries) {
 
-        Arrays.sort(summaries, Comparator.comparing(o -> o.previous_finish));
-        Arrays.sort(summaries, Comparator.comparing(o -> o.next_finish));
-        Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_after));
-        Arrays.sort(summaries, Comparator.comparingInt(o -> o.finishes_before));
+        summaries.sort(Comparator.comparing(o -> o.previous_finish));
+        summaries.sort(Comparator.comparing(o -> o.next_finish));
+        summaries.sort(Comparator.comparingInt(o -> o.finishes_after));
+        summaries.sort(Comparator.comparingInt(o -> o.finishes_before));
     }
 
     private int getNumberOfTeamFinishesBefore(final int starting_index, final int bib_number) {
@@ -214,7 +215,7 @@ public class RelayRaceMissingData {
         int count = 0;
         for (int i = starting_index - 1; i > 0; i--) {
 
-            final Integer result_bib_number = race.getRawResults()[i - 1].getBibNumber();
+            final Integer result_bib_number = race.getRawResults().get(i - 1).getBibNumber();
             if (result_bib_number != null && result_bib_number == bib_number) count++;
         }
 
@@ -224,9 +225,9 @@ public class RelayRaceMissingData {
     private int getNumberOfTeamFinishesAfter(final int starting_index, final int bib_number) {
 
         int count = 0;
-        for (int i = starting_index + 1; i <= race.getRawResults().length; i++) {
+        for (int i = starting_index + 1; i <= race.getRawResults().size(); i++) {
 
-            final Integer result_bib_number = race.getRawResults()[i - 1].getBibNumber();
+            final Integer result_bib_number = race.getRawResults().get(i - 1).getBibNumber();
             if (result_bib_number != null && result_bib_number == bib_number) count++;
         }
 
@@ -237,7 +238,7 @@ public class RelayRaceMissingData {
 
         for (int i = starting_index - 1; i > 0; i--) {
 
-            final RawResult result = race.getRawResults()[i - 1];
+            final RawResult result = race.getRawResults().get(i - 1);
             final Integer result_bib_number = result.getBibNumber();
 
             if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();
@@ -248,9 +249,9 @@ public class RelayRaceMissingData {
 
     private Duration getNextTeamFinishTime(final int starting_index, final int bib_number) {
 
-        for (int i = starting_index + 1; i <= race.getRawResults().length; i++) {
+        for (int i = starting_index + 1; i <= race.getRawResults().size(); i++) {
 
-            final RawResult result = race.getRawResults()[i - 1];
+            final RawResult result = race.getRawResults().get(i - 1);
             final Integer result_bib_number = result.getBibNumber();
 
             if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();

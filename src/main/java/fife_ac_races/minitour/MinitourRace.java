@@ -1,6 +1,8 @@
 package fife_ac_races.minitour;
 
-import common.*;
+import common.Category;
+import common.JuniorRaceCategories;
+import common.Runner;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import series_race.SeriesRace;
@@ -9,9 +11,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class MinitourRace extends SeriesRace {
 
@@ -21,16 +23,15 @@ public class MinitourRace extends SeriesRace {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     MinitourRacePrizes prizes;
 
-    public MinitourRaceResult[] overall_results;
+    public List<MinitourRaceResult> overall_results;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public MinitourRace(final Path config_file_path) throws IOException {
         super(config_file_path);
-        minimum_number_of_races = races.length;
+        minimum_number_of_races = races.size();
     }
 
     public static void main(final String[] args) throws IOException {
@@ -74,17 +75,17 @@ public class MinitourRace extends SeriesRace {
     public void initialiseResults() {
 
         super.initialiseResults();
-        overall_results = new MinitourRaceResult[combined_runners.length];
+        overall_results = new ArrayList<>();
     }
 
     @Override
     public void calculateResults() {
 
-        for (int i = 0; i < overall_results.length; i++)
-            overall_results[i] = getOverallResult(combined_runners[i]);
+        for (final Runner runner : combined_runners)
+            overall_results.add(getOverallResult(runner));
 
-        // Ordering defined in MinitourRaceResult: sort by time then by runner name.
-        Arrays.sort(overall_results);
+        // Sort by time then by runner name.
+        overall_results.sort(MinitourRaceResult::compareTo);
     }
 
     @Override
@@ -118,12 +119,12 @@ public class MinitourRace extends SeriesRace {
 
         final MinitourRaceResult result = new MinitourRaceResult(runner, this);
 
-        for (int i = 0; i < races.length; i++) {
+        for (int i = 0; i < races.size(); i++) {
 
-            final IndividualRace individual_race = races[i];
+            final IndividualRace individual_race = races.get(i);
 
             if (individual_race != null)
-                result.times[i] = getRaceTime(individual_race, runner);
+                result.times.set(i, getRaceTime(individual_race, runner));
         }
 
         return result;
@@ -137,22 +138,22 @@ public class MinitourRace extends SeriesRace {
         return null;
     }
 
-    public MinitourRaceResult[] getOverallResults() {
+    public List<MinitourRaceResult> getOverallResults() {
 
         return overall_results;
     }
 
-    public MinitourRaceResult[] getResultsByCategory(List<Category> categories_required) {
+    public List<MinitourRaceResult> getResultsByCategory(List<Category> categories_required) {
 
         final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> categories_required.contains(minitourRaceResult.runner.category);
 
-        return Stream.of(overall_results).filter(category_filter).toArray(MinitourRaceResult[]:: new);
+        return overall_results.stream().filter(category_filter).toList();
     }
 
     public int findIndexOfRunner(Runner runner) {
 
-        for (int i = 0; i < overall_results.length; i++)
-            if (runner.equals(overall_results[i].runner)) return i;
+        for (int i = 0; i < overall_results.size(); i++)
+            if (runner.equals(overall_results.get(i).runner)) return i;
 
         throw new RuntimeException("Runner not found: " + runner.name);
     }

@@ -6,6 +6,7 @@ import common.Category;
 import common.RaceResult;
 
 import java.io.IOException;
+import java.util.List;
 
 public class RelayRaceOutputPDF extends RelayRaceOutput {
 
@@ -24,7 +25,7 @@ public class RelayRaceOutputPDF extends RelayRaceOutput {
 
         addCategoryHeader(category, document);
 
-        final RaceResult[] category_prize_winners = ((RelayRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
 
         if (category_prize_winners == null)
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));

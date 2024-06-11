@@ -7,6 +7,7 @@ import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 public class MidweekRaceOutputText extends RaceOutput {
 
@@ -22,7 +23,7 @@ public class MidweekRaceOutputText extends RaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final RaceResult[] category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
 
@@ -31,7 +32,7 @@ public class MidweekRaceOutputText extends RaceOutput {
             writer.append(header).append("\n");
             writer.append("-".repeat(header.length())).append("\n\n");
 
-            if (category_prize_winners.length == 0)
+            if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
 
             int position = 1;
