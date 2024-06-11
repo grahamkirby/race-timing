@@ -1,6 +1,7 @@
 package individual_race;
 
 import common.*;
+import single_race.SingleRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -17,10 +18,6 @@ public class IndividualRace extends SingleRace {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    IndividualRaceInput input;
-    IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
-    RacePrizes prizes;
-
     private boolean senior_race;
     public boolean open_category;
     public int open_prizes, category_prizes;
@@ -31,7 +28,7 @@ public class IndividualRace extends SingleRace {
         super(config_file_path);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
 
         // Path to configuration file should be first argument.
 
@@ -111,12 +108,6 @@ public class IndividualRace extends SingleRace {
         output_PDF = new IndividualRaceOutputPDF(this);
 
         prizes = new RacePrizes(this);
-    }
-
-    private void configureInputData() throws IOException {
-
-        raw_results = input.loadRawResults(input.raw_results_path);
-        entries = input.loadEntries();
     }
 
     private void initialiseResults() {

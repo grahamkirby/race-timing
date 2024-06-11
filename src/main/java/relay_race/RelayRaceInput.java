@@ -2,15 +2,15 @@ package relay_race;
 
 import common.Race;
 import common.RaceEntry;
-import common.RaceInput;
 import common.RawResult;
+import single_race.SingleRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class RelayRaceInput extends RaceInput {
+public class RelayRaceInput extends SingleRaceInput {
 
     Path paper_results_path, annotations_path;
     String paper_results_filename, annotations_filename;

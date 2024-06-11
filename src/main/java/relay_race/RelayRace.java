@@ -1,9 +1,7 @@
 package relay_race;
 
-import common.RaceEntry;
-import common.RaceResult;
-import common.RawResult;
-import common.SingleRace;
+import common.*;
+import single_race.SingleRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -26,13 +24,8 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RelayRaceInput input;
-    private RelayRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     private RelayRaceMissingData missing_data;
-    private RelayRacePrizes prizes;
-
-    int number_of_legs;
-
+    protected int number_of_legs;
     private int senior_prizes, category_prizes;
 
     // Records for each leg whether there was a mass start.
@@ -139,12 +132,10 @@ public class RelayRace extends SingleRace {
         categories = new RelayRaceCategories(senior_prizes, category_prizes);
     }
 
-    private void configureInputData() throws IOException {
+    protected void configureInputData() throws IOException {
 
-        entries = input.loadEntries();
-        raw_results = input.loadRawResults();
-
-        input.loadTimeAnnotations(raw_results);
+        super.configureInputData();
+        ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
     }
 
     private void interpolateMissingTimes() {
@@ -479,8 +470,8 @@ public class RelayRace extends SingleRace {
 
     private void printLegResults() throws IOException {
 
-        output_CSV.printLegResults();
-        output_HTML.printLegResults();
+        ((RelayRaceOutput)output_CSV).printLegResults();
+        ((RelayRaceOutput)output_HTML).printLegResults();
     }
 
     private void printPrizes() throws IOException {

@@ -5,10 +5,7 @@ import common.RawResult;
 import individual_race.IndividualRace;
 import series_race.SeriesRaceInput;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -32,7 +29,6 @@ public class MinitourRaceInput extends SeriesRaceInput {
     private Duration time_trial_inter_wave_interval;
 
     public MinitourRaceInput(final Race race) {
-
         super(race);
     }
 
@@ -40,7 +36,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
     public void readProperties() {
 
         super.readProperties();
-        race_config_paths = readRaceConfigPaths();
+
         wave_start_offsets = readWaveStartOffsets();
         self_timed_runs = readSelfTimedRuns();
 
@@ -51,16 +47,6 @@ public class MinitourRaceInput extends SeriesRaceInput {
     protected void configureIndividualRace(final IndividualRace individual_race, final int race_number) {
 
         applyRunnerStartOffsets(individual_race, race_number);
-    }
-
-    private List<Path> readRaceConfigPaths() {
-
-        final String[] race_strings = race.getProperties().getProperty("RACES").split(",", -1);
-        final List<Path> race_paths = new ArrayList<>();
-
-        for (final String s : race_strings) race_paths.add(Paths.get(s));
-
-        return race_paths;
     }
 
     private List<Duration> readWaveStartOffsets() {

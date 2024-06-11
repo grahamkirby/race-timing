@@ -5,7 +5,6 @@ import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,33 +14,15 @@ public abstract class RelayRaceOutput extends RaceOutput {
     String detailed_results_filename, collated_times_filename;
 
     public RelayRaceOutput(final RelayRace race) {
-
         super(race);
-        configure();
-    }
-
-    private void configure() {
-
-        readProperties();
-        constructFilePaths();
-    }
-
-    protected void readProperties() {
-
-        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
-        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
-        year = race.getProperties().getProperty("YEAR");
     }
 
     protected void constructFilePaths() {
 
-        overall_results_filename = race_name_for_filenames + "_overall_" + year;
-        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
-        prizes_filename = race_name_for_filenames + "_prizes_" + year;
-        collated_times_filename = "times_collated";
+        super.constructFilePaths();
 
-        Path workingDirectoryPath = race.getWorkingDirectoryPath();
-        output_directory_path = workingDirectoryPath.resolve("output");
+        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
+        collated_times_filename = "times_collated";
     }
 
     public void printLegResults() throws IOException {

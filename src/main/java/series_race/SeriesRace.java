@@ -1,8 +1,6 @@
 package series_race;
 
 import common.Race;
-import common.RaceOutput;
-import common.RacePrizes;
 import common.Runner;
 import individual_race.IndividualRace;
 
@@ -14,19 +12,20 @@ public abstract class SeriesRace extends Race {
 
     public List<IndividualRace> races;
     public List<Runner> combined_runners;
-    protected RacePrizes prizes;
 
     public int category_prizes;
     public int minimum_number_of_races;
-
-    protected SeriesRaceInput input;
-    protected RaceOutput output_CSV, output_HTML, output_text, output_PDF;
 
     public SeriesRace(Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void configureInputData() throws IOException {
+
+        races = ((SeriesRaceInput)input).loadRaces();
+    }
 
     public void processResults() throws IOException {
 
@@ -63,7 +62,6 @@ public abstract class SeriesRace extends Race {
 
     public abstract void configureHelpers();
     public abstract void configureCategories();
-    public abstract void configureInputData() throws IOException;
 
     public abstract void calculateResults() throws IOException;
     public abstract void allocatePrizes() throws IOException;

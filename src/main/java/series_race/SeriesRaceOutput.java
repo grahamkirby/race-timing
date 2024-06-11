@@ -8,12 +8,8 @@ import java.io.OutputStreamWriter;
 
 public abstract class SeriesRaceOutput extends RaceOutput {
 
-    protected SeriesRace race;
-
-    public SeriesRaceOutput(SeriesRace race) {
-
+    public SeriesRaceOutput(Race race) {
         super(race);
-        this.race = race;
     }
 
     @Override
@@ -21,7 +17,7 @@ public abstract class SeriesRaceOutput extends RaceOutput {
 
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (final Race individual_race : race.races)
+        for (final Race individual_race : ((SeriesRace)race).races)
             if (individual_race != null)
                 writer.append(",").
                         append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));

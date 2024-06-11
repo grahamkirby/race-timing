@@ -1,6 +1,7 @@
 package series_race;
 
 import common.Race;
+import common.RaceInput;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
@@ -9,20 +10,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SeriesRaceInput {
-
-    public final Race race;
+public abstract class SeriesRaceInput extends RaceInput {
 
     public List<Path> race_config_paths;
 
     public SeriesRaceInput(final Race race) {
 
-        this.race = race;
-        configure();
-    }
-
-    public void configure() {
-
+        super(race);
         readProperties();
     }
 
@@ -33,7 +27,7 @@ public abstract class SeriesRaceInput {
 
     private List<Path> readRaceConfigPaths() {
 
-        final String[] race_strings = race.getProperties().getProperty("RACES").split(":", -1);
+        final String[] race_strings = race.getProperties().getProperty("RACES").split(",", -1);
 
         final List<Path> race_paths = new ArrayList<>();
 
