@@ -1,5 +1,6 @@
 package relay_race;
 
+import common.Category;
 import common.Race;
 import common.RaceResult;
 
@@ -45,7 +46,24 @@ public class LegResult extends RaceResult {
     }
 
     @Override
+    public boolean sameEntrant(RaceResult other) {
+        return entry.equals(((LegResult) other).entry);
+    }
+
+    @Override
+    public boolean completed() {
+        return !DNF;
+    }
+
+    @Override
+    public Category getCategory() {
+        return entry.team.category;
+    }
+
+    @Override
     public int comparePerformanceTo(RaceResult other) {
         return duration().compareTo(((LegResult) other).duration());
     }
+
+
 }

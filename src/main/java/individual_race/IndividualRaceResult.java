@@ -1,5 +1,6 @@
 package individual_race;
 
+import common.Category;
 import common.RaceResult;
 
 import java.time.Duration;
@@ -24,19 +25,27 @@ public class IndividualRaceResult extends RaceResult {
 
     @Override
     public int compareTo(RaceResult other) {
+        return compare(this, other);
+    }
 
-        IndividualRaceResult o = (IndividualRaceResult) other;
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof IndividualRaceResult other && compareTo(other) == 0;
+    }
 
-        // Where the time is the same, use the recording order.
-        if (duration().equals(o.duration())) {
+    @Override
+    public boolean sameEntrant(RaceResult other) {
+        return entry.equals(((IndividualRaceResult) other).entry);
+    }
 
-            final int this_recorded_position = ((IndividualRace)race).getRecordedPosition(entry.bib_number);
-            final int other_recorded_position = ((IndividualRace)race).getRecordedPosition(o.entry.bib_number);
+    @Override
+    public boolean completed() {
+        return !DNF;
+    }
 
-            return Integer.compare(this_recorded_position, other_recorded_position);
-        }
-        else
-            return duration().compareTo(o.duration());
+    @Override
+    public Category getCategory() {
+        return entry.runner.category;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package fife_ac_races.midweek;
 
+import common.RacePrizes;
 import common.RaceResult;
 import common.Runner;
 import common.SeniorRaceCategories;
@@ -24,8 +25,6 @@ public class MidweekRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final int MAX_RACE_SCORE = 200;
-
-    MidweekRacePrizes prizes;
 
     public boolean open_category;
     public int open_prizes;
@@ -67,7 +66,7 @@ public class MidweekRace extends SeriesRace {
         output_HTML = new MidweekRaceOutputHTML(this);
         output_text = new MidweekRaceOutputText(this);
 
-        prizes = new MidweekRacePrizes(this);
+        prizes = new RacePrizes(this);
     }
 
     @Override

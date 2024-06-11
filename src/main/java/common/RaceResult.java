@@ -12,4 +12,9 @@ public abstract class RaceResult implements Comparable<RaceResult> {
     public int comparePerformanceTo(RaceResult other) {
         throw new UnsupportedOperationException();
     }
+
+    public abstract boolean sameEntrant(RaceResult other);
+
+    public abstract boolean completed();
+    public abstract Category getCategory();
 }
