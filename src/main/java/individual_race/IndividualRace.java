@@ -22,8 +22,6 @@ public class IndividualRace extends Race {
     IndividualRacePrizes prizes;
 
     public List<IndividualRaceEntry> entries;
-    private List<IndividualRaceResult> overall_results;
-    Map<Category, List<RaceResult>> prize_winners = new HashMap<>();
 
     private boolean senior_race;
     public boolean open_category;
@@ -136,7 +134,7 @@ public class IndividualRace extends Race {
         for (int results_index = 0; results_index < raw_results.size(); results_index++) {
 
             final RawResult raw_result = raw_results.get(results_index);
-            final IndividualRaceResult result = overall_results.get(results_index);
+            final IndividualRaceResult result = (IndividualRaceResult)overall_results.get(results_index);
 
             result.entry = findEntryWithBibNumber(raw_result.getBibNumber());
             result.finish_time = raw_result.getRecordedFinishTime();
@@ -171,13 +169,13 @@ public class IndividualRace extends Race {
 
     public IndividualRaceResult getResultWithBibNumber(final int bib_number) {
 
-        return overall_results.get(findResultsIndexOfRunnerWithBibNumber(bib_number));
+        return (IndividualRaceResult)overall_results.get(findResultsIndexOfRunnerWithBibNumber(bib_number));
     }
 
     int findResultsIndexOfRunnerWithBibNumber(final int bib_number) {
 
         for (int i = 0; i < overall_results.size(); i++)
-            if (overall_results.get(i).entry.bib_number == bib_number)
+            if (((IndividualRaceResult)overall_results.get(i)).entry.bib_number == bib_number)
                 return i;
 
         throw new RuntimeException("unregistered bib number: " + bib_number);
@@ -213,7 +211,7 @@ public class IndividualRace extends Race {
         // Sort in order of recorded time.
         // DNF results are sorted in increasing order of bib number.
         // Where two runners have the same recorded time, the order in which they were recorded is preserved.
-        overall_results.sort(IndividualRaceResult::compareTo);
+        overall_results.sort(IndividualRaceResult::compare);
     }
 
     private void allocatePrizes() {
@@ -237,9 +235,5 @@ public class IndividualRace extends Race {
     private void printCombined() throws IOException {
 
         output_HTML.printCombined();
-    }
-
-    public List<IndividualRaceResult> getOverallResults() {
-        return overall_results;
     }
 }

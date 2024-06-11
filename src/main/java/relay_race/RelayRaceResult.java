@@ -66,4 +66,29 @@ public class RelayRaceResult extends RaceResult {
 
         return duration().compareTo(o.duration());
     }
+
+    public static int compare(final RaceResult r1, final RaceResult r2) {
+
+        RelayRaceResult o = (RelayRaceResult) r2;
+
+        // DNF results are sorted in increasing order of bib number.
+        // Otherwise sort in order of increasing overall team time.
+        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+
+        if (!((RelayRaceResult)r1).dnf() && o.dnf()) return -1;
+        if (((RelayRaceResult)r1).dnf() && !o.dnf()) return 1;
+        if (((RelayRaceResult)r1).dnf() && o.dnf()) return Integer.compare(((RelayRaceResult)r1).entry.bib_number, o.entry.bib_number);
+
+        if (((RelayRaceResult)r1).duration().equals(o.duration())) {
+
+            RelayRace relay_race = (RelayRace)r1.race;
+
+            final int this_last_leg_position = relay_race.getRecordedLegPosition(((RelayRaceResult)r1).entry.bib_number, relay_race.number_of_legs);
+            final int other_last_leg_position = relay_race.getRecordedLegPosition(o.entry.bib_number, relay_race.number_of_legs);
+
+            return Integer.compare(this_last_leg_position, other_last_leg_position);
+        }
+
+        return ((RelayRaceResult)r1).duration().compareTo(o.duration());
+    }
 }

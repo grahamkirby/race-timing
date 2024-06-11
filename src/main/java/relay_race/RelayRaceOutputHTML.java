@@ -154,7 +154,9 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
 
         int position = 1;
 
-        for (final RelayRaceResult result : ((RelayRace)race).overall_results) {
+        for (final RaceResult res : race.getOverallResults()) {
+
+            RelayRaceResult result = ((RelayRaceResult) res);
 
             writer.append("""
                         <tr>
@@ -232,13 +234,13 @@ public class RelayRaceOutputHTML extends RelayRaceOutput {
 
     private void printDetailedResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < ((RelayRace)race).overall_results.size(); result_index++)
+        for (int result_index = 0; result_index < race.getOverallResults().size(); result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final RelayRaceResult result = ((RelayRace)race).overall_results.get(result_index);
+        final RelayRaceResult result = (RelayRaceResult) race.getOverallResults().get(result_index);
 
         writer.append("""
                 <tr>

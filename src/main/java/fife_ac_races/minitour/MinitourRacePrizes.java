@@ -19,7 +19,7 @@ public class MinitourRacePrizes extends RacePrizes {
 
         int position = 1;
 
-        for (final MinitourRaceResult result : ((MinitourRace)race).getOverallResults()) {
+        for (final RaceResult result : ((MinitourRace)race).getOverallResults()) {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
@@ -30,8 +30,8 @@ public class MinitourRacePrizes extends RacePrizes {
         return prize_winners;
     }
 
-    private boolean prizeWinner(final MinitourRaceResult result, final Category category) {
+    private boolean prizeWinner(final RaceResult result, final Category category) {
 
-        return result.completed() && race.categories.includes(category, result.runner.category) && notYetWonPrize(result.runner);
+        return ((MinitourRaceResult)result).completed() && race.categories.includes(category, ((MinitourRaceResult)result).runner.category) && notYetWonPrize(((MinitourRaceResult)result).runner);
     }
 }

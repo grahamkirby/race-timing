@@ -1,14 +1,19 @@
 package fife_ac_races.midweek;
 
+import common.RaceResult;
 import common.Runner;
 import common.SeniorRaceCategories;
-import individual_race.*;
-import series_race.*;
+import individual_race.IndividualRace;
+import individual_race.IndividualRaceResult;
+import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MidweekRace extends SeriesRace {
 
@@ -21,8 +26,6 @@ public class MidweekRace extends SeriesRace {
     public static final int MAX_RACE_SCORE = 200;
 
     MidweekRacePrizes prizes;
-
-    List<MidweekRaceResult> overall_results;
 
     public boolean open_category;
     public int open_prizes;
@@ -80,7 +83,7 @@ public class MidweekRace extends SeriesRace {
 
         for (final String runner_name : getRunnerNames(races)) {
 
-            final List<String> clubs_for_runner = getClubsForRunner(runner_name);
+            final List<String> clubs_for_runner = getRunnerClubs(runner_name);
             final List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
 
             final int number_of_defined_clubs = defined_clubs.size();
@@ -92,8 +95,9 @@ public class MidweekRace extends SeriesRace {
 
                 for (final IndividualRace race : races) {
                     if (race != null)
-                        for (final IndividualRaceResult result : race.getOverallResults()) {
-                            final Runner runner = result.entry.runner;
+                        for (final RaceResult result : race.getOverallResults()) {
+
+                            final Runner runner = ((IndividualRaceResult)result).entry.runner;
                             if (runner.name.equals(runner_name) && runner.club.equals("?"))
                                 runner.club = defined_club;
                         }
@@ -115,7 +119,7 @@ public class MidweekRace extends SeriesRace {
         for (final Runner runner : combined_runners)
             overall_results.add(getOverallResult(runner));
 
-        overall_results.sort(MidweekRaceResult::compareTo);
+        overall_results.sort(MidweekRaceResult::compare);
     }
 
     @Override
@@ -146,13 +150,13 @@ public class MidweekRace extends SeriesRace {
         return clubsForRunner.stream().filter(club -> !club.equals("?")).toList();
     }
 
-    private List<String> getClubsForRunner(final String runner_name) {
+    private List<String> getRunnerClubs(final String runner_name) {
 
         final Set<String> clubs = new HashSet<>();
         for (IndividualRace race : races) {
             if (race != null)
-                for (final IndividualRaceResult result : race.getOverallResults()) {
-                    final Runner runner = result.entry.runner;
+                for (final RaceResult result : race.getOverallResults()) {
+                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
                     if (runner.name.equals(runner_name)) clubs.add(runner.club);
                 }
         }
@@ -165,8 +169,8 @@ public class MidweekRace extends SeriesRace {
         final Set<String> names = new HashSet<>();
         for (final IndividualRace race : races) {
             if (race != null)
-                for (IndividualRaceResult result : race.getOverallResults()) {
-                    Runner runner = result.entry.runner;
+                for (RaceResult result : race.getOverallResults()) {
+                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
                     names.add(runner.name);
                 }
         }
@@ -193,9 +197,9 @@ public class MidweekRace extends SeriesRace {
 
         final String gender = getGender(runner);
 
-        for (IndividualRaceResult result : individual_race.getOverallResults()) {
+        for (RaceResult result : individual_race.getOverallResults()) {
 
-            final Runner result_runner = result.entry.runner;
+            final Runner result_runner = ((IndividualRaceResult)result).entry.runner;
 
             if (result_runner.equals(runner)) return Math.max(score, 0);
             if (gender.equals(getGender(result_runner))) score--;
@@ -206,9 +210,5 @@ public class MidweekRace extends SeriesRace {
 
     private static String getGender(final Runner runner) {
         return runner.category.getGender();
-    }
-
-    public List<MidweekRaceResult> getOverallResults() {
-        return overall_results;
     }
 }

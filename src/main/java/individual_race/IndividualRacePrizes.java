@@ -28,7 +28,7 @@ public class IndividualRacePrizes {
 
         int position = 1;
 
-        for (final IndividualRaceResult result : race.getOverallResults()) {
+        for (final RaceResult result : race.getOverallResults()) {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
@@ -39,9 +39,9 @@ public class IndividualRacePrizes {
         return prize_winners;
     }
 
-    private boolean prizeWinner(final IndividualRaceResult result, final Category category) {
+    private boolean prizeWinner(final RaceResult result, final Category category) {
 
-        return !result.DNF && race.categories.includes(category, result.entry.runner.category) && !alreadyWonPrize(result.entry);
+        return !((IndividualRaceResult)result).DNF && race.categories.includes(category, ((IndividualRaceResult)result).entry.runner.category) && !alreadyWonPrize(((IndividualRaceResult)result).entry);
     }
 
     private boolean alreadyWonPrize(final IndividualRaceEntry entry) {

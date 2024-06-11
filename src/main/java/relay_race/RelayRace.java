@@ -1,6 +1,5 @@
 package relay_race;
 
-import common.Category;
 import common.Race;
 import common.RaceResult;
 import common.RawResult;
@@ -9,7 +8,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class RelayRace extends Race {
 
@@ -32,8 +33,6 @@ public class RelayRace extends Race {
     int number_of_legs;
 
     List<RelayRaceEntry> entries;
-    List<RelayRaceResult> overall_results;
-    Map<Category, List<RaceResult>> prize_winners = new HashMap<>();
 
     private int senior_prizes, category_prizes;
 
@@ -291,7 +290,7 @@ public class RelayRace extends Race {
     private void recordLegResult(final RawResult raw_result) {
 
         final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
-        final RelayRaceResult result = overall_results.get(team_index);
+        final RelayRaceResult result = (RelayRaceResult)overall_results.get(team_index);
         final List<LegResult> leg_results = result.leg_results;
 
         final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
@@ -308,13 +307,15 @@ public class RelayRace extends Race {
 
     private void sortLegResults() {
 
-        for (final RelayRaceResult team_result : overall_results) {
+        for (final RaceResult team_result : overall_results) {
+
+            final List<LegResult> leg_results = ((RelayRaceResult)team_result).leg_results;
 
             // Sort by explicitly recorded leg number.
-            team_result.leg_results.sort(Comparator.comparingInt(o -> o.leg_number));
+            leg_results.sort(Comparator.comparingInt(o -> o.leg_number));
 
-            for (int leg_index = 0; leg_index < team_result.leg_results.size(); leg_index++)
-                team_result.leg_results.get(leg_index).leg_number = leg_index+1;
+            for (int leg_index = 0; leg_index < leg_results.size(); leg_index++)
+                leg_results.get(leg_index).leg_number = leg_index+1;
         }
     }
 
@@ -327,9 +328,9 @@ public class RelayRace extends Race {
         final int leg_number = Integer.parseInt(elements[1]);
         final int leg_index = leg_number - 1;
 
-        final RelayRaceResult result = overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
+        final RaceResult result = overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
 
-        return new ResultWithLegIndex(result, leg_index);
+        return new ResultWithLegIndex((RelayRaceResult)result, leg_index);
     }
 
     private void fillDNFs() {
@@ -360,9 +361,9 @@ public class RelayRace extends Race {
 
     private void fillLegStartTimes() {
 
-        for (final RelayRaceResult overall_result : overall_results)
+        for (final RaceResult overall_result : overall_results)
             for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-                fillLegStartTime(overall_result.leg_results, leg_index);
+                fillLegStartTime(((RelayRaceResult)overall_result).leg_results, leg_index);
     }
 
     private void fillLegStartTime(final List<LegResult> leg_results, final int leg_index) {
@@ -427,7 +428,7 @@ public class RelayRace extends Race {
         // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
         // DNF results are sorted in increasing order of bib number.
         // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
-        overall_results.sort(RelayRaceResult::compareTo);
+        overall_results.sort(RelayRaceResult::compare);
     }
 
     int getRecordedLegPosition(final int bib_number, final int leg_number) {
@@ -455,7 +456,7 @@ public class RelayRace extends Race {
     int findIndexOfTeamWithBibNumber(final int bib_number) {
 
         for (int i = 0; i < overall_results.size(); i++)
-            if (overall_results.get(i).entry.bib_number == bib_number) return i;
+            if (((RelayRaceResult)overall_results.get(i)).entry.bib_number == bib_number) return i;
 
         throw new RuntimeException("unregistered team: " + bib_number);
     }

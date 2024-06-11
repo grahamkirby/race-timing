@@ -1,19 +1,19 @@
 package series_race;
 
-import common.*;
+import common.Race;
+import common.RaceInput;
+import common.RaceOutput;
+import common.Runner;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class SeriesRace extends Race {
 
     public List<IndividualRace> races;
     public List<Runner> combined_runners;
-    public Map<Category, List<RaceResult>> prize_winners = new HashMap<>();
 
     public int category_prizes;
     public int minimum_number_of_races;

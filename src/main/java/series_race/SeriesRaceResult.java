@@ -29,8 +29,8 @@ public abstract class SeriesRaceResult extends RaceResult {
 
         for (final IndividualRace individual_race : ((SeriesRace)race).races) {
             if (individual_race != null)
-                for (final IndividualRaceResult result : individual_race.getOverallResults())
-                    if (result.entry.runner.equals(runner)) count++;
+                for (final RaceResult result : individual_race.getOverallResults())
+                    if (((IndividualRaceResult)result).entry.runner.equals(runner)) count++;
         }
 
         return count;

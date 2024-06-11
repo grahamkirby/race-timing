@@ -1,6 +1,7 @@
 package fife_ac_races.minitour;
 
 import common.Category;
+import common.Race;
 import common.RaceResult;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
@@ -73,20 +74,20 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
         }
     }
 
-    private void printRaceCategories(final OutputStreamWriter html_writer, final IndividualRace race, final String combined_categories_title, final String... category_names) throws IOException {
+    private void printRaceCategories(final OutputStreamWriter html_writer, Race race, final String combined_categories_title, final String... category_names) throws IOException {
 
         final List<Category> category_list = getCategoryList(category_names);
 
-        final List<IndividualRaceResult> category_results = race.
+        final List<RaceResult> category_results = race.
                 getOverallResults().
                 stream().
-                filter(result -> category_list.contains(result.entry.runner.category)).
+                filter(result -> category_list.contains(((IndividualRaceResult)result).entry.runner.category)).
                 toList();
 
         printRaceCategories(html_writer, category_results, combined_categories_title);
     }
 
-    private void printRaceCategories(final OutputStreamWriter writer, final List<IndividualRaceResult> category_results, final String combined_categories_title) throws IOException {
+    private void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results, final String combined_categories_title) throws IOException {
 
         writer.append("<h4>").
                 append(combined_categories_title).
@@ -113,11 +114,13 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
                 """);
     }
 
-    private static void printRaceCategories(final OutputStreamWriter writer, final List<IndividualRaceResult> category_results) throws IOException {
+    private static void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results) throws IOException {
 
         int position = 1;
 
-        for (final IndividualRaceResult result : category_results) {
+        for (final RaceResult res : category_results) {
+
+            final IndividualRaceResult result = (IndividualRaceResult) res;
 
             writer.append("""
                     <tr>
