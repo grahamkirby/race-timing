@@ -1,20 +1,21 @@
 package relay_race;
 
 import common.Category;
+import common.Race;
+import common.RacePrizes;
 import common.RaceResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelayRacePrizes {
+public class RelayRacePrizes extends RacePrizes {
 
-    final RelayRace race;
+    public RelayRacePrizes(final Race race) {
 
-    public RelayRacePrizes(final RelayRace race) {
-
-        this.race = race;
+        super(race);
     }
 
+    @Override
     public void allocatePrizes() {
 
         // Allocate first prize in each category first, in decreasing order of category breadth.
@@ -24,6 +25,11 @@ public class RelayRacePrizes {
 
         // Now consider other prizes (only available in senior categories).
         allocateMinorPrizes();
+    }
+
+    @Override
+    protected List<RaceResult> getPrizeWinners(Category category) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void allocateFirstPrizes() {
@@ -60,21 +66,5 @@ public class RelayRacePrizes {
                 position++;
             }
         }
-    }
-
-    private boolean prizeWinner(final RaceResult result, final Category category) {
-
-        return !((RelayRaceResult)result).dnf() && race.categories.includes(category, ((RelayRaceResult)result).entry.team.category) && !alreadyWonPrize(((RelayRaceResult)result).entry.team);
-    }
-
-    private boolean alreadyWonPrize(final Team team) {
-
-        for (final List<RaceResult> winners : race.prize_winners.values())
-
-            for (final RaceResult result : winners)
-                if (((RelayRaceResult)result).entry.team.equals(team))
-                    return true;
-
-        return false;
     }
 }

@@ -49,21 +49,8 @@ public class MinitourRaceResult extends SeriesRaceResult {
     @Override
     public int compareTo(final RaceResult other) {
 
-        final MinitourRaceResult o = (MinitourRaceResult) other;
+        return compare(this, other);
 
-        final int compare_completion = compareCompletionTo(o);
-        if (compare_completion != 0) return compare_completion;
-
-        final int compare_completion_so_far = compareCompletionSoFarTo(o);
-        if (compare_completion_so_far != 0) return compare_completion_so_far;
-
-        if (completedAllRacesSoFar()) {
-
-            final int compare_performance = comparePerformanceTo(o);
-            if (compare_performance != 0) return compare_performance;
-        }
-
-        return compareRunnerNameTo(o);
     }
 
     @Override

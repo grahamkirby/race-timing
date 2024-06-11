@@ -50,16 +50,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
     @Override
     public int compareTo(final RaceResult other) {
-
-        MidweekRaceResult o = (MidweekRaceResult) other;
-
-        final int compare_completion = compareCompletionTo(o);
-        if (compare_completion != 0) return compare_completion;
-
-        final int compare_performance = comparePerformanceTo(o);
-        if (compare_performance != 0) return compare_performance;
-
-        return compareRunnerNameTo(o);
+        return compare(this, other);
     }
 
     public static int compare(final RaceResult r1, final RaceResult r2) {

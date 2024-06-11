@@ -2,6 +2,7 @@ package series_race;
 
 import common.Race;
 import common.RaceOutput;
+import common.RacePrizes;
 import common.Runner;
 import individual_race.IndividualRace;
 
@@ -13,6 +14,7 @@ public abstract class SeriesRace extends Race {
 
     public List<IndividualRace> races;
     public List<Runner> combined_runners;
+    protected RacePrizes prizes;
 
     public int category_prizes;
     public int minimum_number_of_races;

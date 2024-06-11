@@ -1,9 +1,6 @@
 package fife_ac_races.minitour;
 
-import common.Category;
-import common.JuniorRaceCategories;
-import common.RaceResult;
-import common.Runner;
+import common.*;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import series_race.SeriesRace;
@@ -24,7 +21,7 @@ public class MinitourRace extends SeriesRace {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MinitourRacePrizes prizes;
+//    MinitourRacePrizes prizes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,7 +52,7 @@ public class MinitourRace extends SeriesRace {
         output_text = new MinitourRaceOutputText(this);
         output_PDF = new MinitourRaceOutputPDF(this);
 
-        prizes = new MinitourRacePrizes(this);
+        prizes = new RacePrizes(this);
     }
 
     @Override

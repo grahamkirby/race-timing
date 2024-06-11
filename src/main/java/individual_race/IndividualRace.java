@@ -19,7 +19,7 @@ public class IndividualRace extends SingleRace {
 
     IndividualRaceInput input;
     IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
-    IndividualRacePrizes prizes;
+    RacePrizes prizes;
 
     private boolean senior_race;
     public boolean open_category;
@@ -110,7 +110,7 @@ public class IndividualRace extends SingleRace {
         output_text = new IndividualRaceOutputText(this);
         output_PDF = new IndividualRaceOutputPDF(this);
 
-        prizes = new IndividualRacePrizes(this);
+        prizes = new RacePrizes(this);
     }
 
     private void configureInputData() throws IOException {

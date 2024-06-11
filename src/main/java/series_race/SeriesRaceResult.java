@@ -1,5 +1,6 @@
 package series_race;
 
+import common.Category;
 import common.Race;
 import common.RaceResult;
 import common.Runner;
@@ -16,12 +17,23 @@ public abstract class SeriesRaceResult extends RaceResult {
         this.runner = runner;
     }
 
+    @Override
     public boolean completed() {
 
         return numberCompleted() >= ((SeriesRace)race).minimum_number_of_races;
     }
 
+    @Override
+    public Category getCategory() {
+        return runner.category;
+    }
+
     public abstract boolean completedAllRacesSoFar();
+
+    @Override
+    public boolean sameEntrant(RaceResult other) {
+        return runner.equals(((SeriesRaceResult) other).runner);
+    }
 
     protected int numberCompleted() {
 

@@ -1,5 +1,6 @@
 package relay_race;
 
+import common.Category;
 import common.Race;
 import common.RaceResult;
 
@@ -45,26 +46,22 @@ public class RelayRaceResult extends RaceResult {
 
     @Override
     public int compareTo(final RaceResult other) {
+        return compare(this, other);
+    }
 
-        RelayRaceResult o = (RelayRaceResult) other;
+    @Override
+    public boolean sameEntrant(RaceResult other) {
+        return entry.equals(((RelayRaceResult) other).entry);
+    }
 
-        // DNF results are sorted in increasing order of bib number.
-        // Otherwise sort in order of increasing overall team time.
-        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+    @Override
+    public boolean completed() {
+        return !dnf();
+    }
 
-        if (!dnf() && o.dnf()) return -1;
-        if (dnf() && !o.dnf()) return 1;
-        if (dnf() && o.dnf()) return Integer.compare(entry.bib_number, o.entry.bib_number);
-
-        if (duration().equals(o.duration())) {
-
-            final int this_last_leg_position = ((RelayRace)race).getRecordedLegPosition(entry.bib_number, ((RelayRace)race).number_of_legs);
-            final int other_last_leg_position = ((RelayRace)race).getRecordedLegPosition(o.entry.bib_number, ((RelayRace)race).number_of_legs);
-
-            return Integer.compare(this_last_leg_position, other_last_leg_position);
-        }
-
-        return duration().compareTo(o.duration());
+    @Override
+    public Category getCategory() {
+        return entry.team.category;
     }
 
     public static int compare(final RaceResult r1, final RaceResult r2) {
