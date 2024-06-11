@@ -27,6 +27,10 @@ public abstract class Race {
     protected List<RaceResult> overall_results;
 
     public Categories categories;
+    protected RacePrizes prizes;
+
+    public RaceInput input;
+    public RaceOutput output_CSV, output_HTML, output_text, output_PDF;
 
     public Race(final Path config_file_path) throws IOException {
 
@@ -60,9 +64,8 @@ public abstract class Race {
 
     public Category lookupCategory(final String short_name) {
 
-        for (Category category : categories.getCategoriesInDecreasingGeneralityOrder()) {
+        for (final Category category : categories.getCategoriesInDecreasingGeneralityOrder())
             if (category.getShortName().equals(short_name)) return category;
-        }
 
         throw new RuntimeException("Category not found: " + short_name);
     }
@@ -86,7 +89,7 @@ public abstract class Race {
         return value == null || value.isBlank() ? default_value : value;
     }
 
-    public static List<Runner> getCombinedRunners(List<IndividualRace> individual_races) {
+    public static List<Runner> getCombinedRunners(final List<IndividualRace> individual_races) {
 
         final List<Runner> runners = new ArrayList<>();
 

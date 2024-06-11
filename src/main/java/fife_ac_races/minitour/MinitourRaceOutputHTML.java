@@ -5,6 +5,7 @@ import common.Race;
 import common.RaceResult;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
+import series_race.SeriesRace;
 import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
     @Override
     public void printCombined() throws IOException {
 
-        for (int i = 1; i <= race.races.size(); i++)
+        for (int i = 1; i <= ((SeriesRace)race).races.size(); i++)
             printRace(i);
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
@@ -57,7 +58,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
 
     private void printRace(final int race_number) throws IOException {
 
-        final IndividualRace individual_race = race.races.get(race_number - 1);
+        final IndividualRace individual_race = ((SeriesRace)race).races.get(race_number - 1);
 
         if (individual_race != null) {
 
@@ -74,7 +75,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
         }
     }
 
-    private void printRaceCategories(final OutputStreamWriter html_writer, final Race race, final String combined_categories_title, final String... category_names) throws IOException {
+    private void printRaceCategories(final OutputStreamWriter writer, final Race race, final String combined_categories_title, final String... category_names) throws IOException {
 
         final List<Category> category_list = getCategoryList(category_names);
 
@@ -84,7 +85,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
                 filter(result -> category_list.contains(((IndividualRaceResult)result).entry.runner.category)).
                 toList();
 
-        printRaceCategories(html_writer, category_results, combined_categories_title);
+        printRaceCategories(writer, category_results, combined_categories_title);
     }
 
     private void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results, final String combined_categories_title) throws IOException {
@@ -204,8 +205,10 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < race.races.size(); i++)
-            if (race.races.get(i) != null)
+        final SeriesRace series_race = (SeriesRace) race;
+
+        for (int i = 0; i < series_race.races.size(); i++)
+            if (series_race.races.get(i) != null)
                 writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
 
         writer.append("""

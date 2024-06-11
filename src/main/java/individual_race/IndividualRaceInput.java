@@ -2,11 +2,11 @@ package individual_race;
 
 import common.Race;
 import common.RaceEntry;
-import common.RaceInput;
+import single_race.SingleRaceInput;
 
 import java.util.List;
 
-public class IndividualRaceInput extends RaceInput {
+public class IndividualRaceInput extends SingleRaceInput {
 
     public IndividualRaceInput(final Race race) {
         super(race);

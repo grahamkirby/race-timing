@@ -1,9 +1,6 @@
 package relay_race;
 
-import common.Category;
-import common.RaceEntry;
-import common.RaceResult;
-import common.RawResult;
+import common.*;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -79,9 +76,10 @@ public class RelayRaceOutputText extends RelayRaceOutput {
         for (int i = 0; i < race.getRawResults().size(); i++) {
 
             final RawResult raw_result = race.getRawResults().get(i);
-            final boolean last_electronically_recorded_result = i == ((RelayRace)race).input.getNumberOfRawResults() - 1;
+            final RelayRaceInput input = (RelayRaceInput) race.input;
+            final boolean last_electronically_recorded_result = i == input.getNumberOfRawResults() - 1;
 
-            if (last_electronically_recorded_result && ((RelayRace)race).input.getNumberOfRawResults() < race.getRawResults().size())
+            if (last_electronically_recorded_result && input.getNumberOfRawResults() < race.getRawResults().size())
                 raw_result.appendComment("Remaining times from paper recording sheet only.");
 
             printResult(raw_result, leg_finished_count, writer);

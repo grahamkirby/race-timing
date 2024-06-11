@@ -117,12 +117,12 @@ public abstract class RaceOutput {
         }
     }
 
-    protected void printPrizesHTML(OutputStreamWriter html_writer) throws IOException {
+    protected void printPrizesHTML(OutputStreamWriter writer) throws IOException {
 
-        html_writer.append("<h4>Prizes</h4>\n");
+        writer.append("<h4>Prizes</h4>\n");
 
         for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, html_writer);
+            printPrizes(category, writer);
     }
 
     public void printPrizesPDF() throws IOException {
