@@ -1,10 +1,6 @@
 package common;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 
 import java.io.IOException;
@@ -13,8 +9,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public abstract class RaceOutput {
 
@@ -33,30 +28,6 @@ public abstract class RaceOutput {
 
     public static final String DNF_STRING = "DNF";
 
-    static Map<String, String> NORMALISED_CLUB_NAMES = new HashMap<>();
-
-    static {
-        NORMALISED_CLUB_NAMES.put("", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("Unattached", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("U/A", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("None", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("Fife Athletic Club", "Fife AC");
-        NORMALISED_CLUB_NAMES.put("Dundee HH", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("Leven Las Vegas", "Leven Las Vegas RC");
-        NORMALISED_CLUB_NAMES.put("Leven Las Vegas Running Club", "Leven Las Vegas RC");
-        NORMALISED_CLUB_NAMES.put("Haddies", "Anster Haddies");
-        NORMALISED_CLUB_NAMES.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("DRR", "Dundee Road Runners");
-        NORMALISED_CLUB_NAMES.put("Perth RR", "Perth Road Runners");
-        NORMALISED_CLUB_NAMES.put("Kinross RR", "Kinross Road Runners");
-        NORMALISED_CLUB_NAMES.put("Falkland TR", "Falkland Trail Runners");
-        NORMALISED_CLUB_NAMES.put("PH Racing Club", "PH Racing");
-        NORMALISED_CLUB_NAMES.put("DHH", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("Carnegie H", "Carnegie Harriers");
-        NORMALISED_CLUB_NAMES.put("Dundee RR", "Dundee Road Runners");
-        NORMALISED_CLUB_NAMES.put("Recreational Running", "Recreational Runners");
-    }
-
     public final Race race;
 
     public String year;
@@ -72,12 +43,12 @@ public abstract class RaceOutput {
         configure();
     }
 
-    protected void printResults(final RaceResult[] results, final ResultPrinter printer) throws IOException {
+    protected void printResults(final List<? extends RaceResult> results, final ResultPrinter printer) throws IOException {
 
         for (final RaceResult result : results)
             printer.printResult(result);
 
-        if (results.length == 0)
+        if (results.isEmpty())
             printer.printNoResults();
     }
 
@@ -204,11 +175,6 @@ public abstract class RaceOutput {
         document.add(category_header_paragraph);
     }
 
-    public static String normaliseClubName(final String club) {
-
-        return NORMALISED_CLUB_NAMES.getOrDefault(club, club);
-    }
-
     public static String htmlEncode(String s) {
 
         return s.replaceAll("è", "&egrave;").
@@ -225,14 +191,14 @@ public abstract class RaceOutput {
         return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
     }
 
-    protected void setPositionStrings(final RaceResult[] results, final boolean allow_equal_positions) {
+    protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
 
-        for (int result_index = 0; result_index < results.length; result_index++) {
+        for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            final RaceResult result = results[result_index];
+            final RaceResult result = results.get(result_index);
 
             if (allow_equal_positions)
                 // Skip over any following results with the same times.
@@ -242,7 +208,7 @@ public abstract class RaceOutput {
         }
     }
 
-    private int groupEqualResultsAndReturnFollowingIndex(final RaceResult[] results, final RaceResult result, final int result_index) {
+    private int groupEqualResultsAndReturnFollowingIndex(final List<? extends RaceResult> results, final RaceResult result, final int result_index) {
 
         final int highest_index_with_same_duration = getHighestIndexWithSameResult(results, result, result_index);
 
@@ -250,7 +216,7 @@ public abstract class RaceOutput {
 
             // Record the same position for all the results with equal times.
             for (int i = result_index; i <= highest_index_with_same_duration; i++)
-                results[i].position_string = result_index + 1 + "=";
+                results.get(i).position_string = result_index + 1 + "=";
 
         else
             result.position_string = String.valueOf(result_index + 1);
@@ -258,11 +224,11 @@ public abstract class RaceOutput {
         return highest_index_with_same_duration;
     }
 
-    private int getHighestIndexWithSameResult(final RaceResult[] results, final RaceResult result, final int result_index) {
+    private int getHighestIndexWithSameResult(final List<? extends RaceResult> results, final RaceResult result, final int result_index) {
 
         int highest_index_with_same_result = result_index;
 
-        while (highest_index_with_same_result + 1 < results.length && result.comparePerformanceTo(results[highest_index_with_same_result + 1]) == 0)
+        while (highest_index_with_same_result + 1 < results.size() && result.comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
             highest_index_with_same_result++;
 
         return highest_index_with_same_result;

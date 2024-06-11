@@ -4,13 +4,14 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import common.Category;
 import common.RaceResult;
-import series_race.SeriesRace;
+import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
+import java.util.List;
 
-public class MinitourRaceOutputPDF extends MinitourRaceOutput {
+public class MinitourRaceOutputPDF extends SeriesRaceOutput {
 
-    public MinitourRaceOutputPDF(final SeriesRace race) {
+    public MinitourRaceOutputPDF(final MinitourRace race) {
         super(race);
     }
 
@@ -25,7 +26,7 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
 
         addCategoryHeader(category, document);
 
-        RaceResult[] results = getMinitourRacePrizeResults(category);
+        final List<RaceResult> results = race.prize_winners.get(category);
 
         setPositionStrings(results, true);
         printResults(results, new ResultPrinterPDF(document));
@@ -37,7 +38,7 @@ public class MinitourRaceOutputPDF extends MinitourRaceOutput {
         public void printResult(final RaceResult r) {
 
             MinitourRaceResult result = (MinitourRaceResult) r;
-            printPrizePDF(document, result.position_string, result.runner.name, normaliseClubName(result.runner.club), result.duration());
+            printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, result.duration());
         }
 
         @Override

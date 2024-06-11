@@ -5,9 +5,7 @@ import common.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class IndividualRace extends Race {
 
@@ -23,9 +21,9 @@ public class IndividualRace extends Race {
     IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     IndividualRacePrizes prizes;
 
-    public IndividualRaceEntry[] entries;
-    private IndividualRaceResult[] overall_results;
-    Map<Category, RaceResult[]> prize_winners = new HashMap<>();
+    public List<IndividualRaceEntry> entries;
+    private List<IndividualRaceResult> overall_results;
+    Map<Category, List<RaceResult>> prize_winners = new HashMap<>();
 
     private boolean senior_race;
     public boolean open_category;
@@ -127,18 +125,18 @@ public class IndividualRace extends Race {
 
     private void initialiseResults() {
 
-        overall_results = new IndividualRaceResult[raw_results.length];
+        overall_results = new ArrayList<>();
 
-        for (int i = 0; i < overall_results.length; i++)
-            overall_results[i] = new IndividualRaceResult(this);
+        for (int i = 0; i < raw_results.size(); i++)
+            overall_results.add(new IndividualRaceResult(this));
     }
 
     private void fillFinishTimes() {
 
-        for (int results_index = 0; results_index < raw_results.length; results_index++) {
+        for (int results_index = 0; results_index < raw_results.size(); results_index++) {
 
-            final RawResult raw_result = raw_results[results_index];
-            final IndividualRaceResult result = overall_results[results_index];
+            final RawResult raw_result = raw_results.get(results_index);
+            final IndividualRaceResult result = overall_results.get(results_index);
 
             result.entry = findEntryWithBibNumber(raw_result.getBibNumber());
             result.finish_time = raw_result.getRecordedFinishTime();
@@ -173,13 +171,13 @@ public class IndividualRace extends Race {
 
     public IndividualRaceResult getResultWithBibNumber(final int bib_number) {
 
-        return overall_results[findResultsIndexOfRunnerWithBibNumber(bib_number)];
+        return overall_results.get(findResultsIndexOfRunnerWithBibNumber(bib_number));
     }
 
     int findResultsIndexOfRunnerWithBibNumber(final int bib_number) {
 
-        for (int i = 0; i < overall_results.length; i++)
-            if (overall_results[i].entry.bib_number == bib_number)
+        for (int i = 0; i < overall_results.size(); i++)
+            if (overall_results.get(i).entry.bib_number == bib_number)
                 return i;
 
         throw new RuntimeException("unregistered bib number: " + bib_number);
@@ -187,8 +185,8 @@ public class IndividualRace extends Race {
 
     public int getRecordedPosition(final int bib_number) {
 
-        for (int i = 0; i < raw_results.length; i++) {
-            if (raw_results[i].getBibNumber() == bib_number) {
+        for (int i = 0; i < raw_results.size(); i++) {
+            if (raw_results.get(i).getBibNumber() == bib_number) {
                 return i + 1;
             }
         }
@@ -215,7 +213,7 @@ public class IndividualRace extends Race {
         // Sort in order of recorded time.
         // DNF results are sorted in increasing order of bib number.
         // Where two runners have the same recorded time, the order in which they were recorded is preserved.
-        Arrays.sort(overall_results);
+        overall_results.sort(IndividualRaceResult::compareTo);
     }
 
     private void allocatePrizes() {
@@ -241,7 +239,7 @@ public class IndividualRace extends Race {
         output_HTML.printCombined();
     }
 
-    public IndividualRaceResult[] getOverallResults() {
+    public List<IndividualRaceResult> getOverallResults() {
         return overall_results;
     }
 }

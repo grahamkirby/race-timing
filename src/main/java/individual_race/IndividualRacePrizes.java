@@ -22,7 +22,7 @@ public class IndividualRacePrizes {
             race.prize_winners.put(category, getPrizeWinners(category));
     }
 
-    private RaceResult[] getPrizeWinners(final Category category) {
+    private List<RaceResult> getPrizeWinners(final Category category) {
 
         final List<RaceResult> prize_winners = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public class IndividualRacePrizes {
                 position++;
             }
         }
-        return prize_winners.toArray(new RaceResult[0]);
+        return prize_winners;
     }
 
     private boolean prizeWinner(final IndividualRaceResult result, final Category category) {
@@ -46,8 +46,8 @@ public class IndividualRacePrizes {
 
     private boolean alreadyWonPrize(final IndividualRaceEntry entry) {
 
-        for (RaceResult[] winners : race.prize_winners.values())
-            for (RaceResult result : winners)
+        for (final List<RaceResult> winners : race.prize_winners.values())
+            for (final RaceResult result : winners)
                 if (((IndividualRaceResult)result).entry.equals(entry))
                     return true;
 

@@ -9,6 +9,7 @@ import individual_race.IndividualRace;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -24,8 +25,8 @@ public class MinitourRaceInput extends RaceInput {
 
     private static final List<String> SECOND_WAVE_CATEGORY_NAMES = Arrays.asList("FU9", "MU9", "FU11", "MU11");
 
-    private Duration[] wave_start_offsets;
-    private SelfTimedRun[] self_timed_runs;
+    private List<Duration> wave_start_offsets;
+    private List<SelfTimedRun> self_timed_runs;
 
     private int time_trial_race_number;
     private int time_trial_runners_per_wave;
@@ -53,25 +54,24 @@ public class MinitourRaceInput extends RaceInput {
         applyRunnerStartOffsets(individual_race, race_number);
     }
 
-    private Path[] readRaceConfigPaths() {
+    private List<Path> readRaceConfigPaths() {
 
         final String[] race_strings = race.getProperties().getProperty("RACES").split(",", -1);
-        final Path[] race_paths = new Path[race_strings.length];
+        final List<Path> race_paths = new ArrayList<>();
 
-        for (int i = 0; i < race_paths.length; i++)
-            race_paths[i] = Paths.get(race_strings[i]);
+        for (final String s : race_strings) race_paths.add(Paths.get(s));
 
         return race_paths;
     }
 
-    private Duration[] readWaveStartOffsets() {
+    private List<Duration> readWaveStartOffsets() {
 
         final String[] offset_strings = race.getPropertyWithDefault("WAVE_START_OFFSETS", "").split(",", -1);
 
         return extractConfigFromPropertyStrings(offset_strings, Race::parseTime, Duration[]::new);
     }
 
-    private SelfTimedRun[] readSelfTimedRuns() {
+    private List<SelfTimedRun> readSelfTimedRuns() {
 
         final Function<String, SelfTimedRun> extract_run_function = s -> {
 
@@ -84,10 +84,11 @@ public class MinitourRaceInput extends RaceInput {
         return extractConfigFromPropertyStrings(self_timed_strings, extract_run_function, SelfTimedRun[]::new);
     }
 
-    private <T> T[] extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper, IntFunction<T[]> array_element_initializer) {
+    private <T> List<T> extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper, IntFunction<T[]> array_element_initializer) {
 
         final String[] non_empty_strings = strings.length == 1 && strings[0].isEmpty() ? new String[0] : strings;
-        return Arrays.stream(non_empty_strings).map(mapper).toArray(array_element_initializer);
+
+        return Arrays.stream(non_empty_strings).map(mapper).toList();
     }
 
     private void readTimeTrialProperties() {
@@ -117,7 +118,7 @@ public class MinitourRaceInput extends RaceInput {
             return getTimeTrialOffset(bib_number);
 
         if (runnerIsInSecondWave(individual_race, bib_number))
-            return wave_start_offsets[race_number-1];
+            return wave_start_offsets.get(race_number - 1);
 
         return Duration.ZERO;
     }

@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class RelayRaceOutput extends RaceOutput {
 
@@ -52,26 +53,26 @@ public abstract class RelayRaceOutput extends RaceOutput {
         throw new UnsupportedOperationException();
     }
 
-    Duration sumDurationsUpToLeg(final LegResult[] leg_results, final int leg) {
+    Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
 
-        Duration total = leg_results[0].duration();
-        for (int i = 1; i < leg; i++)
-            total = total.plus(leg_results[i].duration());
+        Duration total = Duration.ZERO;
+        for (int i = 0; i < leg; i++)
+            total = total.plus(leg_results.get(i).duration());
         return total;
     }
 
-    LegResult[] getLegResults(final int leg_number) {
+    List<LegResult> getLegResults(final int leg_number) {
 
-        final LegResult[] leg_results = new LegResult[((RelayRace)race).overall_results.length];
+        final List<LegResult> leg_results = new ArrayList<>();
 
-        for (int i = 0; i < leg_results.length; i++)
-            leg_results[i] = ((RelayRace)race).overall_results[i].leg_results[leg_number-1];
+        for (final RelayRaceResult overall_result : ((RelayRace) race).overall_results)
+            leg_results.add(overall_result.leg_results.get(leg_number - 1));
 
         // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
         // Ordering for DNF results doesn't matter since they're omitted in output.
         // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
         // OutputCSV.printLegResults deals with dead heats.
-        Arrays.sort(leg_results);
+        leg_results.sort(LegResult::compareTo);
 
         return leg_results;
     }
@@ -83,7 +84,7 @@ public abstract class RelayRaceOutput extends RaceOutput {
 
             // Find the next mass start.
             int mass_start_leg = leg;
-            while (!((RelayRace)race).mass_start_legs[mass_start_leg-1])
+            while (!((RelayRace)race).mass_start_legs.get(mass_start_leg-1))
                 mass_start_leg++;
 
             writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");

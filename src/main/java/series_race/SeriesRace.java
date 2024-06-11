@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class SeriesRace extends Race {
 
-    public IndividualRace[] races;
-    public Runner[] combined_runners;
-    public Map<Category, RaceResult[]> prize_winners = new HashMap<>();
+    public List<IndividualRace> races;
+    public List<Runner> combined_runners;
+    public Map<Category, List<RaceResult>> prize_winners = new HashMap<>();
 
     public int category_prizes;
     public int minimum_number_of_races;

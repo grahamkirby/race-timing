@@ -1,7 +1,5 @@
 package individual_race;
 
-import common.Race;
-import common.RaceOutput;
 import common.RawResult;
 
 import java.io.IOException;
@@ -45,58 +43,39 @@ public class IndividualRaceInput {
         raw_results_path = input_directory_path.resolve(raw_results_filename);
     }
 
-    IndividualRaceEntry[] loadEntries() throws IOException {
+    protected List<IndividualRaceEntry> loadEntries() throws IOException {
 
         final List<String> lines = Files.readAllLines(entries_path);
-        final IndividualRaceEntry[] entries = new IndividualRaceEntry[lines.size()];
+        final List<IndividualRaceEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < entries.length; i++)
-            loadEntry(entries, lines, i);
+        for (final String line : lines) {
+
+            final IndividualRaceEntry entry = new IndividualRaceEntry(line.split("\t"), race);
+
+            checkDuplicateBibNumber(entries, entry.bib_number);
+            checkDuplicateRunner(entries, entry.runner.name, entry.runner.club);
+
+            entries.add(entry);
+        }
 
         return entries;
     }
 
-    private void loadEntry(final IndividualRaceEntry[] entries, final List<String> lines, final int entry_index) {
-
-        final String[] runner_elements = lines.get(entry_index).split("\t");
-
-        if (runner_elements.length != 4)
-            throw new RuntimeException("illegal composition for runner: " + runner_elements[0]);
-
-        final int bib_number = Integer.parseInt(runner_elements[0]);
-        final String runner_name = runner_elements[1] = cleanName(runner_elements[1]);
-        final String club = runner_elements[2] = RaceOutput.normaliseClubName(cleanName(runner_elements[2]));
-
-        if (entriesAlreadyContain(entries, bib_number))
-            throw new RuntimeException("duplicate runner number: " + bib_number);
-
-        if (entriesAlreadyContain(entries, runner_name, club))
-            throw new RuntimeException("duplicate runner: " + runner_name + ", " + club);
-
-        entries[entry_index] = new IndividualRaceEntry(runner_elements, race);
-    }
-
-    private String cleanName(String name) {
-
-        while (name.contains("  ")) name = name.replaceAll(" {2}", " ");
-        return name.strip();
-    }
-
-    private boolean entriesAlreadyContain(final IndividualRaceEntry[] entries, final int bib_number) {
+    private void checkDuplicateBibNumber(final List<IndividualRaceEntry> entries, final int bib_number) {
 
         for (IndividualRaceEntry entry : entries)
-            if (entry != null && entry.bib_number == bib_number) return true;
-        return false;
+            if (entry != null && entry.bib_number == bib_number)
+                throw new RuntimeException("duplicate runner number: " + bib_number);
     }
 
-    private boolean entriesAlreadyContain(final IndividualRaceEntry[] entries, final String runner_name, final String club) {
+    private void checkDuplicateRunner(final List<IndividualRaceEntry> entries, final String runner_name, final String club) {
 
         for (IndividualRaceEntry entry : entries)
-            if (entry != null && entry.runner.name.equals(runner_name) && entry.runner.club.equals(club)) return true;
-        return false;
+            if (entry.runner.name.equals(runner_name) && entry.runner.club.equals(club))
+                throw new RuntimeException("duplicate runner: " + runner_name + ", " + club);
     }
 
-    RawResult[] loadRawResults() throws IOException {
+    protected List<RawResult> loadRawResults() throws IOException {
 
         final List<String> lines = Files.readAllLines(raw_results_path);
         final List<RawResult> raw_results = new ArrayList<>();
@@ -104,7 +83,7 @@ public class IndividualRaceInput {
         for (String line : lines)
             loadRawResult(raw_results, line);
 
-        return raw_results.toArray(new RawResult[0]);
+        return raw_results;
     }
 
     private static void loadRawResult(final List<RawResult> raw_results, String line) {

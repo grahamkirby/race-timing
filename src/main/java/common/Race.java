@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 public abstract class Race {
 
@@ -18,13 +20,11 @@ public abstract class Race {
     protected final Properties properties;
     private final Path working_directory_path;
 
-
-
     // String read from configuration file specifying all the runners who did have a finish
     // time recorded but were declared DNF.
     protected String dnf_string;
 
-    protected RawResult[] raw_results;
+    protected List<RawResult> raw_results;
 
     public Categories categories;
 
@@ -72,7 +72,7 @@ public abstract class Race {
         return working_directory_path;
     }
 
-    public RawResult[] getRawResults() {
+    public List<RawResult> getRawResults() {
         return raw_results;
     }
 
@@ -82,29 +82,17 @@ public abstract class Race {
         return value == null || value.isBlank() ? default_value : value;
     }
 
-    public static Runner[] getCombinedRunners(IndividualRace[] individual_races) {
+    public static List<Runner> getCombinedRunners(List<IndividualRace> individual_races) {
 
-        final Set<Runner> runners = new HashSet<>();
+        final List<Runner> runners = new ArrayList<>();
 
         for (final IndividualRace individual_race : individual_races)
             if (individual_race != null)
-                for (final IndividualRaceResult result : individual_race.getOverallResults()) {
-                    if (!isDuplicate(result, runners))
+                for (final IndividualRaceResult result : individual_race.getOverallResults())
+                    if (!runners.contains(result.entry.runner))
                         runners.add(result.entry.runner);
-                }
 
-        return runners.toArray(new Runner[0]);
-    }
-
-    private static boolean isDuplicate(IndividualRaceResult result, Set<Runner> runners) {
-
-        final String result_name = result.entry.runner.name;
-        final String result_club = result.entry.runner.club;
-
-        for (final Runner runner : runners) {
-            if (result_name.equals(runner.name) && result_club.equals(runner.club)) return true;
-        }
-        return false;
+        return runners;
     }
 
     public static Duration parseTime(final String element) {

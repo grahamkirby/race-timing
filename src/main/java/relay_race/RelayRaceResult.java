@@ -4,20 +4,22 @@ import common.Race;
 import common.RaceResult;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RelayRaceResult extends RaceResult {
 
     public final RelayRaceEntry entry;
-    final LegResult[] leg_results;
+    final List<LegResult> leg_results;
 
     public RelayRaceResult(final RelayRaceEntry entry, final int number_of_legs, final Race race) {
 
         super(race);
         this.entry = entry;
-        leg_results = new LegResult[number_of_legs];
+        leg_results = new ArrayList<>();
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results[i] = new LegResult(entry, race);
+            leg_results.add(new LegResult(entry, race));
     }
 
     public Duration duration() {
@@ -63,10 +65,5 @@ public class RelayRaceResult extends RaceResult {
         }
 
         return duration().compareTo(o.duration());
-    }
-
-    @Override
-    public int comparePerformanceTo(RaceResult other) {
-        throw new UnsupportedOperationException();
     }
 }

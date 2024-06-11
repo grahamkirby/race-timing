@@ -5,6 +5,7 @@ import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 public class IndividualRaceOutputText extends IndividualRaceOutput {
 
@@ -20,7 +21,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final RaceResult[] category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
 
@@ -29,7 +30,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
             writer.append(header).append("\n");
             writer.append("-".repeat(header.length())).append("\n\n");
 
-            if (category_prize_winners.length == 0)
+            if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
 
             int position = 1;

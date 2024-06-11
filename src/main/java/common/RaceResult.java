@@ -9,5 +9,7 @@ public abstract class RaceResult implements Comparable<RaceResult> {
         this.race = race;
     }
 
-    public abstract int comparePerformanceTo(RaceResult other);
+    public int comparePerformanceTo(RaceResult other) {
+        throw new UnsupportedOperationException();
+    }
 }

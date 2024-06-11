@@ -2,14 +2,15 @@ package fife_ac_races.minitour;
 
 import common.Category;
 import common.RaceResult;
-import series_race.SeriesRace;
+import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
-public class MinitourRaceOutputText extends MinitourRaceOutput {
+public class MinitourRaceOutputText extends SeriesRaceOutput {
 
-    public MinitourRaceOutputText(final SeriesRace race) {
+    public MinitourRaceOutputText(final MinitourRace race) {
         super(race);
     }
 
@@ -26,7 +27,7 @@ public class MinitourRaceOutputText extends MinitourRaceOutput {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        final RaceResult[] results = getMinitourRacePrizeResults(category);
+        final List<RaceResult> results = race.prize_winners.get(category);
 
         setPositionStrings(results, true);
         printResults(results, new ResultPrinterText(writer));

@@ -48,53 +48,39 @@ public class RelayRaceInput {
         annotations_path = annotations_filename != null ? input_directory_path.resolve(annotations_filename): null;
     }
 
-    public RelayRaceEntry[] loadEntries() throws IOException {
+    protected List<RelayRaceEntry> loadEntries() throws IOException {
 
         final List<String> lines = Files.readAllLines(entries_path);
-        final RelayRaceEntry[] entries = new RelayRaceEntry[lines.size()];
+        final List<RelayRaceEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < entries.length; i++)
-            loadEntry(entries, lines, i);
+        for (final String line : lines) {
+
+            final RelayRaceEntry entry = new RelayRaceEntry(line.split("\t"), race);
+
+            checkDuplicateBibNumber(entries, entry.bib_number);
+            checkDuplicateTeamNumber(entries, entry.team.name);
+
+            entries.add(entry);
+        }
 
         return entries;
     }
 
-    private void loadEntry(final RelayRaceEntry[] entries, final List<String> lines, final int entry_index) {
+    private void checkDuplicateBibNumber(final List<RelayRaceEntry> entries, final int bib_number) {
 
-        final String[] team_elements = lines.get(entry_index).split("\t");
-
-        if (team_elements.length != race.number_of_legs + 3)
-            throw new RuntimeException("illegal composition for team: " + team_elements[0]);
-
-        final int bib_number = Integer.parseInt(team_elements[0]);
-        final String team_name = team_elements[1];
-
-        if (entriesAlreadyContain(entries, bib_number))
-            throw new RuntimeException("duplicate team number: " + bib_number);
-
-        if (entriesAlreadyContain(entries, team_name))
-            throw new RuntimeException("duplicate team name: " + team_name);
-
-        entries[entry_index] = new RelayRaceEntry(team_elements, race);
+        for (final RelayRaceEntry entry : entries)
+            if (entry != null && entry.bib_number == bib_number)
+                throw new RuntimeException("duplicate team number: " + bib_number);
     }
 
-    private boolean entriesAlreadyContain(final RelayRaceEntry[] entries, final int bib_number) {
+    private void checkDuplicateTeamNumber(final List<RelayRaceEntry> entries, final String team_name) {
 
-        for (RelayRaceEntry entry : entries)
-            if (entry != null && entry.bib_number == bib_number) return true;
-
-        return false;
+        for (final RelayRaceEntry entry : entries)
+            if (entry != null && entry.team.name.equals(team_name))
+                throw new RuntimeException("duplicate team name: " + team_name);
     }
 
-    private boolean entriesAlreadyContain(final RelayRaceEntry[] entries, final String team_name) {
-
-        for (RelayRaceEntry entry : entries)
-            if (entry != null && entry.team.name.equals(team_name)) return true;
-
-        return false;
-    }
-
-    RawResult[] loadRawResults() throws IOException {
+    protected List<RawResult> loadRawResults() throws IOException {
 
         final List<RawResult> raw_results = new ArrayList<>();
 
@@ -107,7 +93,7 @@ public class RelayRaceInput {
             for (final String line : Files.readAllLines(paper_results_path))
                 loadRawResult(raw_results, line);
 
-        return raw_results.toArray(new RawResult[0]);
+        return raw_results;
     }
 
     int getNumberOfRawResults() {
@@ -147,7 +133,7 @@ public class RelayRaceInput {
                 previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0;
     }
 
-    public void loadTimeAnnotations(RawResult[] raw_results) throws IOException {
+    public void loadTimeAnnotations(final List<RawResult> raw_results) throws IOException {
 
         if (annotations_path != null) {
 
@@ -165,10 +151,10 @@ public class RelayRaceInput {
         }
     }
 
-    private static void updateResult(RawResult[] raw_results, String[] elements) {
+    private static void updateResult(final List<RawResult> raw_results, String[] elements) {
 
         final int position = Integer.parseInt(elements[1]);
-        final RawResult raw_result = raw_results[position - 1];
+        final RawResult raw_result = raw_results.get(position - 1);
 
         if (elements[2].equals("?")) raw_result.setBibNumber(null);
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));

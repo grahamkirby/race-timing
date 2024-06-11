@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class RelayRaceOutputCSV extends RelayRaceOutput {
 
@@ -46,7 +47,7 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
             printLegResultsHeader(csv_writer, leg_number);
 
-            final LegResult[] leg_results = getLegResults(leg_number);
+            final List<LegResult> leg_results = getLegResults(leg_number);
 
             // Deal with dead heats in legs after the first.
             setPositionStrings(leg_results, leg_number > 1);
@@ -64,9 +65,9 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < ((RelayRace)race).overall_results.length; i++) {
+        for (int i = 0; i < ((RelayRace)race).overall_results.size(); i++) {
 
-            final RelayRaceResult overall_result = ((RelayRace)race).overall_results[i];
+            final RelayRaceResult overall_result = ((RelayRace)race).overall_results.get(i);
 
             if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
 
@@ -93,13 +94,13 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < ((RelayRace)race).overall_results.length; result_index++)
+        for (int result_index = 0; result_index < ((RelayRace)race).overall_results.size(); result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final RelayRaceResult result = ((RelayRace)race).overall_results[result_index];
+        final RelayRaceResult result = ((RelayRace)race).overall_results.get(result_index);
 
         if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
 
@@ -119,7 +120,7 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
         for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
-            final LegResult leg_result = result.leg_results[leg_number - 1];
+            final LegResult leg_result = result.leg_results.get(leg_number - 1);
 
             writer.append(team.runners[leg_number-1]);
             addMassStartAnnotation(writer, leg_result, leg_number);
@@ -136,11 +137,11 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg_number) throws IOException {
 
         writer.append("Pos,Runner");
-        if (((RelayRace)race).paired_legs[leg_number-1]) writer.append("s");
+        if (((RelayRace)race).paired_legs.get(leg_number-1)) writer.append("s");
         writer.append(",Time\n");
     }
 
-    private void printLegResults(final OutputStreamWriter writer, final LegResult[] leg_results) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final List<LegResult> leg_results) throws IOException {
 
         for (final LegResult leg_result : leg_results)
             printLegResult(writer, leg_result);

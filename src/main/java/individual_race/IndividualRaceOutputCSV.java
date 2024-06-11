@@ -34,9 +34,9 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < ((IndividualRace)race).getOverallResults().length; i++) {
+        for (int i = 0; i < ((IndividualRace)race).getOverallResults().size(); i++) {
 
-            final IndividualRaceResult overall_result = ((IndividualRace)race).getOverallResults()[i];
+            final IndividualRaceResult overall_result = ((IndividualRace)race).getOverallResults().get(i);
 
             if (!overall_result.DNF) {
                 writer.append(String.valueOf(i + 1));
@@ -44,7 +44,7 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
                 writer.append(",").
                         append(String.valueOf(overall_result.entry.bib_number)).append(",").
                         append(overall_result.entry.runner.name).append(",").
-                        append(overall_result.entry.runner.club).append(",").
+                        append((overall_result.entry.runner.club)).append(",").
                         append(overall_result.entry.runner.category.getShortName()).append(",").
                         append(overall_result.DNF ? "DNF" : format(overall_result.duration())).append("\n");
             }

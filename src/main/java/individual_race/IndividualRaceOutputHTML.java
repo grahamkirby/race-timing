@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.util.List;
 
 public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
@@ -61,13 +62,13 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final RaceResult[] category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 
         if (category_prize_winners != null) {
             writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
             writer.append("<ol>\n");
 
-            if (category_prize_winners.length == 0)
+            if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
             else
                 for (final RaceResult entry : category_prize_winners) {
@@ -76,7 +77,7 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
                     writer.append("<li>").
                             append(htmlEncode(result.entry.runner.name)).append(" (").
-                            append(normaliseClubName(result.entry.runner.club)).append(") ").
+                            append((result.entry.runner.club)).append(") ").
                             append(format(result.duration())).append("</li>\n");
                 }
 
@@ -132,7 +133,8 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(normaliseClubName(result.entry.runner.club));
+//            writer.append(normaliseClubName(result.entry.runner.club));
+            writer.append((result.entry.runner.club));
             writer.append("""
                             </td>
                             <td>""");

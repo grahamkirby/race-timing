@@ -2,7 +2,7 @@ package fife_ac_races.minitour;
 
 import common.Category;
 import common.RaceResult;
-import series_race.SeriesRace;
+import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -10,9 +10,9 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
-public class MinitourRaceOutputCSV extends MinitourRaceOutput {
+public class MinitourRaceOutputCSV extends SeriesRaceOutput {
 
-    public MinitourRaceOutputCSV(final SeriesRace race) {
+    public MinitourRaceOutputCSV(final MinitourRace race) {
         super(race);
     }
 
@@ -36,7 +36,7 @@ public class MinitourRaceOutputCSV extends MinitourRaceOutput {
     private void printCategoryResults(final OutputStreamWriter writer, final String... category_names) throws IOException {
 
         final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
-        final RaceResult[] results = ((MinitourRace)race).getResultsByCategory(category_list);
+        final List<? extends RaceResult> results = ((MinitourRace)race).getResultsByCategory(category_list);
 
         setPositionStrings(results, true);
         printResults(results, new ResultPrinterCSV(writer));

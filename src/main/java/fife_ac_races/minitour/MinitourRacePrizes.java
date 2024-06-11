@@ -9,20 +9,17 @@ import java.util.List;
 
 public class MinitourRacePrizes extends RacePrizes {
 
-    final MinitourRace race;
-
     public MinitourRacePrizes(final MinitourRace race) {
         super(race);
-        this.race = race;
     }
 
-    protected RaceResult[] getPrizeWinners(final Category category) {
+    protected List<RaceResult> getPrizeWinners(final Category category) {
 
         final List<RaceResult> prize_winners = new ArrayList<>();
 
         int position = 1;
 
-        for (final MinitourRaceResult result : race.getOverallResults()) {
+        for (final MinitourRaceResult result : ((MinitourRace)race).getOverallResults()) {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
@@ -30,7 +27,7 @@ public class MinitourRacePrizes extends RacePrizes {
                 position++;
             }
         }
-        return prize_winners.toArray(new RaceResult[0]);
+        return prize_winners;
     }
 
     private boolean prizeWinner(final MinitourRaceResult result, final Category category) {
