@@ -65,9 +65,9 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < ((RelayRace)race).overall_results.size(); i++) {
+        for (int i = 0; i < race.getOverallResults().size(); i++) {
 
-            final RelayRaceResult overall_result = ((RelayRace)race).overall_results.get(i);
+            final RelayRaceResult overall_result = (RelayRaceResult) race.getOverallResults().get(i);
 
             if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
 
@@ -94,13 +94,13 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int result_index = 0; result_index < ((RelayRace)race).overall_results.size(); result_index++)
+        for (int result_index = 0; result_index < race.getOverallResults().size(); result_index++)
             printDetailedResult(writer, result_index);
     }
 
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
-        final RelayRaceResult result = ((RelayRace)race).overall_results.get(result_index);
+        final RelayRaceResult result = (RelayRaceResult) race.getOverallResults().get(result_index);
 
         if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
 

@@ -71,4 +71,23 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
         return duration().compareTo(((MinitourRaceResult) other).duration());
     }
+
+    public static int compare(final RaceResult r1, final RaceResult r2) {
+
+        final MinitourRaceResult o = (MinitourRaceResult) r2;
+
+        final int compare_completion = ((MinitourRaceResult) r1).compareCompletionTo(o);
+        if (compare_completion != 0) return compare_completion;
+
+        final int compare_completion_so_far = ((MinitourRaceResult) r1).compareCompletionSoFarTo(o);
+        if (compare_completion_so_far != 0) return compare_completion_so_far;
+
+        if (((MinitourRaceResult) r1).completedAllRacesSoFar()) {
+
+            final int compare_performance = r1.comparePerformanceTo(o);
+            if (compare_performance != 0) return compare_performance;
+        }
+
+        return ((MinitourRaceResult) r1).compareRunnerNameTo(o);
+    }
 }

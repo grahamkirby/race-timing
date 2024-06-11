@@ -116,7 +116,9 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
 
         int position = 1;
 
-        for (final IndividualRaceResult result : ((IndividualRace)race).getOverallResults()) {
+        for (final RaceResult res : race.getOverallResults()) {
+
+            final IndividualRaceResult result = ((IndividualRaceResult)res);
 
             writer.append("""
                         <tr>
@@ -133,7 +135,6 @@ public class IndividualRaceOutputHTML extends IndividualRaceOutput {
             writer.append("""
                             </td>
                             <td>""");
-//            writer.append(normaliseClubName(result.entry.runner.club));
             writer.append((result.entry.runner.club));
             writer.append("""
                             </td>

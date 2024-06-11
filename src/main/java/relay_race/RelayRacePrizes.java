@@ -30,7 +30,7 @@ public class RelayRacePrizes {
 
         for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder()) {
 
-            for (final RelayRaceResult result : race.overall_results) {
+            for (final RaceResult result : race.getOverallResults()) {
                 if (prizeWinner(result, category)) {
                     List<RaceResult> result1 = new ArrayList<>();
                     result1.add(result);
@@ -51,7 +51,7 @@ public class RelayRacePrizes {
 
         int position = 2;
 
-        for (final RelayRaceResult result : race.overall_results) {
+        for (final RaceResult result : race.getOverallResults()) {
 
             if (position > category.numberOfPrizes()) return;
 
@@ -62,9 +62,9 @@ public class RelayRacePrizes {
         }
     }
 
-    private boolean prizeWinner(final RelayRaceResult result, final Category category) {
+    private boolean prizeWinner(final RaceResult result, final Category category) {
 
-        return !result.dnf() && race.categories.includes(category, result.entry.team.category) && !alreadyWonPrize(result.entry.team);
+        return !((RelayRaceResult)result).dnf() && race.categories.includes(category, ((RelayRaceResult)result).entry.team.category) && !alreadyWonPrize(((RelayRaceResult)result).entry.team);
     }
 
     private boolean alreadyWonPrize(final Team team) {

@@ -7,9 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public abstract class Race {
 
@@ -25,6 +23,8 @@ public abstract class Race {
     protected String dnf_string;
 
     protected List<RawResult> raw_results;
+    public Map<Category, List<RaceResult>> prize_winners = new HashMap<>();
+    protected List<RaceResult> overall_results;
 
     public Categories categories;
 
@@ -52,6 +52,10 @@ public abstract class Race {
             properties.load(in);
             return properties;
         }
+    }
+
+    public List<RaceResult> getOverallResults() {
+        return overall_results;
     }
 
     public Category lookupCategory(final String short_name) {
@@ -88,9 +92,11 @@ public abstract class Race {
 
         for (final IndividualRace individual_race : individual_races)
             if (individual_race != null)
-                for (final IndividualRaceResult result : individual_race.getOverallResults())
-                    if (!runners.contains(result.entry.runner))
-                        runners.add(result.entry.runner);
+                for (final RaceResult result : individual_race.getOverallResults()) {
+                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
+                    if (!runners.contains(runner))
+                        runners.add(runner);
+                }
 
         return runners;
     }

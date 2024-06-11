@@ -61,4 +61,15 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
         return compareRunnerNameTo(o);
     }
+
+    public static int compare(final RaceResult r1, final RaceResult r2) {
+
+        final int compare_completion = ((MidweekRaceResult)r1).compareCompletionTo((MidweekRaceResult) r2);
+        if (compare_completion != 0) return compare_completion;
+
+        final int compare_performance = r1.comparePerformanceTo((MidweekRaceResult) r2);
+        if (compare_performance != 0) return compare_performance;
+
+        return ((MidweekRaceResult)r1).compareRunnerNameTo((MidweekRaceResult) r2);
+    }
 }

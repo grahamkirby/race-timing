@@ -19,7 +19,7 @@ public class MidweekRacePrizes extends RacePrizes {
 
         int position = 1;
 
-        for (final MidweekRaceResult result : ((MidweekRace)race).getOverallResults()) {
+        for (final RaceResult result : race.getOverallResults()) {
 
             if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
 
@@ -31,8 +31,8 @@ public class MidweekRacePrizes extends RacePrizes {
         return prize_winners;
     }
 
-    private boolean prizeWinner(final MidweekRaceResult result, final Category category) {
+    private boolean prizeWinner(final RaceResult result, final Category category) {
 
-        return result.completed() && race.categories.includes(category, result.runner.category) && notYetWonPrize(result.runner);
+        return ((MidweekRaceResult)result).completed() && race.categories.includes(category, ((MidweekRaceResult)result).runner.category) && notYetWonPrize(((MidweekRaceResult)result).runner);
     }
 }

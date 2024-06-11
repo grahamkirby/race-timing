@@ -2,6 +2,7 @@ package fife_ac_races.minitour;
 
 import common.Category;
 import common.JuniorRaceCategories;
+import common.RaceResult;
 import common.Runner;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
@@ -24,8 +25,6 @@ public class MinitourRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     MinitourRacePrizes prizes;
-
-    public List<MinitourRaceResult> overall_results;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +84,7 @@ public class MinitourRace extends SeriesRace {
             overall_results.add(getOverallResult(runner));
 
         // Sort by time then by runner name.
-        overall_results.sort(MinitourRaceResult::compareTo);
+        overall_results.sort(MinitourRaceResult::compare);
     }
 
     @Override
@@ -132,29 +131,16 @@ public class MinitourRace extends SeriesRace {
 
     private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
 
-        for (IndividualRaceResult result : individual_race.getOverallResults())
-            if (result.entry.runner.equals(runner)) return result.duration();
+        for (RaceResult result : individual_race.getOverallResults())
+            if (((IndividualRaceResult)result).entry.runner.equals(runner)) return ((IndividualRaceResult)result).duration();
 
         return null;
     }
 
-    public List<MinitourRaceResult> getOverallResults() {
+    public List<RaceResult> getResultsByCategory(List<Category> categories_required) {
 
-        return overall_results;
-    }
-
-    public List<MinitourRaceResult> getResultsByCategory(List<Category> categories_required) {
-
-        final Predicate<MinitourRaceResult> category_filter = minitourRaceResult -> categories_required.contains(minitourRaceResult.runner.category);
+        final Predicate<RaceResult> category_filter = result -> categories_required.contains(((MinitourRaceResult)result).runner.category);
 
         return overall_results.stream().filter(category_filter).toList();
-    }
-
-    public int findIndexOfRunner(Runner runner) {
-
-        for (int i = 0; i < overall_results.size(); i++)
-            if (runner.equals(overall_results.get(i).runner)) return i;
-
-        throw new RuntimeException("Runner not found: " + runner.name);
     }
 }

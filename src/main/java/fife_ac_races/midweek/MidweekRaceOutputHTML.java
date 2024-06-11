@@ -123,7 +123,9 @@ public class MidweekRaceOutputHTML extends RaceOutput {
 
     private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        for (final MidweekRaceResult result : ((MidweekRace)race).getOverallResults()) {
+        for (final RaceResult res : race.getOverallResults()) {
+
+            MidweekRaceResult result = ((MidweekRaceResult)res);
 
             writer.append("""
                         <tr>

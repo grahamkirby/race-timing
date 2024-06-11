@@ -1,6 +1,7 @@
 package relay_race;
 
 import common.RaceOutput;
+import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -65,8 +66,8 @@ public abstract class RelayRaceOutput extends RaceOutput {
 
         final List<LegResult> leg_results = new ArrayList<>();
 
-        for (final RelayRaceResult overall_result : ((RelayRace) race).overall_results)
-            leg_results.add(overall_result.leg_results.get(leg_number - 1));
+        for (final RaceResult overall_result : race.getOverallResults())
+            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
 
         // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
         // Ordering for DNF results doesn't matter since they're omitted in output.
