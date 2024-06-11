@@ -74,7 +74,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
         }
     }
 
-    private void printRaceCategories(final OutputStreamWriter html_writer, Race race, final String combined_categories_title, final String... category_names) throws IOException {
+    private void printRaceCategories(final OutputStreamWriter html_writer, final Race race, final String combined_categories_title, final String... category_names) throws IOException {
 
         final List<Category> category_list = getCategoryList(category_names);
 

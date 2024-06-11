@@ -1,8 +1,9 @@
 package relay_race;
 
-import common.Race;
+import common.RaceEntry;
 import common.RaceResult;
 import common.RawResult;
+import common.SingleRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class RelayRace extends Race {
+public class RelayRace extends SingleRace {
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -31,8 +32,6 @@ public class RelayRace extends Race {
     private RelayRacePrizes prizes;
 
     int number_of_legs;
-
-    List<RelayRaceEntry> entries;
 
     private int senior_prizes, category_prizes;
 
@@ -270,8 +269,8 @@ public class RelayRace extends Race {
 
         overall_results = new ArrayList<>();
 
-        for (RelayRaceEntry entry : entries)
-            overall_results.add(new RelayRaceResult(entry, number_of_legs, this));
+        for (RaceEntry entry : entries)
+            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
     }
 
     private void fillLegFinishTimes() {

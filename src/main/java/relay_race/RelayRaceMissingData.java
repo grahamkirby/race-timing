@@ -1,5 +1,6 @@
 package relay_race;
 
+import common.RaceEntry;
 import common.RawResult;
 
 import java.time.Duration;
@@ -185,7 +186,7 @@ public class RelayRaceMissingData {
 
         final List<TeamSummaryAtPosition> summaries = new ArrayList<>();
 
-        for (final RelayRaceEntry entry : race.entries)
+        for (final RaceEntry entry : race.entries)
             summaries.add(summarise(position, entry.bib_number));
 
         return summaries;

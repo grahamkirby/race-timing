@@ -272,12 +272,12 @@ public class LapRaceTest extends RaceTest {
 
     @Test
     public void duplicateTeamNumber() throws Exception {
-        testExpectedException("duplicate_team_number", "duplicate team number: 3");
+        testExpectedException("duplicate_team_number", "duplicate bib number: 3");
     }
 
     @Test
     public void duplicateTeamName() throws Exception {
-        testExpectedException("duplicate_team_name", "duplicate team name: Team 2");
+        testExpectedException("duplicate_team_name", "duplicate entry: Team 2");
     }
 
     @Test

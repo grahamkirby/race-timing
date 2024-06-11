@@ -2,12 +2,13 @@ package individual_race;
 
 import common.Category;
 import common.Race;
+import common.RaceEntry;
 import common.Runner;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class IndividualRaceEntry {
+public class IndividualRaceEntry extends RaceEntry {
 
     private static final Map<String, String> NORMALISED_CLUB_NAMES = new HashMap<>();
 
@@ -33,7 +34,6 @@ public class IndividualRaceEntry {
         NORMALISED_CLUB_NAMES.put("Recreational Running", "Recreational Runners");
     }
 
-    public int bib_number = 0;
     public final Runner runner;
 
     public IndividualRaceEntry(final String[] elements, final Race race) {
@@ -67,5 +67,10 @@ public class IndividualRaceEntry {
     private static String normaliseClubName(final String club) {
 
         return NORMALISED_CLUB_NAMES.getOrDefault(club, club);
+    }
+
+    @Override
+    public String toString() {
+        return runner.name + ", " + runner.club;
     }
 }
