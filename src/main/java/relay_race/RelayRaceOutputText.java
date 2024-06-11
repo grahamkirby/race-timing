@@ -1,6 +1,7 @@
 package relay_race;
 
 import common.Category;
+import common.RaceEntry;
 import common.RaceResult;
 import common.RawResult;
 
@@ -106,7 +107,7 @@ public class RelayRaceOutputText extends RelayRaceOutput {
 
         final List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
 
-        for (final RelayRaceEntry entry : ((RelayRace)race).entries) {
+        for (final RaceEntry entry : ((RelayRace)race).entries) {
 
             final int number_of_legs_finished = leg_finished_count.getOrDefault(entry.bib_number, 0);
 

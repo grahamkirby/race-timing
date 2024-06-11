@@ -1,74 +1,114 @@
 package common;
 
-import individual_race.IndividualRace;
-
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RaceInput {
 
-    public final Race race;
+    public Race race;
+    public Path input_directory_path, entries_path, raw_results_path;
+    public String entries_filename, raw_results_filename;
 
-    public List<Path> race_config_paths;
-
-    public RaceInput(final Race race) {
-
+    public RaceInput(Race race) {
         this.race = race;
         configure();
     }
 
-    public void configure() {
+    private void configure() {
 
         readProperties();
+        constructFilePaths();
     }
 
-    public void readProperties() {
+    protected void readProperties() {
 
-        race_config_paths = readRaceConfigPaths();
+        entries_filename = race.getProperties().getProperty("ENTRIES_FILENAME");
+        raw_results_filename = race.getProperties().getProperty("RAW_RESULTS_FILENAME");
     }
 
-    private List<Path> readRaceConfigPaths() {
+    protected void constructFilePaths() {
 
-        final String[] race_strings = race.getProperties().getProperty("RACES").split(":", -1);
-
-        final List<Path> race_paths = new ArrayList<>();
-
-        for (final String race_string : race_strings)
-            race_paths.add(Paths.get(race_string));
-
-        return race_paths;
+        input_directory_path = race.getWorkingDirectoryPath().resolve("input");
+        entries_path = input_directory_path.resolve(entries_filename);
+        raw_results_path = input_directory_path.resolve(raw_results_filename);
     }
 
-    public List<IndividualRace> loadRaces() throws IOException {
+    public List<RaceEntry> loadEntries() throws IOException {
 
-        final List<IndividualRace> races = new ArrayList<>();
+        final List<String> lines = Files.readAllLines(entries_path);
+        final List<RaceEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < race_config_paths.size(); i++) {
+        for (final String line : lines) {
 
-            final Path relative_path = race_config_paths.get(i);
+            final RaceEntry entry = makeRaceEntry(line.split("\t"));
 
-            if (!relative_path.toString().isEmpty())
-                races.add(getIndividualRace(relative_path, i + 1));
-            else
-                races.add(null);
+            checkDuplicateBibNumber(entries, entry);
+            checkDuplicateEntry(entries, entry);
+
+            entries.add(entry);
         }
 
-        return races;
+        return entries;
     }
 
-    protected IndividualRace getIndividualRace(final Path relative_path, final int race_number) throws IOException {
+    protected void checkDuplicateBibNumber(final List<RaceEntry> entries, final RaceEntry new_entry) {
 
-        final Path individual_race_path = race.getWorkingDirectoryPath().resolve(relative_path);
-        final IndividualRace individual_race = new IndividualRace(individual_race_path);
-
-        configureIndividualRace(individual_race, race_number);
-        individual_race.processResults(false);
-
-        return individual_race;
+        for (final RaceEntry entry : entries)
+            if (entry != null && entry.bib_number == new_entry.bib_number)
+                throw new RuntimeException("duplicate bib number: " + new_entry.bib_number);
     }
 
-    protected abstract void configureIndividualRace(final IndividualRace individual_race, final int race_number) throws IOException;
+    public List<RawResult> loadRawResults() throws IOException {
+
+        return loadRawResults(raw_results_path);
+    }
+
+    public List<RawResult> loadRawResults(final Path results_path) throws IOException {
+
+        final List<RawResult> raw_results = new ArrayList<>();
+
+        for (String line : Files.readAllLines(results_path))
+            loadRawResult(raw_results, line);
+
+        return raw_results;
+    }
+
+    public static void loadRawResult(final List<RawResult> raw_results, String line) {
+
+        final int comment_start_index = line.indexOf("#");
+        if (comment_start_index > -1) line = line.substring(0, comment_start_index);
+
+        if (!line.isBlank()) {
+
+            try {
+                final RawResult result = new RawResult(line);
+                checkOrdering(raw_results, result);
+
+                raw_results.add(result);
+            }
+            catch (NumberFormatException ignored) {
+            }
+        }
+    }
+
+    private static void checkOrdering(List<RawResult> raw_results, RawResult result) {
+
+        final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
+
+        if (resultsAreOutOfOrder(result, previous_result))
+            throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
+    }
+
+    private static boolean resultsAreOutOfOrder(RawResult result, RawResult previous_result) {
+
+        return result.getRecordedFinishTime() != null &&
+                previous_result != null && previous_result.getRecordedFinishTime() != null &&
+                previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0;
+    }
+
+    protected abstract void checkDuplicateEntry(final List<RaceEntry> entries, final RaceEntry new_entry);
+    protected abstract RaceEntry makeRaceEntry(final String[] elements);
 }

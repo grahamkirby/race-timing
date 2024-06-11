@@ -1,15 +1,14 @@
 package fife_ac_races.midweek;
 
 import common.Race;
-import common.RaceInput;
+import series_race.SeriesRaceInput;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
 
-public class MidweekRaceInput extends RaceInput {
+public class MidweekRaceInput extends SeriesRaceInput {
 
     public MidweekRaceInput(final Race race) {
-
         super(race);
     }
 

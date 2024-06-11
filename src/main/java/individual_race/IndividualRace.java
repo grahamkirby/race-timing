@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class IndividualRace extends Race {
+public class IndividualRace extends SingleRace {
 
     // TODO non-binary category; optional team prizes, by cumulative positions and times
 
@@ -20,8 +20,6 @@ public class IndividualRace extends Race {
     IndividualRaceInput input;
     IndividualRaceOutput output_CSV, output_HTML, output_text, output_PDF;
     IndividualRacePrizes prizes;
-
-    public List<IndividualRaceEntry> entries;
 
     private boolean senior_race;
     public boolean open_category;
@@ -117,7 +115,7 @@ public class IndividualRace extends Race {
 
     private void configureInputData() throws IOException {
 
-        raw_results = input.loadRawResults();
+        raw_results = input.loadRawResults(input.raw_results_path);
         entries = input.loadEntries();
     }
 
@@ -194,9 +192,9 @@ public class IndividualRace extends Race {
 
     private IndividualRaceEntry findEntryWithBibNumber(final int bib_number) {
 
-        for (IndividualRaceEntry entry : entries)
+        for (RaceEntry entry : entries)
             if (entry.bib_number == bib_number)
-                return entry;
+                return (IndividualRaceEntry)entry;
 
         throw new RuntimeException("unregistered bib number: " + bib_number);
     }

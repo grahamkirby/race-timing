@@ -21,12 +21,12 @@ public class IndividualRaceTest extends RaceTest {
 
     @Test
     public void duplicateBibNumber() throws Exception {
-        testExpectedException("duplicate_bib_number", "duplicate runner number: 3");
+        testExpectedException("duplicate_bib_number", "duplicate bib number: 3");
     }
 
     @Test
     public void duplicateRunner() throws Exception {
-        testExpectedException("duplicate_runner", "duplicate runner: John Smith, Fife AC");
+        testExpectedException("duplicate_runner", "duplicate entry: John Smith, Fife AC");
     }
 
     @Test

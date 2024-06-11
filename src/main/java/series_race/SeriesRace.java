@@ -1,7 +1,6 @@
 package series_race;
 
 import common.Race;
-import common.RaceInput;
 import common.RaceOutput;
 import common.Runner;
 import individual_race.IndividualRace;
@@ -18,7 +17,7 @@ public abstract class SeriesRace extends Race {
     public int category_prizes;
     public int minimum_number_of_races;
 
-    protected RaceInput input;
+    protected SeriesRaceInput input;
     protected RaceOutput output_CSV, output_HTML, output_text, output_PDF;
 
     public SeriesRace(Path config_file_path) throws IOException {

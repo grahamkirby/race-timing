@@ -1,10 +1,9 @@
 package fife_ac_races.minitour;
 
-import common.Category;
 import common.Race;
-import common.RaceInput;
 import common.RawResult;
 import individual_race.IndividualRace;
+import series_race.SeriesRaceInput;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +16,7 @@ import java.util.function.IntFunction;
 
 import static common.Race.parseTime;
 
-public class MinitourRaceInput extends RaceInput {
+public class MinitourRaceInput extends SeriesRaceInput {
 
     private record SelfTimedRun(int bib_number, int race_number) {}
 
@@ -141,7 +140,7 @@ public class MinitourRaceInput extends RaceInput {
 
     private boolean runnerIsSelfTimed(final int race_number, final int bib_number) {
 
-        for (SelfTimedRun self_timed_run : self_timed_runs)
+        for (final SelfTimedRun self_timed_run : self_timed_runs)
             if (self_timed_run.bib_number == bib_number && self_timed_run.race_number == race_number) return true;
 
         return false;
@@ -149,8 +148,6 @@ public class MinitourRaceInput extends RaceInput {
 
     private boolean runnerIsInSecondWave(final IndividualRace individual_race, final int bib_number) {
 
-        final Category category = individual_race.findCategory(bib_number);
-
-        return SECOND_WAVE_CATEGORY_NAMES.contains(category.getShortName());
+        return SECOND_WAVE_CATEGORY_NAMES.contains(individual_race.findCategory(bib_number).getShortName());
     }
 }
