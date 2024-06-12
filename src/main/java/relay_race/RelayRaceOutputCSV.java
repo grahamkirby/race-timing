@@ -1,5 +1,6 @@
 package relay_race;
 
+import common.Race;
 import common.RaceResult;
 
 import java.io.IOException;
@@ -12,20 +13,30 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
-    public RelayRaceOutputCSV(final RelayRace results) {
-        super(results);
+    public RelayRaceOutputCSV(final Race race) {
+        super(race);
     }
 
     @Override
-    public void printOverallResults() throws IOException {
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
+        writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
+    }
 
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
+    @Override
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-            printOverallResultsHeader(csv_writer);
-            printOverallResults(csv_writer);
-        }
+        printOverallResultsCSV(writer);
+    }
+
+    @Override
+    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
+        return new ResultPrinterCSV(writer);
+    }
+
+    @Override
+    protected boolean allowEqualPositions() {
+        return false;
     }
 
     @Override
@@ -56,21 +67,6 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
 
             printLegResults(csv_writer, leg_results);
         }
-    }
-
-    @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
-    }
-
-    @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
-
-        final List<RaceResult> results = race.getOverallResults();
-
-        setPositionStrings(results, false);
-        printResults(results, new ResultPrinterCSV(writer));
     }
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {

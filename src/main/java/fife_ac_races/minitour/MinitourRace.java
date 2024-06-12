@@ -125,7 +125,8 @@ public class MinitourRace extends SeriesRace {
         return null;
     }
 
-    public List<RaceResult> getResultsByCategory(List<Category> categories_required) {
+    @Override
+    public List<RaceResult> getResultsByCategory(final List<Category> categories_required) {
 
         final Predicate<RaceResult> category_filter = result -> categories_required.contains(((MinitourRaceResult)result).runner.category);
 

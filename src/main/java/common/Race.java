@@ -104,6 +104,11 @@ public abstract class Race {
         return runners;
     }
 
+    public List<RaceResult> getResultsByCategory(List<Category> ignore) {
+
+        return overall_results;
+    }
+
     public static Duration parseTime(final String element) {
 
         try {

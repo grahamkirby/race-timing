@@ -21,7 +21,7 @@ public class IndividualRaceOutputText extends IndividualRaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<RaceResult> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners != null) {
 

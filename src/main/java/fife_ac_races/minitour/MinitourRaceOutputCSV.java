@@ -1,18 +1,17 @@
 package fife_ac_races.minitour;
 
-import common.Category;
+import common.Race;
 import common.RaceResult;
 import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 
 public class MinitourRaceOutputCSV extends SeriesRaceOutput {
 
-    public MinitourRaceOutputCSV(final MinitourRace race) {
+    public MinitourRaceOutputCSV(final Race race) {
         super(race);
     }
 
@@ -26,20 +25,29 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        printCategoryResults(writer, "FU9", "MU9");
-        printCategoryResults(writer, "FU11", "MU11");
-        printCategoryResults(writer, "FU13","MU13");
-        printCategoryResults(writer, "FU15","MU15");
-        printCategoryResults(writer, "FU18","MU18");
+        printOverallResultsCSV(writer);
     }
 
-    private void printCategoryResults(final OutputStreamWriter writer, final String... category_names) throws IOException {
+    @Override
+    protected List<List<String>> getResultCategoryGroups() {
 
-        final List<Category> category_list = Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
-        final List<RaceResult> results = ((MinitourRace)race).getResultsByCategory(category_list);
+        return List.of(
+                List.of("FU9", "MU9"),
+                List.of("FU11", "MU11"),
+                List.of("FU13", "MU13"),
+                List.of("FU15", "MU15"),
+                List.of("FU18", "MU18")
+                );
+    }
 
-        setPositionStrings(results, true);
-        printResults(results, new ResultPrinterCSV(writer));
+    @Override
+    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
+        return new ResultPrinterCSV(writer);
+    }
+
+    @Override
+    protected boolean allowEqualPositions() {
+        return true;
     }
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {

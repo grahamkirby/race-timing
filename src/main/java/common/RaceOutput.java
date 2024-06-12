@@ -126,6 +126,36 @@ public abstract class RaceOutput {
         }
     }
 
+    protected void printCategoryResultsCSV(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
+
+        final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
+        final List<RaceResult> results = race.getResultsByCategory(category_list);
+
+        setPositionStrings(results, allowEqualPositions());
+        printResults(results, getResultPrinterCSV(writer));
+    }
+
+    protected void printOverallResultsCSV(OutputStreamWriter writer) throws IOException {
+        for (List<String> category_group : getResultCategoryGroups()) {
+            printCategoryResultsCSV(writer, category_group);
+        }
+    }
+
+    protected List<List<String>> getResultCategoryGroups() {
+
+        return List.of(
+                List.of()
+        );
+    }
+
+    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected boolean allowEqualPositions() {
+        throw new UnsupportedOperationException();
+    }
+
     protected void printPrizesHTML(OutputStreamWriter writer) throws IOException {
 
         writer.append("<h4>Prizes</h4>\n");
@@ -178,6 +208,7 @@ public abstract class RaceOutput {
     }
 
     protected void printPrizesText(Category category, OutputStreamWriter writer) throws IOException {
+
         final String header = "Category: " + category.getLongName();
 
         writer.append(header).append("\n");

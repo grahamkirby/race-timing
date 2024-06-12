@@ -51,7 +51,7 @@ public class RelayRace extends SingleRace {
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java LapRace <config file path>");
+            System.out.println("usage: java RelayRace <config file path>");
         else {
             new RelayRace(Paths.get(args[0])).processResults();
         }

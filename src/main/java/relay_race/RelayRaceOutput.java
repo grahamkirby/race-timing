@@ -1,5 +1,6 @@
 package relay_race;
 
+import common.Race;
 import common.RaceOutput;
 import common.RaceResult;
 
@@ -13,7 +14,7 @@ public abstract class RelayRaceOutput extends RaceOutput {
 
     String detailed_results_filename, collated_times_filename;
 
-    public RelayRaceOutput(final RelayRace race) {
+    public RelayRaceOutput(final Race race) {
         super(race);
     }
 

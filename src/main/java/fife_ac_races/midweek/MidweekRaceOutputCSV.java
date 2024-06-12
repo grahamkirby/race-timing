@@ -6,7 +6,6 @@ import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
 
 public class MidweekRaceOutputCSV extends SeriesRaceOutput {
 
@@ -24,10 +23,17 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final List<RaceResult> results = race.getOverallResults();
+        printOverallResultsCSV(writer);
+    }
 
-        setPositionStrings(results, true);
-        printResults(results, new ResultPrinterCSV(race, writer));
+    @Override
+    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
+        return new ResultPrinterCSV(race, writer);
+    }
+
+    @Override
+    protected boolean allowEqualPositions() {
+        return true;
     }
 
     private record ResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {
