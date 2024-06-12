@@ -1,5 +1,7 @@
 package relay_race;
 
+import common.RaceResult;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -65,17 +67,30 @@ public class RelayRaceOutputCSV extends RelayRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < race.getOverallResults().size(); i++) {
+        final List<RaceResult> results = race.getOverallResults();
 
-            final RelayRaceResult overall_result = (RelayRaceResult) race.getOverallResults().get(i);
+        setPositionStrings(results, false);
+        printResults(results, new ResultPrinterCSV(writer));
+    }
 
-            if (!overall_result.dnf()) writer.append(String.valueOf(i + 1));
+    private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+
+            if (!result.dnf()) writer.append(result.position_string);
 
             writer.append(",").
-                    append(String.valueOf(overall_result.entry.bib_number)).append(",").
-                    append(overall_result.entry.team.name).append(",").
-                    append(overall_result.entry.team.category.getLongName()).append(",").
-                    append(overall_result.dnf() ? "DNF" : format(overall_result.duration())).append("\n");
+                    append(String.valueOf(result.entry.bib_number)).append(",").
+                    append(result.entry.team.name).append(",").
+                    append(result.entry.team.category.getLongName()).append(",").
+                    append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
+        }
+
+        @Override
+        public void printNoResults() {
         }
     }
 

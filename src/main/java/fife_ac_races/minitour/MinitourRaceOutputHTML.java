@@ -30,11 +30,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
     @Override
     public void printOverallResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printOverallResults(writer);
-        }
+        printOverallResultsHTML();
     }
 
     @Override
@@ -153,10 +149,10 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
+        final List<RaceResult> results = race.prize_winners.get(category);
+
         writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
         writer.append("<ul>\n");
-
-        final List<RaceResult> results = race.prize_winners.get(category);
 
         setPositionStrings(results, true);
         printResults(results, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
@@ -241,6 +237,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             MinitourRaceResult result = (MinitourRaceResult)r;
+
             writer.append("""
                     <tr>
                         <td>""").
@@ -259,7 +256,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutput {
                     append(result.runner.club).
                     append("""
                         </td>""");
-
 
             for (int i = 0; i < result.times.size(); i++)
                 if (result.times.get(i) != null)

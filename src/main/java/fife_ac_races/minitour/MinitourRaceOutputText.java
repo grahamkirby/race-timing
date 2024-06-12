@@ -20,19 +20,15 @@ public class MinitourRaceOutputText extends SeriesRaceOutput {
         printPrizesText();
     }
 
+    @Override
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final String header = "Category: " + category.getLongName();
+        printPrizesText(category, writer);
+    }
 
-        writer.append(header).append("\n");
-        writer.append("-".repeat(header.length())).append("\n\n");
+    protected void printPrizes(List<RaceResult> results, OutputStreamWriter writer) throws IOException {
 
-        final List<RaceResult> results = race.prize_winners.get(category);
-
-        setPositionStrings(results, true);
         printResults(results, new ResultPrinterText(writer));
-
-        writer.append("\n\n");
     }
 
     record ResultPrinterText(OutputStreamWriter writer) implements ResultPrinter {

@@ -2,14 +2,14 @@ package fife_ac_races.midweek;
 
 import common.Category;
 import common.Race;
-import common.RaceOutput;
 import common.RaceResult;
+import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-public class MidweekRaceOutputText extends RaceOutput {
+public class MidweekRaceOutputText extends SeriesRaceOutput {
 
     public MidweekRaceOutputText(final Race race) {
         super(race);
@@ -21,32 +21,33 @@ public class MidweekRaceOutputText extends RaceOutput {
         printPrizesText();
     }
 
+    @Override
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<RaceResult> category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
+        printPrizesText(category, writer);
+    }
 
-        if (category_prize_winners != null) {
+    protected void printPrizes(List<RaceResult> results, OutputStreamWriter writer) throws IOException {
 
-            final String header = "Category: " + category.getLongName();
+        printResults(results, new ResultPrinterText(writer));
+    }
 
-            writer.append(header).append("\n");
-            writer.append("-".repeat(header.length())).append("\n\n");
+    record ResultPrinterText(OutputStreamWriter writer) implements ResultPrinter {
 
-            if (category_prize_winners.isEmpty())
-                writer.append("No results\n");
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
 
-            int position = 1;
-            for (final RaceResult runner : category_prize_winners) {
+            final MidweekRaceResult result = (MidweekRaceResult) r;
 
-                final MidweekRaceResult result = ((MidweekRaceResult)runner);
+            writer.append(result.position_string).append(": ").
+                    append(result.runner.name).append(" (").
+                    append(result.runner.club).append(") ").
+                    append(String.valueOf(result.totalScore())).append("\n");
+        }
 
-                writer.append(String.valueOf(position++)).append(": ").
-                        append(result.runner.name).append(" (").
-                        append(result.runner.club).append(") ").
-                        append(String.valueOf(result.totalScore())).append("\n");
-            }
-
-            writer.append("\n\n");
+        @Override
+        public void printNoResults() throws IOException {
+            writer.append("No results\n");
         }
     }
 }

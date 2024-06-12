@@ -117,6 +117,15 @@ public abstract class RaceOutput {
         }
     }
 
+    public void printOverallResultsHTML() throws IOException {
+
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
+
+        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
+            printOverallResults(html_writer);
+        }
+    }
+
     protected void printPrizesHTML(OutputStreamWriter writer) throws IOException {
 
         writer.append("<h4>Prizes</h4>\n");
@@ -166,6 +175,24 @@ public abstract class RaceOutput {
             for (final Category category : race.categories.getCategoriesInReportOrder())
                 printPrizes(category, writer);
         }
+    }
+
+    protected void printPrizesText(Category category, OutputStreamWriter writer) throws IOException {
+        final String header = "Category: " + category.getLongName();
+
+        writer.append(header).append("\n");
+        writer.append("-".repeat(header.length())).append("\n\n");
+
+        final List<RaceResult> results = race.prize_winners.get(category);
+
+        setPositionStrings(results, true);
+        printPrizes(results, writer);
+
+        writer.append("\n\n");
+    }
+
+    protected void printPrizes(List<RaceResult> results, OutputStreamWriter writer) throws IOException {
+        throw new UnsupportedOperationException();
     }
 
     public static void addCategoryHeader(Category category, Document document) {
