@@ -1,13 +1,15 @@
 package individual_race;
 
+import common.Race;
 import common.RaceOutput;
+
 import java.util.Objects;
 
 public abstract class IndividualRaceOutput extends RaceOutput {
 
     String alternative_output_directory_path;
 
-    public IndividualRaceOutput(final IndividualRace race) {
+    public IndividualRaceOutput(final Race race) {
         super(race);
     }
 

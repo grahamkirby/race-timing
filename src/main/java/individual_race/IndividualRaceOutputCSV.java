@@ -1,31 +1,17 @@
 package individual_race;
 
+import common.Race;
 import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 
 public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time";
 
-    public IndividualRaceOutputCSV(final IndividualRace results) {
-        super(results);
-    }
-
-    @Override
-    public void printOverallResults() throws IOException {
-
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
-
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
-
-            printOverallResultsHeader(csv_writer);
-            printOverallResults(csv_writer);
-        }
+    public IndividualRaceOutputCSV(final Race race) {
+        super(race);
     }
 
     @Override
@@ -37,10 +23,17 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final List<RaceResult> results = race.getOverallResults();
+        printOverallResultsCSV(writer);
+    }
 
-        setPositionStrings(results, false);
-        printResults(results, new ResultPrinterCSV(writer));
+    @Override
+    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
+        return new ResultPrinterCSV(writer);
+    }
+
+    @Override
+    protected boolean allowEqualPositions() {
+        return false;
     }
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {

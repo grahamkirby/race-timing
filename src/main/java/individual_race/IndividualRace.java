@@ -93,11 +93,6 @@ public class IndividualRace extends SingleRace {
         category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
     }
 
-    private void configureCategories() {
-
-        categories = senior_race ? new SeniorRaceCategories(open_category, open_prizes, category_prizes) : new JuniorRaceCategories(category_prizes);
-    }
-
     private void configureHelpers() {
 
         input = new IndividualRaceInput(this);
@@ -108,6 +103,11 @@ public class IndividualRace extends SingleRace {
         output_PDF = new IndividualRaceOutputPDF(this);
 
         prizes = new RacePrizes(this);
+    }
+
+    private void configureCategories() {
+
+        categories = senior_race ? new SeniorRaceCategories(open_category, open_prizes, category_prizes) : new JuniorRaceCategories(category_prizes);
     }
 
     private void initialiseResults() {
