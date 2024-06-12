@@ -2,7 +2,6 @@ package fife_ac_races.midweek;
 
 import common.Race;
 import common.RaceResult;
-import series_race.SeriesRace;
 import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class MidweekRaceOutputCSV extends SeriesRaceOutput {
 
-    public MidweekRaceOutputCSV(final SeriesRace race) {
+    public MidweekRaceOutputCSV(final Race race) {
         super(race);
     }
 
@@ -25,7 +24,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        final List<? extends RaceResult> results = ((MidweekRace) race).getOverallResults();
+        final List<RaceResult> results = race.getOverallResults();
 
         setPositionStrings(results, true);
         printResults(results, new ResultPrinterCSV(race, writer));

@@ -1,9 +1,12 @@
 package individual_race;
 
+import common.RaceResult;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class IndividualRaceOutputCSV extends IndividualRaceOutput {
 
@@ -34,20 +37,33 @@ public class IndividualRaceOutputCSV extends IndividualRaceOutput {
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (int i = 0; i < race.getOverallResults().size(); i++) {
+        final List<RaceResult> results = race.getOverallResults();
 
-            final IndividualRaceResult overall_result = (IndividualRaceResult)race.getOverallResults().get(i);
+        setPositionStrings(results, false);
+        printResults(results, new ResultPrinterCSV(writer));
+    }
 
-            if (!overall_result.DNF) {
-                writer.append(String.valueOf(i + 1));
+    private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final IndividualRaceResult result = (IndividualRaceResult)r;
+
+            if (!result.dnf()) {
+                writer.append(String.valueOf(result.position_string));
 
                 writer.append(",").
-                        append(String.valueOf(overall_result.entry.bib_number)).append(",").
-                        append(overall_result.entry.runner.name).append(",").
-                        append((overall_result.entry.runner.club)).append(",").
-                        append(overall_result.entry.runner.category.getShortName()).append(",").
-                        append(overall_result.DNF ? "DNF" : format(overall_result.duration())).append("\n");
+                        append(String.valueOf(result.entry.bib_number)).append(",").
+                        append(result.entry.runner.name).append(",").
+                        append((result.entry.runner.club)).append(",").
+                        append(result.entry.runner.category.getShortName()).append(",").
+                        append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
             }
+        }
+
+        @Override
+        public void printNoResults() {
         }
     }
 }

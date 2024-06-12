@@ -2,8 +2,8 @@ package fife_ac_races.midweek;
 
 import common.Category;
 import common.Race;
-import common.RaceOutput;
 import common.RaceResult;
+import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,7 +11,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
-public class MidweekRaceOutputHTML extends RaceOutput {
+public class MidweekRaceOutputHTML extends SeriesRaceOutput {
 
     public MidweekRaceOutputHTML(final Race race) {
         super(race);
@@ -26,11 +26,7 @@ public class MidweekRaceOutputHTML extends RaceOutput {
     @Override
     public void printOverallResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
-
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printOverallResults(html_writer);
-        }
+        printOverallResultsHTML();
     }
 
     public void printCombined() throws IOException {
@@ -55,40 +51,47 @@ public class MidweekRaceOutputHTML extends RaceOutput {
 
     public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
 
-        final List<RaceResult> category_prize_winners = ((MidweekRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
-        if (category_prize_winners != null) {
-            writer.append("<p><strong>").
-                    append(category.getShortName()).
-                    append("</strong></p>\n").
-                    append("<ol>\n");
+        writer.append("<p><strong>").
+                append(category.getShortName()).
+                append("</strong></p>\n").
+                append("<ol>\n");
 
-            if (category_prize_winners.isEmpty())
-                writer.append("No results\n");
+        printResults(category_prize_winners, new PrizeResultPrinterHTML(((MidweekRace)race), writer));
 
-            for (final RaceResult entry : category_prize_winners) {
+        writer.append("</ol>\n\n");
+    }
 
-                final MidweekRaceResult result = ((MidweekRaceResult)entry);
+    private record PrizeResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
 
-                writer.append("<li>").
-                        append(result.runner.name).
-                        append(" (").
-                        append(result.runner.category.getShortName()).
-                        append(") ").
-                        append(String.valueOf(result.totalScore())).
-                        append("</li>\n");
-            }
+        @Override
+        public void printResult(RaceResult r) throws IOException {
 
-            writer.append("</ol>\n\n");
+            final MidweekRaceResult result = ((MidweekRaceResult)r);
+
+            writer.append("<li>").
+                    append(result.runner.name).
+                    append(" (").
+                    append(result.runner.category.getShortName()).
+                    append(") ").
+                    append(String.valueOf(result.totalScore())).
+                    append("</li>\n");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            writer.append("No results\n");
         }
     }
 
     @Override
-    protected void printOverallResults(OutputStreamWriter html_writer) throws IOException {
+    protected void printOverallResults(OutputStreamWriter writer) throws IOException {
 
-        printOverallResultsHeader(html_writer);
-        printOverallResultsBody(html_writer);
-        printOverallResultsFooter(html_writer);
+        printOverallResultsHeader(writer);
+        printOverallResultsBody(writer);
+        printOverallResultsFooter(writer);
     }
 
     @Override

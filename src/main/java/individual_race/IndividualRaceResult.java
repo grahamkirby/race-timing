@@ -53,6 +53,10 @@ public class IndividualRaceResult extends RaceResult {
         return duration().compareTo(((IndividualRaceResult) other).duration());
     }
 
+    public boolean dnf() {
+        return DNF;
+    }
+
     public static int compare(RaceResult r1, RaceResult r2) {
 
         // Where the time is the same, use the recording order.

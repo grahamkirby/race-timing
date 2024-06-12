@@ -40,7 +40,7 @@ public class RelayRaceOutputText extends RelayRaceOutput {
         writer.append("\n\n");
     }
 
-    private void printPrizes(List<RaceResult> category_prize_winners, OutputStreamWriter writer) throws IOException {
+    protected void printPrizes(List<RaceResult> category_prize_winners, OutputStreamWriter writer) throws IOException {
 
         int position = 1;
         for (final RaceResult res : category_prize_winners) {
