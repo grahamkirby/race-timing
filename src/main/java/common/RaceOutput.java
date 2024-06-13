@@ -11,6 +11,14 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 
+/*
+RaceOutput
+    RaceOutputCSV
+        MidweekRaceOutputCSV
+        MinitourRaceOutputCSV
+    RaceOutputHTML
+ */
+
 public abstract class RaceOutput {
 
     public interface ResultPrinter {

@@ -1,14 +1,13 @@
-package relay_race.devils_burdens;
+package relay_race;
 
 import common.Race;
 import common.RaceTest;
-import relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class LapRaceTest extends RaceTest {
+public class DevilsBurdensTest extends RaceTest {
 
     // To do: generate xls files.
 

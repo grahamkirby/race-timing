@@ -3,12 +3,13 @@ package relay_race;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import common.Category;
+import common.RaceOutputPDF;
 import common.RaceResult;
 
 import java.io.IOException;
 import java.util.List;
 
-public class RelayRaceOutputPDF extends RelayRaceOutput {
+public class RelayRaceOutputPDF extends RaceOutputPDF {
 
     public RelayRaceOutputPDF(final RelayRace results) {
         super(results);

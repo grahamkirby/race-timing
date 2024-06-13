@@ -3,12 +3,13 @@ package individual_race;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import common.Category;
+import common.RaceOutputPDF;
 import common.RaceResult;
 
 import java.io.IOException;
 import java.util.List;
 
-public class IndividualRaceOutputPDF extends IndividualRaceOutput {
+public class IndividualRaceOutputPDF extends RaceOutputPDF {
 
     public IndividualRaceOutputPDF(final IndividualRace results) {
         super(results);

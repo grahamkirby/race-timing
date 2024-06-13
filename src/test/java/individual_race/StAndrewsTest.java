@@ -1,13 +1,12 @@
-package individual_race.st_andrews;
+package individual_race;
 
 import common.Race;
 import common.RaceTest;
-import individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class IndividualRaceTest extends RaceTest {
+public class StAndrewsTest extends RaceTest {
 
     @Test
     public void actual2023() throws Exception {

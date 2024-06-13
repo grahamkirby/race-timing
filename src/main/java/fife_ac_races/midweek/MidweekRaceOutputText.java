@@ -2,14 +2,14 @@ package fife_ac_races.midweek;
 
 import common.Category;
 import common.Race;
+import common.RaceOutputText;
 import common.RaceResult;
-import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-public class MidweekRaceOutputText extends SeriesRaceOutput {
+public class MidweekRaceOutputText extends RaceOutputText {
 
     public MidweekRaceOutputText(final Race race) {
         super(race);

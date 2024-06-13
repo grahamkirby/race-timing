@@ -2,11 +2,11 @@ package fife_ac_races.minitour;
 
 import common.Category;
 import common.Race;
+import common.RaceOutputHTML;
 import common.RaceResult;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import series_race.SeriesRace;
-import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
-public class MinitourRaceOutputHTML extends SeriesRaceOutput {
+public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
     public MinitourRaceOutputHTML(final MinitourRace race) {
         super(race);

@@ -12,10 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RelayRaceOutputText extends RelayRaceOutput {
+public class RelayRaceOutputText extends RaceOutputText {
 
+    String detailed_results_filename, collated_times_filename;
     public RelayRaceOutputText(final RelayRace results) {
         super(results);
+        constructFilePaths();
+    }
+
+    protected void constructFilePaths() {
+
+        super.constructFilePaths();
+
+        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
+        collated_times_filename = "times_collated";
     }
 
     @Override
