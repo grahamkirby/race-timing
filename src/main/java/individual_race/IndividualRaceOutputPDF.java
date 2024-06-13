@@ -6,7 +6,6 @@ import common.Category;
 import common.RaceOutputPDF;
 import common.RaceResult;
 
-import java.io.IOException;
 import java.util.List;
 
 public class IndividualRaceOutputPDF extends RaceOutputPDF {
@@ -16,13 +15,7 @@ public class IndividualRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    public void printPrizes() throws IOException {
-
-        printPrizesPDF();
-    }
-
-    @Override
-    public void printPrizes(final Category category, final Document document) {
+    public void printPrizes(final Document document, final Category category) {
 
         addCategoryHeader(category, document);
 

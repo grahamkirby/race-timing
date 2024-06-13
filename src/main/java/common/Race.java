@@ -109,6 +109,13 @@ public abstract class Race {
         return overall_results;
     }
 
+    public record CategoryGroup(String combined_categories_title, List<String> category_names){};
+
+    public List<CategoryGroup> getResultCategoryGroups() {
+
+        return List.of(new CategoryGroup("Everything", List.of()));
+    }
+
     public static Duration parseTime(final String element) {
 
         try {

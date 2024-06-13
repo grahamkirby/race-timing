@@ -29,13 +29,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
-
-        printOverallResultsCSV(writer);
-    }
-
-    @Override
-    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
+    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
         return new ResultPrinterCSV(writer);
     }
 

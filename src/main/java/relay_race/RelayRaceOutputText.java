@@ -15,6 +15,7 @@ import java.util.Map;
 public class RelayRaceOutputText extends RaceOutputText {
 
     String detailed_results_filename, collated_times_filename;
+
     public RelayRaceOutputText(final RelayRace results) {
         super(results);
         constructFilePaths();
@@ -28,16 +29,10 @@ public class RelayRaceOutputText extends RaceOutputText {
         collated_times_filename = "times_collated";
     }
 
-    @Override
-    public void printPrizes() throws IOException {
-
-        printPrizesText();
-    }
-
-    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         final String header = "Category: " + category.getLongName();
-        final List<RaceResult> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
@@ -45,12 +40,12 @@ public class RelayRaceOutputText extends RaceOutputText {
         if (category_prize_winners == null)
             writer.append("No results\n");
         else
-            printPrizes(category_prize_winners, writer);
+            printPrizes(writer, category_prize_winners);
 
         writer.append("\n\n");
     }
 
-    protected void printPrizes(List<RaceResult> category_prize_winners, OutputStreamWriter writer) throws IOException {
+    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> category_prize_winners) throws IOException {
 
         int position = 1;
         for (final RaceResult res : category_prize_winners) {

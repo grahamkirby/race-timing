@@ -1,6 +1,5 @@
 package fife_ac_races.midweek;
 
-import common.Category;
 import common.Race;
 import common.RaceOutputText;
 import common.RaceResult;
@@ -15,19 +14,7 @@ public class MidweekRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-    @Override
-    public void printPrizes() throws IOException {
-
-        printPrizesText();
-    }
-
-    @Override
-    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
-
-        printPrizesText(category, writer);
-    }
-
-    protected void printPrizes(List<RaceResult> results, OutputStreamWriter writer) throws IOException {
+    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) throws IOException {
 
         printResults(results, new ResultPrinterText(writer));
     }

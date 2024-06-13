@@ -14,13 +14,7 @@ public class IndividualRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-    @Override
-    public void printPrizes() throws IOException {
-
-        printPrizesText();
-    }
-
-    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 

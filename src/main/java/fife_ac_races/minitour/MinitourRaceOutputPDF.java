@@ -16,13 +16,7 @@ public class MinitourRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    public void printPrizes() throws IOException {
-
-        printPrizesPDF();
-    }
-
-    @Override
-    public void printPrizes(final Category category, final Document document) throws IOException {
+    public void printPrizes(final Document document, final Category category) throws IOException {
 
         addCategoryHeader(category, document);
 

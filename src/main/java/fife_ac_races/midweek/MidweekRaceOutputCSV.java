@@ -3,7 +3,6 @@ package fife_ac_races.midweek;
 import common.Race;
 import common.RaceOutputCSV;
 import common.RaceResult;
-import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -17,28 +16,12 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
     @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
-        printOverallResultsHeader2(writer);
+        printOverallResultsHeaderRoot(writer);
         writer.append(",Total,Completed\n");
     }
 
-    protected void printOverallResultsHeader2(final OutputStreamWriter writer) throws IOException {
-
-        writer.append(OVERALL_RESULTS_HEADER);
-
-        for (final Race individual_race : ((SeriesRace)race).races)
-            if (individual_race != null)
-                writer.append(",").
-                        append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
-    }
-
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
-
-        printOverallResultsCSV(writer);
-    }
-
-    @Override
-    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
+    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
         return new ResultPrinterCSV(race, writer);
     }
 
@@ -83,7 +66,7 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
         }
 
         @Override
-        public void printNoResults() throws IOException {
+        public void printNoResults() {
         }
     }
 }
