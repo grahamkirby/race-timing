@@ -1,4 +1,8 @@
-package common;
+package common.output;
+
+import common.Race;
+import common.RaceResult;
+import common.categories.Category;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

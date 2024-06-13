@@ -1,7 +1,7 @@
 package fife_ac_races.midweek;
 
 import common.Race;
-import common.RaceOutputCSV;
+import common.output.RaceOutputCSV;
 import common.RaceResult;
 
 import java.io.IOException;

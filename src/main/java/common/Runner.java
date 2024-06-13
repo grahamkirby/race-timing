@@ -1,5 +1,7 @@
 package common;
 
+import common.categories.Category;
+
 public class Runner {
 
     public String name;

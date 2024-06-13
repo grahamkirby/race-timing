@@ -1,5 +1,8 @@
-package common;
+package common.output;
 
+import common.Race;
+import common.RaceResult;
+import common.categories.Category;
 import series_race.SeriesRace;
 
 import java.io.IOException;

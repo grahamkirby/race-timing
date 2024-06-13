@@ -1,6 +1,6 @@
 package relay_race;
 
-import common.Category;
+import common.categories.Category;
 import common.Race;
 import common.RaceResult;
 

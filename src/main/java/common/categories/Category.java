@@ -1,4 +1,4 @@
-package common;
+package common.categories;
 
 public final class Category {
 

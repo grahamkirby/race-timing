@@ -1,5 +1,7 @@
 package common;
 
+import common.categories.Category;
+
 public abstract class RaceResult implements Comparable<RaceResult> {
 
     public final Race race;

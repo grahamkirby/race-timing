@@ -1,6 +1,6 @@
 package fife_ac_races.minitour;
 
-import common.RaceOutputText;
+import common.output.RaceOutputText;
 import common.RaceResult;
 
 import java.io.IOException;

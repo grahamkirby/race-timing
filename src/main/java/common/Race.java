@@ -1,5 +1,8 @@
 package common;
 
+import common.categories.Categories;
+import common.categories.Category;
+import common.output.RaceOutput;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 

@@ -1,9 +1,11 @@
-package common;
+package common.output;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import common.Race;
+import common.categories.Category;
 
 import java.io.IOException;
 import java.io.OutputStream;

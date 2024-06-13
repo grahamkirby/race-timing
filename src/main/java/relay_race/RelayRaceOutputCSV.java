@@ -1,7 +1,7 @@
 package relay_race;
 
 import common.Race;
-import common.RaceOutputCSV;
+import common.output.RaceOutputCSV;
 import common.RaceResult;
 
 import java.io.IOException;

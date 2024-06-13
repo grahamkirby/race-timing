@@ -1,4 +1,4 @@
-package common;
+package common.categories;
 
 public class SeniorRaceCategories extends Categories {
 
