@@ -1,15 +1,16 @@
 package fife_ac_races.minitour;
 
 import common.Race;
+import common.RaceOutputCSV;
 import common.RaceResult;
-import series_race.SeriesRaceOutput;
+import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
 import java.util.List;
 
-public class MinitourRaceOutputCSV extends SeriesRaceOutput {
+public class MinitourRaceOutputCSV extends RaceOutputCSV {
 
     public MinitourRaceOutputCSV(final Race race) {
         super(race);
@@ -18,8 +19,18 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
-        super.printOverallResultsHeader(writer);
+        printOverallResultsHeader2(writer);
         writer.append(",Total\n");
+    }
+
+    protected void printOverallResultsHeader2(final OutputStreamWriter writer) throws IOException {
+
+        writer.append(OVERALL_RESULTS_HEADER);
+
+        for (final Race individual_race : ((SeriesRace)race).races)
+            if (individual_race != null)
+                writer.append(",").
+                        append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
     }
 
     @Override

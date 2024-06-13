@@ -1,15 +1,13 @@
-package individual_race.strath_blebo.st_andrews;
+package individual_race;
 
 import common.Race;
 import common.RaceTest;
-import individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Properties;
 
-public class IndividualRaceTest extends RaceTest {
+public class StrathBleboTest extends RaceTest {
 
     @Test
     public void actual2023() throws Exception {

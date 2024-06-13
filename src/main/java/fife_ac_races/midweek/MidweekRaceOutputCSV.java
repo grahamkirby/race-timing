@@ -1,13 +1,14 @@
 package fife_ac_races.midweek;
 
 import common.Race;
+import common.RaceOutputCSV;
 import common.RaceResult;
-import series_race.SeriesRaceOutput;
+import series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class MidweekRaceOutputCSV extends SeriesRaceOutput {
+public class MidweekRaceOutputCSV extends RaceOutputCSV {
 
     public MidweekRaceOutputCSV(final Race race) {
         super(race);
@@ -16,8 +17,18 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutput {
     @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
-        super.printOverallResultsHeader(writer);
+        printOverallResultsHeader2(writer);
         writer.append(",Total,Completed\n");
+    }
+
+    protected void printOverallResultsHeader2(final OutputStreamWriter writer) throws IOException {
+
+        writer.append(OVERALL_RESULTS_HEADER);
+
+        for (final Race individual_race : ((SeriesRace)race).races)
+            if (individual_race != null)
+                writer.append(",").
+                        append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
     }
 
     @Override

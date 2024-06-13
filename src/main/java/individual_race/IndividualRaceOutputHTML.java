@@ -1,6 +1,7 @@
 package individual_race;
 
 import common.Category;
+import common.RaceOutputHTML;
 import common.RaceResult;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
-public class IndividualRaceOutputHTML extends IndividualRaceOutput {
+public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     public IndividualRaceOutputHTML(final IndividualRace race) {
         super(race);

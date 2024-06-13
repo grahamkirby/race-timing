@@ -1,12 +1,13 @@
 package individual_race;
 
 import common.Race;
+import common.RaceOutputCSV;
 import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class IndividualRaceOutputCSV extends IndividualRaceOutput {
+public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time";
 

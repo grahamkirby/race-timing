@@ -3,13 +3,13 @@ package fife_ac_races.minitour;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import common.Category;
+import common.RaceOutputPDF;
 import common.RaceResult;
-import series_race.SeriesRaceOutput;
 
 import java.io.IOException;
 import java.util.List;
 
-public class MinitourRaceOutputPDF extends SeriesRaceOutput {
+public class MinitourRaceOutputPDF extends RaceOutputPDF {
 
     public MinitourRaceOutputPDF(final MinitourRace race) {
         super(race);

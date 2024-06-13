@@ -1,13 +1,14 @@
 package individual_race;
 
 import common.Category;
+import common.RaceOutputText;
 import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-public class IndividualRaceOutputText extends IndividualRaceOutput {
+public class IndividualRaceOutputText extends RaceOutputText {
 
     public IndividualRaceOutputText(final IndividualRace race) {
         super(race);

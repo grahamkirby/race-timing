@@ -1,14 +1,12 @@
-package individual_race.balmullo;
+package individual_race;
 
 import common.Race;
 import common.RaceTest;
-import individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
 
-public class IndividualRaceTest extends RaceTest {
+public class BalmulloTest extends RaceTest {
 
     @Test
     public void simple() throws Exception {

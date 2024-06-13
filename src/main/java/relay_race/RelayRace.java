@@ -1,6 +1,8 @@
 package relay_race;
 
-import common.*;
+import common.RaceEntry;
+import common.RaceResult;
+import common.RawResult;
 import single_race.SingleRace;
 
 import java.io.IOException;
@@ -12,6 +14,14 @@ import java.util.Comparator;
 import java.util.List;
 
 public class RelayRace extends SingleRace {
+
+
+
+
+
+
+
+
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -470,8 +480,8 @@ public class RelayRace extends SingleRace {
 
     private void printLegResults() throws IOException {
 
-        ((RelayRaceOutput)output_CSV).printLegResults();
-        ((RelayRaceOutput)output_HTML).printLegResults();
+        ((RelayRaceOutputCSV)output_CSV).printLegResults();
+        ((RelayRaceOutputHTML)output_HTML).printLegResults();
     }
 
     private void printPrizes() throws IOException {
