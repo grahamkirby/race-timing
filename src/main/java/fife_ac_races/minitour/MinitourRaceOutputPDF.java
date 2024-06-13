@@ -2,8 +2,8 @@ package fife_ac_races.minitour;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
-import common.Category;
-import common.RaceOutputPDF;
+import common.categories.Category;
+import common.output.RaceOutputPDF;
 import common.RaceResult;
 
 import java.io.IOException;

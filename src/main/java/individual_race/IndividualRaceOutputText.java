@@ -1,7 +1,7 @@
 package individual_race;
 
-import common.Category;
-import common.RaceOutputText;
+import common.categories.Category;
+import common.output.RaceOutputText;
 import common.RaceResult;
 
 import java.io.IOException;

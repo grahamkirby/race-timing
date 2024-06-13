@@ -1,6 +1,9 @@
 package individual_race;
 
 import common.*;
+import common.categories.Category;
+import common.categories.JuniorRaceCategories;
+import common.categories.SeniorRaceCategories;
 import single_race.SingleRace;
 
 import java.io.IOException;

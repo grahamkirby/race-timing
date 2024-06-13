@@ -1,9 +1,12 @@
-package common;
+package common.output;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
+import common.Race;
+import common.RaceResult;
+import common.categories.Category;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

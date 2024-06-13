@@ -3,7 +3,7 @@ package fife_ac_races.midweek;
 import common.RacePrizes;
 import common.RaceResult;
 import common.Runner;
-import common.SeniorRaceCategories;
+import common.categories.SeniorRaceCategories;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import series_race.SeriesRace;

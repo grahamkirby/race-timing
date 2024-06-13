@@ -1,6 +1,8 @@
 package fife_ac_races.minitour;
 
 import common.*;
+import common.categories.Category;
+import common.categories.JuniorRaceCategories;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import series_race.SeriesRace;

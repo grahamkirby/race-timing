@@ -1,7 +1,7 @@
 package relay_race;
 
-import common.Categories;
-import common.Category;
+import common.categories.Categories;
+import common.categories.Category;
 
 import java.util.Arrays;
 

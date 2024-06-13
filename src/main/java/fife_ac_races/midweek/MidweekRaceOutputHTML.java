@@ -1,8 +1,8 @@
 package fife_ac_races.midweek;
 
-import common.Category;
+import common.categories.Category;
 import common.Race;
-import common.RaceOutputHTML;
+import common.output.RaceOutputHTML;
 import common.RaceResult;
 
 import java.io.IOException;

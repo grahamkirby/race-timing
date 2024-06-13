@@ -1,6 +1,8 @@
 package relay_race;
 
 import common.*;
+import common.categories.Category;
+import common.output.RaceOutputText;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

@@ -1,6 +1,6 @@
 package individual_race;
 
-import common.Category;
+import common.categories.Category;
 import common.RaceResult;
 
 import java.time.Duration;
