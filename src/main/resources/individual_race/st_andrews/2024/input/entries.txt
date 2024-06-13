@@ -40,7 +40,7 @@
 34	John Kinninmonth	RunSum Running Kirkcaldy	M60
 17	Jock Dryburgh	RunSum Running Kirkcaldy	M60
 59	Martin Rollo	Dundee RR	M50
-46	Bethan McRobbie	Dundee RR	FS
+46	Bethan McRobbie	Unatt.	FS
 68	Huw Watkins	Unatt.	MS
 62	Ruth Sharp	Unatt.	FS
 32	Scott Hutchison	STAART	MS

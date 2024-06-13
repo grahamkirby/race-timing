@@ -40,6 +40,18 @@ public class MinitourRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public List<CategoryGroup> getResultCategoryGroups() {
+
+        return List.of(
+                new CategoryGroup("U9", List.of("FU9", "MU9")),
+                new CategoryGroup("U11", List.of("FU11", "MU11")),
+                new CategoryGroup("U13", List.of("FU13", "MU13")),
+                new CategoryGroup("U15", List.of("FU15", "MU15")),
+                new CategoryGroup("U18", List.of("FU18", "MU18"))
+        );
+    }
+
+    @Override
     public void configureHelpers() {
 
         input = new MinitourRaceInput(this);
@@ -102,6 +114,14 @@ public class MinitourRace extends SeriesRace {
         output_HTML.printCombined();
     }
 
+    @Override
+    public List<RaceResult> getResultsByCategory(final List<Category> categories_required) {
+
+        final Predicate<RaceResult> category_filter = result -> categories_required.contains(((MinitourRaceResult)result).runner.category);
+
+        return overall_results.stream().filter(category_filter).toList();
+    }
+
     private MinitourRaceResult getOverallResult(final Runner runner) {
 
         final MinitourRaceResult result = new MinitourRaceResult(runner, this);
@@ -123,13 +143,5 @@ public class MinitourRace extends SeriesRace {
             if (((IndividualRaceResult)result).entry.runner.equals(runner)) return ((IndividualRaceResult)result).duration();
 
         return null;
-    }
-
-    @Override
-    public List<RaceResult> getResultsByCategory(final List<Category> categories_required) {
-
-        final Predicate<RaceResult> category_filter = result -> categories_required.contains(((MinitourRaceResult)result).runner.category);
-
-        return overall_results.stream().filter(category_filter).toList();
     }
 }

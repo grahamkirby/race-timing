@@ -15,6 +15,7 @@ import java.util.List;
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     String detailed_results_filename, collated_times_filename;
+
     public RelayRaceOutputHTML(final RelayRace race) {
         super(race);
         constructFilePaths();
@@ -110,20 +111,20 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         writer.append("<h4>Prizes</h4>\n");
 
         for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, writer);
+            printPrizes(writer, category);
     }
 
-    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
         writer.append("<ol>\n");
 
-        final List<RaceResult> category_prize_winners = ((RelayRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners == null)
             writer.append("No results\n");

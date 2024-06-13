@@ -17,12 +17,6 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    public void printPrizes() throws IOException {
-
-        printPrizesHTML();
-    }
-
-    @Override
     public void printOverallResults() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
@@ -53,15 +47,15 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private void printPrizes(final OutputStreamWriter html_writer) throws IOException {
+    public void printPrizes(final OutputStreamWriter html_writer) throws IOException {
 
         html_writer.append("<h4>Prizes</h4>\n");
 
         for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, html_writer);
+            printPrizes(html_writer, category);
     }
 
-    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         final List<RaceResult> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
 

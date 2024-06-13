@@ -1,23 +1,15 @@
 package common;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
-
-/*
-RaceOutput
-    RaceOutputCSV
-        MidweekRaceOutputCSV
-        MinitourRaceOutputCSV
-    RaceOutputHTML
- */
 
 public abstract class RaceOutput {
 
@@ -29,11 +21,10 @@ public abstract class RaceOutput {
     protected static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
     protected static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
     protected static final Font PDF_BOLD_UNDERLINED_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, Font.DEFAULTSIZE, Font.UNDERLINE);
-    public static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
+    protected static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
     protected static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
-
     public static final String DNF_STRING = "DNF";
 
     public final Race race;
@@ -60,40 +51,6 @@ public abstract class RaceOutput {
             printer.printNoResults();
     }
 
-    public void printOverallResults() throws IOException {
-
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
-
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
-
-            printOverallResultsHeader(csv_writer);
-            printOverallResults(csv_writer);
-        }
-    }
-
-    public void printDetailedResults() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printPrizes() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printCombined() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    protected void printOverallResults(OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printPrizes(Category category, OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printPrizes(Category category, Document document) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
     private void configure() {
 
         readProperties();
@@ -114,124 +71,6 @@ public abstract class RaceOutput {
 
         race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
         race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
-    }
-
-    public void printPrizesHTML() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
-
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printPrizesHTML(html_writer);
-        }
-    }
-
-    public void printOverallResultsHTML() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
-
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printOverallResults(html_writer);
-        }
-    }
-
-    protected void printCategoryResultsCSV(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
-
-        final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
-        final List<RaceResult> results = race.getResultsByCategory(category_list);
-
-        setPositionStrings(results, allowEqualPositions());
-        printResults(results, getResultPrinterCSV(writer));
-    }
-
-    protected void printOverallResultsCSV(OutputStreamWriter writer) throws IOException {
-        for (List<String> category_group : getResultCategoryGroups()) {
-            printCategoryResultsCSV(writer, category_group);
-        }
-    }
-
-    protected List<List<String>> getResultCategoryGroups() {
-
-        return List.of(
-                List.of()
-        );
-    }
-
-    protected ResultPrinter getResultPrinterCSV(OutputStreamWriter writer) {
-        throw new UnsupportedOperationException();
-    }
-
-    protected boolean allowEqualPositions() {
-        throw new UnsupportedOperationException();
-    }
-
-    protected void printPrizesHTML(OutputStreamWriter writer) throws IOException {
-
-        writer.append("<h4>Prizes</h4>\n");
-
-        for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, writer);
-    }
-
-    public void printPrizesPDF() throws IOException {
-
-        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
-        final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
-
-        final Document document = new Document();
-        PdfWriter.getInstance(document, pdf_file_output_stream);
-
-        document.open();
-        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
-
-        for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(category, document);
-
-        document.close();
-    }
-
-    public static void printPrizePDF(Document document, String positionString, String name, String detail, Duration duration) {
-
-        final Paragraph paragraph = new Paragraph();
-
-        paragraph.add(new com.lowagie.text.Chunk(positionString + ": ", PDF_FONT));
-        paragraph.add(new Chunk(name, PDF_BOLD_FONT));
-        paragraph.add(new Chunk(" (" + detail + ") ", PDF_FONT));
-        paragraph.add(new Chunk(format(duration), PDF_FONT));
-
-        document.add(paragraph);
-    }
-
-    public void printPrizesText() throws IOException {
-
-        final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
-
-            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
-            writer.append("============================").append("\n\n");
-
-            for (final Category category : race.categories.getCategoriesInReportOrder())
-                printPrizes(category, writer);
-        }
-    }
-
-    protected void printPrizesText(Category category, OutputStreamWriter writer) throws IOException {
-
-        final String header = "Category: " + category.getLongName();
-
-        writer.append(header).append("\n");
-        writer.append("-".repeat(header.length())).append("\n\n");
-
-        final List<RaceResult> results = race.prize_winners.get(category);
-
-        setPositionStrings(results, true);
-        printPrizes(results, writer);
-
-        writer.append("\n\n");
-    }
-
-    protected void printPrizes(List<RaceResult> results, OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
     }
 
     public static void addCategoryHeader(Category category, Document document) {
@@ -298,5 +137,47 @@ public abstract class RaceOutput {
             highest_index_with_same_result++;
 
         return highest_index_with_same_result;
+    }
+
+    public void printOverallResults() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    public void printDetailedResults() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    public void printPrizes() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    public void printCombined() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    protected void printOverallResults(OutputStreamWriter writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    protected void printPrizes(OutputStreamWriter writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    protected void printPrizes(Document document, Category category) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    protected void printPrizes(OutputStreamWriter writer, Category category) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    protected void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
+    protected boolean allowEqualPositions() {
+        throw new UnsupportedOperationException();
+    }
+    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) throws IOException {
+        throw new UnsupportedOperationException();
     }
 }
