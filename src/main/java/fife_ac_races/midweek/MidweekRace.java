@@ -39,13 +39,18 @@ public class MidweekRace extends SeriesRace {
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java SeriesRace <config file path>");
+            System.out.println("usage: java MidweekRace <config file path>");
         else {
             new MidweekRace(Paths.get(args[0])).processResults();
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected Comparator<RaceResult> getResultsSortComparator() {
+        return MidweekRaceResult::compare;
+    }
 
     @Override
     public void configureHelpers() {
@@ -66,12 +71,43 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
+    public void printPrizes() throws IOException {
+
+        output_text.printPrizes();
+    }
+
+    @Override
+    public void printCombined() throws IOException {
+    }
+
+    @Override
+    protected RaceResult getOverallResult(final Runner runner) {
+
+        final MidweekRaceResult result = new MidweekRaceResult(runner, this);
+
+        for (final IndividualRace individual_race : races)
+            result.scores.add(calculateRaceScore(individual_race, runner));
+
+        return result;
+    }
+
+    @Override
     public void configureInputData() throws IOException {
 
         super.configureInputData();
 
         for (final String runner_name : getRunnerNames())
             checkClubsForRunner(runner_name);
+    }
+
+    @Override
+    protected void readProperties() {
+
+        super.readProperties();
+
+        minimum_number_of_races = Integer.parseInt(getProperties().getProperty("MINIMUM_NUMBER_OF_RACES"));
+        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
     }
 
     private void checkClubsForRunner(final String runner_name) {
@@ -101,30 +137,6 @@ public class MidweekRace extends SeriesRace {
                     if (runner.name.equals(runner_name) && runner.club.equals("?"))
                         runner.club = defined_club;
                 }
-    }
-
-    @Override
-    protected Comparator<RaceResult> getResultsSortComparator() {
-        return MidweekRaceResult::compare;
-    }
-
-    @Override
-    public void printPrizes() throws IOException {
-
-        output_text.printPrizes();
-    }
-
-    @Override
-    public void printCombined() throws IOException {
-    }
-
-    protected void readProperties() {
-
-        super.readProperties();
-
-        minimum_number_of_races = Integer.parseInt(getProperties().getProperty("MINIMUM_NUMBER_OF_RACES"));
-        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
     }
 
     private List<String> getDefinedClubs(final List<String> clubs) {
@@ -161,16 +173,6 @@ public class MidweekRace extends SeriesRace {
         return new ArrayList<>(names);
     }
 
-    protected RaceResult getOverallResult(final Runner runner) {
-
-        final MidweekRaceResult result = new MidweekRaceResult(runner, this);
-
-        for (final IndividualRace individual_race : races)
-            result.scores.add(calculateRaceScore(individual_race, runner));
-
-        return result;
-    }
-
     private int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
         if (individual_race == null) return -1;
@@ -190,9 +192,5 @@ public class MidweekRace extends SeriesRace {
 
         // Runner didn't compete in this race.
         return 0;
-    }
-
-    private static String getGender(final Runner runner) {
-        return runner.category.getGender();
     }
 }
