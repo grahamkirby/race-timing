@@ -2,6 +2,7 @@ package single_race;
 
 import common.Race;
 import common.RaceEntry;
+import common.RawResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,9 +11,21 @@ import java.util.List;
 public abstract class SingleRace extends Race {
 
     public List<RaceEntry> entries;
+    protected List<RawResult> raw_results;
+
+    protected String dnf_string;
 
     public SingleRace(final Path config_file_path) throws IOException {
+
         super(config_file_path);
+
+        // Specifies all the runners who did have a finish
+        // time recorded but were declared DNF.
+        dnf_string = getProperties().getProperty("DNF_LEGS");
+    }
+
+    public List<RawResult> getRawResults() {
+        return raw_results;
     }
 
     protected void configureInputData() throws IOException {

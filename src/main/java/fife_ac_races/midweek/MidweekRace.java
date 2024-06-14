@@ -52,7 +52,7 @@ public class MidweekRace extends SeriesRace {
 
         super.readProperties();
 
-        minimum_number_of_races = Integer.parseInt(properties.getProperty("MINIMUM_NUMBER_OF_RACES"));
+        minimum_number_of_races = Integer.parseInt(getProperties().getProperty("MINIMUM_NUMBER_OF_RACES"));
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
         open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
     }
@@ -103,13 +103,6 @@ public class MidweekRace extends SeriesRace {
                 }
             }
         }
-    }
-
-    @Override
-    public void initialiseResults() {
-
-        super.initialiseResults();
-        overall_results = new ArrayList<>();
     }
 
     @Override

@@ -14,12 +14,20 @@ import java.util.List;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
-    String detailed_results_filename, collated_times_filename;
+    String detailed_results_filename;
+
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
     public RelayRaceOutputCSV(final Race race) {
         super(race);
         constructFilePaths();
+    }
+
+    protected void constructFilePaths() {
+
+        super.constructFilePaths();
+
+        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
     }
 
     @Override
@@ -171,14 +179,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         for (int i = 0; i < leg; i++)
             total = total.plus(leg_results.get(i).duration());
         return total;
-    }
-
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-
-        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
-        collated_times_filename = "times_collated";
     }
 
     void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {

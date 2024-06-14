@@ -202,7 +202,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
     private void printOverallResultsBody(final OutputStreamWriter writer, final List<Category> result_categories) throws IOException {
 
-        final List<? extends RaceResult> results = race.getResultsByCategory(result_categories);
+        final List<RaceResult> results = race.getResultsByCategory(result_categories);
 
         setPositionStrings(results, true);
         printResults(results, new OverallResultPrinterHTML(writer));

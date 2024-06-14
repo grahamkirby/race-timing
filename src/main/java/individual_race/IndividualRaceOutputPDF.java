@@ -19,7 +19,7 @@ public class IndividualRaceOutputPDF extends RaceOutputPDF {
 
         addCategoryHeader(category, document);
 
-        final List<RaceResult> category_prize_winners = ((IndividualRace)race).prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners == null)
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
-    String detailed_results_filename, collated_times_filename;
+    String detailed_results_filename;
 
     public RelayRaceOutputHTML(final RelayRace race) {
         super(race);
@@ -24,9 +24,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     protected void constructFilePaths() {
 
         super.constructFilePaths();
-
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
-        collated_times_filename = "times_collated";
     }
 
     public void printLegResults() throws IOException {
