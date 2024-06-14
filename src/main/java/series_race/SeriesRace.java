@@ -9,6 +9,7 @@ import individual_race.IndividualRaceResult;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class SeriesRace extends Race {
@@ -25,9 +26,14 @@ public abstract class SeriesRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void configureInputData() throws IOException {
+    @Override
+    public void configure() throws IOException {
 
-        races = ((SeriesRaceInput)input).loadRaces();
+        readProperties();
+
+        configureHelpers();
+        configureCategories();
+        configureInputData();
     }
 
     public void processResults() throws IOException {
@@ -42,17 +48,17 @@ public abstract class SeriesRace extends Race {
         printCombined();
     }
 
-    @Override
-    public void configure() throws IOException {
+    public void allocatePrizes() {
 
-        readProperties();
-
-        configureHelpers();
-        configureCategories();
-        configureInputData();
+        prizes.allocatePrizes();
     }
 
-    public void initialiseResults() {
+    protected void configureInputData() throws IOException {
+
+        races = ((SeriesRaceInput)input).loadRaces();
+    }
+
+    private void initialiseResults() {
 
         combined_runners = new ArrayList<>();
 
@@ -71,31 +77,28 @@ public abstract class SeriesRace extends Race {
         category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    private void calculateResults() {
 
-    private static List<Runner> getCombinedRunners(final List<IndividualRace> individual_races) {
+        for (final Runner runner : combined_runners)
+            overall_results.add(getOverallResult(runner));
 
-        final List<Runner> runners = new ArrayList<>();
+        overall_results.sort(getResultsSortComparator());
+    }
 
-        for (final IndividualRace individual_race : individual_races)
-            if (individual_race != null)
-                for (final RaceResult result : individual_race.getOverallResults()) {
-                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
-                    if (!runners.contains(runner))
-                        runners.add(runner);
-                }
+    private void printOverallResults() throws IOException {
 
-        return runners;
+        output_CSV.printOverallResults();
+        output_HTML.printOverallResults();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract void configureHelpers();
-    public abstract void configureCategories();
+    protected abstract Comparator<RaceResult> getResultsSortComparator();
+    protected abstract RaceResult getOverallResult(final Runner runner);
 
-    public abstract void calculateResults() throws IOException;
-    public abstract void allocatePrizes() throws IOException;
-    public abstract void printOverallResults() throws IOException;
-    public abstract void printPrizes() throws IOException;
-    public abstract void printCombined() throws IOException;
+    protected abstract void configureHelpers();
+    protected abstract void configureCategories();
+
+    protected abstract void printPrizes() throws IOException;
+    protected abstract void printCombined() throws IOException;
 }
