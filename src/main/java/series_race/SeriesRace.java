@@ -1,11 +1,14 @@
 package series_race;
 
 import common.Race;
+import common.RaceResult;
 import common.Runner;
 import individual_race.IndividualRace;
+import individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SeriesRace extends Race {
@@ -51,14 +54,41 @@ public abstract class SeriesRace extends Race {
 
     public void initialiseResults() {
 
-        combined_runners = getCombinedRunners(races);
+        combined_runners = new ArrayList<>();
+
+        for (final IndividualRace individual_race : races)
+            if (individual_race != null)
+                for (final RaceResult result : individual_race.getOverallResults()) {
+
+                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
+                    if (!combined_runners.contains(runner))
+                        combined_runners.add(runner);
+                }
     }
 
     protected void readProperties() {
 
-        super.readProperties();
         category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static List<Runner> getCombinedRunners(final List<IndividualRace> individual_races) {
+
+        final List<Runner> runners = new ArrayList<>();
+
+        for (final IndividualRace individual_race : individual_races)
+            if (individual_race != null)
+                for (final RaceResult result : individual_race.getOverallResults()) {
+                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
+                    if (!runners.contains(runner))
+                        runners.add(runner);
+                }
+
+        return runners;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract void configureHelpers();
     public abstract void configureCategories();

@@ -1,6 +1,8 @@
 package fife_ac_races.minitour;
 
-import common.*;
+import common.RacePrizes;
+import common.RaceResult;
+import common.Runner;
 import common.categories.Category;
 import common.categories.JuniorRaceCategories;
 import individual_race.IndividualRace;
@@ -11,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -70,13 +71,6 @@ public class MinitourRace extends SeriesRace {
     public void configureCategories() {
 
         categories = new JuniorRaceCategories(category_prizes);
-    }
-
-    @Override
-    public void initialiseResults() {
-
-        super.initialiseResults();
-        overall_results = new ArrayList<>();
     }
 
     @Override

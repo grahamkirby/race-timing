@@ -1,9 +1,8 @@
 package series_race;
 
-import common.categories.Category;
-import common.Race;
 import common.RaceResult;
 import common.Runner;
+import common.categories.Category;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 
@@ -64,7 +63,17 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     protected int compareRunnerNameTo(SeriesRaceResult o) {
 
-        final int last_name_comparison = Race.getLastName(runner.name).compareTo(Race.getLastName(o.runner.name));
-        return last_name_comparison != 0 ? last_name_comparison : Race.getFirstName(runner.name).compareTo(Race.getFirstName(o.runner.name));
+        final int last_name_comparison = getLastName(runner.name).compareTo(getLastName(o.runner.name));
+        return last_name_comparison != 0 ? last_name_comparison : getFirstName(runner.name).compareTo(getFirstName(o.runner.name));
+    }
+
+    private static String getFirstName(final String name) {
+        return name.split(" ")[0];
+    }
+
+    private static String getLastName(final String name) {
+
+        final String[] names = name.split(" ");
+        return names[names.length - 1];
     }
 }

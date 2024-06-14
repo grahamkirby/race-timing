@@ -1,8 +1,11 @@
 package relay_race;
 
-import common.*;
+import common.RaceEntry;
+import common.RaceResult;
+import common.RawResult;
 import common.categories.Category;
 import common.output.RaceOutputText;
+import single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -80,13 +83,15 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         final Map<Integer, Integer> leg_finished_count = new HashMap<>();
 
-        for (int i = 0; i < race.getRawResults().size(); i++) {
+        final List<RawResult> raw_results = ((SingleRace)race).getRawResults();
+        final RelayRaceInput input = (RelayRaceInput) race.input;
 
-            final RawResult raw_result = race.getRawResults().get(i);
-            final RelayRaceInput input = (RelayRaceInput) race.input;
+        for (int i = 0; i < raw_results.size(); i++) {
+
+            final RawResult raw_result = raw_results.get(i);
             final boolean last_electronically_recorded_result = i == input.getNumberOfRawResults() - 1;
 
-            if (last_electronically_recorded_result && input.getNumberOfRawResults() < race.getRawResults().size())
+            if (last_electronically_recorded_result && input.getNumberOfRawResults() < raw_results.size())
                 raw_result.appendComment("Remaining times from paper recording sheet only.");
 
             printResult(raw_result, leg_finished_count, writer);
@@ -99,7 +104,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         final List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
 
-        for (final RawResult raw_result : race.getRawResults()) {
+        for (final RawResult raw_result : ((SingleRace)race).getRawResults()) {
 
             if (raw_result.getBibNumber() == null)
                 times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());

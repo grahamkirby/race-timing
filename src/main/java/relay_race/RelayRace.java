@@ -14,14 +14,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class RelayRace extends SingleRace {
-
-
-
-
-
-
-
-
+    public static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 3;
+    public static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -34,6 +28,9 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    protected static final String ZERO_TIME_STRING = "0:0:0";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     private RelayRaceMissingData missing_data;
     protected int number_of_legs;
     private int senior_prizes, category_prizes;
@@ -104,24 +101,14 @@ public class RelayRace extends SingleRace {
         printCollatedTimes();
     }
 
-    protected int getDefaultSeniorPrizes() {
-        return 3;
-    }
-
-    protected int getDefaultCategoryPrizes() {
-        return 1;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
 
-        super.readProperties();
-
-        number_of_legs = Integer.parseInt(properties.getProperty("NUMBER_OF_LEGS"));
+        number_of_legs = Integer.parseInt(getProperties().getProperty("NUMBER_OF_LEGS"));
         start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
-        senior_prizes = Integer.parseInt(getPropertyWithDefault("SENIOR_PRIZES", String.valueOf(getDefaultSeniorPrizes())));
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
+        senior_prizes = Integer.parseInt(getPropertyWithDefault("SENIOR_PRIZES", String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
     }
 
     private void configureHelpers() {
@@ -225,7 +212,7 @@ public class RelayRace extends SingleRace {
 
     private void configurePairedLegs() {
 
-        final String paired_legs_string = properties.getProperty("PAIRED_LEGS");
+        final String paired_legs_string = getProperties().getProperty("PAIRED_LEGS");
 
         // Example: PAIRED_LEGS = 2,3
 
@@ -268,7 +255,7 @@ public class RelayRace extends SingleRace {
 
     private void initialiseResults() {
 
-        overall_results = new ArrayList<>();
+//        overall_results = new ArrayList<>();
 
         for (RaceEntry entry : entries)
             overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));

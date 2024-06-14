@@ -1,6 +1,8 @@
 package individual_race;
 
-import common.*;
+import common.RaceEntry;
+import common.RacePrizes;
+import common.RawResult;
 import common.categories.Category;
 import common.categories.JuniorRaceCategories;
 import common.categories.SeniorRaceCategories;
@@ -9,7 +11,6 @@ import single_race.SingleRace;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
 
 public class IndividualRace extends SingleRace {
 
@@ -88,8 +89,6 @@ public class IndividualRace extends SingleRace {
 
     protected void readProperties() {
 
-        super.readProperties();
-
         senior_race = Boolean.parseBoolean(getPropertyWithDefault("SENIOR_RACE", "true"));
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
         open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
@@ -115,7 +114,7 @@ public class IndividualRace extends SingleRace {
 
     private void initialiseResults() {
 
-        overall_results = new ArrayList<>();
+//        overall_results = new ArrayList<>();
 
         for (int i = 0; i < raw_results.size(); i++)
             overall_results.add(new IndividualRaceResult(this));
