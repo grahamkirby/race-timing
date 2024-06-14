@@ -46,15 +46,8 @@ public class MinitourRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<CategoryGroup> getResultCategoryGroups() {
-
-        return List.of(
-                new CategoryGroup("U9", List.of("FU9", "MU9")),
-                new CategoryGroup("U11", List.of("FU11", "MU11")),
-                new CategoryGroup("U13", List.of("FU13", "MU13")),
-                new CategoryGroup("U15", List.of("FU15", "MU15")),
-                new CategoryGroup("U18", List.of("FU18", "MU18"))
-        );
+    protected Comparator<RaceResult> getResultsSortComparator() {
+        return MinitourRaceResult::compare;
     }
 
     @Override
@@ -77,11 +70,6 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
-    protected Comparator<RaceResult> getResultsSortComparator() {
-        return MinitourRaceResult::compare;
-    }
-
-    @Override
     public void printPrizes() throws IOException {
 
         output_PDF.printPrizes();
@@ -96,13 +84,6 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
-    public List<RaceResult> getResultsByCategory(final List<Category> categories_required) {
-
-        final Predicate<RaceResult> category_filter = result -> categories_required.contains(((MinitourRaceResult)result).runner.category);
-
-        return overall_results.stream().filter(category_filter).toList();
-    }
-
     protected RaceResult getOverallResult(final Runner runner) {
 
         final MinitourRaceResult result = new MinitourRaceResult(runner, this);
@@ -111,6 +92,26 @@ public class MinitourRace extends SeriesRace {
             result.times.add(getRaceTime(individual_race, runner));
 
         return result;
+    }
+
+    @Override
+    public List<CategoryGroup> getResultCategoryGroups() {
+
+        return List.of(
+                new CategoryGroup("U9", List.of("FU9", "MU9")),
+                new CategoryGroup("U11", List.of("FU11", "MU11")),
+                new CategoryGroup("U13", List.of("FU13", "MU13")),
+                new CategoryGroup("U15", List.of("FU15", "MU15")),
+                new CategoryGroup("U18", List.of("FU18", "MU18"))
+        );
+    }
+
+    @Override
+    public List<RaceResult> getResultsByCategory(final List<Category> categories_required) {
+
+        final Predicate<RaceResult> category_filter = result -> categories_required.contains(((MinitourRaceResult)result).runner.category);
+
+        return overall_results.stream().filter(category_filter).toList();
     }
 
     private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
