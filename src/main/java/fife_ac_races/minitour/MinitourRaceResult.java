@@ -17,8 +17,8 @@ public class MinitourRaceResult extends SeriesRaceResult {
         super(runner, race);
 
         times = new ArrayList<>();
-        for (int i = 0; i < race.races.size(); i++)
-            times.add(null);
+//        for (int i = 0; i < race.races.size(); i++)
+//            times.add(null);
     }
 
     protected Duration duration() {

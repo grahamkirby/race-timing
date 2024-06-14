@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -29,6 +30,8 @@ public class MinitourRace extends SeriesRace {
         super(config_file_path);
         minimum_number_of_races = races.size();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(final String[] args) throws IOException {
 
@@ -74,26 +77,8 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
-    public void calculateResults() {
-
-        for (final Runner runner : combined_runners)
-            overall_results.add(getOverallResult(runner));
-
-        // Sort by time then by runner name.
-        overall_results.sort(MinitourRaceResult::compare);
-    }
-
-    @Override
-    public void allocatePrizes() {
-
-        prizes.allocatePrizes();
-    }
-
-    @Override
-    public void printOverallResults() throws IOException {
-
-        output_CSV.printOverallResults();
-        output_HTML.printOverallResults();
+    protected Comparator<RaceResult> getResultsSortComparator() {
+        return MinitourRaceResult::compare;
     }
 
     @Override
@@ -118,22 +103,19 @@ public class MinitourRace extends SeriesRace {
         return overall_results.stream().filter(category_filter).toList();
     }
 
-    private MinitourRaceResult getOverallResult(final Runner runner) {
+    protected RaceResult getOverallResult(final Runner runner) {
 
         final MinitourRaceResult result = new MinitourRaceResult(runner, this);
 
-        for (int i = 0; i < races.size(); i++) {
-
-            final IndividualRace individual_race = races.get(i);
-
-            if (individual_race != null)
-                result.times.set(i, getRaceTime(individual_race, runner));
-        }
+        for (final IndividualRace individual_race : races)
+            result.times.add(getRaceTime(individual_race, runner));
 
         return result;
     }
 
     private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
+
+        if (individual_race == null) return null;
 
         for (RaceResult result : individual_race.getOverallResults())
             if (((IndividualRaceResult)result).entry.runner.equals(runner)) return ((IndividualRaceResult)result).duration();

@@ -11,10 +11,7 @@ import series_race.SeriesRace;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MidweekRace extends SeriesRace {
 
@@ -24,16 +21,18 @@ public class MidweekRace extends SeriesRace {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final int MAX_RACE_SCORE = 200;
+    private static final int MAX_RACE_SCORE = 200;
 
-    public boolean open_category;
-    public int open_prizes;
+    private boolean open_category;
+    private int open_prizes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public MidweekRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(final String[] args) throws IOException {
 
@@ -47,15 +46,6 @@ public class MidweekRace extends SeriesRace {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected void readProperties() {
-
-        super.readProperties();
-
-        minimum_number_of_races = Integer.parseInt(getProperties().getProperty("MINIMUM_NUMBER_OF_RACES"));
-        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
-    }
 
     @Override
     public void configureHelpers() {
@@ -80,51 +70,42 @@ public class MidweekRace extends SeriesRace {
 
         super.configureInputData();
 
-        for (final String runner_name : getRunnerNames(races)) {
+        for (final String runner_name : getRunnerNames())
+            checkClubsForRunner(runner_name);
+    }
 
-            final List<String> clubs_for_runner = getRunnerClubs(runner_name);
-            final List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
+    private void checkClubsForRunner(final String runner_name) {
 
-            final int number_of_defined_clubs = defined_clubs.size();
-            final int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
+        // Where a runner name is associated with a single entry with a defined club
+        // plus some other entries with no club defined, add the club to those entries.
 
-            if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0) {
+        // Where a runner name is associated with multiple clubs, leave as is, under
+        // assumption that they are separate runners.
+        final List<String> clubs_for_runner = getRunnerClubs(runner_name);
+        final List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
 
-                final String defined_club = defined_clubs.get(0);
+        final int number_of_defined_clubs = defined_clubs.size();
+        final int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
 
-                for (final IndividualRace race : races) {
-                    if (race != null)
-                        for (final RaceResult result : race.getOverallResults()) {
+        if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
+            recordClubForRunnerName(runner_name, defined_clubs.get(0));
+    }
 
-                            final Runner runner = ((IndividualRaceResult)result).entry.runner;
-                            if (runner.name.equals(runner_name) && runner.club.equals("?"))
-                                runner.club = defined_club;
-                        }
+    private void recordClubForRunnerName(final String runner_name, final String defined_club) {
+
+        for (final IndividualRace race : races)
+            if (race != null)
+                for (final RaceResult result : race.getOverallResults()) {
+
+                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
+                    if (runner.name.equals(runner_name) && runner.club.equals("?"))
+                        runner.club = defined_club;
                 }
-            }
-        }
     }
 
     @Override
-    public void calculateResults() {
-
-        for (final Runner runner : combined_runners)
-            overall_results.add(getOverallResult(runner));
-
-        overall_results.sort(MidweekRaceResult::compare);
-    }
-
-    @Override
-    public void allocatePrizes() {
-
-        prizes.allocatePrizes();
-    }
-
-    @Override
-    public void printOverallResults() throws IOException {
-
-        output_CSV.printOverallResults();
-        output_HTML.printOverallResults();
+    protected Comparator<RaceResult> getResultsSortComparator() {
+        return MidweekRaceResult::compare;
     }
 
     @Override
@@ -135,19 +116,29 @@ public class MidweekRace extends SeriesRace {
 
     @Override
     public void printCombined() throws IOException {
-
     }
 
-    private List<String> getDefinedClubs(final List<String> clubsForRunner) {
-        return clubsForRunner.stream().filter(club -> !club.equals("?")).toList();
+    protected void readProperties() {
+
+        super.readProperties();
+
+        minimum_number_of_races = Integer.parseInt(getProperties().getProperty("MINIMUM_NUMBER_OF_RACES"));
+        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
+    }
+
+    private List<String> getDefinedClubs(final List<String> clubs) {
+        return clubs.stream().filter(club -> !club.equals("?")).toList();
     }
 
     private List<String> getRunnerClubs(final String runner_name) {
 
         final Set<String> clubs = new HashSet<>();
+
         for (IndividualRace race : races) {
             if (race != null)
                 for (final RaceResult result : race.getOverallResults()) {
+
                     final Runner runner = ((IndividualRaceResult)result).entry.runner;
                     if (runner.name.equals(runner_name)) clubs.add(runner.club);
                 }
@@ -156,7 +147,7 @@ public class MidweekRace extends SeriesRace {
         return new ArrayList<>(clubs);
     }
 
-    private List<String> getRunnerNames(final List<IndividualRace> races) {
+    private List<String> getRunnerNames() {
 
         final Set<String> names = new HashSet<>();
         for (final IndividualRace race : races) {
@@ -170,33 +161,34 @@ public class MidweekRace extends SeriesRace {
         return new ArrayList<>(names);
     }
 
-    private MidweekRaceResult getOverallResult(final Runner runner) {
+    protected RaceResult getOverallResult(final Runner runner) {
 
         final MidweekRaceResult result = new MidweekRaceResult(runner, this);
 
-        for (final IndividualRace individual_race : races) {
-
-            if (individual_race != null)
-                result.scores.add(calculateRaceScore(individual_race, runner));
-        }
+        for (final IndividualRace individual_race : races)
+            result.scores.add(calculateRaceScore(individual_race, runner));
 
         return result;
     }
 
     private int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
+        if (individual_race == null) return -1;
+
         int score = MAX_RACE_SCORE;
 
-        final String gender = getGender(runner);
+        final String gender = runner.category.getGender();
 
-        for (RaceResult result : individual_race.getOverallResults()) {
+        // The first finisher of each gender gets the maximum score, the next one less, and so on.
+        for (final RaceResult result : individual_race.getOverallResults()) {
 
             final Runner result_runner = ((IndividualRaceResult)result).entry.runner;
 
             if (result_runner.equals(runner)) return Math.max(score, 0);
-            if (gender.equals(getGender(result_runner))) score--;
+            if (gender.equals(result_runner.category.getGender())) score--;
         }
 
+        // Runner didn't compete in this race.
         return 0;
     }
 

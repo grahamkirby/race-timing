@@ -13,6 +13,8 @@ import java.util.List;
 
 public abstract class RaceOutputCSV extends RaceOutput {
 
+    public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
+
     public RaceOutputCSV(Race race) {
         super(race);
     }
@@ -29,10 +31,10 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
         final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
 
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
 
-            printOverallResultsHeader(csv_writer);
-            printOverallResults(csv_writer);
+            printOverallResultsHeader(writer);
+            printOverallResults(writer);
         }
     }
 
@@ -46,7 +48,7 @@ public abstract class RaceOutputCSV extends RaceOutput {
         printResults(results, getResultPrinter(writer));
     }
 
-    protected void printOverallResultsHeaderRoot(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResultsHeaderRootSeries(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
 

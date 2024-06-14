@@ -1,8 +1,8 @@
 package fife_ac_races.minitour;
 
 import common.Race;
-import common.output.RaceOutputCSV;
 import common.RaceResult;
+import common.output.RaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -17,7 +17,7 @@ public class MinitourRaceOutputCSV extends RaceOutputCSV {
     @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
-        printOverallResultsHeaderRoot(writer);
+        printOverallResultsHeaderRootSeries(writer);
         writer.append(",Total\n");
     }
 

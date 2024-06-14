@@ -16,9 +16,6 @@ public class MidweekRaceResult extends SeriesRaceResult {
         super(runner, race);
 
         scores = new ArrayList<>();
-        for (int i = 0; i < race.races.size(); i++) {
-            scores.add(-1);
-        }
     }
 
     protected int totalScore() {

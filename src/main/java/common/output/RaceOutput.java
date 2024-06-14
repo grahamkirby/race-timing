@@ -27,7 +27,6 @@ public abstract class RaceOutput {
     protected static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
     protected static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
-    public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
     public static final String DNF_STRING = "DNF";
 
     public final Race race;
