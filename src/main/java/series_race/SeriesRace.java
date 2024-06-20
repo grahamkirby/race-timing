@@ -14,11 +14,11 @@ import java.util.List;
 
 public abstract class SeriesRace extends Race {
 
-    public List<IndividualRace> races;
-    public List<Runner> combined_runners;
+    protected List<IndividualRace> races;
+    protected List<Runner> combined_runners;
 
-    public int category_prizes;
-    public int minimum_number_of_races;
+    protected int category_prizes;
+    protected int minimum_number_of_races;
 
     public SeriesRace(Path config_file_path) throws IOException {
         super(config_file_path);
@@ -36,6 +36,7 @@ public abstract class SeriesRace extends Race {
         configureInputData();
     }
 
+    @Override
     public void processResults() throws IOException {
 
         initialiseResults();
@@ -48,10 +49,15 @@ public abstract class SeriesRace extends Race {
         printCombined();
     }
 
-    public void allocatePrizes() {
-
-        prizes.allocatePrizes();
+    public List<IndividualRace> getRaces() {
+        return races;
     }
+
+    public int getMinimumNumberOfRaces() {
+        return minimum_number_of_races;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void configureInputData() throws IOException {
 

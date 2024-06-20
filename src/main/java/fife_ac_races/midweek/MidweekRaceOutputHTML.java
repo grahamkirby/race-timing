@@ -4,6 +4,7 @@ import common.categories.Category;
 import common.Race;
 import common.output.RaceOutputHTML;
 import common.RaceResult;
+import individual_race.IndividualRace;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -95,8 +96,10 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                                        <th>Club</th>
             """);
 
-        for (int i = 0; i < ((MidweekRace)race).races.size(); i++) {
-            if (((MidweekRace)race).races.get(i) != null) {
+        List<IndividualRace> races = ((MidweekRace)race).getRaces();
+
+        for (int i = 0; i < races.size(); i++) {
+            if (races.get(i) != null) {
                 writer.append("<th>Race ").
                         append(String.valueOf(i + 1)).
                         append("</th>\n");

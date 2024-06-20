@@ -49,7 +49,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
     @Override
     public void printCombined() throws IOException {
 
-        for (int i = 1; i <= ((SeriesRace)race).races.size(); i++)
+        for (int i = 1; i <= ((SeriesRace)race).getRaces().size(); i++)
             printIndividualRace(i);
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
@@ -67,7 +67,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
     private void printIndividualRace(final int race_number) throws IOException {
 
-        final IndividualRace individual_race = ((SeriesRace)race).races.get(race_number - 1);
+        final IndividualRace individual_race = ((SeriesRace)race).getRaces().get(race_number - 1);
 
         if (individual_race != null) {
 
@@ -186,10 +186,10 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
                                        <th>Club</th>
             """);
 
-        final SeriesRace series_race = (SeriesRace) race;
+        final List<IndividualRace> races = ((SeriesRace) race).getRaces();
 
-        for (int i = 0; i < series_race.races.size(); i++)
-            if (series_race.races.get(i) != null)
+        for (int i = 0; i < races.size(); i++)
+            if (races.get(i) != null)
                 writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
 
         writer.append("""

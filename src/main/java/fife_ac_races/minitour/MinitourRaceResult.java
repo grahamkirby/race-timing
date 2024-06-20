@@ -2,6 +2,7 @@ package fife_ac_races.minitour;
 
 import common.RaceResult;
 import common.Runner;
+import individual_race.IndividualRace;
 import series_race.SeriesRaceResult;
 
 import java.time.Duration;
@@ -34,14 +35,16 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     public boolean raceHasTakenPlace(int race_number) {
 
-        return ((MinitourRace)race).races.get(race_number - 1) != null;
+        return ((MinitourRace)race).getRaces().get(race_number - 1) != null;
     }
 
     @Override
     public boolean completedAllRacesSoFar() {
 
-        for (int i = 0; i < ((MinitourRace)race).races.size(); i++)
-            if (((MinitourRace)race).races.get(i) != null && times.get(i) == null)
+        List<IndividualRace> races = ((MinitourRace)race).getRaces();
+
+        for (int i = 0; i < races.size(); i++)
+            if (races.get(i) != null && times.get(i) == null)
                 return false;
 
         return true;

@@ -48,8 +48,8 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract void configure() throws IOException;
     public abstract void processResults() throws IOException;
+    protected abstract void configure() throws IOException;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,12 +58,14 @@ public abstract class Race {
     }
 
     public List<RaceResult> getResultsByCategory(List<Category> ignore) {
-
         return overall_results;
     }
 
-    public List<CategoryGroup> getResultCategoryGroups() {
+    public void allocatePrizes() {
+        prizes.allocatePrizes();
+    }
 
+    public List<CategoryGroup> getResultCategoryGroups() {
         return List.of(new CategoryGroup("Everything", List.of()));
     }
 
@@ -91,16 +93,6 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static Properties loadProperties(final Path config_file_path) throws IOException {
-
-        try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
-
-            final Properties properties = new Properties();
-            properties.load(stream);
-            return properties;
-        }
-    }
-
     public static Duration parseTime(final String element) {
 
         try {
@@ -111,6 +103,16 @@ public abstract class Race {
         }
         catch (Exception e) {
             throw new RuntimeException("illegal time: " + element);
+        }
+    }
+
+    private static Properties loadProperties(final Path config_file_path) throws IOException {
+
+        try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
+
+            final Properties properties = new Properties();
+            properties.load(stream);
+            return properties;
         }
     }
 
