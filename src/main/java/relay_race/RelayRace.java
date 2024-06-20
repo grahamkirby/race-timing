@@ -448,11 +448,6 @@ public class RelayRace extends SingleRace {
         throw new RuntimeException("unregistered team: " + bib_number);
     }
 
-    private void allocatePrizes() {
-
-        prizes.allocatePrizes();
-    }
-
     private void printOverallResults() throws IOException {
 
         output_CSV.printOverallResults();

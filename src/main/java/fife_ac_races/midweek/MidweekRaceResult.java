@@ -25,7 +25,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
         final List<Integer> sorted_scores = new ArrayList<>(scores);
         sorted_scores.sort(Integer::compareTo);
 
-        for (int i = 0; i < ((MidweekRace)race).minimum_number_of_races; i++) {
+        for (int i = 0; i < ((MidweekRace)race).getMinimumNumberOfRaces(); i++) {
             final int score = sorted_scores.get(sorted_scores.size() - 1 - i);
             if (score > -1) total += score;
         }

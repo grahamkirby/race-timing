@@ -53,7 +53,7 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public void configureHelpers() {
+    protected void configureHelpers() {
 
         input = new MidweekRaceInput(this);
 
@@ -65,7 +65,7 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public void configureCategories() {
+    protected void configureCategories() {
 
         categories = new SeniorRaceCategories(open_category, open_prizes, category_prizes);
     }
@@ -92,7 +92,7 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public void configureInputData() throws IOException {
+    protected void configureInputData() throws IOException {
 
         super.configureInputData();
 

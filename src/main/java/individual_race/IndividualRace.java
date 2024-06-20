@@ -13,6 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class IndividualRace extends SingleRace {
+    public static final int DEFAULT_OPEN_PRIZES = 3;
+    public static final int DEFAULT_CATEGORY_PRIZES = 1;
 
     // TODO non-binary category; optional team prizes, by cumulative positions and times
 
@@ -61,14 +63,6 @@ public class IndividualRace extends SingleRace {
         processResults(true);
     }
 
-    protected int getDefaultOpenPrizes() {
-        return 3;
-    }
-
-    protected int getDefaultCategoryPrizes() {
-        return 1;
-    }
-
     public void processResults(boolean output_results) throws IOException {
 
         initialiseResults();
@@ -91,8 +85,8 @@ public class IndividualRace extends SingleRace {
 
         senior_race = Boolean.parseBoolean(getPropertyWithDefault("SENIOR_RACE", "true"));
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(getDefaultOpenPrizes())));
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(getDefaultCategoryPrizes())));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(DEFAULT_OPEN_PRIZES)));
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(DEFAULT_CATEGORY_PRIZES)));
     }
 
     private void configureHelpers() {
@@ -203,11 +197,6 @@ public class IndividualRace extends SingleRace {
         // DNF results are sorted in increasing order of bib number.
         // Where two runners have the same recorded time, the order in which they were recorded is preserved.
         overall_results.sort(IndividualRaceResult::compare);
-    }
-
-    private void allocatePrizes() {
-
-        prizes.allocatePrizes();
     }
 
     public void printOverallResults() throws IOException {
