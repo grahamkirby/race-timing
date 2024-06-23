@@ -21,7 +21,7 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         return new ResultPrinterCSV(race, writer);
     }
 
@@ -29,6 +29,8 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
     protected boolean allowEqualPositions() {
         return true;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record ResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {
 
@@ -57,16 +59,16 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
                     append("\n");
         }
 
+        @Override
+        public void printNoResults() {
+        }
+
         private int getNumberOfRacesCompleted() {
 
             int number_of_races_completed = 0;
             for (final Race individual_race : ((MidweekRace)race).getRaces())
                 if (individual_race != null) number_of_races_completed++;
             return number_of_races_completed;
-        }
-
-        @Override
-        public void printNoResults() {
         }
     }
 }

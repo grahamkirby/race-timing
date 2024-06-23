@@ -37,11 +37,11 @@ public abstract class RaceOutputPDF extends RaceOutput {
         document.close();
     }
 
-    protected static void printPrizePDF(Document document, String positionString, String name, String detail, Duration duration) {
+    protected static void printPrizePDF(final Document document, final String positionString, final String name, final String detail, final Duration duration) {
 
         final Paragraph paragraph = new Paragraph();
 
-        paragraph.add(new com.lowagie.text.Chunk(positionString + ": ", PDF_FONT));
+        paragraph.add(new Chunk(positionString + ": ", PDF_FONT));
         paragraph.add(new Chunk(name, PDF_BOLD_FONT));
         paragraph.add(new Chunk(" (" + detail + ") ", PDF_FONT));
         paragraph.add(new Chunk(format(duration), PDF_FONT));

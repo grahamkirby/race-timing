@@ -18,21 +18,6 @@ public class MidweekRaceResult extends SeriesRaceResult {
         scores = new ArrayList<>();
     }
 
-    protected int totalScore() {
-
-        int total = 0;
-
-        final List<Integer> sorted_scores = new ArrayList<>(scores);
-        sorted_scores.sort(Integer::compareTo);
-
-        for (int i = 0; i < ((MidweekRace)race).getMinimumNumberOfRaces(); i++) {
-            final int score = sorted_scores.get(sorted_scores.size() - 1 - i);
-            if (score > -1) total += score;
-        }
-
-        return total;
-    }
-
     @Override
     public boolean completedAllRacesSoFar() {
         throw new UnsupportedOperationException();
@@ -55,9 +40,24 @@ public class MidweekRaceResult extends SeriesRaceResult {
         final int compare_completion = ((MidweekRaceResult)r1).compareCompletionTo((MidweekRaceResult) r2);
         if (compare_completion != 0) return compare_completion;
 
-        final int compare_performance = r1.comparePerformanceTo((MidweekRaceResult) r2);
+        final int compare_performance = r1.comparePerformanceTo(r2);
         if (compare_performance != 0) return compare_performance;
 
         return ((MidweekRaceResult)r1).compareRunnerNameTo((MidweekRaceResult) r2);
+    }
+
+    protected int totalScore() {
+
+        int total = 0;
+
+        final List<Integer> sorted_scores = new ArrayList<>(scores);
+        sorted_scores.sort(Integer::compareTo);
+
+        for (int i = 0; i < ((MidweekRace)race).getMinimumNumberOfRaces(); i++) {
+            final int score = sorted_scores.get(sorted_scores.size() - 1 - i);
+            if (score > -1) total += score;
+        }
+
+        return total;
     }
 }

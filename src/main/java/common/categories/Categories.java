@@ -19,9 +19,9 @@ public abstract class Categories {
         return categories_in_report_order;
     }
 
-    public Category getCategory(String category_short_name) {
+    public Category getCategory(final String category_short_name) {
 
-        for (Category category : categories_in_decreasing_generality_order)
+        for (final Category category : categories_in_decreasing_generality_order)
             if (category.getShortName().equals(category_short_name)) return category;
 
         throw new RuntimeException("unknown category: " + category_short_name);

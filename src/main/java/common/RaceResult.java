@@ -11,11 +11,11 @@ public abstract class RaceResult implements Comparable<RaceResult> {
         this.race = race;
     }
 
-    public int comparePerformanceTo(RaceResult other) {
+    public int comparePerformanceTo(final RaceResult other) {
         throw new UnsupportedOperationException();
     }
 
-    public abstract boolean sameEntrant(RaceResult other);
+    public abstract boolean sameEntrant(final RaceResult other);
 
     public abstract boolean completed();
     public abstract Category getCategory();
