@@ -34,7 +34,7 @@ public abstract class RaceOutputHTML extends RaceOutput {
         }
     }
 
-    protected void printPrizes(OutputStreamWriter writer) throws IOException {
+    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         writer.append("<h4>Prizes</h4>\n");
 

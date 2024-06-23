@@ -84,17 +84,6 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
-    protected RaceResult getOverallResult(final Runner runner) {
-
-        final MinitourRaceResult result = new MinitourRaceResult(runner, this);
-
-        for (final IndividualRace individual_race : races)
-            result.times.add(getRaceTime(individual_race, runner));
-
-        return result;
-    }
-
-    @Override
     public List<CategoryGroup> getResultCategoryGroups() {
 
         return List.of(
@@ -113,6 +102,19 @@ public class MinitourRace extends SeriesRace {
 
         return overall_results.stream().filter(category_filter).toList();
     }
+
+    @Override
+    protected RaceResult getOverallResult(final Runner runner) {
+
+        final MinitourRaceResult result = new MinitourRaceResult(runner, this);
+
+        for (final IndividualRace individual_race : races)
+            result.times.add(getRaceTime(individual_race, runner));
+
+        return result;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
 

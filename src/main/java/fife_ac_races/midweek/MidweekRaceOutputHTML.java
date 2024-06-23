@@ -52,31 +52,8 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
         writer.append("</ol>\n\n");
     }
 
-    private record PrizeResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
-
-        @Override
-        public void printResult(RaceResult r) throws IOException {
-
-            final MidweekRaceResult result = ((MidweekRaceResult)r);
-
-            writer.append("<li>").
-                    append(result.runner.name).
-                    append(" (").
-                    append(result.runner.category.getShortName()).
-                    append(") ").
-                    append(String.valueOf(result.totalScore())).
-                    append("</li>\n");
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            writer.append("No results\n");
-        }
-    }
-
     @Override
-    protected void printOverallResults(OutputStreamWriter writer) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         printOverallResultsHeader(writer);
         printOverallResultsBody(writer);
@@ -96,7 +73,7 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                                        <th>Club</th>
             """);
 
-        List<IndividualRace> races = ((MidweekRace)race).getRaces();
+        final List<IndividualRace> races = ((MidweekRace)race).getRaces();
 
         for (int i = 0; i < races.size(); i++) {
             if (races.get(i) != null) {
@@ -162,5 +139,30 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                 </tbody>
             </table>
             """);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private record PrizeResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final MidweekRaceResult result = ((MidweekRaceResult)r);
+
+            writer.append("<li>").
+                    append(result.runner.name).
+                    append(" (").
+                    append(result.runner.category.getShortName()).
+                    append(") ").
+                    append(String.valueOf(result.totalScore())).
+                    append("</li>\n");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            writer.append("No results\n");
+        }
     }
 }

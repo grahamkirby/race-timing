@@ -8,9 +8,9 @@ import java.util.List;
 
 public abstract class RaceInput {
 
-    public Race race;
-    public Path input_directory_path, entries_path, raw_results_path;
-    public String entries_filename, raw_results_filename;
+    protected Race race;
+    protected Path input_directory_path, entries_path, raw_results_path;
+    protected String entries_filename, raw_results_filename;
 
     public RaceInput(Race race) {
         this.race = race;
@@ -25,13 +25,13 @@ public abstract class RaceInput {
 
         final List<RawResult> raw_results = new ArrayList<>();
 
-        for (String line : Files.readAllLines(results_path))
+        for (final String line : Files.readAllLines(results_path))
             loadRawResult(raw_results, line);
 
         return raw_results;
     }
 
-    public static void loadRawResult(final List<RawResult> raw_results, String line) {
+    private static void loadRawResult(final List<RawResult> raw_results, String line) {
 
         final int comment_start_index = line.indexOf("#");
         if (comment_start_index > -1) line = line.substring(0, comment_start_index);
@@ -49,7 +49,7 @@ public abstract class RaceInput {
         }
     }
 
-    private static void checkOrdering(List<RawResult> raw_results, RawResult result) {
+    private static void checkOrdering(final List<RawResult> raw_results, final RawResult result) {
 
         final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
 
@@ -57,7 +57,7 @@ public abstract class RaceInput {
             throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
     }
 
-    private static boolean resultsAreOutOfOrder(RawResult result, RawResult previous_result) {
+    private static boolean resultsAreOutOfOrder(final RawResult result, final RawResult previous_result) {
 
         return result.getRecordedFinishTime() != null &&
                 previous_result != null && previous_result.getRecordedFinishTime() != null &&

@@ -22,6 +22,7 @@ public class MidweekRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final int MAX_RACE_SCORE = 200;
+    public static final int DEFAULT_OPEN_PRIZES = 3;
 
     private boolean open_category;
     private int open_prizes;
@@ -71,13 +72,13 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public void printPrizes() throws IOException {
+    protected void printPrizes() throws IOException {
 
         output_text.printPrizes();
     }
 
     @Override
-    public void printCombined() throws IOException {
+    protected void printCombined() throws IOException {
     }
 
     @Override
@@ -107,8 +108,10 @@ public class MidweekRace extends SeriesRace {
 
         minimum_number_of_races = Integer.parseInt(getProperties().getProperty("MINIMUM_NUMBER_OF_RACES"));
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(3)));
+        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(DEFAULT_OPEN_PRIZES)));
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void checkClubsForRunner(final String runner_name) {
 
@@ -147,7 +150,7 @@ public class MidweekRace extends SeriesRace {
 
         final Set<String> clubs = new HashSet<>();
 
-        for (IndividualRace race : races) {
+        for (final IndividualRace race : races) {
             if (race != null)
                 for (final RaceResult result : race.getOverallResults()) {
 
@@ -162,6 +165,7 @@ public class MidweekRace extends SeriesRace {
     private List<String> getRunnerNames() {
 
         final Set<String> names = new HashSet<>();
+
         for (final IndividualRace race : races) {
             if (race != null)
                 for (RaceResult result : race.getOverallResults()) {

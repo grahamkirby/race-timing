@@ -21,22 +21,26 @@ public abstract class RaceOutput {
         void printNoResults() throws IOException;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
     protected static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
     protected static final Font PDF_BOLD_UNDERLINED_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, Font.DEFAULTSIZE, Font.UNDERLINE);
     protected static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
     protected static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
-    public static final String DNF_STRING = "DNF";
+    protected static final String DNF_STRING = "DNF";
 
-    public final Race race;
+    protected final Race race;
 
-    public String year;
-    public String race_name_for_results;
-    public String race_name_for_filenames;
-    public String overall_results_filename;
-    public String prizes_filename;
-    public Path output_directory_path;
+    protected String year;
+    protected String race_name_for_results;
+    protected String race_name_for_filenames;
+    protected String overall_results_filename;
+    protected String prizes_filename;
+    protected Path output_directory_path;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RaceOutput(final Race race) {
 
@@ -44,19 +48,13 @@ public abstract class RaceOutput {
         configure();
     }
 
-    protected void printResults(final List<? extends RaceResult> results, final ResultPrinter printer) throws IOException {
+    protected void printResults(final List<RaceResult> results, final ResultPrinter printer) throws IOException {
 
         for (final RaceResult result : results)
             printer.printResult(result);
 
         if (results.isEmpty())
             printer.printNoResults();
-    }
-
-    private void configure() {
-
-        readProperties();
-        constructFilePaths();
     }
 
     protected void constructFilePaths() {
@@ -67,22 +65,15 @@ public abstract class RaceOutput {
         output_directory_path = race.getWorkingDirectoryPath().resolve("output");
     }
 
-    protected void readProperties() {
-
-        year = race.getProperties().getProperty("YEAR");
-
-        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
-        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
-    }
-
-    public static void addCategoryHeader(Category category, Document document) {
+    protected static void addCategoryHeader(final Category category, final Document document) {
 
         final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.getLongName(), PDF_BOLD_UNDERLINED_FONT);
+
         category_header_paragraph.setSpacingAfter(12);
         document.add(category_header_paragraph);
     }
 
-    public static String htmlEncode(String s) {
+    protected static String htmlEncode(final String s) {
 
         return s.replaceAll("è", "&egrave;").
                 replaceAll("á", "&aacute;").
@@ -92,7 +83,7 @@ public abstract class RaceOutput {
                 replaceAll("’", "&acute;");
     }
 
-    public static String format(final Duration duration) {
+    protected static String format(final Duration duration) {
 
         final long s = duration.getSeconds();
         return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
@@ -113,6 +104,20 @@ public abstract class RaceOutput {
             else
                 result.position_string = String.valueOf(result_index + 1);
         }
+    }
+
+    private void configure() {
+
+        readProperties();
+        constructFilePaths();
+    }
+
+    private void readProperties() {
+
+        year = race.getProperties().getProperty("YEAR");
+
+        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
+        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
     }
 
     private int groupEqualResultsAndReturnFollowingIndex(final List<? extends RaceResult> results, final RaceResult result, final int result_index) {
@@ -141,6 +146,8 @@ public abstract class RaceOutput {
         return highest_index_with_same_result;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public void printOverallResults() throws IOException {
         throw new UnsupportedOperationException();
     }
@@ -154,32 +161,33 @@ public abstract class RaceOutput {
         throw new UnsupportedOperationException();
     }
 
-    protected void printOverallResults(OutputStreamWriter writer) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
-    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException {
+    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
-    protected void printPrizes(OutputStreamWriter writer) throws IOException {
+    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
-    protected void printPrizes(Document document, Category category) throws IOException {
+    protected void printPrizes(final Document document, final Category category) throws IOException {
         throw new UnsupportedOperationException();
     }
-    protected void printPrizes(OutputStreamWriter writer, Category category) throws IOException {
+    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     protected void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
         throw new UnsupportedOperationException();
     }
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         throw new UnsupportedOperationException();
     }
     protected boolean allowEqualPositions() {
         throw new UnsupportedOperationException();
     }
-    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) throws IOException {
+    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
         throw new UnsupportedOperationException();
     }
 }

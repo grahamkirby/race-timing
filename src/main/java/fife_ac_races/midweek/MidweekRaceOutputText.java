@@ -14,10 +14,12 @@ public class MidweekRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) throws IOException {
+    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
 
         printResults(results, new ResultPrinterText(writer));
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     record ResultPrinterText(OutputStreamWriter writer) implements ResultPrinter {
 

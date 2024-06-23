@@ -4,10 +4,12 @@ import java.time.Duration;
 
 public class RawResult {
 
-    // Leg number is optional, depending on whether it was recorded on paper sheet.
-    Integer bib_number, leg_number;
-    public Duration recorded_finish_time;  // Relative to start of leg 1.
+    Integer bib_number;
+    public Duration recorded_finish_time;
     String comment = "";
+
+    // Only used for relay race. Leg number is optional, depending on whether it was recorded on paper sheet.
+    Integer leg_number;
 
     public RawResult(final String file_line) {
 
@@ -18,7 +20,7 @@ public class RawResult {
 
         bib_number = bib_number_as_string.equals("?") ? null : Integer.parseInt(bib_number_as_string);
         recorded_finish_time = time_as_string.equals("?") ? null : Race.parseTime(time_as_string);
-        leg_number = elements.length <= 2 ? 0 : Integer.parseInt(elements[2]);
+        leg_number = elements.length == 2 ? 0 : Integer.parseInt(elements[2]);
     }
 
     public Integer getBibNumber() {

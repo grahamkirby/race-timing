@@ -2,7 +2,7 @@ package common.categories;
 
 public class SeniorRaceCategories extends Categories {
 
-    public SeniorRaceCategories(boolean open_category, int open_prizes, int category_prizes) {
+    public SeniorRaceCategories(final boolean open_category, final int open_prizes, final int category_prizes) {
 
         if (open_category) {
             categories_in_decreasing_generality_order.add(new Category("Women Open", "WO", "Women", 0, open_prizes));

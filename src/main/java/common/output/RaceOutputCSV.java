@@ -20,13 +20,6 @@ public abstract class RaceOutputCSV extends RaceOutput {
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
-
-        for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
-            printCategoryResults(writer, category_group.category_names());
-    }
-
-    @Override
     public void printOverallResults() throws IOException {
 
         final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
@@ -36,6 +29,13 @@ public abstract class RaceOutputCSV extends RaceOutput {
             printOverallResultsHeader(writer);
             printOverallResults(writer);
         }
+    }
+
+    @Override
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
+
+        for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
+            printCategoryResults(writer, category_group.category_names());
     }
 
     @Override

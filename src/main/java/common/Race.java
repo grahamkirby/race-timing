@@ -106,6 +106,8 @@ public abstract class Race {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private static Properties loadProperties(final Path config_file_path) throws IOException {
 
         try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {

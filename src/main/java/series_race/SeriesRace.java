@@ -64,6 +64,11 @@ public abstract class SeriesRace extends Race {
         races = ((SeriesRaceInput)input).loadRaces();
     }
 
+    protected void readProperties() {
+
+        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
+    }
+
     private void initialiseResults() {
 
         combined_runners = new ArrayList<>();
@@ -76,11 +81,6 @@ public abstract class SeriesRace extends Race {
                     if (!combined_runners.contains(runner))
                         combined_runners.add(runner);
                 }
-    }
-
-    protected void readProperties() {
-
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
     }
 
     private void calculateResults() {
