@@ -17,6 +17,7 @@ import java.util.List;
 public abstract class RaceOutput {
 
     public interface ResultPrinter {
+
         void printResult(RaceResult result) throws IOException;
         void printNoResults() throws IOException;
     }

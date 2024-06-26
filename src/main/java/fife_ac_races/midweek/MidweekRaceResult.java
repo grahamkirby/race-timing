@@ -14,13 +14,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
     public MidweekRaceResult(final Runner runner, final MidweekRace race) {
 
         super(runner, race);
-
         scores = new ArrayList<>();
-    }
-
-    @Override
-    public boolean completedAllRacesSoFar() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

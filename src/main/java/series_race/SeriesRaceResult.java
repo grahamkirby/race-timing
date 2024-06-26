@@ -27,10 +27,8 @@ public abstract class SeriesRaceResult extends RaceResult {
         return runner.category;
     }
 
-    public abstract boolean completedAllRacesSoFar();
-
     @Override
-    public boolean sameEntrant(RaceResult other) {
+    public boolean sameEntrant(final RaceResult other) {
         return runner.equals(((SeriesRaceResult) other).runner);
     }
 
@@ -47,21 +45,14 @@ public abstract class SeriesRaceResult extends RaceResult {
         return count;
     }
 
-    protected int compareCompletionTo(SeriesRaceResult o) {
+    protected int compareCompletionTo(final SeriesRaceResult o) {
 
         if (completed() && !o.completed()) return -1;
         if (!completed() && o.completed()) return 1;
         return 0;
     }
 
-    protected int compareCompletionSoFarTo(SeriesRaceResult o) {
-
-        if (completedAllRacesSoFar() && !o.completedAllRacesSoFar()) return -1;
-        if (!completedAllRacesSoFar() && o.completedAllRacesSoFar()) return 1;
-        return 0;
-    }
-
-    protected int compareRunnerNameTo(SeriesRaceResult o) {
+    protected int compareRunnerNameTo(final SeriesRaceResult o) {
 
         final int last_name_comparison = getLastName(runner.name).compareTo(getLastName(o.runner.name));
         return last_name_comparison != 0 ? last_name_comparison : getFirstName(runner.name).compareTo(getFirstName(o.runner.name));

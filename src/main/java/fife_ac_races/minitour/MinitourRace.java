@@ -46,44 +46,6 @@ public class MinitourRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected Comparator<RaceResult> getResultsSortComparator() {
-        return MinitourRaceResult::compare;
-    }
-
-    @Override
-    public void configureHelpers() {
-
-        input = new MinitourRaceInput(this);
-
-        output_CSV = new MinitourRaceOutputCSV(this);
-        output_HTML = new MinitourRaceOutputHTML(this);
-        output_text = new MinitourRaceOutputText(this);
-        output_PDF = new MinitourRaceOutputPDF(this);
-
-        prizes = new RacePrizes(this);
-    }
-
-    @Override
-    public void configureCategories() {
-
-        categories = new JuniorRaceCategories(category_prizes);
-    }
-
-    @Override
-    public void printPrizes() throws IOException {
-
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-        output_text.printPrizes();
-    }
-
-    @Override
-    public void printCombined() throws IOException {
-
-        output_HTML.printCombined();
-    }
-
-    @Override
     public List<CategoryGroup> getResultCategoryGroups() {
 
         return List.of(
@@ -101,6 +63,45 @@ public class MinitourRace extends SeriesRace {
         final Predicate<RaceResult> category_filter = result -> categories_required.contains(((MinitourRaceResult)result).runner.category);
 
         return overall_results.stream().filter(category_filter).toList();
+    }
+
+    @Override
+    protected Comparator<RaceResult> getResultsSortComparator() {
+
+        return MinitourRaceResult::compare;
+    }
+
+    @Override
+    protected void configureHelpers() {
+
+        input = new MinitourRaceInput(this);
+
+        output_CSV = new MinitourRaceOutputCSV(this);
+        output_HTML = new MinitourRaceOutputHTML(this);
+        output_text = new MinitourRaceOutputText(this);
+        output_PDF = new MinitourRaceOutputPDF(this);
+
+        prizes = new RacePrizes(this);
+    }
+
+    @Override
+    protected void configureCategories() {
+
+        categories = new JuniorRaceCategories(category_prizes);
+    }
+
+    @Override
+    protected void printPrizes() throws IOException {
+
+        output_PDF.printPrizes();
+        output_HTML.printPrizes();
+        output_text.printPrizes();
+    }
+
+    @Override
+    protected void printCombined() throws IOException {
+
+        output_HTML.printCombined();
     }
 
     @Override

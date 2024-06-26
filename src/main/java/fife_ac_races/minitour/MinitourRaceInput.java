@@ -9,7 +9,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.IntFunction;
 
 import static common.Race.parseTime;
 
@@ -27,6 +26,8 @@ public class MinitourRaceInput extends SeriesRaceInput {
     private int time_trial_race_number;
     private int time_trial_runners_per_wave;
     private Duration time_trial_inter_wave_interval;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public MinitourRaceInput(final Race race) {
         super(race);
@@ -49,14 +50,18 @@ public class MinitourRaceInput extends SeriesRaceInput {
         applyRunnerStartOffsets(individual_race, race_number);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private List<Duration> readWaveStartOffsets() {
 
         final String[] offset_strings = race.getPropertyWithDefault("WAVE_START_OFFSETS", "").split(",", -1);
 
-        return extractConfigFromPropertyStrings(offset_strings, Race::parseTime, Duration[]::new);
+        return extractConfigFromPropertyStrings(offset_strings, Race::parseTime);
     }
 
     private List<SelfTimedRun> readSelfTimedRuns() {
+
+        final String[] self_timed_strings = race.getPropertyWithDefault("SELF_TIMED","").split(",", -1);
 
         final Function<String, SelfTimedRun> extract_run_function = s -> {
 
@@ -64,12 +69,10 @@ public class MinitourRaceInput extends SeriesRaceInput {
             return new SelfTimedRun(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
         };
 
-        final String[] self_timed_strings = race.getPropertyWithDefault("SELF_TIMED","").split(",", -1);
-
-        return extractConfigFromPropertyStrings(self_timed_strings, extract_run_function, SelfTimedRun[]::new);
+        return extractConfigFromPropertyStrings(self_timed_strings, extract_run_function);
     }
 
-    private <T> List<T> extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper, IntFunction<T[]> array_element_initializer) {
+    private <T> List<T> extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper) {
 
         final String[] non_empty_strings = strings.length == 1 && strings[0].isEmpty() ? new String[0] : strings;
 

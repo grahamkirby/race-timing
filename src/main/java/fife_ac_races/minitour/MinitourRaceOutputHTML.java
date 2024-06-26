@@ -21,6 +21,8 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
         super(race);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
@@ -28,22 +30,6 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
         for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
             printOverallResultsHTML(writer, category_group.combined_categories_title(), category_group.category_names());
-    }
-
-    private void printOverallResultsHTML(final OutputStreamWriter writer, final String combined_categories_title, final List<String> category_names) throws IOException {
-
-        final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
-
-        writer.append("<h4>").append(combined_categories_title).append("</h4>\n");
-
-        printOverallResultsHeader(writer);
-        printOverallResultsBody(writer, category_list);
-        printOverallResultsFooter(writer);
-    }
-
-    private List<Category> getCategoryList(final String... category_names) {
-
-        return Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
     }
 
     @Override
@@ -65,102 +51,8 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private void printIndividualRace(final int race_number) throws IOException {
-
-        final IndividualRace individual_race = ((SeriesRace)race).getRaces().get(race_number - 1);
-
-        if (individual_race != null) {
-
-            final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve("race" + race_number + ".html"));
-
-            try (final OutputStreamWriter html_writer = new OutputStreamWriter(race_stream)) {
-
-                printRaceCategories(html_writer, individual_race, "U9", "FU9","MU9");
-                printRaceCategories(html_writer, individual_race, "U11", "FU11", "MU11");
-                printRaceCategories(html_writer, individual_race, "U13", "FU13", "MU13");
-                printRaceCategories(html_writer, individual_race, "U15", "FU15", "MU15");
-                printRaceCategories(html_writer, individual_race, "U18", "FU18", "MU18");
-            }
-        }
-    }
-
-    private void printRaceCategories(final OutputStreamWriter writer, final Race race, final String combined_categories_title, final String... category_names) throws IOException {
-
-        final List<Category> category_list = getCategoryList(category_names);
-
-        final List<RaceResult> category_results =
-                race.getOverallResults().
-                stream().
-                filter(result -> category_list.contains(((IndividualRaceResult)result).entry.runner.category)).
-                toList();
-
-        printRaceCategories(writer, category_results, combined_categories_title);
-    }
-
-    private void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results, final String combined_categories_title) throws IOException {
-
-        writer.append("<h4>").
-                append(combined_categories_title).
-                append("</h4>\n").
-                append("""
-                    <table class="fac-table">
-                                   <thead>
-                                       <tr>
-                                           <th>Pos</th>
-                                           <th>No</th>
-                                           <th>Runner</th>
-                                           <th>Category</th>
-                                           <th>Total</th>
-                                       </tr>
-                                   </thead>
-                                   <tbody>
-                """);
-
-        printRaceCategories(writer, category_results);
-
-        writer.append("""
-                    </tbody>
-                </table>
-                """);
-    }
-
-    private static void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results) throws IOException {
-
-        int position = 1;
-
-        for (final RaceResult res : category_results) {
-
-            final IndividualRaceResult result = (IndividualRaceResult) res;
-
-            writer.append("""
-                    <tr>
-                        <td>""");
-
-            if (!result.DNF) writer.append(String.valueOf(position++));
-
-            writer.append("""
-                    </td>
-                    <td>""").
-            append(String.valueOf(result.entry.bib_number)).
-            append("""
-                    </td>
-                    <td>""").
-            append(htmlEncode(result.entry.runner.name)).
-            append("""
-                    </td>
-                    <td>""").
-            append(result.entry.runner.category.getShortName()).
-            append("""
-                    </td>
-                    <td>""").
-            append(result.DNF ? DNF_STRING : format(result.duration())).
-            append("""
-                        </td>
-                    </tr>""");
-        }
-    }
-
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    @Override
+    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         final List<RaceResult> results = race.prize_winners.get(category);
 
@@ -200,6 +92,119 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void printOverallResultsHTML(final OutputStreamWriter writer, final String combined_categories_title, final List<String> category_names) throws IOException {
+
+        final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
+
+        writer.append("<h4>").append(combined_categories_title).append("</h4>\n");
+
+        printOverallResultsHeader(writer);
+        printOverallResultsBody(writer, category_list);
+        printOverallResultsFooter(writer);
+    }
+
+    private void printIndividualRace(final int race_number) throws IOException {
+
+        final IndividualRace individual_race = ((SeriesRace)race).getRaces().get(race_number - 1);
+
+        if (individual_race != null) {
+
+            final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve("race" + race_number + ".html"));
+
+            try (final OutputStreamWriter html_writer = new OutputStreamWriter(race_stream)) {
+
+                printRaceCategories(html_writer, individual_race, "U9", "FU9","MU9");
+                printRaceCategories(html_writer, individual_race, "U11", "FU11", "MU11");
+                printRaceCategories(html_writer, individual_race, "U13", "FU13", "MU13");
+                printRaceCategories(html_writer, individual_race, "U15", "FU15", "MU15");
+                printRaceCategories(html_writer, individual_race, "U18", "FU18", "MU18");
+            }
+        }
+    }
+
+    private void printRaceCategories(final OutputStreamWriter writer, final Race race, final String combined_categories_title, final String... category_names) throws IOException {
+
+        final List<Category> category_list = getCategoryList(category_names);
+
+        final List<RaceResult> category_results =
+                race.getOverallResults().
+                stream().
+                filter(result -> category_list.contains(((IndividualRaceResult)result).entry.runner.category)).
+                toList();
+
+        printRaceCategories(writer, category_results, combined_categories_title);
+    }
+
+    private List<Category> getCategoryList(final String... category_names) {
+
+        return Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
+    }
+
+    private void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results, final String combined_categories_title) throws IOException {
+
+        writer.append("<h4>").
+                append(combined_categories_title).
+                append("</h4>\n").
+                append("""
+                    <table class="fac-table">
+                                   <thead>
+                                       <tr>
+                                           <th>Pos</th>
+                                           <th>No</th>
+                                           <th>Runner</th>
+                                           <th>Category</th>
+                                           <th>Total</th>
+                                       </tr>
+                                   </thead>
+                                   <tbody>
+                """);
+
+        printRaceCategories(writer, category_results);
+
+        writer.append("""
+                    </tbody>
+                </table>
+                """);
+    }
+
+    private void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results) throws IOException {
+
+        int position = 1;
+
+        for (final RaceResult res : category_results) {
+
+            final IndividualRaceResult result = (IndividualRaceResult) res;
+
+            writer.append("""
+                    <tr>
+                        <td>""");
+
+            if (!result.DNF) writer.append(String.valueOf(position++));
+
+            writer.append("""
+                    </td>
+                    <td>""").
+            append(String.valueOf(result.entry.bib_number)).
+            append("""
+                    </td>
+                    <td>""").
+            append(htmlEncode(result.entry.runner.name)).
+            append("""
+                    </td>
+                    <td>""").
+            append(result.entry.runner.category.getShortName()).
+            append("""
+                    </td>
+                    <td>""").
+            append(result.DNF ? DNF_STRING : format(result.duration())).
+            append("""
+                        </td>
+                    </tr>""");
+        }
+    }
+
     private void printOverallResultsBody(final OutputStreamWriter writer, final List<Category> result_categories) throws IOException {
 
         final List<RaceResult> results = race.getResultsByCategory(result_categories);
@@ -216,12 +221,15 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     record OverallResultPrinterHTML(OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            MinitourRaceResult result = (MinitourRaceResult)r;
+            final MinitourRaceResult result = (MinitourRaceResult)r;
+            final List<IndividualRace> races = ((MinitourRace) result.race).getRaces();
 
             writer.append("""
                     <tr>
@@ -247,11 +255,12 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
                     writer.append("<td>").
                             append(format(result.times.get(i))).
                             append("</td>\n");
-                else
-                    if (result.raceHasTakenPlace(i + 1))
+                else {
+                    if (races.get(i) != null)
                         writer.append("<td>").
                                 append("-").
                                 append("</td>\n");
+                }
 
             writer.append("""
                         <td>""").
@@ -271,9 +280,9 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
     record PrizeResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
-        public void printResult(RaceResult r) throws IOException {
+        public void printResult(final RaceResult r) throws IOException {
 
-            MinitourRaceResult result = (MinitourRaceResult)r;
+            final MinitourRaceResult result = (MinitourRaceResult)r;
 
             writer.append("<li>").
                     append(result.position_string).

@@ -22,7 +22,7 @@ public class MinitourRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         return new ResultPrinterCSV(writer);
     }
 
@@ -30,6 +30,8 @@ public class MinitourRaceOutputCSV extends RaceOutputCSV {
     protected boolean allowEqualPositions() {
         return true;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
 
