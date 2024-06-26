@@ -13,8 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class IndividualRace extends SingleRace {
-    public static final int DEFAULT_OPEN_PRIZES = 3;
-    public static final int DEFAULT_CATEGORY_PRIZES = 1;
 
     // TODO non-binary category; optional team prizes, by cumulative positions and times
 
@@ -23,6 +21,9 @@ public class IndividualRace extends SingleRace {
     //  See README.md at the project root for details of how to configure and run this software.    //
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final int DEFAULT_OPEN_PRIZES = 3;
+    private static final int DEFAULT_CATEGORY_PRIZES = 1;
 
     private boolean senior_race;
     public boolean open_category;
@@ -63,7 +64,7 @@ public class IndividualRace extends SingleRace {
         processResults(true);
     }
 
-    public void processResults(boolean output_results) throws IOException {
+    public void processResults(final boolean output_results) throws IOException {
 
         initialiseResults();
 
@@ -72,6 +73,7 @@ public class IndividualRace extends SingleRace {
         calculateResults();
         allocatePrizes();
 
+        // This is optional so that an individual race can be loaded as part of a series race without generating output.
         if (output_results) {
             printOverallResults();
             printPrizes();
@@ -81,7 +83,7 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void readProperties() {
+    private void readProperties() {
 
         senior_race = Boolean.parseBoolean(getPropertyWithDefault("SENIOR_RACE", "true"));
         open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
@@ -108,8 +110,6 @@ public class IndividualRace extends SingleRace {
 
     private void initialiseResults() {
 
-//        overall_results = new ArrayList<>();
-
         for (int i = 0; i < raw_results.size(); i++)
             overall_results.add(new IndividualRaceResult(this));
     }
@@ -130,25 +130,13 @@ public class IndividualRace extends SingleRace {
         }
     }
 
-    private void fillDNFs() {
-
-        // This fills in the DNF results that were specified explicitly in the config
-        // file, corresponding to cases where the runner reported not completing the course.
-
-        // DNF cases where there is no recorded leg result are captured by the
-        // default value of Result.DNF being true.
-
-        if (dnf_string != null && !dnf_string.isBlank()) {
-
-            for (final String bib_number : dnf_string.split(",")) {
-
-                try {
-                    getResultWithBibNumber(Integer.parseInt(bib_number)).DNF = true;
-                }
-                catch (Exception e) {
-                    throw new RuntimeException("illegal DNF time");
-                }
-            }
+    @Override
+    protected void fillDNF(String dnf_string) {
+        try {
+            getResultWithBibNumber(Integer.parseInt(dnf_string)).DNF = true;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal DNF time");
         }
     }
 

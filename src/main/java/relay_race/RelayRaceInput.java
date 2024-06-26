@@ -12,10 +12,9 @@ import java.util.List;
 
 public class RelayRaceInput extends SingleRaceInput {
 
-    Path paper_results_path, annotations_path;
-    String paper_results_filename, annotations_filename;
-
-    int number_of_raw_results;
+    private Path paper_results_path, annotations_path;
+    private String paper_results_filename, annotations_filename;
+    private int number_of_raw_results;
 
     public RelayRaceInput(final Race race) {
         super(race);
@@ -40,7 +39,7 @@ public class RelayRaceInput extends SingleRaceInput {
     }
 
     @Override
-    protected RaceEntry makeRaceEntry(String[] elements) {
+    protected RaceEntry makeRaceEntry(final String[] elements) {
         return new RelayRaceEntry(elements, race);
     }
 
@@ -49,12 +48,10 @@ public class RelayRaceInput extends SingleRaceInput {
 
         final String new_team_name = ((RelayRaceEntry) new_entry).team.name;
 
-        for (final RaceEntry entry : entries) {
-            if (entry != null) {
+        for (final RaceEntry entry : entries)
+            if (entry != null)
                 if (((RelayRaceEntry) entry).team.name.equals(new_team_name))
                     throw new RuntimeException("duplicate entry: " + new_entry);
-            }
-        }
     }
 
     @Override
@@ -69,11 +66,11 @@ public class RelayRaceInput extends SingleRaceInput {
         return raw_results;
     }
 
-    int getNumberOfRawResults() {
+    protected int getNumberOfRawResults() {
         return number_of_raw_results;
     }
 
-    public void loadTimeAnnotations(final List<RawResult> raw_results) throws IOException {
+    protected void loadTimeAnnotations(final List<RawResult> raw_results) throws IOException {
 
         if (annotations_path != null) {
 

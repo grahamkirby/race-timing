@@ -14,8 +14,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class RelayRace extends SingleRace {
-    public static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 3;
-    public static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
 
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
@@ -28,9 +26,13 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 3;
+    public static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
+
     protected static final String ZERO_TIME_STRING = "0:0:0";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private RelayRaceMissingData missing_data;
     protected int number_of_legs;
     private int senior_prizes, category_prizes;
@@ -67,7 +69,7 @@ public class RelayRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void configure() throws IOException {
+    public void configure() throws IOException {
 
         readProperties();
 
@@ -101,6 +103,26 @@ public class RelayRace extends SingleRace {
         printCollatedTimes();
     }
 
+    @Override
+    protected void configureInputData() throws IOException {
+
+        super.configureInputData();
+        ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
+    }
+
+    @Override
+    protected void fillDNF(final String dnf_string) {
+
+        try {
+            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
+
+            result_with_leg.result.leg_results.get(result_with_leg.leg_index).DNF = true;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal DNF time");
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
@@ -129,10 +151,18 @@ public class RelayRace extends SingleRace {
         categories = new RelayRaceCategories(senior_prizes, category_prizes);
     }
 
-    protected void configureInputData() throws IOException {
+    protected int getRecordedLegPosition(final int bib_number, final int leg_number) {
 
-        super.configureInputData();
-        ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
+        int legs_completed = 0;
+
+        for (int i = 0; i < raw_results.size(); i++) {
+            if (raw_results.get(i).getBibNumber() != null && raw_results.get(i).getBibNumber() == bib_number) {
+                legs_completed++;
+                if (legs_completed == leg_number) return i + 1;
+            }
+        }
+
+        return Integer.MAX_VALUE;
     }
 
     private void interpolateMissingTimes() {
@@ -183,7 +213,7 @@ public class RelayRace extends SingleRace {
         mass_start_legs.add(!mass_start_time.equals(DUMMY_DURATION));
     }
 
-    private static Duration parseMassStartTime(final String time_as_string) {
+    private Duration parseMassStartTime(final String time_as_string) {
 
         try {
             return parseTime(time_as_string);
@@ -217,6 +247,7 @@ public class RelayRace extends SingleRace {
         // Example: PAIRED_LEGS = 2,3
 
         paired_legs = new ArrayList<>();
+
         for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
             paired_legs.add(false);
 
@@ -234,16 +265,12 @@ public class RelayRace extends SingleRace {
 
         individual_leg_starts = new ArrayList<>();
 
-        if (!individual_leg_starts_string.isBlank()) {
-
-            final String[] individual_leg_starts_strings = individual_leg_starts_string.split(",");
-
-            for (String s : individual_leg_starts_strings)
+        if (!individual_leg_starts_string.isBlank())
+            for (final String s : individual_leg_starts_string.split(","))
                 individual_leg_starts.add(getIndividualLegStart(s));
-        }
     }
 
-    private static IndividualLegStart getIndividualLegStart(final String individual_leg_starts_strings) {
+    private IndividualLegStart getIndividualLegStart(final String individual_leg_starts_strings) {
 
         final String[] split = individual_leg_starts_strings.split("/");
         final int bib_number = Integer.parseInt(split[0]);
@@ -255,9 +282,7 @@ public class RelayRace extends SingleRace {
 
     private void initialiseResults() {
 
-//        overall_results = new ArrayList<>();
-
-        for (RaceEntry entry : entries)
+        for (final RaceEntry entry : entries)
             overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
     }
 
@@ -313,37 +338,10 @@ public class RelayRace extends SingleRace {
         final String[] elements = bib_and_leg.split("/");
         final int bib_number = Integer.parseInt(elements[0]);
         final int leg_number = Integer.parseInt(elements[1]);
-        final int leg_index = leg_number - 1;
 
-        final RaceResult result = overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
+        final RelayRaceResult result = (RelayRaceResult)overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
 
-        return new ResultWithLegIndex((RelayRaceResult)result, leg_index);
-    }
-
-    private void fillDNFs() {
-
-        // This fills in the DNF results that were specified explicitly in the config
-        // file, corresponding to cases where the runners reported not visiting all
-        // checkpoints.
-
-        // DNF cases where there is no recorded leg result are captured by the
-        // default value of LegResult.DNF being true.
-
-        if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(","))
-                fillDNF(individual_dnf_string);
-    }
-
-    private void fillDNF(final String dnf_string) {
-
-        try {
-            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
-
-            result_with_leg.result.leg_results.get(result_with_leg.leg_index).DNF = true;
-        }
-        catch (Exception e) {
-            throw new RuntimeException("illegal DNF time");
-        }
+        return new ResultWithLegIndex(result, leg_number - 1);
     }
 
     private void fillLegStartTimes() {
@@ -363,14 +361,15 @@ public class RelayRace extends SingleRace {
         // Time of the relevant mass start if that was earlier that previous leg finish.
         // Null if no previous leg finish time was recorded: no time can be calculated for current leg so DNF.
 
-        final Duration individual_start_time = getIndividualStartTime(leg_results.get(leg_index), leg_index);
+        final LegResult leg_result = leg_results.get(leg_index);
+        final Duration individual_start_time = getIndividualStartTime(leg_result, leg_index);
         final Duration leg_mass_start_time = start_times_for_mass_starts.get(leg_index);
         final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results.get(leg_index - 1).finish_time : null;
 
-        leg_results.get(leg_index).start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
+        leg_result.start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
 
         // Record whether the runner started in a mass start.
-        leg_results.get(leg_index).in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
+        leg_result.in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
     }
 
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
@@ -418,20 +417,6 @@ public class RelayRace extends SingleRace {
         overall_results.sort(RelayRaceResult::compare);
     }
 
-    int getRecordedLegPosition(final int bib_number, final int leg_number) {
-
-        int legs_completed = 0;
-
-        for (int i = 0; i < raw_results.size(); i++) {
-            if (raw_results.get(i).getBibNumber() != null && raw_results.get(i).getBibNumber() == bib_number) {
-                legs_completed++;
-                if (legs_completed == leg_number) return i + 1;
-            }
-        }
-
-        return Integer.MAX_VALUE;
-    }
-
     private int findIndexOfNextUnfilledLegResult(final List<LegResult> leg_results) {
 
         for (int i = 0; i < leg_results.size(); i++)
@@ -440,7 +425,7 @@ public class RelayRace extends SingleRace {
         throw new RuntimeException("surplus result recorded for team: " + leg_results.get(0).entry.bib_number);
     }
 
-    int findIndexOfTeamWithBibNumber(final int bib_number) {
+    private int findIndexOfTeamWithBibNumber(final int bib_number) {
 
         for (int i = 0; i < overall_results.size(); i++)
             if (((RelayRaceResult)overall_results.get(i)).entry.bib_number == bib_number) return i;
