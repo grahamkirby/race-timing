@@ -31,7 +31,7 @@ public abstract class SingleRace extends Race {
     protected void configureInputData() throws IOException {
 
         entries = ((SingleRaceInput)input).loadEntries();
-        raw_results = input.loadRawResults();
+        raw_results = ((SingleRaceInput)input).loadRawResults();
     }
 
     protected void fillDNFs() {

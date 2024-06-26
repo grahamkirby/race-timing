@@ -2,8 +2,10 @@ package individual_race;
 
 import common.Race;
 import common.RaceEntry;
+import common.RawResult;
 import single_race.SingleRaceInput;
 
+import java.io.IOException;
 import java.util.List;
 
 public class IndividualRaceInput extends SingleRaceInput {
@@ -15,6 +17,12 @@ public class IndividualRaceInput extends SingleRaceInput {
     @Override
     protected RaceEntry makeRaceEntry(String[] elements) {
         return new IndividualRaceEntry(elements, race);
+    }
+
+    @Override
+    public List<RawResult> loadRawResults() throws IOException {
+
+        return loadRawResults(raw_results_path);
     }
 
     @Override

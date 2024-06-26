@@ -13,13 +13,17 @@ public class RelayRaceMissingData {
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
     private record ContiguousSequence(int start_index, int end_index) {}
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private final RelayRace race;
 
     public RelayRaceMissingData(RelayRace race) {
         this.race = race;
     }
 
-    public void interpolateMissingTimes() {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void interpolateMissingTimes() {
 
         final int index_of_first_result_with_recorded_time = getIndexOfFirstResultWithRecordedTime();
 
@@ -29,18 +33,21 @@ public class RelayRaceMissingData {
         setTimesForResultsAfterFirstRecordedTime(index_of_first_result_with_recorded_time);
     }
 
-    public void guessMissingBibNumbers() {
+    protected void guessMissingBibNumbers() {
 
         // Missing bib numbers are only guessed if a full set of finish times has been recorded,
         // i.e. all runners have finished.
 
-        if (timesRecordedForAllRunners())
+        if (timesAreRecordedForAllRunners())
             guessMissingBibNumbersWithAllTimesRecorded();
         else
             recordCommentsForNonGuessedResults();
     }
 
-    private boolean timesRecordedForAllRunners() {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean timesAreRecordedForAllRunners() {
+
         return race.getRawResults().size() == race.entries.size() * race.number_of_legs;
     }
 
