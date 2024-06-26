@@ -33,4 +33,20 @@ public abstract class SingleRace extends Race {
         entries = ((SingleRaceInput)input).loadEntries();
         raw_results = input.loadRawResults();
     }
+
+    protected void fillDNFs() {
+
+        // This fills in the DNF results that were specified explicitly in the config
+        // file, corresponding to cases where the runners reported not visiting all
+        // checkpoints.
+
+        // DNF cases where there is no recorded leg result are captured by the
+        // default value of DNF being true.
+
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(","))
+                fillDNF(individual_dnf_string);
+    }
+
+    protected abstract void fillDNF(String individualDnfString);
 }
