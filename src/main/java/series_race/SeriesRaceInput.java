@@ -20,23 +20,6 @@ public abstract class SeriesRaceInput extends RaceInput {
         readProperties();
     }
 
-    public void readProperties() {
-
-        race_config_paths = readRaceConfigPaths();
-    }
-
-    private List<Path> readRaceConfigPaths() {
-
-        final String[] race_strings = race.getProperties().getProperty("RACES").split(",", -1);
-
-        final List<Path> race_paths = new ArrayList<>();
-
-        for (final String race_string : race_strings)
-            race_paths.add(Paths.get(race_string));
-
-        return race_paths;
-    }
-
     public List<IndividualRace> loadRaces() throws IOException {
 
         final List<IndividualRace> races = new ArrayList<>();
@@ -52,6 +35,25 @@ public abstract class SeriesRaceInput extends RaceInput {
         }
 
         return races;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void readProperties() {
+
+        race_config_paths = readRaceConfigPaths();
+    }
+
+    private List<Path> readRaceConfigPaths() {
+
+        final String[] race_strings = race.getProperties().getProperty("RACES").split(",", -1);
+
+        final List<Path> race_paths = new ArrayList<>();
+
+        for (final String race_string : race_strings)
+            race_paths.add(Paths.get(race_string));
+
+        return race_paths;
     }
 
     protected IndividualRace getIndividualRace(final Path relative_path, final int race_number) throws IOException {

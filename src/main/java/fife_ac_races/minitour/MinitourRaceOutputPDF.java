@@ -26,6 +26,8 @@ public class MinitourRaceOutputPDF extends RaceOutputPDF {
         printResults(results, new ResultPrinterPDF(document));
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     record ResultPrinterPDF(Document document) implements ResultPrinter {
 
         @Override

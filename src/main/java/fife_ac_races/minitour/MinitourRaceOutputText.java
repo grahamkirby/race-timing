@@ -13,22 +13,13 @@ public class MinitourRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-//    @Override
-//    public void printPrizes() throws IOException {
-//
-//        printPrizesText();
-//    }
-
-//    @Override
-//    public void printPrizes(final Category category, final OutputStreamWriter writer) throws IOException {
-//
-//        printPrizesText(category, writer);
-//    }
-
-    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) throws IOException {
+    @Override
+    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
 
         printResults(results, new ResultPrinterText(writer));
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     record ResultPrinterText(OutputStreamWriter writer) implements ResultPrinter {
 

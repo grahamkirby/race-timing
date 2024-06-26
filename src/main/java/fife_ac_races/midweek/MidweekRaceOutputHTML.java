@@ -18,6 +18,9 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
         super(race);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
     public void printCombined() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
@@ -38,7 +41,8 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    @Override
+    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
@@ -91,6 +95,8 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                                <tbody>
             """);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
