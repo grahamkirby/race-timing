@@ -38,7 +38,7 @@ public class RacePrizes {
         return result.completed() && race.categories.includes(category, result.getCategory()) && notYetWonPrize(result);
     }
 
-    protected List<RaceResult> getPrizeWinners(final Category category) {
+    private List<RaceResult> getPrizeWinners(final Category category) {
 
         final List<RaceResult> prize_winners = new ArrayList<>();
 

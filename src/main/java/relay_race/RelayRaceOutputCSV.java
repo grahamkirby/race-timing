@@ -14,19 +14,35 @@ import java.util.List;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
-    String detailed_results_filename;
+    private String detailed_results_filename;
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RelayRaceOutputCSV(final Race race) {
         super(race);
         constructFilePaths();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void printDetailedResults() throws IOException {
+
+        final Path detailed_results_csv_path = output_directory_path.resolve(detailed_results_filename + ".csv");
+
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_csv_path))) {
+
+            printDetailedResultsHeader(csv_writer);
+            printDetailedResults(csv_writer);
+        }
+    }
+
+    @Override
     protected void constructFilePaths() {
 
         super.constructFilePaths();
-
         detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
     }
 
@@ -46,25 +62,15 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         return false;
     }
 
-    @Override
-    public void printDetailedResults() throws IOException {
-
-        final Path detailed_results_csv_path = output_directory_path.resolve(detailed_results_filename + ".csv");
-
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_csv_path))) {
-
-            printDetailedResultsHeader(csv_writer);
-            printDetailedResults(csv_writer);
-        }
-    }
-
-    public void printLegResults() throws IOException {
+    protected void printLegResults() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
             printLegResults(leg);
     }
 
-    public void printLegResults(final int leg_number) throws IOException {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void printLegResults(final int leg_number) throws IOException {
 
         final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg_number + "_" + year + ".csv");
 
@@ -81,7 +87,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    List<LegResult> getLegResults(final int leg_number) {
+    private List<LegResult> getLegResults(final int leg_number) {
 
         final List<LegResult> leg_results = new ArrayList<>();
 
@@ -95,27 +101,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         leg_results.sort(LegResult::compareTo);
 
         return leg_results;
-    }
-
-    private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final RelayRaceResult result = (RelayRaceResult) r;
-
-            if (!result.dnf()) writer.append(result.position_string);
-
-            writer.append(",").
-                    append(String.valueOf(result.entry.bib_number)).append(",").
-                    append(result.entry.team.name).append(",").
-                    append(result.entry.team.category.getLongName()).append(",").
-                    append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
-        }
-
-        @Override
-        public void printNoResults() {
-        }
     }
 
     private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
@@ -173,7 +158,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+    private Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
 
         Duration total = Duration.ZERO;
         for (int i = 0; i < leg; i++)
@@ -181,7 +166,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         return total;
     }
 
-    void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
+    private void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
 
         // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
         if (leg_result.in_mass_start) {
@@ -214,6 +199,29 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
             writer.append(leg_result.position_string).append(",");
             writer.append(leg_result.entry.team.runners[leg_result.leg_number - 1]).append(",");
             writer.append(format(leg_result.duration())).append("\n");
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+
+            if (!result.dnf()) writer.append(result.position_string);
+
+            writer.append(",").
+                    append(String.valueOf(result.entry.bib_number)).append(",").
+                    append(result.entry.team.name).append(",").
+                    append(result.entry.team.category.getLongName()).append(",").
+                    append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
+        }
+
+        @Override
+        public void printNoResults() {
         }
     }
 }

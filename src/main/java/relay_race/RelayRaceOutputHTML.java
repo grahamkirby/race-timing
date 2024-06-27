@@ -14,33 +14,19 @@ import java.util.List;
 
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
-    String detailed_results_filename;
+    private String detailed_results_filename;
 
     public RelayRaceOutputHTML(final RelayRace race) {
         super(race);
         constructFilePaths();
     }
 
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void printLegResults() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
             printLegResults(leg);
-    }
-
-    @Override
-    public void printPrizes() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
-
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printPrizes(html_writer);
-        }
     }
 
     @Override
@@ -63,12 +49,13 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    public void printLegResults(final int leg) throws IOException {
+    @Override
+    public void printPrizes() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html"));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printLegResults(html_writer, leg);
+            printPrizes(html_writer);
         }
     }
 
@@ -109,7 +96,15 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    public void printPrizes(final OutputStreamWriter writer) throws IOException {
+    @Override
+    protected void constructFilePaths() {
+
+        super.constructFilePaths();
+        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
+    }
+
+    @Override
+    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         writer.append("<h4>Prizes</h4>\n");
 
@@ -117,7 +112,8 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             printPrizes(writer, category);
     }
 
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    @Override
+    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
         writer.append("<ol>\n");
@@ -127,9 +123,9 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         if (category_prize_winners == null)
             writer.append("No results\n");
         else {
-            for (final RaceResult team : category_prize_winners) {
+            for (final RaceResult r : category_prize_winners) {
 
-                final RelayRaceResult result = ((RelayRaceResult) team);
+                final RelayRaceResult result = ((RelayRaceResult) r);
 
                 writer.append("<li>").
                         append(result.entry.team.name).append(" (").
@@ -142,7 +138,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResults(OutputStreamWriter writer) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         printOverallResultsHeader(writer);
         printOverallResultsBody(writer);
@@ -165,6 +161,15 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                                </thead>
                                <tbody>
             """);
+    }
+
+    private void printLegResults(final int leg) throws IOException {
+
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html"));
+
+        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
+            printLegResults(html_writer, leg);
+        }
     }
 
     private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
@@ -209,11 +214,11 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
-    private void printDetailedResults(OutputStreamWriter html_writer) throws IOException {
+    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        printDetailedResultsHeader(html_writer);
-        printDetailedResultsBody(html_writer);
-        printDetailedResultsFooter(html_writer);
+        printDetailedResultsHeader(writer);
+        printDetailedResultsBody(writer);
+        printDetailedResultsFooter(writer);
     }
 
     private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
@@ -284,7 +289,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 </tr>""");
     }
 
-   private void printDetailedResultsFooter(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResultsFooter(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 </tbody>
@@ -292,14 +297,14 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
-    private void printLegResults(final OutputStreamWriter html_writer, int leg) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final int leg) throws IOException {
 
-        printLegResultsHeader(html_writer, leg);
-        printLegResultsBody(html_writer, getLegResults(leg));
-        printLegResultsFooter(html_writer);
+        printLegResultsHeader(writer, leg);
+        printLegResultsBody(writer, getLegResults(leg));
+        printLegResultsFooter(writer);
     }
 
-    private void printLegDetails(OutputStreamWriter writer, RelayRaceResult result, Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
@@ -329,7 +334,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+    private Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
 
         Duration total = Duration.ZERO;
         for (int i = 0; i < leg; i++)
@@ -337,7 +342,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         return total;
     }
 
-    List<LegResult> getLegResults(final int leg_number) {
+    private List<LegResult> getLegResults(final int leg_number) {
 
         final List<LegResult> leg_results = new ArrayList<>();
 
@@ -353,7 +358,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         return leg_results;
     }
 
-    void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
+    private void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
 
         // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
         if (leg_result.in_mass_start) {
@@ -366,6 +371,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
         }
     }
+    
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg) throws IOException {
 
         writer.append("""

@@ -25,9 +25,9 @@ public class RelayRaceOutputPDF extends RaceOutputPDF {
             document.add(new Paragraph("No results", PDF_ITALIC_FONT));
         else {
             int position = 1;
-            for (final RaceResult team : category_prize_winners) {
+            for (final RaceResult r : category_prize_winners) {
 
-                final RelayRaceResult result = ((RelayRaceResult) team);
+                final RelayRaceResult result = ((RelayRaceResult) r);
 
                 printPrizePDF(document, String.valueOf(position++), result.entry.team.name, result.entry.team.category.getLongName(), result.duration());
             }
