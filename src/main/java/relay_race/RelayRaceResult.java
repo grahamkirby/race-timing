@@ -23,26 +23,7 @@ public class RelayRaceResult extends RaceResult {
             leg_results.add(new LegResult(entry, race));
     }
 
-    public Duration duration() {
-
-        Duration overall = Duration.ZERO;
-
-        for (final LegResult leg_result : leg_results) {
-
-            if (leg_result.DNF) return RelayRace.DUMMY_DURATION;
-            overall = overall.plus(leg_result.duration());
-        }
-
-        return overall;
-    }
-
-    public boolean dnf() {
-
-        for (final LegResult leg_result : leg_results)
-            if (leg_result.DNF) return true;
-
-        return false;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public int compareTo(final RaceResult other) {
@@ -50,7 +31,7 @@ public class RelayRaceResult extends RaceResult {
     }
 
     @Override
-    public boolean sameEntrant(RaceResult other) {
+    public boolean sameEntrant(final RaceResult other) {
         return entry.equals(((RelayRaceResult) other).entry);
     }
 
@@ -64,28 +45,54 @@ public class RelayRaceResult extends RaceResult {
         return entry.team.category;
     }
 
-    public static int compare(final RaceResult r1, final RaceResult r2) {
+    protected Duration duration() {
 
-        RelayRaceResult o = (RelayRaceResult) r2;
+        Duration overall = Duration.ZERO;
 
-        // DNF results are sorted in increasing order of bib number.
-        // Otherwise sort in order of increasing overall team time.
-        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+        for (final LegResult leg_result : leg_results) {
 
-        if (!((RelayRaceResult)r1).dnf() && o.dnf()) return -1;
-        if (((RelayRaceResult)r1).dnf() && !o.dnf()) return 1;
-        if (((RelayRaceResult)r1).dnf() && o.dnf()) return Integer.compare(((RelayRaceResult)r1).entry.bib_number, o.entry.bib_number);
-
-        if (((RelayRaceResult)r1).duration().equals(o.duration())) {
-
-            RelayRace relay_race = (RelayRace)r1.race;
-
-            final int this_last_leg_position = relay_race.getRecordedLegPosition(((RelayRaceResult)r1).entry.bib_number, relay_race.number_of_legs);
-            final int other_last_leg_position = relay_race.getRecordedLegPosition(o.entry.bib_number, relay_race.number_of_legs);
-
-            return Integer.compare(this_last_leg_position, other_last_leg_position);
+            if (leg_result.DNF) return RelayRace.DUMMY_DURATION;
+            overall = overall.plus(leg_result.duration());
         }
 
-        return ((RelayRaceResult)r1).duration().compareTo(o.duration());
+        return overall;
+    }
+
+    protected boolean dnf() {
+
+        for (final LegResult leg_result : leg_results)
+            if (leg_result.DNF) return true;
+
+        return false;
+    }
+
+    protected static int compare(final RaceResult r1, final RaceResult r2) {
+
+        final RelayRaceResult result1 = (RelayRaceResult) r1;
+        final RelayRaceResult result2 = (RelayRaceResult) r2;
+
+        final int completion_comparison = compareCompletion(!result1.dnf(), !result2.dnf());
+        final int bib_comparison = Integer.compare(result1.entry.bib_number, result2.entry.bib_number);
+        final int duration_comparison = result1.duration().compareTo(result2.duration());
+        final int last_leg_position_comparison = Integer.compare(getRecordedLastLegPosition(result1), getRecordedLastLegPosition(result2));
+
+        if (completion_comparison != 0) return completion_comparison;   // If one has completed and the other has not, order by completion first.
+        if (result1.dnf()) return bib_comparison;                       // If the first has not completed (then implicitly neither has the second), order by bib number.
+        if (duration_comparison != 0) return duration_comparison;       // If the durations are different, order by duration.
+
+        return last_leg_position_comparison;                            // Both completed, with same overall duration, order by last leg finish position.
+    }
+
+    private static int compareCompletion(final boolean completed1, final boolean completed2) {
+
+        if (completed1 && !completed2) return -1;
+        if (!completed1 && completed2) return 1;
+        return 0;
+    }
+
+    private static int getRecordedLastLegPosition(RelayRaceResult result) {
+
+        final RelayRace race = (RelayRace) result.race;
+        return race.getRecordedLegPosition(result.entry.bib_number, race.number_of_legs);
     }
 }

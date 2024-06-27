@@ -11,7 +11,7 @@ public class Team {
     final Category category;
     final String[] runners;
 
-    public Team(String name, Category category, String[] runners) {
+    public Team(final String name, final Category category, final String[] runners) {
         this.name = name;
         this.category = category;
         this.runners = runners;

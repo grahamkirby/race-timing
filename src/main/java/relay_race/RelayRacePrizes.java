@@ -1,9 +1,9 @@
 package relay_race;
 
-import common.categories.Category;
 import common.Race;
 import common.RacePrizes;
 import common.RaceResult;
+import common.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,8 @@ public class RelayRacePrizes extends RacePrizes {
 
         super(race);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void allocatePrizes() {
@@ -27,20 +29,14 @@ public class RelayRacePrizes extends RacePrizes {
         allocateMinorPrizes();
     }
 
-    @Override
-    protected List<RaceResult> getPrizeWinners(Category category) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     private void allocateFirstPrizes() {
 
         for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder()) {
 
             for (final RaceResult result : race.getOverallResults()) {
+
                 if (prizeWinner(result, category)) {
-                    List<RaceResult> result1 = new ArrayList<>();
-                    result1.add(result);
-                    race.prize_winners.put(category, result1);
+                    race.prize_winners.put(category, new ArrayList<>(List.of(result)));
                     break;
                 }
             }

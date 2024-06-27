@@ -5,7 +5,6 @@ import common.RaceResult;
 import common.RawResult;
 import common.categories.Category;
 import common.output.RaceOutputText;
-import single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -19,50 +18,14 @@ import java.util.Map;
 
 public class RelayRaceOutputText extends RaceOutputText {
 
-    String detailed_results_filename, collated_times_filename;
+    private String collated_times_filename;
 
     public RelayRaceOutputText(final RelayRace results) {
         super(results);
         constructFilePaths();
     }
 
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-
-        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
-        collated_times_filename = "times_collated";
-    }
-
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
-
-        final String header = "Category: " + category.getLongName();
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        writer.append(header).append("\n");
-        writer.append("-".repeat(header.length())).append("\n\n");
-
-        if (category_prize_winners == null)
-            writer.append("No results\n");
-        else
-            printPrizes(writer, category_prize_winners);
-
-        writer.append("\n\n");
-    }
-
-    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> category_prize_winners) throws IOException {
-
-        int position = 1;
-        for (final RaceResult res : category_prize_winners) {
-
-            final RelayRaceResult result = ((RelayRaceResult)res);
-
-            writer.append(String.valueOf(position++)).append(": ").
-                    append(result.entry.team.name).append(" (").
-                    append(result.entry.team.category.getLongName()).append(") ").
-                    append(format(result.duration())).append("\n");
-        }
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void printCollatedResults() throws IOException {
 
@@ -79,12 +42,51 @@ public class RelayRaceOutputText extends RaceOutputText {
         }
     }
 
+    @Override
+    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+
+        final String header = "Category: " + category.getLongName();
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+
+        writer.append(header).append("\n");
+        writer.append("-".repeat(header.length())).append("\n\n");
+
+        if (category_prize_winners == null)
+            writer.append("No results\n");
+        else
+            printPrizes(writer, category_prize_winners);
+
+        writer.append("\n\n");
+    }
+
+    @Override
+    protected void constructFilePaths() {
+
+        super.constructFilePaths();
+        collated_times_filename = "times_collated";
+    }
+
+    @Override
+    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {
+
+        int position = 1;
+        for (final RaceResult r : category_prize_winners) {
+
+            final RelayRaceResult result = ((RelayRaceResult)r);
+
+            writer.append(String.valueOf(position++)).append(": ").
+                    append(result.entry.team.name).append(" (").
+                    append(result.entry.team.category.getLongName()).append(") ").
+                    append(format(result.duration())).append("\n");
+        }
+    }
+
     private Map<Integer, Integer> printResults(final OutputStreamWriter writer) throws IOException {
 
         final Map<Integer, Integer> leg_finished_count = new HashMap<>();
 
-        final List<RawResult> raw_results = ((SingleRace)race).getRawResults();
-        final RelayRaceInput input = (RelayRaceInput) race.input;
+        final List<RawResult> raw_results = ((RelayRace)race).getRawResults();
+        final RelayRaceInput input = (RelayRaceInput)race.input;
 
         for (int i = 0; i < raw_results.size(); i++) {
 
@@ -104,7 +106,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         final List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
 
-        for (final RawResult raw_result : ((SingleRace)race).getRawResults()) {
+        for (final RawResult raw_result : ((RelayRace)race).getRawResults()) {
 
             if (raw_result.getBibNumber() == null)
                 times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());
@@ -128,7 +130,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         return bib_numbers_with_missing_times;
     }
 
-    private static void printDiscrepancies(final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers, final OutputStreamWriter writer) throws IOException {
+    private void printDiscrepancies(final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers, final OutputStreamWriter writer) throws IOException {
 
         bib_numbers_with_missing_times.sort(Integer::compareTo);
 
@@ -159,14 +161,14 @@ public class RelayRaceOutputText extends RaceOutputText {
         printComment(raw_result, writer);
     }
 
-    private static void printBibNumberAndTime(final RawResult raw_result, final Integer bib_number, final OutputStreamWriter writer) throws IOException {
+    private void printBibNumberAndTime(final RawResult raw_result, final Integer bib_number, final OutputStreamWriter writer) throws IOException {
 
         writer.append(bib_number != null ? String.valueOf(bib_number) : "?").
                 append("\t").
                 append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
     }
 
-    private static void printLegNumber(final RawResult raw_result, final int legs_already_finished, final OutputStreamWriter writer) throws IOException {
+    private void printLegNumber(final RawResult raw_result, final int legs_already_finished, final OutputStreamWriter writer) throws IOException {
 
         if (raw_result.getLegNumber() > 0) {
 
@@ -177,7 +179,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         }
     }
 
-    private static void printComment(final RawResult raw_result, final OutputStreamWriter writer) throws IOException {
+    private void printComment(final RawResult raw_result, final OutputStreamWriter writer) throws IOException {
 
         if (!raw_result.getComment().isEmpty()) {
 
