@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SeriesRaceInput extends RaceInput {
+public class SeriesRaceInput extends RaceInput {
 
     public List<Path> race_config_paths;
 
@@ -67,5 +67,7 @@ public abstract class SeriesRaceInput extends RaceInput {
         return individual_race;
     }
 
-    protected abstract void configureIndividualRace(final IndividualRace individual_race, final int race_number) throws IOException;
+    protected void configureIndividualRace(final IndividualRace individual_race, final int race_number) throws IOException {
+
+    }
 }
