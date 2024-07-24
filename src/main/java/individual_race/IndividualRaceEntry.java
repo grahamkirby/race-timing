@@ -40,10 +40,10 @@ public class IndividualRaceEntry extends RaceEntry {
 
         // Expected format: "1" "John Smith"	"Fife AC"	"MS"
 
-        try {
+        if (elements.length != 4)
+            throw new RuntimeException("illegal composition for runner: " + elements[0]);
 
-            if (elements.length != 4)
-                throw new RuntimeException("illegal composition for runner: " + elements[0]);
+        try {
 
             bib_number = Integer.parseInt(elements[0]);
 

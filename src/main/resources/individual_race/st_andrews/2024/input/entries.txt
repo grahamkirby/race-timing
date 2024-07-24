@@ -15,7 +15,7 @@
 61	Jason Sharp	Unatt.	M40
 67	Iain Wallace	PH Racing	M50
 1	David Aitken	Dundee RR	M50
-16	Stephen Dickson	Fife Ac	M40
+16	Stephen Dickson	Fife AC	M40
 8	David Burgess	Anster Haddies	M50
 29	Paul Harkins	Fife AC	M40
 10	Fiona Canavan	Dundee RR	FS

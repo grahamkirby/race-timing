@@ -1,0 +1,62 @@
+2	Simon Anetts	Fife AC	MS
+3	Innes Bracegirdle	Fife AC	F60
+4	Sharon Brown	Anster Haddies	FS
+5	David Burgess	Anster Haddies 	M50
+6	Arman Buta	Unatt.	MS
+7	Ryan Campbell-Hodge	Fife AC	MS
+8	Fiona  Canavan	Dundee RR	FS
+9	Tracy Chalmers	Anster Haddies	F50
+10	Pamela Cruickshanks	Anster Haddies 	F50
+11	Stephen  Dickson 	Fife AC	M40
+12	Jock Dryburgh	RunSum Running Kirkcaldy	M60
+13	Daniel Fields	Dundee RR	M40
+14	Simon Fox	Fife AC	M60
+15	Jackie  Galloway	Anster Haddies	F60
+17	Thomas Gambino	Fife AC	MS
+20	Bill Gillan	Recreational Runners	M70+
+21	Alison Greer	Kirkcaldy Wizards	F50
+22	Jeff Gunnell	Unatt.	M70+
+23	Paul Harkins	Fife AC	M40
+24	Andy Harley	Fife AC	M40
+25	Lynne Herd	Anster Haddies 	F40
+26	Scott Hutchison	STAART	MS
+27	John Kinninmonth	Fife AC	M60
+28	Ben Kinninmonth	Fife AC	MS
+29	Marcas Macfarlane 	Fife AC	MS
+30	Vince MacPherson	Fife AC	M40
+31	John MacPherson	Fife AC	M40
+32	Rhonda Manning	Dundee Hawkhill Harriers	F50
+33	Ross McArthur	Falkland TR	MS
+34	Bethan McRobbie 	Unatt.	FS
+35	Richard Melville	Unatt.	M50
+36	Jonathan Millar	Carnegie Harriers	M40
+38	Neill Mitchell	Fife AC 	M50
+41	Hilary Ritchie	Fife AC 	F60
+42	Ruth Sharp	Unatt.	FS
+45	Ruan  Van Rensburg	Fife AC	MS
+46	Fiona Walker	Fife AC	F50
+47	Iain Wallace	PH Racing 	M50
+49	Steven Wilkie 	Unatt.	MS
+50	Craig Wilson	Unatt.	MS
+51	Sally Young	Falkland TR	F40
+52	Ewan Lumsden	Anster Haddies	M40
+53	Hilary Smart	Kirkcaldy Wizards	F50
+54	David Pugh	Unatt.	M40
+55	Jennifer Massie	Dundee RR	F40
+56	Fiona Callaghan	Dundee RR	FS
+57	Susanne Lumsden	Falkland TR	F40
+58	Tom Rainey	Anster Haddies	M40
+59	Kevin O'Neil	Kirkcaldy Wizards	M50
+60	Heather Finlayson	Kirkcaldy Wizards	F50
+61	Isobel Louden	Kirkcaldy Wizards	F60
+62	Sandra  Pirie	Kirkcaldy Wizards	F50
+63	Lee Cessford	Kirkcaldy Wizards	M40
+64	Chris  Payne	Kirkcaldy Wizards	MS
+65	Ross Young	Anster Haddies	MS
+66	Calum Reid	Kirkcaldy Wizards	MS
+67	Kevin Wallace	Fife AC	M40
+68	Graeme Syme	Kirkcaldy Wizards	MS
+69	Stuart Murray	Unatt.	MS
+70	Michelle Johnstone	Fife AC	F40
+71	Michaela McLean	Fife AC	F40
+72	Laura Muir	Fife AC	F40

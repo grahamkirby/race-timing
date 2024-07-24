@@ -7,6 +7,7 @@ import common.categories.SeniorRaceCategories;
 import individual_race.IndividualRace;
 import individual_race.IndividualRaceResult;
 import series_race.SeriesRace;
+import series_race.SeriesRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -56,7 +57,7 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected void configureHelpers() {
 
-        input = new MidweekRaceInput(this);
+        input = new SeriesRaceInput(this);
 
         output_CSV = new MidweekRaceOutputCSV(this);
         output_HTML = new MidweekRaceOutputHTML(this);

@@ -62,7 +62,7 @@ public class IndividualRaceResult extends RaceResult {
         // Where the time is the same, use the recording order.
         if (((IndividualRaceResult)r1).duration().equals(((IndividualRaceResult)r2).duration())) {
 
-            IndividualRace individual_race = (IndividualRace) ((IndividualRaceResult) r1).race;
+            IndividualRace individual_race = (IndividualRace) r1.race;
 
             final int this_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r1).entry.bib_number);
             final int other_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r2).entry.bib_number);
