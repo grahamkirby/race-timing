@@ -45,8 +45,8 @@ public abstract class SeriesRace extends Race {
         allocatePrizes();
 
         printOverallResults();
-        printPrizes();
         printCombined();
+        printPrizes();
     }
 
     public List<IndividualRace> getRaces() {
@@ -55,6 +55,16 @@ public abstract class SeriesRace extends Race {
 
     public int getMinimumNumberOfRaces() {
         return minimum_number_of_races;
+    }
+
+    public int getNumberOfRacesTakenPlace() {
+
+        int number_of_races_completed = 0;
+
+        for (final Race individual_race : getRaces())
+            if (individual_race != null) number_of_races_completed++;
+
+        return number_of_races_completed;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,4 +117,6 @@ public abstract class SeriesRace extends Race {
 
     protected abstract void printPrizes() throws IOException;
     protected abstract void printCombined() throws IOException;
+
+
 }

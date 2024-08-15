@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 
 public abstract class RaceOutputPDF extends RaceOutput {
 
@@ -37,14 +36,14 @@ public abstract class RaceOutputPDF extends RaceOutput {
         document.close();
     }
 
-    protected static void printPrizePDF(final Document document, final String positionString, final String name, final String detail, final Duration duration) {
+    protected static void printPrizePDF(final Document document, final String positionString, final String name, final String detail1, final String detail2) {
 
         final Paragraph paragraph = new Paragraph();
 
         paragraph.add(new Chunk(positionString + ": ", PDF_FONT));
         paragraph.add(new Chunk(name, PDF_BOLD_FONT));
-        paragraph.add(new Chunk(" (" + detail + ") ", PDF_FONT));
-        paragraph.add(new Chunk(format(duration), PDF_FONT));
+        paragraph.add(new Chunk(" (" + detail1 + ") ", PDF_FONT));
+        paragraph.add(new Chunk(detail2, PDF_FONT));
 
         document.add(paragraph);
     }

@@ -100,7 +100,7 @@ public abstract class RaceOutput {
             final RaceResult result = results.get(result_index);
 
             if (allow_equal_positions)
-                // Skip over any following results with the same times.
+                // Skip over any following results with the same results.
                 result_index = groupEqualResultsAndReturnFollowingIndex(results, result, result_index);
             else
                 result.position_string = String.valueOf(result_index + 1);

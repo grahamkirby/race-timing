@@ -29,7 +29,7 @@ public class IndividualRaceOutputPDF extends RaceOutputPDF {
 
                 final IndividualRaceResult result = ((IndividualRaceResult) r);
 
-                printPrizePDF(document, String.valueOf(position++), result.entry.runner.name, (result.entry.runner.club), result.duration());
+                printPrizePDF(document, String.valueOf(position++), result.entry.runner.name, (result.entry.runner.club), format(result.duration()));
             }
         }
     }
