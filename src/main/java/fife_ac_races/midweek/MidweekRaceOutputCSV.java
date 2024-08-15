@@ -39,7 +39,7 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            if (getNumberOfRacesCompleted() < ((MidweekRace)race).getRaces().size() || result.completed())
+            if (result.shouldDisplayPosition())
                 writer.append(result.position_string);
 
             writer.append(",").
@@ -61,14 +61,6 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
 
         @Override
         public void printNoResults() {
-        }
-
-        private int getNumberOfRacesCompleted() {
-
-            int number_of_races_completed = 0;
-            for (final Race individual_race : ((MidweekRace)race).getRaces())
-                if (individual_race != null) number_of_races_completed++;
-            return number_of_races_completed;
         }
     }
 }

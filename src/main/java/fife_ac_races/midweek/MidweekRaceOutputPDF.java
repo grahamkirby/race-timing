@@ -1,17 +1,17 @@
-package fife_ac_races.minitour;
+package fife_ac_races.midweek;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
+import common.RaceResult;
 import common.categories.Category;
 import common.output.RaceOutputPDF;
-import common.RaceResult;
 
 import java.io.IOException;
 import java.util.List;
 
-public class MinitourRaceOutputPDF extends RaceOutputPDF {
+public class MidweekRaceOutputPDF extends RaceOutputPDF {
 
-    public MinitourRaceOutputPDF(final MinitourRace race) {
+    public MidweekRaceOutputPDF(final MidweekRace race) {
         super(race);
     }
 
@@ -33,8 +33,8 @@ public class MinitourRaceOutputPDF extends RaceOutputPDF {
         @Override
         public void printResult(final RaceResult r) {
 
-            MinitourRaceResult result = (MinitourRaceResult) r;
-            printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, format(result.duration()));
+            MidweekRaceResult result = (MidweekRaceResult) r;
+            printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, String.valueOf(result.totalScore()));
         }
 
         @Override

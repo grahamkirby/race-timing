@@ -1,9 +1,9 @@
 package fife_ac_races.midweek;
 
-import common.categories.Category;
 import common.Race;
-import common.output.RaceOutputHTML;
 import common.RaceResult;
+import common.categories.Category;
+import common.output.RaceOutputHTML;
 import individual_race.IndividualRace;
 
 import java.io.IOException;
@@ -49,11 +49,12 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
         writer.append("<p><strong>").
                 append(category.getShortName()).
                 append("</strong></p>\n").
-                append("<ol>\n");
+                append("<ul>\n");
 
+        setPositionStrings(category_prize_winners, true);
         printResults(category_prize_winners, new PrizeResultPrinterHTML(((MidweekRace)race), writer));
 
-        writer.append("</ol>\n\n");
+        writer.append("</ul>\n\n");
     }
 
     @Override
@@ -100,15 +101,18 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
 
     private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
-        for (final RaceResult res : race.getOverallResults()) {
+        final List<RaceResult> overall_results = race.getOverallResults();
+
+        setPositionStrings(overall_results, true);
+
+        for (final RaceResult res : overall_results) {
 
             MidweekRaceResult result = ((MidweekRaceResult)res);
 
             writer.append("""
                         <tr>
                         <td>""").
-                    append(getNumberOfRacesCompleted() < ((MidweekRace)race).getRaces().size() || result.completed() ?
-                        result.position_string : "").
+                    append(result.shouldDisplayPosition() ? result.position_string : "").
                     append("""
                             </td>
                             <td>""").
@@ -140,14 +144,6 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private int getNumberOfRacesCompleted() {
-
-        int number_of_races_completed = 0;
-        for (final Race individual_race : ((MidweekRace)race).getRaces())
-            if (individual_race != null) number_of_races_completed++;
-        return number_of_races_completed;
-    }
-
     private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
@@ -166,6 +162,7 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
             final MidweekRaceResult result = ((MidweekRaceResult)r);
 
             writer.append("<li>").
+                    append(result.position_string).append(": ").
                     append(result.runner.name).
                     append(" (").
                     append(result.runner.category.getShortName()).

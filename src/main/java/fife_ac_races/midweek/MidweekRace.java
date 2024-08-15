@@ -62,6 +62,7 @@ public class MidweekRace extends SeriesRace {
         output_CSV = new MidweekRaceOutputCSV(this);
         output_HTML = new MidweekRaceOutputHTML(this);
         output_text = new MidweekRaceOutputText(this);
+        output_PDF = new MidweekRaceOutputPDF(this);
 
         prizes = new RacePrizes(this);
     }
@@ -72,14 +73,19 @@ public class MidweekRace extends SeriesRace {
         categories = new SeniorRaceCategories(open_category, open_prizes, category_prizes);
     }
 
+
     @Override
     protected void printPrizes() throws IOException {
 
+        output_PDF.printPrizes();
+        output_HTML.printPrizes();
         output_text.printPrizes();
     }
 
     @Override
     protected void printCombined() throws IOException {
+
+        output_HTML.printCombined();
     }
 
     @Override

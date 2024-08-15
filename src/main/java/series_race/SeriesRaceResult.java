@@ -45,6 +45,14 @@ public abstract class SeriesRaceResult extends RaceResult {
         return count;
     }
 
+    public boolean shouldDisplayPosition() {
+
+        final SeriesRace series_race = (SeriesRace) race;
+        final int number_of_races_taken_place = series_race.getNumberOfRacesTakenPlace();
+
+        return number_of_races_taken_place < series_race.getRaces().size() || completed();
+    }
+
     protected int compareCompletionTo(final SeriesRaceResult o) {
 
         if (completed() && !o.completed()) return -1;

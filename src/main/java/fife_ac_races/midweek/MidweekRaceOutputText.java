@@ -14,8 +14,10 @@ public class MidweekRaceOutputText extends RaceOutputText {
         super(race);
     }
 
+    @Override
     protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
 
+        setPositionStrings(results, true);
         printResults(results, new ResultPrinterText(writer));
     }
 
