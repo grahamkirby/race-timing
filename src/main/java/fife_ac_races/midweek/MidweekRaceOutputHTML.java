@@ -107,7 +107,8 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                         <tr>
                         <td>""").
-                    append(result.position_string).
+                    append(getNumberOfRacesCompleted() < ((MidweekRace)race).getRaces().size() || result.completed() ?
+                        result.position_string : "").
                     append("""
                             </td>
                             <td>""").
@@ -137,6 +138,14 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                         </tr>
                         """);
         }
+    }
+
+    private int getNumberOfRacesCompleted() {
+
+        int number_of_races_completed = 0;
+        for (final Race individual_race : ((MidweekRace)race).getRaces())
+            if (individual_race != null) number_of_races_completed++;
+        return number_of_races_completed;
     }
 
     private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {

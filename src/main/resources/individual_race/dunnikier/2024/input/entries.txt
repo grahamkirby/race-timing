@@ -20,7 +20,7 @@
 24	Andy Harley	Fife AC	M40
 25	Lynne Herd	Anster Haddies 	F40
 26	Scott Hutchison	STAART	MS
-27	John Kinninmonth	Fife AC	M60
+27	John Kinninmonth	RunSum Running Kirkcaldy	M60
 28	Ben Kinninmonth	Fife AC	MS
 29	Marcas Macfarlane 	Fife AC	MS
 30	Vince MacPherson	Fife AC	M40
@@ -50,7 +50,7 @@
 60	Heather Finlayson	Kirkcaldy Wizards	F50
 61	Isobel Louden	Kirkcaldy Wizards	F60
 62	Sandra  Pirie	Kirkcaldy Wizards	F50
-63	Lee Cessford	Kirkcaldy Wizards	M40
+63	Lee Cessford	Falkland Trail Runners	M40
 64	Chris  Payne	Kirkcaldy Wizards	MS
 65	Ross Young	Anster Haddies	MS
 66	Calum Reid	Kirkcaldy Wizards	MS
