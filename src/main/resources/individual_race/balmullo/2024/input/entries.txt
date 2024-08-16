@@ -12,7 +12,6 @@
 12	Fiona  Canavan	Dundee Road Runners	FS
 13	Emanuel Corduneanu	Dundee Road Runners	MS
 14	Ann Davidson	Falkland Trail Runners	F60
-15	Stephen Dickson	Fife AC 	M40
 16	David Dunleavey	Stratheden	M60
 17	Sarah Eaton	Kinross Road Runners	F60
 18	Orla Gage	Anster Haddies	FU20
@@ -81,3 +80,22 @@
 81	Chris Wilson		M40
 82	Simone Young	Kinross Road Runners	F50
 83	Zak Yule	Falkland Trail Runners	M50
+87	Huw Watkins	Unatt.	MS
+86	Jock Dryburgh	RunSum Running Kirkcaldy	M60
+85	Barry Swan	Run SumRunning Kirkcaldy	M50
+84	Jocelyn Scott	Fife AC	F70+
+88	Michael Royden	Dundee Road Runners	M50
+89	Fiona Callaghan	Dundee Road Runners	FS
+90	Ron Milne	Forfar Road Runners	M60
+91	David Mackay	Forfar Road Runners	M50
+92	Linda MacEachen	Kinross Road Runners	F60
+93	Iain Simpson	Lomond Hill Runners	M50
+94	Alistair MacDonald	Bellahouston Road Runners	M60
+95	Stephen Dickson	Fife AC	M40
+96	Philip Suttie	Falkland Trail Runners	M40
+97	Tom Rainey	Anster Haddies	M40
+98	Lee Cessford	Falkland Trail Runners	M40
+99	Jennifer Massie	Dundee Road Runners	F40
+100	Graham Rena	Dundee Road Runners	M50
+128	Rhonda Manning	Dundee Hawkhill Harriers	F50
+130	Scott Hutchison	STAART	MS
