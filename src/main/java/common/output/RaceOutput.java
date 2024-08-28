@@ -1,9 +1,7 @@
 package common.output;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
+
+import com.itextpdf.layout.Document;
 import common.Race;
 import common.RaceResult;
 import common.categories.Category;
@@ -23,12 +21,6 @@ public abstract class RaceOutput {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected static final Font PDF_FONT = FontFactory.getFont(FontFactory.HELVETICA);
-    protected static final Font PDF_BOLD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-    protected static final Font PDF_BOLD_UNDERLINED_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, Font.DEFAULTSIZE, Font.UNDERLINE);
-    protected static final Font PDF_BOLD_LARGE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
-    protected static final Font PDF_ITALIC_FONT = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE);
 
     protected static final String DNF_STRING = "DNF";
 
@@ -64,14 +56,6 @@ public abstract class RaceOutput {
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
 
         output_directory_path = race.getWorkingDirectoryPath().resolve("output");
-    }
-
-    protected static void addCategoryHeader(final Category category, final Document document) {
-
-        final Paragraph category_header_paragraph = new Paragraph(48f, "Category: " + category.getLongName(), PDF_BOLD_UNDERLINED_FONT);
-
-        category_header_paragraph.setSpacingAfter(12);
-        document.add(category_header_paragraph);
     }
 
     protected static String htmlEncode(final String s) {

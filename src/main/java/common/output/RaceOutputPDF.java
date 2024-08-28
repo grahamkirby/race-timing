@@ -1,16 +1,17 @@
 package common.output;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
 import common.Race;
 import common.categories.Category;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public abstract class RaceOutputPDF extends RaceOutput {
 
@@ -21,29 +22,39 @@ public abstract class RaceOutputPDF extends RaceOutput {
     @Override
     public void printPrizes() throws IOException {
 
-        final Path prizes_pdf_path = output_directory_path.resolve(prizes_filename + ".pdf");
-        final OutputStream pdf_file_output_stream = Files.newOutputStream(prizes_pdf_path);
+        final PdfWriter writer = new PdfWriter(output_directory_path.resolve(prizes_filename + ".pdf").toString());
 
-        final Document document = new Document();
-        PdfWriter.getInstance(document, pdf_file_output_stream);
+        try (final Document document = new Document(new PdfDocument(writer))) {
 
-        document.open();
-        document.add(new Paragraph(race_name_for_results + " " + year + " Category Prizes", PDF_BOLD_LARGE_FONT));
+            final PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
-        for (final Category category : race.categories.getCategoriesInReportOrder())
-            printPrizes(document, category);
+            document.add(new Paragraph().setFont(font).setFontSize(24)
+                    .add(race_name_for_results + " " + year + " Category Prizes"));
 
-        document.close();
+            for (final Category category : race.categories.getCategoriesInReportOrder())
+                printPrizes(document, category);
+        }
     }
 
-    protected static void printPrizePDF(final Document document, final String positionString, final String name, final String detail1, final String detail2) {
+    protected static void addCategoryHeader(final Category category, final Document document) throws IOException {
 
-        final Paragraph paragraph = new Paragraph();
+        final PdfFont bold_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
 
-        paragraph.add(new Chunk(positionString + ": ", PDF_FONT));
-        paragraph.add(new Chunk(name, PDF_BOLD_FONT));
-        paragraph.add(new Chunk(" (" + detail1 + ") ", PDF_FONT));
-        paragraph.add(new Chunk(detail2, PDF_FONT));
+        final Paragraph category_header_paragraph = new Paragraph("Category: " + category.getLongName()).setFont(bold_font).setUnderline().setPaddingTop(24);
+
+        document.add(category_header_paragraph);
+    }
+
+    protected static void printPrizePDF(final Document document, final String position_string, final String name, final String detail1, final String detail2) throws IOException {
+
+        final PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+        final PdfFont bold_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+
+        final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
+
+        paragraph.add(new Text(position_string + ": ").setFont(font));
+        paragraph.add(new Text(name).setFont(bold_font));
+        paragraph.add(new Text(" (" + detail1 + ") " + detail2).setFont(font));
 
         document.add(paragraph);
     }
