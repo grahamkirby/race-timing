@@ -40,10 +40,17 @@
             <scope>test</scope>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>com.github.librepdf</groupId>-->
+<!--            <artifactId>openpdf</artifactId>-->
+<!--            <version>1.4.2</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.4.2</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-core</artifactId>
+            <version>8.0.5</version>
+            <type>pom</type>
         </dependency>
 
     </dependencies>

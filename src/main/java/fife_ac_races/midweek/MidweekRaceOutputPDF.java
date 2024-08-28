@@ -1,7 +1,10 @@
 package fife_ac_races.midweek;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import common.RaceResult;
 import common.categories.Category;
 import common.output.RaceOutputPDF;
@@ -31,16 +34,18 @@ public class MidweekRaceOutputPDF extends RaceOutputPDF {
     record ResultPrinterPDF(Document document) implements ResultPrinter {
 
         @Override
-        public void printResult(final RaceResult r) {
+        public void printResult(final RaceResult r) throws IOException {
 
             MidweekRaceResult result = (MidweekRaceResult) r;
             printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, String.valueOf(result.totalScore()));
         }
 
         @Override
-        public void printNoResults() {
+        public void printNoResults() throws IOException {
 
-            document.add(new Paragraph("No results", PDF_ITALIC_FONT));
+            final PdfFont italic_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
+
+            document.add(new Paragraph("No results").setFont(italic_font));
         }
     }
 }
