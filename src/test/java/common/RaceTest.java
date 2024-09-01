@@ -1,5 +1,8 @@
 package common;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.junit.jupiter.api.AfterEach;
 import uk.ac.standrews.cs.utilities.FileManipulation;
 
@@ -113,7 +116,22 @@ public abstract class RaceTest {
 
     private static String getFileContent(final Path path) throws IOException {
 
-        return Files.readAllLines(path).stream().reduce((s1, s2) -> s1 + s2).orElseThrow();
+        if (!path.toString().endsWith(".pdf"))
+            return Files.readAllLines(path).stream().reduce((s1, s2) -> s1 + s2).orElseThrow();
+        else {
+
+            final PdfReader reader = new PdfReader(path.toString());
+
+            try (final PdfDocument pdfDocument = new PdfDocument(reader)) {
+
+                final StringBuilder text = new StringBuilder();
+                for (int i = 1; i <= pdfDocument.getNumberOfPages(); i++) {
+                    text.append(PdfTextExtractor.getTextFromPage(pdfDocument.getPage(i)));
+                }
+
+                return text.toString();
+            }
+        }
     }
 
     private static String removeWhiteSpace(final String s) {

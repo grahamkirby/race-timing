@@ -1,7 +1,5 @@
 package common.output;
 
-
-import com.itextpdf.layout.Document;
 import common.Race;
 import common.RaceResult;
 import common.categories.Category;
@@ -153,9 +151,6 @@ public abstract class RaceOutput {
         throw new UnsupportedOperationException();
     }
     protected void printPrizes(final OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    protected void printPrizes(final Document document, final Category category) throws IOException {
         throw new UnsupportedOperationException();
     }
     protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
