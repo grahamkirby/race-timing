@@ -4,7 +4,9 @@ YEAR = 2024
 RACE_NAME_FOR_RESULTS = Balmullo Trail Race
 RACE_NAME_FOR_FILENAMES = balmullo
 
-OPEN_CATEGORY = true
+OPEN_PRIZE_CATEGORIES = false
+SENIOR_PRIZE_CATEGORIES = true
+NUMBER_OF_SENIOR_PRIZES = 3
 
 # Comma-separated sequence of bib-numbers for any runners that have a time
 # recorded but they DNF'd.

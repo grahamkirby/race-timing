@@ -19,6 +19,14 @@ public abstract class Race {
     protected static final String DUMMY_DURATION_STRING = "23:59:59";
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
 
+    public static final String SENIOR_RACE_KEY = "SENIOR_RACE";
+    public static final String OPEN_PRIZE_CATEGORIES_KEY = "OPEN_PRIZE_CATEGORIES";
+    public static final String SENIOR_PRIZE_CATEGORIES_KEY = "SENIOR_PRIZE_CATEGORIES";
+    public static final String NUMBER_OF_OPEN_PRIZES_KEY = "NUMBER_OF_OPEN_PRIZES";
+    public static final String NUMBER_OF_SENIOR_PRIZES_KEY = "NUMBER_OF_SENIOR_PRIZES";
+    public static final String NUMBER_OF_CATEGORY_PRIZES_KEY = "NUMBER_OF_CATEGORY_PRIZES";
+    public static final String MINIMUM_NUMBER_OF_RACES_KEY = "MINIMUM_NUMBER_OF_RACES";
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Path working_directory_path;
@@ -79,7 +87,7 @@ public abstract class Race {
 
     public Category lookupCategory(final String short_name) {
 
-        for (final Category category : categories.getCategoriesInDecreasingGeneralityOrder())
+        for (final Category category : categories.getRunnerCategories())
             if (category.getShortName().equals(short_name)) return category;
 
         throw new RuntimeException("Category not found: " + short_name);

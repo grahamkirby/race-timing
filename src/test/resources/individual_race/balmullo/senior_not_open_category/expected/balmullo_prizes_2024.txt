@@ -1,32 +1,20 @@
 Balmullo Trail Race Results 2024
 ============================
 
-Category: Women Open
---------------------
+Category: Women Senior
+----------------------
 
 1: Amelia Muir (Strathearn Harriers) 00:42:43
 2: Isabel Ritchie (Fife AC) 00:44:10
 3: Nina Joan Fiona Walker (Carnegie Harriers) 00:47:04
 
 
-Category: Men Open
-------------------
-
-1: John Smith (Fife AC) 00:45:37
-2: Clark O' Connor (Unatt.) 00:48:31
-3: Leo McKenzie (Dundee Hawkhill Harriers) 00:51:25
-
-
-Category: Women Senior
-----------------------
-
-1: Zuzanna Miller-Ford (Leven Las Vegas RC) 00:52:52
-
-
 Category: Men Senior
 --------------------
 
-1: JackBruce (Dundee Road Runners) 01:13:10
+1: John Smith (Fife AC) 00:45:37
+2: Clark O' Connor (Unatt.) 00:48:31
+3: JackBruce (Dundee Road Runners) 01:13:10
 
 
 Category: Women Junior
@@ -86,6 +74,6 @@ Category: Women 70+
 Category: Men 70+
 -----------------
 
-1: Rhys Müllar (Dundee Hawkhill Harriers) 01:08:49
+1: Leo McKenzie (Dundee Hawkhill Harriers) 00:51:25
 
 

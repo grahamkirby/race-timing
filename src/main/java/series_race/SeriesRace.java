@@ -17,7 +17,7 @@ public abstract class SeriesRace extends Race {
     protected List<IndividualRace> races;
     protected List<Runner> combined_runners;
 
-    protected int category_prizes;
+    protected int number_of_category_prizes;
     protected int minimum_number_of_races;
 
     public SeriesRace(Path config_file_path) throws IOException {
@@ -76,7 +76,7 @@ public abstract class SeriesRace extends Race {
 
     protected void readProperties() {
 
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
+        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
     }
 
     private void initialiseResults() {

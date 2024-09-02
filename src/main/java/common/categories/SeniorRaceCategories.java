@@ -1,28 +1,49 @@
 package common.categories;
 
+import java.util.Arrays;
+
 public class SeniorRaceCategories extends Categories {
 
-    public SeniorRaceCategories(final boolean open_category, final int open_prizes, final int category_prizes) {
+    public SeniorRaceCategories(final boolean open_prize_categories, final boolean senior_prize_categories, final int number_of_open_prizes, final int number_of_senior_prizes, final int number_of_category_prizes) {
 
-        if (open_category) {
-            categories_in_decreasing_generality_order.add(new Category("Women Open", "WO", "Women", 0, open_prizes));
-            categories_in_decreasing_generality_order.add(new Category("Men Open", "MO", "Men", 0, open_prizes));
+        final Category FU20 = new Category("Women Junior", "FU20", "Women", 0, number_of_category_prizes);
+        final Category MU20 = new Category("Men Junior", "MU20", "Men", 0, number_of_category_prizes);
+
+        final Category FS = new Category("Women Senior", "FS", "Women", 20, number_of_senior_prizes);
+        final Category MS = new Category("Men Senior", "MS", "Men", 20, number_of_senior_prizes);
+
+        final Category F40 = new Category("Women 40-49", "F40", "Women", 40, number_of_category_prizes);
+        final Category M40 = new Category("Men 40-49", "M40", "Men", 40, number_of_category_prizes);
+        final Category F50 = new Category("Women 50-59", "F50", "Women", 50, number_of_category_prizes);
+        final Category M50 = new Category("Men 50-59", "M50", "Men", 50, number_of_category_prizes);
+        final Category F60 = new Category("Women 60-69", "F60", "Women", 60, number_of_category_prizes);
+        final Category M60 = new Category("Men 60-69", "M60", "Men", 60, number_of_category_prizes);
+        final Category F70 = new Category("Women 70+", "F70+", "Women", 70, number_of_category_prizes);
+        final Category M70 = new Category("Men 70+", "M70+", "Men", 70, number_of_category_prizes);
+
+        final Category WO = new Category("Women Open", "WO", "Women", 0, number_of_open_prizes);
+        final Category MO = new Category("Men Open", "MO", "Men", 0, number_of_open_prizes);
+
+        runner_categories.addAll(Arrays.asList(FU20, MU20, FS, MS, F40, M40, F50, M50, F60, M60, F70, M70));
+
+        if (open_prize_categories) {
+            prize_categories_in_decreasing_generality_order.add(WO);
+            prize_categories_in_decreasing_generality_order.add(MO);
+
+            prize_categories_in_report_order.add(WO);
+            prize_categories_in_report_order.add(MO);
         }
 
-        categories_in_decreasing_generality_order.add(new Category("Women Senior", "FS", "Women", 20, category_prizes));
-        categories_in_decreasing_generality_order.add(new Category("Men Senior", "MS", "Men", 20, category_prizes));
-        categories_in_decreasing_generality_order.add(new Category("Women Junior", "FU20", "Women", 0, category_prizes));
-        categories_in_decreasing_generality_order.add(new Category("Men Junior", "MU20", "Men", 0, category_prizes));
+        if (senior_prize_categories) {
+            prize_categories_in_decreasing_generality_order.add(FS);
+            prize_categories_in_decreasing_generality_order.add(MS);
 
-        for (int age_group = 40; age_group <= 60; age_group+= 10) {
-            categories_in_decreasing_generality_order.add(new Category("Women " + age_group + "-" + (age_group+9), "F" + age_group,"Women", age_group, category_prizes));
-            categories_in_decreasing_generality_order.add(new Category("Men " + age_group + "-" + (age_group+9), "M" + age_group,"Men", age_group, category_prizes));
+            prize_categories_in_report_order.add(FS);
+            prize_categories_in_report_order.add(MS);
         }
 
-        categories_in_decreasing_generality_order.add(new Category("Women 70+", "F70+","Women", 70, category_prizes));
-        categories_in_decreasing_generality_order.add(new Category("Men 70+", "M70+","Men", 70, category_prizes));
-
-        categories_in_report_order.addAll(categories_in_decreasing_generality_order);
+        prize_categories_in_decreasing_generality_order.addAll(Arrays.asList(FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70));
+        prize_categories_in_report_order.addAll(Arrays.asList(FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70));
     }
 
     @Override

@@ -25,8 +25,8 @@ public class MidweekRace extends SeriesRace {
     private static final int MAX_RACE_SCORE = 200;
     public static final int DEFAULT_OPEN_PRIZES = 3;
 
-    private boolean open_category;
-    private int open_prizes;
+    private boolean open_prize_categories, senior_prize_categories;
+    private int number_of_open_prizes, number_of_senior_prizes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,7 +70,9 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected void configureCategories() {
 
-        categories = new SeniorRaceCategories(open_category, open_prizes, category_prizes);
+//            public SeniorRace Categories(final boolean open_prize_categories, final boolean senior_prize_categories, final int number_of_open_prizes, final int number_of_senior_prizes, final int number_of_category_prizes) {
+
+            categories = new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes);
     }
 
 
@@ -113,9 +115,11 @@ public class MidweekRace extends SeriesRace {
 
         super.readProperties();
 
-        minimum_number_of_races = Integer.parseInt(getProperties().getProperty("MINIMUM_NUMBER_OF_RACES"));
-        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(DEFAULT_OPEN_PRIZES)));
+        minimum_number_of_races = Integer.parseInt(getProperties().getProperty(MINIMUM_NUMBER_OF_RACES_KEY));
+        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(OPEN_PRIZE_CATEGORIES_KEY, "true"));
+        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(SENIOR_PRIZE_CATEGORIES_KEY, "true"));
+        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(NUMBER_OF_OPEN_PRIZES_KEY, String.valueOf(DEFAULT_OPEN_PRIZES)));
+        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(NUMBER_OF_SENIOR_PRIZES_KEY, String.valueOf(DEFAULT_OPEN_PRIZES)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,12 +22,13 @@ public class IndividualRace extends SingleRace {
     //                                                                                              //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final int DEFAULT_OPEN_PRIZES = 3;
-    private static final int DEFAULT_CATEGORY_PRIZES = 1;
+    private static final int DEFAULT_NUMBER_OF_OPEN_PRIZES = 3;
+    private static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 1;
+    private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
 
     private boolean senior_race;
-    public boolean open_category;
-    public int open_prizes, category_prizes;
+    public boolean open_prize_categories, senior_prize_categories;
+    public int number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,10 +86,12 @@ public class IndividualRace extends SingleRace {
 
     private void readProperties() {
 
-        senior_race = Boolean.parseBoolean(getPropertyWithDefault("SENIOR_RACE", "true"));
-        open_category = Boolean.parseBoolean(getPropertyWithDefault("OPEN_CATEGORY", "true"));
-        open_prizes = Integer.parseInt(getPropertyWithDefault("OPEN_PRIZES", String.valueOf(DEFAULT_OPEN_PRIZES)));
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(DEFAULT_CATEGORY_PRIZES)));
+        senior_race = Boolean.parseBoolean(getPropertyWithDefault(SENIOR_RACE_KEY, "true"));
+        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(OPEN_PRIZE_CATEGORIES_KEY, "true"));
+        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(SENIOR_PRIZE_CATEGORIES_KEY, "false"));
+        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(NUMBER_OF_OPEN_PRIZES_KEY, String.valueOf(DEFAULT_NUMBER_OF_OPEN_PRIZES)));
+        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(NUMBER_OF_SENIOR_PRIZES_KEY, String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
+        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault(NUMBER_OF_CATEGORY_PRIZES_KEY, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
     }
 
     private void configureHelpers() {
@@ -105,7 +108,7 @@ public class IndividualRace extends SingleRace {
 
     private void configureCategories() {
 
-        categories = senior_race ? new SeniorRaceCategories(open_category, open_prizes, category_prizes) : new JuniorRaceCategories(category_prizes);
+        categories = senior_race ? new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes) : new JuniorRaceCategories(number_of_category_prizes);
     }
 
     private void initialiseResults() {

@@ -17,18 +17,6 @@ Category: Men Open
 3: Ben Kinninmonth (Fife AC) 00:26:55
 
 
-Category: Women Senior
-----------------------
-
-1: Hannah Tippetts (Dundee Road Runners) 00:32:49
-
-
-Category: Men Senior
---------------------
-
-1: Adam Hart (Dundee Road Runners) 00:28:58
-
-
 Category: Women Junior
 ----------------------
 
@@ -87,3 +75,5 @@ Category: Men 70+
 -----------------
 
 1: Tony Martin (Falkland Trail Runners) 00:32:00
+
+

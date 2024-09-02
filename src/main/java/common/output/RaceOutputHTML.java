@@ -38,7 +38,7 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
         writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : race.categories.getCategoriesInReportOrder())
+        for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
             printPrizes(writer, category);
     }
 }
