@@ -19,7 +19,7 @@ public class RacePrizes {
 
     public void allocatePrizes() {
 
-        for (final Category category : race.categories.getCategoriesInDecreasingGeneralityOrder())
+        for (final Category category : race.categories.getPrizeCategoriesInDecreasingGeneralityOrder())
             race.prize_winners.put(category, getPrizeWinners(category));
     }
 

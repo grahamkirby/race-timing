@@ -17,18 +17,6 @@ Category: Men Open
 3: Patrick O'Hare (?) 00:25:52
 
 
-Category: Women Senior
-----------------------
-
-1: Hannah Tippetts (?) 00:31:44
-
-
-Category: Men Senior
---------------------
-
-1: Adam Hart (?) 00:27:53
-
-
 Category: Women Junior
 ----------------------
 
@@ -87,3 +75,5 @@ Category: Men 70+
 -----------------
 
 1: John Wilmot (?) 00:36:20
+
+

@@ -17,18 +17,6 @@ Category: Men Open
 3: Leo McKenzie (Dundee Hawkhill Harriers) 00:51:25
 
 
-Category: Women Senior
-----------------------
-
-1: Zuzanna Miller-Ford (Leven Las Vegas RC) 00:52:52
-
-
-Category: Men Senior
---------------------
-
-1: JackBruce (Dundee Road Runners) 01:13:10
-
-
 Category: Women Junior
 ----------------------
 
@@ -87,3 +75,5 @@ Category: Men 70+
 -----------------
 
 1: Rhys Müllar (Dundee Hawkhill Harriers) 01:08:49
+
+

@@ -19,8 +19,8 @@ public class BalmulloTest extends RaceTest {
     }
 
     @Test
-    public void openCategory() throws Exception {
-        testExpectedCompletion("open_category");
+    public void seniorNotOpenCategory() throws Exception {
+        testExpectedCompletion("senior_not_open_category");
     }
 
     protected Race makeRace(final Path config_file_path) throws IOException {

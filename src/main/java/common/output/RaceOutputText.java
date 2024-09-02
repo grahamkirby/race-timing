@@ -26,7 +26,7 @@ public abstract class RaceOutputText extends RaceOutput {
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            for (final Category category : race.categories.getCategoriesInReportOrder())
+            for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
                 printPrizes(writer, category);
         }
     }

@@ -51,7 +51,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
         html_writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : race.categories.getCategoriesInReportOrder())
+        for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
             printPrizes(html_writer, category);
     }
 

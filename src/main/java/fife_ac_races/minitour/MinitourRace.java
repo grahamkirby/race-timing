@@ -87,7 +87,7 @@ public class MinitourRace extends SeriesRace {
     @Override
     protected void configureCategories() {
 
-        categories = new JuniorRaceCategories(category_prizes);
+        categories = new JuniorRaceCategories(number_of_category_prizes);
     }
 
     @Override

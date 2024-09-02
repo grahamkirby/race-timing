@@ -49,7 +49,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
             document.add(new Paragraph().setFont(font).setFontSize(24)
                     .add(race_name_for_results + " " + year + " Category Prizes"));
 
-            for (final Category category : race.categories.getCategoriesInReportOrder())
+            for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
                 printPrizes(document, category);
         }
     }
