@@ -12,6 +12,9 @@ import java.util.*;
 
 public abstract class Race {
 
+    // TODO document where dead heats can occur - not where result is directly recorded,
+    // only where calculated from other results. E.g. DB overall vs lap time
+
     public record CategoryGroup(String combined_categories_title, List<String> category_names){};
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
