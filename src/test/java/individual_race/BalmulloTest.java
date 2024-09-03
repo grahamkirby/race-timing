@@ -9,8 +9,8 @@ import java.nio.file.Path;
 public class BalmulloTest extends RaceTest {
 
     @Test
-    public void simple() throws Exception {
-        testExpectedCompletion("simple");
+    public void deadHeats() throws Exception {
+        testExpectedCompletion("dead_heats");
     }
 
     @Test

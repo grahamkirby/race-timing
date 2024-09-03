@@ -55,4 +55,9 @@ public class MidweekTest extends RaceTest {
     public void completed_5() throws Exception {
         testExpectedCompletion("actual_2023/completed_5");
     }
+
+    @Test
+    public void deadHeats() throws Exception {
+        testExpectedCompletion("dead_heats");
+    }
 }

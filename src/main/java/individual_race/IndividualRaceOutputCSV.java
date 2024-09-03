@@ -28,6 +28,8 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
     @Override
     protected boolean allowEqualPositions() {
+
+        // No dead heats for overall results, since an ordering is imposed at finish funnel.
         return false;
     }
 
