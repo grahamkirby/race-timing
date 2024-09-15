@@ -1,0 +1,4 @@
+# Format: Race Number 1	Runner Name 1 	Club 1	Category 1
+# e.g.
+# 1	David  Aitken 	Dundee Road Runners	M50
+# 2	Jude Alcock	Falkland Trail Runners	F70+
