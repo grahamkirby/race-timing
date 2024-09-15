@@ -1,0 +1,4 @@
+# Format: Race Number 1 	Time 1
+# e.g.
+# 60	31:30
+# 7	31:45
