@@ -1,4 +1,4 @@
-package fife_ac_races.midweek;
+package series_race.fife_ac_midweek;
 
 import common.RaceResult;
 import common.Runner;

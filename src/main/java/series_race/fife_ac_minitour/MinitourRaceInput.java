@@ -1,4 +1,4 @@
-package fife_ac_races.minitour;
+package series_race.fife_ac_minitour;
 
 import common.Race;
 import common.RawResult;

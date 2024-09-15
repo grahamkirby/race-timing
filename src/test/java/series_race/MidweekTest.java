@@ -3,7 +3,7 @@ package series_race;
 import common.Race;
 import common.RaceTest;
 import org.junit.jupiter.api.Test;
-import fife_ac_races.midweek.MidweekRace;
+import series_race.fife_ac_midweek.MidweekRace;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -1,4 +1,4 @@
-package fife_ac_races.midweek;
+package series_race.fife_ac_minitour;
 
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
@@ -12,9 +12,9 @@ import common.output.RaceOutputPDF;
 import java.io.IOException;
 import java.util.List;
 
-public class MidweekRaceOutputPDF extends RaceOutputPDF {
+public class MinitourRaceOutputPDF extends RaceOutputPDF {
 
-    public MidweekRaceOutputPDF(final MidweekRace race) {
+    public MinitourRaceOutputPDF(final MinitourRace race) {
         super(race);
     }
 
@@ -36,8 +36,8 @@ public class MidweekRaceOutputPDF extends RaceOutputPDF {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            MidweekRaceResult result = (MidweekRaceResult) r;
-            printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, String.valueOf(result.totalScore()));
+            MinitourRaceResult result = (MinitourRaceResult) r;
+            printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, format(result.duration()));
         }
 
         @Override
