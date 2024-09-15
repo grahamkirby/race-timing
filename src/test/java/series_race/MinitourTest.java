@@ -2,7 +2,7 @@ package series_race;
 
 import common.Race;
 import common.RaceTest;
-import fife_ac_races.minitour.MinitourRace;
+import series_race.fife_ac_minitour.MinitourRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

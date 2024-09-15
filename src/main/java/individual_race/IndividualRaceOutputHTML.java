@@ -150,6 +150,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         writer.append("""
                 </tbody>
             </table>
+            <p style="font-size:smaller; font-style:italic;">Results generated using <a href="https://github.com/grahamkirby/race-timing">race-timing</a>.
             """);
     }
 }
