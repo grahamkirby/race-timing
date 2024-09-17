@@ -1,7 +1,11 @@
-# _race-timing_ is a Java application for calculating race results for [Fife Athletic Club](https://fifeac.org) #
+# _race-timing_ is a Java application for calculating race results
 
-This software supports several types of race:
+This software was originally written to process results for races organised by [Fife Athletic Club](https://fifeac.org),
+although it would probably work for other races. Reports of success or otherwise would be welcome, by email to the
+author.
 
-* [individual races](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/individual_race/README.md)
+The software supports several types of race:
+
+* [individual races](tree/main/src/main/resources/individual_race/README.md)
 * relay races
 * series races
