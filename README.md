@@ -8,4 +8,4 @@ The software supports several types of race:
 
 * [individual races](/src/main/resources/individual_race/README.md)
 * [relay races](/src/main/resources/relay_race/README.md)
-* series races
+* [series races](/src/main/resources/series_race/README.md)
