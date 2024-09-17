@@ -1,9 +1,11 @@
-## Relay races ##
+## Series races ##
 
-This package supports relay races, in particular the long-running [Fife AC](www.fifeac.org) race
-[Devil's Burdens](https://www.fifeac.org/events/fife-ac-events/devils-burdens.html).
+This package supports series races composed of multiple individual races, in particular the following [Fife AC](www.fifeac.org) series:
 
-## Processing results for a relay race ##
+* [Midweek Series](https://www.fifeac.org/events/fife-ac-events/midweek-series.html)
+* [Minitour of Fife](https://www.fifeac.org/events/fife-ac-events/minitour-of-fife.html)
+
+## Processing results for a series race ##
 
 1. Create a new copy of the directory [```src/main/resources/individual_race/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/individual_race/sample_config).
 2. In the new file ```input/config.txt```, update properties as required:
