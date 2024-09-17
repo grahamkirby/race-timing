@@ -2,7 +2,7 @@
 
 This package supports conventional individual races.
 
-It has been used for the following [Fife AC](www.fifeac.org) races:
+It has been used for the following [Fife AC](//fifeac.org) races:
 
 * [Balmullo Trail Race](https://www.fifeac.org/events/fife-ac-events/balmullo-trail-race.html)
 * [Hill of Tarvit](https://www.fifeac.org/events/fife-ac-events/hill-of-tarvit.html)
