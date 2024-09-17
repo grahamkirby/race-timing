@@ -6,6 +6,6 @@ author.
 
 The software supports several types of race:
 
-* [individual races](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/individual_race)
+* [individual races](blob/main/src/main/resources/individual_race/README.md)
 * relay races
 * series races
