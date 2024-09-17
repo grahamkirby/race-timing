@@ -1,15 +1,9 @@
-## Individual races ##
+## Relay races ##
 
-This package supports conventional individual races.
+This package supports relay races, in particular the long-running Fife AC race
+[Devil's Burdens](https://www.fifeac.org/events/fife-ac-events/devils-burdens.html).
 
-It has been used for the following Fife AC races:
-
-* [Balmullo Trail Race](https://www.fifeac.org/events/fife-ac-events/balmullo-trail-race.html)
-* [Hill of Tarvit](https://www.fifeac.org/events/fife-ac-events/hill-of-tarvit.html)
-* [St Andrews 5K/5M](https://www.fifeac.org/events/fife-ac-events/st-andrews-5k.html)
-* [Strathkinness - Blebocraigs](https://www.fifeac.org/events/fife-ac-events/strathkinness-blebocraigs.html)
-
-## Processing results for an individual race ##
+## Processing results for a relay race ##
 
 1. Create a new copy of the directory [```src/main/resources/individual_race/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/individual_race/sample_config).
 2. In the new file ```input/config.txt```, update properties as required:
