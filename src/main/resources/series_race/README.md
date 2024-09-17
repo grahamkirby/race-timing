@@ -1,6 +1,6 @@
 ## Series races ##
 
-This package supports series races composed of multiple individual races, in particular the following [Fife AC](www.fifeac.org) series:
+This package supports series races composed of multiple individual races, in particular the following [Fife AC](//fifeac.org) series:
 
 * [Midweek Series](https://www.fifeac.org/events/fife-ac-events/midweek-series.html)
 * [Minitour of Fife](https://www.fifeac.org/events/fife-ac-events/minitour-of-fife.html)

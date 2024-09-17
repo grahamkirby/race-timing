@@ -1,6 +1,6 @@
 ## Relay races ##
 
-This package supports relay races, in particular the long-running [Fife AC](www.fifeac.org) race
+This package supports relay races, in particular the long-running [Fife AC](//fifeac.org) race
 [Devil's Burdens](https://www.fifeac.org/events/fife-ac-events/devils-burdens.html).
 
 ## Processing results for a relay race ##
