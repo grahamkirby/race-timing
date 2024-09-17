@@ -13,15 +13,15 @@ It has been used for the following Fife AC races:
 ## Processing results for an individual race ##
 
 1. Create a new copy of the directory [```src/main/resources/individual_race/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/individual_race/sample_config).
-2. In the file ```input/config.txt```, update properties as required:
-   1. WORKING_DIRECTORY: the location of the new directory
+2. In the new file ```input/config.txt```, update properties as required:
    2. ENTRIES_FILENAME: name of the file containing the race entries
    3. RAW_RESULTS_FILENAME: name of the file containing the recorded times
    4. YEAR: year of race
-   5. NUMBER_OF_LAPS: 4 in current configuration of race
-   6. PAIRED_LEGS: numbers of the legs that are run in pairs
    7. RACE_NAME_FOR_RESULTS: race title
    8. RACE_NAME_FOR_FILENAMES: filename root for output files
+   1. WORKING_DIRECTORY: the location of the new directory
+   5. NUMBER_OF_LAPS: 4 in current configuration of race
+   6. PAIRED_LEGS: numbers of the legs that are run in pairs
    9. MASS_START_ELAPSED_TIMES: mass start time for each leg
    10. DNF_LEGS: legs with recorded times but runners missed a checkpoint
    11. INDIVIDUAL_LEG_STARTS: any runners exceptionally starting at different times
