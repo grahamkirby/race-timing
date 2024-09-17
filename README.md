@@ -6,6 +6,6 @@ author.
 
 The software supports several types of race:
 
-* [individual races](tree/main/src/main/resources/individual_race/README.md)
+* [individual races](tree/main/src/main/resources/individual_race/)
 * relay races
 * series races
