@@ -58,14 +58,6 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
-
-        printOverallResultsHeader(writer);
-        printOverallResultsBody(writer);
-        printOverallResultsFooter(writer);
-    }
-
-    @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
@@ -99,7 +91,7 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
         final List<RaceResult> overall_results = race.getOverallResults();
 
@@ -142,14 +134,6 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                         </tr>
                         """);
         }
-    }
-
-    private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            """);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

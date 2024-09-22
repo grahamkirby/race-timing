@@ -29,6 +29,7 @@ public abstract class RaceOutput {
     protected String race_name_for_filenames;
     protected String overall_results_filename;
     protected String prizes_filename;
+    protected String notes_filename;
     protected Path output_directory_path;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +53,7 @@ public abstract class RaceOutput {
 
         overall_results_filename = race_name_for_filenames + "_overall_" + year;
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
+        notes_filename = "processing_notes";
 
         output_directory_path = race.getWorkingDirectoryPath().resolve("output");
     }
@@ -140,6 +142,9 @@ public abstract class RaceOutput {
     public void printPrizes() throws IOException {
         throw new UnsupportedOperationException();
     }
+    public void printNotes() throws IOException {
+        throw new UnsupportedOperationException();
+    }
     public void printCombined() throws IOException {
         throw new UnsupportedOperationException();
     }
@@ -148,6 +153,9 @@ public abstract class RaceOutput {
         throw new UnsupportedOperationException();
     }
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
     protected void printPrizes(final OutputStreamWriter writer) throws IOException {

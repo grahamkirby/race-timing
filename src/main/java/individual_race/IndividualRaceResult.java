@@ -1,7 +1,7 @@
 package individual_race;
 
-import common.categories.Category;
 import common.RaceResult;
+import common.categories.Category;
 
 import java.time.Duration;
 
@@ -11,7 +11,7 @@ public class IndividualRaceResult extends RaceResult {
 
     public IndividualRaceEntry entry;
     public boolean DNF;
-    Duration finish_time; // Relative to start of leg 1.
+    public Duration finish_time;
 
     public IndividualRaceResult(final IndividualRace race) {
 
@@ -53,23 +53,42 @@ public class IndividualRaceResult extends RaceResult {
         return duration().compareTo(((IndividualRaceResult) other).duration());
     }
 
+    protected int compareRunnerNameTo(final IndividualRaceResult o) {
+
+        final int last_name_comparison = getLastName(entry.runner.name).compareTo(getLastName(o.entry.runner.name));
+        return last_name_comparison != 0 ? last_name_comparison : getFirstName(entry.runner.name).compareTo(getFirstName(o.entry.runner.name));
+    }
+
+    private int compareRecordedPositionTo(IndividualRaceResult r2) {
+
+        IndividualRace individual_race = (IndividualRace) race;
+
+        final int this_recorded_position = individual_race.getRecordedPosition(entry.bib_number);
+        final int other_recorded_position = individual_race.getRecordedPosition(r2.entry.bib_number);
+
+        return Integer.compare(this_recorded_position, other_recorded_position);
+    }
+
     public boolean dnf() {
         return DNF;
     }
 
     public static int compare(RaceResult r1, RaceResult r2) {
 
-        // Where the time is the same, use the recording order.
-        if (((IndividualRaceResult)r1).duration().equals(((IndividualRaceResult)r2).duration())) {
+        final int compare_completion = r1.compareCompletionTo(r2);
+        if (compare_completion != 0) return compare_completion;
 
-            IndividualRace individual_race = (IndividualRace) r1.race;
+        // Either both have completed or neither have completed.
 
-            final int this_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r1).entry.bib_number);
-            final int other_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r2).entry.bib_number);
+        final int compare_performance = r1.comparePerformanceTo(r2);
+        if (compare_performance != 0) return compare_performance;
 
-            return Integer.compare(this_recorded_position, other_recorded_position);
-        }
+        // Both have the same time. If they have completed, use the recording order,
+        // otherwise use alphabetical order for DNFs.
+
+        if (r1.completed())
+            return ((IndividualRaceResult)r1).compareRecordedPositionTo((IndividualRaceResult) r2);
         else
-            return ((IndividualRaceResult)r1).duration().compareTo(((IndividualRaceResult)r2).duration());
+            return ((IndividualRaceResult)r1).compareRunnerNameTo((IndividualRaceResult) r2);
     }
 }

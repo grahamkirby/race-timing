@@ -47,6 +47,7 @@ public abstract class SeriesRace extends Race {
         printOverallResults();
         printCombined();
         printPrizes();
+        printNotes();
     }
 
     public List<IndividualRace> getRaces() {
@@ -107,6 +108,11 @@ public abstract class SeriesRace extends Race {
         output_HTML.printOverallResults();
     }
 
+    private void printNotes() throws IOException {
+
+        output_text.printNotes();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected abstract Comparator<RaceResult> getResultsSortComparator();
@@ -117,6 +123,4 @@ public abstract class SeriesRace extends Race {
 
     protected abstract void printPrizes() throws IOException;
     protected abstract void printCombined() throws IOException;
-
-
 }

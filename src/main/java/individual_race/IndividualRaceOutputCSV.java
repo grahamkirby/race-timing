@@ -40,16 +40,15 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
             final IndividualRaceResult result = (IndividualRaceResult)r;
 
-            if (!result.dnf()) {
+            if (!result.dnf())
                 writer.append(String.valueOf(result.position_string));
 
-                writer.append(",").
-                        append(String.valueOf(result.entry.bib_number)).append(",").
-                        append(result.entry.runner.name).append(",").
-                        append((result.entry.runner.club)).append(",").
-                        append(result.entry.runner.category.getShortName()).append(",").
-                        append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
-            }
+            writer.append(",").
+                    append(String.valueOf(result.entry.bib_number)).append(",").
+                    append(result.entry.runner.name).append(",").
+                    append((result.entry.runner.club)).append(",").
+                    append(result.entry.runner.category.getShortName()).append(",").
+                    append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
         }
 
         @Override

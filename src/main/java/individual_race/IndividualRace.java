@@ -11,6 +11,7 @@ import single_race.SingleRace;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 
 public class IndividualRace extends SingleRace {
 
@@ -78,6 +79,7 @@ public class IndividualRace extends SingleRace {
         if (output_results) {
             printOverallResults();
             printPrizes();
+            printNotes();
             printCombined();
         }
     }
@@ -134,12 +136,17 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    protected void fillDNF(String dnf_string) {
+    protected void fillDNF(final String dnf_string) {
         try {
-            getResultWithBibNumber(Integer.parseInt(dnf_string)).DNF = true;
+            final String cleaned = dnf_string.strip();
+            if (!cleaned.isEmpty()) {
+                final IndividualRaceResult result = getResultWithBibNumber(Integer.parseInt(cleaned));
+                result.DNF = true;
+                result.finish_time = Duration.ZERO;
+            }
         }
         catch (Exception e) {
-            throw new RuntimeException("illegal DNF time");
+            throw new RuntimeException("illegal DNF time: " + e.getLocalizedMessage());
         }
     }
 
@@ -201,6 +208,11 @@ public class IndividualRace extends SingleRace {
         output_text.printPrizes();
         output_PDF.printPrizes();
         output_HTML.printPrizes();
+    }
+
+    private void printNotes() throws IOException {
+
+        output_text.printNotes();
     }
 
     private void printCombined() throws IOException {

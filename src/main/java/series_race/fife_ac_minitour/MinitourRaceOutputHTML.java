@@ -213,14 +213,6 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
         printResults(results, new OverallResultPrinterHTML(writer));
     }
 
-    private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            """);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     record OverallResultPrinterHTML(OutputStreamWriter writer) implements ResultPrinter {

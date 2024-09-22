@@ -9,6 +9,15 @@ It has been used for the following [Fife AC](//fifeac.org) races:
 * [St Andrews 5K/5M](https://www.fifeac.org/events/fife-ac-events/st-andrews-5k.html)
 * [Strathkinness - Blebocraigs](https://www.fifeac.org/events/fife-ac-events/strathkinness-blebocraigs.html)
 
+## Configurable options ##
+
+The following options can be configured:
+
+* Senior or junior race, determining the runner categories (via configuration file; default true)
+* Inclusion of Open prize categories (via configuration file; default true)
+* Inclusion of Senior prize categories (via configuration file; default false)
+* Numbers of Open, Senior and Age Category prizes (via configuration file; defaults specified in code)
+
 ## Processing results for an individual race ##
 
 1. Create a new copy of the directory [```src/main/resources/individual_race/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/individual_race/sample_config).

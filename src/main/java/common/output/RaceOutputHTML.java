@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
+import static common.Race.SOFTWARE_LINK_TEXT;
+
 public abstract class RaceOutputHTML extends RaceOutput {
 
     public RaceOutputHTML(Race race) {
@@ -22,6 +24,14 @@ public abstract class RaceOutputHTML extends RaceOutput {
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printOverallResults(html_writer);
         }
+    }
+
+    @Override
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
+
+        printOverallResultsHeader(writer);
+        printOverallResultsBody(writer);
+        printOverallResultsFooter(writer);
     }
 
     @Override
@@ -40,5 +50,13 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
         for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
             printPrizes(writer, category);
+    }
+
+    protected void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
+
+        writer.append("""
+                </tbody>
+            </table>
+            """).append(SOFTWARE_LINK_TEXT);
     }
 }
