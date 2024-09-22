@@ -45,34 +45,17 @@ public abstract class SeriesRaceResult extends RaceResult {
         return count;
     }
 
-    public boolean shouldDisplayPosition() {
-
-        final SeriesRace series_race = (SeriesRace) race;
-        final int number_of_races_taken_place = series_race.getNumberOfRacesTakenPlace();
-
-        return number_of_races_taken_place < series_race.getRaces().size() || completed();
-    }
-
-    protected int compareCompletionTo(final SeriesRaceResult o) {
-
-        if (completed() && !o.completed()) return -1;
-        if (!completed() && o.completed()) return 1;
-        return 0;
-    }
-
     protected int compareRunnerNameTo(final SeriesRaceResult o) {
 
         final int last_name_comparison = getLastName(runner.name).compareTo(getLastName(o.runner.name));
         return last_name_comparison != 0 ? last_name_comparison : getFirstName(runner.name).compareTo(getFirstName(o.runner.name));
     }
 
-    private static String getFirstName(final String name) {
-        return name.split(" ")[0];
-    }
+    public boolean shouldDisplayPosition() {
 
-    private static String getLastName(final String name) {
+        final SeriesRace series_race = (SeriesRace) race;
+        final int number_of_races_taken_place = series_race.getNumberOfRacesTakenPlace();
 
-        final String[] names = name.split(" ");
-        return names[names.length - 1];
+        return number_of_races_taken_place < series_race.getRaces().size() || completed();
     }
 }

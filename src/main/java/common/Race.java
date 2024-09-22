@@ -30,6 +30,8 @@ public abstract class Race {
     public static final String NUMBER_OF_CATEGORY_PRIZES_KEY = "NUMBER_OF_CATEGORY_PRIZES";
     public static final String MINIMUM_NUMBER_OF_RACES_KEY = "MINIMUM_NUMBER_OF_RACES";
 
+    public static final String SOFTWARE_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.";
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Path working_directory_path;
@@ -40,6 +42,7 @@ public abstract class Race {
 
     public Categories categories;
     protected RacePrizes prizes;
+    protected StringBuilder notes;
 
     public RaceInput input;
     public RaceOutput output_CSV, output_HTML, output_text, output_PDF;
@@ -53,6 +56,7 @@ public abstract class Race {
 
         prize_winners = new HashMap<>();
         overall_results = new ArrayList<>();
+        notes = new StringBuilder();
 
         configure();
     }
@@ -86,6 +90,10 @@ public abstract class Race {
 
     public Properties getProperties() {
         return properties;
+    }
+
+    public StringBuilder getNotes() {
+        return notes;
     }
 
     public Category lookupCategory(final String short_name) {

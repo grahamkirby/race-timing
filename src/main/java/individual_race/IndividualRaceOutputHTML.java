@@ -1,8 +1,8 @@
 package individual_race;
 
+import common.RaceResult;
 import common.categories.Category;
 import common.output.RaceOutputHTML;
-import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -81,14 +81,6 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter html_writer) throws IOException {
-
-        printOverallResultsHeader(html_writer);
-        printOverallResultsBody(html_writer);
-        printOverallResultsFooter(html_writer);
-    }
-
-    @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
@@ -107,7 +99,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
-    private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
 
@@ -143,14 +135,5 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                             </td>
                         </tr>""");
         }
-    }
-
-    private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            <p style="font-size:smaller; font-style:italic;">Results generated using <a href="https://github.com/grahamkirby/race-timing">race-timing</a>.
-            """);
     }
 }

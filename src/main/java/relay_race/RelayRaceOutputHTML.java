@@ -1,8 +1,8 @@
 package relay_race;
 
+import common.RaceResult;
 import common.categories.Category;
 import common.output.RaceOutputHTML;
-import common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+
+import static common.Race.SOFTWARE_LINK_TEXT;
 
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
@@ -138,14 +140,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
-
-        printOverallResultsHeader(writer);
-        printOverallResultsBody(writer);
-        printOverallResultsFooter(writer);
-    }
-
-    @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
@@ -172,7 +166,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
 
@@ -204,14 +198,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                             </td>
                         </tr>""");
         }
-    }
-
-    private void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            """);
     }
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
@@ -294,7 +280,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         writer.append("""
                 </tbody>
             </table>
-            """);
+            """).append(SOFTWARE_LINK_TEXT);
     }
 
     private void printLegResults(final OutputStreamWriter writer, final int leg) throws IOException {
@@ -421,6 +407,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         writer.append("""
                 </tbody>
             </table>
-            """);
+            """).append(SOFTWARE_LINK_TEXT);
     }
 }

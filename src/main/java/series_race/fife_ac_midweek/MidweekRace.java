@@ -70,11 +70,8 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected void configureCategories() {
 
-//            public SeniorRace Categories(final boolean open_prize_categories, final boolean senior_prize_categories, final int number_of_open_prizes, final int number_of_senior_prizes, final int number_of_category_prizes) {
-
-            categories = new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes);
+        categories = new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes);
     }
-
 
     @Override
     protected void printPrizes() throws IOException {
@@ -139,6 +136,13 @@ public class MidweekRace extends SeriesRace {
 
         if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
             recordClubForRunnerName(runner_name, defined_clubs.get(0));
+
+        if (number_of_defined_clubs > 1) {
+            getNotes().append("Runner name ").append(runner_name).append(" recorded for multiple clubs: ");
+            for (String club : defined_clubs)
+                getNotes().append(club).append(" ");
+            getNotes().append("\n");
+        }
     }
 
     private void recordClubForRunnerName(final String runner_name, final String defined_club) {

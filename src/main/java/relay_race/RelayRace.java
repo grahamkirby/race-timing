@@ -101,6 +101,7 @@ public class RelayRace extends SingleRace {
         printPrizes();
         printCombined();
         printCollatedTimes();
+        printNotes();
     }
 
     @Override
@@ -456,6 +457,11 @@ public class RelayRace extends SingleRace {
         output_PDF.printPrizes();
         output_HTML.printPrizes();
         output_text.printPrizes();
+    }
+
+    private void printNotes() throws IOException {
+
+        output_text.printNotes();
     }
 
     private void printCombined() throws IOException {

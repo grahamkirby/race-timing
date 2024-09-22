@@ -34,8 +34,12 @@ public class MidweekRaceResult extends SeriesRaceResult {
         final int compare_completion = ((MidweekRaceResult)r1).compareCompletionTo((MidweekRaceResult) r2);
         if (compare_completion != 0) return compare_completion;
 
+        // Either both have completed or neither have completed.
+
         final int compare_performance = r1.comparePerformanceTo(r2);
         if (compare_performance != 0) return compare_performance;
+
+        // Both have the same points.
 
         return ((MidweekRaceResult)r1).compareRunnerNameTo((MidweekRaceResult) r2);
     }
