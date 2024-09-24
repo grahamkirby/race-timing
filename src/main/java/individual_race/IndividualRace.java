@@ -199,8 +199,8 @@ public class IndividualRace extends SingleRace {
 
     public void printOverallResults() throws IOException {
 
-        output_CSV.printOverallResults();
-        output_HTML.printOverallResults();
+        output_CSV.printOverallResults(false);
+        output_HTML.printOverallResults(true);
     }
 
     private void printPrizes() throws IOException {

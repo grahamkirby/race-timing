@@ -30,7 +30,7 @@ public abstract class Race {
     public static final String NUMBER_OF_CATEGORY_PRIZES_KEY = "NUMBER_OF_CATEGORY_PRIZES";
     public static final String MINIMUM_NUMBER_OF_RACES_KEY = "MINIMUM_NUMBER_OF_RACES";
 
-    public static final String SOFTWARE_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.";
+    public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -112,10 +112,26 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static Duration parseTime(final String element) {
+//    0:58:
+//    65:55
+//    :67:22
+//    68:49.32
+
+//    public static void main(String[] args) throws IOException {
+//
+//        Duration d = parseTime("0:58:45.32");
+//        int x = 3;
+//        System.out.println("duration: " + d);
+//    }
+
+    public static Duration parseTime(String element) {
+
+        element = element.strip();
+        if (element.startsWith(":")) element = "0" + element;
+        if (element.endsWith(":")) element = element + "0";
 
         try {
-            final String[] parts = element.strip().split(":");
+            final String[] parts = element.split(":");
             final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
 
             return Duration.parse(time_as_ISO);

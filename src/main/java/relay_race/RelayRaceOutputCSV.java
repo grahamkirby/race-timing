@@ -28,7 +28,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void printDetailedResults() throws IOException {
+    public void printDetailedResults(boolean include_credit_link) throws IOException {
 
         final Path detailed_results_csv_path = output_directory_path.resolve(detailed_results_filename + ".csv");
 

@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
-import static common.Race.SOFTWARE_LINK_TEXT;
+import static common.Race.SOFTWARE_CREDIT_LINK_TEXT;
 
 public abstract class RaceOutputHTML extends RaceOutput {
 
@@ -17,21 +17,21 @@ public abstract class RaceOutputHTML extends RaceOutput {
     }
 
     @Override
-    public void printOverallResults() throws IOException {
+    public void printOverallResults(final boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printOverallResults(html_writer);
+            printOverallResults(html_writer, include_credit_link);
         }
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         printOverallResultsHeader(writer);
         printOverallResultsBody(writer);
-        printOverallResultsFooter(writer);
+        printOverallResultsFooter(writer, include_credit_link);
     }
 
     @Override
@@ -52,11 +52,13 @@ public abstract class RaceOutputHTML extends RaceOutput {
             printPrizes(writer, category);
     }
 
-    protected void printOverallResultsFooter(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         writer.append("""
                 </tbody>
             </table>
-            """).append(SOFTWARE_LINK_TEXT);
+            """);
+
+        if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 }

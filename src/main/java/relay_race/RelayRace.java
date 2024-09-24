@@ -436,20 +436,20 @@ public class RelayRace extends SingleRace {
 
     private void printOverallResults() throws IOException {
 
-        output_CSV.printOverallResults();
-        output_HTML.printOverallResults();
+        output_CSV.printOverallResults(false);
+        output_HTML.printOverallResults(true);
     }
 
     private void printDetailedResults() throws IOException {
 
-        output_CSV.printDetailedResults();
-        output_HTML.printDetailedResults();
+        output_CSV.printDetailedResults(false);
+        output_HTML.printDetailedResults(true);
     }
 
     private void printLegResults() throws IOException {
 
         ((RelayRaceOutputCSV)output_CSV).printLegResults();
-        ((RelayRaceOutputHTML)output_HTML).printLegResults();
+        ((RelayRaceOutputHTML)output_HTML).printLegResults(true);
     }
 
     private void printPrizes() throws IOException {

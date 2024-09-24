@@ -71,7 +71,15 @@ public abstract class RaceOutput {
     protected static String format(final Duration duration) {
 
         final long s = duration.getSeconds();
-        return String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+        final int n = duration.getNano();
+        String result = String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+        if (n > 0) {
+            double fractional_seconds = n / 1000000000.0;
+            String frac = String.format("%1$,.3f", fractional_seconds);
+            result += frac.substring(1);
+            while (result.endsWith("0")) result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 
     protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
@@ -133,10 +141,10 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printOverallResults() throws IOException {
+    public void printOverallResults(boolean include_credit_link) throws IOException {
         throw new UnsupportedOperationException();
     }
-    public void printDetailedResults() throws IOException {
+    public void printDetailedResults(boolean include_credit_link) throws IOException {
         throw new UnsupportedOperationException();
     }
     public void printPrizes() throws IOException {
@@ -149,7 +157,7 @@ public abstract class RaceOutput {
         throw new UnsupportedOperationException();
     }
 
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
         throw new UnsupportedOperationException();
     }
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {

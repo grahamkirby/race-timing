@@ -20,19 +20,19 @@ public abstract class RaceOutputCSV extends RaceOutput {
     }
 
     @Override
-    public void printOverallResults() throws IOException {
+    public void printOverallResults(boolean include_credit_link) throws IOException {
 
         final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
 
             printOverallResultsHeader(writer);
-            printOverallResults(writer);
+            printOverallResults(writer, false);
         }
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
 
         for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
             printCategoryResults(writer, category_group.category_names());

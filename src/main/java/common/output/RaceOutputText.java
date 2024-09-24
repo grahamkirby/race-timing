@@ -50,11 +50,15 @@ public abstract class RaceOutputText extends RaceOutput {
     @Override
     public void printNotes() throws IOException {
 
-        final Path notes_path = output_directory_path.resolve(notes_filename + ".txt");
+        final String notes = race.getNotes().toString();
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(notes_path))) {
+        if (!notes.isEmpty()) {
 
-            writer.append(race.getNotes().toString());
+            final Path notes_path = output_directory_path.resolve(notes_filename + ".txt");
+
+            try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(notes_path))) {
+                writer.append(notes);
+            }
         }
     }
 }
