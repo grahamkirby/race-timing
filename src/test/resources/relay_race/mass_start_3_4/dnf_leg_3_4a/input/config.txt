@@ -9,7 +9,3 @@ RACE_NAME_FOR_FILENAMES = simple
 # Elapsed duration from start of leg 1 to mass start time for each leg.
 # 23:59:59 indicates no mass start.
 MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,1:30:00,2:36:00
-
-# Comma-separated sequence of bib-number/leg-number for all legs that have a time
-# recorded but the runners DNF'd the leg.
-DNF_LEGS =

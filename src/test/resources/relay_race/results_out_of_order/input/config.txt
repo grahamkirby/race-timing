@@ -5,11 +5,3 @@ NUMBER_OF_LEGS = 4
 PAIRED_LEGS = 2,3
 RACE_NAME_FOR_RESULTS = Devil's Burdens
 RACE_NAME_FOR_FILENAMES = devils_burdens
-
-# Elapsed duration from start of leg 1 to mass start time for each leg.
-# 23:59:59 indicates no mass start.
-MASS_START_ELAPSED_TIMES =
-
-# Comma-separated sequence of bib-number/leg-number for all legs that have a time
-# recorded but the runners DNF'd the leg.
-DNF_LEGS =
