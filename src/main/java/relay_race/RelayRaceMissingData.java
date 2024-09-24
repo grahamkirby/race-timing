@@ -119,13 +119,19 @@ public class RelayRaceMissingData {
 
     private void interpolateTimes(final ContiguousSequence sequence, final Duration time_step) {
 
-        for (int i = sequence.start_index; i <= sequence.end_index; i++) {
+        final Duration previous_finish_time = race.getRawResults().get(sequence.start_index - 1).getRecordedFinishTime();
 
-            final Duration previous_finish_time = race.getRawResults().get(i - 1).getRecordedFinishTime();
+        for (int i = 0; i <= sequence.end_index - sequence.start_index; i++) {
 
-            race.getRawResults().get(i).setRecordedFinishTime(previous_finish_time.plus(time_step));
-            race.getRawResults().get(i).appendComment("Time not recorded. Time interpolated.");
+            final Duration interpolated_finish_time = roundToIntegerSeconds(previous_finish_time.plus(time_step.multipliedBy(i + 1)));
+
+            race.getRawResults().get(sequence.start_index + i).setRecordedFinishTime(interpolated_finish_time);
+            race.getRawResults().get(sequence.start_index + i).appendComment("Time not recorded. Time interpolated.");
         }
+    }
+
+    private static Duration roundToIntegerSeconds(Duration interpolated_finish_time) {
+        return Duration.ofSeconds(interpolated_finish_time.getSeconds());
     }
 
     private void setTimesForResultsAfterLastRecordedTime(final int missing_times_start_index) {

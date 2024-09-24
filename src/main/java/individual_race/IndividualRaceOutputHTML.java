@@ -17,12 +17,12 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    public void printOverallResults() throws IOException {
+    public void printOverallResults(boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printOverallResults(writer);
+            printOverallResults(writer, true);
         }
     }
 
@@ -43,7 +43,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                     <h4>Overall</h4>
                     """);
 
-            printOverallResults(html_writer);
+            printOverallResults(html_writer, true);
         }
     }
 

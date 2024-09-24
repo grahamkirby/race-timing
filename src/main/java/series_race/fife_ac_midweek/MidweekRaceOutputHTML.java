@@ -37,7 +37,7 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                     <h4>Overall</h4>
                     """);
 
-            printOverallResults(html_writer);
+            printOverallResults(html_writer, true);
         }
     }
 

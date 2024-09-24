@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static common.Race.SOFTWARE_LINK_TEXT;
+import static common.Race.SOFTWARE_CREDIT_LINK_TEXT;
 
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
@@ -25,29 +25,29 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printLegResults() throws IOException {
+    public void printLegResults(boolean include_credit_link) throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
-            printLegResults(leg);
+            printLegResults(leg, include_credit_link);
     }
 
     @Override
-    public void printOverallResults() throws IOException {
+    public void printOverallResults(boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printOverallResults(html_writer);
+            printOverallResults(html_writer, include_credit_link);
         }
     }
 
     @Override
-    public void printDetailedResults() throws IOException {
+    public void printDetailedResults(boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".html"));
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printDetailedResults(html_writer);
+            printDetailedResults(html_writer, include_credit_link);
         }
     }
 
@@ -78,13 +78,13 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                     <h4>Overall</h4>
                     """);
 
-            printOverallResults(html_writer);
+            printOverallResults(html_writer, false);
 
             html_writer.append("""
                     <h4>Full Results</h4>
                     """);
 
-            printDetailedResults(html_writer);
+            printDetailedResults(html_writer, false);
 
             html_writer.append("""
                     <p>M3: mass start leg 3<br />M4: mass start leg 4</p>
@@ -93,7 +93,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
                 html_writer.append("<p></p>\n<h4>Leg ").append(String.valueOf(leg_number)).append(" Results</h4>\n");
-                printLegResults(html_writer, leg_number);
+                printLegResults(html_writer, leg_number, leg_number == ((RelayRace)race).number_of_legs);
             }
         }
     }
@@ -157,12 +157,12 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
-    private void printLegResults(final int leg) throws IOException {
+    private void printLegResults(final int leg, boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html"));
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printLegResults(html_writer, leg);
+            printLegResults(html_writer, leg, include_credit_link);
         }
     }
 
@@ -200,11 +200,11 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResults(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
 
         printDetailedResultsHeader(writer);
         printDetailedResultsBody(writer);
-        printDetailedResultsFooter(writer);
+        printDetailedResultsFooter(writer, include_credit_link);
     }
 
     private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
@@ -275,19 +275,21 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 </tr>""");
     }
 
-    private void printDetailedResultsFooter(final OutputStreamWriter writer) throws IOException {
+    private void printDetailedResultsFooter(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
 
         writer.append("""
                 </tbody>
             </table>
-            """).append(SOFTWARE_LINK_TEXT);
+            """);
+
+        if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 
-    private void printLegResults(final OutputStreamWriter writer, final int leg) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final int leg, boolean include_credit_link) throws IOException {
 
         printLegResultsHeader(writer, leg);
         printLegResultsBody(writer, getLegResults(leg));
-        printLegResultsFooter(writer);
+        printLegResultsFooter(writer, include_credit_link);
     }
 
     private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
@@ -402,11 +404,13 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private void printLegResultsFooter(final OutputStreamWriter writer) throws IOException {
+    private void printLegResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         writer.append("""
                 </tbody>
             </table>
-            """).append(SOFTWARE_LINK_TEXT);
+            """);
+
+        if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 }

@@ -24,12 +24,15 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
 
         writer.append("<h4>Overall Results</h4>\n");
 
-        for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
-            printOverallResultsHTML(writer, category_group.combined_categories_title(), category_group.category_names());
+        final List<Race.CategoryGroup> groups = race.getResultCategoryGroups();
+
+        for (int i = 0; i < groups.size(); i++) {
+            printOverallResultsHTML(writer, groups.get(i).combined_categories_title(), groups.get(i).category_names(), i == groups.size() - 1);
+        }
     }
 
     @Override
@@ -47,7 +50,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
                     """);
 
             printPrizes(writer);
-            printOverallResults(writer);
+            printOverallResults(writer, true);
         }
     }
 
@@ -94,7 +97,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void printOverallResultsHTML(final OutputStreamWriter writer, final String combined_categories_title, final List<String> category_names) throws IOException {
+    private void printOverallResultsHTML(final OutputStreamWriter writer, final String combined_categories_title, final List<String> category_names, boolean include_credit_link) throws IOException {
 
         final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
 
@@ -102,7 +105,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
         printOverallResultsHeader(writer);
         printOverallResultsBody(writer, category_list);
-        printOverallResultsFooter(writer);
+        printOverallResultsFooter(writer, include_credit_link);
     }
 
     private void printIndividualRace(final int race_number) throws IOException {

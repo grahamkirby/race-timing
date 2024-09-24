@@ -57,6 +57,11 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
+    public void multipleTimeFormats() throws Exception {
+        testExpectedCompletion("multiple_time_formats");
+    }
+
+    @Test
     public void resultsOutOfOrder() throws Exception {
         testExpectedException("results_out_of_order", "result 15 out of order");
     }
