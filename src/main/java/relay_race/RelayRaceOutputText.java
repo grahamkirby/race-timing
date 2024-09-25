@@ -75,8 +75,8 @@ public class RelayRaceOutputText extends RaceOutputText {
             final RelayRaceResult result = ((RelayRaceResult)r);
 
             writer.append(String.valueOf(position++)).append(": ").
-                    append(result.entry.team.name).append(" (").
-                    append(result.entry.team.category.getLongName()).append(") ").
+                    append(result.entry.team.name()).append(" (").
+                    append(result.entry.team.category().getLongName()).append(") ").
                     append(format(result.duration())).append("\n");
         }
     }

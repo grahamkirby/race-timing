@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 public class RelayRaceEntry extends RaceEntry {
 
+    public record Team(String name, Category category, String[] runners) {}
+
     public Team team;
 
     public RelayRaceEntry(final String[] elements, Race race) {

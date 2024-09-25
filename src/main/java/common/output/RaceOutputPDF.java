@@ -4,9 +4,7 @@ import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
@@ -16,22 +14,6 @@ import common.categories.Category;
 import java.io.IOException;
 
 public abstract class RaceOutputPDF extends RaceOutput {
-
-    public static void main(String[] args) throws IOException {
-
-        PdfReader reader = new PdfReader("/Users/gnck/Documents/Code/race-timing/src/main/resources/individual_race/balmullo/2024/output/balmullo_prizes_2024.pdf");
-
-        PdfDocument pdfDocument = new PdfDocument(reader);
-
-        StringBuilder text = new StringBuilder();
-        for (int i = 1; i <= pdfDocument.getNumberOfPages(); i++) {
-            text.append(PdfTextExtractor.getTextFromPage(pdfDocument.getPage(i)));
-        }
-
-        System.out.println(text.toString());
-
-        pdfDocument.close();
-    }
 
     public RaceOutputPDF(Race race) {
         super(race);

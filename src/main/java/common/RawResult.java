@@ -9,7 +9,7 @@ public class RawResult {
     String comment = "";
 
     // Only used for relay race. Leg number is optional, depending on whether it was recorded on paper sheet.
-    Integer leg_number;
+    private final Integer leg_number;
 
     public RawResult(final String file_line) {
 

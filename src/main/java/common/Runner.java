@@ -4,9 +4,9 @@ import common.categories.Category;
 
 public class Runner {
 
-    public String name;
+    public final String name;
     public String club;
-    public Category category;
+    public final Category category;
 
     public Runner(final String name, final String club, final Category category) {
         this.name = name;

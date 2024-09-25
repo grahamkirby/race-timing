@@ -67,7 +67,6 @@ public class SeriesRaceInput extends RaceInput {
         return individual_race;
     }
 
-    protected void configureIndividualRace(final IndividualRace individual_race, final int race_number) throws IOException {
-
+    protected void configureIndividualRace(final IndividualRace individual_race, final int race_number) {
     }
 }

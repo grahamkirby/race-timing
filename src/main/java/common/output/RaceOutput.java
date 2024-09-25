@@ -157,23 +157,13 @@ public abstract class RaceOutput {
         throw new UnsupportedOperationException();
     }
 
-    protected void printOverallResults(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
-        throw new UnsupportedOperationException();
-    }
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
     protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
-    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
     protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    protected void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
         throw new UnsupportedOperationException();
     }
 

@@ -15,7 +15,7 @@ public abstract class Race {
     // TODO document where dead heats can occur - not where result is directly recorded,
     // only where calculated from other results. E.g. DB overall vs lap time
 
-    public record CategoryGroup(String combined_categories_title, List<String> category_names){};
+    public record CategoryGroup(String combined_categories_title, List<String> category_names){}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -111,18 +111,6 @@ public abstract class Race {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-//    0:58:
-//    65:55
-//    :67:22
-//    68:49.32
-
-//    public static void main(String[] args) throws IOException {
-//
-//        Duration d = parseTime("0:58:45.32");
-//        int x = 3;
-//        System.out.println("duration: " + d);
-//    }
 
     public static Duration parseTime(String element) {
 

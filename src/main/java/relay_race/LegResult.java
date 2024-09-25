@@ -57,7 +57,7 @@ public class LegResult extends RaceResult {
 
     @Override
     public Category getCategory() {
-        return entry.team.category;
+        return entry.team.category();
     }
 
     @Override

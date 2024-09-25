@@ -46,11 +46,11 @@ public class RelayRaceInput extends SingleRaceInput {
     @Override
     protected void checkDuplicateEntry(final List<RaceEntry> entries, final RaceEntry new_entry) {
 
-        final String new_team_name = ((RelayRaceEntry) new_entry).team.name;
+        final String new_team_name = ((RelayRaceEntry) new_entry).team.name();
 
         for (final RaceEntry entry : entries)
             if (entry != null)
-                if (((RelayRaceEntry) entry).team.name.equals(new_team_name))
+                if (((RelayRaceEntry) entry).team.name().equals(new_team_name))
                     throw new RuntimeException("duplicate entry: " + new_entry);
     }
 
