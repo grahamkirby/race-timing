@@ -1,8 +1,8 @@
 package relay_race;
 
 import common.Race;
-import common.output.RaceOutputCSV;
 import common.RaceResult;
+import common.output.RaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -132,15 +132,15 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         writer.append(",");
         writer.append(String.valueOf(result.entry.bib_number)).append(",");
-        writer.append(result.entry.team.name).append(",");
-        writer.append(result.entry.team.category.getLongName()).append(",");
+        writer.append(result.entry.team.name()).append(",");
+        writer.append(result.entry.team.category().getLongName()).append(",");
 
         printLegDetails(writer, result, result.entry.team);
 
         writer.append("\n");
     }
 
-    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final RelayRaceEntry.Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
@@ -148,7 +148,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             final LegResult leg_result = result.leg_results.get(leg_number - 1);
 
-            writer.append(team.runners[leg_number-1]);
+            writer.append(team.runners()[leg_number-1]);
             addMassStartAnnotation(writer, leg_result, leg_number);
 
             writer.append(",");
@@ -199,7 +199,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         if (!leg_result.DNF) {
             writer.append(leg_result.position_string).append(",");
-            writer.append(leg_result.entry.team.runners[leg_result.leg_number - 1]).append(",");
+            writer.append(leg_result.entry.team.runners()[leg_result.leg_number - 1]).append(",");
             writer.append(format(leg_result.duration())).append("\n");
         }
     }
@@ -217,8 +217,8 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             writer.append(",").
                     append(String.valueOf(result.entry.bib_number)).append(",").
-                    append(result.entry.team.name).append(",").
-                    append(result.entry.team.category.getLongName()).append(",").
+                    append(result.entry.team.name()).append(",").
+                    append(result.entry.team.category().getLongName()).append(",").
                     append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
         }
 

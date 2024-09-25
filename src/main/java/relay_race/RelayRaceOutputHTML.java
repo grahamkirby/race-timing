@@ -130,8 +130,8 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 final RelayRaceResult result = ((RelayRaceResult) r);
 
                 writer.append("<li>").
-                        append(result.entry.team.name).append(" (").
-                        append(result.entry.team.category.getLongName()).append(") ").
+                        append(result.entry.team.name()).append(" (").
+                        append(result.entry.team.category().getLongName()).append(") ").
                         append(format(result.duration())).append("</li>\n");
             }
         }
@@ -185,11 +185,11 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.entry.team.name));
+            writer.append(htmlEncode(result.entry.team.name()));
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(result.entry.team.category.getLongName());
+            writer.append(result.entry.team.category().getLongName());
             writer.append("""
                             </td>
                             <td>""");
@@ -261,11 +261,11 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(htmlEncode(result.entry.team.name));
+        writer.append(htmlEncode(result.entry.team.name()));
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(result.entry.team.category.getLongName());
+        writer.append(result.entry.team.category().getLongName());
         writer.append("""
                 </td>""");
 
@@ -292,7 +292,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         printLegResultsFooter(writer, include_credit_link);
     }
 
-    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final RelayRaceEntry.Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
@@ -302,7 +302,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
             writer.append("""
                 <td>""");
-            writer.append(htmlEncode(team.runners[leg - 1]));
+            writer.append(htmlEncode(team.runners()[leg - 1]));
 
             addMassStartAnnotation(writer, leg_result, leg);
 
@@ -392,7 +392,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(htmlEncode(leg_result.entry.team.runners[leg_result.leg_number-1]));
+                writer.append(htmlEncode(leg_result.entry.team.runners()[leg_result.leg_number-1]));
                 writer.append("""
                                 </td>
                                 <td>""");

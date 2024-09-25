@@ -26,7 +26,6 @@ public abstract class RaceOutputHTML extends RaceOutput {
         }
     }
 
-    @Override
     protected void printOverallResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         printOverallResultsHeader(writer);

@@ -60,7 +60,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     public static int compare(final RaceResult r1, final RaceResult r2) {
         
-        final int compare_completion = ((MinitourRaceResult) r1).compareCompletionTo((MinitourRaceResult) r2);
+        final int compare_completion = r1.compareCompletionTo(r2);
         if (compare_completion != 0) return compare_completion;
 
         final int compare_completion_so_far = ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);

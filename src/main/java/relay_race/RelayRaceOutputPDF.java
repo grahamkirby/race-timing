@@ -35,7 +35,7 @@ public class RelayRaceOutputPDF extends RaceOutputPDF {
 
                 final RelayRaceResult result = ((RelayRaceResult) r);
 
-                printPrizePDF(document, String.valueOf(position++), result.entry.team.name, result.entry.team.category.getLongName(), format(result.duration()));
+                printPrizePDF(document, String.valueOf(position++), result.entry.team.name(), result.entry.team.category().getLongName(), format(result.duration()));
             }
         }
     }

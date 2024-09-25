@@ -5,9 +5,9 @@ import java.util.List;
 
 public abstract class Categories {
 
-    protected List<Category> runner_categories = new ArrayList<>();
-    protected List<Category> prize_categories_in_decreasing_generality_order = new ArrayList<>();
-    protected List<Category> prize_categories_in_report_order = new ArrayList<>();
+    protected final List<Category> runner_categories = new ArrayList<>();
+    protected final List<Category> prize_categories_in_decreasing_generality_order = new ArrayList<>();
+    protected final List<Category> prize_categories_in_report_order = new ArrayList<>();
 
     public List<Category> getRunnerCategories() {
 

@@ -27,18 +27,16 @@ public abstract class RaceOutputCSV extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
 
             printOverallResultsHeader(writer);
-            printOverallResults(writer, false);
+            printOverallResults(writer);
         }
     }
 
-    @Override
-    protected void printOverallResults(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
             printCategoryResults(writer, category_group.category_names());
     }
 
-    @Override
     protected void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
 
         final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();

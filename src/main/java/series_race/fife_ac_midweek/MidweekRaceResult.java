@@ -31,7 +31,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
     public static int compare(final RaceResult r1, final RaceResult r2) {
 
-        final int compare_completion = ((MidweekRaceResult)r1).compareCompletionTo((MidweekRaceResult) r2);
+        final int compare_completion = r1.compareCompletionTo(r2);
         if (compare_completion != 0) return compare_completion;
 
         // Either both have completed or neither have completed.

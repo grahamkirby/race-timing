@@ -42,7 +42,7 @@ public class RelayRaceResult extends RaceResult {
 
     @Override
     public Category getCategory() {
-        return entry.team.category;
+        return entry.team.category();
     }
 
     protected Duration duration() {
