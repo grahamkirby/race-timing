@@ -30,8 +30,6 @@ public abstract class Race {
     public static final String NUMBER_OF_CATEGORY_PRIZES_KEY = "NUMBER_OF_CATEGORY_PRIZES";
     public static final String MINIMUM_NUMBER_OF_RACES_KEY = "MINIMUM_NUMBER_OF_RACES";
 
-    public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Path working_directory_path;

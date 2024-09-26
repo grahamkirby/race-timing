@@ -3,7 +3,3 @@ RAW_RESULTS_FILENAME = rawtimes.txt
 YEAR = 2024
 RACE_NAME_FOR_RESULTS = Dunnikier 2 Bridges
 RACE_NAME_FOR_FILENAMES = dunnikier
-
-# Comma-separated sequence of bib-numbers for any runners that have a time
-# recorded but they DNF'd.
-DNF_LEGS =
