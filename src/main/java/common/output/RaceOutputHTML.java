@@ -8,9 +8,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
-import static common.Race.SOFTWARE_CREDIT_LINK_TEXT;
-
 public abstract class RaceOutputHTML extends RaceOutput {
+
+    public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     public RaceOutputHTML(Race race) {
         super(race);

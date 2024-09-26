@@ -9,19 +9,18 @@ public abstract class Categories {
     protected final List<Category> prize_categories_in_decreasing_generality_order = new ArrayList<>();
     protected final List<Category> prize_categories_in_report_order = new ArrayList<>();
 
+    // Order not important.
     public List<Category> getRunnerCategories() {
-
         return runner_categories;
     }
 
     // Defines the order of iteration when allocating prizes.
     public List<Category> getPrizeCategoriesInDecreasingGeneralityOrder() {
-
         return prize_categories_in_decreasing_generality_order;
     }
 
+    // Defines the order of iteration when reporting prizes.
     public List<Category> getPrizeCategoriesInReportOrder() {
-
         return prize_categories_in_report_order;
     }
 

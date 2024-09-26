@@ -2,7 +2,7 @@
 
 This package supports conventional individual races.
 
-It has been used for the following [Fife AC](//fifeac.org) races:
+It has been used for the following [Fife AC](https://fifeac.org) races:
 
 * [Balmullo Trail Race](https://www.fifeac.org/events/fife-ac-events/balmullo-trail-race.html)
 * [Hill of Tarvit](https://www.fifeac.org/events/fife-ac-events/hill-of-tarvit.html)
@@ -11,12 +11,27 @@ It has been used for the following [Fife AC](//fifeac.org) races:
 
 ## Configurable options ##
 
-The following options can be configured:
+A particular individual race has two related but distinct sets of categories:
+* Runner categories
+* Prize categories
 
-* Senior or junior race, determining the runner categories (via configuration file; default true)
-* Inclusion of Open prize categories (via configuration file; default true)
-* Inclusion of Senior prize categories (via configuration file; default false)
-* Numbers of Open, Senior and Age Category prizes (via configuration file; defaults specified in code)
+In many cases these are equivalent, but there may be differences. For example, the races listed
+above (from the [Midweek Series](https://www.fifeac.org/events/fife-ac-events/midweek-series.html)) use the following:
+* Runner categories:
+    * FU20, MU20: Female Under 20, Male Under 20
+    * FS, MS: Female Senior, Male Senior (age 20-39)
+    * F40, M40: Female Vet 40, Male Vet 40 (age 40-49)
+    * F50, M50: Female Vet 50, Male Vet 50 (age 50-59)
+    * F60, M60: Female Vet 60, Male Vet 60 (age 60-69)
+    * F70+, M70+: Female Vet 70, Male Vet 70 (age 70+)
+* Prize categories: WO, MO, FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70
+
+Category options can be configured via the race configuration file:
+
+* Senior or junior race, determining the runner categories (default: senior)
+* Whether or not there should be Open prize categories (default: true)
+* Whether or not there should be Senior prize categories (default: false)
+* The numbers of prizes to be awarded in Open, Senior and veteran age categories
 
 ## Processing results for an individual race ##
 

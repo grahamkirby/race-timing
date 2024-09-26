@@ -15,8 +15,6 @@ import java.time.Duration;
 
 public class IndividualRace extends SingleRace {
 
-    // TODO non-binary category; optional team prizes, by cumulative positions and times
-
     ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
     //                                                                                              //
     //  See README.md at the project root for details of how to configure and run this software.    //
