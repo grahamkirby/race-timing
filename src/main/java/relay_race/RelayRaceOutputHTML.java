@@ -12,8 +12,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static common.Race.SOFTWARE_CREDIT_LINK_TEXT;
-
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     private String detailed_results_filename;
