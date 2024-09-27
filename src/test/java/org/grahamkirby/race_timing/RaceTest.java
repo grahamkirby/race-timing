@@ -21,12 +21,13 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
 import org.junit.jupiter.api.AfterEach;
-import uk.ac.standrews.cs.utilities.FileManipulation;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
@@ -49,7 +50,7 @@ public abstract class RaceTest {
     @AfterEach
     public void tearDown() throws IOException {
 
-        if (!DEBUG) FileManipulation.deleteDirectory(temp_directory);
+        if (!DEBUG) deleteDirectory(temp_directory);
     }
 
     protected void configureTest(final String test_resource_root) throws IOException {
@@ -120,6 +121,31 @@ public abstract class RaceTest {
         }
 
         return directory_listing;
+    }
+
+    private static void deleteDirectory(final String directory_path) throws IOException {
+
+        deleteDirectory(Paths.get(directory_path));
+    }
+
+    private static void deleteDirectory(final Path directory_path) throws IOException {
+
+        Files.walkFileTree(directory_path, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     private static void assertThatFilesHaveSameContentIgnoringWhitespace(final Path path1, final Path path2) throws IOException {
