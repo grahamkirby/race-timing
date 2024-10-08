@@ -23,8 +23,10 @@ import org.grahamkirby.race_timing.common.categories.Category;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
+import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
 public abstract class RaceOutput {
 
@@ -74,47 +76,6 @@ public abstract class RaceOutput {
         output_directory_path = race.getWorkingDirectoryPath().resolve("output");
     }
 
-    protected static String htmlEncode(final String s) {
-
-        return s.replaceAll("è", "&egrave;").
-                replaceAll("á", "&aacute;").
-                replaceAll("é", "&eacute;").
-                replaceAll("ü", "&uuml;").
-                replaceAll("ö", "&ouml;").
-                replaceAll("’", "&acute;");
-    }
-
-    protected static String format(final Duration duration) {
-
-        final long s = duration.getSeconds();
-        final int n = duration.getNano();
-        String result = String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
-        if (n > 0) {
-            double fractional_seconds = n / 1000000000.0;
-            String frac = String.format("%1$,.3f", fractional_seconds);
-            result += frac.substring(1);
-            while (result.endsWith("0")) result = result.substring(0, result.length() - 1);
-        }
-        return result;
-    }
-
-    protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
-
-        // Sets position strings for dead heats.
-        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
-
-        for (int result_index = 0; result_index < results.size(); result_index++) {
-
-            final RaceResult result = results.get(result_index);
-
-            if (allow_equal_positions)
-                // Skip over any following results with the same results.
-                result_index = groupEqualResultsAndReturnFollowingIndex(results, result, result_index);
-            else
-                result.position_string = String.valueOf(result_index + 1);
-        }
-    }
-
     private void configure() {
 
         readProperties();
@@ -125,31 +86,39 @@ public abstract class RaceOutput {
 
         year = race.getProperties().getProperty("YEAR");
 
-        race_name_for_results = race.getProperties().getProperty("RACE_NAME_FOR_RESULTS");
-        race_name_for_filenames = race.getProperties().getProperty("RACE_NAME_FOR_FILENAMES");
+        race_name_for_results = race.getProperties().getProperty(KEY_RACE_NAME_FOR_RESULTS);
+        race_name_for_filenames = race.getProperties().getProperty(KEY_RACE_NAME_FOR_FILENAMES);
     }
 
-    private int groupEqualResultsAndReturnFollowingIndex(final List<? extends RaceResult> results, final RaceResult result, final int result_index) {
+    protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
 
-        final int highest_index_with_same_duration = getHighestIndexWithSameResult(results, result, result_index);
+        // Sets position strings for dead heats.
+        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
 
-        if (highest_index_with_same_duration > result_index)
+        for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            // Record the same position for all the results with equal times.
-            for (int i = result_index; i <= highest_index_with_same_duration; i++)
-                results.get(i).position_string = result_index + 1 + "=";
+            // Skip over any following results with the same results.
+            final int highest_index_with_same_duration = getHighestIndexWithSamePerformance(results, result_index);
 
-        else
-            result.position_string = String.valueOf(result_index + 1);
+            if (allow_equal_positions && highest_index_with_same_duration > result_index) {
 
-        return highest_index_with_same_duration;
+                // Record the same position for all the results with equal times.
+                for (int i = result_index; i <= highest_index_with_same_duration; i++)
+                    results.get(i).position_string = result_index + 1 + "=";
+
+                result_index = highest_index_with_same_duration;
+            }
+            else
+                results.get(result_index).position_string = String.valueOf(result_index + 1);
+        }
     }
 
-    private int getHighestIndexWithSameResult(final List<? extends RaceResult> results, final RaceResult result, final int result_index) {
+    private int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
 
-        int highest_index_with_same_result = result_index;
+        int highest_index_with_same_result = start_index;
 
-        while (highest_index_with_same_result + 1 < results.size() && result.comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
+        while (highest_index_with_same_result + 1 < results.size() &&
+                results.get(start_index).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
             highest_index_with_same_result++;
 
         return highest_index_with_same_result;

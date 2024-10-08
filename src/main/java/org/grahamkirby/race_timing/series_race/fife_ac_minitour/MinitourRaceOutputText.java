@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+
 public class MinitourRaceOutputText extends RaceOutputText {
 
     public MinitourRaceOutputText(final MinitourRace race) {

@@ -16,35 +16,33 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RacePrizes;
-import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.categories.JuniorRaceCategories;
 import org.grahamkirby.race_timing.common.categories.SeniorRaceCategories;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Map;
 
 public class IndividualRace extends SingleRace {
-
-    ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
-    //                                                                                              //
-    //  See README.md at the project root for details of how to configure and run this software.    //
-    //                                                                                              //
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final int DEFAULT_NUMBER_OF_OPEN_PRIZES = 3;
     private static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 1;
     private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
 
+    private static final String DEFAULT_NORMALISED_TEAM_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private boolean senior_race;
     public boolean open_prize_categories, senior_prize_categories;
     public int number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes;
+
+    public Map<String, String> normalised_club_names;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,45 +68,49 @@ public class IndividualRace extends SingleRace {
 
         readProperties();
 
+        super.configure();
+
         configureHelpers();
         configureCategories();
+        configureNormalisedTeamNames();
         configureInputData();
     }
 
     @Override
     public void processResults() throws IOException {
 
-        processResults(true);
+        calculateResults();
+        outputResults();
     }
 
-    public void processResults(final boolean output_results) throws IOException {
+    public void calculateResults() {
 
         initialiseResults();
 
         fillFinishTimes();
         fillDNFs();
-        calculateResults();
+        sortResults();
         allocatePrizes();
+    }
 
-        // This is optional so that an individual race can be loaded as part of a series race without generating output.
-        if (output_results) {
-            printOverallResults();
-            printPrizes();
-            printNotes();
-            printCombined();
-        }
+    private void outputResults() throws IOException {
+
+        printOverallResults();
+        printPrizes();
+        printNotes();
+        printCombined();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void readProperties() {
 
-        senior_race = Boolean.parseBoolean(getPropertyWithDefault(Race.SENIOR_RACE_KEY, "true"));
-        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(Race.OPEN_PRIZE_CATEGORIES_KEY, "true"));
-        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(Race.SENIOR_PRIZE_CATEGORIES_KEY, "false"));
-        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(Race.NUMBER_OF_OPEN_PRIZES_KEY, String.valueOf(DEFAULT_NUMBER_OF_OPEN_PRIZES)));
-        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(Race.NUMBER_OF_SENIOR_PRIZES_KEY, String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
-        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault(Race.NUMBER_OF_CATEGORY_PRIZES_KEY, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
+        senior_race = Boolean.parseBoolean(getPropertyWithDefault(Race.KEY_SENIOR_RACE, "true"));
+        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(Race.KEY_OPEN_PRIZE_CATEGORIES, "true"));
+        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(Race.KEY_SENIOR_PRIZE_CATEGORIES, "false"));
+        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(Race.KEY_NUMBER_OF_OPEN_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_OPEN_PRIZES)));
+        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(Race.KEY_NUMBER_OF_SENIOR_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
+        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault(Race.KEY_NUMBER_OF_CATEGORY_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
     }
 
     private void configureHelpers() {
@@ -126,6 +128,11 @@ public class IndividualRace extends SingleRace {
     private void configureCategories() {
 
         categories = senior_race ? new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes) : new JuniorRaceCategories(number_of_category_prizes);
+    }
+
+    private void configureNormalisedTeamNames() throws IOException {
+
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_TEAM_NAMES, DEFAULT_NORMALISED_TEAM_NAMES_PATH);
     }
 
     private void initialiseResults() {
@@ -154,29 +161,28 @@ public class IndividualRace extends SingleRace {
     protected void fillDNF(final String dnf_string) {
         try {
             final String cleaned = dnf_string.strip();
+
             if (!cleaned.isEmpty()) {
-                final IndividualRaceResult result = getResultWithBibNumber(Integer.parseInt(cleaned));
+
+                final int bib_number = Integer.parseInt(cleaned);
+                final IndividualRaceResult result = getResultWithBibNumber(bib_number);
+                
                 result.DNF = true;
                 result.finish_time = Duration.ZERO;
             }
         }
         catch (Exception e) {
-            throw new RuntimeException("illegal DNF time: " + e.getLocalizedMessage());
+            throw new RuntimeException("illegal DNF string: " + e.getLocalizedMessage());
         }
     }
 
-    public IndividualRaceResult getResultWithBibNumber(final int bib_number) {
+    private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
 
-        return (IndividualRaceResult)overall_results.get(findResultsIndexOfRunnerWithBibNumber(bib_number));
-    }
+        for (RaceResult result : overall_results)
+            if (((IndividualRaceResult) result).entry.bib_number == bib_number)
+                return (IndividualRaceResult) result;
 
-    int findResultsIndexOfRunnerWithBibNumber(final int bib_number) {
-
-        for (int i = 0; i < overall_results.size(); i++)
-            if (((IndividualRaceResult)overall_results.get(i)).entry.bib_number == bib_number)
-                return i;
-
-        throw new RuntimeException("unregistered bib number: " + bib_number);
+        throw new RuntimeException("unrecorded bib number: " + bib_number);
     }
 
     public int getRecordedPosition(final int bib_number) {
@@ -199,12 +205,12 @@ public class IndividualRace extends SingleRace {
         throw new RuntimeException("unregistered bib number: " + bib_number);
     }
 
-    public Category findCategory(int bib_number) {
+    public Category findCategory(final int bib_number) {
 
         return findEntryWithBibNumber(bib_number).runner.category;
     }
 
-    private void calculateResults() {
+    private void sortResults() {
 
         // Sort in order of recorded time.
         // DNF results are sorted in increasing order of bib number.
@@ -212,7 +218,7 @@ public class IndividualRace extends SingleRace {
         overall_results.sort(IndividualRaceResult::compare);
     }
 
-    public void printOverallResults() throws IOException {
+    private void printOverallResults() throws IOException {
 
         output_CSV.printOverallResults(false);
         output_HTML.printOverallResults(true);

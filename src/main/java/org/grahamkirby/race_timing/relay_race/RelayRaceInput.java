@@ -26,6 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_ANNOTATIONS_FILENAME;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAPER_RESULTS_FILENAME;
+
 public class RelayRaceInput extends SingleRaceInput {
 
     private Path paper_results_path, annotations_path;
@@ -41,8 +45,8 @@ public class RelayRaceInput extends SingleRaceInput {
 
         super.readProperties();
 
-        paper_results_filename = race.getProperties().getProperty("PAPER_RESULTS_FILENAME");
-        annotations_filename = race.getProperties().getProperty("ANNOTATIONS_FILENAME");
+        paper_results_filename = race.getProperties().getProperty(KEY_PAPER_RESULTS_FILENAME);
+        annotations_filename = race.getProperties().getProperty(KEY_ANNOTATIONS_FILENAME);
     }
 
     @Override
@@ -65,9 +69,24 @@ public class RelayRaceInput extends SingleRaceInput {
         final String new_team_name = ((RelayRaceEntry) new_entry).team.name();
 
         for (final RaceEntry entry : entries)
-            if (entry != null)
-                if (((RelayRaceEntry) entry).team.name().equals(new_team_name))
-                    throw new RuntimeException("duplicate entry: " + new_entry);
+            if (((RelayRaceEntry) entry).team.name().equals(new_team_name))
+//                if (entry != null && (((RelayRaceEntry) entry).team.name().equals(new_team_name)))
+                throw new RuntimeException("duplicate entry: " + new_entry);
+    }
+
+    @Override
+    protected void checkForDuplicateEntries(final List<RaceEntry> entries) {
+
+        for (final RaceEntry entry1 : entries) {
+            for (final RaceEntry entry2 : entries) {
+
+                final RelayRaceEntry relay_race_entry1 = ((RelayRaceEntry) entry1);
+                final RelayRaceEntry relay_race_entry2 = ((RelayRaceEntry) entry2);
+
+                if (relay_race_entry1 != relay_race_entry2 && relay_race_entry1.team.name().equals(relay_race_entry2.team.name()))
+                    throw new RuntimeException("duplicate entry: " + relay_race_entry1);
+            }
+        }
     }
 
     @Override
@@ -80,6 +99,13 @@ public class RelayRaceInput extends SingleRaceInput {
             raw_results.addAll(loadRawResults(paper_results_path));
 
         return raw_results;
+    }
+
+    @Override
+    protected RawResult loadRawResult(final String line) {
+
+//        return new RelayRaceRawResult(stripComment(line));
+        return new RelayRaceRawResult(line);
     }
 
     protected int getNumberOfRawResults() {
@@ -104,7 +130,7 @@ public class RelayRaceInput extends SingleRaceInput {
         }
     }
 
-    private static void updateResult(final List<RawResult> raw_results, String[] elements) {
+    private static void updateResult(final List<RawResult> raw_results, final String[] elements) {
 
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);
@@ -113,7 +139,7 @@ public class RelayRaceInput extends SingleRaceInput {
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
         if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);
-        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(Race.parseTime(elements[3]));
+        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(parseTime(elements[3]));
 
         if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
     }

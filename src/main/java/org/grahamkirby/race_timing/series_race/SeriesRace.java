@@ -24,19 +24,18 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public abstract class SeriesRace extends Race {
 
+    public static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 3;
     protected List<IndividualRace> races;
     protected List<Runner> combined_runners;
 
     protected int number_of_category_prizes;
     protected int minimum_number_of_races;
 
-    public SeriesRace(Path config_file_path) throws IOException {
+    public SeriesRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -46,6 +45,8 @@ public abstract class SeriesRace extends Race {
     public void configure() throws IOException {
 
         readProperties();
+
+        super.configure();
 
         configureHelpers();
         configureCategories();
@@ -76,12 +77,19 @@ public abstract class SeriesRace extends Race {
 
     public int getNumberOfRacesTakenPlace() {
 
-        int number_of_races_completed = 0;
+        return getRaces().
+                stream().
+                map(race -> race == null ? 0 : 1).
+                reduce(Integer::sum).
+                orElseThrow();
 
-        for (final Race individual_race : getRaces())
-            if (individual_race != null) number_of_races_completed++;
 
-        return number_of_races_completed;
+//        int number_of_races_completed = 0;
+//
+//        for (final Race individual_race : getRaces())
+//            if (individual_race != null) number_of_races_completed++;
+//
+//        return number_of_races_completed;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,28 +101,41 @@ public abstract class SeriesRace extends Race {
 
     protected void readProperties() {
 
-        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(3)));
+        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault(KEY_CATEGORY_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
     }
 
     private void initialiseResults() {
 
-        combined_runners = new ArrayList<>();
+//        combined_runners = new ArrayList<>();
+//
+//        for (final IndividualRace individual_race : races)
+//            if (individual_race != null)
+//                for (final RaceResult result : individual_race.getOverallResults()) {
+//
+//                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
+//                    if (!combined_runners.contains(runner))
+//                        combined_runners.add(runner);
+//                }
+
+
+        Set<Runner> combined = new HashSet<>();
 
         for (final IndividualRace individual_race : races)
             if (individual_race != null)
-                for (final RaceResult result : individual_race.getOverallResults()) {
+                for (final RaceResult result : individual_race.getOverallResults())
+                    combined.add(((IndividualRaceResult)result).entry.runner);
 
-                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
-                    if (!combined_runners.contains(runner))
-                        combined_runners.add(runner);
-                }
+        combined_runners = new ArrayList<>(combined);
     }
 
     private void calculateResults() {
 
-        for (final Runner runner : combined_runners)
-            overall_results.add(getOverallResult(runner));
+        overall_results.addAll(combined_runners.stream().map(this::getOverallResult).toList());
 
+
+//        for (final Runner runner : combined_runners)
+//            overall_results.add(getOverallResult(runner));
+//
         overall_results.sort(getResultsSortComparator());
     }
 

@@ -28,6 +28,8 @@ import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import java.io.IOException;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+
 public class IndividualRaceOutputPDF extends RaceOutputPDF {
 
     public IndividualRaceOutputPDF(final IndividualRace results) {
@@ -35,13 +37,12 @@ public class IndividualRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    public void printPrizes(final Document document, final Category category) throws IOException {
+    protected void printPrizes(final Document document, final Category category) throws IOException {
 
         final PdfFont italic_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         addCategoryHeader(category, document);
-
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners == null)
             document.add(new Paragraph("No results").setFont(italic_font));

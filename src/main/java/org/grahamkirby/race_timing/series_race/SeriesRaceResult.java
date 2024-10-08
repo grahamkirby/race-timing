@@ -22,6 +22,9 @@ import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
+import static org.grahamkirby.race_timing.common.Normalisation.getFirstName;
+import static org.grahamkirby.race_timing.common.Normalisation.getLastName;
+
 public abstract class SeriesRaceResult extends RaceResult {
 
     public final Runner runner;

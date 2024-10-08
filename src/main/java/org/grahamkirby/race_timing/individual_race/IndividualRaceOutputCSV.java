@@ -23,6 +23,8 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+
 public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time";
@@ -33,12 +35,11 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
     @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
-
         writer.append(OVERALL_RESULTS_HEADER).append("\n");
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         return new ResultPrinterCSV(writer);
     }
 

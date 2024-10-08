@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -29,39 +30,35 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class RelayRace extends SingleRace {
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
-    ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
-    //                                                                                              //
-    //  See README.md at the project root for details of how to configure and run this software.    //
-    //                                                                                              //
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+public class RelayRace extends SingleRace {
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
     private record ResultWithLegIndex(RelayRaceResult result, int leg_index) {}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 3;
-    public static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
+    private static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 3;
+    private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
 
-    protected static final String ZERO_TIME_STRING = "0:0:0";
+    private static final String ZERO_TIME_STRING = "0:0:0";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private RelayRaceMissingData missing_data;
     protected int number_of_legs;
     private int senior_prizes, category_prizes;
+    private RelayRaceMissingData missing_data;
 
     // Records for each leg whether there was a mass start.
-    List<Boolean> mass_start_legs;
+    private List<Boolean> mass_start_legs;
 
     // Times relative to start of leg 1 at which each mass start occurred.
     // For leg 2 onward, legs that didn't have a mass start are recorded with the time of the next actual
     // mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
     private List<Duration> start_times_for_mass_starts;
 
-    List<Boolean> paired_legs;
+    protected List<Boolean> paired_legs;
     private List<IndividualLegStart> individual_leg_starts;
     private Duration start_offset;
 
@@ -89,6 +86,8 @@ public class RelayRace extends SingleRace {
 
         readProperties();
 
+        super.configure();
+
         configureHelpers();
         configureCategories();
         configureInputData();
@@ -102,14 +101,28 @@ public class RelayRace extends SingleRace {
     public void processResults() throws IOException {
 
         initialiseResults();
+        calculateResults();
+        printResults();
+    }
+
+    private void initialiseResults() {
+
+        for (final RaceEntry entry : entries)
+            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
+    }
+
+    private void calculateResults() {
 
         interpolateMissingTimes();
         guessMissingBibNumbers();
         fillLegFinishTimes();
         fillDNFs();
-        fillLegStartTimes();
+        fillLegResultDetails();
         sortOverallResults();
         allocatePrizes();
+    }
+
+    private void printResults() throws IOException {
 
         printOverallResults();
         printDetailedResults();
@@ -142,12 +155,12 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void readProperties() {
+    private void readProperties() {
 
-        number_of_legs = Integer.parseInt(getProperties().getProperty("NUMBER_OF_LEGS"));
-        start_offset = parseTime(getPropertyWithDefault("START_OFFSET", ZERO_TIME_STRING));
-        senior_prizes = Integer.parseInt(getPropertyWithDefault("SENIOR_PRIZES", String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
-        category_prizes = Integer.parseInt(getPropertyWithDefault("CATEGORY_PRIZES", String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
+        number_of_legs = Integer.parseInt(getProperties().getProperty(KEY_NUMBER_OF_LEGS));
+        start_offset = parseTime(getPropertyWithDefault(KEY_START_OFFSET, ZERO_TIME_STRING));
+        senior_prizes = Integer.parseInt(getPropertyWithDefault(KEY_SENIOR_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
+        category_prizes = Integer.parseInt(getPropertyWithDefault(KEY_CATEGORY_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
     }
 
     private void configureHelpers() {
@@ -173,7 +186,10 @@ public class RelayRace extends SingleRace {
         int legs_completed = 0;
 
         for (int i = 0; i < raw_results.size(); i++) {
-            if (raw_results.get(i).getBibNumber() != null && raw_results.get(i).getBibNumber() == bib_number) {
+
+            final Integer result_bib_number = raw_results.get(i).getBibNumber();
+
+            if (result_bib_number != null && result_bib_number == bib_number) {
                 legs_completed++;
                 if (legs_completed == leg_number) return i + 1;
             }
@@ -197,7 +213,9 @@ public class RelayRace extends SingleRace {
         start_times_for_mass_starts = new ArrayList<>();
         mass_start_legs = new ArrayList<>();
 
-        setMassStartTimes(getMassStartElapsedTimesString().split(","));
+        String massStartElapsedTimesString = getMassStartElapsedTimesString();
+        String[] split = massStartElapsedTimesString.split(",");
+        setMassStartTimes(split);
 
         // If there is no mass start configured for legs 2 and above, use the first actual mass start time.
         // This covers the case where an early leg runner finishes after a mass start.
@@ -206,21 +224,28 @@ public class RelayRace extends SingleRace {
 
     private String getMassStartElapsedTimesString() {
 
-        final String default_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
-        return getPropertyWithDefault("MASS_START_ELAPSED_TIMES", default_string);
-
         // Example: MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,23:59:59,2:36:00
+
+        final String default_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
+        return getPropertyWithDefault(KEY_MASS_START_ELAPSED_TIMES, default_string);
     }
 
     private void setMassStartTimes(final String[] mass_start_elapsed_times_strings) {
 
         for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-            setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
+//            try {
+                setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
+
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//                e.printStackTrace();
+//                throw new RuntimeException("illegal mass start time: " + mass_start_elapsed_times_strings[leg_index]);
+//            }
     }
 
     private void setMassStartTime(final String time_as_string, final int leg_index) {
 
-        final Duration mass_start_time = parseMassStartTime(time_as_string);
+        final Duration mass_start_time = parseTime(time_as_string);
         final Duration previous_mass_start_time = leg_index > 0 ? start_times_for_mass_starts.get(leg_index -1) : null;
 
         if (massStartTimesOutOfOrder(previous_mass_start_time, mass_start_time))
@@ -230,19 +255,11 @@ public class RelayRace extends SingleRace {
         mass_start_legs.add(!mass_start_time.equals(DUMMY_DURATION));
     }
 
-    private Duration parseMassStartTime(final String time_as_string) {
-
-        try {
-            return parseTime(time_as_string);
-        }
-        catch (Exception e) {
-            throw new RuntimeException("illegal mass start time: " + time_as_string);
-        }
-    }
-
     private boolean massStartTimesOutOfOrder(final Duration previous_mass_start_time, final Duration current_mass_start_time) {
 
-        return previous_mass_start_time != null && !previous_mass_start_time.equals(DUMMY_DURATION) && previous_mass_start_time.compareTo(current_mass_start_time) > 0;
+        return previous_mass_start_time != null &&
+                !previous_mass_start_time.equals(DUMMY_DURATION) &&
+                previous_mass_start_time.compareTo(current_mass_start_time) > 0;
     }
 
     private void setEmptyMassStartTimes() {
@@ -250,16 +267,15 @@ public class RelayRace extends SingleRace {
         // For legs 2 and above, if there is no mass start time configured, use the next actual mass start time.
         // This covers the case where an early leg runner finishes after a mass start.
 
-        for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--) {
+        for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--)
 
             if (start_times_for_mass_starts.get(leg_index).equals(DUMMY_DURATION))
                 start_times_for_mass_starts.set(leg_index, start_times_for_mass_starts.get(leg_index+1));
-        }
     }
 
     private void configurePairedLegs() {
 
-        final String paired_legs_string = getProperties().getProperty("PAIRED_LEGS");
+        final String paired_legs_string = getProperties().getProperty(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
 
@@ -268,14 +284,13 @@ public class RelayRace extends SingleRace {
         for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
             paired_legs.add(false);
 
-        for (final String leg_number_as_string : paired_legs_string.split(",")) {
+        for (final String leg_number_as_string : paired_legs_string.split(","))
             paired_legs.set(Integer.parseInt(leg_number_as_string) - 1, true);
-        }
     }
 
     private void configureIndividualLegStarts() {
 
-        final String individual_leg_starts_string = getPropertyWithDefault("INDIVIDUAL_LEG_STARTS", "");
+        final String individual_leg_starts_string = getPropertyWithDefault(KEY_INDIVIDUAL_LEG_STARTS, "");
 
         // bib number / leg number / start time
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20
@@ -287,20 +302,15 @@ public class RelayRace extends SingleRace {
                 individual_leg_starts.add(getIndividualLegStart(s));
     }
 
-    private IndividualLegStart getIndividualLegStart(final String individual_leg_starts_strings) {
+    private IndividualLegStart getIndividualLegStart(final String individual_leg_starts_string) {
 
-        final String[] split = individual_leg_starts_strings.split("/");
+        final String[] split = individual_leg_starts_string.split("/");
+
         final int bib_number = Integer.parseInt(split[0]);
         final int leg_number = Integer.parseInt(split[1]);
         final Duration start_time = parseTime(split[2]);
 
         return new IndividualLegStart(bib_number, leg_number, start_time);
-    }
-
-    private void initialiseResults() {
-
-        for (final RaceEntry entry : entries)
-            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
     }
 
     private void fillLegFinishTimes() {
@@ -313,39 +323,43 @@ public class RelayRace extends SingleRace {
 
         for (final RawResult raw_result : raw_results)
             if (raw_result.getBibNumber() != null)
-                recordLegResult(raw_result);
+                recordLegResult((RelayRaceRawResult)raw_result);
     }
 
-    private void recordLegResult(final RawResult raw_result) {
+    private void recordLegResult(final RelayRaceRawResult raw_result) {
 
         final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
         final RelayRaceResult result = (RelayRaceResult)overall_results.get(team_index);
-        final List<LegResult> leg_results = result.leg_results;
 
-        final int leg_index = findIndexOfNextUnfilledLegResult(leg_results);
+        final int leg_index = findIndexOfNextUnfilledLegResult(result.leg_results);
+        final LegResult leg_result = result.leg_results.get(leg_index);
 
-        leg_results.get(leg_index).finish_time = raw_result.getRecordedFinishTime().plus(start_offset);
+        leg_result.finish_time = raw_result.getRecordedFinishTime().plus(start_offset);
 
         // Leg number will be zero in most cases, unless explicitly recorded in raw results.
-        leg_results.get(leg_index).leg_number = raw_result.getLegNumber();
+        leg_result.leg_number = raw_result.getLegNumber();
 
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
-        leg_results.get(leg_index).DNF = false;
+        leg_result.DNF = false;
     }
 
     private void sortLegResults() {
 
-        for (final RaceResult team_result : overall_results) {
+        for (final RaceResult result : overall_results)
+            sortLegResults(result);
+    }
 
-            final List<LegResult> leg_results = ((RelayRaceResult)team_result).leg_results;
+    private void sortLegResults(final RaceResult result) {
 
-            // Sort by explicitly recorded leg number.
-            leg_results.sort(Comparator.comparingInt(o -> o.leg_number));
+        final List<LegResult> leg_results = ((RelayRaceResult)result).leg_results;
 
-            for (int leg_index = 0; leg_index < leg_results.size(); leg_index++)
-                leg_results.get(leg_index).leg_number = leg_index+1;
-        }
+        // Sort by explicitly recorded leg number.
+        leg_results.sort(Comparator.comparingInt(o -> o.leg_number));
+
+        // Reset the leg numbers according to new positions in leg sequence.
+        for (int leg_index = 1; leg_index <= leg_results.size(); leg_index++)
+            leg_results.get(leg_index - 1).leg_number = leg_index;
     }
 
     private ResultWithLegIndex getResultWithLegIndex(final String bib_and_leg) {
@@ -361,24 +375,60 @@ public class RelayRace extends SingleRace {
         return new ResultWithLegIndex(result, leg_number - 1);
     }
 
-    private void fillLegStartTimes() {
+    protected List<LegResult> getLegResults(final int leg_number) {
 
-        for (final RaceResult overall_result : overall_results)
-            for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-                fillLegStartTime(((RelayRaceResult)overall_result).leg_results, leg_index);
+        final List<LegResult> leg_results = new ArrayList<>();
+
+        for (final RaceResult overall_result : getOverallResults())
+            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
+
+        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
+        // Ordering for DNF results doesn't matter since they're omitted in output.
+        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+        // OutputCSV.printLegResults deals with dead heats.
+        leg_results.sort(LegResult::compareTo);
+
+        return leg_results;
     }
 
-    private void fillLegStartTime(final List<LegResult> leg_results, final int leg_index) {
+    protected void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
 
-        // Possible cases:
+        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
+        if (leg_result.in_mass_start) {
 
-        // Individual start time recorded explicitly in the race configuration file (rare).
-        // Zero if first leg.
-        // Finish time of the previous leg runner.
-        // Time of the relevant mass start if that was earlier that previous leg finish.
-        // Null if no previous leg finish time was recorded: no time can be calculated for current leg so DNF.
+            // Find the next mass start.
+            int mass_start_leg = leg;
+            while (!(mass_start_legs.get(mass_start_leg-1)))
+                mass_start_leg++;
+
+            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
+        }
+    }
+
+    protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+
+        Duration total = Duration.ZERO;
+        for (int i = 0; i < leg; i++)
+            total = total.plus(leg_results.get(i).duration());
+        return total;
+    }
+
+    private void fillLegResultDetails() {
+
+        for (final RaceResult result : overall_results)
+            fillLegResultDetails(result);
+    }
+
+    private void fillLegResultDetails(final RaceResult result) {
+
+        for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
+            fillLegResultDetails(((RelayRaceResult)result).leg_results, leg_index);
+    }
+
+    private void fillLegResultDetails(final List<LegResult> leg_results, final int leg_index) {
 
         final LegResult leg_result = leg_results.get(leg_index);
+
         final Duration individual_start_time = getIndividualStartTime(leg_result, leg_index);
         final Duration leg_mass_start_time = start_times_for_mass_starts.get(leg_index);
         final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results.get(leg_index - 1).finish_time : null;
@@ -439,7 +489,7 @@ public class RelayRace extends SingleRace {
         for (int i = 0; i < leg_results.size(); i++)
             if (leg_results.get(i).finish_time == null) return i;
 
-        throw new RuntimeException("surplus result recorded for team: " + leg_results.get(0).entry.bib_number);
+        throw new RuntimeException("surplus result recorded for team: " + leg_results.getFirst().entry.bib_number);
     }
 
     private int findIndexOfTeamWithBibNumber(final int bib_number) {

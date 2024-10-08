@@ -75,7 +75,5 @@ public abstract class RaceOutputPDF extends RaceOutput {
         document.add(paragraph);
     }
 
-    protected void printPrizes(final Document document, final Category category) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract void printPrizes(final Document document, final Category category) throws IOException;
 }

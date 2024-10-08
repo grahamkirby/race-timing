@@ -32,12 +32,6 @@ import java.util.*;
 
 public class MidweekRace extends SeriesRace {
 
-    ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
-    //                                                                                              //
-    //  See README.md at the project root for details of how to configure and run this software.    //
-    //                                                                                              //
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private static final int MAX_RACE_SCORE = 200;
     public static final int DEFAULT_OPEN_PRIZES = 3;
 
@@ -128,11 +122,11 @@ public class MidweekRace extends SeriesRace {
 
         super.readProperties();
 
-        minimum_number_of_races = Integer.parseInt(getProperties().getProperty(MINIMUM_NUMBER_OF_RACES_KEY));
-        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(OPEN_PRIZE_CATEGORIES_KEY, "true"));
-        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(SENIOR_PRIZE_CATEGORIES_KEY, "true"));
-        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(NUMBER_OF_OPEN_PRIZES_KEY, String.valueOf(DEFAULT_OPEN_PRIZES)));
-        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(NUMBER_OF_SENIOR_PRIZES_KEY, String.valueOf(DEFAULT_OPEN_PRIZES)));
+        minimum_number_of_races = Integer.parseInt(getProperties().getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
+        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(KEY_OPEN_PRIZE_CATEGORIES, "true"));
+        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(KEY_SENIOR_PRIZE_CATEGORIES, "true"));
+        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(KEY_NUMBER_OF_OPEN_PRIZES, String.valueOf(DEFAULT_OPEN_PRIZES)));
+        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(KEY_NUMBER_OF_SENIOR_PRIZES, String.valueOf(DEFAULT_OPEN_PRIZES)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,11 +145,11 @@ public class MidweekRace extends SeriesRace {
         final int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
 
         if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
-            recordClubForRunnerName(runner_name, defined_clubs.get(0));
+            recordClubForRunnerName(runner_name, defined_clubs.getFirst());
 
         if (number_of_defined_clubs > 1) {
             getNotes().append("Runner name ").append(runner_name).append(" recorded for multiple clubs: ");
-            for (String club : defined_clubs)
+            for (final String club : defined_clubs)
                 getNotes().append(club).append(" ");
             getNotes().append("\n");
         }

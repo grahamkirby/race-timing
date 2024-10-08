@@ -28,6 +28,8 @@ import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import java.io.IOException;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+
 public class MinitourRaceOutputPDF extends RaceOutputPDF {
 
     public MinitourRaceOutputPDF(final MinitourRace race) {
@@ -35,7 +37,7 @@ public class MinitourRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    public void printPrizes(final Document document, final Category category) throws IOException {
+    protected void printPrizes(final Document document, final Category category) throws IOException {
 
         addCategoryHeader(category, document);
 
@@ -52,7 +54,7 @@ public class MinitourRaceOutputPDF extends RaceOutputPDF {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            MinitourRaceResult result = (MinitourRaceResult) r;
+            final MinitourRaceResult result = (MinitourRaceResult) r;
             printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, format(result.duration()));
         }
 

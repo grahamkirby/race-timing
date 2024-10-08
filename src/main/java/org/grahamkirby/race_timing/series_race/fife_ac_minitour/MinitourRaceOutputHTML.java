@@ -31,6 +31,9 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Normalisation.htmlEncode;
+
 public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
     public MinitourRaceOutputHTML(final Race race) {
@@ -46,9 +49,8 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
         final List<Race.CategoryGroup> groups = race.getResultCategoryGroups();
 
-        for (int i = 0; i < groups.size(); i++) {
+        for (int i = 0; i < groups.size(); i++)
             printOverallResultsHTML(writer, groups.get(i).combined_categories_title(), groups.get(i).category_names(), i == groups.size() - 1);
-        }
     }
 
     @Override
@@ -74,11 +76,11 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
     protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
         final List<RaceResult> results = race.prize_winners.get(category);
+        setPositionStrings(results, true);
 
         writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
         writer.append("<ul>\n");
 
-        setPositionStrings(results, true);
         printResults(results, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
 
         writer.append("</ul>\n\n");
@@ -209,7 +211,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             append("""
                     </td>
                     <td>""").
-            append(htmlEncode(result.entry.runner.name)).
+            append(htmlEncode(result.entry.runner.name, race)).
             append("""
                     </td>
                     <td>""").
@@ -240,7 +242,8 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             final MinitourRaceResult result = (MinitourRaceResult)r;
-            final List<IndividualRace> races = ((MinitourRace) result.race).getRaces();
+            final MinitourRace race = (MinitourRace) result.race;
+            final List<IndividualRace> races = race.getRaces();
 
             writer.append("""
                     <tr>
@@ -249,7 +252,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
                     append("""
                         </td>
                         <td>""").
-                    append(htmlEncode(result.runner.name)).
+                    append(htmlEncode(result.runner.name, race)).
                     append("""
                         </td>
                         <td>""").
@@ -298,7 +301,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             writer.append("<li>").
                     append(result.position_string).
                     append(" ").
-                    append(htmlEncode(result.runner.name)).
+                    append(htmlEncode(result.runner.name, race)).
                     append(" (").
                     append((result.runner.club)).
                     append(") ").

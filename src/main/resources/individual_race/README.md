@@ -16,21 +16,31 @@ A particular individual race has two related but distinct sets of categories:
 * Prize categories
 
 In many cases these are equivalent, but there may be differences. For example, the races listed
-above (from the [Midweek Series](https://www.fifeac.org/events/fife-ac-events/midweek-series.html)) use the following:
+above (from the senior [Midweek Series](https://www.fifeac.org/events/fife-ac-events/midweek-series.html)) use the following:
 * Runner categories:
-    * FU20, MU20: Female Under 20, Male Under 20
-    * FS, MS: Female Senior, Male Senior (age 20-39)
-    * F40, M40: Female Vet 40, Male Vet 40 (age 40-49)
-    * F50, M50: Female Vet 50, Male Vet 50 (age 50-59)
-    * F60, M60: Female Vet 60, Male Vet 60 (age 60-69)
-    * F70+, M70+: Female Vet 70, Male Vet 70 (age 70+)
-* Prize categories: WO, MO, FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70
+    * FU20, MU20: Female/Male Under 20
+    * FS, MS: Female/Male Senior (age 20-39)
+    * F40, M40: Female/Male Vet 40 (age 40-49)
+    * F50, M50: Female/Male Vet 50 (age 50-59)
+    * F60, M60: Female/Male Vet 60 (age 60-69)
+    * F70+, M70+: Female/Male Vet 70 (age 70+)
+* Prize categories:
+    * FU20, MU20: Female/Male Under 20
+    * FO, MO: Female/Male Open
+    * F40, M40: Female/Male Vet 40 (age 40-49)
+    * F50, M50: Female/Male Vet 50 (age 50-59)
+    * F60, M60: Female/Male Vet 60 (age 60-69)
+    * F70+, M70+: Female/Male Vet 70 (age 70+)
 
-Category options can be configured via the race configuration file:
+In these races there are no prizes specific to the Senior (20-39) age range, but instead there are
+open prize categories for which all runners are eligible.
 
-* Senior or junior race, determining the runner categories (default: senior)
-* Whether or not there should be Open prize categories (default: true)
-* Whether or not there should be Senior prize categories (default: false)
+The four veteran age groupings are fixed; the following category options for individual
+races can be configured via the race configuration file:
+
+* Whether senior or junior race, determining the runner categories (default: senior)
+* Whether or not there are Open prize categories (default: true)
+* Whether or not there are Senior prize categories (default: false)
 * The numbers of prizes to be awarded in Open, Senior and veteran age categories
 
 ## Processing results for an individual race ##
@@ -54,10 +64,10 @@ for examples of required formats.
 working directory.
     * example format for race entries: [```entries.txt```](src/main/resources/relay_race/devils_burdens/sample_config/input/entries.txt)
     * example format for raw results: [```rawtimes.txt```](src/main/resources/relay_race/devils_burdens/sample_config/input/rawtimes.txt)
-4. Run the class [```LapRace```](src/main/java/relay_race/LapRace.java),
+5.Run the class [```LapRace```](src/main/java/relay_race/LapRace.java),
 passing the path of the new configuration file as command line parameter (surrounded by double
 quotes, no escaping of spaces).
-5. The results files will be created in the ```output``` sub-directory in CSV and HTML
+6The results files will be created in the ```output``` sub-directory in CSV and HTML
 formats:
     * overall results
     * detailed results including individual leg times

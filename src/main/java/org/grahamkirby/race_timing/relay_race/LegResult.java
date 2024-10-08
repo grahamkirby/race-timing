@@ -41,28 +41,26 @@ public class LegResult extends RaceResult {
     }
 
     public Duration duration() {
-        return DNF ? RelayRace.DUMMY_DURATION : finish_time.minus(start_time);
+        return DNF ? Race.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
     @Override
-    public int compareTo(final RaceResult other) {
+    public int compareTo(final RaceResult result) {
 
-        LegResult o = (LegResult) other;
+        final LegResult other = (LegResult) result;
 
-        // Where the time is the same, use the recording order.
-        if (duration().equals(o.duration())) {
+        final int compare_duration = duration().compareTo(other.duration());
+        if (compare_duration != 0) return compare_duration;
 
-            final int this_recorded_position = ((RelayRace)race).getRecordedLegPosition(entry.bib_number, leg_number);
-            final int other_recorded_position = ((RelayRace)race).getRecordedLegPosition(o.entry.bib_number, leg_number);
+        // The times are the same, so use the recording order.
+        final int this_recorded_position = ((RelayRace)race).getRecordedLegPosition(entry.bib_number, leg_number);
+        final int other_recorded_position = ((RelayRace)race).getRecordedLegPosition(other.entry.bib_number, leg_number);
 
-            return Integer.compare(this_recorded_position, other_recorded_position);
-        }
-        else
-            return duration().compareTo(o.duration());
+        return Integer.compare(this_recorded_position, other_recorded_position);
     }
 
     @Override
-    public boolean sameEntrant(RaceResult other) {
+    public boolean sameEntrant(final RaceResult other) {
         return entry.equals(((LegResult) other).entry);
     }
 
@@ -77,9 +75,9 @@ public class LegResult extends RaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(RaceResult other) {
-        return duration().compareTo(((LegResult) other).duration());
+    public int comparePerformanceTo(final RaceResult result) {
+
+        final LegResult other = (LegResult) result;
+        return duration().compareTo(other.duration());
     }
-
-
 }

@@ -23,14 +23,16 @@ import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 public class RelayRaceOutputText extends RaceOutputText {
 
@@ -45,16 +47,17 @@ public class RelayRaceOutputText extends RaceOutputText {
 
     public void printCollatedResults() throws IOException {
 
-        final Path collated_times_text_path = output_directory_path.resolve(collated_times_filename + ".txt");
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(collated_times_filename + ".txt"));
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(collated_times_text_path))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
+            // TODO separate printing from counting legs.
             final Map<Integer, Integer> leg_finished_count = printResults(writer);
             final List<Duration> times_with_missing_bib_numbers = getTimesWithMissingBibNumbers();
             final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(leg_finished_count);
 
             if (!bib_numbers_with_missing_times.isEmpty())
-                printDiscrepancies(bib_numbers_with_missing_times, times_with_missing_bib_numbers, writer);
+                printDiscrepancies(writer, bib_numbers_with_missing_times, times_with_missing_bib_numbers);
         }
     }
 
@@ -90,6 +93,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
             final RelayRaceResult result = ((RelayRaceResult)r);
 
+            // No dead heats in overall results since determined by ordering at finish.
             writer.append(String.valueOf(position++)).append(": ").
                     append(result.entry.team.name()).append(" (").
                     append(result.entry.team.category().getLongName()).append(") ").
@@ -106,13 +110,13 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         for (int i = 0; i < raw_results.size(); i++) {
 
-            final RawResult raw_result = raw_results.get(i);
+            final RelayRaceRawResult raw_result = (RelayRaceRawResult) raw_results.get(i);
             final boolean last_electronically_recorded_result = i == input.getNumberOfRawResults() - 1;
 
             if (last_electronically_recorded_result && input.getNumberOfRawResults() < raw_results.size())
                 raw_result.appendComment("Remaining times from paper recording sheet only.");
 
-            printResult(raw_result, leg_finished_count, writer);
+            printResult(writer, raw_result, leg_finished_count);
         }
 
         return leg_finished_count;
@@ -146,7 +150,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         return bib_numbers_with_missing_times;
     }
 
-    private void printDiscrepancies(final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers, final OutputStreamWriter writer) throws IOException {
+    private void printDiscrepancies(final OutputStreamWriter writer, final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers) throws IOException {
 
         bib_numbers_with_missing_times.sort(Integer::compareTo);
 
@@ -165,26 +169,26 @@ public class RelayRaceOutputText extends RaceOutputText {
             writer.append(format(time)).append("\n");
     }
 
-    private void printResult(final RawResult raw_result, final Map<Integer, Integer> leg_finished_count, final OutputStreamWriter writer) throws IOException {
+    private void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final Map<Integer, Integer> leg_finished_count) throws IOException {
 
         final Integer bib_number = raw_result.getBibNumber();
 
         final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
         leg_finished_count.put(bib_number, legs_already_finished + 1);
 
-        printBibNumberAndTime(raw_result, bib_number, writer);
-        printLegNumber(raw_result, legs_already_finished, writer);
-        printComment(raw_result, writer);
+        printBibNumberAndTime(writer, raw_result, bib_number);
+        printLegNumber(writer, raw_result, legs_already_finished);
+        printComment(writer, raw_result);
     }
 
-    private void printBibNumberAndTime(final RawResult raw_result, final Integer bib_number, final OutputStreamWriter writer) throws IOException {
+    private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result, final Integer bib_number) throws IOException {
 
         writer.append(bib_number != null ? String.valueOf(bib_number) : "?").
                 append("\t").
                 append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
     }
 
-    private void printLegNumber(final RawResult raw_result, final int legs_already_finished, final OutputStreamWriter writer) throws IOException {
+    private void printLegNumber(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
 
         if (raw_result.getLegNumber() > 0) {
 
@@ -195,7 +199,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         }
     }
 
-    private void printComment(final RawResult raw_result, final OutputStreamWriter writer) throws IOException {
+    private void printComment(final OutputStreamWriter writer, final RelayRaceRawResult raw_result) throws IOException {
 
         if (!raw_result.getComment().isEmpty()) {
 

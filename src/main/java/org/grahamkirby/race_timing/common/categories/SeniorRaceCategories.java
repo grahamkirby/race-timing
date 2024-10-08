@@ -37,16 +37,16 @@ public class SeniorRaceCategories extends Categories {
         final Category F70 = new Category("Women 70+", "F70+", "Women", 70, number_of_category_prizes);
         final Category M70 = new Category("Men 70+", "M70+", "Men", 70, number_of_category_prizes);
 
-        final Category WO = new Category("Women Open", "WO", "Women", 0, number_of_open_prizes);
+        final Category FO = new Category("Women Open", "FO", "Women", 0, number_of_open_prizes);
         final Category MO = new Category("Men Open", "MO", "Men", 0, number_of_open_prizes);
 
         runner_categories.addAll(Arrays.asList(FU20, MU20, FS, MS, F40, M40, F50, M50, F60, M60, F70, M70));
 
         if (open_prize_categories) {
-            prize_categories_in_decreasing_generality_order.add(WO);
+            prize_categories_in_decreasing_generality_order.add(FO);
             prize_categories_in_decreasing_generality_order.add(MO);
 
-            prize_categories_in_report_order.add(WO);
+            prize_categories_in_report_order.add(FO);
             prize_categories_in_report_order.add(MO);
         }
 

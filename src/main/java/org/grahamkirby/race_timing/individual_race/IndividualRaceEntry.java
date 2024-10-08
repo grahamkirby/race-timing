@@ -16,39 +16,15 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.common.categories.Category;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.grahamkirby.race_timing.common.Normalisation.cleanName;
+import static org.grahamkirby.race_timing.common.Normalisation.normaliseClubName;
 
 public class IndividualRaceEntry extends RaceEntry {
-
-    private static final Map<String, String> NORMALISED_CLUB_NAMES = new HashMap<>();
-
-    static {
-        NORMALISED_CLUB_NAMES.put("", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("Unattached", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("U/A", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("None", "Unatt.");
-        NORMALISED_CLUB_NAMES.put("Fife Athletic Club", "Fife AC");
-        NORMALISED_CLUB_NAMES.put("Dundee HH", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("Leven Las Vegas", "Leven Las Vegas RC");
-        NORMALISED_CLUB_NAMES.put("Leven Las Vegas Running Club", "Leven Las Vegas RC");
-        NORMALISED_CLUB_NAMES.put("Haddies", "Anster Haddies");
-        NORMALISED_CLUB_NAMES.put("Dundee Hawkhill", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("DRR", "Dundee Road Runners");
-        NORMALISED_CLUB_NAMES.put("Perth RR", "Perth Road Runners");
-        NORMALISED_CLUB_NAMES.put("Kinross RR", "Kinross Road Runners");
-        NORMALISED_CLUB_NAMES.put("Falkland TR", "Falkland Trail Runners");
-        NORMALISED_CLUB_NAMES.put("PH Racing Club", "PH Racing");
-        NORMALISED_CLUB_NAMES.put("DHH", "Dundee Hawkhill Harriers");
-        NORMALISED_CLUB_NAMES.put("Carnegie H", "Carnegie Harriers");
-        NORMALISED_CLUB_NAMES.put("Dundee RR", "Dundee Road Runners");
-        NORMALISED_CLUB_NAMES.put("Recreational Running", "Recreational Runners");
-    }
 
     public final Runner runner;
 
@@ -60,11 +36,10 @@ public class IndividualRaceEntry extends RaceEntry {
             throw new RuntimeException("illegal composition for runner: " + elements[0]);
 
         try {
-
             bib_number = Integer.parseInt(elements[0]);
 
             final String name = cleanName(elements[1]);
-            final String club = normaliseClubName(cleanName(elements[2]));
+            final String club = normaliseClubName(cleanName(elements[2]), (IndividualRace) race);
             final Category category = race.lookupCategory(elements[3]);
 
             runner = new Runner(name, club, category);
@@ -74,19 +49,15 @@ public class IndividualRaceEntry extends RaceEntry {
         }
     }
 
-    private String cleanName(String name) {
-
-        while (name.contains("  ")) name = name.replaceAll(" {2}", " ");
-        return name.strip();
-    }
-
-    private static String normaliseClubName(final String club) {
-
-        return NORMALISED_CLUB_NAMES.getOrDefault(club, club);
-    }
-
     @Override
     public String toString() {
         return runner.name + ", " + runner.club;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof IndividualRaceEntry other_entry &&
+                runner.name.equals(other_entry.runner.name) &&
+                runner.club.equals(other_entry.runner.club);
     }
 }

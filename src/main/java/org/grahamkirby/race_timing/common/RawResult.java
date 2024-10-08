@@ -18,14 +18,16 @@ package org.grahamkirby.race_timing.common;
 
 import java.time.Duration;
 
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+
 public class RawResult {
 
     Integer bib_number;
-    public Duration recorded_finish_time;
     String comment = "";
+    public Duration recorded_finish_time;
 
     // Only used for relay race. Leg number is optional, depending on whether it was recorded on paper sheet.
-    private final Integer leg_number;
+//    private final Integer leg_number;
 
     public RawResult(final String file_line) {
 
@@ -35,8 +37,8 @@ public class RawResult {
         final String time_as_string = elements[1];
 
         bib_number = bib_number_as_string.equals("?") ? null : Integer.parseInt(bib_number_as_string);
-        recorded_finish_time = time_as_string.equals("?") ? null : Race.parseTime(time_as_string);
-        leg_number = elements.length == 2 ? 0 : Integer.parseInt(elements[2]);
+        recorded_finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
+//        leg_number = elements.length == 2 ? 0 : Integer.parseInt(elements[2]);
     }
 
     public Integer getBibNumber() {
@@ -64,7 +66,7 @@ public class RawResult {
         this.comment += comment;
     }
 
-    public Integer getLegNumber() {
-        return leg_number;
-    }
+//    public Integer getLegNumber() {
+//        return leg_number;
+//    }
 }

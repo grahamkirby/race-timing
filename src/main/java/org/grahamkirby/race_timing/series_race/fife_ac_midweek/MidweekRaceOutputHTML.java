@@ -28,6 +28,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.htmlEncode;
+
 public class MidweekRaceOutputHTML extends RaceOutputHTML {
 
     public MidweekRaceOutputHTML(final Race race) {
@@ -113,9 +115,9 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
 
         setPositionStrings(overall_results, true);
 
-        for (final RaceResult res : overall_results) {
+        for (final RaceResult r : overall_results) {
 
-            MidweekRaceResult result = ((MidweekRaceResult)res);
+            MidweekRaceResult result = ((MidweekRaceResult)r);
 
             writer.append("""
                         <tr>
@@ -124,7 +126,7 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                     append("""
                             </td>
                             <td>""").
-                    append(htmlEncode(result.runner.name)).append("""
+                    append(htmlEncode(result.runner.name, race)).append("""
                             </td>
                             <td>""").
                     append(result.runner.category.getShortName()).append("""
