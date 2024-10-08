@@ -84,9 +84,8 @@ public class RelayRace extends SingleRace {
     @Override
     public void configure() throws IOException {
 
-        readProperties();
-
         super.configure();
+        readProperties();
 
         configureHelpers();
         configureCategories();
@@ -213,9 +212,7 @@ public class RelayRace extends SingleRace {
         start_times_for_mass_starts = new ArrayList<>();
         mass_start_legs = new ArrayList<>();
 
-        String massStartElapsedTimesString = getMassStartElapsedTimesString();
-        String[] split = massStartElapsedTimesString.split(",");
-        setMassStartTimes(split);
+        setMassStartTimes(getMassStartElapsedTimesString().split(","));
 
         // If there is no mass start configured for legs 2 and above, use the first actual mass start time.
         // This covers the case where an early leg runner finishes after a mass start.
@@ -233,14 +230,7 @@ public class RelayRace extends SingleRace {
     private void setMassStartTimes(final String[] mass_start_elapsed_times_strings) {
 
         for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-//            try {
-                setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
-
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//                e.printStackTrace();
-//                throw new RuntimeException("illegal mass start time: " + mass_start_elapsed_times_strings[leg_index]);
-//            }
+            setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
     }
 
     private void setMassStartTime(final String time_as_string, final int leg_index) {

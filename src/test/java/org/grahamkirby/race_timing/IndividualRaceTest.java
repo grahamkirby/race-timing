@@ -100,6 +100,11 @@ public class IndividualRaceTest extends RaceTest {
         testExpectedCompletion("alternative_club_name_normalisation");
     }
 
+    @Test
+    public void alternativeHtmlEntityNormalisation() throws Exception {
+        testExpectedCompletion("alternative_html_entity_normalisation");
+    }
+
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
         return new IndividualRace(config_file_path);

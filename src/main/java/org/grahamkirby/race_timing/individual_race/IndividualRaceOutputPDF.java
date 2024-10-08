@@ -39,6 +39,7 @@ public class IndividualRaceOutputPDF extends RaceOutputPDF {
     @Override
     protected void printPrizes(final Document document, final Category category) throws IOException {
 
+        // TODO factor out.
         final PdfFont italic_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 

@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.Category;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -70,9 +71,9 @@ public abstract class RaceOutputText extends RaceOutput {
 
         if (!notes.isEmpty()) {
 
-            final Path notes_path = output_directory_path.resolve(notes_filename + ".txt");
+            final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + ".txt"));
 
-            try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(notes_path))) {
+            try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
                 writer.append(notes);
             }
         }

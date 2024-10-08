@@ -82,6 +82,7 @@ public abstract class Race {
     public static final String KEY_RACES = "RACES";
 
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "src/main/resources/configuration/html_entities.csv";
+    protected static final String DEFAULT_NORMALISED_TEAM_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

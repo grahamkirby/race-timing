@@ -35,16 +35,6 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         super(race);
     }
 
-//    @Override
-//    public void printOverallResults(final boolean include_credit_link) throws IOException {
-//
-//        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
-//
-//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-//            printOverallResults(writer, include_credit_link);
-//        }
-//    }
-
     @Override
     public void printCombined() throws IOException {
 
