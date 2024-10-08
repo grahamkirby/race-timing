@@ -77,19 +77,7 @@ public abstract class SeriesRace extends Race {
 
     public int getNumberOfRacesTakenPlace() {
 
-        return getRaces().
-                stream().
-                map(race -> race == null ? 0 : 1).
-                reduce(Integer::sum).
-                orElseThrow();
-
-
-//        int number_of_races_completed = 0;
-//
-//        for (final Race individual_race : getRaces())
-//            if (individual_race != null) number_of_races_completed++;
-//
-//        return number_of_races_completed;
+        return (int) getRaces().stream().filter(Objects::nonNull).count();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,19 +94,7 @@ public abstract class SeriesRace extends Race {
 
     private void initialiseResults() {
 
-//        combined_runners = new ArrayList<>();
-//
-//        for (final IndividualRace individual_race : races)
-//            if (individual_race != null)
-//                for (final RaceResult result : individual_race.getOverallResults()) {
-//
-//                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
-//                    if (!combined_runners.contains(runner))
-//                        combined_runners.add(runner);
-//                }
-
-
-        Set<Runner> combined = new HashSet<>();
+        final Set<Runner> combined = new HashSet<>();
 
         for (final IndividualRace individual_race : races)
             if (individual_race != null)
@@ -131,11 +107,6 @@ public abstract class SeriesRace extends Race {
     private void calculateResults() {
 
         overall_results.addAll(combined_runners.stream().map(this::getOverallResult).toList());
-
-
-//        for (final Runner runner : combined_runners)
-//            overall_results.add(getOverallResult(runner));
-//
         overall_results.sort(getResultsSortComparator());
     }
 

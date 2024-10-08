@@ -106,22 +106,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-//    private List<LegResult> getLegResults(final int leg_number) {
-//
-//        final List<LegResult> leg_results = new ArrayList<>();
-//
-//        for (final RaceResult overall_result : race.getOverallResults())
-//            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
-//
-//        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
-//        // Ordering for DNF results doesn't matter since they're omitted in output.
-//        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
-//        // OutputCSV.printLegResults deals with dead heats.
-//        leg_results.sort(LegResult::compareTo);
-//
-//        return leg_results;
-//    }
-
     private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
@@ -176,30 +160,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
             if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
-
-//    private Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
-//
-//        Duration total = Duration.ZERO;
-//
-//        for (int i = 0; i < leg; i++)
-//            total = total.plus(leg_results.get(i).duration());
-//
-//        return total;
-//    }
-
-//    private void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
-//
-//        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
-//        if (leg_result.in_mass_start) {
-//
-//            // Find the next mass start.
-//            int mass_start_leg = leg;
-//            while (!((RelayRace)race).mass_start_legs.get(mass_start_leg-1))
-//                mass_start_leg++;
-//
-//            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
-//        }
-//    }
 
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg_number) throws IOException {
 

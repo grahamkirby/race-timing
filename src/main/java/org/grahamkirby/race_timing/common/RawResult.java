@@ -22,7 +22,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public class RawResult {
 
-    Integer bib_number;
+    int bib_number;
     String comment = "";
     public Duration recorded_finish_time;
 
@@ -33,15 +33,15 @@ public class RawResult {
         final String bib_number_as_string = elements[0];
         final String time_as_string = elements[1];
 
-        bib_number = bib_number_as_string.equals("?") ? null : Integer.parseInt(bib_number_as_string);
+        bib_number = bib_number_as_string.equals("?") ? -1 : Integer.parseInt(bib_number_as_string);
         recorded_finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
     }
 
-    public Integer getBibNumber() {
+    public int getBibNumber() {
         return bib_number;
     }
 
-    public void setBibNumber(final Integer bib_number) {
+    public void setBibNumber(final int bib_number) {
         this.bib_number = bib_number;
     }
 

@@ -39,6 +39,7 @@ public class RelayRaceOutputText extends RaceOutputText {
     private String collated_times_filename;
 
     public RelayRaceOutputText(final RelayRace results) {
+
         super(results);
         constructFilePaths();
     }
@@ -128,7 +129,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         for (final RawResult raw_result : ((RelayRace)race).getRawResults()) {
 
-            if (raw_result.getBibNumber() == null)
+            if (raw_result.getBibNumber() == -1)
                 times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());
         }
 
@@ -171,7 +172,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
     private void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final Map<Integer, Integer> leg_finished_count) throws IOException {
 
-        final Integer bib_number = raw_result.getBibNumber();
+        final int bib_number = raw_result.getBibNumber();
 
         final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
         leg_finished_count.put(bib_number, legs_already_finished + 1);
@@ -181,9 +182,9 @@ public class RelayRaceOutputText extends RaceOutputText {
         printComment(writer, raw_result);
     }
 
-    private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result, final Integer bib_number) throws IOException {
+    private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result, final int bib_number) throws IOException {
 
-        writer.append(bib_number != null ? String.valueOf(bib_number) : "?").
+        writer.append(bib_number != -1 ? String.valueOf(bib_number) : "?").
                 append("\t").
                 append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
     }
