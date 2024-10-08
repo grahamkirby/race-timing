@@ -35,7 +35,7 @@ public abstract class RaceResult implements Comparable<RaceResult> {
     }
 
     public int comparePerformanceTo(final RaceResult other) {
-//        throw new UnsupportedOperationException();
+        // Neutral implementation to be overridden.
         return 0;
     }
 

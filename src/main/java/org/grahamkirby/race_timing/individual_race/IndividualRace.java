@@ -34,8 +34,6 @@ public class IndividualRace extends SingleRace {
     private static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 1;
     private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
 
-    private static final String DEFAULT_NORMALISED_TEAM_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private boolean senior_race;
@@ -185,7 +183,7 @@ public class IndividualRace extends SingleRace {
         throw new RuntimeException("unrecorded bib number: " + bib_number);
     }
 
-    public int getRecordedPosition(final int bib_number) {
+    protected int getRecordedPosition(final int bib_number) {
 
         for (int i = 0; i < raw_results.size(); i++) {
             if (raw_results.get(i).getBibNumber() == bib_number) {

@@ -25,10 +25,12 @@ import java.util.List;
 
 public class RelayRaceMissingData {
 
-    public static final int HALF_A_SECOND_IN_NANOSECONDS = 500000000;
-
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
     private record ContiguousSequence(int start_index, int end_index) {}
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final int HALF_A_SECOND_IN_NANOSECONDS = 500000000;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -249,8 +251,9 @@ public class RelayRaceMissingData {
         int count = 0;
         for (int i = starting_index - 1; i > 0; i--) {
 
-            final Integer result_bib_number = race.getRawResults().get(i - 1).getBibNumber();
-            if (result_bib_number != null && result_bib_number == bib_number) count++;
+            count += getCount(bib_number, i);
+//            final Integer result_bib_number = race.getRawResults().get(i - 1).getBibNumber();
+//            if (result_bib_number != null && result_bib_number == bib_number) count++;
         }
 
         return count;
@@ -259,13 +262,18 @@ public class RelayRaceMissingData {
     private int getNumberOfTeamFinishesAfter(final int starting_index, final int bib_number) {
 
         int count = 0;
-        for (int i = starting_index + 1; i <= race.getRawResults().size(); i++) {
 
-            final Integer result_bib_number = race.getRawResults().get(i - 1).getBibNumber();
-            if (result_bib_number != null && result_bib_number == bib_number) count++;
-        }
+        for (int i = starting_index + 1; i <= race.getRawResults().size(); i++)
+            count += getCount(bib_number, i);
 
         return count;
+    }
+
+    private int getCount(final int bib_number, final int result_number) {
+
+        final Integer result_bib_number = race.getRawResults().get(result_number - 1).getBibNumber();
+//        return (result_bib_number != null && result_bib_number == bib_number) ? 1 : 0;
+        return (result_bib_number == bib_number) ? 1 : 0;
     }
 
     private Duration getPreviousTeamFinishTime(final int starting_index, final int bib_number) {

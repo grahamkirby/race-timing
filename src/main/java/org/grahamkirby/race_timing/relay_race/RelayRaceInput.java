@@ -70,7 +70,6 @@ public class RelayRaceInput extends SingleRaceInput {
 
         for (final RaceEntry entry : entries)
             if (((RelayRaceEntry) entry).team.name().equals(new_team_name))
-//                if (entry != null && (((RelayRaceEntry) entry).team.name().equals(new_team_name)))
                 throw new RuntimeException("duplicate entry: " + new_entry);
     }
 
@@ -104,7 +103,6 @@ public class RelayRaceInput extends SingleRaceInput {
     @Override
     protected RawResult loadRawResult(final String line) {
 
-//        return new RelayRaceRawResult(stripComment(line));
         return new RelayRaceRawResult(line);
     }
 

@@ -42,6 +42,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
+            // TODO extract constants to Race
             final PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
             document.add(new Paragraph().setFont(font).setFontSize(24)

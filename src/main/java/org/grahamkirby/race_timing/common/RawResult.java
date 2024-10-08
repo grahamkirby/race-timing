@@ -26,9 +26,6 @@ public class RawResult {
     String comment = "";
     public Duration recorded_finish_time;
 
-    // Only used for relay race. Leg number is optional, depending on whether it was recorded on paper sheet.
-//    private final Integer leg_number;
-
     public RawResult(final String file_line) {
 
         final String[] elements = file_line.split("\t");
@@ -38,7 +35,6 @@ public class RawResult {
 
         bib_number = bib_number_as_string.equals("?") ? null : Integer.parseInt(bib_number_as_string);
         recorded_finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
-//        leg_number = elements.length == 2 ? 0 : Integer.parseInt(elements[2]);
     }
 
     public Integer getBibNumber() {
@@ -62,11 +58,8 @@ public class RawResult {
     }
 
     public void appendComment(final String comment) {
+
         if (!this.comment.isEmpty()) this.comment += " ";
         this.comment += comment;
     }
-
-//    public Integer getLegNumber() {
-//        return leg_number;
-//    }
 }

@@ -45,16 +45,17 @@ public class IndividualRaceOutputText extends RaceOutputText {
 
             if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
+            else {
+                int position = 1;
+                for (final RaceResult r : category_prize_winners) {
 
-            int position = 1;
-            for (final RaceResult r : category_prize_winners) {
+                    final IndividualRaceResult result = ((IndividualRaceResult) r);
 
-                final IndividualRaceResult result = ((IndividualRaceResult)r);
-
-                writer.append(String.valueOf(position++)).append(": ").
-                        append(result.entry.runner.name).append(" (").
-                        append(result.entry.runner.club).append(") ").
-                        append(format(result.duration())).append("\n");
+                    writer.append(String.valueOf(position++)).append(": ").
+                            append(result.entry.runner.name).append(" (").
+                            append(result.entry.runner.club).append(") ").
+                            append(format(result.duration())).append("\n");
+                }
             }
 
             writer.append("\n\n");

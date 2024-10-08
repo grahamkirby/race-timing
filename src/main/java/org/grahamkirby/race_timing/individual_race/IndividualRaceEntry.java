@@ -30,7 +30,7 @@ public class IndividualRaceEntry extends RaceEntry {
 
     public IndividualRaceEntry(final String[] elements, final Race race) {
 
-        // Expected format: "1" "John Smith"	"Fife AC"	"MS"
+        // Expected format: "1", "John Smith", "Fife AC", "MS".
 
         if (elements.length != 4)
             throw new RuntimeException("illegal composition for runner: " + elements[0]);

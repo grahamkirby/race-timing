@@ -3,14 +3,18 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Map;
 
 public class Normalisation {
 
+    public static final int SECONDS_PER_HOUR = 3600;
+    public static final int SECONDS_PER_MINUTE = 60;
+    public static final double NANOSECONDS_PER_SECOND = 1000000000.0;
+
     public static String cleanName(String name) {
 
-//        while (name.contains("  ")) name = name.replaceAll(" {2}", " ");
-
+        // Remove double spaces, and surrounding whitespace.
         name = applyNormalisation(name, Map.of("  ", " "), false);
         return name.strip();
     }
@@ -21,14 +25,12 @@ public class Normalisation {
 
     public static String getLastName(final String name) {
 
-        final String[] names = name.split(" ");
-        return names[names.length - 1];
+        return Arrays.stream(name.split(" ")).toList().getLast();
     }
 
     public static String normaliseClubName(final String club, final IndividualRace race) {
 
-        String s = applyNormalisation(club, race.normalised_club_names, true);
-        return s;
+        return applyNormalisation(club, race.normalised_club_names, true);
     }
 
     public static String htmlEncode(final String s, final Race race) {
@@ -71,9 +73,9 @@ public class Normalisation {
         final long s = duration.getSeconds();
         final int n = duration.getNano();
 
-        String result = String.format("0%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+        String result = String.format("0%d:%02d:%02d", s / SECONDS_PER_HOUR, (s % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE, (s % SECONDS_PER_MINUTE));
         if (n > 0) {
-            double fractional_seconds = n / 1000000000.0;
+            double fractional_seconds = n / NANOSECONDS_PER_SECOND;
             result += String.format("%1$,.3f", fractional_seconds).substring(1);
             while (result.endsWith("0")) result = result.substring(0, result.length() - 1);
         }
