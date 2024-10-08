@@ -21,12 +21,13 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
@@ -37,6 +38,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RelayRaceOutputCSV(final Race race) {
+        
         super(race);
         constructFilePaths();
     }
@@ -44,14 +46,14 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void printDetailedResults(boolean include_credit_link) throws IOException {
+    public void printDetailedResults(final boolean ignore) throws IOException {
 
-        final Path detailed_results_csv_path = output_directory_path.resolve(detailed_results_filename + ".csv");
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".csv"));
 
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(detailed_results_csv_path))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            printDetailedResultsHeader(csv_writer);
-            printDetailedResults(csv_writer);
+            printDetailedResultsHeader(writer);
+            printDetailedResults(writer);
         }
     }
 
@@ -69,7 +71,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         return new ResultPrinterCSV(writer);
     }
 
@@ -94,32 +96,31 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
 
-            printLegResultsHeader(csv_writer, leg_number);
-
-            final List<LegResult> leg_results = getLegResults(leg_number);
+            final List<LegResult> leg_results = ((RelayRace)race).getLegResults(leg_number);
 
             // Deal with dead heats in legs after the first.
             setPositionStrings(leg_results, leg_number > 1);
 
+            printLegResultsHeader(csv_writer, leg_number);
             printLegResults(csv_writer, leg_results);
         }
     }
 
-    private List<LegResult> getLegResults(final int leg_number) {
-
-        final List<LegResult> leg_results = new ArrayList<>();
-
-        for (final RaceResult overall_result : race.getOverallResults())
-            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
-
-        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
-        // Ordering for DNF results doesn't matter since they're omitted in output.
-        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
-        // OutputCSV.printLegResults deals with dead heats.
-        leg_results.sort(LegResult::compareTo);
-
-        return leg_results;
-    }
+//    private List<LegResult> getLegResults(final int leg_number) {
+//
+//        final List<LegResult> leg_results = new ArrayList<>();
+//
+//        for (final RaceResult overall_result : race.getOverallResults())
+//            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
+//
+//        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
+//        // Ordering for DNF results doesn't matter since they're omitted in output.
+//        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+//        // OutputCSV.printLegResults deals with dead heats.
+//        leg_results.sort(LegResult::compareTo);
+//
+//        return leg_results;
+//    }
 
     private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
 
@@ -165,38 +166,40 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
             final LegResult leg_result = result.leg_results.get(leg_number - 1);
 
             writer.append(team.runners()[leg_number-1]);
-            addMassStartAnnotation(writer, leg_result, leg_number);
+            ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
 
             writer.append(",");
             writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration())).append(",");
-            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg_number)));
+            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(((RelayRace)race).sumDurationsUpToLeg(result.leg_results, leg_number)));
 
             if (leg_number < ((RelayRace)race).number_of_legs) writer.append(",");
             if (leg_result.DNF) any_previous_leg_dnf = true;
         }
     }
 
-    private Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+//    private Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+//
+//        Duration total = Duration.ZERO;
+//
+//        for (int i = 0; i < leg; i++)
+//            total = total.plus(leg_results.get(i).duration());
+//
+//        return total;
+//    }
 
-        Duration total = Duration.ZERO;
-        for (int i = 0; i < leg; i++)
-            total = total.plus(leg_results.get(i).duration());
-        return total;
-    }
-
-    private void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
-
-        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
-        if (leg_result.in_mass_start) {
-
-            // Find the next mass start.
-            int mass_start_leg = leg;
-            while (!((RelayRace)race).mass_start_legs.get(mass_start_leg-1))
-                mass_start_leg++;
-
-            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
-        }
-    }
+//    private void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
+//
+//        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
+//        if (leg_result.in_mass_start) {
+//
+//            // Find the next mass start.
+//            int mass_start_leg = leg;
+//            while (!((RelayRace)race).mass_start_legs.get(mass_start_leg-1))
+//                mass_start_leg++;
+//
+//            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
+//        }
+//    }
 
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg_number) throws IOException {
 
@@ -207,16 +210,16 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     private void printLegResults(final OutputStreamWriter writer, final List<LegResult> leg_results) throws IOException {
 
-        for (final LegResult leg_result : leg_results)
-            printLegResult(writer, leg_result);
+        for (final LegResult result : leg_results)
+            printLegResult(writer, result);
     }
 
-    private void printLegResult(final OutputStreamWriter writer, final LegResult leg_result) throws IOException {
+    private void printLegResult(final OutputStreamWriter writer, final LegResult result) throws IOException {
 
-        if (!leg_result.DNF) {
-            writer.append(leg_result.position_string).append(",");
-            writer.append(leg_result.entry.team.runners()[leg_result.leg_number - 1]).append(",");
-            writer.append(format(leg_result.duration())).append("\n");
+        if (!result.DNF) {
+            writer.append(result.position_string).append(",");
+            writer.append(result.entry.team.runners()[result.leg_number - 1]).append(",");
+            writer.append(format(result.duration())).append("\n");
         }
     }
 

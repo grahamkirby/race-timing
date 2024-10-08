@@ -47,13 +47,13 @@ public abstract class RaceOutputCSV extends RaceOutput {
         }
     }
 
-    protected void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
         for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
             printCategoryResults(writer, category_group.category_names());
     }
 
-    protected void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
+    private void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
 
         final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
         final List<RaceResult> results = race.getResultsByCategory(category_list);

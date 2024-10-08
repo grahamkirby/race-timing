@@ -26,21 +26,24 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Normalisation.htmlEncode;
+
 public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     public IndividualRaceOutputHTML(final IndividualRace race) {
         super(race);
     }
 
-    @Override
-    public void printOverallResults(boolean ignore) throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printOverallResults(writer, true);
-        }
-    }
+//    @Override
+//    public void printOverallResults(final boolean include_credit_link) throws IOException {
+//
+//        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
+//
+//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+//            printOverallResults(writer, include_credit_link);
+//        }
+//    }
 
     @Override
     public void printCombined() throws IOException {
@@ -76,18 +79,19 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         if (category_prize_winners != null) {
+
             writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
             writer.append("<ol>\n");
 
             if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
             else
-                for (final RaceResult entry : category_prize_winners) {
+                for (final RaceResult r : category_prize_winners) {
 
-                    final IndividualRaceResult result = ((IndividualRaceResult)entry);
+                    final IndividualRaceResult result = ((IndividualRaceResult)r);
 
                     writer.append("<li>").
-                            append(htmlEncode(result.entry.runner.name)).append(" (").
+                            append(htmlEncode(result.entry.runner.name, race)).append(" (").
                             append((result.entry.runner.club)).append(") ").
                             append(format(result.duration())).append("</li>\n");
                 }
@@ -119,9 +123,9 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
         int position = 1;
 
-        for (final RaceResult res : race.getOverallResults()) {
+        for (final RaceResult r : race.getOverallResults()) {
 
-            final IndividualRaceResult result = ((IndividualRaceResult)res);
+            final IndividualRaceResult result = ((IndividualRaceResult)r);
 
             writer.append("""
                         <tr>
@@ -134,7 +138,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.entry.runner.name));
+            writer.append(htmlEncode(result.entry.runner.name, race));
             writer.append("""
                             </td>
                             <td>""");

@@ -24,9 +24,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Normalisation.htmlEncode;
 
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
@@ -39,29 +40,29 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printLegResults(boolean include_credit_link) throws IOException {
+    public void printLegResults(final boolean include_credit_link) throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
             printLegResults(leg, include_credit_link);
     }
 
+//    @Override
+//    public void printOverallResults(final boolean include_credit_link) throws IOException {
+//
+//        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
+//
+//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+//            printOverallResults(writer, include_credit_link);
+//        }
+//    }
+
     @Override
-    public void printOverallResults(boolean include_credit_link) throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
-
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printOverallResults(html_writer, include_credit_link);
-        }
-    }
-
-    @Override
-    public void printDetailedResults(boolean include_credit_link) throws IOException {
+    public void printDetailedResults(final boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".html"));
 
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printDetailedResults(html_writer, include_credit_link);
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printDetailedResults(writer, include_credit_link);
         }
     }
 
@@ -70,8 +71,8 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
 
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printPrizes(html_writer);
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printPrizes(writer);
         }
     }
 
@@ -80,34 +81,34 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
 
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            html_writer.append("""
+            writer.append("""
                     <h3><strong>Results</strong></h3>
                     """);
 
-            printPrizes(html_writer);
+            printPrizes(writer);
 
-            html_writer.append("""
+            writer.append("""
                     <h4>Overall</h4>
                     """);
 
-            printOverallResults(html_writer, false);
+            printOverallResults(writer, false);
 
-            html_writer.append("""
+            writer.append("""
                     <h4>Full Results</h4>
                     """);
 
-            printDetailedResults(html_writer, false);
+            printDetailedResults(writer, false);
 
-            html_writer.append("""
+            writer.append("""
                     <p>M3: mass start leg 3<br />M4: mass start leg 4</p>
                     """);
 
             for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
-                html_writer.append("<p></p>\n<h4>Leg ").append(String.valueOf(leg_number)).append(" Results</h4>\n");
-                printLegResults(html_writer, leg_number, leg_number == ((RelayRace)race).number_of_legs);
+                writer.append("<p></p>\n<h4>Leg ").append(String.valueOf(leg_number)).append(" Results</h4>\n");
+                printLegResults(writer, leg_number, leg_number == ((RelayRace)race).number_of_legs);
             }
         }
     }
@@ -131,43 +132,45 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     @Override
     protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+
         writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
         writer.append("<ol>\n");
 
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
         if (category_prize_winners == null)
             writer.append("No results\n");
-        else {
-            for (final RaceResult r : category_prize_winners) {
-
-                final RelayRaceResult result = ((RelayRaceResult) r);
-
-                writer.append("<li>").
-                        append(result.entry.team.name()).append(" (").
-                        append(result.entry.team.category().getLongName()).append(") ").
-                        append(format(result.duration())).append("</li>\n");
-            }
-        }
+        else
+            for (final RaceResult result : category_prize_winners)
+                printPrizeWinner(writer, result);
 
         writer.append("</ol>\n\n");
+    }
+
+    private void printPrizeWinner(final OutputStreamWriter writer, final RaceResult r) throws IOException {
+
+        final RelayRaceResult result = (RelayRaceResult) r;
+
+        writer.append("<li>").
+            append(result.entry.team.name()).append(" (").
+            append(result.entry.team.category().getLongName()).append(") ").
+            append(format(result.duration())).append("</li>\n");
     }
 
     @Override
     protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
-                <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>No</th>
-                                       <th>Team</th>
-                                       <th>Category</th>
-                                       <th>Total</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
+            <table class="fac-table">
+                           <thead>
+                               <tr>
+                                   <th>Pos</th>
+                                   <th>No</th>
+                                   <th>Team</th>
+                                   <th>Category</th>
+                                   <th>Total</th>
+                               </tr>
+                           </thead>
+                           <tbody>
             """);
     }
 
@@ -184,9 +187,9 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         int position = 1;
 
-        for (final RaceResult res : race.getOverallResults()) {
+        for (final RaceResult r : race.getOverallResults()) {
 
-            RelayRaceResult result = ((RelayRaceResult) res);
+            RelayRaceResult result = ((RelayRaceResult) r);
 
             writer.append("""
                         <tr>
@@ -199,7 +202,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.entry.team.name()));
+            writer.append(htmlEncode(result.entry.team.name(), race));
             writer.append("""
                             </td>
                             <td>""");
@@ -275,7 +278,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(htmlEncode(result.entry.team.name()));
+        writer.append(htmlEncode(result.entry.team.name(), race));
         writer.append("""
                 </td>
                 <td>""");
@@ -302,7 +305,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     private void printLegResults(final OutputStreamWriter writer, final int leg, boolean include_credit_link) throws IOException {
 
         printLegResultsHeader(writer, leg);
-        printLegResultsBody(writer, getLegResults(leg));
+        printLegResultsBody(writer, ((RelayRace)race).getLegResults(leg));
         printLegResultsFooter(writer, include_credit_link);
     }
 
@@ -310,15 +313,15 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         boolean any_previous_leg_dnf = false;
 
-        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++) {
+        for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
-            final LegResult leg_result = result.leg_results.get(leg - 1);
+            final LegResult leg_result = result.leg_results.get(leg_number - 1);
 
             writer.append("""
                 <td>""");
-            writer.append(htmlEncode(team.runners()[leg - 1]));
+            writer.append(htmlEncode(team.runners()[leg_number - 1], race));
 
-            addMassStartAnnotation(writer, leg_result, leg);
+            ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
 
             writer.append("""
                 </td>
@@ -328,7 +331,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                 </td>
                 <td>""");
-            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(sumDurationsUpToLeg(result.leg_results, leg)));
+            writer.append(leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(((RelayRace)race).sumDurationsUpToLeg(result.leg_results, leg_number)));
             writer.append("""
                 </td>""");
 
@@ -336,43 +339,43 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+//    private Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+//
+//        Duration total = Duration.ZERO;
+//        for (int i = 0; i < leg; i++)
+//            total = total.plus(leg_results.get(i).duration());
+//        return total;
+//    }
 
-        Duration total = Duration.ZERO;
-        for (int i = 0; i < leg; i++)
-            total = total.plus(leg_results.get(i).duration());
-        return total;
-    }
+//    private List<LegResult> getLegResults(final int leg_number) {
+//
+//        final List<LegResult> leg_results = new ArrayList<>();
+//
+//        for (final RaceResult overall_result : race.getOverallResults())
+//            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
+//
+//        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
+//        // Ordering for DNF results doesn't matter since they're omitted in output.
+//        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+//        // OutputCSV.printLegResults deals with dead heats.
+//        leg_results.sort(LegResult::compareTo);
+//
+//        return leg_results;
+//    }
 
-    private List<LegResult> getLegResults(final int leg_number) {
-
-        final List<LegResult> leg_results = new ArrayList<>();
-
-        for (final RaceResult overall_result : race.getOverallResults())
-            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
-
-        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
-        // Ordering for DNF results doesn't matter since they're omitted in output.
-        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
-        // OutputCSV.printLegResults deals with dead heats.
-        leg_results.sort(LegResult::compareTo);
-
-        return leg_results;
-    }
-
-    private void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
-
-        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
-        if (leg_result.in_mass_start) {
-
-            // Find the next mass start.
-            int mass_start_leg = leg;
-            while (!((RelayRace)race).mass_start_legs.get(mass_start_leg-1))
-                mass_start_leg++;
-
-            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
-        }
-    }
+//    private void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
+//
+//        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
+//        if (leg_result.in_mass_start) {
+//
+//            // Find the next mass start.
+//            int mass_start_leg = leg;
+//            while (!((RelayRace)race).mass_start_legs.get(mass_start_leg-1))
+//                mass_start_leg++;
+//
+//            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
+//        }
+//    }
     
     private void printLegResultsHeader(final OutputStreamWriter writer, final int leg) throws IOException {
 
@@ -406,7 +409,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(htmlEncode(leg_result.entry.team.runners()[leg_result.leg_number-1]));
+                writer.append(htmlEncode(leg_result.entry.team.runners()[leg_result.leg_number-1], race));
                 writer.append("""
                                 </td>
                                 <td>""");

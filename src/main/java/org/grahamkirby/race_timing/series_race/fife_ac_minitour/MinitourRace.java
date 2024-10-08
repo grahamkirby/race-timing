@@ -35,12 +35,6 @@ import java.util.function.Predicate;
 
 public class MinitourRace extends SeriesRace {
 
-    ////////////////////////////////////////////  SET UP  ////////////////////////////////////////////
-    //                                                                                              //
-    //  See README.md at the project root for details of how to configure and run this software.    //
-    //                                                                                              //
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     public MinitourRace(final Path config_file_path) throws IOException {
 
         super(config_file_path);

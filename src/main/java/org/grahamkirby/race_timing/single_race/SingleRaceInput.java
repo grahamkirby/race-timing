@@ -27,9 +27,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Race.KEY_ENTRIES_FILENAME;
+import static org.grahamkirby.race_timing.common.Race.KEY_RAW_RESULTS_FILENAME;
+
 public abstract class SingleRaceInput extends RaceInput {
 
-    public SingleRaceInput(Race race) {
+    public SingleRaceInput(final Race race) {
 
         super(race);
 
@@ -39,8 +42,8 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected void readProperties() {
 
-        entries_filename = race.getProperties().getProperty("ENTRIES_FILENAME");
-        raw_results_filename = race.getProperties().getProperty("RAW_RESULTS_FILENAME");
+        entries_filename = race.getProperties().getProperty(KEY_ENTRIES_FILENAME);
+        raw_results_filename = race.getProperties().getProperty(KEY_RAW_RESULTS_FILENAME);
     }
 
     protected void constructFilePaths() {
@@ -52,63 +55,107 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected List<RaceEntry> loadEntries() throws IOException {
 
-        final List<String> lines = Files.readAllLines(entries_path);
-        final List<RaceEntry> entries = new ArrayList<>();
+        final List<RaceEntry> entries = Files.readAllLines(entries_path).stream().map(line -> makeRaceEntry(line.split("\t"))).toList();
 
-        for (final String line : lines) {
-
-            final RaceEntry entry = makeRaceEntry(line.split("\t"));
-
-            checkDuplicateBibNumber(entries, entry);
-            checkDuplicateEntry(entries, entry);
-
-            entries.add(entry);
-        }
+        checkForDuplicateBibNumbers(entries);
+        checkForDuplicateEntries(entries);
 
         return entries;
+
+
+//        final List<RaceEntry> entries = new ArrayList<>();
+//
+//        for (final String line : lines) {
+//
+//            final RaceEntry entry = makeRaceEntry(line.split("\t"));
+//
+//            checkDuplicateBibNumber(entries, entry);
+//            checkDuplicateEntry(entries, entry);
+//
+//            entries.add(entry);
+//        }
+//
+//        return entries;
     }
+
+//    protected List<RawResult> loadRawResults(final Path results_path) throws IOException {
+//
+//        final List<RawResult> raw_results = new ArrayList<>();
+//
+//        for (final String line : Files.readAllLines(results_path))
+//            loadRawResult(raw_results, line);
+//
+//        return raw_results;
+//    }
+//
+//    private void loadRawResult(final List<RawResult> raw_results, String line) {
+//
+//        final int comment_start_index = line.indexOf("#");
+//        if (comment_start_index > -1) line = line.substring(0, comment_start_index);
+//
+//        if (!line.isBlank()) {
+//
+//            try {
+//                final RawResult result = new RawResult(line);
+//                checkOrdering(raw_results, result);
+//
+//                raw_results.add(result);
+//            }
+//            catch (NumberFormatException ignored) {
+//            }
+//        }
+//    }
 
     protected List<RawResult> loadRawResults(final Path results_path) throws IOException {
 
         final List<RawResult> raw_results = new ArrayList<>();
 
-        for (final String line : Files.readAllLines(results_path))
-            loadRawResult(raw_results, line);
+        for (String line : Files.readAllLines(results_path)) {
+
+            line = stripComment(line);
+
+            if (!line.isBlank()) {
+                try {
+                    raw_results.add(loadRawResult(line));
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
+        checkOrdering(raw_results);
 
         return raw_results;
     }
 
-    private void loadRawResult(final List<RawResult> raw_results, String line) {
+    protected RawResult loadRawResult(final String line) {
+
+//        return new RawResult(stripComment(line));
+        return new RawResult(line);
+    }
+
+    protected static String stripComment(final String line) {
 
         final int comment_start_index = line.indexOf("#");
-        if (comment_start_index > -1) line = line.substring(0, comment_start_index);
+        return (comment_start_index > -1) ? line.substring(0, comment_start_index) : line;
+    }
 
-        if (!line.isBlank()) {
+    private void checkOrdering(final List<RawResult> raw_results) {
 
-            try {
-                final RawResult result = new RawResult(line);
-                checkOrdering(raw_results, result);
+        for (int i = 0; i < raw_results.size() - 1; i++) {
 
-                raw_results.add(result);
-            }
-            catch (NumberFormatException ignored) {
-            }
+            final RawResult result1 = raw_results.get(i);
+            final RawResult result2 = raw_results.get(i+1);
+
+            if (resultsAreOutOfOrder(result1, result2))
+                throw new RuntimeException("result " + (i+2) + " out of order");
         }
     }
 
-    private void checkOrdering(final List<RawResult> raw_results, final RawResult result) {
+    private boolean resultsAreOutOfOrder(final RawResult result1, final RawResult result2) {
 
-        final RawResult previous_result = !raw_results.isEmpty() ? raw_results.get(raw_results.size() - 1) : null;
-
-        if (resultsAreOutOfOrder(result, previous_result))
-            throw new RuntimeException("result " + (raw_results.size() + 1) + " out of order");
-    }
-
-    private boolean resultsAreOutOfOrder(final RawResult result, final RawResult previous_result) {
-
-        return result.getRecordedFinishTime() != null &&
-                previous_result != null && previous_result.getRecordedFinishTime() != null &&
-                previous_result.getRecordedFinishTime().compareTo(result.getRecordedFinishTime()) > 0;
+        return result2.getRecordedFinishTime() != null &&
+                result1 != null && result1.getRecordedFinishTime() != null &&
+                result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
     }
 
     private void checkDuplicateBibNumber(final List<RaceEntry> entries, final RaceEntry new_entry) {
@@ -118,7 +165,19 @@ public abstract class SingleRaceInput extends RaceInput {
                 throw new RuntimeException("duplicate bib number: " + new_entry.bib_number);
     }
 
+    protected void checkForDuplicateBibNumbers(final List<RaceEntry> entries) {
+
+        for (final RaceEntry entry1 : entries) {
+            for (final RaceEntry entry2 : entries) {
+
+                if (entry1 != entry2 && entry1.bib_number == entry2.bib_number)
+                    throw new RuntimeException("duplicate bib number: " + entry1.bib_number);
+            }
+        }
+    }
+
     protected abstract List<RawResult> loadRawResults() throws IOException;
     protected abstract void checkDuplicateEntry(final List<RaceEntry> entries, final RaceEntry new_entry);
+    protected abstract void checkForDuplicateEntries(final List<RaceEntry> entries);
     protected abstract RaceEntry makeRaceEntry(final String[] elements);
 }

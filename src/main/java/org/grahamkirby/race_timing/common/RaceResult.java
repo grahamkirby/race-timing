@@ -34,22 +34,12 @@ public abstract class RaceResult implements Comparable<RaceResult> {
         return 0;
     }
 
-    protected static String getFirstName(final String name) {
-        return name.split(" ")[0];
-    }
-
-    protected static String getLastName(final String name) {
-
-        final String[] names = name.split(" ");
-        return names[names.length - 1];
-    }
-
     public int comparePerformanceTo(final RaceResult other) {
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+        return 0;
     }
 
     public abstract boolean sameEntrant(final RaceResult other);
-
     public abstract boolean completed();
     public abstract Category getCategory();
 }

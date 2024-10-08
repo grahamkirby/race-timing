@@ -35,7 +35,7 @@ public class MidweekRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    public void printPrizes(final Document document, final Category category) throws IOException {
+    protected void printPrizes(final Document document, final Category category) throws IOException {
 
         addCategoryHeader(category, document);
 

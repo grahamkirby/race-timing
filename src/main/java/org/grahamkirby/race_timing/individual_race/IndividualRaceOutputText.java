@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+
 public class IndividualRaceOutputText extends RaceOutputText {
 
     public IndividualRaceOutputText(final IndividualRace race) {
@@ -45,9 +47,9 @@ public class IndividualRaceOutputText extends RaceOutputText {
                 writer.append("No results\n");
 
             int position = 1;
-            for (final RaceResult entry : category_prize_winners) {
+            for (final RaceResult r : category_prize_winners) {
 
-                final IndividualRaceResult result = ((IndividualRaceResult)entry);
+                final IndividualRaceResult result = ((IndividualRaceResult)r);
 
                 writer.append(String.valueOf(position++)).append(": ").
                         append(result.entry.runner.name).append(" (").

@@ -39,7 +39,12 @@ public class RacePrizes {
             race.prize_winners.put(category, getPrizeWinners(category));
     }
 
-    protected boolean notYetWonPrize(final RaceResult potential_winner) {
+    protected boolean prizeWinner(final RaceResult result, final Category category) {
+
+        return result.completed() && race.categories.includes(category, result.getCategory()) && notYetWonPrize(result);
+    }
+
+    private boolean notYetWonPrize(final RaceResult potential_winner) {
 
         for (final List<RaceResult> winners : race.prize_winners.values())
             for (final RaceResult result : winners)
@@ -47,11 +52,6 @@ public class RacePrizes {
                     return false;
 
         return true;
-    }
-
-    protected boolean prizeWinner(final RaceResult result, final Category category) {
-
-        return result.completed() && race.categories.includes(category, result.getCategory()) && notYetWonPrize(result);
     }
 
     private List<RaceResult> getPrizeWinners(final Category category) {

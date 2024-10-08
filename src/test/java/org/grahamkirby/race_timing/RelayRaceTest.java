@@ -307,7 +307,7 @@ public class RelayRaceTest extends RaceTest {
 
     @Test
     public void illegalMassStartTime() throws Exception {
-        testExpectedException("illegal_mass_start_time", "illegal mass start time: XXX");
+        testExpectedException("illegal_mass_start_time", "illegal time: XXX");
     }
 
     @Test

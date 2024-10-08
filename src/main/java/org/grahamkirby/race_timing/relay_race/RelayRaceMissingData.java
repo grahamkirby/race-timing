@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RawResult;
 
 import java.time.Duration;
@@ -25,6 +24,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class RelayRaceMissingData {
+
+    public static final int HALF_A_SECOND_IN_NANOSECONDS = 500000000;
 
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after, Duration previous_finish, Duration next_finish) { }
     private record ContiguousSequence(int start_index, int end_index) {}
@@ -135,19 +136,25 @@ public class RelayRaceMissingData {
 
     private void interpolateTimes(final ContiguousSequence sequence, final Duration time_step) {
 
-        final Duration previous_finish_time = race.getRawResults().get(sequence.start_index - 1).getRecordedFinishTime();
+        final Duration finish_time_before_missing_sequence = race.getRawResults().get(sequence.start_index - 1).getRecordedFinishTime();
 
         for (int i = 0; i <= sequence.end_index - sequence.start_index; i++) {
 
-            final Duration interpolated_finish_time = roundToIntegerSeconds(previous_finish_time.plus(time_step.multipliedBy(i + 1)));
+            final Duration interpolated_finish_time = finish_time_before_missing_sequence.plus(time_step.multipliedBy(i + 1));
+            final Duration rounded_interpolated_finish_time = roundToIntegerSeconds(interpolated_finish_time);
 
-            race.getRawResults().get(sequence.start_index + i).setRecordedFinishTime(interpolated_finish_time);
-            race.getRawResults().get(sequence.start_index + i).appendComment("Time not recorded. Time interpolated.");
+            final RawResult interpolated_result = race.getRawResults().get(sequence.start_index + i);
+            
+            interpolated_result.setRecordedFinishTime(rounded_interpolated_finish_time);
+            interpolated_result.appendComment("Time not recorded. Time interpolated.");
         }
     }
 
-    private static Duration roundToIntegerSeconds(Duration interpolated_finish_time) {
-        return Duration.ofSeconds(interpolated_finish_time.getSeconds());
+    private static Duration roundToIntegerSeconds(final Duration duration) {
+
+        long seconds = duration.getSeconds();
+        if (duration.getNano() > HALF_A_SECOND_IN_NANOSECONDS) seconds++;
+        return Duration.ofSeconds(seconds);
     }
 
     private void setTimesForResultsAfterLastRecordedTime(final int missing_times_start_index) {
@@ -156,16 +163,18 @@ public class RelayRaceMissingData {
 
         for (int i = missing_times_start_index; i < race.getRawResults().size(); i++) {
 
-            race.getRawResults().get(i).setRecordedFinishTime(last_recorded_time);
-            race.getRawResults().get(i).appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
+            final RawResult missing_result = race.getRawResults().get(i);
+            
+            missing_result.setRecordedFinishTime(last_recorded_time);
+            missing_result.appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
         }
     }
 
     private void recordCommentsForNonGuessedResults() {
 
-        for (final RawResult raw_result : race.getRawResults())
-            if (raw_result.getBibNumber() == null)
-                raw_result.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
+        for (final RawResult result : race.getRawResults())
+            if (result.getBibNumber() == null)
+                result.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
     }
 
     private void guessMissingBibNumbersWithAllTimesRecorded() {
@@ -208,17 +217,12 @@ public class RelayRaceMissingData {
 
         // Guess the team with the fewest previous finishes, using the other attributes
         // described above as tie-breaks.
-        return summaries.get(0).team_number;
+        return summaries.getFirst().team_number;
     }
 
     private List<TeamSummaryAtPosition> summarise(final int position) {
 
-        final List<TeamSummaryAtPosition> summaries = new ArrayList<>();
-
-        for (final RaceEntry entry : race.entries)
-            summaries.add(summarise(position, entry.bib_number));
-
-        return summaries;
+        return new ArrayList<>(race.entries.stream().map(entry -> summarise(position, entry.bib_number)).toList());
     }
 
     private TeamSummaryAtPosition summarise(final int position, final int bib_number) {

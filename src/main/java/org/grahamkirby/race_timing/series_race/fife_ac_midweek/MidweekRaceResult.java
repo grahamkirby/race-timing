@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MidweekRaceResult extends SeriesRaceResult {
 
-    public final List<Integer> scores;
+    protected final List<Integer> scores;
 
     public MidweekRaceResult(final Runner runner, final MidweekRace race) {
 
@@ -55,7 +55,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
         final int compare_performance = r1.comparePerformanceTo(r2);
         if (compare_performance != 0) return compare_performance;
 
-        // Both have the same points.
+        // Both have the same points, so sort alphabetically.
 
         return ((MidweekRaceResult)r1).compareRunnerNameTo((MidweekRaceResult) r2);
     }

@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
+import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
@@ -26,7 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Race.parseTime;
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Race.*;
 
 public class MinitourRaceInput extends SeriesRaceInput {
 
@@ -35,6 +37,8 @@ public class MinitourRaceInput extends SeriesRaceInput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final List<String> SECOND_WAVE_CATEGORY_NAMES = Arrays.asList("FU9", "MU9", "FU11", "MU11");
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private List<Duration> wave_start_offsets;
     private List<SelfTimedRun> self_timed_runs;
@@ -70,14 +74,14 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private List<Duration> readWaveStartOffsets() {
 
-        final String[] offset_strings = race.getPropertyWithDefault("WAVE_START_OFFSETS", "").split(",", -1);
+        final String[] offset_strings = race.getPropertyWithDefault(KEY_WAVE_START_OFFSETS, "").split(",", -1);
 
-        return extractConfigFromPropertyStrings(offset_strings, Race::parseTime);
+        return extractConfigFromPropertyStrings(offset_strings, Normalisation::parseTime);
     }
 
     private List<SelfTimedRun> readSelfTimedRuns() {
 
-        final String[] self_timed_strings = race.getPropertyWithDefault("SELF_TIMED","").split(",", -1);
+        final String[] self_timed_strings = race.getPropertyWithDefault(KEY_SELF_TIMED,"").split(",", -1);
 
         final Function<String, SelfTimedRun> extract_run_function = s -> {
 
@@ -97,7 +101,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private void readTimeTrialProperties() {
 
-        final String[] parts = race.getProperties().getProperty("TIME_TRIAL").split("/", -1);
+        final String[] parts = race.getProperties().getProperty(KEY_TIME_TRIAL).split("/", -1);
 
         time_trial_race_number = Integer.parseInt(parts[0]);
         time_trial_runners_per_wave = Integer.parseInt(parts[1]);
@@ -106,10 +110,10 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private void applyRunnerStartOffsets(final IndividualRace individual_race, final int race_number) {
 
-        for (final RawResult raw_result : individual_race.getRawResults()) {
+        for (final RawResult result : individual_race.getRawResults()) {
 
-            final Duration runner_start_offset = getRunnerStartOffset(individual_race, race_number, raw_result.getBibNumber());
-            raw_result.recorded_finish_time = raw_result.recorded_finish_time.minus(runner_start_offset);
+            final Duration runner_start_offset = getRunnerStartOffset(individual_race, race_number, result.getBibNumber());
+            result.recorded_finish_time = result.recorded_finish_time.minus(runner_start_offset);
         }
     }
 
@@ -135,11 +139,11 @@ public class MinitourRaceInput extends SeriesRaceInput {
         return time_trial_inter_wave_interval.multipliedBy(wave_number);
     }
 
-    private int runnerIndexInBibOrder(int bib_number) {
+    private int runnerIndexInBibOrder(final int bib_number) {
         return bib_number - 1;
     }
 
-    private boolean raceIsTimeTrial(int race_number) {
+    private boolean raceIsTimeTrial(final int race_number) {
         return race_number == time_trial_race_number;
     }
 

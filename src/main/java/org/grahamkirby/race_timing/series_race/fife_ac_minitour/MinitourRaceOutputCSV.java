@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+
 public class MinitourRaceOutputCSV extends RaceOutputCSV {
 
     public MinitourRaceOutputCSV(final Race race) {

@@ -32,7 +32,6 @@ public class MinitourRaceResult extends SeriesRaceResult {
     public MinitourRaceResult(final Runner runner, final MinitourRace race) {
 
         super(runner, race);
-
         times = new ArrayList<>();
     }
 
@@ -78,6 +77,8 @@ public class MinitourRaceResult extends SeriesRaceResult {
         
         final int compare_completion = r1.compareCompletionTo(r2);
         if (compare_completion != 0) return compare_completion;
+
+        // Either both have completed or neither have.
 
         final int compare_completion_so_far = ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
         if (compare_completion_so_far != 0) return compare_completion_so_far;

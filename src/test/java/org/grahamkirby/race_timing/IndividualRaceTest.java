@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -92,6 +93,11 @@ public class IndividualRaceTest extends RaceTest {
     @Test
     public void unregisteredRunner() throws Exception {
         testExpectedException("unregistered_runner", "unregistered bib number: 4");
+    }
+
+    @Test
+    public void alternativeClubNameNormalisation() throws Exception {
+        testExpectedCompletion("alternative_club_name_normalisation");
     }
 
     @Override

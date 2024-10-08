@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Race.KEY_RACES;
 
 public class SeriesRaceInput extends RaceInput {
 
@@ -62,14 +65,16 @@ public class SeriesRaceInput extends RaceInput {
 
     private List<Path> readRaceConfigPaths() {
 
-        final String[] race_strings = race.getProperties().getProperty("RACES").split(",", -1);
+        final String[] race_strings = race.getProperties().getProperty(KEY_RACES).split(",", -1);
 
-        final List<Path> race_paths = new ArrayList<>();
+        return Arrays.stream(race_strings).map(Paths::get).toList();
 
-        for (final String race_string : race_strings)
-            race_paths.add(Paths.get(race_string));
-
-        return race_paths;
+//        final List<Path> race_paths = new ArrayList<>();
+//
+//        for (final String race_string : race_strings)
+//            race_paths.add(Paths.get(race_string));
+//
+//        return race_paths;
     }
 
     protected IndividualRace getIndividualRace(final Path relative_path, final int race_number) throws IOException {
@@ -78,7 +83,7 @@ public class SeriesRaceInput extends RaceInput {
         final IndividualRace individual_race = new IndividualRace(individual_race_path);
 
         configureIndividualRace(individual_race, race_number);
-        individual_race.processResults(false);
+        individual_race.calculateResults();
 
         return individual_race;
     }

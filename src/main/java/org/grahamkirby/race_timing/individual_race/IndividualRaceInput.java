@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
@@ -44,8 +45,28 @@ public class IndividualRaceInput extends SingleRaceInput {
     @Override
     protected void checkDuplicateEntry(final List<RaceEntry> entries, final RaceEntry new_entry) {
 
-        for (final RaceEntry entry : entries)
-            if (((IndividualRaceEntry)entry).runner.name.equals(((IndividualRaceEntry) new_entry).runner.name) && ((IndividualRaceEntry)entry).runner.club.equals(((IndividualRaceEntry) new_entry).runner.club))
+        for (final RaceEntry entry : entries) {
+
+            final Runner runner1 = ((IndividualRaceEntry) entry).runner;
+            final Runner runner2 = ((IndividualRaceEntry) new_entry).runner;
+
+            if (runner1.name.equals(runner2.name) && runner1.club.equals(runner2.club))
                 throw new RuntimeException("duplicate entry: " + new_entry);
+        }
+    }
+
+    @Override
+    protected void checkForDuplicateEntries(final List<RaceEntry> entries) {
+
+        for (final RaceEntry entry1 : entries) {
+            for (final RaceEntry entry2 : entries) {
+
+                final Runner runner1 = ((IndividualRaceEntry) entry1).runner;
+                final Runner runner2 = ((IndividualRaceEntry) entry2).runner;
+
+                if (runner1 != runner2 && runner1.name.equals(runner2.name) && runner1.club.equals(runner2.club))
+                    throw new RuntimeException("duplicate entry: " + runner1);
+            }
+        }
     }
 }

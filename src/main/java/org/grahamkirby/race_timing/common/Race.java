@@ -22,9 +22,13 @@ import org.grahamkirby.race_timing.common.output.RaceOutput;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
+
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
 
@@ -35,16 +39,49 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected static final String DUMMY_DURATION_STRING = "23:59:59";
+    public static final String DUMMY_DURATION_STRING = "23:59:59";
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
 
-    public static final String SENIOR_RACE_KEY = "SENIOR_RACE";
-    public static final String OPEN_PRIZE_CATEGORIES_KEY = "OPEN_PRIZE_CATEGORIES";
-    public static final String SENIOR_PRIZE_CATEGORIES_KEY = "SENIOR_PRIZE_CATEGORIES";
-    public static final String NUMBER_OF_OPEN_PRIZES_KEY = "NUMBER_OF_OPEN_PRIZES";
-    public static final String NUMBER_OF_SENIOR_PRIZES_KEY = "NUMBER_OF_SENIOR_PRIZES";
-    public static final String NUMBER_OF_CATEGORY_PRIZES_KEY = "NUMBER_OF_CATEGORY_PRIZES";
-    public static final String MINIMUM_NUMBER_OF_RACES_KEY = "MINIMUM_NUMBER_OF_RACES";
+    public static final String KEY_SENIOR_RACE = "SENIOR_RACE";
+    public static final String KEY_OPEN_PRIZE_CATEGORIES = "OPEN_PRIZE_CATEGORIES";
+    public static final String KEY_SENIOR_PRIZE_CATEGORIES = "SENIOR_PRIZE_CATEGORIES";
+    public static final String KEY_NUMBER_OF_OPEN_PRIZES = "NUMBER_OF_OPEN_PRIZES";
+    public static final String KEY_NUMBER_OF_SENIOR_PRIZES = "NUMBER_OF_SENIOR_PRIZES";
+    public static final String KEY_NUMBER_OF_CATEGORY_PRIZES = "NUMBER_OF_CATEGORY_PRIZES";
+    public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
+    public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
+
+    public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
+    public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
+
+    public static final String KEY_DNF_LEGS = "DNF_LEGS";
+
+    public static final String KEY_NORMALISED_TEAM_NAMES = "NORMALISED_TEAM_NAMES_PATH";
+
+    public static final String KEY_SELF_TIMED = "SELF_TIMED";
+    public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
+    public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
+
+    public static final String KEY_CATEGORY_PRIZES = "CATEGORY_PRIZES";
+
+    public static final String KEY_ENTRIES_FILENAME = "ENTRIES_FILENAME";
+    public static final String KEY_RAW_RESULTS_FILENAME = "RAW_RESULTS_FILENAME";
+
+    public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
+    public static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
+    public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
+    public static final String KEY_START_OFFSET = "START_OFFSET";
+    public static final String KEY_SENIOR_PRIZES = "SENIOR_PRIZES";
+    public static final String KEY_PAPER_RESULTS_FILENAME = "PAPER_RESULTS_FILENAME";
+    public static final String KEY_ANNOTATIONS_FILENAME = "ANNOTATIONS_FILENAME";
+
+    public static final String KEY_RACES = "RACES";
+
+    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "src/main/resources/configuration/html_entities.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,6 +97,8 @@ public abstract class Race {
 
     public RaceInput input;
     public RaceOutput output_CSV, output_HTML, output_text, output_PDF;
+
+    public Map<String, String> normalised_html_entities;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,9 +117,13 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract void processResults() throws IOException;
-    public abstract void configure() throws IOException;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void configure() throws IOException {
+
+        configureHTMLEntityNormalisation();
+    }
 
     public List<RaceResult> getOverallResults() {
         return overall_results;
@@ -126,25 +169,6 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static Duration parseTime(String element) {
-
-        element = element.strip();
-        if (element.startsWith(":")) element = "0" + element;
-        if (element.endsWith(":")) element = element + "0";
-
-        try {
-            final String[] parts = element.split(":");
-            final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
-
-            return Duration.parse(time_as_ISO);
-        }
-        catch (Exception e) {
-            throw new RuntimeException("illegal time: " + element);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private static Properties loadProperties(final Path config_file_path) throws IOException {
 
         try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
@@ -155,13 +179,24 @@ public abstract class Race {
         }
     }
 
-    private static String hours(final String[] parts) {
-        return parts.length > 2 ? parts[0] + "H" : "";
+    private void configureHTMLEntityNormalisation() throws IOException {
+
+        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
     }
-    private static String minutes(final String[] parts) {
-        return (parts.length > 2 ? parts[1] : parts[0]) + "M";
-    }
-    private static String seconds(final String[] parts) {
-        return (parts.length > 2 ? parts[2] : parts[1]) + "S";
+
+    protected Map<String, String> loadNormalisationMap(String path_key, String default_path) throws IOException {
+
+        Map<String, String> map = new HashMap<>();
+
+        String propertyWithDefault = getPropertyWithDefault(path_key, default_path);
+        Path path = Paths.get(propertyWithDefault);
+        final List<String> lines = Files.readAllLines(path);
+
+        for (final String line : lines) {
+            final String[] parts = line.split(",");
+            map.put(parts[0], parts[1]);
+        }
+
+        return map;
     }
 }

@@ -67,7 +67,7 @@ public class RelayRaceResult extends RaceResult {
 
         for (final LegResult leg_result : leg_results) {
 
-            if (leg_result.DNF) return RelayRace.DUMMY_DURATION;
+            if (leg_result.DNF) return Race.DUMMY_DURATION;
             overall = overall.plus(leg_result.duration());
         }
 

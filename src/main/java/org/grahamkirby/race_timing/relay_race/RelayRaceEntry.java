@@ -28,7 +28,7 @@ public class RelayRaceEntry extends RaceEntry {
 
     public Team team;
 
-    public RelayRaceEntry(final String[] elements, Race race) {
+    public RelayRaceEntry(final String[] elements, final Race race) {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 

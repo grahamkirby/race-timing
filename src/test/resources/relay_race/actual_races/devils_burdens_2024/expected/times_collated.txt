@@ -382,8 +382,8 @@
 30	04:12:47
 8	04:13:03
 44	04:13:06		# Remaining times from paper recording sheet only.
-72	04:13:33		# Time not recorded. Time interpolated.
-93	04:14:01		# Time not recorded. Time interpolated.
+72	04:13:34		# Time not recorded. Time interpolated.
+93	04:14:02		# Time not recorded. Time interpolated.
 105	04:14:29	4	# Time not recorded. Time interpolated.
 6	04:14:57		# Time not recorded. Time interpolated.
 70	04:15:25
@@ -407,7 +407,7 @@
 76	04:18:30	4
 40	04:18:30		# Time not recorded. Time reverse engineered from submitted leg time.
 36	04:18:32	4
-11	04:18:41		# Only on recording sheet, looks like 110. Time not recorded. Time interpolated.
+11	04:18:42		# Only on recording sheet, looks like 110. Time not recorded. Time interpolated.
 39	04:18:51		# Time not recorded. Time interpolated.
 28	04:19:01
 31	04:19:03		# Time not recorded. Time reverse engineered from submitted Strava trace.
