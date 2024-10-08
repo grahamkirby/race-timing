@@ -144,7 +144,6 @@ public class RelayRace extends SingleRace {
 
         try {
             final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
-
             result_with_leg.result.leg_results.get(result_with_leg.leg_index).DNF = true;
         }
         catch (Exception e) {
@@ -186,9 +185,9 @@ public class RelayRace extends SingleRace {
 
         for (int i = 0; i < raw_results.size(); i++) {
 
-            final Integer result_bib_number = raw_results.get(i).getBibNumber();
+            final int result_bib_number = raw_results.get(i).getBibNumber();
 
-            if (result_bib_number != null && result_bib_number == bib_number) {
+            if (result_bib_number == bib_number) {
                 legs_completed++;
                 if (legs_completed == leg_number) return i + 1;
             }
@@ -312,7 +311,7 @@ public class RelayRace extends SingleRace {
     private void recordLegResults() {
 
         for (final RawResult raw_result : raw_results)
-            if (raw_result.getBibNumber() != null)
+            if (raw_result.getBibNumber() > -1)
                 recordLegResult((RelayRaceRawResult)raw_result);
     }
 

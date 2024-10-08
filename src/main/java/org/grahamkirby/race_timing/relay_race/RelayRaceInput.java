@@ -133,7 +133,7 @@ public class RelayRaceInput extends SingleRaceInput {
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);
 
-        if (elements[2].equals("?")) raw_result.setBibNumber(null);
+        if (elements[2].equals("?")) raw_result.setBibNumber(-1);
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
         if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);

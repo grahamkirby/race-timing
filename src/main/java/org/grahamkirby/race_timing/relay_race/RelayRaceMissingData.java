@@ -175,7 +175,7 @@ public class RelayRaceMissingData {
     private void recordCommentsForNonGuessedResults() {
 
         for (final RawResult result : race.getRawResults())
-            if (result.getBibNumber() == null)
+            if (result.getBibNumber() == -1)
                 result.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
     }
 
@@ -197,7 +197,7 @@ public class RelayRaceMissingData {
     private int getPositionOfNextMissingBibNumber() {
 
         for (int i = 0; i < race.getRawResults().size(); i++)
-            if (race.getRawResults().get(i).getBibNumber() == null) return i + 1;
+            if (race.getRawResults().get(i).getBibNumber() == -1) return i + 1;
 
         return 0;
     }
@@ -228,9 +228,9 @@ public class RelayRaceMissingData {
     }
 
     private TeamSummaryAtPosition summarise(final int position, final int bib_number) {
-
-        final int finishes_before = getNumberOfTeamFinishesBefore(position, bib_number);
-        final int finishes_after = getNumberOfTeamFinishesAfter(position, bib_number);
+        
+        final int finishes_before = getNumberOfTeamFinishesBetween(0, position - 1, bib_number);
+        final int finishes_after = getNumberOfTeamFinishesBetween(position, race.getRawResults().size(), bib_number);
 
         final Duration previous_finish_time = getPreviousTeamFinishTime(position, bib_number);
         final Duration next_finish_time = getNextTeamFinishTime(position, bib_number);
@@ -238,67 +238,50 @@ public class RelayRaceMissingData {
         return new TeamSummaryAtPosition(bib_number, finishes_before, finishes_after, previous_finish_time, next_finish_time);
     }
 
+    private int getNumberOfTeamFinishesBetween(final int position1, final int position2, final int bib_number) {
+
+        int count = 0;
+        for (int i = position1; i < position2; i++)
+            if (race.getRawResults().get(i).getBibNumber() == bib_number) count++;
+
+        return count;
+    }
+
+    private Duration getPreviousTeamFinishTime(final int position, final int bib_number) {
+
+        for (int i = position - 1; i > 0; i--) {
+
+            final Duration finish_time = getFinishTimeIfBibNumberMatches(bib_number, i);
+            if (finish_time != null) return finish_time;
+        }
+
+        return Duration.ZERO;
+    }
+
+    private Duration getNextTeamFinishTime(final int position, final int bib_number) {
+
+        for (int i = position + 1; i <= race.getRawResults().size(); i++) {
+
+            final Duration finish_time = getFinishTimeIfBibNumberMatches(bib_number, i);
+            if (finish_time != null) return finish_time;
+        }
+
+        return Duration.ZERO;
+    }
+
+    private Duration getFinishTimeIfBibNumberMatches(final int bib_number, final int position) {
+
+        final RawResult result = race.getRawResults().get(position - 1);
+        final int result_bib_number = result.getBibNumber();
+
+        return (result_bib_number == bib_number) ? result.getRecordedFinishTime() : null;
+    }
+    
     private void sort(final List<TeamSummaryAtPosition> summaries) {
 
         summaries.sort(Comparator.comparing(o -> o.previous_finish));
         summaries.sort(Comparator.comparing(o -> o.next_finish));
         summaries.sort(Comparator.comparingInt(o -> o.finishes_after));
         summaries.sort(Comparator.comparingInt(o -> o.finishes_before));
-    }
-
-    private int getNumberOfTeamFinishesBefore(final int starting_index, final int bib_number) {
-
-        int count = 0;
-        for (int i = starting_index - 1; i > 0; i--) {
-
-            count += getCount(bib_number, i);
-//            final Integer result_bib_number = race.getRawResults().get(i - 1).getBibNumber();
-//            if (result_bib_number != null && result_bib_number == bib_number) count++;
-        }
-
-        return count;
-    }
-
-    private int getNumberOfTeamFinishesAfter(final int starting_index, final int bib_number) {
-
-        int count = 0;
-
-        for (int i = starting_index + 1; i <= race.getRawResults().size(); i++)
-            count += getCount(bib_number, i);
-
-        return count;
-    }
-
-    private int getCount(final int bib_number, final int result_number) {
-
-        final Integer result_bib_number = race.getRawResults().get(result_number - 1).getBibNumber();
-//        return (result_bib_number != null && result_bib_number == bib_number) ? 1 : 0;
-        return (result_bib_number == bib_number) ? 1 : 0;
-    }
-
-    private Duration getPreviousTeamFinishTime(final int starting_index, final int bib_number) {
-
-        for (int i = starting_index - 1; i > 0; i--) {
-
-            final RawResult result = race.getRawResults().get(i - 1);
-            final Integer result_bib_number = result.getBibNumber();
-
-            if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();
-        }
-
-        return Duration.ZERO;
-    }
-
-    private Duration getNextTeamFinishTime(final int starting_index, final int bib_number) {
-
-        for (int i = starting_index + 1; i <= race.getRawResults().size(); i++) {
-
-            final RawResult result = race.getRawResults().get(i - 1);
-            final Integer result_bib_number = result.getBibNumber();
-
-            if (result_bib_number != null && result_bib_number == bib_number) return result.getRecordedFinishTime();
-        }
-
-        return Duration.ZERO;
     }
 }

@@ -61,50 +61,7 @@ public abstract class SingleRaceInput extends RaceInput {
         checkForDuplicateEntries(entries);
 
         return entries;
-
-
-//        final List<RaceEntry> entries = new ArrayList<>();
-//
-//        for (final String line : lines) {
-//
-//            final RaceEntry entry = makeRaceEntry(line.split("\t"));
-//
-//            checkDuplicateBibNumber(entries, entry);
-//            checkDuplicateEntry(entries, entry);
-//
-//            entries.add(entry);
-//        }
-//
-//        return entries;
     }
-
-//    protected List<RawResult> loadRawResults(final Path results_path) throws IOException {
-//
-//        final List<RawResult> raw_results = new ArrayList<>();
-//
-//        for (final String line : Files.readAllLines(results_path))
-//            loadRawResult(raw_results, line);
-//
-//        return raw_results;
-//    }
-//
-//    private void loadRawResult(final List<RawResult> raw_results, String line) {
-//
-//        final int comment_start_index = line.indexOf("#");
-//        if (comment_start_index > -1) line = line.substring(0, comment_start_index);
-//
-//        if (!line.isBlank()) {
-//
-//            try {
-//                final RawResult result = new RawResult(line);
-//                checkOrdering(raw_results, result);
-//
-//                raw_results.add(result);
-//            }
-//            catch (NumberFormatException ignored) {
-//            }
-//        }
-//    }
 
     protected List<RawResult> loadRawResults(final Path results_path) throws IOException {
 
@@ -117,6 +74,7 @@ public abstract class SingleRaceInput extends RaceInput {
             if (!line.isBlank()) {
                 try {
                     raw_results.add(loadRawResult(line));
+
                 } catch (NumberFormatException ignored) {
                 }
             }
@@ -129,7 +87,6 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected RawResult loadRawResult(final String line) {
 
-//        return new RawResult(stripComment(line));
         return new RawResult(line);
     }
 

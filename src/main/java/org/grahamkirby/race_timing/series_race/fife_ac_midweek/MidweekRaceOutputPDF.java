@@ -59,6 +59,7 @@ public class MidweekRaceOutputPDF extends RaceOutputPDF {
         @Override
         public void printNoResults() throws IOException {
 
+            // TODO extract
             final PdfFont italic_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
 
             document.add(new Paragraph("No results").setFont(italic_font));

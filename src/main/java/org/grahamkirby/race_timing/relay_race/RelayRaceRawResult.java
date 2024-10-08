@@ -28,7 +28,7 @@ public class RelayRaceRawResult extends RawResult {
         super(file_line);
 
         final String[] elements = file_line.split("\t");
-        leg_number = elements.length == 2 ? 0 : Integer.parseInt(elements[2]);
+        leg_number = elements.length == 2 ? -1 : Integer.parseInt(elements[2]);
     }
 
     public int getLegNumber() {
