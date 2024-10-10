@@ -1,11 +1,11 @@
-1	Jude Alcock	Falkland Trail Runners	F70+
+1	Jude Alcock	Falkland Trail Runners	F70
 2	Simon Anetts	Fife AC	MS
 3	David Baird	Dundee Road Runners	MS
 4	Peter Banjs	Strathearn Harriers 	MS
 5	James Barnet	Dundee Road Runners	MS
 6	Colin Birtwistle	Dundee Road Runners 	M50
 7	Gemma Bond	Dundee Road Runners	FS
-8	Barbara Brown	Dundee Road Runners	F70+
+8	Barbara Brown	Dundee Road Runners	F70
 9	Joe Brown	Unatt.	MS
 10	Fiona Callaghan	Dundee Road Runners 	FS
 11	Myra Campbell	Falkland Trail Runners	F50
@@ -17,7 +17,7 @@
 17	Alison Cunningham	Strathearn Harriers	F50
 18	Ann Davidson	Falkland Trail Runners	F60
 19	Steven Davidson	Unatt.	M40
-20	Bill Duff	Falkland Trail Runners 	M70+
+20	Bill Duff	Falkland Trail Runners 	M70
 21	David Dunleavey	Stratheden Buttercups	M60
 22	Mark Feely	Anster Allsorts	M50
 23	Malcolm Forbes	Dundee Road Runners	M60
@@ -28,7 +28,7 @@
 28	Alan Gardener	Falkland Trail Runners	M50
 29	Sandra Gardener	Falkland Trail Runners	F50
 30	Keith Gelly	Dundee Road Runners	M50
-31	Allan Gibson	Anster Haddies	M70+
+31	Allan Gibson	Anster Haddies	M70
 32	Kevin Greig	Dundee Road Runners	M40
 33	Christian Harding	Fife AC	M40
 34	Paul Harkins	Fife AC	M40
@@ -57,7 +57,7 @@
 57	Richard Melville	Unatt.	M50
 58	Jonathan Millar	Carnegie Harriers	M40
 59	Mike Murdoch	Falkland Trail Runners	M40
-60	Eric Nachman	Falkland Trail Runners	M70+
+60	Eric Nachman	Falkland Trail Runners	M70
 61	Jane O'Donnell	Dundee Road Runners	F40
 62	Patrick O'Hare	Fife AC	MS
 63	David Pease	Falkland Trail Runners 	M50
@@ -90,13 +90,13 @@
 90	Iain Wallace	PH Racing Club	M50
 91	Huw Watkins	STAART	MS
 92	Nicola Watson	Strathearn Harriers	F50
-93	John Wilmot	Falkland Trail Runners	M70+
+93	John Wilmot	Falkland Trail Runners	M70
 94	George Young	Falkland Trail Runners	M40
 95	Ron Milne	Forfar Road Runners	M60
 96	Elizabeth Milne	Forfar Road Runners	F50
 97	John Mill	Dundee Road Runners	M50
-98	Iain Luke	Dundee Road Runners	M70+
-99	Tony Martin	Falkland Trail Runners	M70+
+98	Iain Luke	Dundee Road Runners	M70
+99	Tony Martin	Falkland Trail Runners	M70
 100	Margaret Martin	Fife AC	F60
 160	Rachel Callaghan	Dundee Road Runners	FS
 161	Anwen Darlington	Dundee Road Runners	FS

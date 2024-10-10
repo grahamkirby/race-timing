@@ -9,7 +9,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 8,Sandra Gardener,Falkland Trail Runners,F50,168,175,177,181,701,Y
 9,Malcolm Forbes,Dundee Road Runners,M60,173,175,164,186,698,Y
 10,Christian Harding,Fife AC,M40,171,167,171,184,693,Y
-11,Allan Gibson,Anster Haddies,M70+,156,155,153,171,635,Y
+11,Allan Gibson,Anster Haddies,M70,156,155,153,171,635,Y
 12,Rhona Van Rensburg,Fife AC,F50,200,200,0,200,600,N
 13,Ben Hukins,PH Racing,M40,197,200,200,0,597,N
 14,Ben Kinninmonth,Fife AC,MS,198,0,199,199,596,N
@@ -33,14 +33,14 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 32=,John Kinninmonth,RunSum Running Group,M50,164,162,166,0,492,N
 32=,Martin Rollo,Dundee Road Runners,M50,167,164,161,0,492,N
 34,David Pease,Falkland Trail Runners,M50,0,160,157,173,490,N
-35,Bill Gillan,Recreational Runners,M70+,0,159,152,175,486,N
+35,Bill Gillan,Recreational Runners,M70,0,159,152,175,486,N
 36,Nick Brian,Fife AC,M60,158,154,0,172,484,N
 37,Heather Anderson,Fife AC,F40,199,0,200,0,399,N
 38,Jamie Lessels,Fife AC,MU20,199,0,198,0,397,N
 39,Alison McNeilly,Dundee Road Runners,F40,197,197,0,0,394,N
 40,Lynne Herd,Anster Haddies,F40,194,0,0,198,392,N
 41,Matthew Beaney,Dundee Road Runners,MS,0,192,192,0,384,N
-42,Tony Martin,Falkland Trail Runners,M70+,188,0,186,0,374,N
+42,Tony Martin,Falkland Trail Runners,M70,188,0,186,0,374,N
 43=,Margaret Martin,Fife AC,F60,0,184,189,0,373,N
 43=,Merce Torres,Fife AC,F40,187,186,0,0,373,N
 45=,Stephen Dickson,Fife AC,M40,186,0,185,0,371,N
@@ -58,10 +58,10 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 57,Philip Suttie,Falkland Trail Runners,M40,170,177,0,0,347,N
 58=,Steven Brand,Falkland Trail Runners,MS,0,173,168,0,341,N
 58=,Carolann Kinnear,Recreational Runners,F40,165,176,0,0,341,N
-60,Margaret Robertson,Dundee Road Runners,F70+,166,174,0,0,340,N
+60,Margaret Robertson,Dundee Road Runners,F70,166,174,0,0,340,N
 61,David Dunleavey,Unatt.,M60,0,171,167,0,338,N
 62,Lorraine Hands,Recreational Runners,F40,164,173,0,0,337,N
-63,John Wilmot,Falkland Trail Runners,M70+,166,165,0,0,331,N
+63,John Wilmot,Falkland Trail Runners,M70,166,165,0,0,331,N
 64=,Martin Kirkbride,Falkland Trail Runners,M60,0,156,0,174,330,N
 64=,John Mill,Dundee Road Runners,M50,0,168,162,0,330,N
 64=,Paul Reed,Dundee Road Runners,M40,165,0,165,0,330,N
@@ -70,9 +70,9 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 69,Richard Cleary,Dundee Road Runners,M50,163,0,159,0,322,N
 70=,John Lee,Falkland Trail Runners,M60,0,150,0,166,316,N
 70=,Joseph Smith,Unatt.,MS,0,161,155,0,316,N
-72,Stewart Davidson,Fife AC,M70+,152,152,0,0,304,N
+72,Stewart Davidson,Fife AC,M70,152,152,0,0,304,N
 73,Sean Kenyon,Unatt.,M50,0,153,150,0,303,N
-74,Alan McLeod,Fife AC,M70+,149,151,0,0,300,N
+74,Alan McLeod,Fife AC,M70,149,151,0,0,300,N
 75=,Ryan Lafferty,Fife AC,MS,0,0,0,200,200,N
 75=,David Webster,Dundee Road Runners,MS,200,0,0,0,200,N
 77=,Anwen Darlington,Dundee Road Runners,FS,0,0,0,199,199,N
@@ -134,7 +134,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 133=,Zuleika Brett,Carnegie Harriers,F40,181,0,0,0,181,N
 133=,Allan Kettles,Dundee Road Runners,M50,181,0,0,0,181,N
 133=,Simone Young,Kinross Road Runners,F50,0,0,181,0,181,N
-136=,Catriona Duncan,?,F70+,0,180,0,0,180,N
+136=,Catriona Duncan,?,F70,0,180,0,0,180,N
 136=,Hannah Lopez,Kinross Road Runners,FS,0,0,180,0,180,N
 136=,Katy McBride,Unatt.,F50,180,0,0,0,180,N
 139=,Andy Ballentine,Kirkcaldy Wizards,M50,0,0,0,179,179,N
@@ -173,7 +173,7 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 172,Barbara Mary Brown,Dundee Road Runners,F60,163,0,0,0,163,N
 173,Carrie Baird,Dundee Road Runners,FS,162,0,0,0,162,N
 174=,Linda Craddock,Dundee Road Runners,F50,161,0,0,0,161,N
-174=,Frank McLaren,Fife AC,M70+,161,0,0,0,161,N
+174=,Frank McLaren,Fife AC,M70,161,0,0,0,161,N
 176,Daniel Haran,GTC,M50,160,0,0,0,160,N
 177,Phillip Gillespie,Dundee Road Runners,M50,159,0,0,0,159,N
 178=,Ewan Cameron,Anster Haddies,M60,157,0,0,0,157,N
@@ -181,8 +181,8 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 180,Robert Garside,Dundee Road Runners,M40,155,0,0,0,155,N
 181=,Josh McKay,Dundee Road Runners,MS,154,0,0,0,154,N
 181=,John Myerscough,Kinross Road Runners,M60,0,0,154,0,154,N
-183,Ed Wade,Fife AC,M70+,153,0,0,0,153,N
-184=,John Keenlyside,Fife AC,M70+,151,0,0,0,151,N
+183,Ed Wade,Fife AC,M70,153,0,0,0,153,N
+184=,John Keenlyside,Fife AC,M70,151,0,0,0,151,N
 184=,Russ Valentine,Falkland Trail Runners,M60,0,0,151,0,151,N
 186,Michael Creechan,Falkland Trail Runners,M60,150,0,0,0,150,N
-187,Mike Alcock,Falkland Trail Runners,M70+,148,0,0,0,148,N
+187,Mike Alcock,Falkland Trail Runners,M70,148,0,0,0,148,N

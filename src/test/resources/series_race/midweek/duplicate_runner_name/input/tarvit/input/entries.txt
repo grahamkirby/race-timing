@@ -12,7 +12,7 @@
 12	Malcolm Forbes	Dundee Road Runners	M60
 13	Will Gage	Anster Haddies 	M50
 14	Sandra Gardener	Falkland Trail Runners	F50
-15	Allan Gibson	Anster Haddies	M70+
+15	Allan Gibson	Anster Haddies	M70
 16	Robyn Graham	Falkland Trail Runners	FS
 17	James Hall	Fife AC	M40
 18	Christian Harding	Fife AC	M40
@@ -21,7 +21,7 @@
 21	Dominic Hughes	Dundee Road Runners	MS
 23	Stephanie Johnson	Kinross Road Runners 	FS
 24	Caroline Jones	Kinross Road Runners	F40
-25	John Keenlyside	Fife AC	M70+
+25	John Keenlyside	Fife AC	M70
 26	Ben Kinninmonth	Fife AC	MS
 27	Jamie Lessels	Fife AC	MU20
 28	Louise Lessels	Falkland Trail Runners	F40
@@ -68,7 +68,7 @@
 70	Simone Young	Kinross Road Runners 	F50
 71	Fiona Walker	Fife AC	F50
 72	Martin Rollo	Dundee Road Runners	M50
-73	Tony Martin	Falkland Trail Runners	M70+
+73	Tony Martin	Falkland Trail Runners	M70
 74	Margaret Martin	Fife AC	F60
 75	Hannah Tippetts	Dundee Road Runners	FS
 76	James Barnet	Dundee Road Runners	MS
@@ -84,4 +84,4 @@
 86	Heather Anderson	Fife AC	F40
 87	Sam Woolhead	Unatt.	MS
 88	Joseph Smith	Unatt.	MS
-89	Bill Gillan	Recreational Runners	M70+
+89	Bill Gillan	Recreational Runners	M70

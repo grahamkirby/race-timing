@@ -65,13 +65,25 @@ Category: Men 60-69
 1: Andy Gallagher (Strathearn Harriers) 00:39:31
 
 
-Category: Women 70+
--------------------
+Category: Women 70-79
+---------------------
 
 1: Jude Alcock (Falkland Trail Runners) 01:04:59
 
 
-Category: Men 70+
------------------
+Category: Men 70-79
+-------------------
 
 1: Tony Martin (Falkland Trail Runners) 00:38:17
+
+
+Category: Women 80-89
+---------------------
+
+No results
+
+
+Category: Men 80-89
+-------------------
+
+No results

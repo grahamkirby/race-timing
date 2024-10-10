@@ -69,6 +69,7 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                 append("</strong></p>\n").
                 append("<ul>\n");
 
+        // TODO suppress <ul> if no winners.
         setPositionStrings(category_prize_winners, true);
         printResults(category_prize_winners, new PrizeResultPrinterHTML(((MidweekRace)race), writer));
 
