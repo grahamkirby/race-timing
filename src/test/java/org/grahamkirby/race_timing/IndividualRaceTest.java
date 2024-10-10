@@ -23,10 +23,13 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class IndividualRaceTest extends RaceTest {
 
     @Test
     public void balmullo2023() throws Exception {
+        fail();
         testExpectedCompletion("actual_races/balmullo_2023");
     }
 
