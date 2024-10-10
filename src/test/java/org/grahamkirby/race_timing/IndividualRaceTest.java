@@ -29,7 +29,6 @@ public class IndividualRaceTest extends RaceTest {
 
     @Test
     public void balmullo2023() throws Exception {
-        fail();
         testExpectedCompletion("actual_races/balmullo_2023");
     }
 
