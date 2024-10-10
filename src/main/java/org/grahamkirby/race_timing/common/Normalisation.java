@@ -33,6 +33,22 @@ public class Normalisation {
         return applyNormalisation(club, race.normalised_club_names, true);
     }
 
+    // TODO Convert runner and club names to title case.
+    public static String toTitleCase(String input) {
+        StringBuilder titleCase = new StringBuilder();
+        String[] words = input.split(" ");
+
+        for (String word : words) {
+            if (word.length() > 0) {
+                titleCase.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+
+        return titleCase.toString().trim();
+    }
+
     public static String htmlEncode(final String s, final Race race) {
 
         return applyNormalisation(s, race.normalised_html_entities, false);

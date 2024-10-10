@@ -1,0 +1,164 @@
+1	Bryce Aitken	Fife Athletic Club	M60
+2	Sandra Aitken	Fife Athletic Club	F60
+3	Hanna Andrejczuk	University of St. Andrews Cross Country	FS
+4	India Arikan	Dundee Hawkhill Harriers	FS
+5	David Baird	Dundee Road Runners	MS
+6	Heather Ballantyne	Dundee Road Runners	F50
+7	Jenny Bannerman	Inverness Harriers	FS
+8	Glenn Barclay	Fife Athletic Club	MS
+9	Michael Barker	Metro Aberdeen Running Club	M50
+10	James Barnet	Dundee Road Runners	MS
+11	Gordon Barrie	Dundee Hawkhill Harriers	M50
+12	OLIVIA BATHO-SAMBLÁS	Dundee Road Runners	FS
+13	Aaron Bennet	PH Racing Club	MU20
+14	Ross Bennet	PH Racing Club	M50
+15	Nick Bennett	Dundee Road Runners	MS
+16	Wright Beveridge	PH Racing Club	M50
+17	Alan Bothwell	Perth Road Runners	M60
+18	Innes Bracegirdle	Fife Athletic Club	F60
+19	Tom Brian	Metro Aberdeen Running Club	MS
+20	Fiona Brian	Metro Aberdeen Running Club	FS
+21	Nick Brian	Fife Athletic Club	M60
+22	Finlay Brill		MU20
+23	Lara Brown	Kirkcaldy wizards	F40
+24	Andrew BRYSON	Shettleston Harriers	MS
+25	Ester Burgerova		FU20
+26	Martin Butcher	PH Racing Club	M40
+27	Callum Butterworth	Shettleston Harriers	MS
+28	Fiona Callaghan	Dundee Road Runners	FS
+29	Ross Campbell	Kirkcaldy wizards	MS
+30	Colin Campbell	RunSum running Kirkcaldy	M40
+31	john cassells	PH Racing Club	M50
+32	Jonathan Creese	Dundee Road Runners AC	M40
+33	John Crookston	PH Racing Club	M60
+34	Laura Darling-Brackenridge	Dundee Road Runners	FS
+35	Fred Davies	Shettleston Harriers	MS
+36	Janet Dickson	Fife Athletic Club	F40
+37	Graeme Doig	PH Racing Club	M40
+38	Jack Dryburgh	Kirkcaldy Wizards	MS
+39	Sean Duffy		M40
+40	Ally Dunn		M60
+41	Jayne Emery	Central Athletics Club	FS
+42	Tony Ewen	Pitreavie AAC	MS
+43	Greg Ewen		MS
+44	Daniel Fields	Dundee Road Runners	M40
+45	Heather Finlayson	Kirkcaldy Wizards	F50
+46	Luke Fleming	Fife Athletic Club	MU20
+47	Paul Forbes	Edinburgh Athletics Club	M60
+48	Ben Fraser	Pitreavie AAC	MS
+49	Thomas Gambino	Fife AC	MS
+50	Alison Gelly	Dundee Road Runners	F50
+51	Keith Gelly	Dundee Road Runners	M50
+52	Laura Gibson	Fife Athletic Club	FS
+53	Alan Gibson	Fife Athletic Club	M60
+54	Victoria Gilbert		FS
+55	Phillip Gillespie	Dundee Road Runners	M50
+56	John Henry Godson	Fife Athletic Club	M50
+57	Marie Godson	Kirkcaldy wizards	F50
+58	Stuart Goodfellow	Kirkcaldy Wizards	M50
+59	Clare Graham	PH RACING CLUB	F50
+60	Scott Graves		M40
+61	Ryan Gray	Fife Athletic Club	MS
+62	James Hall	Fife Athletic Club	M40
+63	Gill Hanlon	Dundee Road Runners AC	F60
+64	Rosemary Hill	Scotia Racewalking Club	F70
+65	Kenneth Hislop	Central Athletics Club	MS
+66	Hannah Hislop	Central Athletics Club	FS
+67	Kevin Hughes	PH Racing	M50
+68	Michelle Johnstone	Fife Athletic Club	F40
+69	Charlene Junkin	Dundee Road Runners	FS
+70	Christopher Kent	Fife Athletic Club	M40
+71	Shania King	Dundee Hawkhill Harriers	FS
+72	Heather Kinninmonth	Kirkcaldy Wizards	F50
+73	John Kinninmonth	Fife Athletic Club	M50
+74	Ben Kinninmonth	Fife Athletic Club	MS
+75	Samuel Knox		MS
+76	constant lacroix		MU20
+77	Sandy Laing		MS
+78	Sam Lesley	Shettleston Harriers	MS
+79	Jamie Lessels	Fife Athletic Club	MU20
+80	Mairi Littleson	Dundee Road Runners	FS
+81	Scott Love	PH Racing Club	M40
+82	Miguel Angel Luna Sanchez		MS
+83	George MacDonald	Kirkcaldy Wizards	M60
+84	Colin MacFadyen		M50
+85	Alastair MacFadyen	Dundee Hawkhill Harriers	MS
+86	Stephen Mackay		MS
+87	Linzie Marsh	Pitreavie AAC	F40
+88	Tony Martin	Fife Athletic Club	M70
+89	Margaret Martin	Fife Athletic Club	F60
+90	Morag Martin	Wormit Runners	F40
+91	Charlie Mason	Fife Athletic Club	MU20
+92	Jennifer Massie	Dundee Road Runners	FS
+93	Holly Mathie		FS
+94	Kenneth McAllister	Pitreavie AAC	M60
+95	Marion McClung	Kirkcaldy Wizards	F50
+96	Scott McClung	Fife Athletic Club	MS
+97	Graeme McDowall	Fife Athletic Club	M50
+98	Kerry Mcgregor	Kirkcaldy Wizards	F50
+99	Graham McInnes	PH Racing Club	M40
+100	John Mcintosh		M50
+101	John Mcintyre snr	Fife Athletic Club	M50
+102	Josh McKay	Dundee Road Runners	MS
+103	Eliza Mclachlan	Fife Athletic Club	F60
+104	Kenneth McLeod	Fife Athletic Club	M40
+105	Laura McMahon	Dundee Road Runners	FS
+106	Stuart Meiklejohn	PH racing	M40
+107	Michael Mitchell	Dundee Road Runners	M50
+108	Courtney Moffat	Lothian Running Club	FS
+109	Will Moffat	Lothian Running Club	M50
+110	Dave Morton	PH Racing Club	M40
+111	Ed Norton	PH Racing Club	M70
+112	Craig O'Donnell	Dunbar Running Club	M40
+113	David Oliver	Deeside Runners	M60
+114	Jane Oliver	Deeside Runners	F60
+115	Gerard Pelegri	Shettleston Harriers	MS
+116	Gary Pirie	PH Racing Club	M50
+117	Tom Rainey	Anster Haddies Running Club	M40
+118	Logan Rees	Fife Athletic Club	MS
+119	Leanne Reid	Kirkcaldy wizards	F40
+120	Karen Richards	Fife Athletic Club	F50
+121	Michael Richardson	Dundee Road Runners	MS
+122	Hilary Ritchie	Fife Athletic Club	F60
+123	Raph Robeson	University of St Andrews Triathlon Club	FS
+124	Lewis Rodgers	Fife Athletic Club	MS
+125	Martin Rollo	Dundee Road Runners	M50
+126	Jocelyn Scott	Fife Athletic Club	F70
+127	Calum Scott	Cumbernauld Amateur Athletics Club	MS
+128	Gary Shaw	Anster Haddies Running Club	M40
+129	David Shepherd	Fife Athletic Club	M60
+130	Keirra Small	Dundee Road Runners	FS
+131	Arron Small	Dundee Road Runners	MS
+132	Eric Stenhouse		M50
+133	Morag Taggart	Dundee Road Runners	F60
+134	Kelly Taylor	Bellahouston Road Runners	FS
+135	Carter Taylor	Fife Athletic Club	MS
+136	Andrew Taylor	Shettleston Harriers	MS
+137	Craig Thomson	Kirkcaldy Wizards	M40
+138	Murray Thomson	PH Racing Club	M50
+139	Susan Thores	Kirkcaldy Wizards	F60
+140	Verek Trcka		M40
+141	Shona Turner	Kirkcaldy wizards	F50
+142	Anonymous User	Orkney Athletic Club	FS
+143	Anonymous User		M40
+144	Anonymous User	Pitreavie AAC	FS
+145	Anonymous User	Falkland Trail Runners	FS
+146	Anonymous User	Falkland trail runners	MS
+147	Anonymous User	Dundee Hawkhill Harriers	FU20
+148	Anonymous User	PH Racing Club	MS
+149	Gerhard Van Zyl	Fife Athletic Club	M40
+150	Yulian Vasilev	Fife Athletic Club	MS
+151	Karel Vesely	Edinburgh Athletics Club	MS
+152	Fiona Walker	Fife Athletic Club	F50
+153	Richard Ward	Perth Road Runners	M50
+154	Lucy Ward	Perth Strathtay Harriers	FU20
+155	Mary Western	PH Racing Club	F60
+156	Mark Western	PH Racing Club	M50
+157	Abigail Wheel	Falkland Trail Runners	FS
+158	Iain Wheel	Falkland Trail Runners	MS
+159	Bryan Whittingham	Fife AC	M40
+160	Lewis Whittingham	Fife Athletic Club	MS
+161	Sharron Wilson	Kirkcaldy Wizards	F50
+162	Alan Wise	Kirkcaldy Wizards	MS
+163	Alastair Wood		M70
+164	Andrew Wright	PH Racing Club	M40
