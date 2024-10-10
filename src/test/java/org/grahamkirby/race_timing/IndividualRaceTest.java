@@ -41,6 +41,11 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
+    public void giffordtown2023() throws Exception {
+        testExpectedCompletion("actual_races/giffordtown_2023");
+    }
+
+    @Test
     public void deadHeats() throws Exception {
         testExpectedCompletion("dead_heats");
     }

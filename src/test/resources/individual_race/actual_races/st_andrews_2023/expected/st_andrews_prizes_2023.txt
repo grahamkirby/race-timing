@@ -65,15 +65,26 @@ Category: Men 60-69
 1: Malcolm Forbes (Dundee Road Runners) 00:35:10
 
 
-Category: Women 70+
--------------------
+Category: Women 70-79
+---------------------
 
 1: Margaret Robertson (Dundee Road Runners) 00:51:20
 
 
-Category: Men 70+
------------------
+Category: Men 70-79
+-------------------
 
 1: Tony Martin (Falkland Trail Runners) 00:32:00
 
+
+Category: Women 80-89
+---------------------
+
+No results
+
+
+Category: Men 80-89
+-------------------
+
+No results
 

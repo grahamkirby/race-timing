@@ -34,13 +34,15 @@ public class SeniorRaceCategories extends Categories {
         final Category M50 = new Category("Men 50-59", "M50", "Men", 50, number_of_category_prizes);
         final Category F60 = new Category("Women 60-69", "F60", "Women", 60, number_of_category_prizes);
         final Category M60 = new Category("Men 60-69", "M60", "Men", 60, number_of_category_prizes);
-        final Category F70 = new Category("Women 70+", "F70+", "Women", 70, number_of_category_prizes);
-        final Category M70 = new Category("Men 70+", "M70+", "Men", 70, number_of_category_prizes);
+        final Category F70 = new Category("Women 70-79", "F70", "Women", 70, number_of_category_prizes);
+        final Category M70 = new Category("Men 70-79", "M70", "Men", 70, number_of_category_prizes);
+        final Category F80 = new Category("Women 80-89", "F80", "Women", 80, number_of_category_prizes);
+        final Category M80 = new Category("Men 80-89", "M80", "Men", 80, number_of_category_prizes);
 
         final Category FO = new Category("Women Open", "FO", "Women", 0, number_of_open_prizes);
         final Category MO = new Category("Men Open", "MO", "Men", 0, number_of_open_prizes);
 
-        runner_categories.addAll(Arrays.asList(FU20, MU20, FS, MS, F40, M40, F50, M50, F60, M60, F70, M70));
+        runner_categories.addAll(Arrays.asList(FU20, MU20, FS, MS, F40, M40, F50, M50, F60, M60, F70, M70, F80, M80));
 
         if (open_prize_categories) {
             prize_categories_in_decreasing_generality_order.add(FO);
@@ -58,8 +60,8 @@ public class SeniorRaceCategories extends Categories {
             prize_categories_in_report_order.add(MS);
         }
 
-        prize_categories_in_decreasing_generality_order.addAll(Arrays.asList(FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70));
-        prize_categories_in_report_order.addAll(Arrays.asList(FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70));
+        prize_categories_in_decreasing_generality_order.addAll(Arrays.asList(FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70, F80, M80));
+        prize_categories_in_report_order.addAll(Arrays.asList(FU20, MU20, F40, M40, F50, M50, F60, M60, F70, M70, F80, M80));
     }
 
     @Override

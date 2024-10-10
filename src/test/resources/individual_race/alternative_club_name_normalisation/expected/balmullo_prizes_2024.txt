@@ -65,15 +65,26 @@ Category: Men 60-69
 1: Neil MacDonald (DRR) 01:10:16
 
 
-Category: Women 70+
--------------------
+Category: Women 70-79
+---------------------
 
 1: Cayla Duncan (Dundee Hawkhill Harriers) 01:11:43
 
 
-Category: Men 70+
------------------
+Category: Men 70-79
+-------------------
 
 1: Leo McKenzie (Dundee HH) 00:51:25
 
+
+Category: Women 80-89
+---------------------
+
+No results
+
+
+Category: Men 80-89
+-------------------
+
+No results
 
