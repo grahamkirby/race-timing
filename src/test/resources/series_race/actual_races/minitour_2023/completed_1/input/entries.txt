@@ -14,7 +14,7 @@
 14	Lewis Dickson	Unatt.	MU13
 15	Alfie Edwards	East Fife Triathlon Club	MU11
 16	Ronan Emmerson	Unatt.	MU18
-17	Phoebe Fleetham	St Leonard's Running Club	FU13
+17	Phoebe Fleetham	St Leonards Running Club	FU13
 18	Fergus Fyfe	Unatt.	MU13
 19	Isla Fyfe	Unatt.	FU13
 20	Kitty Fyfe	Unatt.	FU11

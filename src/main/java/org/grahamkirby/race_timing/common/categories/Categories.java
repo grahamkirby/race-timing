@@ -21,6 +21,7 @@ import java.util.List;
 
 public abstract class Categories {
 
+    // TODO rewrite to load from config file.
     protected final List<Category> runner_categories = new ArrayList<>();
     protected final List<Category> prize_categories_in_decreasing_generality_order = new ArrayList<>();
     protected final List<Category> prize_categories_in_report_order = new ArrayList<>();

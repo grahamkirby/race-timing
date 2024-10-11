@@ -27,6 +27,7 @@ import java.util.List;
 
 public class IndividualRaceInput extends SingleRaceInput {
 
+    // TODO add importer from EntryCentral, SIEntries format.
     public IndividualRaceInput(final Race race) {
         super(race);
     }

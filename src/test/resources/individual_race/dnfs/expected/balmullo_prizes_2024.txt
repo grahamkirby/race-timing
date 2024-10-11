@@ -14,7 +14,7 @@ Category: Men Senior
 
 1: John Smith (Fife AC) 00:45:37
 2: Clark O' Connor (Unatt.) 00:48:31
-3: JackBruce (Dundee Road Runners) 01:13:10
+3: Jackbruce (Dundee Road Runners) 01:13:10
 
 
 Category: Women Junior
@@ -50,7 +50,7 @@ Category: Women 50-59
 Category: Men 50-59
 -------------------
 
-1: Regan Millar (FTR) 00:57:13
+1: Regan Millar (Falkland Trail Runners) 00:57:13
 
 
 Category: Women 60-69

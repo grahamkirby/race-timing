@@ -56,7 +56,8 @@ public abstract class Race {
 
     public static final String KEY_DNF_LEGS = "DNF_LEGS";
 
-    public static final String KEY_NORMALISED_TEAM_NAMES = "NORMALISED_TEAM_NAMES_PATH";
+    public static final String KEY_NORMALISED_CLUB_NAMES = "NORMALISED_TEAM_NAMES_PATH";
+    public static final String KEY_CAPITALISATION_STOP_WORDS = "INTERNALLY_CAPITALISED_NAMES_PATH";
 
     public static final String KEY_SELF_TIMED = "SELF_TIMED";
     public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
@@ -82,7 +83,8 @@ public abstract class Race {
     public static final String KEY_RACES = "RACES";
 
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "src/main/resources/configuration/html_entities.csv";
-    protected static final String DEFAULT_NORMALISED_TEAM_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
+    protected static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
+    protected static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "src/main/resources/configuration/capitalisation_stop_words.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,6 +102,8 @@ public abstract class Race {
     public RaceOutput output_CSV, output_HTML, output_text, output_PDF;
 
     public Map<String, String> normalised_html_entities;
+    public List<String> capitalisation_stop_words;
+    public Set<String> non_title_case_words;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -123,7 +127,7 @@ public abstract class Race {
 
     public void configure() throws IOException {
 
-        configureHTMLEntityNormalisation();
+        configureNormalisation();
     }
 
     public List<RaceResult> getOverallResults() {
@@ -180,9 +184,11 @@ public abstract class Race {
         }
     }
 
-    private void configureHTMLEntityNormalisation() throws IOException {
+    private void configureNormalisation() throws IOException {
 
         normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
+        capitalisation_stop_words = Files.readAllLines(Paths.get(getPropertyWithDefault(KEY_CAPITALISATION_STOP_WORDS, DEFAULT_CAPITALISATION_STOP_WORDS_PATH)));
+        non_title_case_words = new HashSet<>();
     }
 
     protected Map<String, String> loadNormalisationMap(String path_key, String default_path) throws IOException {
