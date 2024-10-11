@@ -21,9 +21,6 @@ import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.Category;
 
-import static org.grahamkirby.race_timing.common.Normalisation.cleanName;
-import static org.grahamkirby.race_timing.common.Normalisation.normaliseClubName;
-
 public class IndividualRaceEntry extends RaceEntry {
 
     public final Runner runner;
@@ -38,8 +35,8 @@ public class IndividualRaceEntry extends RaceEntry {
         try {
             bib_number = Integer.parseInt(elements[0]);
 
-            final String name = cleanName(elements[1], race);
-            final String club = normaliseClubName(cleanName(elements[2], race), (IndividualRace) race);
+            final String name = race.normalisation.cleanName(elements[1]);
+            final String club = race.normalisation.normaliseClubName(race.normalisation.cleanName(elements[2]));
             final Category category = race.lookupCategory(elements[3]);
 
             runner = new Runner(name, club, category);

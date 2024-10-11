@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Map;
 
 public class IndividualRace extends SingleRace {
 
@@ -39,8 +38,6 @@ public class IndividualRace extends SingleRace {
     private boolean senior_race;
     public boolean open_prize_categories, senior_prize_categories;
     public int number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes;
-
-    public Map<String, String> normalised_club_names;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,7 +67,6 @@ public class IndividualRace extends SingleRace {
 
         configureHelpers();
         configureCategories();
-        configureNormalisedClubNames();
         configureInputData();
     }
 
@@ -126,11 +122,6 @@ public class IndividualRace extends SingleRace {
     private void configureCategories() {
 
         categories = senior_race ? new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes) : new JuniorRaceCategories(number_of_category_prizes);
-    }
-
-    private void configureNormalisedClubNames() throws IOException {
-
-        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
     }
 
     private void initialiseResults() {

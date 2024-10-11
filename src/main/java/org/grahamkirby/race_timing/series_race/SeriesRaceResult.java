@@ -22,9 +22,6 @@ import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
-import static org.grahamkirby.race_timing.common.Normalisation.getFirstName;
-import static org.grahamkirby.race_timing.common.Normalisation.getLastName;
-
 public abstract class SeriesRaceResult extends RaceResult {
 
     public final Runner runner;
@@ -66,8 +63,8 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     protected int compareRunnerNameTo(final SeriesRaceResult o) {
 
-        final int last_name_comparison = getLastName(runner.name).compareTo(getLastName(o.runner.name));
-        return last_name_comparison != 0 ? last_name_comparison : getFirstName(runner.name).compareTo(getFirstName(o.runner.name));
+        final int last_name_comparison = race.normalisation.getLastName(runner.name).compareTo(race.normalisation.getLastName(o.runner.name));
+        return last_name_comparison != 0 ? last_name_comparison : race.normalisation.getFirstName(runner.name).compareTo(race.normalisation.getFirstName(o.runner.name));
     }
 
     public boolean shouldDisplayPosition() {

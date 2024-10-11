@@ -27,7 +27,6 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Normalisation.htmlEncode;
 
 public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
@@ -81,7 +80,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                     final IndividualRaceResult result = ((IndividualRaceResult)r);
 
                     writer.append("<li>").
-                            append(htmlEncode(result.entry.runner.name, race)).append(" (").
+                            append(race.normalisation.htmlEncode(result.entry.runner.name)).append(" (").
                             append((result.entry.runner.club)).append(") ").
                             append(format(result.duration())).append("</li>\n");
                 }
@@ -128,7 +127,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.entry.runner.name, race));
+            writer.append(race.normalisation.htmlEncode(result.entry.runner.name));
             writer.append("""
                             </td>
                             <td>""");

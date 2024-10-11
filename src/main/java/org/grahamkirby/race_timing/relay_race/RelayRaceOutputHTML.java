@@ -27,7 +27,6 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Normalisation.htmlEncode;
 
 public class RelayRaceOutputHTML extends RaceOutputHTML {
 
@@ -193,7 +192,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                             </td>
                             <td>""");
-            writer.append(htmlEncode(result.entry.team.name(), race));
+            writer.append(race.normalisation.htmlEncode(result.entry.team.name()));
             writer.append("""
                             </td>
                             <td>""");
@@ -269,7 +268,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         writer.append("""
                 </td>
                 <td>""");
-        writer.append(htmlEncode(result.entry.team.name(), race));
+        writer.append(race.normalisation.htmlEncode(result.entry.team.name()));
         writer.append("""
                 </td>
                 <td>""");
@@ -310,7 +309,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
             writer.append("""
                 <td>""");
-            writer.append(htmlEncode(team.runners()[leg_number - 1], race));
+            writer.append(race.normalisation.htmlEncode(team.runners()[leg_number - 1]));
 
             ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
 
@@ -362,7 +361,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(htmlEncode(leg_result.entry.team.runners()[leg_result.leg_number-1], race));
+                writer.append(race.normalisation.htmlEncode(leg_result.entry.team.runners()[leg_result.leg_number-1]));
                 writer.append("""
                                 </td>
                                 <td>""");
