@@ -38,8 +38,8 @@ public class IndividualRaceEntry extends RaceEntry {
         try {
             bib_number = Integer.parseInt(elements[0]);
 
-            final String name = cleanName(elements[1]);
-            final String club = normaliseClubName(cleanName(elements[2]), (IndividualRace) race);
+            final String name = cleanName(elements[1], race);
+            final String club = normaliseClubName(cleanName(elements[2], race), (IndividualRace) race);
             final Category category = race.lookupCategory(elements[3]);
 
             runner = new Runner(name, club, category);

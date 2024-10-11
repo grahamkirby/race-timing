@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RaceOutputText extends RaceOutput {
@@ -67,10 +68,18 @@ public abstract class RaceOutputText extends RaceOutput {
     @Override
     public void printNotes() throws IOException {
 
+        if (!race.non_title_case_words.isEmpty()) {
+            List<String> words = new ArrayList<>(race.non_title_case_words);
+            words.sort(String::compareTo);
+
+            race.getNotes().append("Converted to title case: ");
+            for (String word : words) race.getNotes().append(word).append(", ");
+        }
+
         final String notes = race.getNotes().toString();
 
         if (!notes.isEmpty()) {
-
+            
             final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + ".txt"));
 
             try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {

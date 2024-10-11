@@ -70,7 +70,7 @@ public class IndividualRace extends SingleRace {
 
         configureHelpers();
         configureCategories();
-        configureNormalisedTeamNames();
+        configureNormalisedClubNames();
         configureInputData();
     }
 
@@ -128,9 +128,9 @@ public class IndividualRace extends SingleRace {
         categories = senior_race ? new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes) : new JuniorRaceCategories(number_of_category_prizes);
     }
 
-    private void configureNormalisedTeamNames() throws IOException {
+    private void configureNormalisedClubNames() throws IOException {
 
-        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_TEAM_NAMES, DEFAULT_NORMALISED_TEAM_NAMES_PATH);
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
     }
 
     private void initialiseResults() {

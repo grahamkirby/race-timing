@@ -4,6 +4,7 @@ import org.grahamkirby.race_timing.individual_race.IndividualRace;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class Normalisation {
@@ -12,11 +13,12 @@ public class Normalisation {
     public static final int SECONDS_PER_MINUTE = 60;
     public static final double NANOSECONDS_PER_SECOND = 1000000000.0;
 
-    public static String cleanName(String name) {
+    private static final List<String> word_separators = List.of(" ", "-", "'", "’");
+
+    public static String cleanName(String name, final Race race) {
 
         // Remove double spaces, and surrounding whitespace.
-        name = applyNormalisation(name, Map.of("  ", " "), false);
-        return name.strip();
+        return applyNormalisation(toTitleCase(name, race), Map.of("  ", " "), false).strip();
     }
 
     public static String getFirstName(final String name) {
@@ -30,24 +32,47 @@ public class Normalisation {
 
     public static String normaliseClubName(final String club, final IndividualRace race) {
 
-        return applyNormalisation(club, race.normalised_club_names, true);
+        return applyNormalisation(toTitleCase(club, race), race.normalised_club_names, true);
     }
 
-    // TODO Convert runner and club names to title case.
-    public static String toTitleCase(String input) {
-        StringBuilder titleCase = new StringBuilder();
-        String[] words = input.split(" ");
+    public static String toTitleCase(String input, final Race race) {
 
-        for (String word : words) {
-            if (!word.isEmpty()) {
-                titleCase.append(Character.toUpperCase(word.charAt(0)))
-                        .append(word.substring(1).toLowerCase())
-                        .append(" ");
-            }
-        }
+        final StringBuilder result = new StringBuilder();
 
-        return titleCase.toString().trim();
+        while (result.length() < input.length())
+            processWord(input, race, result);
+
+        return result.toString();
     }
+
+    private static void processWord(String input, Race race, StringBuilder result) {
+
+        int i = result.length();
+        while (i < input.length() && !word_separators.contains(input.substring(i, i+1))) i++;
+
+        if (i < input.length())
+            result.append(titleCaseWord(input.substring(result.length(), i), race)).append(input.charAt(i));
+        else
+            result.append(titleCaseWord(input.substring(result.length()), race));
+    }
+
+    public static String titleCaseWord(String input, final Race race) {
+
+        if (input.isEmpty()) return input;
+        if (isTitleCase(input)) return input;
+        if (race.capitalisation_stop_words.contains(input)) return input;
+
+        race.non_title_case_words.add(input);
+        return Character.toUpperCase(input.charAt(0)) + input.substring(1).toLowerCase();
+     }
+
+     private static boolean isTitleCase(String input) {
+
+        if (Character.isLowerCase(input.charAt(0))) return false;
+        for (int i = 1; i < input.length(); i++)
+            if (Character.isUpperCase(input.charAt(i))) return false;
+        return true;
+     }
 
     public static String htmlEncode(final String s, final Race race) {
 
@@ -58,10 +83,11 @@ public class Normalisation {
 
         for (Map.Entry<String, String> normalisation : normalisation_map.entrySet()) {
             if (only_replace_whole_string) {
-                if (s.equals(normalisation.getKey())) s = normalisation.getValue();
+                if (s.equalsIgnoreCase(normalisation.getKey())) return normalisation.getValue();
+                if (s.equalsIgnoreCase(normalisation.getValue())) return normalisation.getValue();
             }
             else {
-                s = s.replaceAll(normalisation.getKey(), normalisation.getValue());
+                s = s.replaceAll("(?i)" + normalisation.getKey(), normalisation.getValue());
             }
         }
         return s;
