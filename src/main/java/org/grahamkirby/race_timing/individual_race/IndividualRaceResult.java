@@ -22,9 +22,6 @@ import org.grahamkirby.race_timing.common.Race;
 
 import java.time.Duration;
 
-import static org.grahamkirby.race_timing.common.Normalisation.getFirstName;
-import static org.grahamkirby.race_timing.common.Normalisation.getLastName;
-
 public class IndividualRaceResult extends RaceResult {
 
     public IndividualRaceEntry entry;
@@ -73,8 +70,8 @@ public class IndividualRaceResult extends RaceResult {
 
     private int compareRunnerNameTo(final IndividualRaceResult other) {
 
-        final int last_name_comparison = getLastName(entry.runner.name).compareTo(getLastName(other.entry.runner.name));
-        return last_name_comparison != 0 ? last_name_comparison : getFirstName(entry.runner.name).compareTo(getFirstName(other.entry.runner.name));
+        final int last_name_comparison = race.normalisation.getLastName(entry.runner.name).compareTo(race.normalisation.getLastName(other.entry.runner.name));
+        return last_name_comparison != 0 ? last_name_comparison : race.normalisation.getFirstName(entry.runner.name).compareTo(race.normalisation.getFirstName(other.entry.runner.name));
     }
 
     private int compareRecordedPositionTo(final IndividualRaceResult other) {

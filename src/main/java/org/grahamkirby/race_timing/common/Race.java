@@ -100,10 +100,12 @@ public abstract class Race {
 
     public RaceInput input;
     public RaceOutput output_CSV, output_HTML, output_text, output_PDF;
+    public Normalisation normalisation;
 
     public Map<String, String> normalised_html_entities;
     public List<String> capitalisation_stop_words;
     public Set<String> non_title_case_words;
+    public Map<String, String> normalised_club_names;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -186,6 +188,9 @@ public abstract class Race {
 
     private void configureNormalisation() throws IOException {
 
+        normalisation = new Normalisation(this);
+
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
         normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
         capitalisation_stop_words = Files.readAllLines(Paths.get(getPropertyWithDefault(KEY_CAPITALISATION_STOP_WORDS, DEFAULT_CAPITALISATION_STOP_WORDS_PATH)));
         non_title_case_words = new HashSet<>();

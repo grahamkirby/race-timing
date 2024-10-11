@@ -22,8 +22,6 @@ import org.grahamkirby.race_timing.common.RaceEntry;
 
 import java.util.Arrays;
 
-import static org.grahamkirby.race_timing.common.Normalisation.cleanName;
-
 public class RelayRaceEntry extends RaceEntry {
 
     public record Team(String name, Category category, String[] runners) {}
@@ -44,7 +42,7 @@ public class RelayRaceEntry extends RaceEntry {
             final String[] runners = Arrays.copyOfRange(elements, 3, elements.length);
 
             for (int i = 0; i < runners.length; i++) {
-                runners[i] = cleanName(runners[i], race);
+                runners[i] = race.normalisation.cleanName(runners[i]);
             }
 
             team = new Team(name, category, runners);

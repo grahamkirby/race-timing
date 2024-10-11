@@ -1,7 +1,5 @@
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
-
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -13,50 +11,56 @@ public class Normalisation {
     public static final int SECONDS_PER_MINUTE = 60;
     public static final double NANOSECONDS_PER_SECOND = 1000000000.0;
 
-    private static final List<String> word_separators = List.of(" ", "-", "'", "’");
+    private static final List<String> WORD_SEPARATORS = List.of(" ", "-", "'", "’");
 
-    public static String cleanName(String name, final Race race) {
+    private final Race race;
 
-        // Remove double spaces, and surrounding whitespace.
-        return applyNormalisation(toTitleCase(name, race), Map.of("  ", " "), false).strip();
+    public Normalisation(Race race) {
+        this.race = race;
     }
 
-    public static String getFirstName(final String name) {
+    public String cleanName(String name) {
+
+        // Remove double spaces, and surrounding whitespace.
+        return applyNormalisation(toTitleCase(name), Map.of("  ", " "), false).strip();
+    }
+
+    public String getFirstName(final String name) {
         return name.split(" ")[0];
     }
 
-    public static String getLastName(final String name) {
+    public String getLastName(final String name) {
 
         return Arrays.stream(name.split(" ")).toList().getLast();
     }
 
-    public static String normaliseClubName(final String club, final IndividualRace race) {
+    public String normaliseClubName(final String club) {
 
-        return applyNormalisation(toTitleCase(club, race), race.normalised_club_names, true);
+        return applyNormalisation(toTitleCase(club), race.normalised_club_names, true);
     }
 
-    public static String toTitleCase(String input, final Race race) {
+    public String toTitleCase(final String input) {
 
         final StringBuilder result = new StringBuilder();
 
         while (result.length() < input.length())
-            processWord(input, race, result);
+            processWord(input, result);
 
         return result.toString();
     }
 
-    private static void processWord(String input, Race race, StringBuilder result) {
+    private void processWord(final String input, final StringBuilder result) {
 
         int i = result.length();
-        while (i < input.length() && !word_separators.contains(input.substring(i, i+1))) i++;
+        while (i < input.length() && !WORD_SEPARATORS.contains(input.substring(i, i+1))) i++;
 
         if (i < input.length())
-            result.append(titleCaseWord(input.substring(result.length(), i), race)).append(input.charAt(i));
+            result.append(toTitleCaseWord(input.substring(result.length(), i))).append(input.charAt(i));
         else
-            result.append(titleCaseWord(input.substring(result.length()), race));
+            result.append(toTitleCaseWord(input.substring(result.length())));
     }
 
-    public static String titleCaseWord(String input, final Race race) {
+    public String toTitleCaseWord(final String input) {
 
         if (input.isEmpty()) return input;
         if (isTitleCase(input)) return input;
@@ -66,7 +70,7 @@ public class Normalisation {
         return Character.toUpperCase(input.charAt(0)) + input.substring(1).toLowerCase();
      }
 
-     private static boolean isTitleCase(String input) {
+     private static boolean isTitleCase(final String input) {
 
         if (Character.isLowerCase(input.charAt(0))) return false;
         for (int i = 1; i < input.length(); i++)
@@ -74,14 +78,14 @@ public class Normalisation {
         return true;
      }
 
-    public static String htmlEncode(final String s, final Race race) {
+    public String htmlEncode(final String s) {
 
         return applyNormalisation(s, race.normalised_html_entities, false);
     }
 
-    private static String applyNormalisation(String s, final Map<String, String> normalisation_map, boolean only_replace_whole_string) {
+    private static String applyNormalisation(String s, final Map<String, String> normalisation_map, final boolean only_replace_whole_string) {
 
-        for (Map.Entry<String, String> normalisation : normalisation_map.entrySet()) {
+        for (final Map.Entry<String, String> normalisation : normalisation_map.entrySet()) {
             if (only_replace_whole_string) {
                 if (s.equalsIgnoreCase(normalisation.getKey())) return normalisation.getValue();
                 if (s.equalsIgnoreCase(normalisation.getValue())) return normalisation.getValue();

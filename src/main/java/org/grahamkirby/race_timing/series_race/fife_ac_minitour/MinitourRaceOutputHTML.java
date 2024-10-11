@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Normalisation.htmlEncode;
 
 public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
@@ -211,7 +210,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             append("""
                     </td>
                     <td>""").
-            append(htmlEncode(result.entry.runner.name, race)).
+            append(race.normalisation.htmlEncode(result.entry.runner.name)).
             append("""
                     </td>
                     <td>""").
@@ -252,7 +251,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
                     append("""
                         </td>
                         <td>""").
-                    append(htmlEncode(result.runner.name, race)).
+                    append(race.normalisation.htmlEncode(result.runner.name)).
                     append("""
                         </td>
                         <td>""").
@@ -301,7 +300,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             writer.append("<li>").
                     append(result.position_string).
                     append(" ").
-                    append(htmlEncode(result.runner.name, race)).
+                    append(race.normalisation.htmlEncode(result.runner.name)).
                     append(" (").
                     append((result.runner.club)).
                     append(") ").
