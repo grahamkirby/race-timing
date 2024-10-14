@@ -2,5 +2,5 @@ YEAR = 2023
 RACE_NAME_FOR_RESULTS = Midweek Series
 RACE_NAME_FOR_FILENAMES = midweek
 
-RACES = input/st_andrews/input/config.txt,input/strath_blebo/input/config.txt,input/tarvit/input/config.txt,input/dunnikier/input/config.txt,
+RACES = input/st_andrews/input/config.txt,input/strath_blebo/input/config.txt,input/hill_of_tarvit/input/config.txt,input/dunnikier/input/config.txt,
 MINIMUM_NUMBER_OF_RACES = 4

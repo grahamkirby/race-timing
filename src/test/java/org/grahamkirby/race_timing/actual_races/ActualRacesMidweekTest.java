@@ -60,4 +60,9 @@ public class ActualRacesMidweekTest extends RaceTest {
     public void midweek2023Completed5() throws Exception {
         testExpectedCompletion("2023/completed_5");
     }
+
+    @Test
+    public void midweek2024() throws Exception {
+        testExpectedCompletion("2024");
+    }
 }

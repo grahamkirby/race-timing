@@ -1,0 +1,5 @@
+ENTRIES_FILENAME = entries.txt
+RAW_RESULTS_FILENAME = rawtimes.txt
+YEAR = 2024
+RACE_NAME_FOR_RESULTS = Balmullo
+RACE_NAME_FOR_FILENAMES = balmullo
