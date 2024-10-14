@@ -14,37 +14,50 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing;
+package org.grahamkirby.race_timing.actual_races;
 
+import org.grahamkirby.race_timing.RaceTest;
 import org.grahamkirby.race_timing.common.Race;
-import org.junit.jupiter.api.Test;
 import org.grahamkirby.race_timing.series_race.fife_ac_midweek.MidweekRace;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class MidweekTest extends RaceTest {
+public class ActualRacesMidweekTest extends RaceTest {
+
+    @Override
+    protected String getResourcesPath() {
+        return "actual_races/series_race/midweek/";
+    }
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
         return new MidweekRace(config_file_path);
     }
 
-    // TODO add minitour and midweek 2024 as tests
-
-
-    @Override
-    protected String getResourcesPath() {
-        return "series_race/";
+    @Test
+    public void midweek2023Completed1() throws Exception {
+        testExpectedCompletion("2023/completed_1");
     }
 
     @Test
-    public void deadHeats() throws Exception {
-        testExpectedCompletion("midweek/dead_heats");
+    public void midweek2023Completed2() throws Exception {
+        testExpectedCompletion("2023/completed_2");
     }
 
     @Test
-    public void duplicateRunnerName() throws Exception {
-        testExpectedCompletion("midweek/duplicate_runner_name");
+    public void midweek2023Completed3() throws Exception {
+        testExpectedCompletion("2023/completed_3");
+    }
+
+    @Test
+    public void midweek2023Completed4() throws Exception {
+        testExpectedCompletion("2023/completed_4");
+    }
+
+    @Test
+    public void midweek2023Completed5() throws Exception {
+        testExpectedCompletion("2023/completed_5");
     }
 }

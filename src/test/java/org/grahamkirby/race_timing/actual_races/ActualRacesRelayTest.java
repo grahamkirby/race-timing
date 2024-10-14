@@ -14,37 +14,35 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing;
+package org.grahamkirby.race_timing.actual_races;
 
+import org.grahamkirby.race_timing.RaceTest;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
-import org.grahamkirby.race_timing.series_race.fife_ac_midweek.MidweekRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class MidweekTest extends RaceTest {
+public class ActualRacesRelayTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        return new MidweekRace(config_file_path);
+        return new RelayRace(config_file_path);
     }
-
-    // TODO add minitour and midweek 2024 as tests
-
 
     @Override
     protected String getResourcesPath() {
-        return "series_race/";
+        return "actual_races/relay_race/devils_burdens";
     }
 
     @Test
-    public void deadHeats() throws Exception {
-        testExpectedCompletion("midweek/dead_heats");
+    public void devilsBurdens2020() throws Exception {
+        testExpectedCompletion("2020");
     }
 
     @Test
-    public void duplicateRunnerName() throws Exception {
-        testExpectedCompletion("midweek/duplicate_runner_name");
+    public void devilsBurdens2024() throws Exception {
+        testExpectedCompletion("2024");
     }
 }
