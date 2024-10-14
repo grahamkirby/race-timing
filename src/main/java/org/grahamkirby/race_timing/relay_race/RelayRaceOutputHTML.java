@@ -115,8 +115,10 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
-            printPrizes(writer, category);
+        final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
+
+        for (final Category category : categories)
+            if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
     }
 
     @Override

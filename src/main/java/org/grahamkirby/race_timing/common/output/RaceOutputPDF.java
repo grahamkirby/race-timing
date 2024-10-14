@@ -28,6 +28,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.categories.Category;
 
 import java.io.IOException;
+import java.util.List;
 
 public abstract class RaceOutputPDF extends RaceOutput {
 
@@ -48,8 +49,10 @@ public abstract class RaceOutputPDF extends RaceOutput {
             document.add(new Paragraph().setFont(font).setFontSize(24)
                     .add(race_name_for_results + " " + year + " Category Prizes"));
 
-            for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
-                printPrizes(document, category);
+            final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
+
+            for (final Category category : categories)
+                if (prizesInThisOrLaterCategory(category, categories)) printPrizes(document, category);
         }
     }
 

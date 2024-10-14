@@ -1,0 +1,8 @@
+ENTRIES_FILENAME = entries.txt
+RAW_RESULTS_FILENAME = rawtimes.txt
+YEAR = 2023
+RACE_NAME_FOR_RESULTS = Giffordtown 5K
+RACE_NAME_FOR_FILENAMES = giffordtown
+SENIOR_PRIZE_CATEGORIES = true
+
+ENTRY_MAP_PATH = /Users/gnck/Documents/Code/race-timing/src/test/resources/individual_race/actual_races/giffordtown/2023/input/entry_map.txt

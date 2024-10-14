@@ -56,6 +56,7 @@ public abstract class Race {
 
     public static final String KEY_DNF_LEGS = "DNF_LEGS";
 
+    public static final String KEY_ENTRY_MAP = "ENTRY_MAP_PATH";
     public static final String KEY_NORMALISED_CLUB_NAMES = "NORMALISED_TEAM_NAMES_PATH";
     public static final String KEY_CAPITALISATION_STOP_WORDS = "INTERNALLY_CAPITALISED_NAMES_PATH";
 
@@ -107,6 +108,9 @@ public abstract class Race {
     public Set<String> non_title_case_words;
     public Map<String, String> normalised_club_names;
 
+    public Map<String, String> entry_map;
+    private String entry_column_map_string;
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Race(final Path config_file_path) throws IOException {
@@ -130,6 +134,7 @@ public abstract class Race {
     public void configure() throws IOException {
 
         configureNormalisation();
+        configureImportCategoryMap(KEY_ENTRY_MAP);
     }
 
     public List<RaceResult> getOverallResults() {
@@ -174,6 +179,12 @@ public abstract class Race {
         return value == null || value.isBlank() ? default_value : value;
     }
 
+    public String mapCategory(final String category) {
+
+        final String result = entry_map.get(category);
+        return result == null ? category : result;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Properties loadProperties(final Path config_file_path) throws IOException {
@@ -196,17 +207,46 @@ public abstract class Race {
         non_title_case_words = new HashSet<>();
     }
 
-    protected Map<String, String> loadNormalisationMap(String path_key, String default_path) throws IOException {
+    private void configureImportCategoryMap(final String path_key) throws IOException {
+
+        String s = properties.getProperty(path_key);
 
         Map<String, String> map = new HashMap<>();
 
-        String propertyWithDefault = getPropertyWithDefault(path_key, default_path);
-        Path path = Paths.get(propertyWithDefault);
-        final List<String> lines = Files.readAllLines(path);
+        if (s != null) {
 
-        for (final String line : lines) {
-            final String[] parts = line.split(",");
-            map.put(parts[0], parts[1]);
+            Path path = Paths.get(s);
+            final List<String> lines = Files.readAllLines(path);
+
+            entry_column_map_string = lines.getFirst();
+
+            for (final String line : lines.subList(1, lines.size())) {
+                final String[] parts = line.split(",");
+                map.put(parts[0], parts[1]);
+            }
+        }
+
+        entry_map = map;
+    }
+
+    protected Map<String, String> loadNormalisationMap(String path_key, String default_path) throws IOException {
+
+        return loadMap(getPropertyWithDefault(path_key, default_path));
+    }
+
+    private static Map<String, String> loadMap(String s) throws IOException {
+
+        Map<String, String> map = new HashMap<>();
+
+        if (s != null) {
+
+            Path path = Paths.get(s);
+            final List<String> lines = Files.readAllLines(path);
+
+            for (final String line : lines) {
+                final String[] parts = line.split(",");
+                map.put(parts[0], parts[1]);
+            }
         }
 
         return map;
