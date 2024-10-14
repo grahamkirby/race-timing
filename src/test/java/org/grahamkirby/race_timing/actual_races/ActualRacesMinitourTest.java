@@ -60,4 +60,9 @@ public class ActualRacesMinitourTest extends RaceTest {
     public void minitour2023Completed5() throws Exception {
         testExpectedCompletion("2023/completed_5");
     }
+
+    @Test
+    public void minitour2024() throws Exception {
+        testExpectedCompletion("2024");
+    }
 }

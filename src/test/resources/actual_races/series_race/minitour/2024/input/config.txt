@@ -1,0 +1,14 @@
+YEAR = 2024
+RACE_NAME_FOR_RESULTS = Minitour of Fife
+RACE_NAME_FOR_FILENAMES = minitour
+
+RACES = input/race1/input/config.txt,input/race2/input/config.txt,input/race3/input/config.txt,input/race4/input/config.txt,input/race5/input/config.txt
+
+WAVE_START_OFFSETS = 00:01:00,00:05:47,00:00:44,00:00:00,00:01:23
+
+# Comma-separated sequence of bib-number/race-number for self-timed runs
+# (which should not have start offsets applied).
+SELF_TIMED = 62/4
+
+# Details of time-trial race: race-number/runners-per-wave/inter-wave-interval.
+TIME_TRIAL = 4/4/00:00:30

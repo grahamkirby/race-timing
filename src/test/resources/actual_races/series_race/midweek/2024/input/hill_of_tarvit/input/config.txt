@@ -1,0 +1,6 @@
+ENTRIES_FILENAME = entries.txt
+RAW_RESULTS_FILENAME = rawtimes.txt
+YEAR = 2024
+RACE_NAME_FOR_RESULTS = Hill of Tarvit
+RACE_NAME_FOR_FILENAMES = hill_of_tarvit
+SENIOR_PRIZE_CATEGORIES = true

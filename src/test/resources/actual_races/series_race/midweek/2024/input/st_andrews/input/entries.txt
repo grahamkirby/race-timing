@@ -1,0 +1,71 @@
+71	Jamie Lessels	Fife AC	MS
+69	David Webster	Dundee RR	MS
+33	Ben Kinninmonth	Fife AC	MS
+53	Patrick O’Hare	Fife AC	MS
+6	Mark Bell	Dundee RR	M40
+3	Simon Anetts	Fife AC	MS
+35	Mairi Littleson	Dundee RR	FS
+55	Alex Reilly	Kinross RR	MS
+76	Aaron Taylor	Anster Haddies	MS
+60	Rory Sandilands	Fife AC	M40
+48	Jonathan Millar	Carnegie Harriers	M40
+56	Willie Rennie	PH Racing Club	M50
+30	Andy Harley	Fife AC	M40
+49	Michael Mitchell	Dundee RR	M50
+61	Jason Sharp	Unatt.	M40
+67	Iain Wallace	PH Racing	M50
+1	David Aitken	Dundee RR	M50
+16	Stephen Dickson	Fife AC	M40
+8	David Burgess	Anster Haddies	M50
+29	Paul Harkins	Fife AC	M40
+10	Fiona Canavan	Dundee RR	FS
+2	Eric Anderson	Anster Haddies	M50
+70	Chris Wilson	Unatt.	M40
+13	Jennifer Cruickshanks	Fife AC	FS
+40	Tony Martin	Falkland Trail Runners	M70
+66	Hendrik Van Rensburg	Fife AC	M50
+77	Calum Reid	Kirkcaldy Wizards	MS
+63	Chris Sturrock	Running Machines	MS
+9	Fiona Callaghan	Dundee RR	FS
+101	Tom Rainey	Anster Haddies	MS
+28	Christian Harding	Fife AC	M40
+42	Ross McArthur	Falkland TR	MS
+52	Jane O'Donnell	Dundee RR	F40
+57	Hilary Ritchie	Fife AC	F60
+73	David Miller	Dundee RR	M50
+21	Orla Gage	Anster Haddies	FU20
+75	Nick Ware	Anster Haddies	M50
+22	Alison Gelly	Dundee RR	F50
+11	Emanuel Corduneanu	Dundee RR	MS
+34	John Kinninmonth	RunSum Running Kirkcaldy	M60
+17	Jock Dryburgh	RunSum Running Kirkcaldy	M60
+59	Martin Rollo	Dundee RR	M50
+46	Bethan McRobbie	Unatt.	FS
+68	Huw Watkins	Unatt.	MS
+62	Ruth Sharp	Unatt.	FS
+32	Scott Hutchison	STAART	MS
+65	Mercè Torres	Fife AC	F40
+102	Lynne Herd	Anster Haddies	F40
+20	Will Gage	Anster Haddies	M50
+41	Margaret Martin	Fife AC	F60
+47	John Mill	Dundee RR	M60
+50	Ian Mole	STAART	MS
+39	Steven Maloney	Dundee RR	M40
+79	Daniel Fields	Dundee RR	M40
+26	Jeff Gunnell	Unatt.	M60
+81	Lee Cessford	Falkland TR	M40
+7	Innes Bracegirdle	Fife AC	F60
+74	Bill Gillan	Recreational Runners	M70
+24	Phillip Gillespie	Dundee RR	M50
+37	Gillian Lopez	Kinross RR	F60
+12	Pamela Cruickshanks	Anster Haddies	F50
+4	Gary Barker	Fife AC	M60
+72	Grant Whytock	Dundee RR	M50
+23	Keith Gelly	Dundee RR	M50
+51	Stuart Murray	Unatt.	MS
+80	Catriona Duncan	Anster Haddies	F70
+36	Hannah Lopez	Kinross RR	FS
+44	Kenneth McLeod	Fife AC	M40
+103	Alice Hall	Anster Haddies	F60
+104	Yvonne Dehn	Anster Haddies	FS
+78	Bob Thornton	Unatt.	M60
