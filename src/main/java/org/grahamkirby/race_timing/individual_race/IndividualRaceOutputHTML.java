@@ -55,12 +55,14 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    public void printPrizes(final OutputStreamWriter html_writer) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer) throws IOException {
 
-        html_writer.append("<h4>Prizes</h4>\n");
+        writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
-            printPrizes(html_writer, category);
+        final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
+
+        for (final Category category : categories)
+            if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
     }
 
     public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {

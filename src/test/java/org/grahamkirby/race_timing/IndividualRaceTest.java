@@ -23,28 +23,56 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 public class IndividualRaceTest extends RaceTest {
 
     @Test
     public void balmullo2023() throws Exception {
-        testExpectedCompletion("actual_races/balmullo_2023");
+        testExpectedCompletion("actual_races/balmullo/2023");
     }
 
     @Test
-    public void stAndrews2023() throws Exception {
-        testExpectedCompletion("actual_races/st_andrews_2023");
+    public void balmullo2024() throws Exception {
+        testExpectedCompletion("actual_races/balmullo/2024");
     }
 
     @Test
-    public void strathBlebo2023() throws Exception {
-        testExpectedCompletion("actual_races/strath_blebo_2023");
+    public void dunnikier2024() throws Exception {
+        testExpectedCompletion("actual_races/dunnikier/2024");
     }
 
     @Test
     public void giffordtown2023() throws Exception {
-        testExpectedCompletion("actual_races/giffordtown_2023");
+        testExpectedCompletion("actual_races/giffordtown/2023");
+    }
+
+    @Test
+    public void giffordtown2024() throws Exception {
+        testExpectedCompletion("actual_races/giffordtown/2024");
+    }
+
+    @Test
+    public void hillOfTarvit2024() throws Exception {
+        testExpectedCompletion("actual_races/hill_of_tarvit/2024");
+    }
+
+    @Test
+    public void stAndrews2023() throws Exception {
+        testExpectedCompletion("actual_races/st_andrews/2023");
+    }
+
+    @Test
+    public void stAndrews2024() throws Exception {
+        testExpectedCompletion("actual_races/st_andrews/2024");
+    }
+
+    @Test
+    public void strathBlebo2023() throws Exception {
+        testExpectedCompletion("actual_races/strath_blebo/2023");
+    }
+
+    @Test
+    public void strathBlebo2024() throws Exception {
+        testExpectedCompletion("actual_races/strath_blebo/2024");
     }
 
     @Test

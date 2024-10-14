@@ -44,8 +44,10 @@ public abstract class RaceOutputText extends RaceOutput {
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
-                printPrizes(writer, category);
+            final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
+
+            for (final Category category : categories)
+                if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
         }
     }
 
@@ -79,7 +81,7 @@ public abstract class RaceOutputText extends RaceOutput {
         final String notes = race.getNotes().toString();
 
         if (!notes.isEmpty()) {
-            
+
             final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + ".txt"));
 
             try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {

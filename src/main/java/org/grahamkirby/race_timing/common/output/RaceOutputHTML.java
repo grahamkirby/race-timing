@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.util.List;
 
 public abstract class RaceOutputHTML extends RaceOutput {
 
@@ -63,8 +64,10 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
         writer.append("<h4>Prizes</h4>\n");
 
-        for (final Category category : race.categories.getPrizeCategoriesInReportOrder())
-            printPrizes(writer, category);
+        final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
+
+        for (final Category category : categories)
+            if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
     }
 
     protected void printOverallResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {

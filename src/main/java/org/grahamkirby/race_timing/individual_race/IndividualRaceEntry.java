@@ -37,7 +37,7 @@ public class IndividualRaceEntry extends RaceEntry {
 
             final String name = race.normalisation.cleanName(elements[1]);
             final String club = race.normalisation.normaliseClubName(race.normalisation.cleanName(elements[2]));
-            final Category category = race.lookupCategory(elements[3]);
+            final Category category = race.lookupCategory(race.mapCategory(elements[3]));
 
             runner = new Runner(name, club, category);
         }
