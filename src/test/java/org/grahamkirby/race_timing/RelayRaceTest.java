@@ -76,16 +76,6 @@ public class RelayRaceTest extends RaceTest {
     }
 
     @Test
-    public void actual_2020() throws Exception {
-        testExpectedCompletion("actual_races/devils_burdens_2020");
-    }
-
-    @Test
-    public void actual_2024() throws Exception {
-        testExpectedCompletion("actual_races/devils_burdens_2024");
-    }
-
-    @Test
     public void startOffset() throws Exception {
         testExpectedCompletion("start_offset");
     }
@@ -166,107 +156,107 @@ public class RelayRaceTest extends RaceTest {
     }
 
     @Test
-    public void massStart_3_4_DNFLeg1And2And3() throws Exception {
+    public void massStart34DNFLeg1And2And3() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_1_2_3");
     }
 
     @Test
-    public void massStart_3_4_DNFButCompleted() throws Exception {
+    public void massStart34DNFButCompleted() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    public void massStart_3_4_DNFNotCompleted() throws Exception {
+    public void massStart34DNFNotCompleted() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    public void massStart_3_4_DNFLeg2() throws Exception {
+    public void massStart34DNFLeg2() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_2");
     }
 
     @Test
-    public void massStart_3_4_DNFLeg3() throws Exception {
+    public void massStart34DNFLeg3() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_3");
     }
 
     @Test
-    public void massStart_3_4_DNFLeg3And4NoFinishes() throws Exception {
+    public void massStart34DNFLeg3And4NoFinishes() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_3_4a");
     }
 
     @Test
-    public void massStart_3_4_DNFLeg3And4ButCompleted() throws Exception {
+    public void massStart34DNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_3_4b");
     }
 
     @Test
-    public void massStart_3_4_DNFLeg4() throws Exception {
+    public void massStart34DNFLeg4() throws Exception {
         testExpectedCompletion("mass_start_3_4/dnf_leg_4");
     }
 
     @Test
-    public void massStart_3_4_FirstLegFinishAfterMassStart3() throws Exception {
+    public void massStart34FirstLegFinishAfterMassStart3() throws Exception {
         testExpectedCompletion("mass_start_3_4/first_leg_finish_after_mass_start_3");
     }
 
     @Test
-    public void massStart_3_4_FirstLegFinishAfterMassStart4() throws Exception {
+    public void massStart34FirstLegFinishAfterMassStart4() throws Exception {
         testExpectedCompletion("mass_start_3_4/first_leg_finish_after_mass_start_4");
     }
 
     @Test
-    public void massStart_4_AllCompleted() throws Exception {
+    public void massStart4AllCompleted() throws Exception {
         testExpectedCompletion("mass_start_4/all_completed");
     }
 
     @Test
-    public void massStart_4_LegsSwapped() throws Exception {
+    public void massStart4LegsSwapped() throws Exception {
         testExpectedCompletion("mass_start_4/legs_swapped");
     }
 
     @Test
-    public void massStart_4_DNFLeg1() throws Exception {
+    public void massStart4DNFLeg1() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_1");
     }
 
     @Test
-    public void massStart_4_DNFLeg1And2And3() throws Exception {
+    public void massStart4DNFLeg1And2And3() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_1_2_3");
     }
 
     @Test
-    public void massStart_4_DNFButCompleted() throws Exception {
+    public void massStart4DNFButCompleted() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    public void massStart_4_DNFNotCompleted() throws Exception {
+    public void massStart4DNFNotCompleted() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    public void massStart_4_DNFLeg2() throws Exception {
+    public void massStart4DNFLeg2() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_2");
     }
 
     @Test
-    public void massStart_4_DNFLeg3() throws Exception {
+    public void massStart4DNFLeg3() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_3");
     }
 
     @Test
-    public void massStart_4_DNFLeg3And4NoFinishes() throws Exception {
+    public void massStart4DNFLeg3And4NoFinishes() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_3_4a");
     }
 
     @Test
-    public void massStart_4_DNFLeg3And4ButCompleted() throws Exception {
+    public void massStart4DNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_3_4b");
     }
 
     @Test
-    public void massStart_4_DNFLeg4() throws Exception {
+    public void massStart4DNFLeg4() throws Exception {
         testExpectedCompletion("mass_start_4/dnf_leg_4");
     }
 

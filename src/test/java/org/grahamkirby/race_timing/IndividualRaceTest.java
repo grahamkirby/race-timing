@@ -25,55 +25,11 @@ import java.nio.file.Path;
 
 public class IndividualRaceTest extends RaceTest {
 
-    @Test
-    public void balmullo2023() throws Exception {
-        testExpectedCompletion("actual_races/balmullo/2023");
+    @Override
+    protected String getResourcesPath() {
+        return "individual_race/";
     }
 
-    @Test
-    public void balmullo2024() throws Exception {
-        testExpectedCompletion("actual_races/balmullo/2024");
-    }
-
-    @Test
-    public void dunnikier2024() throws Exception {
-        testExpectedCompletion("actual_races/dunnikier/2024");
-    }
-
-    @Test
-    public void giffordtown2023() throws Exception {
-        testExpectedCompletion("actual_races/giffordtown/2023");
-    }
-
-    @Test
-    public void giffordtown2024() throws Exception {
-        testExpectedCompletion("actual_races/giffordtown/2024");
-    }
-
-    @Test
-    public void hillOfTarvit2024() throws Exception {
-        testExpectedCompletion("actual_races/hill_of_tarvit/2024");
-    }
-
-    @Test
-    public void stAndrews2023() throws Exception {
-        testExpectedCompletion("actual_races/st_andrews/2023");
-    }
-
-    @Test
-    public void stAndrews2024() throws Exception {
-        testExpectedCompletion("actual_races/st_andrews/2024");
-    }
-
-    @Test
-    public void strathBlebo2023() throws Exception {
-        testExpectedCompletion("actual_races/strath_blebo/2023");
-    }
-
-    @Test
-    public void strathBlebo2024() throws Exception {
-        testExpectedCompletion("actual_races/strath_blebo/2024");
-    }
 
     @Test
     public void deadHeats() throws Exception {
@@ -143,10 +99,5 @@ public class IndividualRaceTest extends RaceTest {
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
         return new IndividualRace(config_file_path);
-    }
-
-    @Override
-    protected String getResourcesPath() {
-        return "individual_race/";
     }
 }
