@@ -1,4 +1,6 @@
 # _race-timing_ is a Java application for calculating race results
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgrahamkirby%2Frace-timing.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgrahamkirby%2Frace-timing?ref=badge_shield)
+
 
 This software was originally written to process results for races organised by [Fife Athletic Club](//fifeac.org),
 although it would probably work for other races. Reports of success or otherwise would be welcome, by email to the
@@ -15,3 +17,6 @@ generate race results for each [Fife AC](//fifeac.org) race, and corresponding o
 back into the repository to form an archive.
 
 As far as possible, original source files (entries, raw timing results) are not changed during processing.
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgrahamkirby%2Frace-timing.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgrahamkirby%2Frace-timing?ref=badge_large)
