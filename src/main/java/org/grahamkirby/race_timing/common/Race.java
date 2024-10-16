@@ -41,6 +41,7 @@ public abstract class Race {
 
     public static final String DUMMY_DURATION_STRING = "23:59:59";
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
+    public static final String COMMENT_SYMBOL = "#";
 
     public static final String KEY_SENIOR_RACE = "SENIOR_RACE";
     public static final String KEY_OPEN_PRIZE_CATEGORIES = "OPEN_PRIZE_CATEGORIES";
@@ -83,6 +84,7 @@ public abstract class Race {
 
     public static final String KEY_RACES = "RACES";
 
+    private static final String DEFAULT_ENTRY_MAP_PATH = "src/main/resources/configuration/default_entry_map.txt";
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "src/main/resources/configuration/html_entities.csv";
     protected static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
     protected static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "src/main/resources/configuration/capitalisation_stop_words.csv";
@@ -109,7 +111,7 @@ public abstract class Race {
     public Map<String, String> normalised_club_names;
 
     public Map<String, String> entry_map;
-    private String entry_column_map_string;
+    public String entry_column_map_string;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,7 +136,7 @@ public abstract class Race {
     public void configure() throws IOException {
 
         configureNormalisation();
-        configureImportCategoryMap(KEY_ENTRY_MAP);
+        configureImportCategoryMap();
     }
 
     public List<RaceResult> getOverallResults() {
@@ -207,43 +209,51 @@ public abstract class Race {
         non_title_case_words = new HashSet<>();
     }
 
-    private void configureImportCategoryMap(final String path_key) throws IOException {
+    private void configureImportCategoryMap() throws IOException {
 
-        String s = properties.getProperty(path_key);
+        entry_map = loadImportCategoryMap(KEY_ENTRY_MAP, DEFAULT_ENTRY_MAP_PATH);
+    }
 
-        Map<String, String> map = new HashMap<>();
+    private Map<String, String> loadImportCategoryMap(final String path_key, String default_path) throws IOException {
 
-        if (s != null) {
+        final String path = getPropertyWithDefault(path_key, default_path);
 
-            Path path = Paths.get(s);
-            final List<String> lines = Files.readAllLines(path);
+        final Map<String, String> map = new HashMap<>();
 
-            entry_column_map_string = lines.getFirst();
+        if (path != null) {
 
-            for (final String line : lines.subList(1, lines.size())) {
-                final String[] parts = line.split(",");
-                map.put(parts[0], parts[1]);
+            final List<String> lines = Files.readAllLines(Paths.get(path));
+
+            int index = 0;
+            entry_column_map_string = lines.get(index);
+            while (entry_column_map_string.startsWith(COMMENT_SYMBOL))
+                entry_column_map_string = lines.get(++index);
+
+            for (final String line : lines.subList(index + 1, lines.size())) {
+
+                if (!line.startsWith(COMMENT_SYMBOL)) {
+                    final String[] parts = line.split(",");
+                    map.put(parts[0], parts[1]);
+                }
             }
         }
 
-        entry_map = map;
+        return map;
     }
 
-    protected Map<String, String> loadNormalisationMap(String path_key, String default_path) throws IOException {
+    protected Map<String, String> loadNormalisationMap(final String path_key, final String default_path) throws IOException {
 
         return loadMap(getPropertyWithDefault(path_key, default_path));
     }
 
-    private static Map<String, String> loadMap(String s) throws IOException {
+    private static Map<String, String> loadMap(final String path_string) throws IOException {
 
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
 
-        if (s != null) {
+        if (path_string != null) {
 
-            Path path = Paths.get(s);
-            final List<String> lines = Files.readAllLines(path);
+            for (final String line : Files.readAllLines(Paths.get(path_string))) {
 
-            for (final String line : lines) {
                 final String[] parts = line.split(",");
                 map.put(parts[0], parts[1]);
             }

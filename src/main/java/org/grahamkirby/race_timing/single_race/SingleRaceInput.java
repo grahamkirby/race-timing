@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_ENTRIES_FILENAME;
 import static org.grahamkirby.race_timing.common.Race.KEY_RAW_RESULTS_FILENAME;
@@ -55,7 +57,8 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected List<RaceEntry> loadEntries() throws IOException {
 
-        final List<RaceEntry> entries = Files.readAllLines(entries_path).stream().map(line -> makeRaceEntry(line.split("\t"))).toList();
+        final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+        final List<RaceEntry> entries = Files.readAllLines(entries_path).stream().map(race_entry_mapper).toList();
 
         checkForDuplicateBibNumbers(entries);
         checkForDuplicateEntries(entries);
@@ -67,22 +70,22 @@ public abstract class SingleRaceInput extends RaceInput {
 
         final List<RawResult> raw_results = new ArrayList<>();
 
-        for (String line : Files.readAllLines(results_path)) {
-
-            line = stripComment(line);
-
-            if (!line.isBlank()) {
-                try {
-                    raw_results.add(loadRawResult(line));
-
-                } catch (NumberFormatException ignored) {
-                }
-            }
-        }
+        for (final String line : Files.readAllLines(results_path))
+            addResult(stripComment(line), raw_results);
 
         checkOrdering(raw_results);
 
         return raw_results;
+    }
+
+    private void addResult(final String line, final List<RawResult> raw_results) {
+
+        if (!line.isBlank())
+            try {
+                raw_results.add(loadRawResult(line));
+
+            } catch (final NumberFormatException ignored) {
+            }
     }
 
     protected RawResult loadRawResult(final String line) {
@@ -92,7 +95,7 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected static String stripComment(final String line) {
 
-        final int comment_start_index = line.indexOf("#");
+        final int comment_start_index = line.indexOf(Race.COMMENT_SYMBOL);
         return (comment_start_index > -1) ? line.substring(0, comment_start_index) : line;
     }
 
@@ -134,7 +137,6 @@ public abstract class SingleRaceInput extends RaceInput {
     }
 
     protected abstract List<RawResult> loadRawResults() throws IOException;
-    protected abstract void checkDuplicateEntry(final List<RaceEntry> entries, final RaceEntry new_entry);
     protected abstract void checkForDuplicateEntries(final List<RaceEntry> entries);
-    protected abstract RaceEntry makeRaceEntry(final String[] elements);
+    protected abstract RaceEntry makeRaceEntry(final List<String> elements);
 }

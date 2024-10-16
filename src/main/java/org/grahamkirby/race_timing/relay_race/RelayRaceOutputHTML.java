@@ -311,7 +311,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
             writer.append("""
                 <td>""");
-            writer.append(race.normalisation.htmlEncode(team.runners()[leg_number - 1]));
+            writer.append(race.normalisation.htmlEncode(team.runners().get(leg_number - 1)));
 
             ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
 
@@ -363,7 +363,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(race.normalisation.htmlEncode(leg_result.entry.team.runners()[leg_result.leg_number-1]));
+                writer.append(race.normalisation.htmlEncode(leg_result.entry.team.runners().get(leg_result.leg_number-1)));
                 writer.append("""
                                 </td>
                                 <td>""");

@@ -59,18 +59,8 @@ public class RelayRaceInput extends SingleRaceInput {
     }
 
     @Override
-    protected RaceEntry makeRaceEntry(final String[] elements) {
+    protected RaceEntry makeRaceEntry(final List<String> elements) {
         return new RelayRaceEntry(elements, race);
-    }
-
-    @Override
-    protected void checkDuplicateEntry(final List<RaceEntry> entries, final RaceEntry new_entry) {
-
-        final String new_team_name = ((RelayRaceEntry) new_entry).team.name();
-
-        for (final RaceEntry entry : entries)
-            if (((RelayRaceEntry) entry).team.name().equals(new_team_name))
-                throw new RuntimeException("duplicate entry: " + new_entry);
     }
 
     @Override

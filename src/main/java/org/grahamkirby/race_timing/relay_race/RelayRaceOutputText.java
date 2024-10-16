@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
@@ -205,7 +206,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         if (!raw_result.getComment().isEmpty()) {
 
             if (raw_result.getLegNumber() == 0) writer.append("\t");
-            writer.append("\t# ").append(raw_result.getComment());
+            writer.append("\t").append(Race.COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
         }
 
         writer.append("\n");

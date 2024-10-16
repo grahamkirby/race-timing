@@ -1,158 +1,158 @@
-1	David Aitken	Dundee RR	M40
-2	Shaun Anderson	Dundee RR	M40
-3	David Baird	Dundee RR	M Sen
-4	Jenny Bannerman	Inverness H	F Sen
-5	Gordon Barrie	Dundee Hawkhill H	M50
-6	Dawn Barrie	Unattached	F50
-7	Olivia Batho-Samblas	Dundee RR	F Sen
-8	Aaron Bennet	PH Racing Club	MU20
-9	Ross Bennet	PH Racing Club	M50
-10	Miles Benyan	University of St Andrews CCC	MU20
-11	Innes Bracegirdle	Fife AC	F60
-12	Brent Brodie	Bellahouston H	M50
-13	Colin Brodie	Harmeny AC	M40
-14	Laura Brown	Jog Scotland Larbert	F Sen
-15	Callum Butterworth	Shettleston Harriers	M Sen
-16	Leanne Calder	Edinburgh AC	F40
-17	Rachel Callaghan	Dundee RR	F Sen
-18	Sarah Campbell	Jog Scotland Dunfermline	F50
-19	Arabella Caruso	Unattached	F Sen
-20	Phil Chapman	Carnegie H	M50
-21	Andrew Chingos	University of St Andrews CCC	M Sen
-22	Iain Craven	Edinburgh AC	M40
-23	Sebastian Davies	Dundee Hawkhill H	M Sen
-24	Matthew Davies	Edinburgh AC	M Sen
-25	Janet Dickson	Fife AC	F40
-26	Graeme Doig	PH Racing Club	M40
-27	Lesley Duffy	Recreational Running	F50
-28	Sean Duffy	Unattached	M40
-29	Chris Earl	Dundee Hawkhill H	M Sen
-30	Lucy Fraser	Kinross RR	F40
-31	Sandy Freck	Kinross RR	M Sen
-32	Nikolai Gajic	Giffnock North AC	M Sen
-33	Thomas Gambino	Fife AC	M Sen
-34	Robert Garside	Dundee RR	M40
-35	Keith Gelly	Dundee RR	M50
-36	Phillip Gillespie	Dundee RR	M50
-37	Jillian Gordon	Kinross RR	F40
-38	Duncan Gray	Kinross RR	M50
-39	Kirsty Gray	Kinross RR	F50
-40	Angus Gray	Unattached	MU20
-41	Alan Green	Dundee RR	M Sen
-42	Alison Gregory	Kinross RR	F Sen
-43	Craig Grieve	Unattached	M50
-44	Daniel Hale	Fife AC	M Sen
-45	James Hall	Fife AC	M40
-46	Stephen Hall	Giffnock North AC	M40
-47	Calum Hall	Unattached	MU20
-48	Blair Hardie	Unattached	M Sen
-49	Scott Hardie	Unattached	M Sen
-50	Adam Hart	Dundee RR	M Sen
-51	Gordon Henderson	Carnegie H	M Sen
-52	Caroline Hogarth	Perth RR	F40
-53	Alex Huckle	Unattached	FU20
-54	Doireann Hughes	Edinburgh AC	F Sen
-55	John Hynd	Carnegie H	M60
-56	Imogen Jarrett	Dundee Hawkhill H	FU20
-57	Iain Jordan	Perth Strathtay H	MU20
-58	Connor Kelly	Dundee RR	M60
-59	John Kinninmonth	RunSum Kirkcaldy	M50
-60	Vera Kjellberg	Unattached	F Sen
-61	Mikhail Krivomazov	University of St Andrews CCC	M Sen
-62	Noah Lambert	University of St Andrews CCC	M Sen
-63	Sam Lesley	Shettleston H	M Sen
-64	Jamie Lessels	Fife AC	MU20
-65	Mairi Littleson	Dundee RR	F Sen
-66	Hannah Lopez	Kinross RR	F Sen
-67	Iain Luke	Dundee RR	M70
-68	Nellie Luxford	Fife AC	FU20
-69	Moyra Mabe	Anster Allsorts	F60
-70	Vince Mac Pherson	Unattached	M40
-71	Ally Macdonald	Bellahouston RR	M60
-72	Margaret Macdonald	Morpeth H & AC	F50
-73	Alfie MacDonald	Unattached	MU20
-74	Linda MacEachen	Kinross RR	F60
-75	Sophia Maceo	Unattached	F Sen
-76	John MacPherson	Fife AC	M40
-77	Keren Macpherson	Fife AC	F50
-78	Dawn MacPherson	Unattached	F40
-79	Ann Malcolm	Kinross RR	F60
-80	Tony Martin	Fife AC	M70
-81	Margaret Martin	Fife AC	F60
-82	Abigail Mason	Falkland TR	F Sen
-83	Charlie Mason	Fife AC	MU20
-84	Grant Matheson	Falkirk Victoria Harriers	M60
-85	Holly Mathie	Unattached	F Sen
-86	Jonny May	Unattached	M50
-87	Noah McDermott	University of St Andrews CCC	M Sen
-88	Alan McGowan	PH Racing Club	M40
-89	Christopher McHardy	Central AC	M40
-90	Claire McHardy	Wee County H	F40
-91	John Mcintosh	Dundee RR	M50
-92	Morven McIntyre	Dundee RR	F Sen
-93	Iona McKay	Fife AC	F40
-94	Hugh McKay	Fife AC	M60
-95	Kenneth McLeod	Fife AC	M40
-96	Alison McNeilly	Dundee RR	F40
-97	Michael Mitchell	Dundee RR	M50
-98	Toni Moore	RTC Warriors	F Sen
-99	Jim Morton	Dundee RR	M50
-100	Finlay Murray	East Sutherland AC	M Sen
-101	Theodore Murton	Unattached	M Sen
-102	Christine Myerscough	Kinross RR	F60
-103	John Myerscough	Kinross RR	M60
-104	Sam Newington	Durham City H & AC	F40
-105	Matt Newton	Kinross RR	M40
-106	Ed Norton	PH Racing Club	M70
-107	Marlena Nowaczyk	Unattached	F Sen
-108	Ross O'Brien	Giffnock North AC	MU20
-109	Patrick O'Hare	Fife AC	M Sen
-110	David Pease	Falkland TR	M50
-111	Jordan Phillips	Unattached	MU20
-112	Gary Pirie	PH Racing Club	M50
-113	Tom Rainey	Anster Haddies RC	M40
-114	Paul Reed	Dundee RR	M50
-115	Arnaud Richard	Dundee RR	M40
-116	Michael Richardson	Dundee RR	M Sen
-117	Margaret Robertson	Dundee RR	F70
-118	Martin Rollo	Dundee RR	M50
-119	Finlay Rutter	Unattached	M Sen
-120	Jim Scobie	Fife AC	M80
-121	Jill Scott	Jogscotland	F50
-122	Harriet Shaw	Perth RR	F Sen
-123	Conor Shields	University of St Andrews CCC	MU20
-124	Jonathan Sime	Unattached	M40
-125	Ally Sinclair	Kinross RR	M50
-126	Susan Smith	Dundee RR	F40
-127	Lavinia Sprigade	University of St Andrews CCC	F Sen
-128	Greg Stevens	Fife AC	M Sen
-129	Jamie Stewart	Dundee RR	M40
-130	Ian Stewart	PH Racing Club	M60
-131	Matilda Stewart	University of St Andrews CCC	FU20
-132	Scott Stirling	Kirkcaldy Wizards	M40
-133	Munro Strachan	Dunfermline T & F Club	MU20
-134	Scott Strachan	Kinross RR	M50
-135	Carter Taylor	Fife AC	M Sen
-136	Andrew Taylor	Shettleston H	M Sen
-137	Keith Traill	Fife AC	M60
-138	Freddie Truman-Williams	University of St Andrews CCC	M Sen
-139	Raymond Tully	Dundee Hawkhill H	M50
-140	Rhona Van Rensburg	Fife AC	F50
-141	Hendrik van Rensburg	Fife AC	M50
-142	Gerhard Van Zyl	Fife AC	M40
-143	Laura Van Zyl	Fife AC	F50
-144	Richard Ward	Perth RR	M50
-145	Lucy Ward	Perth Strathtay H	FU20
-146	Luke Watson	Unattached	M Sen
-147	David Webster	Dundee RR	M Sen
-148	Gregor Wells	Perth RR	M40
-149	Mark Western	PH Racing Club	M50
-150	Mary Western	PH Racing Club	F60
-151	Iain Wheel	Falkland TR	M Sen
-152	Jacqui Whitton	Arbroath Footers RC	F40
-153	Gary Whitton	Fife AC	M40
-154	Greig Whitton	Unattached	M50
-155	Alexander Wishart	Unattached	M Sen
-156	Alison Wood	Garscube H	F Sen
-157	Raymond Young	Unattached	M60
-158	Laura McMahon	Dundee RR	F Sen
+1	Aitken	David	Dundee RR	M40
+2	Anderson	Shaun	Dundee RR	M40
+3	Baird	David	Dundee RR	M Sen
+4	Bannerman	Jenny	Inverness H	F Sen
+5	Barrie	Gordon	Dundee Hawkhill H	M50
+6	Barrie	Dawn	Unattached	F50
+7	Batho-Samblas	Olivia	Dundee RR	F Sen
+8	Bennet	Aaron	PH Racing Club	MU20
+9	Bennet	Ross	PH Racing Club	M50
+10	Benyan	Miles	University of St Andrews CCC	MU20
+11	Bracegirdle	Innes	Fife AC	F60
+12	Brodie	Brent	Bellahouston H	M50
+13	Brodie	Colin	Harmeny AC	M40
+14	Brown	Laura	Jog Scotland Larbert	F Sen
+15	Butterworth	Callum	Shettleston Harriers	M Sen
+16	Calder	Leanne	Edinburgh AC	F40
+17	Callaghan	Rachel	Dundee RR	F Sen
+18	Campbell	Sarah	Jog Scotland Dunfermline	F50
+19	Caruso	Arabella	Unattached	F Sen
+20	Chapman	Phil	Carnegie H	M50
+21	Chingos	Andrew	University of St Andrews CCC	M Sen
+22	Craven	Iain	Edinburgh AC	M40
+23	Davies	Sebastian	Dundee Hawkhill H	M Sen
+24	Davies	Matthew	Edinburgh AC	M Sen
+25	Dickson	Janet	Fife AC	F40
+26	Doig	Graeme	PH Racing Club	M40
+27	Duffy	Lesley	Recreational Running	F50
+28	Duffy	Sean	Unattached	M40
+29	Earl	Chris	Dundee Hawkhill H	M Sen
+30	Fraser	Lucy	Kinross RR	F40
+31	Freck	Sandy	Kinross RR	M Sen
+32	Gajic	Nikolai	Giffnock North AC	M Sen
+33	Gambino	Thomas	Fife AC	M Sen
+34	Garside	Robert	Dundee RR	M40
+35	Gelly	Keith	Dundee RR	M50
+36	Gillespie	Phillip	Dundee RR	M50
+37	Gordon	Jillian	Kinross RR	F40
+38	Gray	Duncan	Kinross RR	M50
+39	Gray	Kirsty	Kinross RR	F50
+40	Gray	Angus	Unattached	MU20
+41	Green	Alan	Dundee RR	M Sen
+42	Gregory	Alison	Kinross RR	F Sen
+43	Grieve	Craig	Unattached	M50
+44	Hale	Daniel	Fife AC	M Sen
+45	Hall	James	Fife AC	M40
+46	Hall	Stephen	Giffnock North AC	M40
+47	Hall	Calum	Unattached	MU20
+48	Hardie	Blair	Unattached	M Sen
+49	Hardie	Scott	Unattached	M Sen
+50	Hart	Adam	Dundee RR	M Sen
+51	Henderson	Gordon	Carnegie H	M Sen
+52	Hogarth	Caroline	Perth RR	F40
+53	Huckle	Alex	Unattached	FU20
+54	Hughes	Doireann	Edinburgh AC	F Sen
+55	Hynd	John	Carnegie H	M60
+56	Jarrett	Imogen	Dundee Hawkhill H	FU20
+57	Jordan	Iain	Perth Strathtay H	MU20
+58	Kelly	Connor	Dundee RR	M60
+59	Kinninmonth	John	RunSum Kirkcaldy	M50
+60	Kjellberg	Vera	Unattached	F Sen
+61	Krivomazov	Mikhail	University of St Andrews CCC	M Sen
+62	Lambert	Noah	University of St Andrews CCC	M Sen
+63	Lesley	Sam	Shettleston H	M Sen
+64	Lessels	Jamie	Fife AC	MU20
+65	Littleson	Mairi	Dundee RR	F Sen
+66	Lopez	Hannah	Kinross RR	F Sen
+67	Luke	Iain	Dundee RR	M70
+68	Luxford	Nellie	Fife AC	FU20
+69	Mabe	Moyra	Anster Allsorts	F60
+70	Mac Pherson	Vince	Unattached	M40
+71	Macdonald	Ally	Bellahouston RR	M60
+72	Macdonald	Margaret	Morpeth H & AC	F50
+73	MacDonald	Alfie	Unattached	MU20
+74	MacEachen	Linda	Kinross RR	F60
+75	Maceo	Sophia	Unattached	F Sen
+76	MacPherson	John	Fife AC	M40
+77	Macpherson	Keren	Fife AC	F50
+78	MacPherson	Dawn	Unattached	F40
+79	Malcolm	Ann	Kinross RR	F60
+80	Martin	Tony	Fife AC	M70
+81	Martin	Margaret	Fife AC	F60
+82	Mason	Abigail	Falkland TR	F Sen
+83	Mason	Charlie	Fife AC	MU20
+84	Matheson	Grant	Falkirk Victoria Harriers	M60
+85	Mathie	Holly	Unattached	F Sen
+86	May	Jonny	Unattached	M50
+87	McDermott	Noah	University of St Andrews CCC	M Sen
+88	McGowan	Alan	PH Racing Club	M40
+89	McHardy	Christopher	Central AC	M40
+90	McHardy	Claire	Wee County H	F40
+91	Mcintosh	John	Dundee RR	M50
+92	McIntyre	Morven	Dundee RR	F Sen
+93	McKay	Iona	Fife AC	F40
+94	McKay	Hugh	Fife AC	M60
+95	McLeod	Kenneth	Fife AC	M40
+96	McNeilly	Alison	Dundee RR	F40
+97	Mitchell	Michael	Dundee RR	M50
+98	Moore	Toni	RTC Warriors	F Sen
+99	Morton	Jim	Dundee RR	M50
+100	Murray	Finlay	East Sutherland AC	M Sen
+101	Murton	Theodore	Unattached	M Sen
+102	Myerscough	Christine	Kinross RR	F60
+103	Myerscough	John	Kinross RR	M60
+104	Newington	Sam	Durham City H & AC	F40
+105	Newton	Matt	Kinross RR	M40
+106	Norton	Ed	PH Racing Club	M70
+107	Nowaczyk	Marlena	Unattached	F Sen
+108	O'Brien	Ross	Giffnock North AC	MU20
+109	O'Hare	Patrick	Fife AC	M Sen
+110	Pease	David	Falkland TR	M50
+111	Phillips	Jordan	Unattached	MU20
+112	Pirie	Gary	PH Racing Club	M50
+113	Rainey	Tom	Anster Haddies RC	M40
+114	Reed	Paul	Dundee RR	M50
+115	Richard	Arnaud	Dundee RR	M40
+116	Richardson	Michael	Dundee RR	M Sen
+117	Robertson	Margaret	Dundee RR	F70
+118	Rollo	Martin	Dundee RR	M50
+119	Rutter	Finlay	Unattached	M Sen
+120	Scobie	Jim	Fife AC	M80
+121	Scott	Jill	Jogscotland	F50
+122	Shaw	Harriet	Perth RR	F Sen
+123	Shields	Conor	University of St Andrews CCC	MU20
+124	Sime	Jonathan	Unattached	M40
+125	Sinclair	Ally	Kinross RR	M50
+126	Smith	Susan	Dundee RR	F40
+127	Sprigade	Lavinia	University of St Andrews CCC	F Sen
+128	Stevens	Greg	Fife AC	M Sen
+129	Stewart	Jamie	Dundee RR	M40
+130	Stewart	Ian	PH Racing Club	M60
+131	Stewart	Matilda	University of St Andrews CCC	FU20
+132	Stirling	Scott	Kirkcaldy Wizards	M40
+133	Strachan	Munro	Dunfermline T & F Club	MU20
+134	Strachan	Scott	Kinross RR	M50
+135	Taylor	Carter	Fife AC	M Sen
+136	Taylor	Andrew	Shettleston H	M Sen
+137	Traill	Keith	Fife AC	M60
+138	Truman-Williams	Freddie	University of St Andrews CCC	M Sen
+139	Tully	Raymond	Dundee Hawkhill H	M50
+140	Van Rensburg	Rhona	Fife AC	F50
+141	van Rensburg	Hendrik	Fife AC	M50
+142	Van Zyl	Gerhard	Fife AC	M40
+143	Van Zyl	Laura	Fife AC	F50
+144	Ward	Richard	Perth RR	M50
+145	Ward	Lucy	Perth Strathtay H	FU20
+146	Watson	Luke	Unattached	M Sen
+147	Webster	David	Dundee RR	M Sen
+148	Wells	Gregor	Perth RR	M40
+149	Western	Mark	PH Racing Club	M50
+150	Western	Mary	PH Racing Club	F60
+151	Wheel	Iain	Falkland TR	M Sen
+152	Whitton	Jacqui	Arbroath Footers RC	F40
+153	Whitton	Gary	Fife AC	M40
+154	Whitton	Greig	Unattached	M50
+155	Wishart	Alexander	Unattached	M Sen
+156	Wood	Alison	Garscube H	F Sen
+157	Young	Raymond	Unattached	M60
+158	McMahon	Laura	Dundee RR	F Sen
