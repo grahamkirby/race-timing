@@ -33,7 +33,7 @@ public class IndividualRaceInput extends SingleRaceInput {
     }
 
     @Override
-    protected RaceEntry makeRaceEntry(String[] elements) {
+    protected RaceEntry makeRaceEntry(List<String> elements) {
         return new IndividualRaceEntry(elements, race);
     }
 
@@ -41,19 +41,6 @@ public class IndividualRaceInput extends SingleRaceInput {
     public List<RawResult> loadRawResults() throws IOException {
 
         return loadRawResults(raw_results_path);
-    }
-
-    @Override
-    protected void checkDuplicateEntry(final List<RaceEntry> entries, final RaceEntry new_entry) {
-
-        for (final RaceEntry entry : entries) {
-
-            final Runner runner1 = ((IndividualRaceEntry) entry).runner;
-            final Runner runner2 = ((IndividualRaceEntry) new_entry).runner;
-
-            if (runner1.name.equals(runner2.name) && runner1.club.equals(runner2.club))
-                throw new RuntimeException("duplicate entry: " + new_entry);
-        }
     }
 
     @Override

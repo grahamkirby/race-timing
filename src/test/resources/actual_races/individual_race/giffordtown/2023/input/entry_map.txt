@@ -1,3 +1,7 @@
+# Entry map for data received from EntryCentral.
+# Column 2 is last name, column 3 is first name.
+# Senior category names mapped to Fife AC defaults.
 1 3-2 4 5
 M Sen,MS
+# Another comment.
 F Sen,FS

@@ -149,7 +149,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             final LegResult leg_result = result.leg_results.get(leg_number - 1);
 
-            writer.append(team.runners()[leg_number-1]);
+            writer.append(team.runners().get(leg_number-1));
             ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
 
             writer.append(",");
@@ -178,7 +178,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         if (!result.DNF) {
             writer.append(result.position_string).append(",");
-            writer.append(result.entry.team.runners()[result.leg_number - 1]).append(",");
+            writer.append(result.entry.team.runners().get(result.leg_number - 1)).append(",");
             writer.append(format(result.duration())).append("\n");
         }
     }

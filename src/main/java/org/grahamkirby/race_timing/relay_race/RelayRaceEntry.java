@@ -16,34 +16,36 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
+import org.grahamkirby.race_timing.common.categories.Category;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class RelayRaceEntry extends RaceEntry {
 
-    public record Team(String name, Category category, String[] runners) {}
+    private static final int BIB_NUMBER_INDEX = 0;
+    private static final int TEAM_NAME_INDEX = 1;
+    private static final int CATEGORY_INDEX = 2;
+    private static final int FIRST_RUNNER_NAME_INDEX = 3;
+
+    public record Team(String name, Category category, List<String> runners) {}
 
     public Team team;
 
-    public RelayRaceEntry(final String[] elements, final Race race) {
+    public RelayRaceEntry(final List<String> elements, final Race race) {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
-        if (elements.length != ((RelayRace)race).number_of_legs + 3)
-            throw new RuntimeException("illegal composition for team: " + elements[0]);
+        if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace)race).number_of_legs)
+            throw new RuntimeException("illegal composition for team: " + elements.get(BIB_NUMBER_INDEX));
 
-        bib_number = Integer.parseInt(elements[0]);
+        bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {
-            final String name = elements[1];
-            final Category category = race.lookupCategory(elements[2]);
-            final String[] runners = Arrays.copyOfRange(elements, 3, elements.length);
+            final String name = elements.get(TEAM_NAME_INDEX);
+            final Category category = race.lookupCategory(elements.get(CATEGORY_INDEX));
 
-            for (int i = 0; i < runners.length; i++) {
-                runners[i] = race.normalisation.cleanName(runners[i]);
-            }
+            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.normalisation.cleanName(s)).toList();
 
             team = new Team(name, category, runners);
         }
