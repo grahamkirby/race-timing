@@ -118,13 +118,6 @@ public abstract class SingleRaceInput extends RaceInput {
                 result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
     }
 
-    private void checkDuplicateBibNumber(final List<RaceEntry> entries, final RaceEntry new_entry) {
-
-        for (final RaceEntry entry : entries)
-            if (entry != null && entry.bib_number == new_entry.bib_number)
-                throw new RuntimeException("duplicate bib number: " + new_entry.bib_number);
-    }
-
     protected void checkForDuplicateBibNumbers(final List<RaceEntry> entries) {
 
         for (final RaceEntry entry1 : entries) {

@@ -123,11 +123,6 @@ public abstract class RaceTest {
         return directory_listing;
     }
 
-    private static void deleteDirectory(final String directory_path) throws IOException {
-
-        deleteDirectory(Paths.get(directory_path));
-    }
-
     private static void deleteDirectory(final Path directory_path) throws IOException {
 
         Files.walkFileTree(directory_path, new SimpleFileVisitor<Path>() {
