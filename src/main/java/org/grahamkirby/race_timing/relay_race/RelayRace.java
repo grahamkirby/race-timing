@@ -119,6 +119,7 @@ public class RelayRace extends SingleRace {
         fillLegResultDetails();
         sortOverallResults();
         allocatePrizes();
+        addPaperRecordingComments();
     }
 
     private void printResults() throws IOException {
@@ -487,6 +488,17 @@ public class RelayRace extends SingleRace {
             if (((RelayRaceResult)overall_results.get(i)).entry.bib_number == bib_number) return i;
 
         throw new RuntimeException("unregistered team: " + bib_number);
+    }
+
+    private void addPaperRecordingComments() {
+
+        for (int i = 0; i < raw_results.size(); i++) {
+
+            final boolean last_electronically_recorded_result = i == ((RelayRaceInput)input).getNumberOfRawResults() - 1;
+
+            if (last_electronically_recorded_result && ((RelayRaceInput)input).getNumberOfRawResults() < raw_results.size())
+                raw_results.get(i).appendComment("Remaining times from paper recording sheet only.");
+        }
     }
 
     private void printOverallResults() throws IOException {

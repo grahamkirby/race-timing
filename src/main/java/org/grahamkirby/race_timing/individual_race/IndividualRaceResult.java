@@ -31,6 +31,8 @@ public class IndividualRaceResult extends RaceResult {
     public IndividualRaceResult(final IndividualRace race) {
 
         super(race);
+
+        // Will be set to false later if a time is processed for this runner.
         this.DNF = true;
     }
 

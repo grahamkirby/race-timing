@@ -30,9 +30,6 @@ public class MidweekTest extends RaceTest {
         return new MidweekRace(config_file_path);
     }
 
-    // TODO add minitour and midweek 2024 as tests
-
-
     @Override
     protected String getResourcesPath() {
         return "series_race/";

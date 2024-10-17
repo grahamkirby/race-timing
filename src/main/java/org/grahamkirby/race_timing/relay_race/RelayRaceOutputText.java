@@ -53,10 +53,12 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            // TODO separate printing from counting legs.
-            final Map<Integer, Integer> leg_finished_count = printResults(writer);
+            final Map<Integer, Integer> legs_finished_per_team = countLegsFinishedPerTeam();
+
+            printResults(writer, legs_finished_per_team);
+
+            final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(legs_finished_per_team);
             final List<Duration> times_with_missing_bib_numbers = getTimesWithMissingBibNumbers();
-            final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(leg_finished_count);
 
             if (!bib_numbers_with_missing_times.isEmpty())
                 printDiscrepancies(writer, bib_numbers_with_missing_times, times_with_missing_bib_numbers);
@@ -103,25 +105,23 @@ public class RelayRaceOutputText extends RaceOutputText {
         }
     }
 
-    private Map<Integer, Integer> printResults(final OutputStreamWriter writer) throws IOException {
+    private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
 
-        final Map<Integer, Integer> leg_finished_count = new HashMap<>();
+        for (final RawResult result : ((RelayRace)race).getRawResults()) {
 
-        final List<RawResult> raw_results = ((RelayRace)race).getRawResults();
-        final RelayRaceInput input = (RelayRaceInput)race.input;
-
-        for (int i = 0; i < raw_results.size(); i++) {
-
-            final RelayRaceRawResult raw_result = (RelayRaceRawResult) raw_results.get(i);
-            final boolean last_electronically_recorded_result = i == input.getNumberOfRawResults() - 1;
-
-            if (last_electronically_recorded_result && input.getNumberOfRawResults() < raw_results.size())
-                raw_result.appendComment("Remaining times from paper recording sheet only.");
-
-            printResult(writer, raw_result, leg_finished_count);
+            final int legs_already_finished = legs_finished_per_team.get(result.getBibNumber()) - 1;
+            printResult(writer, (RelayRaceRawResult) result, legs_already_finished);
         }
+    }
 
-        return leg_finished_count;
+    private Map<Integer, Integer> countLegsFinishedPerTeam() {
+
+        final Map<Integer, Integer> legs_finished_map = new HashMap<>();
+
+        for (final RawResult result : ((RelayRace)race).getRawResults())
+            legs_finished_map.merge(result.getBibNumber(), 1, Integer::sum);
+
+        return legs_finished_map;
     }
 
     private List<Duration> getTimesWithMissingBibNumbers() {
@@ -171,19 +171,16 @@ public class RelayRaceOutputText extends RaceOutputText {
             writer.append(format(time)).append("\n");
     }
 
-    private void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final Map<Integer, Integer> leg_finished_count) throws IOException {
+    private void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
 
-        final int bib_number = raw_result.getBibNumber();
-
-        final int legs_already_finished = leg_finished_count.getOrDefault(bib_number, 0);
-        leg_finished_count.put(bib_number, legs_already_finished + 1);
-
-        printBibNumberAndTime(writer, raw_result, bib_number);
+        printBibNumberAndTime(writer, raw_result);
         printLegNumber(writer, raw_result, legs_already_finished);
         printComment(writer, raw_result);
     }
 
-    private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result, final int bib_number) throws IOException {
+    private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
+
+        final int bib_number = raw_result.getBibNumber();
 
         writer.append(bib_number != -1 ? String.valueOf(bib_number) : "?").
                 append("\t").

@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.Category;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +28,11 @@ public class IndividualRaceEntry extends RaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
     private static final int EXPECTED_NUMBER_OF_ENTRY_ELEMENTS = 4;
+
+    private static final int BIB_NUMBER_INDEX = 0;
+    private static final int NAME_INDEX = 1;
+    private static final int CLUB_INDEX = 2;
+    private static final int CATEGORY_INDEX = 3;
 
     public final Runner runner;
 
@@ -40,11 +44,11 @@ public class IndividualRaceEntry extends RaceEntry {
             throw new RuntimeException("illegal composition for runner: " + mapped_elements.get(0));
 
         try {
-            bib_number = Integer.parseInt(mapped_elements.get(0));
+            bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
 
-            final String name = race.normalisation.cleanName(mapped_elements.get(1));
-            final String club = race.normalisation.normaliseClubName(race.normalisation.cleanName(mapped_elements.get(2)));
-            final Category category = race.lookupCategory(race.mapCategory(mapped_elements.get(3)));
+            final String name = race.normalisation.cleanName(mapped_elements.get(NAME_INDEX));
+            final String club = race.normalisation.normaliseClubName(race.normalisation.cleanName(mapped_elements.get(CLUB_INDEX)));
+            final Category category = race.lookupCategory(race.mapCategory(mapped_elements.get(CATEGORY_INDEX)));
 
             runner = new Runner(name, club, category);
         }
@@ -58,13 +62,7 @@ public class IndividualRaceEntry extends RaceEntry {
         // Expected format of map string: "1 3-2 4 5",
         // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
 
-        final List<String> map_elements = Arrays.stream(entry_column_map_string.split(" ")).toList();
-        final List<String> result = new ArrayList<>();
-
-        for (int i = 0; i < map_elements.size(); i++)
-            result.add(getMappedElement(elements, map_elements.get(i)));
-        
-        return result;
+        return Arrays.stream(entry_column_map_string.split(" ")).map(s -> getMappedElement(elements, s)).toList();
     }
 
     private static String getMappedElement(final List<String> elements, final String element_combination_map) {
