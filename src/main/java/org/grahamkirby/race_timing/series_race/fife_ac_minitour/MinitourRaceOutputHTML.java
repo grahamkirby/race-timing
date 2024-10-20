@@ -74,15 +74,25 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
     @Override
     protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
 
-        final List<RaceResult> results = race.prize_winners.get(category);
-        setPositionStrings(results, true);
+        // TODO make consistent with MidweekRaceOutputHTML
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
-        writer.append("<p><strong>").append(category.getShortName()).append("</strong></p>\n");
-        writer.append("<ul>\n");
+        writer.append("<p><strong>").
+                append(category.getShortName()).
+                append("</strong></p>\n");
 
-        printResults(results, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
+        if (!category_prize_winners.isEmpty()) {
 
-        writer.append("</ul>\n\n");
+            writer.append("<ul>\n");
+
+            setPositionStrings(category_prize_winners, true);
+            printResults(category_prize_winners, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
+
+            writer.append("</ul>\n\n");
+        }
+        else {
+            writer.append("<p>No results</p>\n");
+        }
     }
 
     @Override

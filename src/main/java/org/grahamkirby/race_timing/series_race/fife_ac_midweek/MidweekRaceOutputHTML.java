@@ -64,14 +64,20 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
 
         writer.append("<p><strong>").
                 append(category.getShortName()).
-                append("</strong></p>\n").
-                append("<ul>\n");
+                append("</strong></p>\n");
 
-        // TODO suppress <ul> if no winners.
-        setPositionStrings(category_prize_winners, true);
-        printResults(category_prize_winners, new PrizeResultPrinterHTML(((MidweekRace)race), writer));
+        if (!category_prize_winners.isEmpty()) {
 
-        writer.append("</ul>\n\n");
+            writer.append("<ul>\n");
+
+            setPositionStrings(category_prize_winners, true);
+            printResults(category_prize_winners, new PrizeResultPrinterHTML(((MidweekRace) race), writer));
+
+            writer.append("</ul>\n\n");
+        }
+        else {
+            writer.append("<p>No results</p>\n");
+        }
     }
 
     @Override

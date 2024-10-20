@@ -74,7 +74,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        if (category_prize_winners == null)
+        if (category_prize_winners.isEmpty())
             writer.append("No results\n");
         else
             printPrizes(writer, category_prize_winners);

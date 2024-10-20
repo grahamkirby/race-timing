@@ -115,7 +115,6 @@ public abstract class RaceOutput {
 
     protected boolean prizesInThisOrLaterCategory(final Category category, final List<Category> categories) {
 
-        // TODO add test case for mid-sequence category with no prizes.
         for (final Category c : categories.reversed()) {
             if (!race.prize_winners.containsKey(c) || !race.prize_winners.get(c).isEmpty()) return true;
             if (category.equals(c) && !prizesInOtherCategorySameAge(category, categories)) return false;

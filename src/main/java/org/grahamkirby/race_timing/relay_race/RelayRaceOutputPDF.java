@@ -45,7 +45,7 @@ public class RelayRaceOutputPDF extends RaceOutputPDF {
 
         addCategoryHeader(category, document);
 
-        if (category_prize_winners == null)
+        if (category_prize_winners.isEmpty())
             document.add(new Paragraph("No results").setFont(italic_font));
         else {
             int position = 1;
