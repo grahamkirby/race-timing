@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.Category;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RelayRacePrizes extends RacePrizes {
 
@@ -35,6 +34,9 @@ public class RelayRacePrizes extends RacePrizes {
 
     @Override
     public void allocatePrizes() {
+
+        for (final Category category : race.categories.getPrizeCategoriesInDecreasingGeneralityOrder())
+            race.prize_winners.put(category, new ArrayList<>());
 
         // Allocate first prize in each category first, in decreasing order of category breadth.
         // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
@@ -52,7 +54,7 @@ public class RelayRacePrizes extends RacePrizes {
             for (final RaceResult result : race.getOverallResults()) {
 
                 if (prizeWinner(result, category)) {
-                    race.prize_winners.put(category, new ArrayList<>(List.of(result)));
+                    race.prize_winners.get(category).add(result);
                     break;
                 }
             }

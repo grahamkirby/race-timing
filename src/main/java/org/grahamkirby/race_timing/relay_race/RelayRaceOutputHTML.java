@@ -123,19 +123,43 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     @Override
     protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+        // TODO make consistent with MidweekRaceOutputHTML
 
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
-        writer.append("<p><strong>").append(category.getLongName()).append("</strong></p>\n");
-        writer.append("<ol>\n");
+        writer.append("<p><strong>").
+                append(category.getLongName()).
+                append("</strong></p>\n");
 
-        if (category_prize_winners == null)
-            writer.append("No results\n");
-        else
-            for (final RaceResult result : category_prize_winners)
-                printPrizeWinner(writer, result);
+//        if (category_prize_winners != null) {
+            if (!category_prize_winners.isEmpty()) {
 
-        writer.append("</ol>\n\n");
+            writer.append("<ol>\n");
+
+            setPositionStrings(category_prize_winners, true);
+            printResults(writer, category_prize_winners);
+
+            writer.append("</ol>\n\n");
+        }
+        else {
+            writer.append("<p>No results</p>\n");
+        }
+
+//        writer.append("<ol>\n");
+//
+//        if (category_prize_winners == null)
+//            writer.append("No results\n");
+//        else
+//            for (final RaceResult result : category_prize_winners)
+//                printPrizeWinner(writer, result);
+//
+//        writer.append("</ol>\n\n");
+    }
+
+    private void printResults(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {
+
+        for (final RaceResult result : category_prize_winners)
+            printPrizeWinner(writer, result);
     }
 
     private void printPrizeWinner(final OutputStreamWriter writer, final RaceResult r) throws IOException {

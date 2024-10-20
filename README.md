@@ -2,7 +2,7 @@
 
 [![Build and test](https://github.com/grahamkirby/race-timing/actions/workflows/maven.yml/badge.svg)](https://github.com/grahamkirby/race-timing/actions/workflows/maven.yml)
 
-This software was originally written to process results for races organised by [Fife Athletic Club](//fifeac.org),
+This software was originally written to process results for amateur athletics races organised by [Fife Athletic Club](//fifeac.org),
 although it would probably work for other races. Reports of success or otherwise would be welcome, by email to the
 author.
 
