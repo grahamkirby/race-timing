@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.PRIZE_FONT_ITALIC_NAME;
 
 public class IndividualRaceOutputPDF extends RaceOutputPDF {
 
@@ -39,8 +39,7 @@ public class IndividualRaceOutputPDF extends RaceOutputPDF {
     @Override
     protected void printPrizes(final Document document, final Category category) throws IOException {
 
-        // TODO factor out.
-        final PdfFont italic_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
+        final PdfFont italic_font = PdfFontFactory.createFont(PRIZE_FONT_ITALIC_NAME);
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         addCategoryHeader(category, document);
@@ -53,7 +52,7 @@ public class IndividualRaceOutputPDF extends RaceOutputPDF {
 
                 final IndividualRaceResult result = ((IndividualRaceResult) r);
 
-                printPrizePDF(document, String.valueOf(position++), result.entry.runner.name, (result.entry.runner.club), format(result.duration()));
+                printPrizePDF(document, String.valueOf(position++), result.entry.runner.name, result.entry.runner.club, format(result.duration()));
             }
         }
     }

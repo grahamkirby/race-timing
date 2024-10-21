@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
-import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.PRIZE_FONT_ITALIC_NAME;
 
 public class MinitourRaceOutputPDF extends RaceOutputPDF {
 
@@ -61,8 +61,7 @@ public class MinitourRaceOutputPDF extends RaceOutputPDF {
         @Override
         public void printNoResults() throws IOException {
 
-            // TODO extract
-            final PdfFont italic_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
+            final PdfFont italic_font = PdfFontFactory.createFont(PRIZE_FONT_ITALIC_NAME);
 
             document.add(new Paragraph("No results").setFont(italic_font));
         }
