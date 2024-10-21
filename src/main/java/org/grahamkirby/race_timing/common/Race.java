@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import com.itextpdf.io.font.constants.StandardFonts;
 import org.grahamkirby.race_timing.common.categories.Categories;
 import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.output.RaceOutput;
@@ -32,16 +33,25 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
 
-    // TODO document where dead heats can occur - not where result is directly recorded,
-    // only where calculated from other results. E.g. DB overall vs lap time
-
     public record CategoryGroup(String combined_categories_title, List<String> category_names){}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
+    public static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
+    public static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
+    public static final int PRIZE_FONT_SIZE = 24;
+
     public static final String DUMMY_DURATION_STRING = "23:59:59";
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     public static final String COMMENT_SYMBOL = "#";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static final String KEY_ENTRIES_FILENAME = "ENTRIES_FILENAME";
+    public static final String KEY_RAW_RESULTS_FILENAME = "RAW_RESULTS_FILENAME";
+    public static final String KEY_PAPER_RESULTS_FILENAME = "PAPER_RESULTS_FILENAME";
+    public static final String KEY_ANNOTATIONS_FILENAME = "ANNOTATIONS_FILENAME";
 
     public static final String KEY_SENIOR_RACE = "SENIOR_RACE";
     public static final String KEY_OPEN_PRIZE_CATEGORIES = "OPEN_PRIZE_CATEGORIES";
@@ -50,44 +60,36 @@ public abstract class Race {
     public static final String KEY_NUMBER_OF_SENIOR_PRIZES = "NUMBER_OF_SENIOR_PRIZES";
     public static final String KEY_NUMBER_OF_CATEGORY_PRIZES = "NUMBER_OF_CATEGORY_PRIZES";
     public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
-    public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
 
-    public static final String KEY_DNF_LEGS = "DNF_LEGS";
-
     public static final String KEY_ENTRY_MAP = "ENTRY_MAP_PATH";
-    public static final String KEY_NORMALISED_CLUB_NAMES = "NORMALISED_TEAM_NAMES_PATH";
-    public static final String KEY_CAPITALISATION_STOP_WORDS = "INTERNALLY_CAPITALISED_NAMES_PATH";
+    public static final String KEY_NORMALISED_CLUB_NAMES = "NORMALISED_CLUB_NAMES_PATH";
+    public static final String KEY_CAPITALISATION_STOP_WORDS = "CAPITALISATION_STOP_WORDS_PATH";
+    public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
     public static final String KEY_SELF_TIMED = "SELF_TIMED";
     public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
     public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
-
     public static final String KEY_CATEGORY_PRIZES = "CATEGORY_PRIZES";
 
-    public static final String KEY_ENTRIES_FILENAME = "ENTRIES_FILENAME";
-    public static final String KEY_RAW_RESULTS_FILENAME = "RAW_RESULTS_FILENAME";
-
+    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
+    public static final String KEY_DNF_LEGS = "DNF_LEGS";
     public static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
     public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     public static final String KEY_START_OFFSET = "START_OFFSET";
     public static final String KEY_SENIOR_PRIZES = "SENIOR_PRIZES";
-    public static final String KEY_PAPER_RESULTS_FILENAME = "PAPER_RESULTS_FILENAME";
-    public static final String KEY_ANNOTATIONS_FILENAME = "ANNOTATIONS_FILENAME";
-
     public static final String KEY_RACES = "RACES";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final String DEFAULT_ENTRY_MAP_PATH = "src/main/resources/configuration/default_entry_map.txt";
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "src/main/resources/configuration/html_entities.csv";
-    protected static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
-    protected static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "src/main/resources/configuration/capitalisation_stop_words.csv";
+    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
+    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "src/main/resources/configuration/capitalisation_stop_words.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -216,7 +218,7 @@ public abstract class Race {
         entry_map = loadImportCategoryMap(KEY_ENTRY_MAP, DEFAULT_ENTRY_MAP_PATH);
     }
 
-    private Map<String, String> loadImportCategoryMap(final String path_key, String default_path) throws IOException {
+    private Map<String, String> loadImportCategoryMap(final String path_key, final String default_path) throws IOException {
 
         final String path = getPropertyWithDefault(path_key, default_path);
 

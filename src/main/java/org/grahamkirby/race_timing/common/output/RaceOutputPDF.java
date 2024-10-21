@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.common.output;
 
-import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -29,6 +28,8 @@ import org.grahamkirby.race_timing.common.categories.Category;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Race.*;
 
 public abstract class RaceOutputPDF extends RaceOutput {
 
@@ -43,10 +44,9 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            // TODO extract constants to Race
-            final PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+            final PdfFont font = PdfFontFactory.createFont(PRIZE_FONT_NAME);
 
-            document.add(new Paragraph().setFont(font).setFontSize(24)
+            document.add(new Paragraph().setFont(font).setFontSize(PRIZE_FONT_SIZE)
                     .add(race_name_for_results + " " + year + " Category Prizes"));
 
             final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
@@ -58,17 +58,19 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
     protected static void addCategoryHeader(final Category category, final Document document) throws IOException {
 
-        final PdfFont bold_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
-
-        final Paragraph category_header_paragraph = new Paragraph("Category: " + category.getLongName()).setFont(bold_font).setUnderline().setPaddingTop(24);
+        final Paragraph category_header_paragraph = new Paragraph("Category: " +
+                category.getLongName()).
+                setFont(PdfFontFactory.createFont(PRIZE_FONT_BOLD_NAME)).
+                setUnderline().
+                setPaddingTop(PRIZE_FONT_SIZE);
 
         document.add(category_header_paragraph);
     }
 
     protected static void printPrizePDF(final Document document, final String position_string, final String name, final String detail1, final String detail2) throws IOException {
 
-        final PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-        final PdfFont bold_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+        final PdfFont font = PdfFontFactory.createFont(PRIZE_FONT_NAME);
+        final PdfFont bold_font = PdfFontFactory.createFont(PRIZE_FONT_BOLD_NAME);
 
         final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
