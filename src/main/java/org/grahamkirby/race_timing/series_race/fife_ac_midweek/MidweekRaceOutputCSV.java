@@ -41,13 +41,6 @@ public class MidweekRaceOutputCSV extends RaceOutputCSV {
         return new ResultPrinterCSV(race, writer);
     }
 
-    @Override
-    protected boolean allowEqualPositions() {
-
-        // There can be dead heats in overall results, since these are determined by sum of multiple race points.
-        return true;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record ResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {

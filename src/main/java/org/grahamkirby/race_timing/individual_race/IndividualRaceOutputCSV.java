@@ -43,12 +43,12 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
         return new ResultPrinterCSV(writer);
     }
 
-    @Override
-    protected boolean allowEqualPositions() {
-
-        // No dead heats for overall results, since an ordering is imposed at finish funnel.
-        return false;
-    }
+//    @Override
+//    protected boolean allowEqualPositions() {
+//
+//        // No dead heats for overall results, since an ordering is imposed at finish funnel.
+//        return false;
+//    }
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
 

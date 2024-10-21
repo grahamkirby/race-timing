@@ -72,27 +72,8 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
-
-        // TODO make consistent with MidweekRaceOutputHTML
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        writer.append("<p><strong>").
-                append(category.getShortName()).
-                append("</strong></p>\n");
-
-        if (!category_prize_winners.isEmpty()) {
-
-            writer.append("<ul>\n");
-
-            setPositionStrings(category_prize_winners, true);
-            printResults(category_prize_winners, new PrizeResultPrinterHTML(((MinitourRace)race), writer));
-
-            writer.append("</ul>\n\n");
-        }
-        else {
-            writer.append("<p>No results</p>\n");
-        }
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
+        return new PrizeResultPrinterHTML(((MinitourRace)race), writer);
     }
 
     @Override
@@ -300,7 +281,9 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    record PrizeResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private record PrizeResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
@@ -308,14 +291,10 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             final MinitourRaceResult result = (MinitourRaceResult)r;
 
             writer.append("<li>").
-                    append(result.position_string).
-                    append(" ").
-                    append(race.normalisation.htmlEncode(result.runner.name)).
-                    append(" (").
-                    append((result.runner.club)).
-                    append(") ").
-                    append(format(result.duration())).
-                    append("</li>\n");
+                    append(result.position_string).append(" ").
+                    append(race.normalisation.htmlEncode(result.runner.name)).append(" (").
+                    append((result.runner.club)).append(") ").
+                    append(format(result.duration())).append("</li>\n");
         }
 
         @Override

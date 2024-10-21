@@ -18,7 +18,6 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 
@@ -58,26 +57,8 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
-
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        writer.append("<p><strong>").
-                append(category.getShortName()).
-                append("</strong></p>\n");
-
-        if (!category_prize_winners.isEmpty()) {
-
-            writer.append("<ul>\n");
-
-            setPositionStrings(category_prize_winners, true);
-            printResults(category_prize_winners, new PrizeResultPrinterHTML(((MidweekRace) race), writer));
-
-            writer.append("</ul>\n\n");
-        }
-        else {
-            writer.append("<p>No results</p>\n");
-        }
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
+        return new PrizeResultPrinterHTML(((MidweekRace)race), writer);
     }
 
     @Override
@@ -180,8 +161,7 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
 
         @Override
         public void printNoResults() throws IOException {
-
-            writer.append("No results\n");
+            throw new UnsupportedOperationException();
         }
     }
 }

@@ -58,7 +58,7 @@ public abstract class RaceOutputCSV extends RaceOutput {
         final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
         final List<RaceResult> results = race.getResultsByCategory(category_list);
 
-        setPositionStrings(results, allowEqualPositions());
+        setPositionStrings(results, race.allowEqualPositions());
         printResults(results, getResultPrinter(writer));
     }
 
