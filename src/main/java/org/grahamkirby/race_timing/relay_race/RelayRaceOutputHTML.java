@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
@@ -111,55 +110,8 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("<h4>Prizes</h4>\n");
-
-        final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
-
-        for (final Category category : categories)
-            if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
-    }
-
-    @Override
-    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
-        // TODO make consistent with MidweekRaceOutputHTML
-
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        writer.append("<p><strong>").
-                append(category.getLongName()).
-                append("</strong></p>\n");
-
-//        if (category_prize_winners != null) {
-            if (!category_prize_winners.isEmpty()) {
-
-            writer.append("<ol>\n");
-
-            setPositionStrings(category_prize_winners, true);
-            printResults(writer, category_prize_winners);
-
-            writer.append("</ol>\n\n");
-        }
-        else {
-            writer.append("<p>No results</p>\n");
-        }
-
-//        writer.append("<ol>\n");
-//
-//        if (category_prize_winners == null)
-//            writer.append("No results\n");
-//        else
-//            for (final RaceResult result : category_prize_winners)
-//                printPrizeWinner(writer, result);
-//
-//        writer.append("</ol>\n\n");
-    }
-
-    private void printResults(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {
-
-        for (final RaceResult result : category_prize_winners)
-            printPrizeWinner(writer, result);
+    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+        return new PrizeResultPrinterHTML(((RelayRace)race), writer);
     }
 
     private void printPrizeWinner(final OutputStreamWriter writer, final RaceResult r) throws IOException {
@@ -408,4 +360,26 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private record PrizeResultPrinterHTML(RelayRace race, OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+
+            writer.append("<li>").
+                    append(result.position_string).append(" ").
+                    append(race.normalisation.htmlEncode(result.entry.team.name())).append(" (").
+                    append(result.entry.team.category().getLongName()).append(") ").
+                    append(format(result.duration())).append("</li>\n");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+            throw new UnsupportedOperationException();
+        }
+    }
 }
+

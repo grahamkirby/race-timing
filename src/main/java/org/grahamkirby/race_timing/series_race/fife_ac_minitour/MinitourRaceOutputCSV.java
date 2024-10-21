@@ -44,13 +44,6 @@ public class MinitourRaceOutputCSV extends RaceOutputCSV {
         return new ResultPrinterCSV(writer);
     }
 
-    @Override
-    protected boolean allowEqualPositions() {
-
-        // There can be dead heats in overall results, since these are determined by sum of multiple race times.
-        return true;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {

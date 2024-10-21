@@ -79,6 +79,13 @@ public class RelayRace extends SingleRace {
         }
     }
 
+    @Override
+    public boolean allowEqualPositions() {
+
+        // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runners.
+        return false;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override

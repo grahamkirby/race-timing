@@ -75,13 +75,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         return new ResultPrinterCSV(writer);
     }
 
-    @Override
-    protected boolean allowEqualPositions() {
-
-        // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runners.
-        return false;
-    }
-
     protected void printLegResults() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)

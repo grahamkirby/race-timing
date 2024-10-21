@@ -131,6 +131,8 @@ public abstract class Race {
 
     public abstract void processResults() throws IOException;
 
+    public abstract boolean allowEqualPositions();
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void configure() throws IOException {

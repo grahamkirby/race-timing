@@ -65,37 +65,9 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
     }
 
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
-        // TODO make consistent with MidweekRaceOutputHTML
-
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        writer.append("<p><strong>").
-                append(category.getLongName()).
-                append("</strong></p>\n");
-
-        if (!category_prize_winners.isEmpty()) {
-
-            writer.append("<ol>\n");
-            printResults(writer, category_prize_winners);
-            writer.append("</ol>\n\n");
-        }
-        else {
-            writer.append("<p>No results</p>\n");
-        }
-    }
-
-    private void printResults(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {
-
-        for (final RaceResult r : category_prize_winners) {
-
-            final IndividualRaceResult result = ((IndividualRaceResult)r);
-
-            writer.append("<li>").
-                    append(race.normalisation.htmlEncode(result.entry.runner.name)).append(" (").
-                    append((result.entry.runner.club)).append(") ").
-                    append(format(result.duration())).append("</li>\n");
-        }
+    @Override
+    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+        return new PrizeResultPrinterHTML(((IndividualRace)race), writer);
     }
 
     @Override
@@ -154,4 +126,28 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                         </tr>""");
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private record PrizeResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final IndividualRaceResult result = ((IndividualRaceResult)r);
+
+            writer.append("<li>").
+                    append(result.position_string).append(" ").
+                    append(race.normalisation.htmlEncode(result.entry.runner.name)).append(" (").
+                    append((result.entry.runner.club)).append(") ").
+                    append(format(result.duration())).append("</li>\n");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            writer.append("No results\n");
+        }
+    }
 }
+

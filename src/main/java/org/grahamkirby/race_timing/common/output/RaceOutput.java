@@ -175,9 +175,6 @@ public abstract class RaceOutput {
     protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         throw new UnsupportedOperationException();
     }
-    protected boolean allowEqualPositions() {
-        throw new UnsupportedOperationException();
-    }
     protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
         throw new UnsupportedOperationException();
     }

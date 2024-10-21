@@ -17,6 +17,7 @@
 package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.Category;
 
 import java.io.IOException;
@@ -69,6 +70,31 @@ public abstract class RaceOutputHTML extends RaceOutput {
         for (final Category category : categories)
             if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
     }
+
+    @Override
+    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+
+        writer.append("<p><strong>").
+                append(category.getLongName()).
+                append("</strong></p>\n");
+
+        if (!category_prize_winners.isEmpty()) {
+
+            writer.append("<ul>\n");
+
+            setPositionStrings(category_prize_winners, race.allowEqualPositions());
+            printResults(category_prize_winners, getResultPrinter(writer));
+
+            writer.append("</ul>\n\n");
+        }
+        else {
+            writer.append("<p>No results</p>\n");
+        }
+    }
+
+    protected abstract ResultPrinter getResultPrinter(final OutputStreamWriter writer);
 
     protected void printOverallResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 

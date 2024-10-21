@@ -57,6 +57,13 @@ public class MidweekRace extends SeriesRace {
         }
     }
 
+    @Override
+    public boolean allowEqualPositions() {
+
+        // There can be dead heats in overall results, since these are determined by sum of multiple race points.
+        return true;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
