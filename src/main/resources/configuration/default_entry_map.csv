@@ -1,0 +1,3 @@
+# Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
+# E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
+1,2,3,4
