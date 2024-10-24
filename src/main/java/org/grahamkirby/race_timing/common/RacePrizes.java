@@ -35,13 +35,13 @@ public class RacePrizes {
 
     public void allocatePrizes() {
 
-        for (final Category category : race.categories.getPrizeCategoriesInDecreasingGeneralityOrder())
+        for (final Category category : race.categories.getPrizeCategories())
             race.prize_winners.put(category, getPrizeWinners(category));
     }
 
     protected boolean prizeWinner(final RaceResult result, final Category category) {
 
-        return result.completed() && race.categories.includes(category, result.getCategory()) && notYetWonPrize(result);
+        return result.completed() && race.categories.isEligibleFor(category, result.getCategory()) && notYetWonPrize(result);
     }
 
     private boolean notYetWonPrize(final RaceResult potential_winner) {
