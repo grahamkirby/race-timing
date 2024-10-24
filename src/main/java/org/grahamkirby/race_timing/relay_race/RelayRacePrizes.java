@@ -35,7 +35,7 @@ public class RelayRacePrizes extends RacePrizes {
     @Override
     public void allocatePrizes() {
 
-        for (final Category category : race.categories.getPrizeCategoriesInDecreasingGeneralityOrder())
+        for (final Category category : race.categories.getPrizeCategories())
             race.prize_winners.put(category, new ArrayList<>());
 
         // Allocate first prize in each category first, in decreasing order of category breadth.
@@ -49,7 +49,7 @@ public class RelayRacePrizes extends RacePrizes {
 
     private void allocateFirstPrizes() {
 
-        for (final Category category : race.categories.getPrizeCategoriesInDecreasingGeneralityOrder()) {
+        for (final Category category : race.categories.getPrizeCategories()) {
 
             for (final RaceResult result : race.getOverallResults()) {
 
@@ -63,7 +63,7 @@ public class RelayRacePrizes extends RacePrizes {
 
     private void allocateMinorPrizes() {
 
-        for (final Category category : race.categories.getPrizeCategoriesInDecreasingGeneralityOrder())
+        for (final Category category : race.categories.getPrizeCategories())
             allocateMinorPrizes(category);
     }
 

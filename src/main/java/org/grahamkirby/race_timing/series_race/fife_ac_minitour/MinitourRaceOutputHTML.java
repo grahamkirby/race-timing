@@ -107,7 +107,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
     private void printOverallResultsHTML(final OutputStreamWriter writer, final String combined_categories_title, final List<String> category_names, boolean include_credit_link) throws IOException {
 
-        final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
+        final List<Category> category_list = category_names.stream().map(s -> race.categories.getPrizeCategory(s)).toList();
 
         writer.append("<h4>").append(combined_categories_title).append("</h4>\n");
 
@@ -150,7 +150,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
     private List<Category> getCategoryList(final String... category_names) {
 
-        return Arrays.stream(category_names).map(s -> race.categories.getCategory(s)).toList();
+        return Arrays.stream(category_names).map(s -> race.categories.getPrizeCategory(s)).toList();
     }
 
     private void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results, final String combined_categories_title) throws IOException {

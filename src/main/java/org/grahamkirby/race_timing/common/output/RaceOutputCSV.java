@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.categories.Categories;
 import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
@@ -49,13 +50,13 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (final Race.CategoryGroup category_group : race.getResultCategoryGroups())
+        for (final Categories.PrizeCategoryGroup category_group : race.categories.getPrizeCategoryGroups())
             printCategoryResults(writer, category_group.category_names());
     }
 
     private void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
 
-        final List<Category> category_list = category_names.stream().map(s -> race.categories.getCategory(s)).toList();
+        final List<Category> category_list = category_names.stream().map(s -> race.categories.getPrizeCategory(s)).toList();
         final List<RaceResult> results = race.getResultsByCategory(category_list);
 
         setPositionStrings(results, race.allowEqualPositions());

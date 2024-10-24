@@ -16,38 +16,48 @@
  */
 package org.grahamkirby.race_timing.common.categories;
 
-import java.util.ArrayList;
-import java.util.List;
+public final class Categories {
 
-public abstract class Categories {
+//    public record PrizeCategoryGroup(String combined_categories_title, List<Category> categories){}
 
-    // TODO rewrite to load from config file. Include both min and max age.
-    protected final List<Category> runner_categories = new ArrayList<>();
-    protected final List<Category> prize_categories_in_decreasing_generality_order = new ArrayList<>();
-    protected final List<Category> prize_categories_in_report_order = new ArrayList<>();
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Order not important.
-    public List<Category> getRunnerCategories() {
-        return runner_categories;
-    }
-
-    // Defines the order of iteration when allocating prizes.
-    public List<Category> getPrizeCategoriesInDecreasingGeneralityOrder() {
-        return prize_categories_in_decreasing_generality_order;
-    }
-
-    // Defines the order of iteration when reporting prizes.
-    public List<Category> getPrizeCategoriesInReportOrder() {
-        return prize_categories_in_report_order;
-    }
-
-    public Category getCategory(final String category_short_name) {
-
-        for (final Category category : runner_categories)
-            if (category.getShortName().equals(category_short_name)) return category;
-
-        throw new RuntimeException("unknown category: " + category_short_name);
-    }
-
-    public abstract boolean includes(Category first_category, Category second_category);
+//    // TODO rewrite to load from config file. Include both min and max age.
+////    private final List<EntryCategory> entry_categories;
+////    private final List<PrizeCategory> prize_categories;
+////    private final List<PrizeCategoryGroup> prize_category_groups = new ArrayList<>();
+//
+//    public Categories(final Path entry_categories_file_path, final Path prize_categories_file_path) throws IOException {
+//
+//
+//
+////        entry_categories = Files.readAllLines(entry_categories_file_path).stream().map(EntryCategory::new).toList();
+////        prize_categories = Files.readAllLines(prize_categories_file_path).stream().map(PrizeCategory::new).toList();
+//    }
+//
+//    // Order not important.
+//    public List<EntryCategory> getEntryCategories() {
+//        return entry_categories;
+//    }
+//
+//    // Defines the order of listing in prize reports.
+//    public List<PrizeCategory> getPrizeCategories() {
+//        return prize_categories;
+//    }
+//
+//    public PrizeCategory getPrizeCategory(final String category_short_name) {
+//
+//        return prize_categories.stream().filter(category -> category.getShortName().equals(category_short_name)).findFirst().orElseThrow(
+//                 () -> new RuntimeException("unknown category: " + category_short_name));
+//
+//    }
+//
+//    public boolean isEligibleFor(final EntryCategory entry_category, PrizeCategory prize_category) {
+//
+//        return false;
+//    }
+//
+//    public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+//        return prize_category_groups;
+//    }
 }

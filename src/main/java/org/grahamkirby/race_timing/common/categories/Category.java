@@ -16,22 +16,22 @@
  */
 package org.grahamkirby.race_timing.common.categories;
 
-public final class Category {
+public abstract class Category {
 
     private final String long_name;
     private final String short_name;
     private final String gender;
 
     private final int minimum_age;
-    private final int number_of_prizes;
+    private final int maximum_age;
 
-    public Category(final String long_name, final String short_name, final String gender, final int minimum_age, final int number_of_prizes) {
+    public Category(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
 
         this.long_name = long_name;
         this.short_name = short_name;
         this.gender = gender;
         this.minimum_age = minimum_age;
-        this.number_of_prizes = number_of_prizes;
+        this.maximum_age = minimum_age;
     }
 
     public String getLongName() {
@@ -50,12 +50,10 @@ public final class Category {
         return minimum_age;
     }
 
-    public int numberOfPrizes() {
-        return number_of_prizes;
-    }
 
     @Override
     public boolean equals(final Object obj) {
+        // TODO check on gender and age bracket
         return obj instanceof Category other && short_name.equals(other.short_name);
     }
 

@@ -36,13 +36,13 @@ public class RelayRaceCategories extends Categories {
         final Category O60 = new Category("Open 60+", "O60", "Open", 60, number_of_category_prizes);
         final Category W60 = new Category("Women 60+", "W60", "Women", 60, number_of_category_prizes);
 
-        runner_categories.addAll(Arrays.asList(OS, MS, WS, O40, M40, W40, O50, W50, O60, W60));
-        prize_categories_in_decreasing_generality_order.addAll(Arrays.asList(OS, MS, WS, O40, M40, W40, O50, W50, O60, W60));
+        entry_categories.addAll(Arrays.asList(OS, MS, WS, O40, M40, W40, O50, W50, O60, W60));
+        prize_categories.addAll(Arrays.asList(OS, MS, WS, O40, M40, W40, O50, W50, O60, W60));
         prize_categories_in_report_order.addAll(Arrays.asList(WS, OS, W40, O40, W50, O50, W60, O60, MS, M40));
     }
 
     @Override
-    public boolean includes(final Category first_category, final Category second_category) {
+    public boolean isEligibleFor(final Category first_category, final Category second_category) {
 
         return genderIncludes(first_category.getGender(), second_category.getGender()) && first_category.getMinimumAge() <= second_category.getMinimumAge();
     }

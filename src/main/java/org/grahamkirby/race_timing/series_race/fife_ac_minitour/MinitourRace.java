@@ -65,6 +65,7 @@ public class MinitourRace extends SeriesRace {
     @Override
     public List<CategoryGroup> getResultCategoryGroups() {
 
+        // TODO model category groups within config files
         return List.of(
                 new CategoryGroup("U9", List.of("FU9", "MU9")),
                 new CategoryGroup("U11", List.of("FU11", "MU11")),

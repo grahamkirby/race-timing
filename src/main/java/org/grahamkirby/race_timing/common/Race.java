@@ -19,6 +19,8 @@ package org.grahamkirby.race_timing.common;
 import com.itextpdf.io.font.constants.StandardFonts;
 import org.grahamkirby.race_timing.common.categories.Categories;
 import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutput;
 
 import java.io.FileInputStream;
@@ -33,9 +35,11 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
 
-    public record CategoryGroup(String combined_categories_title, List<String> category_names){}
+    // TODO define prize numbers in config file - test
+    // TODO define report category order in config file - test
+    // TODO test where open category winners are in various age categories
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    public record PrizeCategoryGroup(String combined_categories_title, List<Category> categories){}
 
     public static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
     public static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
@@ -86,7 +90,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final String DEFAULT_ENTRY_MAP_PATH = "src/main/resources/configuration/default_entry_map.txt";
+    private static final String DEFAULT_ENTRY_MAP_PATH = "src/main/resources/configuration/default_entry_map.csv";
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "src/main/resources/configuration/html_entities.csv";
     private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
     private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "src/main/resources/configuration/capitalisation_stop_words.csv";
@@ -115,6 +119,10 @@ public abstract class Race {
     public Map<String, String> entry_map;
     public String entry_column_map_string;
 
+    public List<EntryCategory> entry_categories;
+    public List<PrizeCategory> prize_categories;
+    public Map<String, List<PrizeCategory>> prize_category_groups;
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Race(final Path config_file_path) throws IOException {
@@ -132,8 +140,10 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract void processResults() throws IOException;
-
     public abstract boolean allowEqualPositions();
+    public abstract Path getEntryCategoriesPath();
+    public abstract Path getPrizeCategoriesPath();
+    public abstract boolean isEligibleFor(EntryCategory entry_category, PrizeCategory prize_category);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -141,6 +151,37 @@ public abstract class Race {
 
         configureNormalisation();
         configureImportCategoryMap();
+
+        entry_categories = Files.readAllLines(getEntryCategoriesPath()).stream().map(EntryCategory::new).toList();
+        prize_categories = Files.readAllLines(getPrizeCategoriesPath()).stream().map(PrizeCategory::new).toList();
+        prize_category_groups = getPrizeCategoryGroups(getPrizeCategoriesPath());
+    }
+
+    private Map<String, List<PrizeCategory>> getPrizeCategoryGroups(Path prize_categories_path) throws IOException {
+
+        Map<String, List<PrizeCategory>> groups = new HashMap<>();
+
+        for (String line : Files.readAllLines(prize_categories_path)) {
+
+            String[] elements = line.split(",");
+            String category_short_name = elements[1];
+            String group_name = elements[5];
+
+            if (!groups.containsKey(group_name)) {
+
+                groups.put(group_name, new ArrayList<>());
+            }
+
+            groups.get(group_name).add(getPrizeCategory(category_short_name));
+        }
+
+        return groups;
+    }
+
+    private PrizeCategory getPrizeCategory(String category_short_name) {
+
+        return prize_categories.stream().filter(category -> category.getShortName().equals(category_short_name)).findFirst().orElseThrow(
+                () -> new RuntimeException("unknown category: " + category_short_name));
     }
 
     public List<RaceResult> getOverallResults() {
@@ -153,10 +194,6 @@ public abstract class Race {
 
     public void allocatePrizes() {
         prizes.allocatePrizes();
-    }
-
-    public List<CategoryGroup> getResultCategoryGroups() {
-        return List.of(new CategoryGroup("Everything", List.of()));
     }
 
     public Path getWorkingDirectoryPath() {
@@ -173,7 +210,7 @@ public abstract class Race {
 
     public Category lookupCategory(final String short_name) {
 
-        for (final Category category : categories.getRunnerCategories())
+        for (final Category category : categories.getEntryCategories())
             if (category.getShortName().equals(short_name)) return category;
 
         throw new RuntimeException("Category not found: " + short_name);
