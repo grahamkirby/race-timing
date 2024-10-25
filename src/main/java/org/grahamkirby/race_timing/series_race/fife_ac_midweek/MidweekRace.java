@@ -19,7 +19,8 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.common.categories.SeniorRaceCategories;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -37,6 +38,9 @@ public class MidweekRace extends SeriesRace {
 
     private boolean open_prize_categories, senior_prize_categories;
     private int number_of_open_prizes, number_of_senior_prizes;
+
+    private static final String DEFAULT_CATEGORIES_ENTRY_PATH = "src/main/resources/configuration/categories_entry_individual_senior.csv";
+    private static final String DEFAULT_CATEGORIES_PRIZE_PATH = "src/main/resources/configuration/categories_prize_individual_senior.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +68,27 @@ public class MidweekRace extends SeriesRace {
         return true;
     }
 
+    @Override
+    public Path getEntryCategoriesPath() {
+
+        return Paths.get(DEFAULT_CATEGORIES_ENTRY_PATH);
+    }
+
+    @Override
+    public Path getPrizeCategoriesPath() {
+
+        return Paths.get(DEFAULT_CATEGORIES_PRIZE_PATH);
+    }
+
+    @Override
+    public boolean isEligibleFor(EntryCategory entry_category, PrizeCategory prize_category) {
+
+        // Only the open categories include any other categories.
+        return prize_category.equals(entry_category) ||
+                (prize_category.getLongName().equals("Women Open") && entry_category.getGender().equals("Women")) ||
+                (prize_category.getLongName().equals("Men Open") && entry_category.getGender().equals("Men"));
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -87,7 +112,7 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected void configureCategories() {
 
-        categories = new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes);
+//        categories = new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes);
     }
 
     @Override

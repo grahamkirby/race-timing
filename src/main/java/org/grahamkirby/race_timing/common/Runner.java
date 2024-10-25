@@ -16,7 +16,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.Objects;
 
@@ -24,9 +24,9 @@ public class Runner {
 
     public final String name;
     public String club;
-    public final Category category;
+    public final EntryCategory category;
 
-    public Runner(final String name, final String club, final Category category) {
+    public Runner(final String name, final String club, final EntryCategory category) {
         this.name = name;
         this.club = club;
         this.category = category;

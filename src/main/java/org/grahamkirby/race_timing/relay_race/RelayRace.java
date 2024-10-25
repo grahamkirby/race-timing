@@ -19,6 +19,8 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -43,6 +45,9 @@ public class RelayRace extends SingleRace {
     private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
 
     private static final String ZERO_TIME_STRING = "0:0:0";
+
+    private static final String DEFAULT_CATEGORIES_ENTRY_PATH = "src/main/resources/configuration/categories_entry_relay.csv";
+    private static final String DEFAULT_CATEGORIES_PRIZE_PATH = "src/main/resources/configuration/categories_prize_relay.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,6 +89,31 @@ public class RelayRace extends SingleRace {
 
         // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runners.
         return false;
+    }
+
+    @Override
+    public boolean isEligibleFor(final EntryCategory first_category, final PrizeCategory second_category) {
+
+        return genderIncludes(first_category.getGender(), second_category.getGender()) && first_category.getMinimumAge() <= second_category.getMinimumAge();
+    }
+
+    private static boolean genderIncludes(final String first_gender, final String second_gender) {
+
+        return first_gender.equals(second_gender) ||
+                first_gender.equals("Open") && second_gender.equals("Women") ||
+                first_gender.equals("Open") && second_gender.equals("Mixed");
+    }
+
+    @Override
+    public Path getEntryCategoriesPath() {
+
+        return Paths.get(DEFAULT_CATEGORIES_ENTRY_PATH);
+    }
+
+    @Override
+    public Path getPrizeCategoriesPath() {
+
+        return Paths.get(DEFAULT_CATEGORIES_PRIZE_PATH);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +214,7 @@ public class RelayRace extends SingleRace {
 
     protected void configureCategories() {
 
-        categories = new RelayRaceCategories(senior_prizes, category_prizes);
+//        categories = new RelayRaceCategories(senior_prizes, category_prizes);
     }
 
     protected int getRecordedLegPosition(final int bib_number, final int leg_number) {
