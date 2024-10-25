@@ -20,7 +20,8 @@ import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.Category;
-import org.grahamkirby.race_timing.common.categories.JuniorRaceCategories;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -34,6 +35,10 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class MinitourRace extends SeriesRace {
+
+    private static final String DEFAULT_CATEGORIES_ENTRY_PATH = "src/main/resources/configuration/categories_entry_individual_junior.csv";
+    private static final String DEFAULT_CATEGORIES_PRIZE_PATH = "src/main/resources/configuration/categories_prize_individual_junior.csv";
+
 
     public MinitourRace(final Path config_file_path) throws IOException {
 
@@ -60,20 +65,38 @@ public class MinitourRace extends SeriesRace {
         return true;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean isEligibleFor(final EntryCategory first_category, final PrizeCategory second_category) {
+
+        return first_category.equals(second_category);
+    }
 
     @Override
-    public List<CategoryGroup> getResultCategoryGroups() {
+    public Path getEntryCategoriesPath() {
 
-        // TODO model category groups within config files
-        return List.of(
-                new CategoryGroup("U9", List.of("FU9", "MU9")),
-                new CategoryGroup("U11", List.of("FU11", "MU11")),
-                new CategoryGroup("U13", List.of("FU13", "MU13")),
-                new CategoryGroup("U15", List.of("FU15", "MU15")),
-                new CategoryGroup("U18", List.of("FU18", "MU18"))
-        );
+        return Paths.get(DEFAULT_CATEGORIES_ENTRY_PATH);
     }
+
+    @Override
+    public Path getPrizeCategoriesPath() {
+
+        return Paths.get(DEFAULT_CATEGORIES_PRIZE_PATH);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    @Override
+//    public List<CategoryGroup> getResultCategoryGroups() {
+//
+//        // TODO model category groups within config files
+//        return List.of(
+//                new CategoryGroup("U9", List.of("FU9", "MU9")),
+//                new CategoryGroup("U11", List.of("FU11", "MU11")),
+//                new CategoryGroup("U13", List.of("FU13", "MU13")),
+//                new CategoryGroup("U15", List.of("FU15", "MU15")),
+//                new CategoryGroup("U18", List.of("FU18", "MU18"))
+//        );
+//    }
 
     @Override
     public List<RaceResult> getResultsByCategory(final List<Category> categories_required) {
@@ -105,7 +128,7 @@ public class MinitourRace extends SeriesRace {
     @Override
     protected void configureCategories() {
 
-        categories = new JuniorRaceCategories(number_of_category_prizes);
+//        categories = new JuniorRaceCategories(number_of_category_prizes);
     }
 
     @Override

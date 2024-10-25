@@ -53,8 +53,7 @@ public abstract class Category {
 
     @Override
     public boolean equals(final Object obj) {
-        // TODO check on gender and age bracket
-        return obj instanceof Category other && short_name.equals(other.short_name);
+        return obj instanceof Category other && gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
     }
 
     @Override

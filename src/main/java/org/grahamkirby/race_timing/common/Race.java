@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.common;
 
 import com.itextpdf.io.font.constants.StandardFonts;
-import org.grahamkirby.race_timing.common.categories.Categories;
 import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
@@ -39,7 +38,7 @@ public abstract class Race {
     // TODO define report category order in config file - test
     // TODO test where open category winners are in various age categories
 
-    public record PrizeCategoryGroup(String combined_categories_title, List<Category> categories){}
+    public record PrizeCategoryGroup(String combined_categories_title, List<PrizeCategory> categories){}
 
     public static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
     public static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
@@ -103,7 +102,7 @@ public abstract class Race {
     public final Map<Category, List<RaceResult>> prize_winners;
     protected final List<RaceResult> overall_results;
 
-    public Categories categories;
+//    public Categories categories;
     protected RacePrizes prizes;
     protected StringBuilder notes;
 
@@ -120,8 +119,8 @@ public abstract class Race {
     public String entry_column_map_string;
 
     public List<EntryCategory> entry_categories;
-    public List<PrizeCategory> prize_categories;
-    public Map<String, List<PrizeCategory>> prize_category_groups;
+    public List<PrizeCategory> prize_categories; // TODO infer from groups
+    public List<PrizeCategoryGroup> prize_category_groups;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -157,9 +156,9 @@ public abstract class Race {
         prize_category_groups = getPrizeCategoryGroups(getPrizeCategoriesPath());
     }
 
-    private Map<String, List<PrizeCategory>> getPrizeCategoryGroups(Path prize_categories_path) throws IOException {
+    private List<PrizeCategoryGroup> getPrizeCategoryGroups(Path prize_categories_path) throws IOException {
 
-        Map<String, List<PrizeCategory>> groups = new HashMap<>();
+        Map<String, List<PrizeCategory>> map = new TreeMap<>();
 
         for (String line : Files.readAllLines(prize_categories_path)) {
 
@@ -167,12 +166,18 @@ public abstract class Race {
             String category_short_name = elements[1];
             String group_name = elements[5];
 
-            if (!groups.containsKey(group_name)) {
+            if (!map.containsKey(group_name)) {
 
-                groups.put(group_name, new ArrayList<>());
+                map.put(group_name, new ArrayList<>());
             }
 
-            groups.get(group_name).add(getPrizeCategory(category_short_name));
+            map.get(group_name).add(getPrizeCategory(category_short_name));
+        }
+
+        List<PrizeCategoryGroup> groups = new ArrayList<>();
+
+        for (String group_name : map.keySet()) {
+            groups.add(new PrizeCategoryGroup(group_name, map.get(group_name)));
         }
 
         return groups;
@@ -188,7 +193,7 @@ public abstract class Race {
         return overall_results;
     }
 
-    public List<RaceResult> getResultsByCategory(List<Category> ignore) {
+    public List<RaceResult> getResultsByCategory(List<PrizeCategory> ignore) {
         return overall_results;
     }
 
@@ -208,12 +213,15 @@ public abstract class Race {
         return notes;
     }
 
-    public Category lookupCategory(final String short_name) {
+    public EntryCategory lookupCategory(final String short_name) {
 
-        for (final Category category : categories.getEntryCategories())
-            if (category.getShortName().equals(short_name)) return category;
+        return entry_categories.stream().filter(category -> category.getShortName().equals(short_name)).findFirst().
+                orElseThrow(() -> new RuntimeException("Category not found: " + short_name));
 
-        throw new RuntimeException("Category not found: " + short_name);
+//        for (final EntryCategory category : entry_categories)
+//            if (category.getShortName().equals(short_name)) return category;
+//
+//        throw new RuntimeException("Category not found: " + short_name);
     }
 
     public String getPropertyWithDefault(final String property_key, final String default_value) {

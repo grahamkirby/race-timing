@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class IndividualRaceEntry extends RaceEntry {
 
             final String name = race.normalisation.cleanName(mapped_elements.get(NAME_INDEX));
             final String club = race.normalisation.normaliseClubName(race.normalisation.cleanName(mapped_elements.get(CLUB_INDEX)));
-            final Category category = race.lookupCategory(race.mapCategory(mapped_elements.get(CATEGORY_INDEX)));
+            final EntryCategory category = race.lookupCategory(race.mapCategory(mapped_elements.get(CATEGORY_INDEX)));
 
             runner = new Runner(name, club, category);
         }

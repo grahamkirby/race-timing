@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class RelayRaceEntry extends RaceEntry {
     private static final int CATEGORY_INDEX = 2;
     private static final int FIRST_RUNNER_NAME_INDEX = 3;
 
-    public record Team(String name, Category category, List<String> runners) {}
+    public record Team(String name, EntryCategory category, List<String> runners) {}
 
     public Team team;
 
@@ -43,7 +44,7 @@ public class RelayRaceEntry extends RaceEntry {
         bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {
             final String name = elements.get(TEAM_NAME_INDEX);
-            final Category category = race.lookupCategory(elements.get(CATEGORY_INDEX));
+            final EntryCategory category = race.lookupCategory(elements.get(CATEGORY_INDEX));
 
             final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.normalisation.cleanName(s)).toList();
 

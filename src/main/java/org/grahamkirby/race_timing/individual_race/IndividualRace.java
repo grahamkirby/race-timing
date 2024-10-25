@@ -18,8 +18,8 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.categories.Category;
-import org.grahamkirby.race_timing.common.categories.JuniorRaceCategories;
-import org.grahamkirby.race_timing.common.categories.SeniorRaceCategories;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -32,6 +32,9 @@ public class IndividualRace extends SingleRace {
     private static final int DEFAULT_NUMBER_OF_OPEN_PRIZES = 3;
     private static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 1;
     private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
+
+    private static final String DEFAULT_CATEGORIES_ENTRY_PATH = "src/main/resources/configuration/categories_entry_individual_senior.csv";
+    private static final String DEFAULT_CATEGORIES_PRIZE_PATH = "src/main/resources/configuration/categories_prize_individual_senior.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -62,6 +65,28 @@ public class IndividualRace extends SingleRace {
         // No dead heats for overall results, since an ordering is imposed at finish funnel.
         return false;
     }
+
+    @Override
+    public Path getEntryCategoriesPath() {
+
+        return Paths.get(DEFAULT_CATEGORIES_ENTRY_PATH);
+    }
+
+    @Override
+    public Path getPrizeCategoriesPath() {
+
+        return Paths.get(DEFAULT_CATEGORIES_PRIZE_PATH);
+    }
+
+    @Override
+    public boolean isEligibleFor(EntryCategory entry_category, PrizeCategory prize_category) {
+
+        // Only the open categories include any other categories.
+        return prize_category.equals(entry_category) ||
+                (prize_category.getLongName().equals("Women Open") && entry_category.getGender().equals("Women")) ||
+                (prize_category.getLongName().equals("Men Open") && entry_category.getGender().equals("Men"));
+    }
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -128,7 +153,7 @@ public class IndividualRace extends SingleRace {
 
     private void configureCategories() {
 
-        categories = senior_race ? new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes) : new JuniorRaceCategories(number_of_category_prizes);
+//        categories = senior_race ? new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes) : new JuniorRaceCategories(number_of_category_prizes);
     }
 
     private void initialiseResults() {
