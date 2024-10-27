@@ -21,8 +21,6 @@ import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +29,7 @@ import static org.grahamkirby.race_timing.common.Race.KEY_RACES;
 
 public class SeriesRaceInput extends RaceInput {
 
-    public List<Path> race_config_paths;
+    public List<String> race_config_paths;
 
     public SeriesRaceInput(final Race race) {
 
@@ -50,28 +48,22 @@ public class SeriesRaceInput extends RaceInput {
     }
 
     private IndividualRace getIndividualRace(int i) throws IOException {
-        final Path relative_path = race_config_paths.get(i);
 
-        return relative_path.toString().isEmpty() ? null : getIndividualRace(relative_path, i + 1);
+        final String race_config_path = race_config_paths.get(i);
+
+        return race_config_path.isEmpty() ? null : getIndividualRace(race_config_path, i + 1);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
 
-        race_config_paths = readRaceConfigPaths();
+        race_config_paths = Arrays.asList(race.getProperty(KEY_RACES).split(",", -1));
     }
 
-    private List<Path> readRaceConfigPaths() {
+    private IndividualRace getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
-        final String[] race_strings = race.getProperties().getProperty(KEY_RACES).split(",", -1);
-        return Arrays.stream(race_strings).map(Paths::get).toList();
-    }
-
-    protected IndividualRace getIndividualRace(final Path relative_path, final int race_number) throws IOException {
-
-        final Path individual_race_path = race.getWorkingDirectoryPath().resolve(relative_path);
-        final IndividualRace individual_race = new IndividualRace(individual_race_path);
+        final IndividualRace individual_race = new IndividualRace(race.getPath(race_config_path));
 
         configureIndividualRace(individual_race, race_number);
         individual_race.calculateResults();

@@ -16,9 +16,9 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.time.Duration;
 
@@ -70,7 +70,7 @@ public class LegResult extends RaceResult {
     }
 
     @Override
-    public Category getCategory() {
+    public EntryCategory getCategory() {
         return entry.team.category();
     }
 

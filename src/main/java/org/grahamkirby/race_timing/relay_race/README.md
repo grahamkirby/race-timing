@@ -24,8 +24,8 @@ are awarded the prize in the higher position, and then the younger age category.
 1. Create a new copy of the directory [```src/main/resources/relay_race/devils_burdens/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/lap_race/devils_burdens/sample_config).
 2. In the file ```input/config.txt```, update properties as required:
    1. WORKING_DIRECTORY: the location of the new directory
-   2. ENTRIES_FILENAME: name of the file containing the race entries
-   3. RAW_RESULTS_FILENAME: name of the file containing the recorded times
+   2. ENTRIES_PATH: name of the file containing the race entries
+   3. RAW_RESULTS_PATH: name of the file containing the recorded times
    4. YEAR: year of race
    5. NUMBER_OF_LAPS: 4 in current configuration of race
    6. PAIRED_LEGS: numbers of the legs that are run in pairs

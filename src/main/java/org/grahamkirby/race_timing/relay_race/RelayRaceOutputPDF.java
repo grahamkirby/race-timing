@@ -22,7 +22,7 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class RelayRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    protected void printPrizes(final Document document, final Category category) throws IOException {
+    protected void printPrizes(final Document document, final PrizeCategory category) throws IOException {
 
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 

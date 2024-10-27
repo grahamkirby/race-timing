@@ -16,9 +16,9 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class RelayRaceResult extends RaceResult {
     }
 
     @Override
-    public Category getCategory() {
+    public EntryCategory getCategory() {
         return entry.team.category();
     }
 
@@ -106,7 +106,7 @@ public class RelayRaceResult extends RaceResult {
         return 0;
     }
 
-    private static int getRecordedLastLegPosition(RelayRaceResult result) {
+    private static int getRecordedLastLegPosition(final RelayRaceResult result) {
 
         final RelayRace race = (RelayRace) result.race;
         return race.getRecordedLegPosition(result.entry.bib_number, race.number_of_legs);

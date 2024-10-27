@@ -37,7 +37,7 @@ public abstract class SingleRace extends Race {
 
         // Specifies all the runners who did have a finish
         // time recorded but were declared DNF.
-        dnf_string = getPropertyWithDefault(KEY_DNF_LEGS, "");
+        dnf_string = getProperty(KEY_DNF_LEGS, "");
     }
 
     public List<RawResult> getRawResults() {

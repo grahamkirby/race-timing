@@ -34,13 +34,6 @@ import java.util.*;
 public class MidweekRace extends SeriesRace {
 
     private static final int MAX_RACE_SCORE = 200;
-    public static final int DEFAULT_OPEN_PRIZES = 3;
-
-    private boolean open_prize_categories, senior_prize_categories;
-    private int number_of_open_prizes, number_of_senior_prizes;
-
-    private static final String DEFAULT_CATEGORIES_ENTRY_PATH = "src/main/resources/configuration/categories_entry_individual_senior.csv";
-    private static final String DEFAULT_CATEGORIES_PRIZE_PATH = "src/main/resources/configuration/categories_prize_individual_senior.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,24 +62,8 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public Path getEntryCategoriesPath() {
-
-        return Paths.get(DEFAULT_CATEGORIES_ENTRY_PATH);
-    }
-
-    @Override
-    public Path getPrizeCategoriesPath() {
-
-        return Paths.get(DEFAULT_CATEGORIES_PRIZE_PATH);
-    }
-
-    @Override
-    public boolean isEligibleFor(EntryCategory entry_category, PrizeCategory prize_category) {
-
-        // Only the open categories include any other categories.
-        return prize_category.equals(entry_category) ||
-                (prize_category.getLongName().equals("Women Open") && entry_category.getGender().equals("Women")) ||
-                (prize_category.getLongName().equals("Men Open") && entry_category.getGender().equals("Men"));
+    public boolean isEligibleForGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+        return entry_category.getGender().equals(prize_category.getGender());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,12 +84,6 @@ public class MidweekRace extends SeriesRace {
         output_PDF = new MidweekRaceOutputPDF(this);
 
         prizes = new RacePrizes(this);
-    }
-
-    @Override
-    protected void configureCategories() {
-
-//        categories = new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes);
     }
 
     @Override
@@ -152,13 +123,7 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected void readProperties() {
 
-        super.readProperties();
-
-        minimum_number_of_races = Integer.parseInt(getProperties().getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
-        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(KEY_OPEN_PRIZE_CATEGORIES, "true"));
-        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(KEY_SENIOR_PRIZE_CATEGORIES, "true"));
-        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(KEY_NUMBER_OF_OPEN_PRIZES, String.valueOf(DEFAULT_OPEN_PRIZES)));
-        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(KEY_NUMBER_OF_SENIOR_PRIZES, String.valueOf(DEFAULT_OPEN_PRIZES)));
+        minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

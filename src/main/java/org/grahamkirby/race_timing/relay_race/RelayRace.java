@@ -41,18 +41,11 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 3;
-    private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
-
     private static final String ZERO_TIME_STRING = "0:0:0";
-
-    private static final String DEFAULT_CATEGORIES_ENTRY_PATH = "src/main/resources/configuration/categories_entry_relay.csv";
-    private static final String DEFAULT_CATEGORIES_PRIZE_PATH = "src/main/resources/configuration/categories_prize_relay.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected int number_of_legs;
-    private int senior_prizes, category_prizes;
     private RelayRaceMissingData missing_data;
 
     // Records for each leg whether there was a mass start.
@@ -84,6 +77,8 @@ public class RelayRace extends SingleRace {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean allowEqualPositions() {
 
@@ -92,28 +87,11 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    public boolean isEligibleFor(final EntryCategory first_category, final PrizeCategory second_category) {
+    public boolean isEligibleForGender(EntryCategory entry_category, PrizeCategory prize_category) {
 
-        return genderIncludes(first_category.getGender(), second_category.getGender()) && first_category.getMinimumAge() <= second_category.getMinimumAge();
-    }
-
-    private static boolean genderIncludes(final String first_gender, final String second_gender) {
-
-        return first_gender.equals(second_gender) ||
-                first_gender.equals("Open") && second_gender.equals("Women") ||
-                first_gender.equals("Open") && second_gender.equals("Mixed");
-    }
-
-    @Override
-    public Path getEntryCategoriesPath() {
-
-        return Paths.get(DEFAULT_CATEGORIES_ENTRY_PATH);
-    }
-
-    @Override
-    public Path getPrizeCategoriesPath() {
-
-        return Paths.get(DEFAULT_CATEGORIES_PRIZE_PATH);
+        return entry_category.getGender().equals(prize_category.getGender()) ||
+                entry_category.getGender().equals("Women") && prize_category.getGender().equals("Open") ||
+                entry_category.getGender().equals("Mixed") && prize_category.getGender().equals("Open");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +103,6 @@ public class RelayRace extends SingleRace {
         readProperties();
 
         configureHelpers();
-        configureCategories();
         configureInputData();
 
         configureMassStarts();
@@ -193,10 +170,8 @@ public class RelayRace extends SingleRace {
 
     private void readProperties() {
 
-        number_of_legs = Integer.parseInt(getProperties().getProperty(KEY_NUMBER_OF_LEGS));
-        start_offset = parseTime(getPropertyWithDefault(KEY_START_OFFSET, ZERO_TIME_STRING));
-        senior_prizes = Integer.parseInt(getPropertyWithDefault(KEY_SENIOR_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
-        category_prizes = Integer.parseInt(getPropertyWithDefault(KEY_CATEGORY_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
+        number_of_legs = Integer.parseInt(getProperty(KEY_NUMBER_OF_LEGS));
+        start_offset = parseTime(getProperty(KEY_START_OFFSET, ZERO_TIME_STRING));
     }
 
     private void configureHelpers() {
@@ -210,11 +185,6 @@ public class RelayRace extends SingleRace {
 
         missing_data = new RelayRaceMissingData(this);
         prizes = new RelayRacePrizes(this);
-    }
-
-    protected void configureCategories() {
-
-//        categories = new RelayRaceCategories(senior_prizes, category_prizes);
     }
 
     protected int getRecordedLegPosition(final int bib_number, final int leg_number) {
@@ -261,7 +231,7 @@ public class RelayRace extends SingleRace {
         // Example: MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,23:59:59,2:36:00
 
         final String default_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
-        return getPropertyWithDefault(KEY_MASS_START_ELAPSED_TIMES, default_string);
+        return getProperty(KEY_MASS_START_ELAPSED_TIMES, default_string);
     }
 
     private void setMassStartTimes(final String[] mass_start_elapsed_times_strings) {
@@ -275,18 +245,19 @@ public class RelayRace extends SingleRace {
         final Duration mass_start_time = parseTime(time_as_string);
         final Duration previous_mass_start_time = leg_index > 0 ? start_times_for_mass_starts.get(leg_index -1) : null;
 
-        if (massStartTimesOutOfOrder(previous_mass_start_time, mass_start_time))
-            throw new RuntimeException("illegal mass start time order");
+        checkMassStartTimesOrder(previous_mass_start_time, mass_start_time);
 
         start_times_for_mass_starts.add(mass_start_time);
         mass_start_legs.add(!mass_start_time.equals(DUMMY_DURATION));
     }
 
-    private boolean massStartTimesOutOfOrder(final Duration previous_mass_start_time, final Duration current_mass_start_time) {
+    private void checkMassStartTimesOrder(final Duration previous_mass_start_time, final Duration current_mass_start_time) {
 
-        return previous_mass_start_time != null &&
-                !previous_mass_start_time.equals(DUMMY_DURATION) &&
-                previous_mass_start_time.compareTo(current_mass_start_time) > 0;
+        if (previous_mass_start_time != null &&
+            !previous_mass_start_time.equals(DUMMY_DURATION) &&
+            previous_mass_start_time.compareTo(current_mass_start_time) > 0)
+
+            throw new RuntimeException("illegal mass start time order");
     }
 
     private void setEmptyMassStartTimes() {
@@ -302,7 +273,7 @@ public class RelayRace extends SingleRace {
 
     private void configurePairedLegs() {
 
-        final String paired_legs_string = getProperties().getProperty(KEY_PAIRED_LEGS);
+        final String paired_legs_string = getProperty(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
 
@@ -317,7 +288,7 @@ public class RelayRace extends SingleRace {
 
     private void configureIndividualLegStarts() {
 
-        final String individual_leg_starts_string = getPropertyWithDefault(KEY_INDIVIDUAL_LEG_STARTS, "");
+        final String individual_leg_starts_string = getProperty(KEY_INDIVIDUAL_LEG_STARTS, "");
 
         // bib number / leg number / start time
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20

@@ -27,62 +27,57 @@ import java.nio.file.Path;
 public class ActualRacesIndividualTest extends RaceTest {
 
     @Override
-    protected String getResourcesPath() {
-        return "actual_races/individual_race/";
-    }
-
-    @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
         return new IndividualRace(config_file_path);
     }
 
     @Test
     public void balmullo2023() throws Exception {
-        testExpectedCompletion("balmullo/2023");
+        testExpectedCompletion("actual_races/individual_race/balmullo/2023");
     }
 
     @Test
     public void balmullo2024() throws Exception {
-        testExpectedCompletion("balmullo/2024");
+        testExpectedCompletion("actual_races/individual_race/balmullo/2024");
     }
 
     @Test
     public void dunnikier2024() throws Exception {
-        testExpectedCompletion("dunnikier/2024");
+        testExpectedCompletion("actual_races/individual_race/dunnikier/2024");
     }
 
     @Test
     public void giffordtown2023() throws Exception {
-        testExpectedCompletion("giffordtown/2023");
+        testExpectedCompletion("actual_races/individual_race/giffordtown/2023");
     }
 
     @Test
     public void giffordtown2024() throws Exception {
-        testExpectedCompletion("giffordtown/2024");
+        testExpectedCompletion("actual_races/individual_race/giffordtown/2024");
     }
 
     @Test
     public void hillOfTarvit2024() throws Exception {
-        testExpectedCompletion("hill_of_tarvit/2024");
+        testExpectedCompletion("actual_races/individual_race/hill_of_tarvit/2024");
     }
 
     @Test
     public void stAndrews2023() throws Exception {
-        testExpectedCompletion("st_andrews/2023");
+        testExpectedCompletion("actual_races/individual_race/st_andrews/2023");
     }
 
     @Test
     public void stAndrews2024() throws Exception {
-        testExpectedCompletion("st_andrews/2024");
+        testExpectedCompletion("actual_races/individual_race/st_andrews/2024");
     }
 
     @Test
     public void strathBlebo2023() throws Exception {
-        testExpectedCompletion("strath_blebo/2023");
+        testExpectedCompletion("actual_races/individual_race/strath_blebo/2023");
     }
 
     @Test
     public void strathBlebo2024() throws Exception {
-        testExpectedCompletion("strath_blebo/2024");
+        testExpectedCompletion("actual_races/individual_race/strath_blebo/2024");
     }
  }

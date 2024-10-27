@@ -17,18 +17,6 @@ Category: Men Open
 3: Tom Gough (Fife AC) 00:27:06
 
 
-Category: Women Senior
-----------------------
-
-1: Ailsa Cruickshanks (Fife AC) 00:31:17
-
-
-Category: Men Senior
---------------------
-
-1: Adam Hart (Dundee Road Runners AC) 00:27:25
-
-
 Category: Women Junior
 ----------------------
 
@@ -77,14 +65,14 @@ Category: Men 60-69
 1: John Kinninmonth (RunSum Running Kirkcaldy) 00:35:02
 
 
-Category: Women 70+
--------------------
+Category: Women 70-79
+---------------------
 
 1: Catriona Duncan (Anster Haddies) 00:44:52
 
 
-Category: Men 70+
------------------
+Category: Men 70-79
+-------------------
 
 1: Tony Martin (Falkland Trail Runners) 00:32:17
 

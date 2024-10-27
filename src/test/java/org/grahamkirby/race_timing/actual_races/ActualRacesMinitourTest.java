@@ -31,38 +31,33 @@ public class ActualRacesMinitourTest extends RaceTest {
         return new MinitourRace(config_file_path);
     }
 
-    @Override
-    protected String getResourcesPath() {
-        return "actual_races/series_race/minitour/";
-    }
-
     @Test
     public void minitour2023Completed1() throws Exception {
-        testExpectedCompletion("2023/completed_1");
+        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_1");
     }
 
     @Test
     public void minitour2023Completed2() throws Exception {
-        testExpectedCompletion("2023/completed_2");
+        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_2");
     }
 
     @Test
     public void minitour2023Completed3() throws Exception {
-        testExpectedCompletion("2023/completed_3");
+        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_3");
     }
 
     @Test
     public void minitour2023Completed4() throws Exception {
-        testExpectedCompletion("2023/completed_4");
+        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_4");
     }
 
     @Test
     public void minitour2023Completed5() throws Exception {
-        testExpectedCompletion("2023/completed_5");
+        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_5");
     }
 
     @Test
     public void minitour2024() throws Exception {
-        testExpectedCompletion("2024");
+        testExpectedCompletion("actual_races/series_race/minitour/2024");
     }
 }

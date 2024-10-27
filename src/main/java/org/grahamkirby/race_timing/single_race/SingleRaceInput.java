@@ -29,8 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_ENTRIES_FILENAME;
-import static org.grahamkirby.race_timing.common.Race.KEY_RAW_RESULTS_FILENAME;
+import static org.grahamkirby.race_timing.common.Race.*;
 
 public abstract class SingleRaceInput extends RaceInput {
 
@@ -44,21 +43,28 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected void readProperties() {
 
-        entries_filename = race.getProperties().getProperty(KEY_ENTRIES_FILENAME);
-        raw_results_filename = race.getProperties().getProperty(KEY_RAW_RESULTS_FILENAME);
+        entries_path = race.getProperty(KEY_ENTRIES_PATH);
+        raw_results_path = race.getProperty(KEY_RAW_RESULTS_PATH);
+        categories_entry_path = race.getProperty(KEY_CATEGORIES_ENTRY_PATH);
+        categories_prize_path = race.getProperty(KEY_CATEGORIES_PRIZE_PATH);
+
     }
 
     protected void constructFilePaths() {
 
-        input_directory_path = race.getWorkingDirectoryPath().resolve("input");
-        entries_path = input_directory_path.resolve(entries_filename);
-        raw_results_path = input_directory_path.resolve(raw_results_filename);
+//        input_directory_path = race.getWorkingDirectoryPath().resolve("input");
+//        input_directory_path = race.getPath(".");
+//        entries_path = race.getPath(entries_filename);
+//        raw_results_path = race.getPath(raw_results_filename);
+//        categories_entry_path = getPropertyWithDefault(KEY_CATEGORIES_ENTRY_PATH, DEFAULT_CATEGORIES_ENTRY_PATH);
+//        categories_prize_path = getPropertyWithDefault(KEY_CATEGORIES_PRIZE_PATH, DEFAULT_CATEGORIES_PRIZE_PATH);
+
     }
 
     protected List<RaceEntry> loadEntries() throws IOException {
 
         final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
-        final List<RaceEntry> entries = Files.readAllLines(entries_path).stream().map(race_entry_mapper).toList();
+        final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().map(race_entry_mapper).toList();
 
         checkForDuplicateBibNumbers(entries);
         checkForDuplicateEntries(entries);

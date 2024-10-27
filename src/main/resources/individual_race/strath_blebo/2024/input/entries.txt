@@ -36,13 +36,13 @@
 136	Nessie  Kirkbride	Falkland Trail Runners	F60
 137	Mairi Littleson	Dundee Road Runners	FS
 138	Hannah Lopez	Kinross Road Runners	FS
-139	Iain  Luke	Dundee Road Runners	M70+
+139	Iain  Luke	Dundee Road Runners	M70
 140	John MacPherson	Fife AC	M40
 141	Keren Macpherson	Fife AC	F50
 142	Vince MacPherson 	Fife AC	M40
 143	Steven Maloney	Dundee Road Runners 	M40
 144	Rhonda Manning	Dundee Hawkhill Harriers	F50
-145	Tony Martin	Falkland Trail Runners 	M70+
+145	Tony Martin	Falkland Trail Runners 	M70
 146	Margaret Martin	Fife AC	F60
 147	Ross McArthur	Falkland Trail Runners 	MS
 148	Josh McKay	Dundee Road Runners	MS
@@ -53,7 +53,7 @@
 153	David Miller	Dundee Road Runners 	M50
 154	Michael  Mitchell 	Dundee Road Runners 	M50
 155	Stuart Murray		MS
-156	Eric Nachman	Falkland Trail Runners 	M70+
+156	Eric Nachman	Falkland Trail Runners 	M70
 157	Jane  O'Donnell 	Dundee Road Runners 	F40
 158	David Pease	Falkland Trail Runners 	M60
 159	Gary Pirie	PH Racing Club 	M50
@@ -84,7 +84,7 @@
 184	Chris Wilson		M40
 185	Simone Young	Kinross Road Runners	F50
 188	Hilary Ritchie	Fife AC	F60
-187	Jocelyn Scott	Fife AC	F70+
+187	Jocelyn Scott	Fife AC	F70
 186	Heather Anderson	Fife AC	F40
 189	Jamie  Anderson	Anster Haddies	MU20
 190	Sandra Gardener	Falkland Trail Runners	F50
@@ -93,12 +93,12 @@
 193	Matt Buck	Dundee Road Runners	MS
 194	Debz Hay	Anster Haddies	F50
 195	Ann Malcolm	Kinross Road Runners	F60
-196	John Wilmot	Falkland Trail Runners	M70+
+196	John Wilmot	Falkland Trail Runners	M70
 197	Ann Davidson	Falkland Trail Runners	F60
 198	Fiona Callaghan	Dundee Road Runners	FS
 199	Jennifer Massie	Dundee Road Runners	F40
 200	Rory Sandilands	Fife AC	M40
-100	Bill Gillan	Recreational Running	M70+
+100	Bill Gillan	Recreational Running	M70
 99	Philip Suttie	Falkland Trail Runners	M40
 93	Alice Hall	Anster Haddies	F60
 94	Yvonne Dehn	Anster Haddies	FS
@@ -107,4 +107,4 @@
 98	Ewan Lumsden	Anster Haddies	M40
 96	Dave Clark	Falkland Trail Runners	M50
 92	John Lee	Falkland Trail Runners	M60
-91	Catriona Duncan	Anster Haddies	F70+
+91	Catriona Duncan	Anster Haddies	F70

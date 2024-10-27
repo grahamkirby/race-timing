@@ -24,7 +24,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,14 +49,14 @@ public abstract class RaceOutputPDF extends RaceOutput {
             document.add(new Paragraph().setFont(font).setFontSize(PRIZE_FONT_SIZE)
                     .add(race_name_for_results + " " + year + " Category Prizes"));
 
-            final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
+            final List<PrizeCategory> categories = race.getPrizeCategories();
 
-            for (final Category category : categories)
-                if (prizesInThisOrLaterCategory(category, categories)) printPrizes(document, category);
+            for (final PrizeCategory category : categories)
+                if (prizesInThisOrLaterCategory(category)) printPrizes(document, category);
         }
     }
 
-    protected static void addCategoryHeader(final Category category, final Document document) throws IOException {
+    protected static void addCategoryHeader(final PrizeCategory category, final Document document) throws IOException {
 
         final Paragraph category_header_paragraph = new Paragraph("Category: " +
                 category.getLongName()).
@@ -81,5 +81,5 @@ public abstract class RaceOutputPDF extends RaceOutput {
         document.add(paragraph);
     }
 
-    protected abstract void printPrizes(final Document document, final Category category) throws IOException;
+    protected abstract void printPrizes(final Document document, final PrizeCategory category) throws IOException;
 }

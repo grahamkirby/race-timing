@@ -16,7 +16,7 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.RaceResult;
 
@@ -32,7 +32,8 @@ public class IndividualRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    @Override
+    public void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
 
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
@@ -45,20 +46,25 @@ public class IndividualRaceOutputText extends RaceOutputText {
 
             if (category_prize_winners.isEmpty())
                 writer.append("No results\n");
-            else {
-                int position = 1;
-                for (final RaceResult r : category_prize_winners) {
-
-                    final IndividualRaceResult result = ((IndividualRaceResult) r);
-
-                    writer.append(String.valueOf(position++)).append(": ").
-                            append(result.entry.runner.name).append(" (").
-                            append(result.entry.runner.club).append(") ").
-                            append(format(result.duration())).append("\n");
-                }
-            }
+            else
+                printPrizes(writer, category_prize_winners);
 
             writer.append("\n\n");
+        }
+    }
+
+    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {
+
+        int position = 1;
+
+        for (final RaceResult r : category_prize_winners) {
+
+            final IndividualRaceResult result = ((IndividualRaceResult) r);
+
+            writer.append(String.valueOf(position++)).append(": ").
+                    append(result.entry.runner.name).append(" (").
+                    append(result.entry.runner.club).append(") ").
+                    append(format(result.duration())).append("\n");
         }
     }
 }

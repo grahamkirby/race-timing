@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.single_race.SingleRace;
@@ -28,21 +27,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 
 public class IndividualRace extends SingleRace {
-
-    private static final int DEFAULT_NUMBER_OF_OPEN_PRIZES = 3;
-    private static final int DEFAULT_NUMBER_OF_SENIOR_PRIZES = 1;
-    private static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 1;
-
-    private static final String DEFAULT_CATEGORIES_ENTRY_PATH = "src/main/resources/configuration/categories_entry_individual_senior.csv";
-    private static final String DEFAULT_CATEGORIES_PRIZE_PATH = "src/main/resources/configuration/categories_prize_individual_senior.csv";
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private boolean senior_race;
-    public boolean open_prize_categories, senior_prize_categories;
-    public int number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public IndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
@@ -59,6 +43,8 @@ public class IndividualRace extends SingleRace {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean allowEqualPositions() {
 
@@ -67,38 +53,19 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    public Path getEntryCategoriesPath() {
+    public boolean isEligibleForGender(EntryCategory entry_category, PrizeCategory prize_category) {
 
-        return Paths.get(DEFAULT_CATEGORIES_ENTRY_PATH);
+        return entry_category.getGender().equals(prize_category.getGender());
     }
-
-    @Override
-    public Path getPrizeCategoriesPath() {
-
-        return Paths.get(DEFAULT_CATEGORIES_PRIZE_PATH);
-    }
-
-    @Override
-    public boolean isEligibleFor(EntryCategory entry_category, PrizeCategory prize_category) {
-
-        // Only the open categories include any other categories.
-        return prize_category.equals(entry_category) ||
-                (prize_category.getLongName().equals("Women Open") && entry_category.getGender().equals("Women")) ||
-                (prize_category.getLongName().equals("Men Open") && entry_category.getGender().equals("Men"));
-    }
-
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void configure() throws IOException {
 
-        readProperties();
-
         super.configure();
 
         configureHelpers();
-        configureCategories();
         configureInputData();
     }
 
@@ -129,16 +96,6 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void readProperties() {
-
-        senior_race = Boolean.parseBoolean(getPropertyWithDefault(Race.KEY_SENIOR_RACE, "true"));
-        open_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(Race.KEY_OPEN_PRIZE_CATEGORIES, "true"));
-        senior_prize_categories = Boolean.parseBoolean(getPropertyWithDefault(Race.KEY_SENIOR_PRIZE_CATEGORIES, "false"));
-        number_of_open_prizes = Integer.parseInt(getPropertyWithDefault(Race.KEY_NUMBER_OF_OPEN_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_OPEN_PRIZES)));
-        number_of_senior_prizes = Integer.parseInt(getPropertyWithDefault(Race.KEY_NUMBER_OF_SENIOR_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_SENIOR_PRIZES)));
-        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault(Race.KEY_NUMBER_OF_CATEGORY_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
-    }
-
     private void configureHelpers() {
 
         input = new IndividualRaceInput(this);
@@ -149,11 +106,6 @@ public class IndividualRace extends SingleRace {
         output_PDF = new IndividualRaceOutputPDF(this);
 
         prizes = new RacePrizes(this);
-    }
-
-    private void configureCategories() {
-
-//        categories = senior_race ? new SeniorRaceCategories(open_prize_categories, senior_prize_categories, number_of_open_prizes, number_of_senior_prizes, number_of_category_prizes) : new JuniorRaceCategories(number_of_category_prizes);
     }
 
     private void initialiseResults() {
@@ -226,7 +178,7 @@ public class IndividualRace extends SingleRace {
         throw new RuntimeException("unregistered bib number: " + bib_number);
     }
 
-    public Category findCategory(final int bib_number) {
+    public EntryCategory findCategory(final int bib_number) {
 
         return findEntryWithBibNumber(bib_number).runner.category;
     }

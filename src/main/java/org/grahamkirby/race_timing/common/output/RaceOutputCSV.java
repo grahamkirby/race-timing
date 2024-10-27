@@ -18,8 +18,7 @@ package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Categories;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
@@ -27,6 +26,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
 public abstract class RaceOutputCSV extends RaceOutput {
 
@@ -50,14 +51,13 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
     private void printOverallResults(final OutputStreamWriter writer) throws IOException {
 
-        for (final Categories.PrizeCategoryGroup category_group : race.categories.getPrizeCategoryGroups())
-            printCategoryResults(writer, category_group.category_names());
+        for (final Race.PrizeCategoryGroup category_group : race.prize_category_groups)
+            printCategoryResults(writer, category_group.categories());
     }
 
-    private void printCategoryResults(final OutputStreamWriter writer, final List<String> category_names) throws IOException {
+    private void printCategoryResults(final OutputStreamWriter writer, final List<PrizeCategory> category_names) throws IOException {
 
-        final List<Category> category_list = category_names.stream().map(s -> race.categories.getPrizeCategory(s)).toList();
-        final List<RaceResult> results = race.getResultsByCategory(category_list);
+        final List<RaceResult> results = race.getResultsByCategory(category_names);
 
         setPositionStrings(results, race.allowEqualPositions());
         printResults(results, getResultPrinter(writer));
@@ -70,6 +70,6 @@ public abstract class RaceOutputCSV extends RaceOutput {
         for (final Race individual_race : ((SeriesRace)race).getRaces())
             if (individual_race != null)
                 writer.append(",").
-                        append(individual_race.getProperties().getProperty("RACE_NAME_FOR_RESULTS"));
+                        append(individual_race.getProperty(KEY_RACE_NAME_FOR_RESULTS));
     }
 }

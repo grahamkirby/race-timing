@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -44,15 +44,13 @@ public abstract class RaceOutputText extends RaceOutput {
             writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
             writer.append("============================").append("\n\n");
 
-            final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
-
-            for (final Category category : categories)
-                if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
+            for (final PrizeCategory category : race.getPrizeCategories())
+                if (prizesInThisOrLaterCategory(category)) printPrizes(writer, category);
         }
     }
 
     @Override
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
 
         final String header = "Category: " + category.getLongName();
 
@@ -71,7 +69,8 @@ public abstract class RaceOutputText extends RaceOutput {
     public void printNotes() throws IOException {
 
         if (!race.non_title_case_words.isEmpty()) {
-            List<String> words = new ArrayList<>(race.non_title_case_words);
+
+            final List<String> words = new ArrayList<>(race.non_title_case_words);
             words.sort(String::compareTo);
 
             race.getNotes().append("Converted to title case: ");

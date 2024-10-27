@@ -19,9 +19,11 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class RelayRacePrizes extends RacePrizes {
 
@@ -32,24 +34,44 @@ public class RelayRacePrizes extends RacePrizes {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
+
     @Override
     public void allocatePrizes() {
 
-        for (final Category category : race.categories.getPrizeCategories())
+        for (final PrizeCategory category : race.getPrizeCategories())
             race.prize_winners.put(category, new ArrayList<>());
 
         // Allocate first prize in each category first, in decreasing order of category breadth.
         // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
         // prize in open category.
-        allocateFirstPrizes();
 
-        // Now consider other prizes (only available in senior categories).
-        allocateMinorPrizes();
+        final List<PrizeCategory> categories_sorted_by_decreasing_generality = sortByDecreasingGenerality(race.getPrizeCategories());
+
+        allocateFirstPrizes(categories_sorted_by_decreasing_generality);
+
+        // Now consider other prizes.
+        allocateMinorPrizes(categories_sorted_by_decreasing_generality);
     }
 
-    private void allocateFirstPrizes() {
+    private List<PrizeCategory> sortByDecreasingGenerality(final List<PrizeCategory> prize_categories) {
 
-        for (final Category category : race.categories.getPrizeCategories()) {
+        final List<PrizeCategory> result = new ArrayList<>(prize_categories);
+        result.sort((category1, category2) -> {
+
+            if (category1.equals(category2)) return 0;
+
+            final int compare_minimum_age = Integer.compare(category1.getMinimumAge(), category2.getMinimumAge());
+            if (compare_minimum_age != 0) return compare_minimum_age;
+
+            return Integer.compare(GENDER_ORDER.indexOf(category1.getGender()), GENDER_ORDER.indexOf(category2.getGender()));
+        });
+        return result;
+    }
+
+    private void allocateFirstPrizes(final List<PrizeCategory> prize_categories) {
+
+        for (final PrizeCategory category : prize_categories) {
 
             for (final RaceResult result : race.getOverallResults()) {
 
@@ -61,13 +83,13 @@ public class RelayRacePrizes extends RacePrizes {
         }
     }
 
-    private void allocateMinorPrizes() {
+    private void allocateMinorPrizes(final List<PrizeCategory> prize_categories) {
 
-        for (final Category category : race.categories.getPrizeCategories())
+        for (final PrizeCategory category : prize_categories)
             allocateMinorPrizes(category);
     }
 
-    private void allocateMinorPrizes(final Category category) {
+    private void allocateMinorPrizes(final PrizeCategory category) {
 
         int position = 2;
 

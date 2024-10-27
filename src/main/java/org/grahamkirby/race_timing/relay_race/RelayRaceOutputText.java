@@ -20,7 +20,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class RelayRaceOutputText extends RaceOutputText {
     }
 
     @Override
-    public void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
 
         final String header = "Category: " + category.getLongName();
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);

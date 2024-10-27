@@ -16,7 +16,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 public abstract class RaceResult implements Comparable<RaceResult> {
 
@@ -41,5 +41,5 @@ public abstract class RaceResult implements Comparable<RaceResult> {
 
     public abstract boolean sameEntrant(final RaceResult other);
     public abstract boolean completed();
-    public abstract Category getCategory();
+    public abstract EntryCategory getCategory();
 }

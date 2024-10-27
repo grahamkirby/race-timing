@@ -42,7 +42,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
+    protected void printOverallResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         writer.append("<h4>Overall Results</h4>\n");
 
@@ -50,11 +50,10 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
 
         for (int i = 0; i < groups.size(); i++) {
 
-            String group_title = groups.get(i).combined_categories_title();
-            List<PrizeCategory> prizeCategories = groups.get(i).categories();
-            printOverallResultsHTML(writer, group_title, prizeCategories, i == groups.size() - 1);
-
-//            printOverallResultsHTML(writer, groups.get(i).combined_categories_title(), groups.get(i).category_names(), i == groups.size() - 1);
+            final String group_title = groups.get(i).combined_categories_title();
+            final List<PrizeCategory> prize_categories = groups.get(i).categories();
+            
+            printOverallResultsHTML(writer, group_title, prize_categories, i == groups.size() - 1);
         }
     }
 
@@ -95,11 +94,7 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
                                        <th>Club</th>
             """);
 
-        final List<IndividualRace> races = ((SeriesRace) race).getRaces();
-
-        for (int i = 0; i < races.size(); i++)
-            if (races.get(i) != null)
-                writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
+        printHeadings(writer);
 
         writer.append("""
                                        <th>Total</th>
@@ -109,12 +104,19 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
+    private void printHeadings(final OutputStreamWriter writer) throws IOException {
+        
+        final List<IndividualRace> races = ((SeriesRace) race).getRaces();
+
+        for (int i = 0; i < races.size(); i++)
+            if (races.get(i) != null)
+                writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printOverallResultsHTML(final OutputStreamWriter writer, final String combined_categories_title, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
-
-//        final List<Category> category_list = category_names.stream().map(s -> race.categories.getPrizeCategory(s)).toList();
-
+        
         writer.append("<h4>").append(combined_categories_title).append("</h4>\n");
 
         printOverallResultsHeader(writer);
@@ -131,69 +133,35 @@ public class MinitourRaceOutputHTML extends RaceOutputHTML {
             final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve("race" + race_number + ".html"));
 
             try (final OutputStreamWriter writer = new OutputStreamWriter(race_stream)) {
-
-                final List<Race.PrizeCategoryGroup> groups = race.prize_category_groups;
-
-                for (int i = 0; i < groups.size(); i++) {
-
-                    String group_title = groups.get(i).combined_categories_title();
-                    List<PrizeCategory> prizeCategories = groups.get(i).categories();
-                    printRaceCategories(writer, individual_race, group_title, prizeCategories);
-
-//            printOverallResultsHTML(writer, groups.get(i).combined_categories_title(), groups.get(i).category_names(), i == groups.size() - 1);
-                }
-
-
-
-
-//                final Map<String, List<PrizeCategory>> groups = race.prize_category_groups;
-//
-//
-//                List<String> group_titles = groups.keySet().stream().sorted().toList();
-//
-//                for (int i = 0; i < groups.size(); i++) {
-//
-//                    String group_title = group_titles.get(i);
-//                    List<PrizeCategory> prizeCategories = groups.get(group_title);
-//
-//                    printRaceCategories(html_writer, individual_race, group_title, prizeCategories);
-//                }
-
-
-//                printRaceCategories(html_writer, individual_race, "U9", "FU9","MU9");
-//                printRaceCategories(html_writer, individual_race, "U11", "FU11", "MU11");
-//                printRaceCategories(html_writer, individual_race, "U13", "FU13", "MU13");
-//                printRaceCategories(html_writer, individual_race, "U15", "FU15", "MU15");
-//                printRaceCategories(html_writer, individual_race, "U18", "FU18", "MU18");
+                printIndividualRace(writer, individual_race);
             }
         }
     }
 
+    private void printIndividualRace(final OutputStreamWriter writer, final IndividualRace individual_race) throws IOException {
+
+        for (final Race.PrizeCategoryGroup group : race.prize_category_groups)
+            printRaceCategories(writer, individual_race, group.combined_categories_title(), group.categories());
+    }
+
     private void printRaceCategories(final OutputStreamWriter writer, final Race race, final String combined_categories_title, final List<PrizeCategory> prize_categories) throws IOException {
-
-//        final List<Category> category_list = getCategoryList(category_names);
-
+        
         final List<RaceResult> category_results =
                 race.getOverallResults().
                 stream().
-//                        filter(result -> prize_categories.contains(((IndividualRaceResult)result).entry.runner.category)).
-                        filter(result -> prizeCategoriesIncludesEligible(prize_categories, ((IndividualRaceResult)result).entry.runner.category)).
+                filter(result -> prizeCategoriesIncludesEligible(((IndividualRaceResult)result).entry.runner.category, prize_categories)).
                 toList();
 
         printRaceCategories(writer, category_results, combined_categories_title);
     }
 
-    private boolean prizeCategoriesIncludesEligible(List<PrizeCategory> prizeCategories, EntryCategory category) {
-        for (PrizeCategory prizeCategory : prizeCategories) {
-            if (race.isEligibleFor(category, prizeCategory)) return true;
-        }
+    private boolean prizeCategoriesIncludesEligible(final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
+
+        for (PrizeCategory prizeCategory : prize_categories) 
+            if (race.isEligibleFor(entry_category, prizeCategory)) return true;
+        
         return false;
     }
-
-//    private List<Category> getCategoryList(final String... category_names) {
-
-//        return Arrays.stream(category_names).map(s -> race.categories.getPrizeCategory(s)).toList();
-//    }
 
     private void printRaceCategories(final OutputStreamWriter writer, final List<RaceResult> category_results, final String combined_categories_title) throws IOException {
 

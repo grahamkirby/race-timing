@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.common;
 
 import com.itextpdf.io.font.constants.StandardFonts;
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutput;
@@ -34,11 +33,12 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
 
-    // TODO define prize numbers in config file - test
     // TODO define report category order in config file - test
     // TODO test where open category winners are in various age categories
 
     public record PrizeCategoryGroup(String combined_categories_title, List<PrizeCategory> categories){}
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
     public static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
@@ -51,17 +51,14 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final String KEY_ENTRIES_FILENAME = "ENTRIES_FILENAME";
-    public static final String KEY_RAW_RESULTS_FILENAME = "RAW_RESULTS_FILENAME";
-    public static final String KEY_PAPER_RESULTS_FILENAME = "PAPER_RESULTS_FILENAME";
-    public static final String KEY_ANNOTATIONS_FILENAME = "ANNOTATIONS_FILENAME";
+    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
+    public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
+    public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
 
-    public static final String KEY_SENIOR_RACE = "SENIOR_RACE";
-    public static final String KEY_OPEN_PRIZE_CATEGORIES = "OPEN_PRIZE_CATEGORIES";
-    public static final String KEY_SENIOR_PRIZE_CATEGORIES = "SENIOR_PRIZE_CATEGORIES";
-    public static final String KEY_NUMBER_OF_OPEN_PRIZES = "NUMBER_OF_OPEN_PRIZES";
-    public static final String KEY_NUMBER_OF_SENIOR_PRIZES = "NUMBER_OF_SENIOR_PRIZES";
-    public static final String KEY_NUMBER_OF_CATEGORY_PRIZES = "NUMBER_OF_CATEGORY_PRIZES";
+    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
+    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
+
     public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
 
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
@@ -75,7 +72,6 @@ public abstract class Race {
     public static final String KEY_SELF_TIMED = "SELF_TIMED";
     public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
     public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
-    public static final String KEY_CATEGORY_PRIZES = "CATEGORY_PRIZES";
 
     public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
@@ -84,25 +80,23 @@ public abstract class Race {
     public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
 
     public static final String KEY_START_OFFSET = "START_OFFSET";
-    public static final String KEY_SENIOR_PRIZES = "SENIOR_PRIZES";
     public static final String KEY_RACES = "RACES";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final String DEFAULT_ENTRY_MAP_PATH = "src/main/resources/configuration/default_entry_map.csv";
-    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "src/main/resources/configuration/html_entities.csv";
-    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "src/main/resources/configuration/club_names.csv";
-    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "src/main/resources/configuration/capitalisation_stop_words.csv";
+    private static final String DEFAULT_ENTRY_MAP_PATH = "/src/main/resources/configuration/default_entry_map.csv";
+    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "/src/main/resources/configuration/html_entities.csv";
+    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "/src/main/resources/configuration/club_names.csv";
+    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "/src/main/resources/configuration/capitalisation_stop_words.csv";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final Path working_directory_path;
+    private final Path config_file_path;
     private final Properties properties;
 
-    public final Map<Category, List<RaceResult>> prize_winners;
+    public final Map<PrizeCategory, List<RaceResult>> prize_winners;
     protected final List<RaceResult> overall_results;
 
-//    public Categories categories;
     protected RacePrizes prizes;
     protected StringBuilder notes;
 
@@ -119,14 +113,14 @@ public abstract class Race {
     public String entry_column_map_string;
 
     public List<EntryCategory> entry_categories;
-    public List<PrizeCategory> prize_categories; // TODO infer from groups
+//    public List<PrizeCategory> prize_categories; // TODO infer from groups
     public List<PrizeCategoryGroup> prize_category_groups;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Race(final Path config_file_path) throws IOException {
 
-        working_directory_path = config_file_path.getParent().getParent();
+        this.config_file_path = config_file_path;
         properties = loadProperties(config_file_path);
 
         prize_winners = new HashMap<>();
@@ -140,53 +134,86 @@ public abstract class Race {
 
     public abstract void processResults() throws IOException;
     public abstract boolean allowEqualPositions();
-    public abstract Path getEntryCategoriesPath();
-    public abstract Path getPrizeCategoriesPath();
-    public abstract boolean isEligibleFor(EntryCategory entry_category, PrizeCategory prize_category);
+    public abstract boolean isEligibleForGender(EntryCategory entry_category, PrizeCategory prize_category);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public final boolean isEligibleFor(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        return isEligibleForGender(entry_category, prize_category) && isEligibleForAge(entry_category, prize_category);
+    }
+
+    public boolean isEligibleForAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        return entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
+                entry_category.getMaximumAge() <= prize_category.getMaximumAge();
+    }
+
+    public Path getPath(final String path) {
+
+        if (path.startsWith("/")) return getPathRelativeToProjectRoot(path);
+        else return getPathRelativeToRaceConfigFile(path);
+    }
+
+    public static Path getPathRelativeToProjectRoot(final String path) {
+
+        return Paths.get(path.substring(1));
+    }
+
+    public Path getPathRelativeToRaceConfigFile(final String path) {
+
+        return config_file_path.getParent().resolve(path);
+    }
+
+    public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
+
+        return getPathRelativeToProjectRoot("/src/test/resources/" + individual_test_resource_root);
+    }
 
     public void configure() throws IOException {
 
         configureNormalisation();
         configureImportCategoryMap();
-
-        entry_categories = Files.readAllLines(getEntryCategoriesPath()).stream().map(EntryCategory::new).toList();
-        prize_categories = Files.readAllLines(getPrizeCategoriesPath()).stream().map(PrizeCategory::new).toList();
-        prize_category_groups = getPrizeCategoryGroups(getPrizeCategoriesPath());
+        configureCategories();
     }
 
-    private List<PrizeCategoryGroup> getPrizeCategoryGroups(Path prize_categories_path) throws IOException {
+    private void configureCategories() throws IOException {
 
-        Map<String, List<PrizeCategory>> map = new TreeMap<>();
+        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
+        prize_category_groups = getPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+    }
 
-        for (String line : Files.readAllLines(prize_categories_path)) {
+    public List<PrizeCategory> getPrizeCategories() {
 
-            String[] elements = line.split(",");
-            String category_short_name = elements[1];
-            String group_name = elements[5];
-
-            if (!map.containsKey(group_name)) {
-
-                map.put(group_name, new ArrayList<>());
-            }
-
-            map.get(group_name).add(getPrizeCategory(category_short_name));
+        List<PrizeCategory> prize_categories = new ArrayList<>();
+        for (final PrizeCategoryGroup group : prize_category_groups) {
+            prize_categories.addAll(group.categories);
         }
+        return prize_categories;
+    }
+
+    private List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
 
         List<PrizeCategoryGroup> groups = new ArrayList<>();
 
-        for (String group_name : map.keySet()) {
-            groups.add(new PrizeCategoryGroup(group_name, map.get(group_name)));
+        for (final String line : Files.readAllLines(prize_categories_path)) {
+
+            final String group_name = line.split(",")[5];
+            
+            if (groups.isEmpty())
+                groups.add(new PrizeCategoryGroup(group_name, new ArrayList<>()));
+
+            PrizeCategoryGroup group = groups.getLast();
+
+            if (!group.combined_categories_title.equals(group_name)) {
+                group = new PrizeCategoryGroup(group_name, new ArrayList<>());
+                groups.add(group);
+            }
+
+            group.categories.add(new PrizeCategory(line));
         }
 
         return groups;
-    }
-
-    private PrizeCategory getPrizeCategory(String category_short_name) {
-
-        return prize_categories.stream().filter(category -> category.getShortName().equals(category_short_name)).findFirst().orElseThrow(
-                () -> new RuntimeException("unknown category: " + category_short_name));
     }
 
     public List<RaceResult> getOverallResults() {
@@ -201,12 +228,14 @@ public abstract class Race {
         prizes.allocatePrizes();
     }
 
-    public Path getWorkingDirectoryPath() {
-        return working_directory_path;
+    public String getProperty(final String key) {
+        return properties.getProperty(key);
     }
 
-    public Properties getProperties() {
-        return properties;
+    public String getProperty(final String property_key, final String default_value) {
+
+        final String value = properties.getProperty(property_key);
+        return value == null || value.isBlank() ? default_value : value;
     }
 
     public StringBuilder getNotes() {
@@ -217,17 +246,6 @@ public abstract class Race {
 
         return entry_categories.stream().filter(category -> category.getShortName().equals(short_name)).findFirst().
                 orElseThrow(() -> new RuntimeException("Category not found: " + short_name));
-
-//        for (final EntryCategory category : entry_categories)
-//            if (category.getShortName().equals(short_name)) return category;
-//
-//        throw new RuntimeException("Category not found: " + short_name);
-    }
-
-    public String getPropertyWithDefault(final String property_key, final String default_value) {
-
-        final String value = properties.getProperty(property_key);
-        return value == null || value.isBlank() ? default_value : value;
     }
 
     public String mapCategory(final String category) {
@@ -248,30 +266,30 @@ public abstract class Race {
         }
     }
 
-    private void configureNormalisation() throws IOException {
+    protected void configureNormalisation() throws IOException {
 
         normalisation = new Normalisation(this);
 
         normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
         normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
-        capitalisation_stop_words = Files.readAllLines(Paths.get(getPropertyWithDefault(KEY_CAPITALISATION_STOP_WORDS, DEFAULT_CAPITALISATION_STOP_WORDS_PATH)));
+        capitalisation_stop_words = Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS, DEFAULT_CAPITALISATION_STOP_WORDS_PATH)));
         non_title_case_words = new HashSet<>();
     }
 
-    private void configureImportCategoryMap() throws IOException {
+    protected void configureImportCategoryMap() throws IOException {
 
         entry_map = loadImportCategoryMap(KEY_ENTRY_MAP, DEFAULT_ENTRY_MAP_PATH);
     }
 
     private Map<String, String> loadImportCategoryMap(final String path_key, final String default_path) throws IOException {
 
-        final String path = getPropertyWithDefault(path_key, default_path);
+        final String path = getProperty(path_key, default_path);
 
         final Map<String, String> map = new HashMap<>();
 
         if (path != null) {
 
-            final List<String> lines = Files.readAllLines(Paths.get(path));
+            final List<String> lines = Files.readAllLines(getPath(path));
 
             int index = 0;
             entry_column_map_string = lines.get(index);
@@ -292,16 +310,16 @@ public abstract class Race {
 
     protected Map<String, String> loadNormalisationMap(final String path_key, final String default_path) throws IOException {
 
-        return loadMap(getPropertyWithDefault(path_key, default_path));
+        return loadMap(getProperty(path_key, default_path));
     }
 
-    private static Map<String, String> loadMap(final String path_string) throws IOException {
+    private Map<String, String> loadMap(final String path_string) throws IOException {
 
         final Map<String, String> map = new HashMap<>();
 
         if (path_string != null) {
 
-            for (final String line : Files.readAllLines(Paths.get(path_string))) {
+            for (final String line : Files.readAllLines(getPath(path_string))) {
 
                 final String[] parts = line.split(",");
                 map.put(parts[0], parts[1]);

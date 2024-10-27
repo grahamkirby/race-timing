@@ -23,17 +23,15 @@ import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_ANNOTATIONS_FILENAME;
-import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAPER_RESULTS_FILENAME;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_ANNOTATIONS_PATH;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAPER_RESULTS_PATH;
 
 public class RelayRaceInput extends SingleRaceInput {
 
-    private Path paper_results_path, annotations_path;
-    private String paper_results_filename, annotations_filename;
+    private String paper_results_path, annotations_path;
     private int number_of_raw_results;
 
     public RelayRaceInput(final Race race) {
@@ -45,17 +43,8 @@ public class RelayRaceInput extends SingleRaceInput {
 
         super.readProperties();
 
-        paper_results_filename = race.getProperties().getProperty(KEY_PAPER_RESULTS_FILENAME);
-        annotations_filename = race.getProperties().getProperty(KEY_ANNOTATIONS_FILENAME);
-    }
-
-    @Override
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-
-        paper_results_path = paper_results_filename != null ? input_directory_path.resolve(paper_results_filename) : null;
-        annotations_path = annotations_filename != null ? input_directory_path.resolve(annotations_filename): null;
+        paper_results_path = race.getProperty(KEY_PAPER_RESULTS_PATH);
+        annotations_path = race.getProperty(KEY_ANNOTATIONS_PATH);
     }
 
     @Override
@@ -81,11 +70,11 @@ public class RelayRaceInput extends SingleRaceInput {
     @Override
     public List<RawResult> loadRawResults() throws IOException {
 
-        final List<RawResult> raw_results = loadRawResults(raw_results_path);
+        final List<RawResult> raw_results = loadRawResults(race.getPath(raw_results_path));
         number_of_raw_results = raw_results.size();
 
         if (paper_results_path != null)
-            raw_results.addAll(loadRawResults(paper_results_path));
+            raw_results.addAll(loadRawResults(race.getPath(paper_results_path)));
 
         return raw_results;
     }
@@ -104,7 +93,7 @@ public class RelayRaceInput extends SingleRaceInput {
 
         if (annotations_path != null) {
 
-            final List<String> lines = Files.readAllLines(annotations_path);
+            final List<String> lines = Files.readAllLines(race.getPath(annotations_path));
 
             // Skip header line.
             for (int line_index = 1; line_index < lines.size(); line_index++) {

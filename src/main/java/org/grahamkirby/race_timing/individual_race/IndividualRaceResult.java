@@ -16,9 +16,9 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.time.Duration;
 
@@ -60,8 +60,12 @@ public class IndividualRaceResult extends RaceResult {
         return !DNF;
     }
 
+    public boolean dnf() {
+        return DNF;
+    }
+
     @Override
-    public Category getCategory() {
+    public EntryCategory getCategory() {
         return entry.runner.category;
     }
 
@@ -84,10 +88,6 @@ public class IndividualRaceResult extends RaceResult {
         final int other_recorded_position = individual_race.getRecordedPosition(other.entry.bib_number);
 
         return Integer.compare(this_recorded_position, other_recorded_position);
-    }
-
-    public boolean dnf() {
-        return DNF;
     }
 
     public static int compare(final RaceResult r1, final RaceResult r2) {

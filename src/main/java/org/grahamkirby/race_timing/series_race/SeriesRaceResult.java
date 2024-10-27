@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
@@ -39,7 +39,7 @@ public abstract class SeriesRaceResult extends RaceResult {
     }
 
     @Override
-    public Category getCategory() {
+    public EntryCategory getCategory() {
         return runner.category;
     }
 

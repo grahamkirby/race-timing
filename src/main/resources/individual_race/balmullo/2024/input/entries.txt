@@ -1,5 +1,5 @@
 1	David  Aitken 	Dundee Road Runners	M50
-2	Jude Alcock	Falkland Trail Runners	F70+
+2	Jude Alcock	Falkland Trail Runners	F70
 3	Simon Anetts	Fife AC	MS
 4	Michael Atkinson	Kinross Road Runners	MS
 5	Twig Barber	Falkland Trail Runners	FS
@@ -21,7 +21,7 @@
 22	Keith Gelly	Dundee Road Runners 	M50
 23	Amy Gilligan	Dundee Road Runners	FS
 24	Tom Gough	Fife AC	MS
-25	Jeff Gunnell		M70+
+25	Jeff Gunnell		M70
 26	Rolf  Gunnemann 	Kirkcaldy Wizards	MS
 27	James Hall	Fife AC	M40
 28	Russell Hall	Fife AC	MS
@@ -42,7 +42,7 @@
 43	Vince MacPherson	Fife AC	M40
 44	Allison  MacPherson 	Falkland Trail Runners	F40
 45	Margaret Martin	Fife AC	F60
-46	Tony Martin	Falkland Trail Runners	M70+
+46	Tony Martin	Falkland Trail Runners	M70
 47	Ross McArthur	Falkland Trail Runners 	MS
 48	John Mcintyre Snr	Fife AC 	M50
 49	Phil McLaughlin 	Falkland Trail Runners	M50
@@ -53,7 +53,7 @@
 54	Mike Murdoch	Falkland Trail Runners	M40
 55	Gillian  Murdoch 	Falkland Trail Runners	F40
 56	Stuart Murray		MS
-57	Eric Nachman	Falkland Trail Runners	M70+
+57	Eric Nachman	Falkland Trail Runners	M70
 58	Matt Newton	Kinross Road Runners 	M50
 59	Jane O'Donnell 	Dundee Road Runners 	F40
 60	Patrick  O’Hare	Fife AC 	MS
@@ -70,20 +70,20 @@
 71	Amy Tait	Falkland Trail Runners	FS
 72	Andy  Thom		M60
 73	Gwyneth  Thom	Falkland Trail Runners 	F50
-74	Iain Thomson	Strathearn Harriers	M70+
+74	Iain Thomson	Strathearn Harriers	M70
 75	Robert Thornton		M60
 76	Ruan  Van Rensburg	Fife AC 	MS
 77	Iain Wallace	PH Racing 	M50
 78	Nicola  Watson	Strathearn Harriers	F50
 79	Dominic Williams	Dundee Road Runners	MS
-80	John Wilmot	Falkland Trail Runners	M70+
+80	John Wilmot	Falkland Trail Runners	M70
 81	Chris Wilson		M40
 82	Simone Young	Kinross Road Runners	F50
 83	Zak Yule	Falkland Trail Runners	M50
 87	Huw Watkins	Unatt.	MS
 86	Jock Dryburgh	RunSum Running Kirkcaldy	M60
 85	Barry Swan	Run SumRunning Kirkcaldy	M50
-84	Jocelyn Scott	Fife AC	F70+
+84	Jocelyn Scott	Fife AC	F70
 88	Michael Royden	Dundee Road Runners	M50
 89	Fiona Callaghan	Dundee Road Runners	FS
 90	Ron Milne	Forfar Road Runners	M60

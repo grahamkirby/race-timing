@@ -25,79 +25,75 @@ import java.nio.file.Path;
 
 public class IndividualRaceTest extends RaceTest {
 
-    @Override
-    protected String getResourcesPath() {
-        return "individual_race/";
-    }
-
-
-    @Test
-    public void deadHeats() throws Exception {
-        testExpectedCompletion("dead_heats");
-    }
-
-    @Test
-    public void DNFs() throws Exception {
-        testExpectedCompletion("dnfs");
-    }
-
-    @Test
-    public void duplicateBibNumber() throws Exception {
-        testExpectedException("duplicate_bib_number", "duplicate bib number: 3");
-    }
-
-    @Test
-    public void duplicateRunner() throws Exception {
-        testExpectedException("duplicate_runner", "duplicate entry: John Smith, Fife AC");
-    }
-
-    @Test
-    public void duplicateRunnerName() throws Exception {
-        testExpectedCompletion("duplicate_runner_name");
-    }
-
-    @Test
-    public void illegalCategory() throws Exception {
-        testExpectedException("illegal_category", "illegal category for runner: 92");
-    }
-
-    @Test
-    public void illegalRawTime() throws Exception {
-        testExpectedException("illegal_raw_time", "illegal time: XXX");
-    }
-
-    @Test
-    public void multipleTimeFormats() throws Exception {
-        testExpectedCompletion("multiple_time_formats");
-    }
-
-    @Test
-    public void resultsOutOfOrder() throws Exception {
-        testExpectedException("results_out_of_order", "result 15 out of order");
-    }
-
-    @Test
-    public void seniorNotOpenCategory() throws Exception {
-        testExpectedCompletion("senior_not_open_category");
-    }
-
-    @Test
-    public void unregisteredRunner() throws Exception {
-        testExpectedException("unregistered_runner", "unregistered bib number: 4");
-    }
-
-    @Test
-    public void alternativeClubNameNormalisation() throws Exception {
-        testExpectedCompletion("alternative_club_name_normalisation");
-    }
-
-    @Test
-    public void alternativeHtmlEntityNormalisation() throws Exception {
-        testExpectedCompletion("alternative_html_entity_normalisation");
-    }
+    // TODO test different prize report order.
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
         return new IndividualRace(config_file_path);
+    }
+
+    @Test
+    public void deadHeats() throws Exception {
+        testExpectedCompletion("individual_race/dead_heats");
+    }
+
+    @Test
+    public void DNFs() throws Exception {
+        testExpectedCompletion("individual_race/dnfs");
+    }
+
+    @Test
+    public void duplicateBibNumber() throws Exception {
+        testExpectedException("individual_race/duplicate_bib_number", "duplicate bib number: 3");
+    }
+
+    @Test
+    public void duplicateRunner() throws Exception {
+        testExpectedException("individual_race/duplicate_runner", "duplicate entry: John Smith, Fife AC");
+    }
+
+    @Test
+    public void duplicateRunnerName() throws Exception {
+        testExpectedCompletion("individual_race/duplicate_runner_name");
+    }
+
+    @Test
+    public void illegalCategory() throws Exception {
+        testExpectedException("individual_race/illegal_category", "illegal category for runner: 92");
+    }
+
+    @Test
+    public void illegalRawTime() throws Exception {
+        testExpectedException("individual_race/illegal_raw_time", "illegal time: XXX");
+    }
+
+    @Test
+    public void multipleTimeFormats() throws Exception {
+        testExpectedCompletion("individual_race/multiple_time_formats");
+    }
+
+    @Test
+    public void resultsOutOfOrder() throws Exception {
+        testExpectedException("individual_race/results_out_of_order", "result 15 out of order");
+    }
+
+    @Test
+    public void seniorNotOpenCategory() throws Exception {
+        testExpectedCompletion("individual_race/senior_not_open_category");
+    }
+
+    @Test
+    public void unregisteredRunner() throws Exception {
+        testExpectedException("individual_race/unregistered_runner", "unregistered bib number: 4");
+    }
+
+    @Test
+    public void alternativeClubNameNormalisation() throws Exception {
+        testExpectedCompletion("individual_race/alternative_club_name_normalisation");
+    }
+
+    @Test
+    public void alternativeHtmlEntityNormalisation() throws Exception {
+        testExpectedCompletion("individual_race/alternative_html_entity_normalisation");
     }
 }

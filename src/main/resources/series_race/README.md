@@ -9,8 +9,8 @@ This package supports series races composed of multiple individual races, in par
 
 1. Create a new copy of the directory [```src/main/resources/individual_race/sample_config```](https://github.com/grahamkirby/race-timing/tree/main/src/main/resources/individual_race/sample_config).
 2. In the new file ```input/config.txt```, update properties as required:
-   2. ENTRIES_FILENAME: name of the file containing the race entries
-   3. RAW_RESULTS_FILENAME: name of the file containing the recorded times
+   2. ENTRIES_PATH: name of the file containing the race entries
+   3. RAW_RESULTS_PATH: name of the file containing the recorded times
    4. YEAR: year of race
    7. RACE_NAME_FOR_RESULTS: race title
    8. RACE_NAME_FOR_FILENAMES: filename root for output files

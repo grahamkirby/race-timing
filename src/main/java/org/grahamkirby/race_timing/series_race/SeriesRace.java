@@ -28,11 +28,9 @@ import java.util.*;
 
 public abstract class SeriesRace extends Race {
 
-    public static final int DEFAULT_NUMBER_OF_CATEGORY_PRIZES = 3;
     protected List<IndividualRace> races;
     protected List<Runner> combined_runners;
 
-    protected int number_of_category_prizes;
     protected int minimum_number_of_races;
 
     public SeriesRace(final Path config_file_path) throws IOException {
@@ -49,7 +47,6 @@ public abstract class SeriesRace extends Race {
         super.configure();
 
         configureHelpers();
-        configureCategories();
         configureInputData();
     }
 
@@ -87,10 +84,7 @@ public abstract class SeriesRace extends Race {
         races = ((SeriesRaceInput)input).loadRaces();
     }
 
-    protected void readProperties() {
-
-        number_of_category_prizes = Integer.parseInt(getPropertyWithDefault(KEY_CATEGORY_PRIZES, String.valueOf(DEFAULT_NUMBER_OF_CATEGORY_PRIZES)));
-    }
+    protected abstract void readProperties();
 
     private void initialiseResults() {
 
@@ -127,7 +121,6 @@ public abstract class SeriesRace extends Race {
     protected abstract RaceResult getOverallResult(final Runner runner);
 
     protected abstract void configureHelpers();
-    protected abstract void configureCategories();
 
     protected abstract void printPrizes() throws IOException;
     protected abstract void printCombined() throws IOException;

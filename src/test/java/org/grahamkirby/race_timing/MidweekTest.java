@@ -30,18 +30,13 @@ public class MidweekTest extends RaceTest {
         return new MidweekRace(config_file_path);
     }
 
-    @Override
-    protected String getResourcesPath() {
-        return "series_race/";
-    }
-
     @Test
     public void deadHeats() throws Exception {
-        testExpectedCompletion("midweek/dead_heats");
+        testExpectedCompletion("series_race/midweek/dead_heats");
     }
 
     @Test
     public void duplicateRunnerName() throws Exception {
-        testExpectedCompletion("midweek/duplicate_runner_name");
+        testExpectedCompletion("series_race/midweek/duplicate_runner_name");
     }
 }

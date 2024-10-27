@@ -59,10 +59,10 @@ public class IndividualRaceEntry extends RaceEntry {
 
     private List<String> mapElements(final List<String> elements, final String entry_column_map_string) {
 
-        // Expected format of map string: "1 3-2 4 5",
+        // Expected format of map string: "1,3-2,4,5",
         // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
 
-        return Arrays.stream(entry_column_map_string.split(" ")).map(s -> getMappedElement(elements, s)).toList();
+        return Arrays.stream(entry_column_map_string.split(",")).map(s -> getMappedElement(elements, s)).toList();
     }
 
     private static String getMappedElement(final List<String> elements, final String element_combination_map) {
