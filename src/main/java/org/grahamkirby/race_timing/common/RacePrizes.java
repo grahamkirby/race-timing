@@ -16,7 +16,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +35,13 @@ public class RacePrizes {
 
     public void allocatePrizes() {
 
-        for (final Category category : race.categories.getPrizeCategories())
+        for (final PrizeCategory category : race.getPrizeCategories())
             race.prize_winners.put(category, getPrizeWinners(category));
     }
 
-    protected boolean prizeWinner(final RaceResult result, final Category category) {
+    protected boolean prizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        return result.completed() && race.categories.isEligibleFor(category, result.getCategory()) && notYetWonPrize(result);
+        return result.completed() && race.isEligibleFor(result.getCategory(), category) && notYetWonPrize(result);
     }
 
     private boolean notYetWonPrize(final RaceResult potential_winner) {
@@ -54,7 +54,7 @@ public class RacePrizes {
         return true;
     }
 
-    private List<RaceResult> getPrizeWinners(final Category category) {
+    private List<RaceResult> getPrizeWinners(final PrizeCategory category) {
 
         final List<RaceResult> prize_winners = new ArrayList<>();
 

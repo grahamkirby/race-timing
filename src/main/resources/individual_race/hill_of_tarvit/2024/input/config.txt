@@ -1,5 +1,11 @@
-ENTRIES_FILENAME = entries.txt
-RAW_RESULTS_FILENAME = rawtimes.txt
 YEAR = 2024
 RACE_NAME_FOR_RESULTS = Hill of Tarvit
 RACE_NAME_FOR_FILENAMES = hill_of_tarvit
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv

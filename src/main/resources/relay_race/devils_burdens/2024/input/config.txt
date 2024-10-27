@@ -1,8 +1,14 @@
+YEAR = 2024
+NUMBER_OF_LEGS = 4
+PAIRED_LEGS = 2,3
+RACE_NAME_FOR_RESULTS = Devil's Burdens
+RACE_NAME_FOR_FILENAMES = devils_burdens
+
 # Name of file containing race entries.
-ENTRIES_FILENAME = entries.txt
+ENTRIES_PATH = entries.txt
 
 # Name of file containing raw results.
-RAW_RESULTS_FILENAME = times_original.txt
+RAW_RESULTS_PATH = times_original.txt
 
 # Name of file containing results from paper records (optional).
 PAPER_RESULTS_FILENAME = times_additional_from_paper.txt
@@ -10,11 +16,9 @@ PAPER_RESULTS_FILENAME = times_additional_from_paper.txt
 # Name of file containing additional annotations (optional).
 ANNOTATIONS_FILENAME = times_annotations.txt
 
-YEAR = 2024
-NUMBER_OF_LEGS = 4
-PAIRED_LEGS = 2,3
-RACE_NAME_FOR_RESULTS = Devil's Burdens
-RACE_NAME_FOR_FILENAMES = devils_burdens
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_relay.csv
+CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_relay.csv
 
 # Elapsed duration from start of leg 1 to mass start time for each leg.
 # 23:59:59 indicates no mass start.

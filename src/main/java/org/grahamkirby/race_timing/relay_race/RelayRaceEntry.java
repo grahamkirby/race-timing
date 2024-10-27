@@ -18,7 +18,6 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.List;

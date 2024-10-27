@@ -1,5 +1,5 @@
 101	David Aitken	Dundee Road Runners	M50
-102	Jude Alcock	Falkland Trail Runners	F70+
+102	Jude Alcock	Falkland Trail Runners	F70
 103	Michael Atkinson	Kinross Road Runners	MS
 104	June Balgowan	Falkland Trail Runners	F50
 105	Andy Ballantyne	Kirkcaldy Wizards	M50
@@ -44,7 +44,7 @@
 145	Keren Macpherson	Fife AC	F50
 146	Ann Malcolm	Kinross Road Runners	F60
 148	Margaret Martin	Fife AC	F60
-149	Tony Martin	Falkland Trail Runners	M70+
+149	Tony Martin	Falkland Trail Runners	M70
 150	Ross McArthur	Falkland Trail Runners	MS
 151	Phil McLaughlin	Falkland Trail Runners	M40
 152	Alison McNeilly	Dundee Road Runners	F40
@@ -55,7 +55,7 @@
 157	Mike Murdoch	Falkland Trail Runners	M40
 158	Cara Murdoch	Kirkcaldy Wizards	F40
 159	Stuart Murray	Unatt.	MS
-160	Eric Nachman	Falkland Trail Runners	M70+
+160	Eric Nachman	Falkland Trail Runners	M70
 161	Dorota Park	Kirkcaldy Wizards	F50
 162	Chris Payne	Kirkcaldy Wizards	MS
 163	Alex Priestley	Falkland Trail Runners	MS
@@ -109,7 +109,7 @@
 66	Rhonda Manning	Dundee Hawkhill Harriers	F50
 82	Lee Cessford	Falkland Trail Runners	M40
 83	Jane O'Donnell	Dundee Road Runners	F40
-84	Bill Gillan	Recreational Running	M70+
+84	Bill Gillan	Recreational Running	M70
 86	Scott Hutchison	STAART	MS
 87	Sean Kenyon	Unatt.	M50
 89	Amy Westwell	Falkland Trail Runners	FS

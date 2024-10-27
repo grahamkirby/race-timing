@@ -34,7 +34,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(RaceResult o) {
+    public int comparePerformanceTo(final RaceResult o) {
 
         // Negate so that a higher score gives an earlier ranking.
         return -Integer.compare(totalScore(), ((MidweekRaceResult) o).totalScore());

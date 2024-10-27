@@ -74,6 +74,19 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                                        <th>Club</th>
             """);
 
+        printHeadings(writer);
+
+        writer.append("""
+                                       <th>Total</th>
+                                       <th>Completed</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+            """);
+    }
+
+    private void printHeadings(final OutputStreamWriter writer) throws IOException {
+
         final List<IndividualRace> races = ((MidweekRace)race).getRaces();
 
         for (int i = 0; i < races.size(); i++) {
@@ -83,14 +96,6 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                         append("</th>\n");
             }
         }
-
-        writer.append("""
-                                       <th>Total</th>
-                                       <th>Completed</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

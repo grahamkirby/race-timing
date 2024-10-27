@@ -27,42 +27,37 @@ import java.nio.file.Path;
 public class ActualRacesMidweekTest extends RaceTest {
 
     @Override
-    protected String getResourcesPath() {
-        return "actual_races/series_race/midweek/";
-    }
-
-    @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
         return new MidweekRace(config_file_path);
     }
 
     @Test
     public void midweek2023Completed1() throws Exception {
-        testExpectedCompletion("2023/completed_1");
+        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_1");
     }
 
     @Test
     public void midweek2023Completed2() throws Exception {
-        testExpectedCompletion("2023/completed_2");
+        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_2");
     }
 
     @Test
     public void midweek2023Completed3() throws Exception {
-        testExpectedCompletion("2023/completed_3");
+        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_3");
     }
 
     @Test
     public void midweek2023Completed4() throws Exception {
-        testExpectedCompletion("2023/completed_4");
+        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_4");
     }
 
     @Test
     public void midweek2023Completed5() throws Exception {
-        testExpectedCompletion("2023/completed_5");
+        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_5");
     }
 
     @Test
     public void midweek2024() throws Exception {
-        testExpectedCompletion("2024");
+        testExpectedCompletion("actual_races/series_race/midweek/2024");
     }
 }

@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -73,7 +73,7 @@ public abstract class RaceOutput {
         prizes_filename = race_name_for_filenames + "_prizes_" + year;
         notes_filename = "processing_notes";
 
-        output_directory_path = race.getWorkingDirectoryPath().resolve("output");
+        output_directory_path = race.getPath("../output");
     }
 
     private void configure() {
@@ -84,10 +84,10 @@ public abstract class RaceOutput {
 
     private void readProperties() {
 
-        year = race.getProperties().getProperty("YEAR");
+        year = race.getProperty("YEAR");
 
-        race_name_for_results = race.getProperties().getProperty(KEY_RACE_NAME_FOR_RESULTS);
-        race_name_for_filenames = race.getProperties().getProperty(KEY_RACE_NAME_FOR_FILENAMES);
+        race_name_for_results = race.getProperty(KEY_RACE_NAME_FOR_RESULTS);
+        race_name_for_filenames = race.getProperty(KEY_RACE_NAME_FOR_FILENAMES);
     }
 
     protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
@@ -113,20 +113,33 @@ public abstract class RaceOutput {
         }
     }
 
-    protected boolean prizesInThisOrLaterCategory(final Category category, final List<Category> categories) {
+    protected boolean prizesInThisOrLaterGroup(final Race.PrizeCategoryGroup group) {
 
-        for (final Category c : categories.reversed()) {
-            if (!race.prize_winners.containsKey(c) || !race.prize_winners.get(c).isEmpty()) return true;
-            if (category.equals(c) && !prizesInOtherCategorySameAge(category, categories)) return false;
+        for (final Race.PrizeCategoryGroup g : race.prize_category_groups.reversed()) {
+
+            for (final PrizeCategory c : g.categories()) {
+                if (prizesInThisOrLaterCategory(c)) return true;
+            }
+            if (g.combined_categories_title().equals(group.combined_categories_title())) return false;
         }
         return false;
     }
 
-    private boolean prizesInOtherCategorySameAge(final Category category, final List<Category> categories) {
+    protected boolean prizesInThisOrLaterCategory(final PrizeCategory category) {
+
+        for (final PrizeCategory c : race.getPrizeCategories().reversed()) {
+
+            if (!race.prize_winners.get(c).isEmpty()) return true;
+            if (category.equals(c) && !prizesInOtherCategorySameAge(category)) return false;
+        }
+        return false;
+    }
+
+    private boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
 
         final int age = category.getMinimumAge();
 
-        for (final Category c : categories) {
+        for (final PrizeCategory c : race.getPrizeCategories()) {
             if (!c.equals(category) && age == c.getMinimumAge() && !race.prize_winners.get(c).isEmpty()) return true;
         }
 
@@ -168,7 +181,7 @@ public abstract class RaceOutput {
     protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
-    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    protected void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
         throw new UnsupportedOperationException();
     }
 

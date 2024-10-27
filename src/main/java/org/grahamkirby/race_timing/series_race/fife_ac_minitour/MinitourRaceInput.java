@@ -36,6 +36,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // TODO read from config file
     private static final List<String> SECOND_WAVE_CATEGORY_NAMES = Arrays.asList("FU9", "MU9", "FU11", "MU11");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +75,14 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private List<Duration> readWaveStartOffsets() {
 
-        final String[] offset_strings = race.getPropertyWithDefault(KEY_WAVE_START_OFFSETS, "").split(",", -1);
+        final String[] offset_strings = race.getProperty(KEY_WAVE_START_OFFSETS, "").split(",", -1);
 
         return extractConfigFromPropertyStrings(offset_strings, Normalisation::parseTime);
     }
 
     private List<SelfTimedRun> readSelfTimedRuns() {
 
-        final String[] self_timed_strings = race.getPropertyWithDefault(KEY_SELF_TIMED,"").split(",", -1);
+        final String[] self_timed_strings = race.getProperty(KEY_SELF_TIMED,"").split(",", -1);
 
         final Function<String, SelfTimedRun> extract_run_function = s -> {
 
@@ -101,7 +102,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private void readTimeTrialProperties() {
 
-        final String[] parts = race.getProperties().getProperty(KEY_TIME_TRIAL).split("/", -1);
+        final String[] parts = race.getProperty(KEY_TIME_TRIAL).split("/", -1);
 
         time_trial_race_number = Integer.parseInt(parts[0]);
         time_trial_runners_per_wave = Integer.parseInt(parts[1]);

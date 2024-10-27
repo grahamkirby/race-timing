@@ -30,13 +30,8 @@ public class MinitourTest extends RaceTest {
         return new MinitourRace(config_file_path);
     }
 
-    @Override
-    protected String getResourcesPath() {
-        return "series_race/minitour/";
-    }
-
     @Test
     public void categoryWithoutWinner() throws Exception {
-        testExpectedCompletion("category_without_winner");
+        testExpectedCompletion("series_race/minitour/category_without_winner");
     }
 }

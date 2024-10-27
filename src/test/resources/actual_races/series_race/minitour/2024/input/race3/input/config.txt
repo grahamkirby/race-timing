@@ -1,8 +1,11 @@
-ENTRIES_FILENAME = ../../entries.txt
-RAW_RESULTS_FILENAME = rawtimes.txt
 YEAR = 2024
 RACE_NAME_FOR_RESULTS = Race 3
 RACE_NAME_FOR_FILENAMES = race3
-SENIOR_RACE = false
 
-ALTERNATIVE_OUTPUT_DIRECTORY = ../../output
+# Relative to directory containing configuration file.
+ENTRIES_PATH = ../../entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
+CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv

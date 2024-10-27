@@ -110,18 +110,8 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinterHTML(((RelayRace)race), writer);
-    }
-
-    private void printPrizeWinner(final OutputStreamWriter writer, final RaceResult r) throws IOException {
-
-        final RelayRaceResult result = (RelayRaceResult) r;
-
-        writer.append("<li>").
-            append(result.entry.team.name()).append(" (").
-            append(result.entry.team.category().getLongName()).append(") ").
-            append(format(result.duration())).append("</li>\n");
     }
 
     @Override
@@ -142,7 +132,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
-    private void printLegResults(final int leg, boolean include_credit_link) throws IOException {
+    private void printLegResults(final int leg, final boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html"));
 
@@ -204,6 +194,17 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                                        <th>Category</th>
             """);
 
+        printHeadings(writer);
+
+        writer.append("""
+                                   </tr>
+                               </thead>
+                               <tbody>
+            """);
+    }
+
+    private void printHeadings(final OutputStreamWriter writer) throws IOException {
+
         for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
             writer.append("<th>Runner");
@@ -217,12 +218,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             else
                 writer.append("<th>Total</th>");
         }
-
-        writer.append("""
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
     }
 
     private void printDetailedResultsBody(final OutputStreamWriter writer) throws IOException {
@@ -260,7 +255,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 </tr>""");
     }
 
-    private void printDetailedResultsFooter(final OutputStreamWriter writer, boolean include_credit_link) throws IOException {
+    private void printDetailedResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         writer.append("""
                 </tbody>
@@ -360,6 +355,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record PrizeResultPrinterHTML(RelayRace race, OutputStreamWriter writer) implements ResultPrinter {

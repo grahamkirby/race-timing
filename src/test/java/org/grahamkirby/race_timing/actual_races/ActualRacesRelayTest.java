@@ -31,18 +31,13 @@ public class ActualRacesRelayTest extends RaceTest {
         return new RelayRace(config_file_path);
     }
 
-    @Override
-    protected String getResourcesPath() {
-        return "actual_races/relay_race/devils_burdens";
-    }
-
     @Test
     public void devilsBurdens2020() throws Exception {
-        testExpectedCompletion("2020");
+        testExpectedCompletion("actual_races/relay_race/devils_burdens/2020");
     }
 
     @Test
     public void devilsBurdens2024() throws Exception {
-        testExpectedCompletion("2024");
+        testExpectedCompletion("actual_races/relay_race/devils_burdens/2024");
     }
 }

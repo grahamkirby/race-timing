@@ -25,6 +25,11 @@ public class EntryCategory extends Category {
 
     public EntryCategory(String line) {
 
-        this(null, null, line, 0, 0);
+        this(
+            line.split(",")[0],
+            line.split(",")[1],
+            line.split(",")[2],
+            Integer.parseInt(line.split(",")[3]),
+            Integer.parseInt(line.split(",")[4]));
     }
 }

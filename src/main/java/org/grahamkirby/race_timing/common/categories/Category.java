@@ -31,7 +31,7 @@ public abstract class Category {
         this.short_name = short_name;
         this.gender = gender;
         this.minimum_age = minimum_age;
-        this.maximum_age = minimum_age;
+        this.maximum_age = maximum_age;
     }
 
     public String getLongName() {
@@ -50,10 +50,17 @@ public abstract class Category {
         return minimum_age;
     }
 
+    public int getMaximumAge() {
+        return maximum_age;
+    }
+
+    public boolean equalGenderAndAgeCategory(final Category other) {
+        return gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
+    }
 
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof Category other && gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
+        return obj instanceof Category other && equalGenderAndAgeCategory(other);
     }
 
     @Override

@@ -18,7 +18,6 @@ package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
@@ -26,7 +25,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Map;
 
 public abstract class RaceOutputHTML extends RaceOutput {
 
@@ -67,34 +65,15 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
         writer.append("<h4>Prizes</h4>\n");
 
-//        final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
-//
-//        for (final Category category : categories)
-//            if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
-
-        final List<Race.PrizeCategoryGroup> groups = race.prize_category_groups;
-
-        for (int i = 0; i < groups.size(); i++) {
-
-            String group_title = groups.get(i).combined_categories_title();
-            List<PrizeCategory> prizeCategories = groups.get(i).categories();
-            printRaceCategories(writer, individual_race, group_title, prizeCategories);
-
-//            printOverallResultsHTML(writer, groups.get(i).combined_categories_title(), groups.get(i).category_names(), i == groups.size() - 1);
-        }
-
-
-
-
-
-
-
-
-
+        for (Race.PrizeCategoryGroup group : race.prize_category_groups)
+            if (prizesInThisOrLaterGroup(group))
+                for (final PrizeCategory category : group.categories())
+                    if (prizesInThisOrLaterCategory(category))
+                        printPrizes(writer, category);
     }
 
     @Override
-    protected void printPrizes(final OutputStreamWriter writer, final Category category) throws IOException {
+    protected void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
 
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 

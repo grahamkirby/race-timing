@@ -17,14 +17,13 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.Category;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -55,14 +54,13 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
+    @Override
     public void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         writer.append("<h4>Prizes</h4>\n");
 
-        final List<Category> categories = race.categories.getPrizeCategoriesInReportOrder();
-
-        for (final Category category : categories)
-            if (prizesInThisOrLaterCategory(category, categories)) printPrizes(writer, category);
+        for (final PrizeCategory category : race.getPrizeCategories())
+            if (prizesInThisOrLaterCategory(category)) printPrizes(writer, category);
     }
 
     @Override
@@ -89,6 +87,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
+    @Override
     protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
@@ -150,4 +149,3 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         }
     }
 }
-

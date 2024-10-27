@@ -45,7 +45,6 @@ public abstract class RaceTest {
     private static final String DEBUG_FILES_LOCATION = "/Users/gnck/Desktop/temp";
 
     protected abstract Race makeRace(Path config_file_path) throws IOException;
-    protected abstract String getResourcesPath();
 
     @AfterEach
     public void tearDown() throws IOException {
@@ -53,18 +52,21 @@ public abstract class RaceTest {
         if (!DEBUG) deleteDirectory(temp_directory);
     }
 
-    protected void configureTest(final String test_resource_root) throws IOException {
+    protected void configureTest(final String individual_test_resource_root) throws IOException {
 
         temp_directory = DEBUG ? Paths.get(DEBUG_FILES_LOCATION) : Files.createTempDirectory("temp");
 
-        final Path resources_root = Paths.get("src/test/resources/").resolve(getResourcesPath()).resolve(test_resource_root);
+        final Path resources_root = Race.getTestResourcesRootPath(individual_test_resource_root);
+
         final Path resources_inputs = resources_root.resolve("input");
         expected_output_directory = resources_root.resolve("expected");
 
-        temp_output_directory = Files.createDirectories(temp_directory.resolve("output"));
-
+        // TODO tidy
+        final Path output = temp_directory.resolve("output");
         final Path temp_input_directory = temp_directory.resolve("input");
+
         config_file_path = temp_input_directory.resolve("config.txt");
+        temp_output_directory = Files.createDirectories(output);
 
         copyDirectory(resources_inputs, temp_input_directory);
     }

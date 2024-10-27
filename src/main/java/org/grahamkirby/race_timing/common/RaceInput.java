@@ -16,13 +16,10 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import java.nio.file.Path;
-
 public abstract class RaceInput {
 
     protected final Race race;
-    protected Path input_directory_path, entries_path, raw_results_path;
-    protected String entries_filename, raw_results_filename;
+    protected String entries_path, raw_results_path, categories_entry_path, categories_prize_path;
 
     public RaceInput(Race race) {
         this.race = race;
