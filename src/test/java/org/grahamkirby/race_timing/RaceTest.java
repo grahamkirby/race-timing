@@ -61,14 +61,13 @@ public abstract class RaceTest {
         final Path resources_inputs = resources_root.resolve("input");
         expected_output_directory = resources_root.resolve("expected");
 
-        // TODO tidy
         final Path output = temp_directory.resolve("output");
-        final Path temp_input_directory = temp_directory.resolve("input");
+        final Path input = temp_directory.resolve("input");
 
-        config_file_path = temp_input_directory.resolve("config.txt");
+        config_file_path = input.resolve("config.txt");
         temp_output_directory = Files.createDirectories(output);
 
-        copyDirectory(resources_inputs, temp_input_directory);
+        copyDirectory(resources_inputs, input);
     }
 
     public void testExpectedException(final String configuration_name, final String expected_error_message) throws Exception {

@@ -135,7 +135,7 @@ public abstract class RaceOutput {
         return false;
     }
 
-    private boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
+    protected boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
 
         final int age = category.getMinimumAge();
 

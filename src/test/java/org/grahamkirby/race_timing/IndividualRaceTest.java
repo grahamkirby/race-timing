@@ -25,8 +25,6 @@ import java.nio.file.Path;
 
 public class IndividualRaceTest extends RaceTest {
 
-    // TODO test different prize report order.
-
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
         return new IndividualRace(config_file_path);
@@ -95,5 +93,15 @@ public class IndividualRaceTest extends RaceTest {
     @Test
     public void alternativeHtmlEntityNormalisation() throws Exception {
         testExpectedCompletion("individual_race/alternative_html_entity_normalisation");
+    }
+
+    @Test
+    public void alternativePrizeReportingOrder() throws Exception {
+        testExpectedCompletion("individual_race/alternative_prize_reporting_order");
+    }
+
+    @Test
+    public void openWinnerFromOlderCategory() throws Exception {
+        testExpectedCompletion("individual_race/open_winner_from_older_category");
     }
 }

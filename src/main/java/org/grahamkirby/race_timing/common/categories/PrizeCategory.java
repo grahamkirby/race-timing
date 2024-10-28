@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.common.categories;
 
 public class PrizeCategory extends Category {
 
-    private int number_of_prizes;
+    private final int number_of_prizes;
 
     public PrizeCategory(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age, final int number_of_prizes) {
 

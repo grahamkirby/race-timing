@@ -34,7 +34,7 @@ public class RelayRacePrizes extends RacePrizes {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
+    private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
 
     @Override
     public void allocatePrizes() {
@@ -54,7 +54,7 @@ public class RelayRacePrizes extends RacePrizes {
         allocateMinorPrizes(categories_sorted_by_decreasing_generality);
     }
 
-    private List<PrizeCategory> sortByDecreasingGenerality(final List<PrizeCategory> prize_categories) {
+    public static List<PrizeCategory> sortByDecreasingGenerality(final List<PrizeCategory> prize_categories) {
 
         final List<PrizeCategory> result = new ArrayList<>(prize_categories);
         result.sort((category1, category2) -> {

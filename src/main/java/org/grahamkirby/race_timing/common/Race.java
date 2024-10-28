@@ -33,9 +33,6 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
 
-    // TODO define report category order in config file - test
-    // TODO test where open category winners are in various age categories
-
     public record PrizeCategoryGroup(String combined_categories_title, List<PrizeCategory> categories){}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +67,8 @@ public abstract class Race {
     public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
     public static final String KEY_SELF_TIMED = "SELF_TIMED";
+    public static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
+
     public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
     public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
 
@@ -113,7 +112,6 @@ public abstract class Race {
     public String entry_column_map_string;
 
     public List<EntryCategory> entry_categories;
-//    public List<PrizeCategory> prize_categories; // TODO infer from groups
     public List<PrizeCategoryGroup> prize_category_groups;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
