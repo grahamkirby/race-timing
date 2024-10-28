@@ -317,4 +317,9 @@ public class RelayRaceTest extends RaceTest {
     public void resultsOutOfOrder() throws Exception {
         testExpectedException("relay_race/results_out_of_order","result 15 out of order");
     }
+
+    @Test
+    public void alternativePrizeReportingOrder() throws Exception {
+        testExpectedCompletion("relay_race/alternative_prize_reporting_order");
+    }
 }

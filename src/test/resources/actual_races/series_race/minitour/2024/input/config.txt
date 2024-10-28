@@ -10,6 +10,9 @@ CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_indiv
 
 WAVE_START_OFFSETS = 00:01:00,00:05:47,00:00:44,00:00:00,00:01:23
 
+# Categories starting in the second wave.
+SECOND_WAVE_CATEGORIES = FU9,MU9,FU11,MU11
+
 # Comma-separated sequence of bib-number/race-number for self-timed runs
 # (which should not have start offsets applied).
 SELF_TIMED = 62/4

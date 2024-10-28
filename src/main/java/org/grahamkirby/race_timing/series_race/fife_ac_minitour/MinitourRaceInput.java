@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 
@@ -36,13 +37,9 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO read from config file
-    private static final List<String> SECOND_WAVE_CATEGORY_NAMES = Arrays.asList("FU9", "MU9", "FU11", "MU11");
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private List<Duration> wave_start_offsets;
     private List<SelfTimedRun> self_timed_runs;
+    private List<EntryCategory> second_wave_categories;
 
     private int time_trial_race_number;
     private int time_trial_runners_per_wave;
@@ -61,6 +58,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
         wave_start_offsets = readWaveStartOffsets();
         self_timed_runs = readSelfTimedRuns();
+        second_wave_categories = readSecondWaveCategories();
 
         readTimeTrialProperties();
     }
@@ -91,6 +89,13 @@ public class MinitourRaceInput extends SeriesRaceInput {
         };
 
         return extractConfigFromPropertyStrings(self_timed_strings, extract_run_function);
+    }
+
+    private List<EntryCategory> readSecondWaveCategories() {
+
+        final String[] second_wave_category_strings = race.getProperty(KEY_SECOND_WAVE_CATEGORIES).split(",", -1);
+
+        return extractConfigFromPropertyStrings(second_wave_category_strings, race::lookupCategory);
     }
 
     private <T> List<T> extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper) {
@@ -158,6 +163,10 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private boolean runnerIsInSecondWave(final IndividualRace individual_race, final int bib_number) {
 
-        return SECOND_WAVE_CATEGORY_NAMES.contains(individual_race.findCategory(bib_number).getShortName());
+        return second_wave_categories.stream().map(
+                category -> category.equalGenderAndAgeCategory(individual_race.findCategory(bib_number))).
+                reduce(Boolean::logicalOr).orElseThrow();
+
+//        return SECOND_WAVE_CATEGORY_NAMES.contains(individual_race.findCategory(bib_number).getShortName());
     }
 }
