@@ -84,10 +84,12 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final String DEFAULT_ENTRY_MAP_PATH = "/src/main/resources/configuration/default_entry_map.csv";
-    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "/src/main/resources/configuration/html_entities.csv";
-    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "/src/main/resources/configuration/club_names.csv";
-    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "/src/main/resources/configuration/capitalisation_stop_words.csv";
+    public static final String SUFFIX_CSV = ".csv";
+
+    private static final String DEFAULT_ENTRY_MAP_PATH = "/src/main/resources/configuration/default_entry_map" + SUFFIX_CSV;
+    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "/src/main/resources/configuration/html_entities" + SUFFIX_CSV;
+    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "/src/main/resources/configuration/club_names" + SUFFIX_CSV;
+    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = "/src/main/resources/configuration/capitalisation_stop_words" + SUFFIX_CSV;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

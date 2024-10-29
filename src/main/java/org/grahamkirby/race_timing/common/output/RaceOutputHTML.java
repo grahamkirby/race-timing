@@ -44,32 +44,14 @@ public abstract class RaceOutputHTML extends RaceOutput {
         }
     }
 
-    protected void printOverallResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
-
-        printOverallResultsHeader(writer);
-        printOverallResultsBody(writer);
-        printOverallResultsFooter(writer, include_credit_link);
-    }
-
     @Override
     public void printPrizes() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
 
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-            printPrizes(html_writer);
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printPrizes(writer);
         }
-    }
-
-    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("<h4>Prizes</h4>\n");
-
-        for (Race.PrizeCategoryGroup group : race.prize_category_groups)
-            if (prizesInThisOrLaterGroup(group))
-                for (final PrizeCategory category : group.categories())
-                    if (prizesInThisOrLaterCategory(category))
-                        printPrizes(writer, category);
     }
 
     @Override
@@ -95,7 +77,23 @@ public abstract class RaceOutputHTML extends RaceOutput {
         }
     }
 
-    protected abstract ResultPrinter getResultPrinter(final OutputStreamWriter writer);
+    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
+
+        writer.append("<h4>Prizes</h4>\n");
+
+        for (Race.PrizeCategoryGroup group : race.prize_category_groups)
+            if (prizesInThisOrLaterGroup(group))
+                for (final PrizeCategory category : group.categories())
+                    if (prizesInThisOrLaterCategory(category))
+                        printPrizes(writer, category);
+    }
+
+    protected void printOverallResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
+
+        printOverallResultsHeader(writer);
+        printOverallResultsBody(writer);
+        printOverallResultsFooter(writer, include_credit_link);
+    }
 
     protected void printOverallResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
@@ -105,5 +103,16 @@ public abstract class RaceOutputHTML extends RaceOutput {
             """);
 
         if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+    }
+
+    @Override
+    public void printDetailedResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printNotes() { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) throws IOException {
+        throw new UnsupportedOperationException();
     }
 }

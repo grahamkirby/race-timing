@@ -20,7 +20,6 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
@@ -63,23 +62,6 @@ public class RelayRaceOutputText extends RaceOutputText {
             if (!bib_numbers_with_missing_times.isEmpty())
                 printDiscrepancies(writer, bib_numbers_with_missing_times, times_with_missing_bib_numbers);
         }
-    }
-
-    @Override
-    public void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
-
-        final String header = "Category: " + category.getLongName();
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        writer.append(header).append("\n");
-        writer.append("-".repeat(header.length())).append("\n\n");
-
-        if (category_prize_winners.isEmpty())
-            writer.append("No results\n");
-        else
-            printPrizes(writer, category_prize_winners);
-
-        writer.append("\n\n");
     }
 
     @Override

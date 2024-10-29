@@ -71,16 +71,12 @@ public class RelayRacePrizes extends RacePrizes {
 
     private void allocateFirstPrizes(final List<PrizeCategory> prize_categories) {
 
-        for (final PrizeCategory category : prize_categories) {
-
-            for (final RaceResult result : race.getOverallResults()) {
-
+        for (final PrizeCategory category : prize_categories)
+            for (final RaceResult result : race.getOverallResults())
                 if (prizeWinner(result, category)) {
                     race.prize_winners.get(category).add(result);
                     break;
                 }
-            }
-        }
     }
 
     private void allocateMinorPrizes(final List<PrizeCategory> prize_categories) {

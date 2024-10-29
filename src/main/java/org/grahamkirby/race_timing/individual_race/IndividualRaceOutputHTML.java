@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
@@ -34,6 +33,8 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     // TODO parameterise with category lists for consistency with minitour.
+
+    // TODO make HTML tidier in general.
 
     @Override
     public void printCombined() throws IOException {
@@ -54,15 +55,6 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
             printOverallResults(html_writer, true);
         }
-    }
-
-    @Override
-    public void printPrizes(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("<h4>Prizes</h4>\n");
-
-        for (final PrizeCategory category : race.getPrizeCategories())
-            if (prizesInThisOrLaterCategory(category)) printPrizes(writer, category);
     }
 
     @Override

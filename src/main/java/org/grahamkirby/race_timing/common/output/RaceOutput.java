@@ -159,36 +159,15 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printOverallResults(boolean include_credit_link) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printDetailedResults(boolean include_credit_link) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printPrizes() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printNotes() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    public void printCombined() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void printOverallResults(boolean include_credit_link) throws IOException;
+    public abstract void printDetailedResults(boolean include_credit_link) throws IOException;
+    public abstract void printPrizes() throws IOException;
+    public abstract void printNotes() throws IOException;
+    public abstract void printCombined() throws IOException;
 
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    protected void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
-        throw new UnsupportedOperationException();
-    }
-    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException;
+    protected abstract void printOverallResultsBody(final OutputStreamWriter writer) throws IOException;
+    protected abstract void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException;
+    protected abstract void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException;
+    protected abstract ResultPrinter getResultPrinter(final OutputStreamWriter writer);
 }

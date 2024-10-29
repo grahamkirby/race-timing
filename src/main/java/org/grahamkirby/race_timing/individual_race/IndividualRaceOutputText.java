@@ -16,9 +16,8 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -30,27 +29,6 @@ public class IndividualRaceOutputText extends RaceOutputText {
 
     public IndividualRaceOutputText(final IndividualRace race) {
         super(race);
-    }
-
-    @Override
-    public void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
-
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        if (category_prize_winners != null) {
-
-            final String header = "Category: " + category.getLongName();
-
-            writer.append(header).append("\n");
-            writer.append("-".repeat(header.length())).append("\n\n");
-
-            if (category_prize_winners.isEmpty())
-                writer.append("No results\n");
-            else
-                printPrizes(writer, category_prize_winners);
-
-            writer.append("\n\n");
-        }
     }
 
     protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {

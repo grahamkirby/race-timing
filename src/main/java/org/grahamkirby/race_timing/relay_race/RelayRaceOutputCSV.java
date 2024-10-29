@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
@@ -48,7 +49,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     @Override
     public void printDetailedResults(final boolean ignore) throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".csv"));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + SUFFIX_CSV));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
