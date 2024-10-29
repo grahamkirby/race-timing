@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
@@ -133,6 +134,7 @@ public abstract class Race {
     public abstract void processResults() throws IOException;
     public abstract boolean allowEqualPositions();
     public abstract boolean isEligibleForGender(EntryCategory entry_category, PrizeCategory prize_category);
+    public abstract EntryCategory getEntryCategory(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -215,11 +217,20 @@ public abstract class Race {
     }
 
     public List<RaceResult> getOverallResults() {
-        return overall_results;
+        return getOverallResultsByCategory(getPrizeCategories());
     }
 
-    public List<RaceResult> getResultsByCategory(List<PrizeCategory> ignore) {
-        return overall_results;
+    public List<RaceResult> getOverallResultsByCategory(final List<PrizeCategory> categories_required) {
+
+        final Predicate<RaceResult> category_filter = result -> {
+
+            for (final PrizeCategory prize_category : categories_required)
+                if (isEligibleFor(getEntryCategory(result), prize_category)) return true;
+
+            return false;
+        };
+
+        return overall_results.stream().filter(category_filter).toList();
     }
 
     public void allocatePrizes() {
@@ -232,7 +243,7 @@ public abstract class Race {
 
     public String getProperty(final String property_key, final String default_value) {
 
-        final String value = properties.getProperty(property_key);
+        final String value = getProperty(property_key);
         return value == null || value.isBlank() ? default_value : value;
     }
 
@@ -294,13 +305,12 @@ public abstract class Race {
             while (entry_column_map_string.startsWith(COMMENT_SYMBOL))
                 entry_column_map_string = lines.get(++index);
 
-            for (final String line : lines.subList(index + 1, lines.size())) {
+            for (final String line : lines.subList(index + 1, lines.size()))
 
                 if (!line.startsWith(COMMENT_SYMBOL)) {
                     final String[] parts = line.split(",");
                     map.put(parts[0], parts[1]);
                 }
-            }
         }
 
         return map;
@@ -315,14 +325,13 @@ public abstract class Race {
 
         final Map<String, String> map = new HashMap<>();
 
-        if (path_string != null) {
+        if (path_string != null)
 
             for (final String line : Files.readAllLines(getPath(path_string))) {
 
                 final String[] parts = line.split(",");
                 map.put(parts[0], parts[1]);
             }
-        }
 
         return map;
     }

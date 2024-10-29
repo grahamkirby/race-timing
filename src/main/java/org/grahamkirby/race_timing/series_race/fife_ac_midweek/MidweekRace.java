@@ -126,6 +126,11 @@ public class MidweekRace extends SeriesRace {
         minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
     }
 
+    @Override
+    public EntryCategory getEntryCategory(RaceResult result) {
+        return ((MidweekRaceResult) result).runner.category;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void checkClubsForRunner(final String runner_name) {

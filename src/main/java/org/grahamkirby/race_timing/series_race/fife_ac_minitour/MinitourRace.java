@@ -30,8 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Comparator;
-import java.util.List;
-import java.util.function.Predicate;
 
 public class MinitourRace extends SeriesRace {
 
@@ -72,17 +70,8 @@ public class MinitourRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<RaceResult> getResultsByCategory(final List<PrizeCategory> categories_required) {
-
-        final Predicate<RaceResult> category_filter = result -> {
-
-            for (final PrizeCategory prize_category : categories_required)
-                if (isEligibleFor(((MinitourRaceResult) result).runner.category, prize_category)) return true;
-
-            return false;
-        };
-
-        return overall_results.stream().filter(category_filter).toList();
+    public EntryCategory getEntryCategory(RaceResult result) {
+        return ((MinitourRaceResult) result).runner.category;
     }
 
     @Override

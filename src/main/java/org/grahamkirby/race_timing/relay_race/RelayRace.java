@@ -187,6 +187,11 @@ public class RelayRace extends SingleRace {
         prizes = new RelayRacePrizes(this);
     }
 
+    @Override
+    public EntryCategory getEntryCategory(RaceResult result) {
+        return ((RelayRaceResult) result).entry.team.category();
+    }
+
     protected int getRecordedLegPosition(final int bib_number, final int leg_number) {
 
         int legs_completed = 0;
