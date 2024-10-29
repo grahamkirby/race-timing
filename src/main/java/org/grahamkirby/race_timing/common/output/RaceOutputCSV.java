@@ -57,7 +57,7 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
     private void printCategoryResults(final OutputStreamWriter writer, final List<PrizeCategory> category_names) throws IOException {
 
-        final List<RaceResult> results = race.getResultsByCategory(category_names);
+        final List<RaceResult> results = race.getOverallResultsByCategory(category_names);
 
         setPositionStrings(results, race.allowEqualPositions());
         printResults(results, getResultPrinter(writer));

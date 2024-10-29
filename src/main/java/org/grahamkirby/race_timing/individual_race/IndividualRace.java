@@ -16,7 +16,10 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.RaceEntry;
+import org.grahamkirby.race_timing.common.RacePrizes;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.single_race.SingleRace;
@@ -95,6 +98,11 @@ public class IndividualRace extends SingleRace {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public EntryCategory getEntryCategory(RaceResult result) {
+        return ((IndividualRaceResult) result).entry.runner.category;
+    }
 
     private void configureHelpers() {
 

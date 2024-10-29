@@ -33,6 +33,8 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         super(race);
     }
 
+    // TODO parameterise with category lists for consistency with minitour.
+
     @Override
     public void printCombined() throws IOException {
 
