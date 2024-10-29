@@ -105,6 +105,7 @@ public class MinitourRace extends SeriesRace {
     protected void printCombined() throws IOException {
 
         output_HTML.printCombined();
+        ((MinitourRaceOutputHTML) output_HTML).printIndividualRaces();
     }
 
     @Override

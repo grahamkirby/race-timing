@@ -18,43 +18,20 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.util.List;
 
-public class MidweekRaceOutputHTML extends RaceOutputHTML {
+public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
     public MidweekRaceOutputHTML(final Race race) {
         super(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void printCombined() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
-
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
-
-            html_writer.append("""
-                    <h3><strong>Results</strong></h3>
-                    """);
-
-            printPrizes(html_writer);
-
-            html_writer.append("""
-                    <h4>Overall</h4>
-                    """);
-
-            printOverallResults(html_writer, true);
-        }
-    }
 
     @Override
     protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
@@ -83,19 +60,6 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                                </thead>
                                <tbody>
             """);
-    }
-
-    private void printHeadings(final OutputStreamWriter writer) throws IOException {
-
-        final List<IndividualRace> races = ((MidweekRace)race).getRaces();
-
-        for (int i = 0; i < races.size(); i++) {
-            if (races.get(i) != null) {
-                writer.append("<th>Race ").
-                        append(String.valueOf(i + 1)).
-                        append("</th>\n");
-            }
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +106,19 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
                         </td>
                         </tr>
                         """);
+        }
+    }
+
+    private void printHeadings(final OutputStreamWriter writer) throws IOException {
+
+        final List<IndividualRace> races = ((MidweekRace)race).getRaces();
+
+        for (int i = 0; i < races.size(); i++) {
+            if (races.get(i) != null) {
+                writer.append("<th>Race ").
+                        append(String.valueOf(i + 1)).
+                        append("</th>\n");
+            }
         }
     }
 

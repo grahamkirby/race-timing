@@ -54,13 +54,17 @@ public abstract class RaceOutputText extends RaceOutput {
 
         final String header = "Category: " + category.getLongName();
 
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+
         writer.append(header).append("\n");
         writer.append("-".repeat(header.length())).append("\n\n");
 
-        final List<RaceResult> results = race.prize_winners.get(category);
+        setPositionStrings(category_prize_winners, race.allowEqualPositions());
 
-        setPositionStrings(results, true);
-        printPrizes(writer, results);
+        if (category_prize_winners.isEmpty())
+            writer.append("No results\n");
+        else
+            printPrizes(writer, category_prize_winners);
 
         writer.append("\n\n");
     }
@@ -88,4 +92,24 @@ public abstract class RaceOutputText extends RaceOutput {
             }
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void printOverallResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printDetailedResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printCombined() throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printOverallResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 }

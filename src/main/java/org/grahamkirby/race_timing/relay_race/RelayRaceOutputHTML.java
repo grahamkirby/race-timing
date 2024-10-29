@@ -39,12 +39,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printLegResults(final boolean include_credit_link) throws IOException {
-
-        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
-            printLegResults(leg, include_credit_link);
-    }
-
     @Override
     public void printDetailedResults(final boolean include_credit_link) throws IOException {
 
@@ -52,16 +46,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResults(writer, include_credit_link);
-        }
-    }
-
-    @Override
-    public void printPrizes() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printPrizes(writer);
         }
     }
 
@@ -130,6 +114,14 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                            </thead>
                            <tbody>
             """);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void printLegResults(final boolean include_credit_link) throws IOException {
+
+        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
+            printLegResults(leg, include_credit_link);
     }
 
     private void printLegResults(final int leg, final boolean include_credit_link) throws IOException {

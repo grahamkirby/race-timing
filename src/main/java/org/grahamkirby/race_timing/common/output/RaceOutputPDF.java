@@ -24,9 +24,11 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.*;
@@ -56,6 +58,8 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected static void addCategoryHeader(final PrizeCategory category, final Document document) throws IOException {
 
         final Paragraph category_header_paragraph = new Paragraph("Category: " +
@@ -81,5 +85,34 @@ public abstract class RaceOutputPDF extends RaceOutput {
         document.add(paragraph);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected abstract void printPrizes(final Document document, final PrizeCategory category) throws IOException;
+
+    @Override
+    public void printOverallResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printDetailedResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printNotes() throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printCombined() throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printOverallResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printPrizes(OutputStreamWriter writer, PrizeCategory category) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 }

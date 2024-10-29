@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
+import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public abstract class RaceOutputCSV extends RaceOutput {
 
@@ -40,7 +41,7 @@ public abstract class RaceOutputCSV extends RaceOutput {
     @Override
     public void printOverallResults(boolean include_credit_link) throws IOException {
 
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + ".csv");
+        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + SUFFIX_CSV);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
 
@@ -69,7 +70,29 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
         for (final Race individual_race : ((SeriesRace)race).getRaces())
             if (individual_race != null)
-                writer.append(",").
-                        append(individual_race.getProperty(KEY_RACE_NAME_FOR_RESULTS));
+                writer.append(",").append(individual_race.getProperty(KEY_RACE_NAME_FOR_RESULTS));
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void printCombined() { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printDetailedResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printNotes() { throw new UnsupportedOperationException(); }
+
+    @Override
+    public void printPrizes() { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printOverallResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected void printPrizes(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
 }
