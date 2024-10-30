@@ -16,17 +16,8 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import com.itextpdf.io.font.constants.StandardFonts;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
-
-import java.io.IOException;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -37,23 +28,9 @@ public class RelayRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    protected void printPrizes(final Document document, final PrizeCategory category) throws IOException {
+    protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        final PdfFont italic_font = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
-
-        addCategoryHeader(category, document);
-
-        if (category_prize_winners.isEmpty())
-            document.add(new Paragraph("No results").setFont(italic_font));
-        else {
-            int position = 1;
-            for (final RaceResult r : category_prize_winners) {
-
-                final RelayRaceResult result = ((RelayRaceResult) r);
-                printPrizePDF(document, String.valueOf(position++), result.entry.team.name(), result.entry.team.category().getLongName(), format(result.duration()));
-            }
-        }
+        final RelayRaceResult result = ((RelayRaceResult) r);
+        return new PrizeWinnerDetails(result.position_string, result.entry.team.name(), result.entry.team.category().getLongName(), format(result.duration()));
     }
 }

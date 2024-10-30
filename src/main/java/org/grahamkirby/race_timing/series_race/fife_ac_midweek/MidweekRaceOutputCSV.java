@@ -18,19 +18,19 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class MidweekRaceOutputCSV extends RaceOutputCSV {
+public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
     public MidweekRaceOutputCSV(final Race race) {
         super(race);
     }
 
     @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         printOverallResultsHeaderRootSeries(writer);
         writer.append(",Total,Completed\n");

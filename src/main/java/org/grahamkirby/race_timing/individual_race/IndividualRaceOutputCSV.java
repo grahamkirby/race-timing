@@ -34,7 +34,7 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
         writer.append(OVERALL_RESULTS_HEADER).append("\n");
     }
 
@@ -42,6 +42,8 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
     protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
         return new ResultPrinterCSV(writer);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
 

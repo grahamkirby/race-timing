@@ -53,7 +53,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                     <h4>Overall</h4>
                     """);
 
-            printOverallResults(html_writer, true);
+            printResults(html_writer, true);
         }
     }
 
@@ -63,7 +63,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">
@@ -82,7 +82,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsBody(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
 

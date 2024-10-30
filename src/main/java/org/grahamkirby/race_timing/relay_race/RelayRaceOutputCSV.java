@@ -46,8 +46,9 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void printDetailedResults(final boolean ignore) throws IOException {
+//    @Override
+//    public void printDetailedResults(final boolean ignore) throws IOException {
+        public void printDetailedResults() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + SUFFIX_CSV));
 
@@ -66,7 +67,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
     }
