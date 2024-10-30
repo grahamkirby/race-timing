@@ -44,11 +44,10 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     protected void printIndividualRaces() throws IOException {
         for (int i = 1; i <= ((SeriesRace)race).getRaces().size(); i++)
             printIndividualRaceResults(i);
-
     }
 
     @Override
-    protected void printOverallResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
+    protected void printResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         int group_number = 0;
         for (final Race.PrizeCategoryGroup group : race.prize_category_groups) {
@@ -73,7 +72,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
         printSeriesResultsHeader(writer);
         printSeriesResultsBody(writer, prize_categories);
-        printOverallResultsFooter(writer, include_credit_link);
+        printResultsFooter(writer, include_credit_link);
     }
 
     private void printSeriesResultsHeader(final OutputStreamWriter writer) throws IOException {
@@ -220,10 +219,10 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
+    protected void printResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
 
     @Override
-    protected void printOverallResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected void printResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

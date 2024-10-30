@@ -39,7 +39,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
                 <table class="fac-table">
@@ -64,7 +64,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsBody(final OutputStreamWriter writer) throws IOException {
 
         final List<RaceResult> overall_results = race.getOverallResults();
 

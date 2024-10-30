@@ -24,6 +24,7 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 public abstract class SeriesRaceResult extends RaceResult {
 
+    // TODO rationalise with IndividualRaceResult - consistency wrt entry class
     public final Runner runner;
 
     public SeriesRaceResult(final Runner runner, final SeriesRace race) {

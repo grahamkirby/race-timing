@@ -16,10 +16,12 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import com.itextpdf.io.font.constants.StandardFonts;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.output.RaceOutput;
+import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
+import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,16 +40,13 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
-    public static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
-    public static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
-    public static final int PRIZE_FONT_SIZE = 24;
-
     public static final String DUMMY_DURATION_STRING = "23:59:59";
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     public static final String COMMENT_SYMBOL = "#";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // TODO organise by race type
 
     public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
     public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
@@ -103,7 +102,10 @@ public abstract class Race {
     protected StringBuilder notes;
 
     public RaceInput input;
-    public RaceOutput output_CSV, output_HTML, output_text, output_PDF;
+    public RaceOutputCSV output_CSV;
+    public RaceOutputHTML output_HTML;
+    public RaceOutputText output_text;
+    public RaceOutputPDF output_PDF;
     public Normalisation normalisation;
 
     public Map<String, String> normalised_html_entities;

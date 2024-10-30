@@ -16,19 +16,10 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 
-import java.io.IOException;
-import java.util.List;
-
 import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.PRIZE_FONT_ITALIC_NAME;
 
 public class MinitourRaceOutputPDF extends RaceOutputPDF {
 
@@ -37,33 +28,9 @@ public class MinitourRaceOutputPDF extends RaceOutputPDF {
     }
 
     @Override
-    protected void printPrizes(final Document document, final PrizeCategory category) throws IOException {
+    protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
-        addCategoryHeader(category, document);
-
-        final List<RaceResult> results = race.prize_winners.get(category);
-
-        setPositionStrings(results, true);
-        printResults(results, new ResultPrinterPDF(document));
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    record ResultPrinterPDF(Document document) implements ResultPrinter {
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final MinitourRaceResult result = (MinitourRaceResult) r;
-            printPrizePDF(document, result.position_string, result.runner.name, result.runner.club, format(result.duration()));
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            final PdfFont italic_font = PdfFontFactory.createFont(PRIZE_FONT_ITALIC_NAME);
-
-            document.add(new Paragraph("No results").setFont(italic_font));
-        }
+        final MinitourRaceResult result = (MinitourRaceResult) r;
+        return new PrizeWinnerDetails(result.position_string, result.runner.name, result.runner.club, format(result.duration()));
     }
 }

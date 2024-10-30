@@ -17,39 +17,27 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 
-public abstract class SeriesRaceOutputHTML extends RaceOutputHTML {
+import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
-    public SeriesRaceOutputHTML(final Race race) {
+public abstract class SeriesRaceOutputCSV extends RaceOutputCSV {
+
+    public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
+
+    public SeriesRaceOutputCSV(Race race) {
         super(race);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    protected void printOverallResultsHeaderRootSeries(final OutputStreamWriter writer) throws IOException {
 
-    @Override
-    public void printCombined() throws IOException {
+        writer.append(OVERALL_RESULTS_HEADER);
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append("""
-                    <h3><strong>Results</strong></h3>
-                    """);
-
-            printPrizes(writer);
-
-            writer.append("""
-                    <h4>Overall</h4>
-                    """);
-
-            printResults(writer, true);
-        }
+        for (final Race individual_race : ((SeriesRace)race).getRaces())
+            if (individual_race != null)
+                writer.append(",").append(individual_race.getProperty(KEY_RACE_NAME_FOR_RESULTS));
     }
 }

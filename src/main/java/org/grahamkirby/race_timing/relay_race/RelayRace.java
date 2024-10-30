@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -516,14 +517,14 @@ public class RelayRace extends SingleRace {
 
     private void printOverallResults() throws IOException {
 
-        output_CSV.printOverallResults(false);
-        output_HTML.printOverallResults(true);
+        output_CSV.printResults();
+        output_HTML.printResults();
     }
 
     private void printDetailedResults() throws IOException {
 
-        output_CSV.printDetailedResults(false);
-        output_HTML.printDetailedResults(true);
+        ((RelayRaceOutputCSV)output_CSV).printDetailedResults();
+        ((RelayRaceOutputHTML)output_HTML).printDetailedResults(true);
     }
 
     private void printLegResults() throws IOException {
@@ -546,7 +547,7 @@ public class RelayRace extends SingleRace {
 
     private void printCombined() throws IOException {
 
-        output_HTML.printCombined();
+        ((RaceOutputHTML)output_HTML).printCombined();
     }
 
     private void printCollatedTimes() throws IOException {

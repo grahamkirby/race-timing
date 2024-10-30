@@ -106,8 +106,8 @@ public abstract class SeriesRace extends Race {
 
     private void printOverallResults() throws IOException {
 
-        output_CSV.printOverallResults(false);
-        output_HTML.printOverallResults(true);
+        output_CSV.printResults();
+        output_HTML.printResults();
     }
 
     private void printNotes() throws IOException {

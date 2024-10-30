@@ -159,15 +159,9 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract void printOverallResults(boolean include_credit_link) throws IOException;
-    public abstract void printDetailedResults(boolean include_credit_link) throws IOException;
+    public abstract void printResults() throws IOException;
     public abstract void printPrizes() throws IOException;
-    public abstract void printNotes() throws IOException;
-    public abstract void printCombined() throws IOException;
 
-    protected abstract void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException;
-    protected abstract void printOverallResultsBody(final OutputStreamWriter writer) throws IOException;
-    protected abstract void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException;
-    protected abstract void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException;
+    protected abstract void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException;
     protected abstract ResultPrinter getResultPrinter(final OutputStreamWriter writer);
 }

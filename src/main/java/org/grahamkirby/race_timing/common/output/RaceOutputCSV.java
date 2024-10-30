@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.common.output;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -27,30 +26,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public abstract class RaceOutputCSV extends RaceOutput {
-
-    public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
 
     public RaceOutputCSV(Race race) {
         super(race);
     }
 
     @Override
-    public void printOverallResults(boolean include_credit_link) throws IOException {
+    public void printResults() throws IOException {
 
         final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + SUFFIX_CSV);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
 
-            printOverallResultsHeader(writer);
-            printOverallResults(writer);
+            printResultsHeader(writer);
+            printResults(writer);
         }
     }
 
-    private void printOverallResults(final OutputStreamWriter writer) throws IOException {
+    private void printResults(final OutputStreamWriter writer) throws IOException {
 
         for (final Race.PrizeCategoryGroup category_group : race.prize_category_groups)
             printCategoryResults(writer, category_group.categories());
@@ -64,35 +60,15 @@ public abstract class RaceOutputCSV extends RaceOutput {
         printResults(results, getResultPrinter(writer));
     }
 
-    protected void printOverallResultsHeaderRootSeries(final OutputStreamWriter writer) throws IOException {
-
-        writer.append(OVERALL_RESULTS_HEADER);
-
-        for (final Race individual_race : ((SeriesRace)race).getRaces())
-            if (individual_race != null)
-                writer.append(",").append(individual_race.getProperty(KEY_RACE_NAME_FOR_RESULTS));
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void printCombined() { throw new UnsupportedOperationException(); }
+    protected abstract void printResultsHeader(final OutputStreamWriter writer) throws IOException;
 
-    @Override
-    public void printDetailedResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    public void printNotes() { throw new UnsupportedOperationException(); }
-
+    // Prizes not output to CSV files.
     @Override
     public void printPrizes() { throw new UnsupportedOperationException(); }
 
+    // Prizes not output to CSV files.
     @Override
-    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printOverallResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printPrizes(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
+    protected void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
 }

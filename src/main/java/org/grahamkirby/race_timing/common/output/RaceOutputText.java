@@ -45,12 +45,12 @@ public abstract class RaceOutputText extends RaceOutput {
             writer.append("============================").append("\n\n");
 
             for (final PrizeCategory category : race.getPrizeCategories())
-                if (prizesInThisOrLaterCategory(category)) printPrizes(writer, category);
+                if (prizesInThisOrLaterCategory(category)) printPrizesInCategory(writer, category);
         }
     }
 
     @Override
-    public void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
+    public void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
 
         final String header = "Category: " + category.getLongName();
 
@@ -69,7 +69,6 @@ public abstract class RaceOutputText extends RaceOutput {
         writer.append("\n\n");
     }
 
-    @Override
     public void printNotes() throws IOException {
 
         if (!race.non_title_case_words.isEmpty()) {
@@ -95,21 +94,13 @@ public abstract class RaceOutputText extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void printOverallResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+    protected abstract void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException;
 
+    // Full results not printed to text file.
     @Override
-    public void printDetailedResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+    public void printResults() throws IOException { throw new UnsupportedOperationException(); }
 
-    @Override
-    public void printCombined() throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printOverallResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
-
+    // Full results not printed to text file.
     @Override
     protected ResultPrinter getResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 }

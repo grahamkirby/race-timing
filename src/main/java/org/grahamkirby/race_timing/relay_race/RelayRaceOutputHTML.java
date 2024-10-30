@@ -39,7 +39,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
+//    @Override
     public void printDetailedResults(final boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".html"));
@@ -66,7 +66,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                     <h4>Overall</h4>
                     """);
 
-            printOverallResults(writer, false);
+            printResults(writer, false);
 
             writer.append("""
                     <h4>Full Results</h4>
@@ -99,7 +99,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         writer.append("""
             <table class="fac-table">
@@ -133,7 +133,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    protected void printOverallResultsBody(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsBody(final OutputStreamWriter writer) throws IOException {
 
         int position = 1;
 

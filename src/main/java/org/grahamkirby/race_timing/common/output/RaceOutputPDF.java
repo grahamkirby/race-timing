@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.common.output;
 
+import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -31,9 +32,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.*;
-
 public abstract class RaceOutputPDF extends RaceOutput {
+
+    public static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
+    public static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
+    public static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
+    public static final int PRIZE_FONT_SIZE = 24;
 
     public RaceOutputPDF(Race race) {
         super(race);
@@ -46,35 +50,44 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            final PdfFont font = PdfFontFactory.createFont(PRIZE_FONT_NAME);
+            document.add(
+                    new Paragraph().
+                            setFont(getFont(PRIZE_FONT_NAME)).
+                            setFontSize(PRIZE_FONT_SIZE).
+                            add(race_name_for_results + " " + year + " Category Prizes"));
 
-            document.add(new Paragraph().setFont(font).setFontSize(PRIZE_FONT_SIZE)
-                    .add(race_name_for_results + " " + year + " Category Prizes"));
-
-            final List<PrizeCategory> categories = race.getPrizeCategories();
-
-            for (final PrizeCategory category : categories)
-                if (prizesInThisOrLaterCategory(category)) printPrizes(document, category);
+            for (final PrizeCategory category : race.getPrizeCategories())
+                if (prizesInThisOrLaterCategory(category)) printPrizesInCategory(document, category);
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected static void addCategoryHeader(final PrizeCategory category, final Document document) throws IOException {
+    protected void addCategoryHeader(final Document document, final PrizeCategory category) throws IOException {
 
-        final Paragraph category_header_paragraph = new Paragraph("Category: " +
-                category.getLongName()).
-                setFont(PdfFontFactory.createFont(PRIZE_FONT_BOLD_NAME)).
+        final Paragraph category_header_paragraph = new Paragraph("Category: " + category.getLongName()).
+                setFont(getFont(PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
                 setPaddingTop(PRIZE_FONT_SIZE);
 
         document.add(category_header_paragraph);
     }
 
+    protected void printPrizesInCategory(final Document document, final PrizeCategory category) throws IOException {
+
+        addCategoryHeader(document, category);
+
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+
+        setPositionStrings(category_prize_winners, race.allowEqualPositions());
+        printResults(category_prize_winners, new ResultPrinterPDF(document, this));
+    }
+
+    // Needs to be static to allow access from inner classes of subclasses of this class.
     protected static void printPrizePDF(final Document document, final String position_string, final String name, final String detail1, final String detail2) throws IOException {
 
-        final PdfFont font = PdfFontFactory.createFont(PRIZE_FONT_NAME);
-        final PdfFont bold_font = PdfFontFactory.createFont(PRIZE_FONT_BOLD_NAME);
+        final PdfFont font = getFont(PRIZE_FONT_NAME);
+        final PdfFont bold_font = getFont(PRIZE_FONT_BOLD_NAME);
 
         final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
@@ -85,34 +98,43 @@ public abstract class RaceOutputPDF extends RaceOutput {
         document.add(paragraph);
     }
 
+    protected static PdfFont getFont(final String font_name) throws IOException {
+        return PdfFontFactory.createFont(font_name);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract void printPrizes(final Document document, final PrizeCategory category) throws IOException;
+    public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {}
 
+    private record ResultPrinterPDF(Document document, RaceOutputPDF race_output) implements ResultPrinter {
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            PrizeWinnerDetails details = race_output.getPrizeWinnerDetails(r);
+            printPrizePDF(document, details.position_string, details.name, details.detail1, details.detail2);
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            document.add(new Paragraph("No results").setFont(getFont(PRIZE_FONT_ITALIC_NAME)));
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected abstract PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r);
+
+    // Full results not printed to PDF.
     @Override
-    public void printOverallResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+    public void printResults() throws IOException { throw new UnsupportedOperationException(); }
 
+    // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
-    public void printDetailedResults(boolean include_credit_link) throws IOException { throw new UnsupportedOperationException(); }
+    protected void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) throws IOException { throw new UnsupportedOperationException(); }
 
-    @Override
-    public void printNotes() throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    public void printCombined() throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printOverallResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printOverallResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printPrizes(OutputStreamWriter writer, PrizeCategory category) throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printPrizes(OutputStreamWriter writer, List<RaceResult> results) { throw new UnsupportedOperationException(); }
-
+    // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
     protected ResultPrinter getResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 }

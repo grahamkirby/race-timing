@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,14 +26,14 @@ import java.time.Duration;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
-public class MinitourRaceOutputCSV extends RaceOutputCSV {
+public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     public MinitourRaceOutputCSV(final Race race) {
         super(race);
     }
 
     @Override
-    protected void printOverallResultsHeader(final OutputStreamWriter writer) throws IOException {
+    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
 
         printOverallResultsHeaderRootSeries(writer);
         writer.append(",Total\n");
