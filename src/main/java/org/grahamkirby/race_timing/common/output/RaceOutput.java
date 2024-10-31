@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.common.output;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -113,9 +114,9 @@ public abstract class RaceOutput {
         }
     }
 
-    protected boolean prizesInThisOrLaterGroup(final Race.PrizeCategoryGroup group) {
+    protected boolean prizesInThisOrLaterGroup(final PrizeCategoryGroup group) {
 
-        for (final Race.PrizeCategoryGroup g : race.prize_category_groups.reversed()) {
+        for (final PrizeCategoryGroup g : race.prize_category_groups.reversed()) {
 
             for (final PrizeCategory c : g.categories()) {
                 if (prizesInThisOrLaterCategory(c)) return true;
@@ -163,5 +164,6 @@ public abstract class RaceOutput {
     public abstract void printPrizes() throws IOException;
 
     protected abstract void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException;
-    protected abstract ResultPrinter getResultPrinter(final OutputStreamWriter writer);
+    protected abstract ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer);
+    protected abstract ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer);
 }

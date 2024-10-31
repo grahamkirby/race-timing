@@ -35,7 +35,7 @@ public abstract class SingleRace extends Race {
 
         super(config_file_path);
 
-        // Specifies all the runners who did have a finish
+        // Specifies all the bib numbers for runners who did have a finish
         // time recorded but were declared DNF.
         dnf_string = getProperty(KEY_DNF_LEGS, "");
     }
@@ -53,7 +53,7 @@ public abstract class SingleRace extends Race {
     protected void fillDNFs() {
 
         // This fills in the DNF results that were specified explicitly in the config
-        // file, corresponding to cases where the runners reported not visiting all
+        // file, corresponding to cases where the runner_names reported not visiting all
         // checkpoints.
 
         // DNF cases where there is no recorded leg result are captured by the

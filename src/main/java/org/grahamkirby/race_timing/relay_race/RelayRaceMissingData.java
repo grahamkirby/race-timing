@@ -55,7 +55,7 @@ public class RelayRaceMissingData {
     protected void guessMissingBibNumbers() {
 
         // Missing bib numbers are only guessed if a full set of finish times has been recorded,
-        // i.e. all runners have finished.
+        // i.e. all runner_names have finished.
 
         if (timesAreRecordedForAllRunners())
             guessMissingBibNumbersWithAllTimesRecorded();
@@ -209,7 +209,7 @@ public class RelayRaceMissingData {
         // that it's the one finishing now.
 
         // Get summary of each team's state at the point of this position being recorded,
-        // in terms of how many of the team's runners finished before and after this position,
+        // in terms of how many of the team's runner_names finished before and after this position,
         // and the team's previous and next finish times.
         final List<TeamSummaryAtPosition> summaries = summarise(position);
 

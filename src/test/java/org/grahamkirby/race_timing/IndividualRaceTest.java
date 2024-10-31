@@ -104,4 +104,9 @@ public class IndividualRaceTest extends RaceTest {
     public void openWinnerFromOlderCategory() throws Exception {
         testExpectedCompletion("individual_race/open_winner_from_older_category");
     }
+
+    @Test
+    public void prizeCategoryGroups() throws Exception {
+        testExpectedCompletion("individual_race/prize_category_groups");
+    }
 }

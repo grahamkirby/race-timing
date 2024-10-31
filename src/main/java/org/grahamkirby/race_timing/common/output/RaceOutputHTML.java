@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.common.output;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -68,7 +69,7 @@ public abstract class RaceOutputHTML extends RaceOutput {
             writer.append("<ul>\n");
 
             setPositionStrings(category_prize_winners, race.allowEqualPositions());
-            printResults(category_prize_winners, getResultPrinter(writer));
+            printResults(category_prize_winners, getPrizeResultPrinter(writer));
 
             writer.append("</ul>\n\n");
         }
@@ -81,7 +82,7 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
         writer.append("<h4>Prizes</h4>\n");
 
-        for (Race.PrizeCategoryGroup group : race.prize_category_groups)
+        for (PrizeCategoryGroup group : race.prize_category_groups)
             if (prizesInThisOrLaterGroup(group))
                 for (final PrizeCategory category : group.categories())
                     if (prizesInThisOrLaterCategory(category))
@@ -90,9 +91,31 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     protected void printResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
+        int group_number = 0;
+        for (final PrizeCategoryGroup group : race.prize_category_groups) {
+
+            final String group_title = group.combined_categories_title();
+            final List<PrizeCategory> prize_categories = group.categories();
+
+            printResults(writer, prize_categories, group_title, race.prize_category_groups.size() > 1, include_credit_link && group_number++ == race.prize_category_groups.size() - 1);
+        }
+    }
+
+    private void printResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_sub_heading, boolean include_credit_link) throws IOException {
+
+        if (include_sub_heading) writer.append("<h4>").append(sub_heading).append("</h4>\n");
+
         printResultsHeader(writer);
-        printResultsBody(writer);
+        printResultsBody(writer, prize_categories);
         printResultsFooter(writer, include_credit_link);
+    }
+
+    private void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories) throws IOException {
+
+        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
+
+        setPositionStrings(results, race.allowEqualPositions());
+        printResults(results, getOverallResultPrinter(writer));
     }
 
     protected void printResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
@@ -105,7 +128,6 @@ public abstract class RaceOutputHTML extends RaceOutput {
         if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 
-    protected abstract void printResultsBody(final OutputStreamWriter writer) throws IOException;
     protected abstract void printResultsHeader(final OutputStreamWriter writer) throws IOException;
     public abstract void printCombined() throws IOException;
 }

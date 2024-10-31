@@ -34,7 +34,12 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+        return new OverallResultPrinterHTML(((MidweekRace)race), writer);
+    }
+
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinterHTML(((MidweekRace)race), writer);
     }
 
@@ -62,15 +67,25 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
             """);
     }
 
+    private void printHeadings(final OutputStreamWriter writer) throws IOException {
+
+        final List<IndividualRace> races = ((MidweekRace)race).getRaces();
+
+        for (int i = 0; i < races.size(); i++) {
+            if (races.get(i) != null) {
+                writer.append("<th>Race ").
+                        append(String.valueOf(i + 1)).
+                        append("</th>\n");
+            }
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printResultsBody(final OutputStreamWriter writer) throws IOException {
+    private record OverallResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
 
-        final List<RaceResult> overall_results = race.getOverallResults();
-
-        setPositionStrings(overall_results, true);
-
-        for (final RaceResult r : overall_results) {
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
 
             MidweekRaceResult result = ((MidweekRaceResult)r);
 
@@ -107,22 +122,12 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
                         </tr>
                         """);
         }
-    }
 
-    private void printHeadings(final OutputStreamWriter writer) throws IOException {
-
-        final List<IndividualRace> races = ((MidweekRace)race).getRaces();
-
-        for (int i = 0; i < races.size(); i++) {
-            if (races.get(i) != null) {
-                writer.append("<th>Race ").
-                        append(String.valueOf(i + 1)).
-                        append("</th>\n");
-            }
+        @Override
+        public void printNoResults() throws IOException {
+            throw new UnsupportedOperationException();
         }
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record PrizeResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
 
@@ -143,7 +148,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
         @Override
         public void printNoResults() throws IOException {
-            throw new UnsupportedOperationException();
+            writer.append("No results\n");
         }
     }
 }

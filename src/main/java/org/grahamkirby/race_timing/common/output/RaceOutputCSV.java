@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.common.output;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -48,16 +49,16 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
     private void printResults(final OutputStreamWriter writer) throws IOException {
 
-        for (final Race.PrizeCategoryGroup category_group : race.prize_category_groups)
+        for (final PrizeCategoryGroup category_group : race.prize_category_groups)
             printCategoryResults(writer, category_group.categories());
     }
 
-    private void printCategoryResults(final OutputStreamWriter writer, final List<PrizeCategory> category_names) throws IOException {
+    private void printCategoryResults(final OutputStreamWriter writer, final List<PrizeCategory> categories) throws IOException {
 
-        final List<RaceResult> results = race.getOverallResultsByCategory(category_names);
+        final List<RaceResult> results = race.getOverallResultsByCategory(categories);
 
         setPositionStrings(results, race.allowEqualPositions());
-        printResults(results, getResultPrinter(writer));
+        printResults(results, getOverallResultPrinter(writer));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

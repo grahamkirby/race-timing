@@ -40,9 +40,13 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
         return new ResultPrinterCSV(writer);
     }
+
+    // Prize results not printed to text file.
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

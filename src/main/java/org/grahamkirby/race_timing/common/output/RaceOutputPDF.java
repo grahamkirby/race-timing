@@ -111,7 +111,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            PrizeWinnerDetails details = race_output.getPrizeWinnerDetails(r);
+            final PrizeWinnerDetails details = race_output.getPrizeWinnerDetails(r);
             printPrizePDF(document, details.position_string, details.name, details.detail1, details.detail2);
         }
 
@@ -132,9 +132,13 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
-    protected void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) throws IOException { throw new UnsupportedOperationException(); }
+    protected void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
 
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getOverallResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    // Not implemented since PDF created using PDF document writer rather than output stream.
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 }
