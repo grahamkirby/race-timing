@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 
 import java.io.IOException;
@@ -46,9 +47,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    @Override
-//    public void printDetailedResults(final boolean ignore) throws IOException {
-        public void printDetailedResults() throws IOException {
+    public void printDetailedResults() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + SUFFIX_CSV));
 
@@ -73,8 +72,8 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
-        return new ResultPrinterCSV(writer);
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+        return new OverallResultPrinterCSV(writer);
     }
 
     protected void printLegResults() throws IOException {
@@ -136,7 +135,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         writer.append("\n");
     }
 
-    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final RelayRaceEntry.Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
@@ -144,7 +143,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             final LegResult leg_result = result.leg_results.get(leg_number - 1);
 
-            writer.append(team.runners().get(leg_number-1));
+            writer.append(team.runner_names().get(leg_number-1));
             ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
 
             writer.append(",");
@@ -173,14 +172,18 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         if (!result.DNF) {
             writer.append(result.position_string).append(",");
-            writer.append(result.entry.team.runners().get(result.leg_number - 1)).append(",");
+            writer.append(result.entry.team.runner_names().get(result.leg_number - 1)).append(",");
             writer.append(format(result.duration())).append("\n");
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
+    // Prize results not printed to text file.
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    private record OverallResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
         public void printResult(final RaceResult r) throws IOException {

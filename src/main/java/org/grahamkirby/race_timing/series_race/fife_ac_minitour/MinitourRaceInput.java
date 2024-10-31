@@ -139,7 +139,8 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private Duration getTimeTrialOffset(final int bib_number) {
 
-        // This assumes that time-trial runners are assigned to waves in order of bib number, with incomplete waves if there are any gaps in bib numbers.
+        // This assumes that time-trial runner_names are assigned to waves in order of bib number,
+        // with incomplete waves if there are any gaps in bib numbers.
 
         final int wave_number = runnerIndexInBibOrder(bib_number) / time_trial_runners_per_wave;
         return time_trial_inter_wave_interval.multipliedBy(wave_number);
@@ -163,10 +164,10 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private boolean runnerIsInSecondWave(final IndividualRace individual_race, final int bib_number) {
 
-        return second_wave_categories.stream().map(
-                category -> category.equalGenderAndAgeCategory(individual_race.findCategory(bib_number))).
-                reduce(Boolean::logicalOr).orElseThrow();
+        final EntryCategory runner_entry_category = individual_race.findCategory(bib_number);
 
-//        return SECOND_WAVE_CATEGORY_NAMES.contains(individual_race.findCategory(bib_number).getShortName());
+        return second_wave_categories.stream().map(
+                second_wave_category -> second_wave_category.equalGenderAndAgeCategory(runner_entry_category)).
+                reduce(Boolean::logicalOr).orElseThrow();
     }
 }

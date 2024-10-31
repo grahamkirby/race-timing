@@ -17,6 +17,7 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
@@ -39,7 +40,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    @Override
     public void printDetailedResults(final boolean include_credit_link) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".html"));
@@ -94,7 +94,12 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+        return new OverallResultPrinterHTML(((RelayRace)race), writer);
+    }
+
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinterHTML(((RelayRace)race), writer);
     }
 
@@ -133,18 +138,19 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    protected void printResultsBody(final OutputStreamWriter writer) throws IOException {
+    // TODO use result printer for detailed output
 
-        int position = 1;
+    private record OverallResultPrinterHTML(RelayRace race, OutputStreamWriter writer) implements ResultPrinter {
 
-        for (final RaceResult r : race.getOverallResults()) {
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
 
             RelayRaceResult result = ((RelayRaceResult) r);
 
             writer.append("""
                         <tr>
                             <td>""");
-            if (!result.dnf()) writer.append(String.valueOf(position++));
+            if (!result.dnf()) writer.append(result.position_string);
             writer.append("""
                             </td>
                             <td>""");
@@ -164,6 +170,12 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("""
                             </td>
                         </tr>""");
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            writer.append("No results\n");
         }
     }
 
@@ -264,7 +276,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         printLegResultsFooter(writer, include_credit_link);
     }
 
-    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final RelayRaceEntry.Team team) throws IOException {
+    private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
 
         boolean any_previous_leg_dnf = false;
 
@@ -274,7 +286,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
             writer.append("""
                 <td>""");
-            writer.append(race.normalisation.htmlEncode(team.runners().get(leg_number - 1)));
+            writer.append(race.normalisation.htmlEncode(team.runner_names().get(leg_number - 1)));
 
             ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
 
@@ -326,7 +338,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 writer.append("""
                                 </td>
                                 <td>""");
-                writer.append(race.normalisation.htmlEncode(leg_result.entry.team.runners().get(leg_result.leg_number-1)));
+                writer.append(race.normalisation.htmlEncode(leg_result.entry.team.runner_names().get(leg_result.leg_number-1)));
                 writer.append("""
                                 </td>
                                 <td>""");

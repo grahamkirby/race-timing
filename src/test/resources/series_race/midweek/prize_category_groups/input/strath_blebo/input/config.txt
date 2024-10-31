@@ -1,0 +1,11 @@
+YEAR = 2023
+RACE_NAME_FOR_RESULTS = Strathkinness-Blebocraigs
+RACE_NAME_FOR_FILENAMES = strath_blebo
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv

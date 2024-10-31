@@ -24,7 +24,9 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 public abstract class SeriesRaceResult extends RaceResult {
 
-    // TODO rationalise with IndividualRaceResult - consistency wrt entry class
+    // This refers directly to a runner rather than to an intermediate entry object as in
+    // IndividualRaceResult and RelayRaceResult, because in a series race the runner enters
+    // (and receives a bib number for) the individual component races, not the overall series.
     public final Runner runner;
 
     public SeriesRaceResult(final Runner runner, final SeriesRace race) {
@@ -49,7 +51,7 @@ public abstract class SeriesRaceResult extends RaceResult {
         return runner.equals(((SeriesRaceResult) other).runner);
     }
 
-    protected int numberCompleted() {
+    private int numberCompleted() {
 
         int count = 0;
 

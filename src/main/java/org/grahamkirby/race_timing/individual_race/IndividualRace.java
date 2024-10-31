@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -169,11 +168,9 @@ public class IndividualRace extends SingleRace {
 
     protected int getRecordedPosition(final int bib_number) {
 
-        for (int i = 0; i < raw_results.size(); i++) {
-            if (raw_results.get(i).getBibNumber() == bib_number) {
+        for (int i = 0; i < raw_results.size(); i++)
+            if (raw_results.get(i).getBibNumber() == bib_number)
                 return i + 1;
-            }
-        }
 
         return Integer.MAX_VALUE;
     }
@@ -196,7 +193,7 @@ public class IndividualRace extends SingleRace {
 
         // Sort in order of recorded time.
         // DNF results are sorted in increasing order of bib number.
-        // Where two runners have the same recorded time, the order in which they were recorded is preserved.
+        // Where two runner_names have the same recorded time, the order in which they were recorded is preserved.
         overall_results.sort(IndividualRaceResult::compare);
     }
 
@@ -220,6 +217,6 @@ public class IndividualRace extends SingleRace {
 
     private void printCombined() throws IOException {
 
-        ((RaceOutputHTML)output_HTML).printCombined();
+        output_HTML.printCombined();
     }
 }

@@ -37,13 +37,17 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
-        return new ResultPrinterCSV(race, writer);
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+        return new OverallResultPrinterCSV(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record ResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {
+    // Prize results not printed to text file.
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    private record OverallResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {
 
         @Override
         public void printResult(final RaceResult r) throws IOException {

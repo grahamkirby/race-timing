@@ -49,7 +49,7 @@ public class RelayRace extends SingleRace {
     protected int number_of_legs;
     private RelayRaceMissingData missing_data;
 
-    // Records for each leg whether there was a mass start.
+    // For each leg, records whether there was a mass start.
     private List<Boolean> mass_start_legs;
 
     // Times relative to start of leg 1 at which each mass start occurred.
@@ -83,7 +83,7 @@ public class RelayRace extends SingleRace {
     @Override
     public boolean allowEqualPositions() {
 
-        // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runners.
+        // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runner_names.
         return false;
     }
 
@@ -119,6 +119,30 @@ public class RelayRace extends SingleRace {
         printResults();
     }
 
+    @Override
+    protected void configureInputData() throws IOException {
+
+        super.configureInputData();
+        ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
+    }
+
+    @Override
+    protected void fillDNF(final String dnf_string) {
+
+        try {
+            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
+            result_with_leg.result.leg_results.get(result_with_leg.leg_index).DNF = true;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal DNF time");
+        }
+    }
+
+    @Override
+    public EntryCategory getEntryCategory(RaceResult result) {
+        return ((RelayRaceResult) result).entry.team.category();
+    }
+
     private void initialiseResults() {
 
         for (final RaceEntry entry : entries)
@@ -148,25 +172,6 @@ public class RelayRace extends SingleRace {
         printNotes();
     }
 
-    @Override
-    protected void configureInputData() throws IOException {
-
-        super.configureInputData();
-        ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
-    }
-
-    @Override
-    protected void fillDNF(final String dnf_string) {
-
-        try {
-            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
-            result_with_leg.result.leg_results.get(result_with_leg.leg_index).DNF = true;
-        }
-        catch (Exception e) {
-            throw new RuntimeException("illegal DNF time");
-        }
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void readProperties() {
@@ -186,11 +191,6 @@ public class RelayRace extends SingleRace {
 
         missing_data = new RelayRaceMissingData(this);
         prizes = new RelayRacePrizes(this);
-    }
-
-    @Override
-    public EntryCategory getEntryCategory(RaceResult result) {
-        return ((RelayRaceResult) result).entry.team.category();
     }
 
     protected int getRecordedLegPosition(final int bib_number, final int leg_number) {
@@ -388,7 +388,7 @@ public class RelayRace extends SingleRace {
 
         // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
         // Ordering for DNF results doesn't matter since they're omitted in output.
-        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
         // OutputCSV.printLegResults deals with dead heats.
         leg_results.sort(LegResult::compareTo);
 
@@ -397,7 +397,7 @@ public class RelayRace extends SingleRace {
 
     protected void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
 
-        // Adds e.g. "(M3)" after names of runners that started in leg 3 mass start.
+        // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
         if (leg_result.in_mass_start) {
 
             // Find the next mass start.
@@ -457,7 +457,7 @@ public class RelayRace extends SingleRace {
         // Individual leg time recorded for this runner.
         if (individual_start_time != null) return individual_start_time;
 
-        // Leg 1 runners start at time zero if there's no individual time recorded.
+        // Leg 1 runner_names start at time zero if there's no individual time recorded.
         if (leg_index == 0) return Duration.ZERO;
 
         // No finish time recorded for previous runner, so we can't record a start time for this one.
@@ -484,7 +484,7 @@ public class RelayRace extends SingleRace {
 
         // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
         // DNF results are sorted in increasing order of bib number.
-        // Where two teams have the same overall time, the order in which their last leg runners were recorded is preserved.
+        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
         overall_results.sort(RelayRaceResult::compare);
     }
 

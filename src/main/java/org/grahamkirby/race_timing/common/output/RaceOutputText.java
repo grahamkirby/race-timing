@@ -94,6 +94,7 @@ public abstract class RaceOutputText extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // TODO change to use result printer.
     protected abstract void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException;
 
     // Full results not printed to text file.
@@ -102,5 +103,8 @@ public abstract class RaceOutputText extends RaceOutput {
 
     // Full results not printed to text file.
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getOverallResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 }

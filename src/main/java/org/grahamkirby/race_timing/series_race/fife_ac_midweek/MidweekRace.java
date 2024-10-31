@@ -57,7 +57,7 @@ public class MidweekRace extends SeriesRace {
     @Override
     public boolean allowEqualPositions() {
 
-        // There can be dead heats in overall results, since these are determined by sum of multiple race points.
+        // There can be dead heats in overall results, since these are determined by sum of points from multiple races.
         return true;
     }
 
@@ -127,7 +127,7 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public EntryCategory getEntryCategory(RaceResult result) {
+    public EntryCategory getEntryCategory(final RaceResult result) {
         return ((MidweekRaceResult) result).runner.category;
     }
 
@@ -139,7 +139,7 @@ public class MidweekRace extends SeriesRace {
         // plus some other entries with no club defined, add the club to those entries.
 
         // Where a runner name is associated with multiple clubs, leave as is, under
-        // assumption that they are separate runners.
+        // assumption that they are separate runner_names.
         final List<String> clubs_for_runner = getRunnerClubs(runner_name);
         final List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
 
@@ -193,13 +193,10 @@ public class MidweekRace extends SeriesRace {
 
         final Set<String> names = new HashSet<>();
 
-        for (final IndividualRace race : races) {
+        for (final IndividualRace race : races)
             if (race != null)
-                for (RaceResult result : race.getOverallResults()) {
-                    final Runner runner = ((IndividualRaceResult)result).entry.runner;
-                    names.add(runner.name);
-                }
-        }
+                for (final RaceResult result : race.getOverallResults())
+                    names.add(((IndividualRaceResult)result).entry.runner.name);
 
         return new ArrayList<>(names);
     }

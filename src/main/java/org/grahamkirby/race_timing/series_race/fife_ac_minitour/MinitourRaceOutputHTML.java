@@ -20,6 +20,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -50,7 +51,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     protected void printResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         int group_number = 0;
-        for (final Race.PrizeCategoryGroup group : race.prize_category_groups) {
+        for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
             final String group_title = group.combined_categories_title();
             final List<PrizeCategory> prize_categories = group.categories();
@@ -60,7 +61,12 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(final OutputStreamWriter writer) {
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+        return new SeriesResultPrinterHTML(writer);
+    }
+
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinterHTML(((MinitourRace)race), writer);
     }
 
@@ -110,8 +116,8 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
-        setPositionStrings(results, true);
-        printResults(results, new SeriesResultPrinterHTML(writer));
+        setPositionStrings(results, race.allowEqualPositions());
+        printResults(results, getOverallResultPrinter(writer));
     }
 
     private void printIndividualRaceResults(final int race_number) throws IOException {
@@ -130,7 +136,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     private void printIndividualRaceResults(final OutputStreamWriter writer, final IndividualRace individual_race) throws IOException {
 
-        for (final Race.PrizeCategoryGroup group : race.prize_category_groups)
+        for (final PrizeCategoryGroup group : race.prize_category_groups)
             printIndividualRaceResults(writer, individual_race, group.categories(), group.combined_categories_title());
     }
 
@@ -220,9 +226,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     @Override
     protected void printResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected void printResultsBody(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

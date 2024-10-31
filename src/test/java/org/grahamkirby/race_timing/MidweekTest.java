@@ -39,4 +39,9 @@ public class MidweekTest extends RaceTest {
     public void duplicateRunnerName() throws Exception {
         testExpectedCompletion("series_race/midweek/duplicate_runner_name");
     }
+
+    @Test
+    public void prizeCategoryGroups() throws Exception {
+        testExpectedCompletion("series_race/midweek/prize_category_groups");
+    }
 }

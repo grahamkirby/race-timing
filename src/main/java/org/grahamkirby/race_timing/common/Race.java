@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
@@ -35,8 +36,6 @@ import java.util.function.Predicate;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
-
-    public record PrizeCategoryGroup(String combined_categories_title, List<PrizeCategory> categories){}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -191,7 +190,7 @@ public abstract class Race {
 
         List<PrizeCategory> prize_categories = new ArrayList<>();
         for (final PrizeCategoryGroup group : prize_category_groups) {
-            prize_categories.addAll(group.categories);
+            prize_categories.addAll(group.categories());
         }
         return prize_categories;
     }
@@ -203,21 +202,30 @@ public abstract class Race {
         for (final String line : Files.readAllLines(prize_categories_path)) {
 
             final String group_name = line.split(",")[5];
-            
-            if (groups.isEmpty())
-                groups.add(new PrizeCategoryGroup(group_name, new ArrayList<>()));
 
-            PrizeCategoryGroup group = groups.getLast();
+            addGroupIfAbsent(groups, group_name);
+            PrizeCategoryGroup group = getGroupWithName(groups, group_name);
 
-            if (!group.combined_categories_title.equals(group_name)) {
-                group = new PrizeCategoryGroup(group_name, new ArrayList<>());
-                groups.add(group);
-            }
-
-            group.categories.add(new PrizeCategory(line));
+            group.categories().add(new PrizeCategory(line));
         }
 
         return groups;
+    }
+
+    private void addGroupIfAbsent(List<PrizeCategoryGroup> groups, String groupName) {
+
+        if (getGroupWithName(groups, groupName) == null) {
+            groups.add(new PrizeCategoryGroup(groupName, new ArrayList<>()));
+        }
+    }
+
+    private PrizeCategoryGroup getGroupWithName(List<PrizeCategoryGroup> groups, String groupName) {
+
+        for (PrizeCategoryGroup group : groups) {
+            if (group.combined_categories_title().equals(groupName))
+                return group;
+        }
+        return null;
     }
 
     public List<RaceResult> getOverallResults() {

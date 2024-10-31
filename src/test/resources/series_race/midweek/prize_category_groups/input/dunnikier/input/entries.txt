@@ -1,0 +1,56 @@
+56	Ryan Lafferty	Fife AC	MS
+55	Ben Kinninmonth	Fife AC	MS
+54	Ross Young	Anster Haddies	MS
+53	Tom Rainey	Anster Haddies	M40
+52	Dave Clark	Fife AC	M40
+51	Glenn Barclay	Fife AC	MS
+50	Jonathan Millar	Carnegie Harriers	M40
+49	Rhona Van Rensburg	Fife AC	F50
+48	Scott McClung	Fife AC	MS
+47	Bryan McLaren	Leven Las Vegas RC	MS
+46	Thomas Robertson	Fife AC	MU20
+45	Anwen Darlington	Dundee Road Runners	FS
+44	Andy Harley	Fife AC	M40
+43	Paul Harkins	Fife AC	M40
+42	Jim Morton	Dundee Road Runners	M50
+41	Lynne Herd	Anster Haddies	F40
+40	Amy Tait	Falkland Trail Runners	FS
+39	Louise Lessels	Falkland Trail Runners	F40
+38	Richard Melville	U/A	M50
+37	Malcolm Forbes	Dundee Road Runners	M60
+36	Kevin Murray	Falkland Trail Runners	M50
+35	Christian Harding	Fife AC	M40
+34	Fiona Callaghan	Dundee Road Runners	FS
+33	John MacPherson	Fife AC	M40
+32	Vince MacPherson	U/A	M40
+31	Mike Murdoch	Falkland Trail Runners	M40
+30	Robyn Graham	Falkland Trail Runners	FS
+29	Jennifer Massie	Dundee Road Runners	FS
+28	Fiona Canavan	Dundee Road Runners	FS
+27	George Young	Falkland Trail Runners	M40
+26	Pamela Cruickshanks	Anster Haddies	F50
+25	Hilary Ritchie	Fife AC	F60
+24	Andy Ballentine	Kirkcaldy Wizards	M50
+23	Greg Wilson	Kirkcaldy Wizards	M40
+22	Lee Cessford	Falkland Trail Runners	M40
+21	Jeff Taylor	Leven Las Vegas RC	M50
+20	Lesley Reynolds	Carnegie Harriers	F50
+19	Bill Gillan	Recreational Running	M70
+18	Martin Kirkbride	Falkland Trail Runners	M60
+17	Heather Finlayson	Fife AC	F50
+16	David Pease	Falkland Trail Runners	M50
+15	Vikki Laing	U/A	FS
+14	Janet McWhinnie	U/A	F50
+13	Nick Brian	Fife AC	M60
+12	Allan Gibson	Anster Haddies	M70
+11	Lesley Duffy	Recreational Running	F50
+10	Sean Duffy	U/A	M40
+9	Kevin O'Neill	Kirkcaldy Wizards	M50
+8	Jennifer Morris	Fife AC	F60
+7	Jim McWhinnie	U/A	M60
+6	Jackie Galloway	Anster Haddies	F60
+5	Tracy Chalmers	Anster Haddies	F40
+4	Allan Galloway	Anster Haddies	M40
+3	Sandra Gardener	Falkland Trail Runners	F50
+2	John Lee	Falkland Trail Runners	M60
+1	Rosemary Lee	Falkland Trail Runners	F60

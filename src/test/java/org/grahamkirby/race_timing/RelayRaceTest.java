@@ -322,4 +322,9 @@ public class RelayRaceTest extends RaceTest {
     public void alternativePrizeReportingOrder() throws Exception {
         testExpectedCompletion("relay_race/alternative_prize_reporting_order");
     }
+
+    @Test
+    public void prizeCategoryGroups() throws Exception {
+        testExpectedCompletion("relay_race/prize_category_groups");
+    }
 }

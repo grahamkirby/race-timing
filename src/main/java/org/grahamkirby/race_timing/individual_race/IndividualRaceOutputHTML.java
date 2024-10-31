@@ -32,8 +32,6 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         super(race);
     }
 
-    // TODO parameterise with category lists for consistency with minitour.
-
     // TODO make HTML tidier in general.
 
     @Override
@@ -58,7 +56,12 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     @Override
-    protected ResultPrinter getResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+        return new OverallResultPrinterHTML(((IndividualRace)race), writer);
+    }
+
+    @Override
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinterHTML(((IndividualRace)race), writer);
     }
 
@@ -81,19 +84,19 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
-    @Override
-    protected void printResultsBody(final OutputStreamWriter writer) throws IOException {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        int position = 1;
+    private record OverallResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
 
-        for (final RaceResult r : race.getOverallResults()) {
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
 
             final IndividualRaceResult result = ((IndividualRaceResult)r);
 
             writer.append("""
                         <tr>
                             <td>""");
-            if (!result.DNF) writer.append(String.valueOf(position++));
+            if (!result.DNF) writer.append(result.position_string);
             writer.append("""
                             </td>
                             <td>""");
@@ -118,9 +121,13 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                             </td>
                         </tr>""");
         }
-    }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+        @Override
+        public void printNoResults() throws IOException {
+
+            writer.append("No results\n");
+        }
+    }
 
     private record PrizeResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
 
