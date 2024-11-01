@@ -105,23 +105,10 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
         if (include_sub_heading) writer.append("<h4>").append(sub_heading).append("</h4>\n");
 
-        printResultsBody(writer, prize_categories, include_credit_link);
-    }
-
-    protected void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
-
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
         setPositionStrings(results, race.allowEqualPositions());
-
-        ResultPrinter overallResultPrinter = getOverallResultPrinter(writer);
-        printResultsHeader(writer);
-
-//        overallResultPrinter.print(results, include_credit_link);
-        overallResultPrinter.print(results, false);
-
-
-        printResultsFooter(writer, include_credit_link);
+        getOverallResultPrinter(writer).print(results, include_credit_link);
     }
 
     protected void printResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {

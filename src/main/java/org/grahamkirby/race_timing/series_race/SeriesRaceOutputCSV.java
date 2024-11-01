@@ -32,7 +32,7 @@ public abstract class SeriesRaceOutputCSV extends RaceOutputCSV {
         super(race);
     }
 
-    protected void printOverallResultsHeaderRootSeries(final OutputStreamWriter writer) throws IOException {
+    public void printOverallResultsHeaderRootSeries(final OutputStreamWriter writer) throws IOException {
 
         writer.append(OVERALL_RESULTS_HEADER);
 

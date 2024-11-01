@@ -18,7 +18,6 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
@@ -46,52 +45,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
     @Override
     protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>Runner</th>
-                                       <th>Category</th>
-                                       <th>Club</th>
-            """);
-
-        printHeadings(writer);
-
-        writer.append("""
-                                       <th>Total</th>
-                                       <th>Completed</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
-    }
-
-    private void printHeadings(final OutputStreamWriter writer) throws IOException {
-
-        final List<IndividualRace> races = ((MidweekRace)race).getRaces();
-
-        for (int i = 0; i < races.size(); i++) {
-            if (races.get(i) != null) {
-                writer.append("<th>Race ").
-                        append(String.valueOf(i + 1)).
-                        append("</th>\n");
-            }
-        }
-    }
-
-    protected void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
-
-        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
-
-        setPositionStrings(results, race.allowEqualPositions());
-
-        ResultPrinter overallResultPrinter = getOverallResultPrinter(writer);
-
-        overallResultPrinter.print(results, include_credit_link);
-
-
+throw new UnsupportedOperationException();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

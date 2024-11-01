@@ -120,35 +120,15 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         if (include_sub_heading) writer.append("<h4>").append(sub_heading).append("</h4>\n");
 
-        printDetailedResultsHeader(writer);
-        printDetailedResultsBody(writer, prize_categories);
-        printResultsFooter(writer, include_credit_link);
-    }
-
-    private void printDetailedResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories) throws IOException {
-
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
         setPositionStrings(results, race.allowEqualPositions());
-        printResults(results, new DetailedResultPrinterHTML(writer, (RelayRace) race, new LegResultDetailsPrinterHTML(writer, (RelayRace)race)));
+        new DetailedResultPrinterHTML(writer, (RelayRace) race, new LegResultDetailsPrinterHTML(writer, (RelayRace)race)).print(results, include_credit_link);
     }
 
     @Override
     protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-            <table class="fac-table">
-                           <thead>
-                               <tr>
-                                   <th>Pos</th>
-                                   <th>No</th>
-                                   <th>Team</th>
-                                   <th>Category</th>
-                                   <th>Total</th>
-                               </tr>
-                           </thead>
-                           <tbody>
-            """);
+throw new UnsupportedOperationException();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,44 +145,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
             printLegResults(html_writer, leg, include_credit_link);
-        }
-    }
-
-    private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>No</th>
-                                       <th>Team</th>
-                                       <th>Category</th>
-            """);
-
-        printHeadings(writer);
-
-        writer.append("""
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
-    }
-
-    private void printHeadings(final OutputStreamWriter writer) throws IOException {
-
-        for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
-
-            writer.append("<th>Runner");
-            if (((RelayRace)race).paired_legs.get(leg_number-1)) writer.append("s");
-            writer.append(" ").append(String.valueOf(leg_number)).append("</th>");
-
-            writer.append("<th>Leg ").append(String.valueOf(leg_number)).append("</th>");
-
-            if (leg_number < ((RelayRace)race).number_of_legs)
-                writer.append("<th>Split ").append(String.valueOf(leg_number)).append("</th>");
-            else
-                writer.append("<th>Total</th>");
         }
     }
 
@@ -235,43 +177,13 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     private void printLegResultsBody(final OutputStreamWriter writer, final List<LegResult> leg_results) throws IOException {
 
-        for (final LegResult leg_result : leg_results) {
+        for (final LegResult leg_result : leg_results)
             new LegResultPrinterHTML(writer, (RelayRace) race).printResult(leg_result);
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     // TODO incorporate header & footer into result printer
-
-
-
-
-
-
-
-
-
-    protected void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
-
-        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
-
-        setPositionStrings(results, race.allowEqualPositions());
-
-        ResultPrinter overallResultPrinter = getOverallResultPrinter(writer);
-
-        overallResultPrinter.print(results, include_credit_link);
-
-
-    }
-
-
-
-
-
-
-
-
 
     private record OverallResultPrinterHTML(OutputStreamWriter writer, RelayRace race) implements ResultPrinter {
 
@@ -473,21 +385,62 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
+            writer.append("""
+                <table class="fac-table">
+                               <thead>
+                                   <tr>
+                                       <th>Pos</th>
+                                       <th>No</th>
+                                       <th>Team</th>
+                                       <th>Category</th>
+            """);
+
+            for (int leg_number = 1; leg_number <= race.number_of_legs; leg_number++) {
+
+                writer.append("<th>Runner");
+                if (race.paired_legs.get(leg_number-1)) writer.append("s");
+                writer.append(" ").append(String.valueOf(leg_number)).append("</th>");
+
+                writer.append("<th>Leg ").append(String.valueOf(leg_number)).append("</th>");
+
+                if (leg_number < ((RelayRace)race).number_of_legs)
+                    writer.append("<th>Split ").append(String.valueOf(leg_number)).append("</th>");
+                else
+                    writer.append("<th>Total</th>");
+            }
+
+            writer.append("""
+                                   </tr>
+                               </thead>
+                               <tbody>
+            """);
 
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            writer.append("""
+                </tbody>
+            </table>
+            """);
+
+            if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
 
         }
 
         @Override
         public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            printResultsHeader();
+
+            for (final RaceResult result : results)
+                printResult(result);
+
+            if (results.isEmpty())
+                printNoResults();
+
+            printResultsFooter(include_credit_link);
         }
         @Override
         public void printResult(final RaceResult r) throws IOException {

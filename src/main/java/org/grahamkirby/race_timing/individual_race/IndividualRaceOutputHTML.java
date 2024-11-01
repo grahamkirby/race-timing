@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
@@ -69,34 +68,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     @Override
     protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>No</th>
-                                       <th>Runner</th>
-                                       <th>Club</th>
-                                       <th>Cat</th>
-                                       <th>Time</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
-    }
-
-    protected void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
-
-        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
-
-        setPositionStrings(results, race.allowEqualPositions());
-
-        ResultPrinter overallResultPrinter = getOverallResultPrinter(writer);
-
-        overallResultPrinter.print(results, include_credit_link);
-
-
+        throw new UnsupportedOperationException();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
