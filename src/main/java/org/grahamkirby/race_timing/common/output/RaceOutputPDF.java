@@ -80,7 +80,8 @@ public abstract class RaceOutputPDF extends RaceOutput {
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         setPositionStrings(category_prize_winners, race.allowEqualPositions());
-        printResults(category_prize_winners, new ResultPrinterPDF(document, this));
+//        printResults(category_prize_winners, new ResultPrinterPDF(document, this));
+        new ResultPrinterPDF(document, this).print(category_prize_winners, false);
     }
 
     // Needs to be static to allow access from inner classes of subclasses of this class.
@@ -111,14 +112,14 @@ public abstract class RaceOutputPDF extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
+
 
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+
 
         }
 
@@ -126,7 +127,11 @@ public abstract class RaceOutputPDF extends RaceOutput {
         @Override
         public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            for (final RaceResult result : results)
+                printResult(result);
+
+            if (results.isEmpty())
+                printNoResults();
         }
 
         @Override

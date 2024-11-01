@@ -54,21 +54,27 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
+
 
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
-
         }
 
         @Override
         public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            printResultsHeader();
+
+            for (final RaceResult result : results)
+                printResult(result);
+
+            if (results.isEmpty())
+                printNoResults();
+
+            printResultsFooter(include_credit_link);
         }
         @Override
         public void printResult(final RaceResult r) throws IOException {

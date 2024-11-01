@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new ResultPrinterCSV(writer);
+        return new ResultPrinterCSV(writer, (SeriesRace) race);
     }
 
     // Prize results not printed to text file.
@@ -51,25 +52,31 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
+    private record ResultPrinterCSV(OutputStreamWriter writer, SeriesRace race) implements ResultPrinter {
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
 
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
 
         }
 
         @Override
         public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            printResultsHeader();
+
+            for (final RaceResult result : results)
+                printResult(result);
+
+            if (results.isEmpty())
+                printNoResults();
+
+            printResultsFooter(include_credit_link);
         }
         @Override
         public void printResult(final RaceResult r) throws IOException {

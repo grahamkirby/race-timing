@@ -58,7 +58,8 @@ public abstract class RaceOutputCSV extends RaceOutput {
         final List<RaceResult> results = race.getOverallResultsByCategory(categories);
 
         setPositionStrings(results, race.allowEqualPositions());
-        printResults(results, getOverallResultPrinter(writer));
+//        printResults(results, getOverallResultPrinter(writer));
+        getOverallResultPrinter(writer).print(results, false);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

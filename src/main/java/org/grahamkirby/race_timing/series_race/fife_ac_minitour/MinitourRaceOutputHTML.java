@@ -48,21 +48,8 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     }
 
     @Override
-    protected void printResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
-
-        int group_number = 0;
-        for (final PrizeCategoryGroup group : race.prize_category_groups) {
-
-            final String group_title = group.combined_categories_title();
-            final List<PrizeCategory> prize_categories = group.categories();
-
-            printSeriesResults(writer, prize_categories, group_title, group_number++ == race.prize_category_groups.size() - 1);
-        }
-    }
-
-    @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new SeriesResultPrinterHTML(writer);
+        return new SeriesResultPrinterHTML(writer, (SeriesRace) race);
     }
 
     @Override
@@ -71,54 +58,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printSeriesResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_credit_link) throws IOException {
-        
-        writer.append("<h4>").append(sub_heading).append("</h4>\n");
-
-        printSeriesResultsHeader(writer);
-        printSeriesResultsBody(writer, prize_categories);
-        printResultsFooter(writer, include_credit_link);
-    }
-
-    private void printSeriesResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append("""
-                <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>Runner</th>
-                                       <th>Cat</th>
-                                       <th>Club</th>
-            """);
-
-        printSeriesHeadings(writer);
-
-        writer.append("""
-                                       <th>Total</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
-    }
-
-    private void printSeriesHeadings(final OutputStreamWriter writer) throws IOException {
-
-        final List<IndividualRace> races = ((SeriesRace) race).getRaces();
-
-        for (int i = 0; i < races.size(); i++)
-            if (races.get(i) != null)
-                writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
-    }
-
-    private void printSeriesResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories) throws IOException {
-
-        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
-
-        setPositionStrings(results, race.allowEqualPositions());
-        printResults(results, getOverallResultPrinter(writer));
-    }
 
     private void printIndividualRaceResults(final int race_number) throws IOException {
 
@@ -229,25 +168,59 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record SeriesResultPrinterHTML(OutputStreamWriter writer) implements ResultPrinter {
+    private record SeriesResultPrinterHTML(OutputStreamWriter writer, SeriesRace race) implements ResultPrinter {
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
+            writer.append("""
+                <table class="fac-table">
+                               <thead>
+                                   <tr>
+                                       <th>Pos</th>
+                                       <th>Runner</th>
+                                       <th>Cat</th>
+                                       <th>Club</th>
+            """);
 
+            final List<IndividualRace> races = ((SeriesRace) race).getRaces();
+
+            for (int i = 0; i < races.size(); i++)
+                if (races.get(i) != null)
+                    writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
+
+
+            writer.append("""
+                                       <th>Total</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+            """);
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            writer.append("""
+                </tbody>
+            </table>
+            """);
+
+            if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
 
         }
 
         @Override
         public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            printResultsHeader();
+
+            for (final RaceResult result : results)
+                printResult(result);
+
+            if (results.isEmpty())
+                printNoResults();
+
+            printResultsFooter(include_credit_link);
         }
         @Override
         public void printResult(final RaceResult r) throws IOException {
