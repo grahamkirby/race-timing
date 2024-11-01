@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -51,7 +52,25 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record ResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
+        @Override
+        public void printResultsHeader() throws IOException {
 
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 

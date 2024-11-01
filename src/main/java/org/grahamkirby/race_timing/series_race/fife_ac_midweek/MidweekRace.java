@@ -98,6 +98,7 @@ public class MidweekRace extends SeriesRace {
     protected void printCombined() throws IOException {
 
         output_HTML.printCombined();
+        int x = 3;
     }
 
     @Override

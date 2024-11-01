@@ -230,7 +230,25 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record SeriesResultPrinterHTML(OutputStreamWriter writer) implements ResultPrinter {
+        @Override
+        public void printResultsHeader() throws IOException {
 
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -287,7 +305,25 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record PrizeResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
+        @Override
+        public void printResultsHeader() throws IOException {
 
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 

@@ -101,21 +101,43 @@ public abstract class RaceOutputHTML extends RaceOutput {
         }
     }
 
-    private void printResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_sub_heading, boolean include_credit_link) throws IOException {
+    protected void printResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_sub_heading, boolean include_credit_link) throws IOException {
 
         if (include_sub_heading) writer.append("<h4>").append(sub_heading).append("</h4>\n");
 
-        printResultsHeader(writer);
-        printResultsBody(writer, prize_categories);
-        printResultsFooter(writer, include_credit_link);
+//        printResultsHeader(writer);
+        printResultsBody(writer, prize_categories, include_credit_link);
+//        printResultsFooter(writer, include_credit_link);
     }
 
-    private void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories) throws IOException {
+    private void printResults2(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_sub_heading, boolean include_credit_link) throws IOException {
+
+//        if (include_sub_heading) writer.append("<h4>").append(sub_heading).append("</h4>\n");
+//
+//        printResultsHeader(writer);
+//        printResultsBody(writer, prize_categories);
+//        printResultsFooter(writer, include_credit_link);
+    }
+
+    protected void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
 
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
         setPositionStrings(results, race.allowEqualPositions());
-        printResults(results, getOverallResultPrinter(writer));
+
+        ResultPrinter overallResultPrinter = getOverallResultPrinter(writer);
+        printResultsHeader(writer);
+
+//        overallResultPrinter.print(results, include_credit_link);
+        overallResultPrinter.print(results, false);
+
+//        for (final RaceResult result : results)
+//            overallResultPrinter.printResult(result);
+//
+//        if (results.isEmpty())
+//            overallResultPrinter.printNoResults();
+
+        printResultsFooter(writer, include_credit_link);
     }
 
     protected void printResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {

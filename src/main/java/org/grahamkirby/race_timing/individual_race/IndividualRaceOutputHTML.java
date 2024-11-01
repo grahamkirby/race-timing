@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -87,7 +88,29 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record OverallResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
+        @Override
+        public void printResultsHeader() throws IOException {
 
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            for (final RaceResult result : results)
+                printResult(result);
+
+            if (results.isEmpty())
+                printNoResults();
+        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -130,7 +153,25 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
     }
 
     private record PrizeResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
+        @Override
+        public void printResultsHeader() throws IOException {
 
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 

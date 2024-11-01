@@ -33,6 +33,11 @@ public abstract class RaceOutput {
 
     public interface ResultPrinter {
 
+        void printResultsHeader() throws IOException;
+
+        void printResultsFooter(boolean include_credit_link) throws IOException;
+
+        void print(List<RaceResult> results, boolean include_credit_link) throws IOException;
         void printResult(RaceResult result) throws IOException;
         void printNoResults() throws IOException;
     }
