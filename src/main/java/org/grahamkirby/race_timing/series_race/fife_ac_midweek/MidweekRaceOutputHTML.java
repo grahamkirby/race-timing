@@ -83,7 +83,29 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record OverallResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
+        @Override
+        public void printResultsHeader() throws IOException {
 
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            for (final RaceResult result : results)
+                printResult(result);
+
+            if (results.isEmpty())
+                printNoResults();
+        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -130,7 +152,25 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
     }
 
     private record PrizeResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
+        @Override
+        public void printResultsHeader() throws IOException {
 
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 

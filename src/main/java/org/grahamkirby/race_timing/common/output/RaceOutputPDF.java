@@ -109,6 +109,27 @@ public abstract class RaceOutputPDF extends RaceOutput {
     private record ResultPrinterPDF(Document document, RaceOutputPDF race_output) implements ResultPrinter {
 
         @Override
+        public void printResultsHeader() throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+
+        @Override
+        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final PrizeWinnerDetails details = race_output.getPrizeWinnerDetails(r);
