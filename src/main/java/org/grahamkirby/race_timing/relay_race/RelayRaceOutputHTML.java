@@ -250,16 +250,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
 
 
-@Override
-    protected void printResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_sub_heading, boolean include_credit_link) throws IOException {
-
-        if (include_sub_heading) writer.append("<h4>").append(sub_heading).append("</h4>\n");
-
-//        printResultsHeader(writer);
-        printResultsBody(writer, prize_categories, include_credit_link);
-//        printResultsFooter(writer, include_credit_link);
-    }
-
 
 
     protected void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
@@ -269,17 +259,10 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         setPositionStrings(results, race.allowEqualPositions());
 
         ResultPrinter overallResultPrinter = getOverallResultPrinter(writer);
-//        printResultsHeader(writer);
 
         overallResultPrinter.print(results, include_credit_link);
 
-//        for (final RaceResult result : results)
-//            overallResultPrinter.printResult(result);
-//
-//        if (results.isEmpty())
-//            overallResultPrinter.printNoResults();
 
-//        printResultsFooter(writer, include_credit_link);
     }
 
 

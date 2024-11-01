@@ -17,6 +17,7 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
@@ -85,31 +86,66 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             """);
     }
 
+    protected void printResultsBody(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, boolean include_credit_link) throws IOException {
+
+        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
+
+        setPositionStrings(results, race.allowEqualPositions());
+
+        ResultPrinter overallResultPrinter = getOverallResultPrinter(writer);
+
+        overallResultPrinter.print(results, include_credit_link);
+
+
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record OverallResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
+            writer.append("""
+                <table class="fac-table">
+                               <thead>
+                                   <tr>
+                                       <th>Pos</th>
+                                       <th>No</th>
+                                       <th>Runner</th>
+                                       <th>Club</th>
+                                       <th>Cat</th>
+                                       <th>Time</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+            """);
 
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
+            writer.append("""
+                </tbody>
+            </table>
+            """);
+
+            if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
 
         }
 
         @Override
         public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
 
+            printResultsHeader();
+
             for (final RaceResult result : results)
                 printResult(result);
 
             if (results.isEmpty())
                 printNoResults();
+
+            printResultsFooter(include_credit_link);
         }
         @Override
         public void printResult(final RaceResult r) throws IOException {
