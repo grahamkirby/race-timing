@@ -21,6 +21,8 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterHTML;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -43,18 +45,19 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void printIndividualRaces() throws IOException {
+
         for (int i = 1; i <= ((SeriesRace)race).getRaces().size(); i++)
             printIndividualRaceResults(i);
     }
 
     @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new SeriesResultPrinterHTML(writer, (SeriesRace) race);
+        return new OverallResultPrinter(race, writer);
     }
 
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
-        return new PrizeResultPrinterHTML(((MinitourRace)race), writer);
+        return new PrizeResultPrinter(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,12 +166,12 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    protected void printResultsHeader(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
+    private static class OverallResultPrinter extends OverallResultPrinterHTML {
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
 
-    private record SeriesResultPrinterHTML(OutputStreamWriter writer, SeriesRace race) implements ResultPrinter {
         @Override
         public void printResultsHeader() throws IOException {
 
@@ -197,31 +200,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
             """);
         }
 
-        @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
-
-            writer.append("""
-                </tbody>
-            </table>
-            """);
-
-            if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-
-        }
-
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            printResultsHeader();
-
-            for (final RaceResult result : results)
-                printResult(result);
-
-            if (results.isEmpty())
-                printNoResults();
-
-            printResultsFooter(include_credit_link);
-        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -253,12 +231,11 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
                     writer.append("<td>").
                             append(format(result.times.get(i))).
                             append("</td>\n");
-                else {
+                else
                     if (races.get(i) != null)
                         writer.append("<td>").
                                 append("-").
                                 append("</td>\n");
-                }
 
             writer.append("""
                         <td>""").
@@ -267,36 +244,26 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
                         </td>
                     </tr>""");
         }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            writer.append("No results\n");
-        }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    private static class PrizeResultPrinter extends OverallResultPrinterHTML {
 
-    private record PrizeResultPrinterHTML(MinitourRace race, OutputStreamWriter writer) implements ResultPrinter {
+        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
-
+            writer.append("<ul>\n");
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
-
+            writer.append("</ul>\n\n");
         }
 
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            throw new UnsupportedOperationException();
-        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -307,12 +274,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
                     append(race.normalisation.htmlEncode(result.runner.name)).append(" (").
                     append((result.runner.club)).append(") ").
                     append(format(result.duration())).append("</li>\n");
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            writer.append("No results\n");
         }
     }
 }

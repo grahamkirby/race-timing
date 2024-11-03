@@ -18,11 +18,11 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
 
 public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
@@ -39,7 +39,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
     @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new OverallResultPrinterCSV(race, writer);
+        return new OverallResultPrinter(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,34 +48,20 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
     @Override
     protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
-    private record OverallResultPrinterCSV(Race race, OutputStreamWriter writer) implements ResultPrinter {
+    private static class OverallResultPrinter extends ResultPrinter {
+
+        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
-
-
-
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
-
-
-
         }
 
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            printResultsHeader();
-
-            for (final RaceResult result : results)
-                printResult(result);
-
-            if (results.isEmpty())
-                printNoResults();
-
-            printResultsFooter(include_credit_link);
-        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 

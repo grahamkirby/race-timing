@@ -18,6 +18,8 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterHTML;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
@@ -35,22 +37,22 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
     @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new OverallResultPrinterHTML(((MidweekRace)race), writer);
+        return new OverallResultPrinter(race, writer);
     }
 
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
-        return new PrizeResultPrinterHTML(((MidweekRace)race), writer);
-    }
-
-    @Override
-    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-throw new UnsupportedOperationException();
+        return new PrizeResultPrinter(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record OverallResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
+    private static class OverallResultPrinter extends OverallResultPrinterHTML {
+
+        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
 
@@ -85,34 +87,9 @@ throw new UnsupportedOperationException();
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
-
-            writer.append("""
-                </tbody>
-            </table>
-            """);
-
-            if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-
-        }
-
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            printResultsHeader();
-
-            for (final RaceResult result : results)
-                printResult(result);
-
-            if (results.isEmpty())
-                printNoResults();
-
-            printResultsFooter(include_credit_link);
-        }
-        @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            MidweekRaceResult result = ((MidweekRaceResult)r);
+            final MidweekRaceResult result = ((MidweekRaceResult)r);
 
             writer.append("""
                         <tr>
@@ -147,33 +124,26 @@ throw new UnsupportedOperationException();
                         </tr>
                         """);
         }
-
-        @Override
-        public void printNoResults() throws IOException {
-            throw new UnsupportedOperationException();
-        }
     }
 
-    private record PrizeResultPrinterHTML(MidweekRace race, OutputStreamWriter writer) implements ResultPrinter {
+    private static class PrizeResultPrinter extends OverallResultPrinterHTML {
+
+        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
-
+            writer.append("<ul>\n");
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
-
+            writer.append("</ul>\n\n");
         }
 
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            throw new UnsupportedOperationException();
-        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -187,11 +157,6 @@ throw new UnsupportedOperationException();
                     append(") ").
                     append(String.valueOf(result.totalScore())).
                     append("</li>\n");
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-            writer.append("No results\n");
         }
     }
 }

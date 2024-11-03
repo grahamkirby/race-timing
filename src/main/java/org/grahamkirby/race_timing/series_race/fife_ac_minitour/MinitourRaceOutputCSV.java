@@ -18,13 +18,12 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.series_race.SeriesRace;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -43,7 +42,7 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new ResultPrinterCSV(writer, (SeriesRace) race);
+        return new OverallResultPrinter(race, writer);
     }
 
     // Prize results not printed to text file.
@@ -52,32 +51,20 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record ResultPrinterCSV(OutputStreamWriter writer, SeriesRace race) implements ResultPrinter {
-        @Override
-        public void printResultsHeader() throws IOException {
+    private static class OverallResultPrinter extends ResultPrinter {
 
-
+        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
-
-
+        public void printResultsHeader() {
         }
 
         @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            printResultsHeader();
-
-            for (final RaceResult result : results)
-                printResult(result);
-
-            if (results.isEmpty())
-                printNoResults();
-
-            printResultsFooter(include_credit_link);
+        public void printResultsFooter(final boolean include_credit_link) {
         }
+
         @Override
         public void printResult(final RaceResult r) throws IOException {
 

@@ -16,14 +16,16 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -40,40 +42,38 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
 
-        try (final OutputStreamWriter html_writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            html_writer.append("""
-                    <h3><strong>Results</strong></h3>
-                    """);
+            writer.append("<h3><strong>Results</strong></h3>\n");
 
-            printPrizes(html_writer);
+            printPrizes(writer);
 
-            html_writer.append("""
+            writer.append("""
                     <h4>Overall</h4>
                     """);
 
-            printResults(html_writer, true);
+            printResults(writer, true);
         }
     }
 
     @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new OverallResultPrinterHTML(((IndividualRace)race), writer);
+        return new OverallResultPrinter(race, writer);
     }
 
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
-        return new PrizeResultPrinterHTML(((IndividualRace)race), writer);
-    }
-
-    @Override
-    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-        throw new UnsupportedOperationException();
+        return new PrizeResultPrinter(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record OverallResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
+    private static class OverallResultPrinter extends OverallResultPrinterHTML {
+
+        public OverallResultPrinter(final Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
 
@@ -91,34 +91,8 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                                </thead>
                                <tbody>
             """);
-
         }
 
-        @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
-
-            writer.append("""
-                </tbody>
-            </table>
-            """);
-
-            if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-
-        }
-
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            printResultsHeader();
-
-            for (final RaceResult result : results)
-                printResult(result);
-
-            if (results.isEmpty())
-                printNoResults();
-
-            printResultsFooter(include_credit_link);
-        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -152,34 +126,26 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                             </td>
                         </tr>""");
         }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            writer.append("No results\n");
-        }
     }
 
-    private record PrizeResultPrinterHTML(IndividualRace race, OutputStreamWriter writer) implements ResultPrinter {
+    private static class PrizeResultPrinter extends OverallResultPrinterHTML {
+
+        public PrizeResultPrinter(final Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
 
-            throw new UnsupportedOperationException();
-
+            writer.append("<ul>\n");
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
 
-            throw new UnsupportedOperationException();
-
+            writer.append("</ul>\n\n");
         }
 
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            throw new UnsupportedOperationException();
-        }
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
@@ -190,12 +156,6 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                     append(race.normalisation.htmlEncode(result.entry.runner.name)).append(" (").
                     append((result.entry.runner.club)).append(") ").
                     append(format(result.duration())).append("</li>\n");
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            writer.append("No results\n");
         }
     }
 }

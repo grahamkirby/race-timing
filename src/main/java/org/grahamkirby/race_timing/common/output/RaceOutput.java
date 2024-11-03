@@ -22,7 +22,9 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -30,19 +32,6 @@ import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAME
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
 public abstract class RaceOutput {
-
-    public interface ResultPrinter {
-
-        void printResultsHeader() throws IOException;
-
-        void printResultsFooter(boolean include_credit_link) throws IOException;
-
-        void print(List<RaceResult> results, boolean include_credit_link) throws IOException;
-        void printResult(RaceResult result) throws IOException;
-        void printNoResults() throws IOException;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected static final String DNF_STRING = "DNF";
 
@@ -62,15 +51,6 @@ public abstract class RaceOutput {
 
         this.race = race;
         configure();
-    }
-
-    protected void printResults(final List<RaceResult> results, final ResultPrinter printer) throws IOException {
-
-        for (final RaceResult result : results)
-            printer.printResult(result);
-
-        if (results.isEmpty())
-            printer.printNoResults();
     }
 
     protected void constructFilePaths() {
@@ -94,6 +74,44 @@ public abstract class RaceOutput {
 
         race_name_for_results = race.getProperty(KEY_RACE_NAME_FOR_RESULTS);
         race_name_for_filenames = race.getProperty(KEY_RACE_NAME_FOR_FILENAMES);
+    }
+
+    public abstract String getFileSuffix();
+
+    public abstract String getPrizesSectionHeader();
+    public abstract String getPrizesCategoryHeader(final PrizeCategory category) ;
+
+    public abstract String getPrizesCategoryFooter();
+    public void printPrizes() throws IOException {
+
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + getFileSuffix()));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printPrizes(writer);
+        }
+    }
+
+    public void printPrizes(final OutputStreamWriter writer) throws IOException {
+
+        writer.append(getPrizesSectionHeader());
+
+        for (PrizeCategoryGroup group : race.prize_category_groups)
+            if (prizesInThisOrLaterGroup(group))
+                for (final PrizeCategory category : group.categories())
+                    if (prizesInThisOrLaterCategory(category))
+                        printPrizesInCategory(writer, category);
+    }
+
+    public void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
+
+        writer.append(getPrizesCategoryHeader(category));
+
+        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+
+        setPositionStrings(category_prize_winners, race.allowEqualPositions());
+        getPrizeResultPrinter(writer).print(category_prize_winners, false);
+
+        writer.append(getPrizesCategoryFooter());
     }
 
     protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
@@ -166,9 +184,7 @@ public abstract class RaceOutput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract void printResults() throws IOException;
-    public abstract void printPrizes() throws IOException;
 
-    protected abstract void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException;
     protected abstract ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer);
     protected abstract ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer);
 }

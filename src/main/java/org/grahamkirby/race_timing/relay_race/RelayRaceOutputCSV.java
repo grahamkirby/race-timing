@@ -20,6 +20,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -73,7 +74,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     @Override
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new OverallResultPrinterCSV(writer);
+        return new OverallResultPrinter(race, writer);
     }
 
     protected void printLegResults() throws IOException {
@@ -183,27 +184,18 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
-    private record OverallResultPrinterCSV(OutputStreamWriter writer) implements ResultPrinter {
+    private static class OverallResultPrinter extends ResultPrinter {
+
+        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
         @Override
         public void printResultsHeader() {
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) {
-        }
-
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            printResultsHeader();
-
-            for (final RaceResult result : results)
-                printResult(result);
-
-            if (results.isEmpty())
-                printNoResults();
-
-            printResultsFooter(include_credit_link);
         }
 
         @Override

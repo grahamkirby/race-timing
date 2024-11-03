@@ -38,55 +38,27 @@ public abstract class RaceOutputHTML extends RaceOutput {
     @Override
     public void printResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + ".html"));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + getFileSuffix()));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, true);
         }
     }
 
-    @Override
-    public void printPrizes() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + ".html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printPrizes(writer);
-        }
+    public String getFileSuffix() {
+        return ".html";
     }
 
-    @Override
-    protected void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
-
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
-
-        writer.append("<p><strong>").
-                append(category.getLongName()).
-                append("</strong></p>\n");
-
-        if (!category_prize_winners.isEmpty()) {
-
-            writer.append("<ul>\n");
-
-            setPositionStrings(category_prize_winners, race.allowEqualPositions());
-            printResults(category_prize_winners, getPrizeResultPrinter(writer));
-
-            writer.append("</ul>\n\n");
-        }
-        else {
-            writer.append("<p>No results</p>\n");
-        }
+    public String getPrizesSectionHeader() {
+        return "<h4>Prizes</h4>\n";
     }
 
-    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
+    public String getPrizesCategoryHeader(final PrizeCategory category) {
+        return "<p><strong>" + category.getLongName() + "</strong></p>\n";
+    }
 
-        writer.append("<h4>Prizes</h4>\n");
-
-        for (PrizeCategoryGroup group : race.prize_category_groups)
-            if (prizesInThisOrLaterGroup(group))
-                for (final PrizeCategory category : group.categories())
-                    if (prizesInThisOrLaterCategory(category))
-                        printPrizesInCategory(writer, category);
+    public String getPrizesCategoryFooter() {
+        return "";
     }
 
     protected void printResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
@@ -111,16 +83,5 @@ public abstract class RaceOutputHTML extends RaceOutput {
         getOverallResultPrinter(writer).print(results, include_credit_link);
     }
 
-    protected void printResultsFooter(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            """);
-
-        if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-    }
-
-    protected abstract void printResultsHeader(final OutputStreamWriter writer) throws IOException;
     public abstract void printCombined() throws IOException;
 }
