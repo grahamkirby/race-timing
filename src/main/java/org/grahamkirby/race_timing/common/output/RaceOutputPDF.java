@@ -61,6 +61,16 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
     }
 
+    @Override
+    public String getFileSuffix() {
+        return ".pdf";
+    }
+
+    @Override
+    public String getPrizesSectionHeader() {
+        return "";
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void addCategoryHeader(final Document document, final PrizeCategory category) throws IOException {
@@ -80,8 +90,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
         setPositionStrings(category_prize_winners, race.allowEqualPositions());
-//        printResults(category_prize_winners, new ResultPrinterPDF(document, this));
-        new ResultPrinterPDF(document, this).print(category_prize_winners, false);
+        new PrizeResultPrinter(race, document).print(category_prize_winners, false);
     }
 
     // Needs to be static to allow access from inner classes of subclasses of this class.
@@ -107,37 +116,27 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
     public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {}
 
-    private record ResultPrinterPDF(Document document, RaceOutputPDF race_output) implements ResultPrinter {
+    private static class PrizeResultPrinter extends ResultPrinter {
+
+        private final Document document;
+
+        public PrizeResultPrinter(Race race, Document document) {
+            super(race, null);
+            this.document = document;
+        }
 
         @Override
         public void printResultsHeader() throws IOException {
-
-
-
         }
 
         @Override
         public void printResultsFooter(final boolean include_credit_link) throws IOException {
-
-
-
-        }
-
-
-        @Override
-        public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
-
-            for (final RaceResult result : results)
-                printResult(result);
-
-            if (results.isEmpty())
-                printNoResults();
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final PrizeWinnerDetails details = race_output.getPrizeWinnerDetails(r);
+            final PrizeWinnerDetails details = race.output_PDF.getPrizeWinnerDetails(r);
             printPrizePDF(document, details.position_string, details.name, details.detail1, details.detail2);
         }
 
@@ -156,9 +155,13 @@ public abstract class RaceOutputPDF extends RaceOutput {
     @Override
     public void printResults() throws IOException { throw new UnsupportedOperationException(); }
 
+    @Override
+    // Not implemented since PDF created using PDF document writer rather than output stream.
+    public void printPrizes(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
+
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
-    protected void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
+    public void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
 
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
@@ -167,4 +170,11 @@ public abstract class RaceOutputPDF extends RaceOutput {
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
     protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+
+    @Override
+    public String getPrizesCategoryHeader(PrizeCategory category) { throw new UnsupportedOperationException(); }
+
+    @Override
+    public String getPrizesCategoryFooter() { throw new UnsupportedOperationException(); }
+
 }

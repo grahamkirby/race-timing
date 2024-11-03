@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,39 +33,25 @@ public abstract class RaceOutputText extends RaceOutput {
         super(race);
     }
 
-    @Override
-    public void printPrizes() throws IOException {
-
-        final Path prizes_text_path = output_directory_path.resolve(prizes_filename + ".txt");
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(prizes_text_path))) {
-
-            writer.append(race_name_for_results).append(" Results ").append(year).append("\n");
-            writer.append("============================").append("\n\n");
-
-            for (final PrizeCategory category : race.getPrizeCategories())
-                if (prizesInThisOrLaterCategory(category)) printPrizesInCategory(writer, category);
-        }
+    public String getFileSuffix() {
+        return ".txt";
     }
 
-    @Override
-    public void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
+    public String getPrizesSectionHeader() {
+        return race_name_for_results + " Results " + year +"\n" +
+                "============================\n\n";
+    }
+
+    public String getPrizesCategoryHeader(final PrizeCategory category) {
 
         final String header = "Category: " + category.getLongName();
 
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+        return header + "\n" + "-".repeat(header.length()) + "\n\n";
+    }
 
-        writer.append(header).append("\n");
-        writer.append("-".repeat(header.length())).append("\n\n");
+    public String getPrizesCategoryFooter() {
 
-        setPositionStrings(category_prize_winners, race.allowEqualPositions());
-
-        if (category_prize_winners.isEmpty())
-            writer.append("No results\n");
-        else
-            printPrizes(writer, category_prize_winners);
-
-        writer.append("\n\n");
+        return "\n\n";
     }
 
     public void printNotes() throws IOException {
@@ -94,8 +79,11 @@ public abstract class RaceOutputText extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO change to use result printer.
-    protected abstract void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException;
+    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
+
+        setPositionStrings(results, true);
+        getPrizeResultPrinter(writer).print(results, false);
+    }
 
     // Full results not printed to text file.
     @Override
@@ -104,7 +92,4 @@ public abstract class RaceOutputText extends RaceOutput {
     // Full results not printed to text file.
     @Override
     protected ResultPrinter getOverallResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
-
-    @Override
-    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 }

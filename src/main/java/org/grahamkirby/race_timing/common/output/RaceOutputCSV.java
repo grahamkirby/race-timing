@@ -22,9 +22,9 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
@@ -38,9 +38,9 @@ public abstract class RaceOutputCSV extends RaceOutput {
     @Override
     public void printResults() throws IOException {
 
-        final Path overall_results_csv_path = output_directory_path.resolve(overall_results_filename + SUFFIX_CSV);
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + SUFFIX_CSV));
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(overall_results_csv_path))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             printResultsHeader(writer);
             printResults(writer);
@@ -58,10 +58,26 @@ public abstract class RaceOutputCSV extends RaceOutput {
         final List<RaceResult> results = race.getOverallResultsByCategory(categories);
 
         setPositionStrings(results, race.allowEqualPositions());
-//        printResults(results, getOverallResultPrinter(writer));
         getOverallResultPrinter(writer).print(results, false);
     }
 
+    @Override
+    public String getFileSuffix() {
+        return ".csv";
+    }
+
+    @Override
+    public String getPrizesSectionHeader() {
+        return "";
+    }
+
+    public String getPrizesCategoryHeader(final PrizeCategory category) {
+        return "";
+    }
+
+    public String getPrizesCategoryFooter() {
+        return "";
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected abstract void printResultsHeader(final OutputStreamWriter writer) throws IOException;
@@ -70,7 +86,11 @@ public abstract class RaceOutputCSV extends RaceOutput {
     @Override
     public void printPrizes() { throw new UnsupportedOperationException(); }
 
+    @Override
+    // Prizes not output to CSV files.
+    public void printPrizes(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
+
     // Prizes not output to CSV files.
     @Override
-    protected void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
+    public void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
 }

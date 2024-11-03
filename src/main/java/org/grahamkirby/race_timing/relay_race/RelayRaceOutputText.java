@@ -20,7 +20,9 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterText;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -69,22 +71,6 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         super.constructFilePaths();
         collated_times_filename = "times_collated";
-    }
-
-    @Override
-    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {
-
-        int position = 1;
-        for (final RaceResult r : category_prize_winners) {
-
-            final RelayRaceResult result = ((RelayRaceResult)r);
-
-            // No dead heats in overall results since determined by ordering at finish.
-            writer.append(String.valueOf(position++)).append(": ").
-                    append(result.entry.team.name()).append(" (").
-                    append(result.entry.team.category().getLongName()).append(") ").
-                    append(format(result.duration())).append("\n");
-        }
     }
 
     private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
@@ -189,5 +175,29 @@ public class RelayRaceOutputText extends RaceOutputText {
         }
 
         writer.append("\n");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) {
+        return new PrizeResultPrinter(race, writer);
+    }
+    private static class PrizeResultPrinter extends OverallResultPrinterText {
+
+        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final RelayRaceResult result = ((RelayRaceResult)r);
+
+            // No dead heats in overall results since determined by ordering at finish.
+            writer.append(result.position_string).append(": ").
+                    append(result.entry.team.name()).append(" (").
+                    append(result.entry.team.category().getLongName()).append(") ").
+                    append(format(result.duration())).append("\n");
+        }
     }
 }

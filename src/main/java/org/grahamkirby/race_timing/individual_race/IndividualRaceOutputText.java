@@ -16,12 +16,14 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterText;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
+import org.grahamkirby.race_timing.common.output.ResultPrinter;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -31,15 +33,24 @@ public class IndividualRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> category_prize_winners) throws IOException {
+    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) {
+        return new PrizeResultPrinter(race, writer);
+    }
 
-        int position = 1;
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        for (final RaceResult r : category_prize_winners) {
+    private static class PrizeResultPrinter extends OverallResultPrinterText {
+
+        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
 
             final IndividualRaceResult result = ((IndividualRaceResult) r);
 
-            writer.append(String.valueOf(position++)).append(": ").
+            writer.append(result.position_string).append(": ").
                     append(result.entry.runner.name).append(" (").
                     append(result.entry.runner.club).append(") ").
                     append(format(result.duration())).append("\n");
