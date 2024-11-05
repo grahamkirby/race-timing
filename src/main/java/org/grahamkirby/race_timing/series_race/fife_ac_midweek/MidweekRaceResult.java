@@ -16,8 +16,10 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
     protected final List<Integer> scores;
 
-    public MidweekRaceResult(final Runner runner, final MidweekRace race) {
+    public MidweekRaceResult(final Runner runner, final Race race) {
 
         super(runner, race);
         scores = new ArrayList<>();
@@ -73,5 +75,13 @@ public class MidweekRaceResult extends SeriesRaceResult {
         }
 
         return total;
+    }
+
+    public boolean shouldDisplayPosition() {
+
+        final SeriesRace series_race = (SeriesRace) race;
+        final int number_of_races_taken_place = series_race.getNumberOfRacesTakenPlace();
+
+        return number_of_races_taken_place < series_race.getRaces().size() || completed();
     }
 }

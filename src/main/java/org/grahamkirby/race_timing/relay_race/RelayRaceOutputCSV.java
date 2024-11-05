@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Team;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 
@@ -67,9 +68,8 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     }
 
     @Override
-    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        writer.append(OVERALL_RESULTS_HEADER).append("Total\n");
+    public String getResultsHeader() {
+        return OVERALL_RESULTS_HEADER + "Total\n";
     }
 
     @Override
@@ -124,7 +124,8 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final RelayRaceResult result = (RelayRaceResult) race.getOverallResults().get(result_index);
 
-        if (!result.dnf()) writer.append(String.valueOf(result_index + 1));
+        if (result.shouldDisplayPosition())
+            writer.append(result.position_string);
 
         writer.append(",");
         writer.append(String.valueOf(result.entry.bib_number)).append(",");
@@ -184,18 +185,10 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
-    private static class OverallResultPrinter extends ResultPrinter {
+    private static class OverallResultPrinter extends OverallResultPrinterCSV {
 
-        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() {
-        }
-
-        @Override
-        public void printResultsFooter(final boolean include_credit_link) {
         }
 
         @Override
@@ -203,17 +196,15 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            if (!result.dnf()) writer.append(result.position_string);
+            if (result.shouldDisplayPosition())
+                writer.append(result.position_string);
 
             writer.append(",").
                     append(String.valueOf(result.entry.bib_number)).append(",").
                     append(result.entry.team.name()).append(",").
-                    append(result.entry.team.category().getLongName()).append(",").
+//                    append(result.entry.team.category().getLongName()).append(",").
+                    append(result.entry.team.category().getShortName()).append(",").
                     append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
-        }
-
-        @Override
-        public void printNoResults() {
         }
     }
 }

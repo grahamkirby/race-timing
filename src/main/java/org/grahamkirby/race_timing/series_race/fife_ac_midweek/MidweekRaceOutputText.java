@@ -31,21 +31,14 @@ public class MidweekRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-//    @Override
-//    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
-//
-//        setPositionStrings(results, true);
-//        printResults(results, new ResultPrinterText(writer));
-//    }
-
-    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     static class PrizeResultPrinter extends OverallResultPrinterText {
 
-        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

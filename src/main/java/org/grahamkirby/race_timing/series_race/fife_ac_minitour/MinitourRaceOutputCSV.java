@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
@@ -34,10 +35,8 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
     }
 
     @Override
-    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        printOverallResultsHeaderRootSeries(writer);
-        writer.append(",Total\n");
+    public String getResultsHeader() {
+        return getSeriesResultsHeader() + ",Total\n";
     }
 
     @Override
@@ -47,22 +46,14 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     // Prize results not printed to text file.
     @Override
-    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinter {
+    private static class OverallResultPrinter extends OverallResultPrinterCSV {
 
-        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() {
-        }
-
-        @Override
-        public void printResultsFooter(final boolean include_credit_link) {
         }
 
         @Override
@@ -70,7 +61,12 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final MinitourRaceResult result = (MinitourRaceResult) r;
 
-            writer.append(result.completedAllRacesSoFar() ? result.position_string : "-").append(",").
+            if (result.shouldDisplayPosition())
+                writer.append(result.position_string);
+            else
+                writer.append("-");
+
+            writer.append(",").
                     append(result.runner.name).append(",").
                     append(result.runner.club).append(",").
                     append(result.runner.category.getShortName()).append(",");
@@ -79,11 +75,6 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
                 writer.append(time != null ? format(time) : "-").append(",");
 
             writer.append(result.completedAllRacesSoFar() ? format(result.duration()) : "-").append("\n");
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-            writer.append("No results\n");
         }
     }
 }

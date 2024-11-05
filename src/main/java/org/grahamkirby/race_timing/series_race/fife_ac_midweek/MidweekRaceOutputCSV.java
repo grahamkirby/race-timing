@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.OverallResultPrinterCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
@@ -31,10 +32,8 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
     }
 
     @Override
-    protected void printResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        printOverallResultsHeaderRootSeries(writer);
-        writer.append(",Total,Completed\n");
+    public String getResultsHeader() {
+        return getSeriesResultsHeader() + ",Total,Completed\n";
     }
 
     @Override
@@ -42,24 +41,16 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
         return new OverallResultPrinter(race, writer);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     // Prize results not printed to text file.
     @Override
-    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
-    private static class OverallResultPrinter extends ResultPrinter {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static class OverallResultPrinter extends OverallResultPrinterCSV {
 
         public OverallResultPrinter(Race race, OutputStreamWriter writer) {
             super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-        }
-
-        @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
         }
 
         @Override
@@ -71,24 +62,15 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
                 writer.append(result.position_string);
 
             writer.append(",").
-                    append(result.runner.name).
-                    append(",").
-                    append(result.runner.club).
-                    append(",").
-                    append(result.runner.category.getShortName()).
-                    append(",");
+                    append(result.runner.name).append(",").
+                    append(result.runner.club).append(",").
+                    append(result.runner.category.getShortName()).append(",");
 
             for (final int score : result.scores)
                 if (score >= 0) writer.append(String.valueOf(score)).append(",");
 
-            writer.append(String.valueOf(result.totalScore())).
-                    append(",").
-                    append(result.completed() ? "Y" : "N").
-                    append("\n");
-        }
-
-        @Override
-        public void printNoResults() {
+            writer.append(String.valueOf(result.totalScore())).append(",").
+                    append(result.completed() ? "Y" : "N").append("\n");
         }
     }
 }

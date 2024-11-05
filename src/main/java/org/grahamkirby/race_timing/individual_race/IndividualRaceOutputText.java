@@ -33,7 +33,7 @@ public class IndividualRaceOutputText extends RaceOutputText {
         super(race);
     }
 
-    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
 
@@ -41,7 +41,7 @@ public class IndividualRaceOutputText extends RaceOutputText {
 
     private static class PrizeResultPrinter extends OverallResultPrinterText {
 
-        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

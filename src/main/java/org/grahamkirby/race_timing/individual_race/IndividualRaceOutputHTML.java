@@ -70,7 +70,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     private static class OverallResultPrinter extends OverallResultPrinterHTML {
 
-        public OverallResultPrinter(final Race race, OutputStreamWriter writer) {
+        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -130,7 +130,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     private static class PrizeResultPrinter extends OverallResultPrinterHTML {
 
-        public PrizeResultPrinter(final Race race, OutputStreamWriter writer) {
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

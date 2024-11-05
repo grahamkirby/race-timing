@@ -62,21 +62,13 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("<h3><strong>Results</strong></h3>\n");
             printPrizes(writer);
 
-            writer.append("""
-                    <h4>Overall</h4>
-                    """);
-
+            writer.append("<h4>Overall</h4>\n");
             printResults(writer, false);
 
-            writer.append("""
-                    <h4>Full Results</h4>
-                    """);
-
+            writer.append("<h4>Full Results</h4>\n");
             printDetailedResults(writer, false);
 
-            writer.append("""
-                    <p>M3: mass start leg 3<br />M4: mass start leg 4</p>
-                    """);
+            writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>\n");
 
             for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
@@ -111,13 +103,15 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             final String group_title = group.combined_categories_title();
             final List<PrizeCategory> prize_categories = group.categories();
 
-            printDetailedResults(writer, prize_categories, group_title, race.prize_category_groups.size() > 1, include_credit_link && group_number++ == race.prize_category_groups.size() - 1);
+            final String sub_heading = race.prize_category_groups.size() == 1 ? "" : makeSubHeading(group_title);
+
+            printDetailedResults(writer, prize_categories, sub_heading, include_credit_link && group_number++ == race.prize_category_groups.size() - 1);
         }
     }
 
-    private void printDetailedResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_sub_heading, boolean include_credit_link) throws IOException {
+    private void printDetailedResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_credit_link) throws IOException {
 
-        if (include_sub_heading) writer.append("<h4>").append(sub_heading).append("</h4>\n");
+        writer.append(sub_heading);
 
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
@@ -530,4 +524,3 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 }
-

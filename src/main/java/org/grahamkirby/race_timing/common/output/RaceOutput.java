@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
@@ -82,6 +83,35 @@ public abstract class RaceOutput {
     public abstract String getPrizesCategoryHeader(final PrizeCategory category) ;
 
     public abstract String getPrizesCategoryFooter();
+
+    public String makeSubHeading(String s) {
+        return s;
+    }
+
+    public void printResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
+
+        int group_number = 0;
+        for (final PrizeCategoryGroup group : race.prize_category_groups) {
+
+            final String group_title = group.combined_categories_title();
+            final List<PrizeCategory> prize_categories = group.categories();
+
+            final String sub_heading = race.prize_category_groups.size() == 1 ? "" : makeSubHeading(group_title);
+
+            printResults(writer, prize_categories, sub_heading, include_credit_link && group_number++ == race.prize_category_groups.size() - 1);
+        }
+    }
+
+    protected void printResults(final OutputStreamWriter writer, final List<PrizeCategory> categories, final String sub_heading, final boolean include_credit_link) throws IOException {
+
+        writer.append(sub_heading);
+
+        final List<RaceResult> results = race.getOverallResultsByCategory(categories);
+
+        setPositionStrings(results, race.allowEqualPositions());
+        getOverallResultPrinter(writer).print(results, include_credit_link);
+    }
+
     public void printPrizes() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + getFileSuffix()));
@@ -95,14 +125,27 @@ public abstract class RaceOutput {
 
         writer.append(getPrizesSectionHeader());
 
+        printPrizes(category -> {
+            try {
+                printPrizes(writer, category);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        });
+    }
+
+    protected void printPrizes(final Function<PrizeCategory, Void> prize_printer) {
+
         for (PrizeCategoryGroup group : race.prize_category_groups)
             if (prizesInThisOrLaterGroup(group))
                 for (final PrizeCategory category : group.categories())
                     if (prizesInThisOrLaterCategory(category))
-                        printPrizesInCategory(writer, category);
+                        prize_printer.apply(category);
     }
 
-    public void printPrizesInCategory(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
+    public void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
 
         writer.append(getPrizesCategoryHeader(category));
 
@@ -139,22 +182,22 @@ public abstract class RaceOutput {
 
     protected boolean prizesInThisOrLaterGroup(final PrizeCategoryGroup group) {
 
-        for (final PrizeCategoryGroup g : race.prize_category_groups.reversed()) {
+        for (final PrizeCategoryGroup group2 : race.prize_category_groups.reversed()) {
 
-            for (final PrizeCategory c : g.categories()) {
-                if (prizesInThisOrLaterCategory(c)) return true;
-            }
-            if (g.combined_categories_title().equals(group.combined_categories_title())) return false;
+            for (final PrizeCategory category : group2.categories())
+                if (prizesInThisOrLaterCategory(category)) return true;
+
+            if (group2.combined_categories_title().equals(group.combined_categories_title())) return false;
         }
         return false;
     }
 
     protected boolean prizesInThisOrLaterCategory(final PrizeCategory category) {
 
-        for (final PrizeCategory c : race.getPrizeCategories().reversed()) {
+        for (final PrizeCategory category2 : race.getPrizeCategories().reversed()) {
 
-            if (!race.prize_winners.get(c).isEmpty()) return true;
-            if (category.equals(c) && !prizesInOtherCategorySameAge(category)) return false;
+            if (!race.prize_winners.get(category2).isEmpty()) return true;
+            if (category.equals(category2) && !prizesInOtherCategorySameAge(category)) return false;
         }
         return false;
     }
@@ -183,7 +226,18 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract void printResults() throws IOException;
+    public void printResults() throws IOException {
+
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + getFileSuffix()));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getResultsHeader());
+            printResults(writer, false);
+        }
+    }
+
+    public abstract String getResultsHeader() throws IOException;
 
     protected abstract ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer);
     protected abstract ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer);
