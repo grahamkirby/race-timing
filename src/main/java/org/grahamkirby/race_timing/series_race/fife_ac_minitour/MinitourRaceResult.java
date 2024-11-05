@@ -49,6 +49,10 @@ public class MinitourRaceResult extends SeriesRaceResult {
         return duration().compareTo(((MinitourRaceResult) other).duration());
     }
 
+    @Override
+    public boolean shouldDisplayPosition() {
+        return completedAllRacesSoFar();
+    }
     public boolean completedAllRacesSoFar() {
 
         final List<IndividualRace> races = ((MinitourRace)race).getRaces();

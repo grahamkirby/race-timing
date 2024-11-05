@@ -158,8 +158,8 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     private boolean prizeCategoriesIncludesEligible(final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
 
-        for (PrizeCategory prizeCategory : prize_categories)
-            if (race.isEligibleFor(entry_category, prizeCategory)) return true;
+        for (final PrizeCategory category : prize_categories)
+            if (race.isEligibleFor(entry_category, category)) return true;
 
         return false;
     }
@@ -190,7 +190,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
                     writer.append("<th>Race ").append(String.valueOf(i + 1)).append("</th>\n");
-
 
             writer.append("""
                                        <th>Total</th>

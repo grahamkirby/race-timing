@@ -46,6 +46,10 @@ public class RelayRaceResult extends RaceResult {
         return compare(this, other);
     }
 
+    public int comparePerformanceTo(final RaceResult other) {
+        return 0;
+    }
+
     @Override
     public boolean sameEntrant(final RaceResult other) {
         return entry.equals(((RelayRaceResult) other).entry);
@@ -59,6 +63,11 @@ public class RelayRaceResult extends RaceResult {
     @Override
     public EntryCategory getCategory() {
         return entry.team.category();
+    }
+
+    @Override
+    public boolean shouldDisplayPosition() {
+        return completed();
     }
 
     protected Duration duration() {

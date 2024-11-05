@@ -46,19 +46,34 @@ public abstract class RaceOutputPDF extends RaceOutput {
     @Override
     public void printPrizes() throws IOException {
 
-        final PdfWriter writer = new PdfWriter(output_directory_path.resolve(prizes_filename + ".pdf").toString());
+        final PdfWriter writer = new PdfWriter(output_directory_path.resolve(prizes_filename + getFileSuffix()).toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
-
-            document.add(
-                    new Paragraph().
-                            setFont(getFont(PRIZE_FONT_NAME)).
-                            setFontSize(PRIZE_FONT_SIZE).
-                            add(race_name_for_results + " " + year + " Category Prizes"));
-
-            for (final PrizeCategory category : race.getPrizeCategories())
-                if (prizesInThisOrLaterCategory(category)) printPrizesInCategory(document, category);
+            printPrizes(document);
         }
+    }
+
+    private void printPrizes(final Document document) throws IOException {
+
+        document.add(getPrizesSectionHeaderPDF());
+
+        printPrizes(category -> {
+            try {
+                printPrizes(document, category);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        });
+    }
+
+    private Paragraph getPrizesSectionHeaderPDF() throws IOException {
+
+        return new Paragraph().
+                setFont(getFont(PRIZE_FONT_NAME)).
+                setFontSize(PRIZE_FONT_SIZE).
+                add(race_name_for_results + " " + year + " Category Prizes");
     }
 
     @Override
@@ -73,19 +88,17 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void addCategoryHeader(final Document document, final PrizeCategory category) throws IOException {
+    private Paragraph getPrizesCategoryHeaderPDF(final PrizeCategory category) throws IOException {
 
-        final Paragraph category_header_paragraph = new Paragraph("Category: " + category.getLongName()).
+        return new Paragraph("Category: " + category.getLongName()).
                 setFont(getFont(PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
                 setPaddingTop(PRIZE_FONT_SIZE);
-
-        document.add(category_header_paragraph);
     }
 
-    protected void printPrizesInCategory(final Document document, final PrizeCategory category) throws IOException {
+    private void printPrizes(final Document document, final PrizeCategory category) throws IOException {
 
-        addCategoryHeader(document, category);
+        document.add(getPrizesCategoryHeaderPDF(category));
 
         final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
 
@@ -147,6 +160,8 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
     }
 
+    public String getResultsHeader() { return ""; }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected abstract PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r);
@@ -157,11 +172,15 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
     @Override
     // Not implemented since PDF created using PDF document writer rather than output stream.
+    public void printResults(OutputStreamWriter writer, boolean ignore) throws IOException { throw new UnsupportedOperationException(); }
+
+    @Override
+    // Not implemented since PDF created using PDF document writer rather than output stream.
     public void printPrizes(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
 
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
-    public void printPrizesInCategory(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
+    public void printPrizes(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
 
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override

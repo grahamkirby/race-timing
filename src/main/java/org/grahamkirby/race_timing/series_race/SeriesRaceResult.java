@@ -16,11 +16,13 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
+
+import java.util.Objects;
 
 public abstract class SeriesRaceResult extends RaceResult {
 
@@ -29,7 +31,7 @@ public abstract class SeriesRaceResult extends RaceResult {
     // (and receives a bib number for) the individual component races, not the overall series.
     public final Runner runner;
 
-    public SeriesRaceResult(final Runner runner, final SeriesRace race) {
+    public SeriesRaceResult(final Runner runner, final Race race) {
 
         super(race);
         this.runner = runner;
@@ -37,7 +39,6 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     @Override
     public boolean completed() {
-
         return numberCompleted() >= ((SeriesRace)race).minimum_number_of_races;
     }
 
@@ -53,28 +54,16 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     private int numberCompleted() {
 
-        int count = 0;
-
-        for (final IndividualRace individual_race : ((SeriesRace)race).races) {
-            if (individual_race != null)
-                for (final RaceResult result : individual_race.getOverallResults())
-                    if (((IndividualRaceResult)result).entry.runner.equals(runner)) count++;
-        }
-
-        return count;
+        return (int) ((SeriesRace)race).races.stream().
+                filter(Objects::nonNull).
+                flatMap(race -> race.getOverallResults().stream()).
+                filter(result -> ((IndividualRaceResult)result).entry.runner.equals(runner)).
+                count();
     }
 
     protected int compareRunnerNameTo(final SeriesRaceResult o) {
 
         final int last_name_comparison = race.normalisation.getLastName(runner.name).compareTo(race.normalisation.getLastName(o.runner.name));
         return last_name_comparison != 0 ? last_name_comparison : race.normalisation.getFirstName(runner.name).compareTo(race.normalisation.getFirstName(o.runner.name));
-    }
-
-    public boolean shouldDisplayPosition() {
-
-        final SeriesRace series_race = (SeriesRace) race;
-        final int number_of_races_taken_place = series_race.getNumberOfRacesTakenPlace();
-
-        return number_of_races_taken_place < series_race.getRaces().size() || completed();
     }
 }

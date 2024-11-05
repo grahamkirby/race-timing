@@ -34,12 +34,9 @@ public abstract class RaceResult implements Comparable<RaceResult> {
         return 0;
     }
 
-    public int comparePerformanceTo(final RaceResult other) {
-        // Neutral implementation to be overridden.
-        return 0;
-    }
-
+    public abstract int comparePerformanceTo(final RaceResult other);
     public abstract boolean sameEntrant(final RaceResult other);
     public abstract boolean completed();
+    public abstract boolean shouldDisplayPosition();
     public abstract EntryCategory getCategory();
 }

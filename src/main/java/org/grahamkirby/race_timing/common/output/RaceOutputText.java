@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
@@ -42,15 +41,15 @@ public abstract class RaceOutputText extends RaceOutput {
                 "============================\n\n";
     }
 
+    public String getResultsHeader() { return ""; }
+
     public String getPrizesCategoryHeader(final PrizeCategory category) {
 
         final String header = "Category: " + category.getLongName();
-
         return header + "\n" + "-".repeat(header.length()) + "\n\n";
     }
 
     public String getPrizesCategoryFooter() {
-
         return "\n\n";
     }
 
@@ -78,16 +77,6 @@ public abstract class RaceOutputText extends RaceOutput {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected void printPrizes(final OutputStreamWriter writer, final List<RaceResult> results) throws IOException {
-
-        setPositionStrings(results, true);
-        getPrizeResultPrinter(writer).print(results, false);
-    }
-
-    // Full results not printed to text file.
-    @Override
-    public void printResults() throws IOException { throw new UnsupportedOperationException(); }
 
     // Full results not printed to text file.
     @Override

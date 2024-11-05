@@ -35,20 +35,14 @@ public abstract class SeriesRaceOutputHTML extends RaceOutputHTML {
     @Override
     public void printCombined() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined" + getFileSuffix()));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append("""
-                    <h3><strong>Results</strong></h3>
-                    """);
-
+            writer.append("<h3><strong>Results</strong></h3>\n");
             printPrizes(writer);
 
-            writer.append("""
-                    <h4>Overall</h4>
-                    """);
-
+            writer.append("<h4>Overall</h4>\n");
             printResults(writer, true);
         }
     }

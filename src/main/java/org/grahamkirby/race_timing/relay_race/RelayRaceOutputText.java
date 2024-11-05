@@ -179,12 +179,12 @@ public class RelayRaceOutputText extends RaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) {
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
     private static class PrizeResultPrinter extends OverallResultPrinterText {
 
-        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -193,7 +193,6 @@ public class RelayRaceOutputText extends RaceOutputText {
 
             final RelayRaceResult result = ((RelayRaceResult)r);
 
-            // No dead heats in overall results since determined by ordering at finish.
             writer.append(result.position_string).append(": ").
                     append(result.entry.team.name()).append(" (").
                     append(result.entry.team.category().getLongName()).append(") ").

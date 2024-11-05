@@ -19,8 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.Objects;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
@@ -28,16 +27,16 @@ public abstract class SeriesRaceOutputCSV extends RaceOutputCSV {
 
     public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
 
-    public SeriesRaceOutputCSV(Race race) {
+    public SeriesRaceOutputCSV(final Race race) {
         super(race);
     }
 
-    public void printOverallResultsHeaderRootSeries(final OutputStreamWriter writer) throws IOException {
+    public String getSeriesResultsHeader() {
 
-        writer.append(OVERALL_RESULTS_HEADER);
-
-        for (final Race individual_race : ((SeriesRace)race).getRaces())
-            if (individual_race != null)
-                writer.append(",").append(individual_race.getProperty(KEY_RACE_NAME_FOR_RESULTS));
+        return OVERALL_RESULTS_HEADER +
+                ((SeriesRace)race).getRaces().stream().filter(Objects::nonNull).
+                map(race -> "," + race.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
+                reduce(String::concat).
+                orElseThrow();
     }
 }

@@ -80,4 +80,9 @@ public class LegResult extends RaceResult {
         final LegResult other = (LegResult) result;
         return duration().compareTo(other.duration());
     }
+
+    @Override
+    public boolean shouldDisplayPosition() {
+        return true;
+    }
 }

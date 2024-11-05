@@ -33,7 +33,7 @@ public class IndividualRaceResult extends RaceResult {
         super(race);
 
         // Will be set to false later if a time is processed for this runner.
-        this.DNF = true;
+        DNF = true;
     }
 
     public Duration duration() {
@@ -60,10 +60,6 @@ public class IndividualRaceResult extends RaceResult {
         return !DNF;
     }
 
-    public boolean dnf() {
-        return DNF;
-    }
-
     @Override
     public EntryCategory getCategory() {
         return entry.runner.category;
@@ -74,20 +70,9 @@ public class IndividualRaceResult extends RaceResult {
         return duration().compareTo(((IndividualRaceResult) other).duration());
     }
 
-    private int compareRunnerNameTo(final IndividualRaceResult other) {
-
-        final int last_name_comparison = race.normalisation.getLastName(entry.runner.name).compareTo(race.normalisation.getLastName(other.entry.runner.name));
-        return last_name_comparison != 0 ? last_name_comparison : race.normalisation.getFirstName(entry.runner.name).compareTo(race.normalisation.getFirstName(other.entry.runner.name));
-    }
-
-    private int compareRecordedPositionTo(final IndividualRaceResult other) {
-
-        final IndividualRace individual_race = (IndividualRace) race;
-
-        final int this_recorded_position = individual_race.getRecordedPosition(entry.bib_number);
-        final int other_recorded_position = individual_race.getRecordedPosition(other.entry.bib_number);
-
-        return Integer.compare(this_recorded_position, other_recorded_position);
+    @Override
+    public boolean shouldDisplayPosition() {
+        return completed();
     }
 
     public static int compare(final RaceResult r1, final RaceResult r2) {
@@ -107,5 +92,21 @@ public class IndividualRaceResult extends RaceResult {
             return ((IndividualRaceResult)r1).compareRecordedPositionTo((IndividualRaceResult)r2);
         else
             return ((IndividualRaceResult)r1).compareRunnerNameTo((IndividualRaceResult)r2);
+    }
+
+    private int compareRecordedPositionTo(final IndividualRaceResult other) {
+
+        final IndividualRace individual_race = (IndividualRace) race;
+
+        final int this_recorded_position = individual_race.getRecordedPosition(entry.bib_number);
+        final int other_recorded_position = individual_race.getRecordedPosition(other.entry.bib_number);
+
+        return Integer.compare(this_recorded_position, other_recorded_position);
+    }
+
+    private int compareRunnerNameTo(final IndividualRaceResult other) {
+
+        final int last_name_comparison = race.normalisation.getLastName(entry.runner.name).compareTo(race.normalisation.getLastName(other.entry.runner.name));
+        return last_name_comparison != 0 ? last_name_comparison : race.normalisation.getFirstName(entry.runner.name).compareTo(race.normalisation.getFirstName(other.entry.runner.name));
     }
 }
