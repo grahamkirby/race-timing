@@ -13,4 +13,4 @@ CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_relay
 CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_relay.csv
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
 # recorded but the runners DNF'd the leg.
-DNF_LEGS = XXX
+DNF_FINISHERS = XXX

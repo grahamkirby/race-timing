@@ -134,12 +134,12 @@ public class RelayRaceTest extends RaceTest {
     }
 
     @Test
-    public void massStart_3_4_AllCompleted() throws Exception {
+    public void massStart34AllCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/all_completed");
     }
 
     @Test
-    public void massStart_3_4_DNFLeg1() throws Exception {
+    public void massStart34DNFLeg1() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1");
     }
 

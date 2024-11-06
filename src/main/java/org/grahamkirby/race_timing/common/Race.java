@@ -45,40 +45,43 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO organise by race type
+    // Configuration file keys.
 
-    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
-    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
-    public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
-    public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
-
-    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
-    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
-
-    public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
-
+    // All races.
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
-
-    public static final String KEY_ENTRY_MAP = "ENTRY_MAP_PATH";
-    public static final String KEY_NORMALISED_CLUB_NAMES = "NORMALISED_CLUB_NAMES_PATH";
-    public static final String KEY_CAPITALISATION_STOP_WORDS = "CAPITALISATION_STOP_WORDS_PATH";
+    public static final String KEY_ENTRY_MAP_PATH = "ENTRY_MAP_PATH";
+    public static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
+    public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
     public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
-    public static final String KEY_SELF_TIMED = "SELF_TIMED";
-    public static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
+    // Single race.
+    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
+    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
+    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
+    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
 
-    public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
-    public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
-
+    // Relay race.
+    public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
+    public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
     public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
-    public static final String KEY_DNF_LEGS = "DNF_LEGS";
     public static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
     public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
-
     public static final String KEY_START_OFFSET = "START_OFFSET";
+
+    // Series race.
     public static final String KEY_RACES = "RACES";
+
+    // Midweek race.
+    public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
+
+    // Minitour race.
+    public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
+    public static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
+    public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
+    public static final String KEY_SELF_TIMED = "SELF_TIMED";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -291,15 +294,15 @@ public abstract class Race {
 
         normalisation = new Normalisation(this);
 
-        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
         normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
-        capitalisation_stop_words = Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS, DEFAULT_CAPITALISATION_STOP_WORDS_PATH)));
+        capitalisation_stop_words = Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH)));
         non_title_case_words = new HashSet<>();
     }
 
     protected void configureImportCategoryMap() throws IOException {
 
-        entry_map = loadImportCategoryMap(KEY_ENTRY_MAP, DEFAULT_ENTRY_MAP_PATH);
+        entry_map = loadImportCategoryMap(KEY_ENTRY_MAP_PATH, DEFAULT_ENTRY_MAP_PATH);
     }
 
     private Map<String, String> loadImportCategoryMap(final String path_key, final String default_path) throws IOException {

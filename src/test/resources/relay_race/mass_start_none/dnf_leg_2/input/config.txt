@@ -14,4 +14,4 @@ CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_relay
 
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
 # recorded but the runners DNF'd the leg.
-DNF_LEGS = 3/2
+DNF_FINISHERS = 3/2
