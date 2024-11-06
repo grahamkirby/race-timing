@@ -79,18 +79,18 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
             writer.append("""
                 <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>No</th>
-                                       <th>Runner</th>
-                                       <th>Club</th>
-                                       <th>Cat</th>
-                                       <th>Time</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-            """);
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>No</th>
+                            <th>Runner</th>
+                            <th>Club</th>
+                            <th>Cat</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                """);
         }
 
         @Override
@@ -98,33 +98,16 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
             final IndividualRaceResult result = ((IndividualRaceResult)r);
 
-            writer.append("""
+            writer.append(STR."""
                         <tr>
-                            <td>""");
-            if (!result.DNF) writer.append(result.position_string);
-            writer.append("""
-                            </td>
-                            <td>""");
-            writer.append(String.valueOf(result.entry.bib_number));
-            writer.append("""
-                            </td>
-                            <td>""");
-            writer.append(race.normalisation.htmlEncode(result.entry.runner.name));
-            writer.append("""
-                            </td>
-                            <td>""");
-            writer.append((result.entry.runner.club));
-            writer.append("""
-                            </td>
-                            <td>""");
-            writer.append(result.entry.runner.category.getShortName());
-            writer.append("""
-                            </td>
-                            <td>""");
-            writer.append(result.DNF ? DNF_STRING : format(result.duration()));
-            writer.append("""
-                            </td>
-                        </tr>""");
+                            <td>\{result.DNF ? "" : result.position_string}</td>
+                            <td>\{result.entry.bib_number}</td>
+                            <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
+                            <td>\{result.entry.runner.club}</td>
+                            <td>\{result.entry.runner.category.getShortName()}</td>
+                            <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
+                        </tr>
+                """);
         }
     }
 
@@ -151,11 +134,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
             final IndividualRaceResult result = ((IndividualRaceResult)r);
 
-            writer.append("<li>").
-                    append(result.position_string).append(" ").
-                    append(race.normalisation.htmlEncode(result.entry.runner.name)).append(" (").
-                    append((result.entry.runner.club)).append(") ").
-                    append(format(result.duration())).append("</li>\n");
+            writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.runner.name)} (\{result.entry.runner.club}) \{format(result.duration())}</li>\n");
         }
     }
 }

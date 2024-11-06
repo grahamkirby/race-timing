@@ -25,7 +25,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -395,7 +394,7 @@ public class RelayRace extends SingleRace {
         return leg_results;
     }
 
-    protected void addMassStartAnnotation(final OutputStreamWriter writer, final LegResult leg_result, final int leg) throws IOException {
+    protected String getMassStartAnnotation(final LegResult leg_result, final int leg) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
         if (leg_result.in_mass_start) {
@@ -405,8 +404,9 @@ public class RelayRace extends SingleRace {
             while (!(mass_start_legs.get(mass_start_leg-1)))
                 mass_start_leg++;
 
-            writer.append(" (M").append(String.valueOf(mass_start_leg)).append(")");
+            return STR." (M\{mass_start_leg})";
         }
+        else return "";
     }
 
     protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {

@@ -96,7 +96,7 @@ public abstract class RaceOutput {
             final String group_title = group.combined_categories_title();
             final List<PrizeCategory> prize_categories = group.categories();
 
-            final String sub_heading = race.prize_category_groups.size() == 1 ? "" : makeSubHeading(group_title);
+            final String sub_heading = race.prize_category_groups.size() == 1 ? "" : "\n" + makeSubHeading(group_title);
 
             printResults(writer, prize_categories, sub_heading, include_credit_link && group_number++ == race.prize_category_groups.size() - 1);
         }
