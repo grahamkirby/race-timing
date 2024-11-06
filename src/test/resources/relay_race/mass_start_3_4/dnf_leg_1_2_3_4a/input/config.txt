@@ -18,4 +18,4 @@ MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,1:30:00,2:36:00
 
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
 # recorded but the runners DNF'd the leg.
-DNF_LEGS =1/1,1/2,1/3,1/4
+DNF_FINISHERS =1/1,1/2,1/3,1/4

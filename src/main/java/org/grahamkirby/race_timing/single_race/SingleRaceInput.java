@@ -38,7 +38,6 @@ public abstract class SingleRaceInput extends RaceInput {
         super(race);
 
         readProperties();
-        constructFilePaths();
     }
 
     protected void readProperties() {
@@ -47,18 +46,6 @@ public abstract class SingleRaceInput extends RaceInput {
         raw_results_path = race.getProperty(KEY_RAW_RESULTS_PATH);
         categories_entry_path = race.getProperty(KEY_CATEGORIES_ENTRY_PATH);
         categories_prize_path = race.getProperty(KEY_CATEGORIES_PRIZE_PATH);
-
-    }
-
-    protected void constructFilePaths() {
-
-//        input_directory_path = race.getWorkingDirectoryPath().resolve("input");
-//        input_directory_path = race.getPath(".");
-//        entries_path = race.getPath(entries_filename);
-//        raw_results_path = race.getPath(raw_results_filename);
-//        categories_entry_path = getPropertyWithDefault(KEY_CATEGORIES_ENTRY_PATH, DEFAULT_CATEGORIES_ENTRY_PATH);
-//        categories_prize_path = getPropertyWithDefault(KEY_CATEGORIES_PRIZE_PATH, DEFAULT_CATEGORIES_PRIZE_PATH);
-
     }
 
     protected List<RaceEntry> loadEntries() throws IOException {
@@ -126,13 +113,10 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected void checkForDuplicateBibNumbers(final List<RaceEntry> entries) {
 
-        for (final RaceEntry entry1 : entries) {
-            for (final RaceEntry entry2 : entries) {
-
+        for (final RaceEntry entry1 : entries)
+            for (final RaceEntry entry2 : entries)
                 if (entry1 != entry2 && entry1.bib_number == entry2.bib_number)
                     throw new RuntimeException("duplicate bib number: " + entry1.bib_number);
-            }
-        }
     }
 
     protected abstract List<RawResult> loadRawResults() throws IOException;
