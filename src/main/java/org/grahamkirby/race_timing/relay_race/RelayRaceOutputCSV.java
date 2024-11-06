@@ -146,7 +146,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
             final LegResult leg_result = result.leg_results.get(leg_number - 1);
 
             writer.append(team.runner_names().get(leg_number-1));
-            ((RelayRace)race).addMassStartAnnotation(writer, leg_result, leg_number);
+            writer.append(((RelayRace)race).getMassStartAnnotation(leg_result, leg_number));
 
             writer.append(",");
             writer.append(leg_result.DNF ? DNF_STRING : format(leg_result.duration())).append(",");

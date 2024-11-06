@@ -58,32 +58,29 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append("""
                 <table class="fac-table">
-                               <thead>
-                                   <tr>
-                                       <th>Pos</th>
-                                       <th>Runner</th>
-                                       <th>Category</th>
-                                       <th>Club</th>
-            """);
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Runner</th>
+                            <th>Category</th>
+                            <th>Club</th>
+                """);
 
             final List<IndividualRace> races = ((MidweekRace)race).getRaces();
 
-            for (int i = 0; i < races.size(); i++) {
-                if (races.get(i) != null) {
-                    writer.append("<th>Race ").
-                            append(String.valueOf(i + 1)).
-                            append("</th>\n");
-                }
-            }
+            for (int i = 0; i < races.size(); i++)
+                if (races.get(i) != null)
+                    writer.append(STR."""
+                                    <th>Race \{i + 1}</th>
+                        """);
 
             writer.append("""
-                                       <th>Total</th>
-                                       <th>Completed</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
+                        <th>Total</th>
+                        <th>Completed</th>
+                    </tr>
+                </thead>
+                <tbody>
             """);
-
         }
 
         @Override
@@ -91,38 +88,25 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final MidweekRaceResult result = ((MidweekRaceResult)r);
 
-            writer.append("""
+            writer.append(STR."""
                         <tr>
-                        <td>""").
-                    append(result.shouldDisplayPosition() ? result.position_string : "").
-                    append("""
-                            </td>
-                            <td>""").
-                    append(race.normalisation.htmlEncode(result.runner.name)).append("""
-                            </td>
-                            <td>""").
-                    append(result.runner.category.getShortName()).append("""
-                            </td>
-                            <td>""").
-                    append(result.runner.club).append("""
-                            </td>
-                            """);
+                            <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
+                            <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
+                            <td>\{result.runner.category.getShortName()}</td>
+                            <td>\{result.runner.club}</td>
+                """);
 
             for (int i = 0; i < result.scores.size(); i++)
                 if (result.scores.get(i) >= 0)
-                    writer.append("<td>").append(String.valueOf(result.scores.get(i))).append("</td>\n");
-
-            writer.append("""
-                            <td>""").
-                    append(String.valueOf(result.totalScore())).
-                    append("""
-                            </td>
-                            <td>""").
-                    append(result.completed() ? "Y" : "N").
-                    append("""
-                        </td>
-                        </tr>
+                    writer.append(STR."""
+                                    <td>\{result.scores.get(i)}</td>
                         """);
+
+            writer.append(STR."""
+                            <td>\{result.totalScore()}</td>
+                            <td>\{result.completed() ? "Y" : "N"}</td>
+                        </tr>
+                """);
         }
     }
 
@@ -149,14 +133,9 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final MidweekRaceResult result = ((MidweekRaceResult)r);
 
-            writer.append("<li>").
-                    append(result.position_string).append(": ").
-                    append(result.runner.name).
-                    append(" (").
-                    append(result.runner.category.getShortName()).
-                    append(") ").
-                    append(String.valueOf(result.totalScore())).
-                    append("</li>\n");
+            writer.append(STR."""
+                    <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{result.totalScore()}</li>
+                """);
         }
     }
 }

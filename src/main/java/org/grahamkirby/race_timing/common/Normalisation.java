@@ -105,11 +105,11 @@ public class Normalisation {
 
         try {
             final String[] parts = element.split(":");
-            final String time_as_ISO = "PT" + hours(parts) + minutes(parts) + seconds(parts);
+            final String time_as_ISO = STR."PT\{hours(parts)}\{minutes(parts)}\{seconds(parts)}";
 
             return Duration.parse(time_as_ISO);
         }
-        catch (Exception e) {
+        catch (Exception _) {
             throw new RuntimeException("illegal time: " + element);
         }
     }
