@@ -25,11 +25,11 @@ import java.util.List;
 
 public abstract class RaceOutputCSV extends RaceOutput {
 
-    public RaceOutputCSV(Race race) {
+    public RaceOutputCSV(final Race race) {
         super(race);
     }
 
-    public String getResultsHeader() { return ""; }
+    protected String getResultsHeader() { return ""; }
 
     protected void printResults(final OutputStreamWriter writer, final List<PrizeCategory> categories, final String sub_heading, boolean include_credit_link) throws IOException {
         super.printResults(writer, categories, "", false);
@@ -45,10 +45,12 @@ public abstract class RaceOutputCSV extends RaceOutput {
         return "";
     }
 
+    @Override
     public String getPrizesCategoryHeader(final PrizeCategory category) {
         return "";
     }
 
+    @Override
     public String getPrizesCategoryFooter() {
         return "";
     }

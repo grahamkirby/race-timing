@@ -25,30 +25,36 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
-    public RaceOutputHTML(Race race) {
+    public RaceOutputHTML(final Race race) {
         super(race);
     }
 
+    @Override
     public String getFileSuffix() {
         return ".html";
     }
 
+    @Override
     public String getPrizesSectionHeader() {
         return "<h4>Prizes</h4>\n";
     }
 
+    @Override
     public String getPrizesCategoryHeader(final PrizeCategory category) {
         return "<p><strong>" + category.getLongName() + "</strong></p>\n";
     }
 
+    @Override
     public String getPrizesCategoryFooter() {
         return "";
     }
 
+    @Override
     public String makeSubHeading(String s) {
         return "<h4>" + s + "</h4>\n";
     }
 
+    @Override
     public String getResultsHeader() { return ""; }
 
     public abstract void printCombined() throws IOException;

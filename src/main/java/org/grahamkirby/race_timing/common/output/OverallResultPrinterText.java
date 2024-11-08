@@ -7,16 +7,16 @@ import java.io.OutputStreamWriter;
 
 public abstract class OverallResultPrinterText extends ResultPrinter {
 
-    public OverallResultPrinterText(Race race, OutputStreamWriter writer) {
+    public OverallResultPrinterText(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 
     @Override
-    public void printResultsHeader() throws IOException {
+    public void printResultsHeader() {
     }
 
     @Override
-    public void printResultsFooter(final boolean include_credit_link) throws IOException {
+    public void printResultsFooter(final boolean include_credit_link) {
     }
 
     @Override

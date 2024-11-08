@@ -35,8 +35,6 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         super(race);
     }
 
-    // TODO make HTML tidier in general.
-
     @Override
     public void printCombined() throws IOException {
 
@@ -48,9 +46,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
             printPrizes(writer);
 
-            writer.append("""
-                    <h4>Overall</h4>
-                    """);
+            writer.append("<h4>Overall</h4>\n");
 
             printResults(writer, true);
         }

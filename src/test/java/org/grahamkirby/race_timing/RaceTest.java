@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class RaceTest {
 
+    // File names that may be present in list of expected output files for a given test, but should be ignored.
     private static final Set<String> IGNORED_FILE_NAMES = Set.of(".DS_Store");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,11 +53,15 @@ public abstract class RaceTest {
     private static final boolean DEBUG = false;
     private static final boolean RETAIN_FIRST_OUTPUT = false;
 
-    private static final String DEBUG_FILES_LOCATION = "/Users/gnck/Desktop/temp";
-    private static final String TEMP_DIRECTORY_NAME = "temp";
+    private static final String USER_TEST_DIRECTORY_PATH = "/Users/gnck/Desktop/tests";
 
+    // Whether the current test is the first test in the run.
     private static boolean first_test = true;
+
+    // Whether at least one test failed earlier in the run.
     private static boolean some_previous_test_failed = false;
+
+    // Whether the current test failed.
     private boolean failed_test = true;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,9 +69,9 @@ public abstract class RaceTest {
     private Path config_file_path;
     private Path resources_root_directory;
     private Path resources_input_directory;
-    private Path temp_directory;
-    private Path temp_input_directory;
-    private Path temp_output_directory;
+    private Path test_directory;
+    private Path test_input_directory;
+    private Path test_output_directory;
     private Path retained_output_directory;
     private Path expected_output_directory;
 
@@ -79,17 +84,26 @@ public abstract class RaceTest {
 
         if (DEBUG) {
 
+            // Whether this is the first test in the run to have failed.
             final boolean first_failed_test = failed_test && !some_previous_test_failed;
+
+            // Whether the retained output directory is present from a previous run (in which case it should be deleted).
             final boolean output_directory_retained_from_previous_run = first_test && Files.exists(retained_output_directory);
+
+            // Whether the output directory from this run should be retained, either because this is the first test
+            // in the run to fail, or this is the first test in the run and RETAIN_FIRST_OUTPUT is set.
             final boolean output_directory_should_be_retained = first_failed_test || (first_test && RETAIN_FIRST_OUTPUT);
 
+            // Delete the input and output directories but retain the parent test directory, to make it easier to
+            // view the contents on repeated debugging runs.
+            // Also retain a copy of the output directory for review if appropriate.
             cleanUpDirectories(output_directory_retained_from_previous_run, output_directory_should_be_retained);
 
             first_test = false;
             if (first_failed_test) some_previous_test_failed = true;
         }
         else
-            deleteDirectory(temp_directory);
+            deleteDirectory(test_directory);
     }
 
     private void cleanUpDirectories(boolean output_directory_retained_from_previous_run, boolean output_directory_should_be_retained) throws IOException {
@@ -98,17 +112,17 @@ public abstract class RaceTest {
             deleteDirectory(retained_output_directory);
 
         if (output_directory_should_be_retained)
-            copyDirectory(temp_output_directory, retained_output_directory);
+            copyDirectory(test_output_directory, retained_output_directory);
 
-        deleteDirectory(temp_input_directory);
-        deleteDirectory(temp_output_directory);
+        deleteDirectory(test_input_directory);
+        deleteDirectory(test_output_directory);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void configureTest(final String individual_test_resource_root) throws IOException {
 
-        temp_directory = DEBUG ? Paths.get(DEBUG_FILES_LOCATION) : Files.createTempDirectory(TEMP_DIRECTORY_NAME);
+        test_directory = DEBUG ? Paths.get(USER_TEST_DIRECTORY_PATH) : Files.createTempDirectory(null);
 
         configureDirectories(individual_test_resource_root);
         configureDirectoryContents(resources_input_directory);
@@ -133,7 +147,7 @@ public abstract class RaceTest {
         configureTest(configuration_name);
         makeRace(config_file_path).processResults();
 
-        assertThatDirectoryContainsAllExpectedContent(expected_output_directory, temp_output_directory);
+        assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
 
         failed_test = false;
     }
@@ -147,19 +161,19 @@ public abstract class RaceTest {
         resources_input_directory = resources_root_directory.resolve("input");
         expected_output_directory = resources_root_directory.resolve("expected");
 
-        temp_input_directory = temp_directory.resolve("input");
-        temp_output_directory = temp_directory.resolve("output");
-        retained_output_directory = temp_directory.resolve("output_retained");
+        test_input_directory = test_directory.resolve("input");
+        test_output_directory = test_directory.resolve("output");
+        retained_output_directory = test_directory.resolve("output_retained");
 
-        config_file_path = temp_input_directory.resolve("config.txt");
+        config_file_path = test_input_directory.resolve("config.txt");
     }
 
     private void configureDirectoryContents(final Path resources_inputs) throws IOException {
 
-        Files.createDirectories(temp_output_directory);
-        if (Files.exists(temp_input_directory)) deleteDirectory(temp_input_directory);
+        Files.createDirectories(test_output_directory);
+        if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
 
-        copyDirectory(resources_inputs, temp_input_directory);
+        copyDirectory(resources_inputs, test_input_directory);
     }
 
     private static void assertThatDirectoryContainsAllExpectedContent(final Path expected, final Path actual) throws IOException {
@@ -204,7 +218,9 @@ public abstract class RaceTest {
 
         try {
             if (!path.toString().endsWith(".pdf"))
-                return Files.readAllLines(path).stream().reduce(String::concat).orElseThrow();
+                return Files.readAllLines(path).stream().
+                        reduce(String::concat).
+                        orElse("");
 
             else {
                 try (final PdfDocument document = new PdfDocument(new PdfReader(path.toString()))) {

@@ -31,7 +31,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
-import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
@@ -48,6 +47,7 @@ public abstract class Race {
     // Configuration file keys.
 
     // All races.
+    public static final String KEY_YEAR = "YEAR";
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
     public static final String KEY_ENTRY_MAP_PATH = "ENTRY_MAP_PATH";
@@ -111,7 +111,7 @@ public abstract class Race {
     public Normalisation normalisation;
 
     public Map<String, String> normalised_html_entities;
-    public List<String> capitalisation_stop_words;
+    public Set<String> capitalisation_stop_words;
     public Set<String> non_title_case_words;
     public Map<String, String> normalised_club_names;
 
@@ -191,11 +191,7 @@ public abstract class Race {
 
     public List<PrizeCategory> getPrizeCategories() {
 
-        List<PrizeCategory> prize_categories = new ArrayList<>();
-        for (final PrizeCategoryGroup group : prize_category_groups) {
-            prize_categories.addAll(group.categories());
-        }
-        return prize_categories;
+        return prize_category_groups.stream().flatMap(group -> group.categories().stream()).toList();
     }
 
     private List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
@@ -215,20 +211,15 @@ public abstract class Race {
         return groups;
     }
 
-    private void addGroupIfAbsent(List<PrizeCategoryGroup> groups, String groupName) {
+    private void addGroupIfAbsent(final List<PrizeCategoryGroup> groups, final String group_name) {
 
-        if (getGroupWithName(groups, groupName) == null) {
-            groups.add(new PrizeCategoryGroup(groupName, new ArrayList<>()));
-        }
+        if (getGroupWithName(groups, group_name) == null)
+            groups.add(new PrizeCategoryGroup(group_name, new ArrayList<>()));
     }
 
-    private PrizeCategoryGroup getGroupWithName(List<PrizeCategoryGroup> groups, String groupName) {
+    private PrizeCategoryGroup getGroupWithName(final List<PrizeCategoryGroup> groups, final String group_name) {
 
-        for (PrizeCategoryGroup group : groups) {
-            if (group.combined_categories_title().equals(groupName))
-                return group;
-        }
-        return null;
+        return groups.stream().filter(group -> group.group_title().equals(group_name)).findFirst().orElse(null);
     }
 
     public List<RaceResult> getOverallResults() {
@@ -237,15 +228,12 @@ public abstract class Race {
 
     public List<RaceResult> getOverallResultsByCategory(final List<PrizeCategory> categories_required) {
 
-        final Predicate<RaceResult> category_filter = result -> {
-
-            for (final PrizeCategory prize_category : categories_required)
-                if (isEligibleFor(getEntryCategory(result), prize_category)) return true;
-
-            return false;
-        };
-
-        return overall_results.stream().filter(category_filter).toList();
+        return overall_results.stream().
+                filter(result -> categories_required.stream().
+                        map(prize_category -> isEligibleFor(getEntryCategory(result), prize_category)).
+                        reduce(Boolean::logicalOr).
+                        orElseThrow()).
+                toList();
     }
 
     public void allocatePrizes() {
@@ -266,9 +254,11 @@ public abstract class Race {
         return notes;
     }
 
-    public EntryCategory lookupCategory(final String short_name) {
+    public EntryCategory lookupEntryCategory(final String short_name) {
 
-        return entry_categories.stream().filter(category -> category.getShortName().equals(short_name)).findFirst().
+        return entry_categories.stream().
+                filter(category -> category.getShortName().equals(short_name)).
+                findFirst().
                 orElseThrow(() -> new RuntimeException("Category not found: " + short_name));
     }
 
@@ -294,9 +284,9 @@ public abstract class Race {
 
         normalisation = new Normalisation(this);
 
-        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
-        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
-        capitalisation_stop_words = Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH)));
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
+        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
+        capitalisation_stop_words = new HashSet<>(Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
         non_title_case_words = new HashSet<>();
     }
 
@@ -307,47 +297,40 @@ public abstract class Race {
 
     private Map<String, String> loadImportCategoryMap(final String path_key, final String default_path) throws IOException {
 
-        final String path = getProperty(path_key, default_path);
-
         final Map<String, String> map = new HashMap<>();
 
-        if (path != null) {
+        for (final String line : Files.readAllLines(getPath(getProperty(path_key, default_path))))
 
-            final List<String> lines = Files.readAllLines(getPath(path));
+            if (!line.startsWith(COMMENT_SYMBOL))
+                if (entry_column_map_string == null)
 
-            int index = 0;
-            entry_column_map_string = lines.get(index);
-            while (entry_column_map_string.startsWith(COMMENT_SYMBOL))
-                entry_column_map_string = lines.get(++index);
+                    // First non-comment line contains column mapping.
+                    entry_column_map_string = line;
 
-            for (final String line : lines.subList(index + 1, lines.size()))
-
-                if (!line.startsWith(COMMENT_SYMBOL)) {
+                else {
+                    // Subsequent non-comment lines contain category mappings.
                     final String[] parts = line.split(",");
                     map.put(parts[0], parts[1]);
                 }
+
+        return map;
+    }
+
+    protected Map<String, String> loadNormalisationMap(final String path_key, final String default_path, final boolean key_case_sensitive) throws IOException {
+
+        final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        loadMap(getProperty(path_key, default_path), map);
+
+        return map;
+    }
+
+    private void loadMap(final String path_string, final Map<String, String> map) throws IOException {
+
+        for (final String line : Files.readAllLines(getPath(path_string))) {
+
+            final String[] parts = line.split(",");
+            map.put(parts[0], parts[1]);
         }
-
-        return map;
-    }
-
-    protected Map<String, String> loadNormalisationMap(final String path_key, final String default_path) throws IOException {
-
-        return loadMap(getProperty(path_key, default_path));
-    }
-
-    private Map<String, String> loadMap(final String path_string) throws IOException {
-
-        final Map<String, String> map = new HashMap<>();
-
-        if (path_string != null)
-
-            for (final String line : Files.readAllLines(getPath(path_string))) {
-
-                final String[] parts = line.split(",");
-                map.put(parts[0], parts[1]);
-            }
-
-        return map;
     }
 }

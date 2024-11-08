@@ -34,12 +34,12 @@ import java.util.List;
 
 public abstract class RaceOutputPDF extends RaceOutput {
 
-    public static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
-    public static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
-    public static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
-    public static final int PRIZE_FONT_SIZE = 24;
+    private static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
+    private static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
+    private static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
+    private static final int PRIZE_FONT_SIZE = 24;
 
-    public RaceOutputPDF(Race race) {
+    public RaceOutputPDF(final Race race) {
         super(race);
     }
 
@@ -52,6 +52,21 @@ public abstract class RaceOutputPDF extends RaceOutput {
             printPrizes(document);
         }
     }
+
+    @Override
+    protected String getFileSuffix() {
+        return ".pdf";
+    }
+
+    @Override
+    protected String getPrizesSectionHeader() {
+        return "";
+    }
+
+    @Override
+    protected String getResultsHeader() { return ""; }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printPrizes(final Document document) throws IOException {
 
@@ -68,34 +83,6 @@ public abstract class RaceOutputPDF extends RaceOutput {
         });
     }
 
-    private Paragraph getPrizesSectionHeaderPDF() throws IOException {
-
-        return new Paragraph().
-                setFont(getFont(PRIZE_FONT_NAME)).
-                setFontSize(PRIZE_FONT_SIZE).
-                add(race_name_for_results + " " + year + " Category Prizes");
-    }
-
-    @Override
-    public String getFileSuffix() {
-        return ".pdf";
-    }
-
-    @Override
-    public String getPrizesSectionHeader() {
-        return "";
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private Paragraph getPrizesCategoryHeaderPDF(final PrizeCategory category) throws IOException {
-
-        return new Paragraph("Category: " + category.getLongName()).
-                setFont(getFont(PRIZE_FONT_BOLD_NAME)).
-                setUnderline().
-                setPaddingTop(PRIZE_FONT_SIZE);
-    }
-
     private void printPrizes(final Document document, final PrizeCategory category) throws IOException {
 
         document.add(getPrizesCategoryHeaderPDF(category));
@@ -104,6 +91,22 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         setPositionStrings(category_prize_winners, race.allowEqualPositions());
         new PrizeResultPrinter(race, document).print(category_prize_winners, false);
+    }
+
+    private Paragraph getPrizesSectionHeaderPDF() throws IOException {
+
+        return new Paragraph().
+                setFont(getFont(PRIZE_FONT_NAME)).
+                setFontSize(PRIZE_FONT_SIZE).
+                add(race_name_for_results + " " + year + " Category Prizes");
+    }
+
+    private Paragraph getPrizesCategoryHeaderPDF(final PrizeCategory category) throws IOException {
+
+        return new Paragraph("Category: " + category.getLongName()).
+                setFont(getFont(PRIZE_FONT_BOLD_NAME)).
+                setUnderline().
+                setPaddingTop(PRIZE_FONT_SIZE);
     }
 
     // Needs to be static to allow access from inner classes of subclasses of this class.
@@ -133,17 +136,17 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         private final Document document;
 
-        public PrizeResultPrinter(Race race, Document document) {
+        public PrizeResultPrinter(final Race race, final Document document) {
             super(race, null);
             this.document = document;
         }
 
         @Override
-        public void printResultsHeader() throws IOException {
+        public void printResultsHeader() {
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+        public void printResultsFooter(final boolean include_credit_link) {
         }
 
         @Override
@@ -160,27 +163,9 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
     }
 
-    public String getResultsHeader() { return ""; }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected abstract PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r);
-
-    // Full results not printed to PDF.
-    @Override
-    public void printResults() throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    // Not implemented since PDF created using PDF document writer rather than output stream.
-    public void printResults(OutputStreamWriter writer, boolean ignore) throws IOException { throw new UnsupportedOperationException(); }
-
-    @Override
-    // Not implemented since PDF created using PDF document writer rather than output stream.
-    public void printPrizes(OutputStreamWriter writer) throws IOException { throw new UnsupportedOperationException(); }
-
-    // Not implemented since PDF created using PDF document writer rather than output stream.
-    @Override
-    public void printPrizes(OutputStreamWriter writer, PrizeCategory category) { throw new UnsupportedOperationException(); }
 
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
@@ -190,10 +175,11 @@ public abstract class RaceOutputPDF extends RaceOutput {
     @Override
     protected ResultPrinter getPrizeResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
+    // Not implemented since we use a specialised version creating a PDF paragraph.
     @Override
     public String getPrizesCategoryHeader(PrizeCategory category) { throw new UnsupportedOperationException(); }
 
+    // Not implemented since we use a specialised version creating a PDF paragraph.
     @Override
     public String getPrizesCategoryFooter() { throw new UnsupportedOperationException(); }
-
 }
