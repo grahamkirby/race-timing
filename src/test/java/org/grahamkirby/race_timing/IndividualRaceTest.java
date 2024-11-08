@@ -96,6 +96,11 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
+    public void alternativeCapitalisationStopWords() throws Exception {
+        testExpectedCompletion("individual_race/alternative_capitalisation_stop_words");
+    }
+
+    @Test
     public void alternativePrizeReportingOrder() throws Exception {
         testExpectedCompletion("individual_race/alternative_prize_reporting_order");
     }

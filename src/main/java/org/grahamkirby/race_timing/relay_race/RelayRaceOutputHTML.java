@@ -101,7 +101,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         int group_number = 0;
         for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
-            final String group_title = group.combined_categories_title();
+            final String group_title = group.group_title();
             final List<PrizeCategory> prize_categories = group.categories();
 
             final String sub_heading = race.prize_category_groups.size() == 1 ? "" : makeSubHeading(group_title);

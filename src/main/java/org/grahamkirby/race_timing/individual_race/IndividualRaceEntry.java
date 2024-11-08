@@ -46,9 +46,9 @@ public class IndividualRaceEntry extends RaceEntry {
         try {
             bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
 
-            final String name = race.normalisation.cleanName(mapped_elements.get(NAME_INDEX));
-            final String club = race.normalisation.normaliseClubName(race.normalisation.cleanName(mapped_elements.get(CLUB_INDEX)));
-            final EntryCategory category = race.lookupCategory(race.mapCategory(mapped_elements.get(CATEGORY_INDEX)));
+            final String name = race.normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
+            final String club = race.normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
+            final EntryCategory category = race.lookupEntryCategory(race.mapCategory(mapped_elements.get(CATEGORY_INDEX)));
 
             runner = new Runner(name, club, category);
         }

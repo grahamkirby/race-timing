@@ -6,7 +6,7 @@ import java.io.OutputStreamWriter;
 
 public abstract class OverallResultPrinterCSV extends ResultPrinter {
 
-    public OverallResultPrinterCSV(Race race, OutputStreamWriter writer) {
+    public OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 

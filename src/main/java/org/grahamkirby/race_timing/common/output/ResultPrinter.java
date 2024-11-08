@@ -12,17 +12,17 @@ public abstract class ResultPrinter {
     protected final Race race;
     protected final OutputStreamWriter writer;
 
-    public ResultPrinter(Race race, OutputStreamWriter writer) {
+    public ResultPrinter(final Race race, final OutputStreamWriter writer) {
         this.race = race;
         this.writer = writer;
     }
 
-    public abstract void printResultsHeader() throws IOException;
-    public abstract void printResultsFooter(boolean include_credit_link) throws IOException;
     public abstract void printResult(RaceResult result) throws IOException;
-    public abstract void printNoResults() throws IOException;
+    protected abstract void printResultsHeader() throws IOException;
+    protected abstract void printResultsFooter(boolean include_credit_link) throws IOException;
+    protected abstract void printNoResults() throws IOException;
 
-    public void print(List<RaceResult> results, boolean include_credit_link) throws IOException {
+    public void print(final List<RaceResult> results, final boolean include_credit_link) throws IOException {
 
         if (!results.isEmpty()) {
             printResultsHeader();

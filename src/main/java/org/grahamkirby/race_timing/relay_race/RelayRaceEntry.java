@@ -42,9 +42,9 @@ public class RelayRaceEntry extends RaceEntry {
         bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {
             final String name = elements.get(TEAM_NAME_INDEX);
-            final EntryCategory category = race.lookupCategory(elements.get(CATEGORY_INDEX));
+            final EntryCategory category = race.lookupEntryCategory(elements.get(CATEGORY_INDEX));
 
-            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.normalisation.cleanName(s)).toList();
+            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.normalisation.cleanRunnerName(s)).toList();
 
             team = new Team(name, category, runners);
         }

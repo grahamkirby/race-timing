@@ -28,6 +28,8 @@ import java.util.*;
 
 public abstract class SeriesRace extends Race {
 
+    // TODO add support for Grand Prix series.
+
     protected List<IndividualRace> races;
     protected List<Runner> combined_runners;
 

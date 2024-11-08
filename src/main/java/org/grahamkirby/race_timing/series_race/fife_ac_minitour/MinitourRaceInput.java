@@ -95,7 +95,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
         final String[] second_wave_category_strings = race.getProperty(KEY_SECOND_WAVE_CATEGORIES).split(",", -1);
 
-        return extractConfigFromPropertyStrings(second_wave_category_strings, race::lookupCategory);
+        return extractConfigFromPropertyStrings(second_wave_category_strings, race::lookupEntryCategory);
     }
 
     private <T> List<T> extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper) {

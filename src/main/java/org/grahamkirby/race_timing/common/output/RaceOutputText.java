@@ -23,56 +23,50 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class RaceOutputText extends RaceOutput {
 
-    public RaceOutputText(Race race) {
+    public RaceOutputText(final Race race) {
         super(race);
     }
 
-    public String getFileSuffix() {
+    @Override
+    protected String getFileSuffix() {
         return ".txt";
     }
 
-    public String getPrizesSectionHeader() {
+    @Override
+    protected String getPrizesSectionHeader() {
         return race_name_for_results + " Results " + year +"\n" +
                 "============================\n\n";
     }
 
-    public String getResultsHeader() { return ""; }
+    @Override
+    protected String getResultsHeader() { return ""; }
 
-    public String getPrizesCategoryHeader(final PrizeCategory category) {
+    @Override
+    protected String getPrizesCategoryHeader(final PrizeCategory category) {
 
         final String header = "Category: " + category.getLongName();
         return header + "\n" + "-".repeat(header.length()) + "\n\n";
     }
 
-    public String getPrizesCategoryFooter() {
+    @Override
+    protected String getPrizesCategoryFooter() {
         return "\n\n";
     }
 
     public void printNotes() throws IOException {
 
-        if (!race.non_title_case_words.isEmpty()) {
+        race.non_title_case_words.stream().
+                sorted().
+                reduce((s1, s2) -> s1 + ", " + s2).
+                ifPresent(s -> race.getNotes().append("Converted to title case: ").append(s));
 
-            final List<String> words = new ArrayList<>(race.non_title_case_words);
-            words.sort(String::compareTo);
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + getFileSuffix()));
 
-            race.getNotes().append("Converted to title case: ");
-            for (String word : words) race.getNotes().append(word).append(", ");
-        }
-
-        final String notes = race.getNotes().toString();
-
-        if (!notes.isEmpty()) {
-
-            final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + ".txt"));
-
-            try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-                writer.append(notes);
-            }
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            writer.append(race.getNotes().toString());
         }
     }
 

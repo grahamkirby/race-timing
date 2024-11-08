@@ -2,27 +2,22 @@ package org.grahamkirby.race_timing.common;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Normalisation {
 
-    public static final int SECONDS_PER_HOUR = 3600;
-    public static final int SECONDS_PER_MINUTE = 60;
-    public static final double NANOSECONDS_PER_SECOND = 1000000000.0;
+    private static final int SECONDS_PER_HOUR = 3600;
+    private static final int SECONDS_PER_MINUTE = 60;
+    private static final double NANOSECONDS_PER_SECOND = 1000000000.0;
 
-    private static final List<String> WORD_SEPARATORS = List.of(" ", "-", "'", "’");
+    private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '’');
+    private static final Map<String, String> REMOVE_DOUBLE_SPACES = Map.of("  ", " ");
 
     private final Race race;
 
-    public Normalisation(Race race) {
+    public Normalisation(final Race race) {
         this.race = race;
-    }
-
-    public String cleanName(String name) {
-
-        // Remove double spaces, and surrounding whitespace.
-        return applyNormalisation(toTitleCase(name), Map.of("  ", " "), false).strip();
     }
 
     public String getFirstName(final String name) {
@@ -34,67 +29,106 @@ public class Normalisation {
         return Arrays.stream(name.split(" ")).toList().getLast();
     }
 
-    public String normaliseClubName(final String club) {
+    public String cleanRunnerName(final String name) {
 
-        return applyNormalisation(toTitleCase(club), race.normalised_club_names, true);
+        // Remove extra whitespace.
+        final String step1 = replaceAllMapEntries(name, REMOVE_DOUBLE_SPACES);
+        final String step2 = step1.strip();
+
+        return toTitleCase(step2);
     }
 
-    public String toTitleCase(final String input) {
+    public String cleanClubOrTeamName(final String name) {
+
+        // Remove extra whitespace.
+        final String step1 = replaceAllMapEntries(name, REMOVE_DOUBLE_SPACES);
+        final String step2 = step1.strip();
+
+        // Check normalisation list (case insensitive).
+        if (race.normalised_club_names.containsKey(step2)) return race.normalised_club_names.get(step2);
+
+        return toTitleCase(step2);
+    }
+
+    public String htmlEncode(final String s) {
+
+        return replaceAllMapEntries(s, race.normalised_html_entities);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private String toTitleCase(final String input) {
+
+        final String s = lookupInStopWords(input);
+        if (s != null) return s;
 
         final StringBuilder result = new StringBuilder();
 
         while (result.length() < input.length())
-            processWord(input, result);
+            processNextWord(input, result);
 
         return result.toString();
     }
 
-    private void processWord(final String input, final StringBuilder result) {
+    private void processNextWord(final String input, final StringBuilder builder) {
 
-        int i = result.length();
-        while (i < input.length() && !WORD_SEPARATORS.contains(input.substring(i, i+1))) i++;
+        int i = builder.length();
+        char separator = 0;
 
-        if (i < input.length())
-            result.append(toTitleCaseWord(input.substring(result.length(), i))).append(input.charAt(i));
-        else
-            result.append(toTitleCaseWord(input.substring(result.length())));
-    }
+        while (i < input.length()) {
 
-    public String toTitleCaseWord(final String input) {
-
-        if (input.isEmpty()) return input;
-        if (isTitleCase(input)) return input;
-        if (race.capitalisation_stop_words.contains(input)) return input;
-
-        race.non_title_case_words.add(input);
-        return Character.toUpperCase(input.charAt(0)) + input.substring(1).toLowerCase();
-     }
-
-     private static boolean isTitleCase(final String input) {
-
-        if (Character.isLowerCase(input.charAt(0))) return false;
-        for (int i = 1; i < input.length(); i++)
-            if (Character.isUpperCase(input.charAt(i))) return false;
-        return true;
-     }
-
-    public String htmlEncode(final String s) {
-
-        return applyNormalisation(s, race.normalised_html_entities, false);
-    }
-
-    private static String applyNormalisation(String s, final Map<String, String> normalisation_map, final boolean only_replace_whole_string) {
-
-        for (final Map.Entry<String, String> normalisation : normalisation_map.entrySet()) {
-            if (only_replace_whole_string) {
-                if (s.equalsIgnoreCase(normalisation.getKey())) return normalisation.getValue();
-                if (s.equalsIgnoreCase(normalisation.getValue())) return normalisation.getValue();
+            if (WORD_SEPARATORS.contains(input.charAt(i))) {
+                separator = input.charAt(i);
+                break;
             }
-            else {
-                s = s.replaceAll("(?i)" + normalisation.getKey(), normalisation.getValue());
-            }
+            i++;
         }
-        return s;
+
+        final String next_word = input.substring(builder.length(), i);
+
+        builder.append(toTitleCaseWord(next_word));
+        if (separator > 0) builder.append(separator);
+    }
+
+    private String toTitleCaseWord(final String word) {
+
+        final String s = lookupInStopWords(word);
+        if (s != null) return s;
+
+        if (word.isEmpty() || isTitleCase(word)) return word;
+
+        race.non_title_case_words.add(word);
+        return Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase();
+    }
+
+    private String lookupInStopWords(final String word) {
+
+        // Try case sensitive match first.
+        if (race.capitalisation_stop_words.contains(word)) return word;
+
+        // Try case insensitive match.
+        return race.capitalisation_stop_words.stream().
+                filter(w -> w.equalsIgnoreCase(word)).
+                findFirst().
+                orElse(null);
+    }
+
+    private boolean isTitleCase(final String input) {
+
+        return !Character.isLowerCase(input.charAt(0)) &&
+                input.chars().boxed().skip(1).noneMatch(Character::isUpperCase);
+    }
+
+    private static String replaceAllMapEntries(final String s, final Map<String, String> normalisation_map) {
+
+        String result = s;
+
+        for (final String key : normalisation_map.keySet()) {
+
+            final String value = normalisation_map.get(key);
+            result = result.replaceAll("(?i)" + key, value);
+        }
+        return result;
     }
 
     public static Duration parseTime(String element) {

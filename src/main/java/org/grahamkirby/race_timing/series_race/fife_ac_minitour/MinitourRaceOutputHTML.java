@@ -62,7 +62,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO rewrite with result printer
     private void printIndividualRaceResults(final int race_number) throws IOException {
 
         final IndividualRace individual_race = ((SeriesRace)race).getRaces().get(race_number - 1);
@@ -72,15 +71,11 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
             final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve("race" + race_number + ".html"));
 
             try (final OutputStreamWriter writer = new OutputStreamWriter(race_stream)) {
-                printIndividualRaceResults(writer, individual_race);
+
+                for (final PrizeCategoryGroup group : race.prize_category_groups)
+                    printIndividualRaceResults(writer, individual_race, group.categories(), group.group_title());
             }
         }
-    }
-
-    private void printIndividualRaceResults(final OutputStreamWriter writer, final IndividualRace individual_race) throws IOException {
-
-        for (final PrizeCategoryGroup group : race.prize_category_groups)
-            printIndividualRaceResults(writer, individual_race, group.categories(), group.combined_categories_title());
     }
 
     private void printIndividualRaceResults(final OutputStreamWriter writer, final IndividualRace individual_race, final List<PrizeCategory> prize_categories, final String sub_heading) throws IOException {
@@ -92,59 +87,12 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
                 toList();
 
         setPositionStrings(category_results, false);
-        printIndividualRaceResults(writer, category_results, sub_heading);
-    }
-
-    private void printIndividualRaceResults(final OutputStreamWriter writer, final List<RaceResult> individual_race_results) throws IOException {
-
-        for (final RaceResult res : individual_race_results) {
-
-            final IndividualRaceResult result = (IndividualRaceResult) res;
-
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.DNF ? "" : result.position_string}</td>
-                        <td>\{result.entry.bib_number}</td>
-                        <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
-                        <td>\{result.entry.runner.category.getShortName()}</td>
-                        <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
-                    </tr>
-            """);
-        }
-    }
-
-    private void printIndividualRaceResults(final OutputStreamWriter writer, final List<RaceResult> individual_race_results, final String sub_heading) throws IOException {
-
-        writer.append(STR."""
-
-                <h4>\{sub_heading}</h4>
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>No</th>
-                            <th>Runner</th>
-                            <th>Category</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
-
-        printIndividualRaceResults(writer, individual_race_results);
-
-        writer.append("""
-                    </tbody>
-                </table>
-                """);
+        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, false);
     }
 
     private boolean prizeCategoriesIncludesEligible(final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
 
-        for (final PrizeCategory category : prize_categories)
-            if (race.isEligibleFor(entry_category, category)) return true;
-
-        return false;
+        return prize_categories.stream().map(category -> race.isEligibleFor(entry_category, category)).reduce(Boolean::logicalOr).orElseThrow();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,6 +183,52 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
             final MinitourRaceResult result = (MinitourRaceResult)r;
 
             writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.runner.name)} (\{result.runner.club}) \{format(result.duration())}</li>\n");
+        }
+    }
+
+    private static class IndividualRaceResultPrinter extends OverallResultPrinterHTML {
+
+        private final String sub_heading;
+
+        public IndividualRaceResultPrinter(final Race race, final String sub_heading, final OutputStreamWriter writer) {
+            super(race, writer);
+            this.sub_heading = sub_heading;
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append(STR."""
+
+                <h4>\{sub_heading}</h4>
+                <table class="fac-table">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>No</th>
+                            <th>Runner</th>
+                            <th>Category</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                """);
+        }
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final IndividualRaceResult result = (IndividualRaceResult) r;
+
+            writer.append(STR."""
+                    <tr>
+                        <td>\{result.DNF ? "" : result.position_string}</td>
+                        <td>\{result.entry.bib_number}</td>
+                        <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
+                        <td>\{result.entry.runner.category.getShortName()}</td>
+                        <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
+                    </tr>
+            """);
         }
     }
 }
