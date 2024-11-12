@@ -57,4 +57,10 @@ public class RelayRaceEntry extends RaceEntry {
     public String toString() {
         return team.name();
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof RelayRaceEntry other_entry &&
+                team.name().equals(other_entry.team.name());
+    }
 }

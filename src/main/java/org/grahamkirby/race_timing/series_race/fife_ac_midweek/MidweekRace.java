@@ -62,15 +62,46 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public boolean isEligibleForGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    public boolean isEligibleForByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
         return entry_category.getGender().equals(prize_category.getGender());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public List<Comparator<RaceResult>> getComparators() {
+
+        return List.of(MidweekRaceResult::compare);
+//        return List.of(RaceResult::compareCompletionTo, RaceResult::comparePerformanceTo, MidweekRaceResult::compareRunnerLastName, MidweekRaceResult::compareRunnerFirstName);
+    }
+
+
+
+    public List<Comparator<RaceResult>> getDNFComparators() {
+        return List.of();
+
+    }
+
+
+    private static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+
+        return r1.race.normalisation.getFirstName(((MidweekRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getFirstName(((MidweekRaceResult)r2).runner.name));
+    }
+
+    private static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+
+        return r1.race.normalisation.getLastName(((MidweekRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getLastName(((MidweekRaceResult)r2).runner.name));
+    }
+
+
+    @Override
     protected Comparator<RaceResult> getResultsSortComparator() {
         return MidweekRaceResult::compare;
+    }
+
+    @Override
+    protected List<Comparator<RaceResult>> getResultsSortComparators() {
+        return List.of(MidweekRaceResult::compare);
     }
 
     @Override

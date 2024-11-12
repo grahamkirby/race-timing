@@ -53,6 +53,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
     public boolean shouldDisplayPosition() {
         return completedAllRacesSoFar();
     }
+
     public boolean completedAllRacesSoFar() {
 
         final List<IndividualRace> races = ((MinitourRace)race).getRaces();
@@ -70,9 +71,18 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
         Duration overall = Duration.ZERO;
 
-        for (final Duration time : times)
-            if (time != null)
-                overall = overall.plus(time);
+//        for (final Duration time : times)
+//            if (time != null)
+//                overall = overall.plus(time);
+
+
+
+        for (int i = 0; i < ((MinitourRace)race).getNumberOfRacesTakenPlace(); i++) {
+            Duration time = times.get(i);
+            if (time == null) return IndividualRace.DUMMY_DURATION;
+            overall = overall.plus(time);
+        }
+
 
         return overall;
     }
@@ -96,7 +106,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
         return ((MinitourRaceResult) r1).compareRunnerNameTo((MinitourRaceResult) r2);
     }
 
-    private int compareCompletionSoFarTo(final MinitourRaceResult o) {
+    int compareCompletionSoFarTo(final MinitourRaceResult o) {
 
         if (completedAllRacesSoFar() && !o.completedAllRacesSoFar()) return -1;
         if (!completedAllRacesSoFar() && o.completedAllRacesSoFar()) return 1;

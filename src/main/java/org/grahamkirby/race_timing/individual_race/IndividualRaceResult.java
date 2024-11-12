@@ -28,6 +28,8 @@ public class IndividualRaceResult extends RaceResult {
     public boolean DNF;
     public Duration finish_time;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public IndividualRaceResult(final IndividualRace race) {
 
         super(race);
@@ -36,9 +38,7 @@ public class IndividualRaceResult extends RaceResult {
         DNF = true;
     }
 
-    public Duration duration() {
-        return DNF ? Race.DUMMY_DURATION : finish_time;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public int compareTo(final RaceResult other) {
@@ -70,22 +70,41 @@ public class IndividualRaceResult extends RaceResult {
         return duration().compareTo(((IndividualRaceResult) other).duration());
     }
 
+    public static int comparePerformance(final RaceResult r1, final RaceResult r2) {
+        IndividualRaceResult r11 = (IndividualRaceResult) r1;
+        Duration duration = r11.duration();
+        IndividualRaceResult r21 = (IndividualRaceResult) r2;
+        Duration duration1 = r21.duration();
+
+        int i = duration.compareTo(duration1);
+        if (r11.entry.runner.name.equals("Isabel Ritchie") && r21.entry.runner.name.equals("Leland Donaldson")) {
+            int x = 3;
+        }
+        return i;
+    }
+
     @Override
     public boolean shouldDisplayPosition() {
         return completed();
     }
 
-    public static int compare(final RaceResult r1, final RaceResult r2) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public Duration duration() {
+        return DNF ? Race.DUMMY_DURATION : finish_time;
+    }
+
+    public static int compare(final RaceResult r1, final RaceResult r2) {
+//throw new RuntimeException();
         final int compare_completion = r1.compareCompletionTo(r2);
         if (compare_completion != 0) return compare_completion;
 
-        // Either both have completed or neither have completed.
+        // Now either both have completed or neither have completed.
 
         final int compare_performance = r1.comparePerformanceTo(r2);
         if (compare_performance != 0) return compare_performance;
 
-        // Both have the same time. If they have completed, use the recording order,
+        // Now both have the same time. If they have completed, use the recording order,
         // otherwise use alphabetical order for DNFs.
 
         if (r1.completed())
@@ -93,6 +112,34 @@ public class IndividualRaceResult extends RaceResult {
         else
             return ((IndividualRaceResult)r1).compareRunnerNameTo((IndividualRaceResult)r2);
     }
+
+
+    public static int compare2(final RaceResult r1, final RaceResult r2) {
+
+//        Comparator<RaceResult> comparator1 = RaceResult::compareCompletion;
+//        Comparator<RaceResult> comparator2 = RaceResult::comparePerformanceTo;
+//
+//
+//        Comparator<RaceResult> comparator6 = IndividualRaceResult::compareRunnerName;
+
+        final int compare_completion = r1.compareCompletionTo(r2);
+        if (compare_completion != 0) return compare_completion;
+
+        // Now either both have completed or neither have completed.
+
+        final int compare_performance = r1.comparePerformanceTo(r2);
+        if (compare_performance != 0) return compare_performance;
+
+        // Now both have the same time. If they have completed, use the recording order,
+        // otherwise use alphabetical order for DNFs.
+
+        if (r1.completed())
+            return ((IndividualRaceResult)r1).compareRecordedPositionTo((IndividualRaceResult)r2);
+        else
+            return ((IndividualRaceResult)r1).compareRunnerNameTo((IndividualRaceResult)r2);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private int compareRecordedPositionTo(final IndividualRaceResult other) {
 
@@ -103,6 +150,13 @@ public class IndividualRaceResult extends RaceResult {
 
         return Integer.compare(this_recorded_position, other_recorded_position);
     }
+
+
+//    private int compareRunnerName(final RaceResult r1, final RaceResult r2) {
+//
+//        final int last_name_comparison = race.normalisation.getLastName(entry.runner.name).compareTo(race.normalisation.getLastName(other.entry.runner.name));
+//        return last_name_comparison != 0 ? last_name_comparison : race.normalisation.getFirstName(entry.runner.name).compareTo(race.normalisation.getFirstName(other.entry.runner.name));
+//    }
 
     private int compareRunnerNameTo(final IndividualRaceResult other) {
 

@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Comparator;
+import java.util.List;
 
 public class MinitourRace extends SeriesRace {
 
@@ -63,7 +64,7 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
-    public boolean isEligibleForGender(EntryCategory entry_category, PrizeCategory prize_category) {
+    public boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category) {
         return entry_category.getGender().equals(prize_category.getGender());
     }
 
@@ -79,6 +80,49 @@ public class MinitourRace extends SeriesRace {
 
         return MinitourRaceResult::compare;
     }
+
+    @Override
+    protected List<Comparator<RaceResult>> getResultsSortComparators() {
+        return List.of(MinitourRaceResult::compare);
+    }
+
+    @Override
+    public List<Comparator<RaceResult>> getComparators() {
+        return List.of(MinitourRace::compareRunnerFirstName, MinitourRace::compareRunnerLastName, RaceResult::comparePerformanceTo, MinitourRace::compareCompletionSoFar, RaceResult::compareCompletion);
+
+
+//        return Arrays.asList(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion);
+
+
+
+//        if (((MinitourRaceResult) result).completedAllRacesSoFar())
+//            return List.of(RaceResult::compareCompletionTo, MinitourRaceResult::compareCompletionSoFar, RaceResult::comparePerformanceTo, MinitourRaceResult::compareRunnerLastName, MinitourRaceResult::compareRunnerFirstName);
+//        else
+//            return List.of(RaceResult::compareCompletionTo, MinitourRaceResult::compareCompletionSoFar, MinitourRaceResult::compareRunnerLastName, MinitourRaceResult::compareRunnerFirstName);
+    }
+
+    public static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
+
+        return ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
+    }
+
+
+
+    @Override
+    public List<Comparator<RaceResult>> getDNFComparators() {
+        return List.of();
+    }
+
+    private static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+
+        return r1.race.normalisation.getFirstName(((MinitourRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getFirstName(((MinitourRaceResult)r2).runner.name));
+    }
+
+    private static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+
+        return r1.race.normalisation.getLastName(((MinitourRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getLastName(((MinitourRaceResult)r2).runner.name));
+    }
+
 
     @Override
     protected void configureHelpers() {

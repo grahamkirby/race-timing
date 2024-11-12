@@ -18,10 +18,12 @@ package org.grahamkirby.race_timing.single_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class SingleRace extends Race {
@@ -64,5 +66,28 @@ public abstract class SingleRace extends Race {
                 fillDNF(individual_dnf_string);
     }
 
+    protected Comparator<RaceResult> dnfOnly(Comparator<RaceResult> comparator) {
+        return (r1, r2) -> r1.completed() || r2.completed() ? 0 : comparator.compare(r1, r2);
+    }
+
+    public void sortResults() {
+
+//        overall_results.sort(RelayRaceResult::compare);
+
+
+
+        for (Comparator<RaceResult> comparator : getComparators())
+            overall_results.sort(comparator);
+
+        for (Comparator<RaceResult> comparator : getDNFComparators())
+            overall_results.sort(dnfOnly(comparator));
+    }
+
+    public abstract void initialiseResults();
+    public abstract void calculateResults();
+
+    public abstract void outputResults() throws IOException;
+//    public abstract void sortResults();
+    public abstract List<Comparator<RaceResult>> getDNFComparators();
     protected abstract void fillDNF(String individual_dnf_string);
 }

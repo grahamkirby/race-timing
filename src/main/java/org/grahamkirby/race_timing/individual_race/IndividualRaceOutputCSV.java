@@ -29,7 +29,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
-    public static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time";
+    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time\n";
 
     public IndividualRaceOutputCSV(final Race race) {
         super(race);
@@ -37,7 +37,7 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
     @Override
     public String getResultsHeader() {
-        return OVERALL_RESULTS_HEADER + "\n";
+        return OVERALL_RESULTS_HEADER;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
         return new OverallResultPrinter(race, writer);
     }
 
-    // Prize results not printed to text file.
+    // Prize results not printed to CSV file.
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
@@ -62,15 +62,8 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
             final IndividualRaceResult result = (IndividualRaceResult)r;
 
-            if (result.shouldDisplayPosition())
-                writer.append(result.position_string);
-
-            writer.append(",").
-                    append(String.valueOf(result.entry.bib_number)).append(",").
-                    append(result.entry.runner.name).append(",").
-                    append((result.entry.runner.club)).append(",").
-                    append(result.entry.runner.category.getShortName()).append(",").
-                    append(!result.completed() ? "DNF" : format(result.duration())).append("\n");
+            writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""}, \{result.entry.bib_number}, \{result.entry.runner.name}, ").
+                    append(STR."\{result.entry.runner.club}, \{result.entry.runner.category.getShortName()}, \{!result.completed() ? "DNF" : format(result.duration())}");
         }
     }
 }

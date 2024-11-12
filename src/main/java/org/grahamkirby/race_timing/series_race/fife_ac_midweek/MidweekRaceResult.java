@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MidweekRaceResult extends SeriesRaceResult {
