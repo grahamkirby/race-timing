@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
-public abstract class RaceResult implements Comparable<RaceResult> {
+public abstract class RaceResult {
 
     public final Race race;
     public String position_string;
@@ -28,7 +28,6 @@ public abstract class RaceResult implements Comparable<RaceResult> {
     }
 
     public int compareCompletionTo(final RaceResult other) {
-
         return compareCompletion(this, other);
     }
 
@@ -39,7 +38,17 @@ public abstract class RaceResult implements Comparable<RaceResult> {
         return 0;
     }
 
+    public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
+        return r1.race.normalisation.getFirstName(r1.getIndividualRunnerName()).compareTo(r1.race.normalisation.getFirstName(r2.getIndividualRunnerName()));
+    }
+
+    public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+
+        return r1.race.normalisation.getLastName(r1.getIndividualRunnerName()).compareTo(r1.race.normalisation.getLastName(r2.getIndividualRunnerName()));
+    }
+
+    protected abstract String getIndividualRunnerName();
     public abstract int comparePerformanceTo(final RaceResult other);
     public abstract boolean sameEntrant(final RaceResult other);
     public abstract boolean completed();

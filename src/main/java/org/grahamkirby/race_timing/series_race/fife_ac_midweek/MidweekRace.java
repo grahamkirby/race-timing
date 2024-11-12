@@ -71,37 +71,11 @@ public class MidweekRace extends SeriesRace {
     @Override
     public List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(MidweekRaceResult::compare);
-//        return List.of(RaceResult::compareCompletionTo, RaceResult::comparePerformanceTo, MidweekRaceResult::compareRunnerLastName, MidweekRaceResult::compareRunnerFirstName);
+        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName, RaceResult::comparePerformanceTo, RaceResult::compareCompletion);
     }
-
-
 
     public List<Comparator<RaceResult>> getDNFComparators() {
         return List.of();
-
-    }
-
-
-    private static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
-
-        return r1.race.normalisation.getFirstName(((MidweekRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getFirstName(((MidweekRaceResult)r2).runner.name));
-    }
-
-    private static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
-
-        return r1.race.normalisation.getLastName(((MidweekRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getLastName(((MidweekRaceResult)r2).runner.name));
-    }
-
-
-    @Override
-    protected Comparator<RaceResult> getResultsSortComparator() {
-        return MidweekRaceResult::compare;
-    }
-
-    @Override
-    protected List<Comparator<RaceResult>> getResultsSortComparators() {
-        return List.of(MidweekRaceResult::compare);
     }
 
     @Override

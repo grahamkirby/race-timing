@@ -76,53 +76,19 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
-    protected Comparator<RaceResult> getResultsSortComparator() {
-
-        return MinitourRaceResult::compare;
-    }
-
-    @Override
-    protected List<Comparator<RaceResult>> getResultsSortComparators() {
-        return List.of(MinitourRaceResult::compare);
-    }
-
-    @Override
     public List<Comparator<RaceResult>> getComparators() {
-        return List.of(MinitourRace::compareRunnerFirstName, MinitourRace::compareRunnerLastName, RaceResult::comparePerformanceTo, MinitourRace::compareCompletionSoFar, RaceResult::compareCompletion);
-
-
-//        return Arrays.asList(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion);
-
-
-
-//        if (((MinitourRaceResult) result).completedAllRacesSoFar())
-//            return List.of(RaceResult::compareCompletionTo, MinitourRaceResult::compareCompletionSoFar, RaceResult::comparePerformanceTo, MinitourRaceResult::compareRunnerLastName, MinitourRaceResult::compareRunnerFirstName);
-//        else
-//            return List.of(RaceResult::compareCompletionTo, MinitourRaceResult::compareCompletionSoFar, MinitourRaceResult::compareRunnerLastName, MinitourRaceResult::compareRunnerFirstName);
+        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName, RaceResult::comparePerformanceTo, MinitourRace::compareCompletionSoFar, RaceResult::compareCompletion);
     }
-
-    public static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
-
-        return ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
-    }
-
-
 
     @Override
     public List<Comparator<RaceResult>> getDNFComparators() {
         return List.of();
     }
 
-    private static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+    public static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
 
-        return r1.race.normalisation.getFirstName(((MinitourRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getFirstName(((MinitourRaceResult)r2).runner.name));
+        return ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
     }
-
-    private static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
-
-        return r1.race.normalisation.getLastName(((MinitourRaceResult)r1).runner.name).compareTo(r1.race.normalisation.getLastName(((MinitourRaceResult)r2).runner.name));
-    }
-
 
     @Override
     protected void configureHelpers() {
