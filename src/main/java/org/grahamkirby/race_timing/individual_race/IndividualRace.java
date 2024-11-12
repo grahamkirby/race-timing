@@ -137,21 +137,17 @@ public class IndividualRace extends SingleRace {
 
     @Override
     public List<Comparator<RaceResult>> getComparators() {
-//        return Arrays.asList(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion, IndividualRace::compareRunnerFirstNameIfDNF, IndividualRace::compareRunnerLastNameIfDNF);
-        return Arrays.asList(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion);
 
+        return Arrays.asList(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion);
     }
 
     @Override
     public List<Comparator<RaceResult>> getDNFComparators() {
-        return Arrays.asList(IndividualRace::compareRunnerFirstName, IndividualRace::compareRunnerLastName);
 
+        return Arrays.asList(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName);
     }
 
     private static int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
-//        if (!r1.completed() && !r2.completed()) {
-//            return 0;
-//        }
 
         final IndividualRace individual_race = (IndividualRace) r1.race;
 
@@ -160,34 +156,6 @@ public class IndividualRace extends SingleRace {
 
         return Integer.compare(this_recorded_position, other_recorded_position);
     }
-
-
-    private static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
-
-        return r1.race.normalisation.getFirstName(((IndividualRaceResult)r1).entry.runner.name).compareTo(r1.race.normalisation.getFirstName(((IndividualRaceResult)r2).entry.runner.name));
-    }
-
-    private static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
-
-        return r1.race.normalisation.getLastName(((IndividualRaceResult)r1).entry.runner.name).compareTo(r1.race.normalisation.getLastName(((IndividualRaceResult)r2).entry.runner.name));
-    }
-    private static int compareRunnerFirstNameIfDNF(final RaceResult r1, final RaceResult r2) {
-
-        if (r1.completed() || r2.completed()) {return 0;}
-        return r1.race.normalisation.getFirstName(((IndividualRaceResult)r1).entry.runner.name).compareTo(r1.race.normalisation.getFirstName(((IndividualRaceResult)r2).entry.runner.name));
-    }
-
-    private static int compareRunnerLastNameIfDNF(final RaceResult r1, final RaceResult r2) {
-
-        if (r1.completed() || r2.completed()) {return 0;}
-        return r1.race.normalisation.getLastName(((IndividualRaceResult)r1).entry.runner.name).compareTo(r1.race.normalisation.getLastName(((IndividualRaceResult)r2).entry.runner.name));
-    }
-
-//    private int compareRunnerLastNameTo(final IndividualRaceResult other) {
-//
-//        return race.normalisation.getLastName(entry.runner.name).compareTo(race.normalisation.getLastName(other.entry.runner.name));
-//    }
-
 
     private void configureHelpers() {
 
@@ -252,16 +220,6 @@ public class IndividualRace extends SingleRace {
             findFirst().
             orElseThrow();
     }
-
-//    @Override
-//    public void sortResults() {
-//
-//        for (Comparator<RaceResult> comparator : getComparators())
-//            overall_results.sort(comparator);
-//
-//        for (Comparator<RaceResult> comparator : getDNFComparators())
-//            overall_results.sort(dnfOnly(comparator));
-//    }
 
     private void printOverallResults() throws IOException {
 

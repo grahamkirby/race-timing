@@ -60,10 +60,4 @@ public abstract class SeriesRaceResult extends RaceResult {
                 filter(result -> ((IndividualRaceResult)result).entry.runner.equals(runner)).
                 count();
     }
-
-    protected int compareRunnerNameTo(final SeriesRaceResult o) {
-
-        final int last_name_comparison = race.normalisation.getLastName(runner.name).compareTo(race.normalisation.getLastName(o.runner.name));
-        return last_name_comparison != 0 ? last_name_comparison : race.normalisation.getFirstName(runner.name).compareTo(race.normalisation.getFirstName(o.runner.name));
-    }
 }

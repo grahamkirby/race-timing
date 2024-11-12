@@ -80,6 +80,7 @@ public class RelayRace extends SingleRace {
 
     @Override
     public List<Comparator<RaceResult>> getComparators() {
+
         // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
         // DNF results are sorted in increasing order of bib number.
         // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
@@ -110,7 +111,6 @@ public class RelayRace extends SingleRace {
 
         return getRecordedLegPosition(result.entry.bib_number, number_of_legs);
     }
-
 
     @Override
     public boolean allowEqualPositions() {
@@ -515,20 +515,6 @@ public class RelayRace extends SingleRace {
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
         return mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
-
-//    @Override
-//    public void sortResults() {
-//
-////        overall_results.sort(RelayRaceResult::compare);
-//
-//
-//
-//        for (Comparator<RaceResult> comparator : getComparators())
-//            overall_results.sort(comparator);
-//
-//        for (Comparator<RaceResult> comparator : getDNFComparators())
-//            overall_results.sort(dnfOnly(comparator));
-//    }
 
     private int findIndexOfNextUnfilledLegResult(final List<LegResult> leg_results) {
 

@@ -23,7 +23,6 @@ import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class MidweekRaceResult extends SeriesRaceResult {
@@ -37,30 +36,15 @@ public class MidweekRaceResult extends SeriesRaceResult {
     }
 
     @Override
+    protected String getIndividualRunnerName() {
+        return runner.name;
+    }
+
+    @Override
     public int comparePerformanceTo(final RaceResult o) {
 
         // Negate so that a higher score gives an earlier ranking.
         return -Integer.compare(totalScore(), ((MidweekRaceResult) o).totalScore());
-    }
-
-    @Override
-    public int compareTo(final RaceResult other) {
-        return compare(this, other);
-    }
-
-    public static int compare(final RaceResult r1, final RaceResult r2) {
-
-        final int compare_completion = r1.compareCompletionTo(r2);
-        if (compare_completion != 0) return compare_completion;
-
-        // Either both have completed or neither have completed.
-
-        final int compare_performance = r1.comparePerformanceTo(r2);
-        if (compare_performance != 0) return compare_performance;
-
-        // Both have the same points, so sort alphabetically.
-
-        return ((MidweekRaceResult)r1).compareRunnerNameTo((MidweekRaceResult) r2);
     }
 
     protected int totalScore() {
@@ -72,7 +56,7 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
         for (int i = 0; i < ((MidweekRace)race).getMinimumNumberOfRaces(); i++) {
             final int score = sorted_scores.get(sorted_scores.size() - 1 - i);
-            if (score > -1) total += score;
+            if (score > 0) total += score;
         }
 
         return total;

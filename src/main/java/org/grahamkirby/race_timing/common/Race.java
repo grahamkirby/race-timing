@@ -138,6 +138,7 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract List<Comparator<RaceResult>> getComparators();
+    public abstract List<Comparator<RaceResult>> getDNFComparators();
     public abstract void processResults() throws IOException;
     public abstract boolean allowEqualPositions();
     protected abstract boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category);
@@ -253,6 +254,19 @@ public abstract class Race {
 
     protected void allocatePrizes() {
         prizes.allocatePrizes();
+    }
+
+    protected void sortResults() {
+
+        for (Comparator<RaceResult> comparator : getComparators())
+            overall_results.sort(comparator);
+
+        for (Comparator<RaceResult> comparator : getDNFComparators())
+            overall_results.sort(dnfOnly(comparator));
+    }
+
+    protected Comparator<RaceResult> dnfOnly(Comparator<RaceResult> comparator) {
+        return (r1, r2) -> r1.shouldDisplayPosition() || r2.shouldDisplayPosition() ? 0 : comparator.compare(r1, r2);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

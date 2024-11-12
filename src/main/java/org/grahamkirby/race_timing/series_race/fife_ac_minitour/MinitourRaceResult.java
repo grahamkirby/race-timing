@@ -38,9 +38,8 @@ public class MinitourRaceResult extends SeriesRaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public int compareTo(final RaceResult other) {
-
-        return compare(this, other);
+    protected String getIndividualRunnerName() {
+        return runner.name;
     }
 
     @Override
@@ -71,39 +70,13 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
         Duration overall = Duration.ZERO;
 
-//        for (final Duration time : times)
-//            if (time != null)
-//                overall = overall.plus(time);
-
-
-
         for (int i = 0; i < ((MinitourRace)race).getNumberOfRacesTakenPlace(); i++) {
             Duration time = times.get(i);
             if (time == null) return IndividualRace.DUMMY_DURATION;
             overall = overall.plus(time);
         }
 
-
         return overall;
-    }
-
-    public static int compare(final RaceResult r1, final RaceResult r2) {
-        
-        final int compare_completion = r1.compareCompletionTo(r2);
-        if (compare_completion != 0) return compare_completion;
-
-        // Either both have completed or neither have.
-
-        final int compare_completion_so_far = ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
-        if (compare_completion_so_far != 0) return compare_completion_so_far;
-
-        if (((MinitourRaceResult) r1).completedAllRacesSoFar()) {
-
-            final int compare_performance = r1.comparePerformanceTo(r2);
-            if (compare_performance != 0) return compare_performance;
-        }
-
-        return ((MinitourRaceResult) r1).compareRunnerNameTo((MinitourRaceResult) r2);
     }
 
     int compareCompletionSoFarTo(final MinitourRaceResult o) {
