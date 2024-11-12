@@ -72,16 +72,14 @@ public class Normalisation {
 
     private void processNextWord(final String input, final StringBuilder builder) {
 
-        int i = builder.length();
         char separator = 0;
-
-        while (i < input.length()) {
-
-            if (WORD_SEPARATORS.contains(input.charAt(i))) {
-                separator = input.charAt(i);
+        int i;
+        for (i = builder.length(); i < input.length(); i++) {
+            final char c = input.charAt(i);
+            if (WORD_SEPARATORS.contains(c)) {
+                separator = c;
                 break;
             }
-            i++;
         }
 
         final String next_word = input.substring(builder.length(), i);

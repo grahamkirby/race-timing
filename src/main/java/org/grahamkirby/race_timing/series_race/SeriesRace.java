@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
+import org.grahamkirby.race_timing.series_race.fife_ac_minitour.MinitourRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -102,10 +103,29 @@ public abstract class SeriesRace extends Race {
 
     private void calculateResults() {
 
+        // TODO unify with RelayRace.calculateResults()
         overall_results.addAll(combined_runners.stream().map(this::getOverallResult).toList());
-        overall_results.sort(getResultsSortComparator());
+//        overall_results.sort(getResultsSortComparator());
+
+        sortResults();
     }
 
+    public void sortResults() {
+
+//        overall_results.sort(RelayRaceResult::compare);
+
+
+
+        for (Comparator<RaceResult> comparator : getComparators())
+            overall_results.sort(comparator);
+
+        for (Comparator<RaceResult> comparator : getDNFComparators())
+            overall_results.sort(dnfOnly(comparator));
+    }
+
+    protected Comparator<RaceResult> dnfOnly(Comparator<RaceResult> comparator) {
+        return (r1, r2) -> ((MinitourRaceResult)r1).completedAllRacesSoFar() || ((MinitourRaceResult)r2).completedAllRacesSoFar() ? 0 : comparator.compare(r1, r2);
+    }
     private void printOverallResults() throws IOException {
 
         output_CSV.printResults();
@@ -118,8 +138,10 @@ public abstract class SeriesRace extends Race {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+    public abstract List<Comparator<RaceResult>> getDNFComparators();
 
     protected abstract Comparator<RaceResult> getResultsSortComparator();
+    protected abstract List<Comparator<RaceResult>> getResultsSortComparators();
     protected abstract RaceResult getOverallResult(final Runner runner);
 
     protected abstract void configureHelpers();

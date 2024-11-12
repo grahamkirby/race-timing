@@ -119,7 +119,14 @@ public abstract class SingleRaceInput extends RaceInput {
                     throw new RuntimeException("duplicate bib number: " + entry1.bib_number);
     }
 
+    protected void checkForDuplicateEntries(final List<RaceEntry> entries) {
+
+        for (final RaceEntry entry1 : entries)
+            for (final RaceEntry entry2 : entries)
+                if (entry1 != entry2 && entry1.equals(entry2))
+                    throw new RuntimeException("duplicate entry: " + entry1);
+    }
+
     protected abstract List<RawResult> loadRawResults() throws IOException;
-    protected abstract void checkForDuplicateEntries(final List<RaceEntry> entries);
     protected abstract RaceEntry makeRaceEntry(final List<String> elements);
 }

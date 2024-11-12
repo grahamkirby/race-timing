@@ -50,10 +50,7 @@ public class IndividualRaceOutputText extends RaceOutputText {
 
             final IndividualRaceResult result = ((IndividualRaceResult) r);
 
-            writer.append(result.position_string).append(": ").
-                    append(result.entry.runner.name).append(" (").
-                    append(result.entry.runner.club).append(") ").
-                    append(format(result.duration())).append("\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.runner.name} (\{result.entry.runner.club}) \{format(result.duration())}\n");
         }
     }
 }

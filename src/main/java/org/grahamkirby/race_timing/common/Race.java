@@ -103,10 +103,10 @@ public abstract class Race {
     protected RacePrizes prizes;
     protected StringBuilder notes;
 
-    public RaceInput input;
-    public RaceOutputCSV output_CSV;
-    public RaceOutputHTML output_HTML;
-    public RaceOutputText output_text;
+    protected RaceInput input;
+    protected RaceOutputCSV output_CSV;
+    protected RaceOutputHTML output_HTML;
+    protected RaceOutputText output_text;
     public RaceOutputPDF output_PDF;
     public Normalisation normalisation;
 
@@ -115,10 +115,10 @@ public abstract class Race {
     public Set<String> non_title_case_words;
     public Map<String, String> normalised_club_names;
 
-    public Map<String, String> entry_map;
+    private Map<String, String> entry_map;
     public String entry_column_map_string;
 
-    public List<EntryCategory> entry_categories;
+    private List<EntryCategory> entry_categories;
     public List<PrizeCategoryGroup> prize_category_groups;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,56 +137,24 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public abstract List<Comparator<RaceResult>> getComparators();
     public abstract void processResults() throws IOException;
     public abstract boolean allowEqualPositions();
-    public abstract boolean isEligibleForGender(EntryCategory entry_category, PrizeCategory prize_category);
-    public abstract EntryCategory getEntryCategory(RaceResult result);
+    protected abstract boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category);
+    protected abstract EntryCategory getEntryCategory(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public final boolean isEligibleFor(final EntryCategory entry_category, final PrizeCategory prize_category) {
-
-        return isEligibleForGender(entry_category, prize_category) && isEligibleForAge(entry_category, prize_category);
-    }
-
-    public boolean isEligibleForAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
-
-        return entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
-                entry_category.getMaximumAge() <= prize_category.getMaximumAge();
-    }
-
     public Path getPath(final String path) {
 
-        if (path.startsWith("/")) return getPathRelativeToProjectRoot(path);
-        else return getPathRelativeToRaceConfigFile(path);
+        return path.startsWith("/") ?
+                getPathRelativeToProjectRoot(path) :
+                getPathRelativeToRaceConfigFile(path);
     }
 
-    public static Path getPathRelativeToProjectRoot(final String path) {
+    public final boolean isEligibleFor(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        return Paths.get(path.substring(1));
-    }
-
-    public Path getPathRelativeToRaceConfigFile(final String path) {
-
-        return config_file_path.getParent().resolve(path);
-    }
-
-    public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
-
-        return getPathRelativeToProjectRoot("/src/test/resources/" + individual_test_resource_root);
-    }
-
-    public void configure() throws IOException {
-
-        configureNormalisation();
-        configureImportCategoryMap();
-        configureCategories();
-    }
-
-    private void configureCategories() throws IOException {
-
-        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
-        prize_category_groups = getPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+        return isEligibleForByGender(entry_category, prize_category) && isEligibleForByAge(entry_category, prize_category);
     }
 
     public List<PrizeCategory> getPrizeCategories() {
@@ -194,50 +162,9 @@ public abstract class Race {
         return prize_category_groups.stream().flatMap(group -> group.categories().stream()).toList();
     }
 
-    private List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
-
-        List<PrizeCategoryGroup> groups = new ArrayList<>();
-
-        for (final String line : Files.readAllLines(prize_categories_path)) {
-
-            final String group_name = line.split(",")[5];
-
-            addGroupIfAbsent(groups, group_name);
-            PrizeCategoryGroup group = getGroupWithName(groups, group_name);
-
-            group.categories().add(new PrizeCategory(line));
-        }
-
-        return groups;
-    }
-
-    private void addGroupIfAbsent(final List<PrizeCategoryGroup> groups, final String group_name) {
-
-        if (getGroupWithName(groups, group_name) == null)
-            groups.add(new PrizeCategoryGroup(group_name, new ArrayList<>()));
-    }
-
-    private PrizeCategoryGroup getGroupWithName(final List<PrizeCategoryGroup> groups, final String group_name) {
-
-        return groups.stream().filter(group -> group.group_title().equals(group_name)).findFirst().orElse(null);
-    }
-
     public List<RaceResult> getOverallResults() {
+
         return getOverallResultsByCategory(getPrizeCategories());
-    }
-
-    public List<RaceResult> getOverallResultsByCategory(final List<PrizeCategory> categories_required) {
-
-        return overall_results.stream().
-                filter(result -> categories_required.stream().
-                        map(prize_category -> isEligibleFor(getEntryCategory(result), prize_category)).
-                        reduce(Boolean::logicalOr).
-                        orElseThrow()).
-                toList();
-    }
-
-    public void allocatePrizes() {
-        prizes.allocatePrizes();
     }
 
     public String getProperty(final String key) {
@@ -268,6 +195,66 @@ public abstract class Race {
         return result == null ? category : result;
     }
 
+    public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
+
+        return getPathRelativeToProjectRoot("/src/test/resources/" + individual_test_resource_root);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void configure() throws IOException {
+
+        configureNormalisation();
+        configureImportCategoryMap();
+        configureCategories();
+    }
+
+    private void configureCategories() throws IOException {
+
+        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
+        prize_category_groups = getPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+    }
+
+    private List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
+
+        List<PrizeCategoryGroup> groups = new ArrayList<>();
+
+        for (final String line : Files.readAllLines(prize_categories_path)) {
+
+            final String group_name = line.split(",")[5];
+
+            addGroupIfAbsent(groups, group_name);
+            getGroupWithName(groups, group_name).categories().add(new PrizeCategory(line));
+        }
+
+        return groups;
+    }
+
+    private void addGroupIfAbsent(final List<PrizeCategoryGroup> groups, final String group_name) {
+
+        if (getGroupWithName(groups, group_name) == null)
+            groups.add(new PrizeCategoryGroup(group_name, new ArrayList<>()));
+    }
+
+    private PrizeCategoryGroup getGroupWithName(final List<PrizeCategoryGroup> groups, final String group_name) {
+
+        return groups.stream().filter(group -> group.group_title().equals(group_name)).findFirst().orElse(null);
+    }
+
+    public List<RaceResult> getOverallResultsByCategory(final List<PrizeCategory> categories_required) {
+
+        return overall_results.stream().
+                filter(result -> categories_required.stream().
+                        map(prize_category -> isEligibleFor(getEntryCategory(result), prize_category)).
+                        reduce(Boolean::logicalOr).
+                        orElseThrow()).
+                toList();
+    }
+
+    protected void allocatePrizes() {
+        prizes.allocatePrizes();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Properties loadProperties(final Path config_file_path) throws IOException {
@@ -288,6 +275,22 @@ public abstract class Race {
         normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
         capitalisation_stop_words = new HashSet<>(Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
         non_title_case_words = new HashSet<>();
+    }
+
+    private boolean isEligibleForByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        return entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
+                entry_category.getMaximumAge() <= prize_category.getMaximumAge();
+    }
+
+    private static Path getPathRelativeToProjectRoot(final String path) {
+
+        return Paths.get(path.substring(1));
+    }
+
+    private Path getPathRelativeToRaceConfigFile(final String path) {
+
+        return config_file_path.getParent().resolve(path);
     }
 
     protected void configureImportCategoryMap() throws IOException {

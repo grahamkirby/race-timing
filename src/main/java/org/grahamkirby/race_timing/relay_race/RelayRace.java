@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -80,6 +79,40 @@ public class RelayRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public List<Comparator<RaceResult>> getComparators() {
+        // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
+        // DNF results are sorted in increasing order of bib number.
+        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
+
+        return List.of(this::compareLastLegPosition, RelayRace::compareDuration, RaceResult::compareCompletion);
+    }
+
+    public List<Comparator<RaceResult>> getDNFComparators() {
+        return List.of(RelayRace::compareBibNumber);
+    }
+
+    public static int compareBibNumber(final RaceResult r1, final RaceResult r2) {
+
+        return Integer.compare(((RelayRaceResult) r1).entry.bib_number, ((RelayRaceResult) r2).entry.bib_number);
+    }
+
+    public static int compareDuration(final RaceResult r1, final RaceResult r2) {
+
+        return ((RelayRaceResult) r1).duration().compareTo(((RelayRaceResult) r2).duration());
+    }
+
+    public  int compareLastLegPosition(final RaceResult r1, final RaceResult r2) {
+
+        return Integer.compare(getRecordedLastLegPosition(((RelayRaceResult) r1)), getRecordedLastLegPosition(((RelayRaceResult) r2)));
+    }
+
+    private  int getRecordedLastLegPosition(final RelayRaceResult result) {
+
+        return getRecordedLegPosition(result.entry.bib_number, number_of_legs);
+    }
+
+
+    @Override
     public boolean allowEqualPositions() {
 
         // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runner_names.
@@ -87,7 +120,7 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    public boolean isEligibleForGender(EntryCategory entry_category, PrizeCategory prize_category) {
+    public boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category) {
 
         return entry_category.getGender().equals(prize_category.getGender()) ||
                 entry_category.getGender().equals("Women") && prize_category.getGender().equals("Open") ||
@@ -115,7 +148,7 @@ public class RelayRace extends SingleRace {
 
         initialiseResults();
         calculateResults();
-        printResults();
+        outputResults();
     }
 
     @Override
@@ -142,25 +175,28 @@ public class RelayRace extends SingleRace {
         return ((RelayRaceResult) result).entry.team.category();
     }
 
-    private void initialiseResults() {
+    @Override
+    public void initialiseResults() {
 
         for (final RaceEntry entry : entries)
             overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
     }
 
-    private void calculateResults() {
+    @Override
+    public void calculateResults() {
 
         interpolateMissingTimes();
         guessMissingBibNumbers();
         fillLegFinishTimes();
         fillDNFs();
         fillLegResultDetails();
-        sortOverallResults();
+        sortResults();
         allocatePrizes();
         addPaperRecordingComments();
     }
 
-    private void printResults() throws IOException {
+    @Override
+    public void outputResults() throws IOException {
 
         printOverallResults();
         printDetailedResults();
@@ -480,13 +516,19 @@ public class RelayRace extends SingleRace {
         return mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
-    private void sortOverallResults() {
-
-        // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
-        // DNF results are sorted in increasing order of bib number.
-        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
-        overall_results.sort(RelayRaceResult::compare);
-    }
+//    @Override
+//    public void sortResults() {
+//
+////        overall_results.sort(RelayRaceResult::compare);
+//
+//
+//
+//        for (Comparator<RaceResult> comparator : getComparators())
+//            overall_results.sort(comparator);
+//
+//        for (Comparator<RaceResult> comparator : getDNFComparators())
+//            overall_results.sort(dnfOnly(comparator));
+//    }
 
     private int findIndexOfNextUnfilledLegResult(final List<LegResult> leg_results) {
 
@@ -547,7 +589,7 @@ public class RelayRace extends SingleRace {
 
     private void printCombined() throws IOException {
 
-        ((RaceOutputHTML)output_HTML).printCombined();
+        output_HTML.printCombined();
     }
 
     private void printCollatedTimes() throws IOException {

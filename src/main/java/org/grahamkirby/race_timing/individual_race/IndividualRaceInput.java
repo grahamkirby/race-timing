@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
@@ -32,27 +31,12 @@ public class IndividualRaceInput extends SingleRaceInput {
     }
 
     @Override
-    protected RaceEntry makeRaceEntry(List<String> elements) {
+    protected RaceEntry makeRaceEntry(final List<String> elements) {
         return new IndividualRaceEntry(elements, race);
     }
 
     @Override
     public List<RawResult> loadRawResults() throws IOException {
         return loadRawResults(race.getPath(raw_results_path));
-    }
-
-    @Override
-    protected void checkForDuplicateEntries(final List<RaceEntry> entries) {
-
-        for (final RaceEntry entry1 : entries) {
-            for (final RaceEntry entry2 : entries) {
-
-                final Runner runner1 = ((IndividualRaceEntry) entry1).runner;
-                final Runner runner2 = ((IndividualRaceEntry) entry2).runner;
-
-                if (runner1 != runner2 && runner1.name.equals(runner2.name) && runner1.club.equals(runner2.club))
-                    throw new RuntimeException("duplicate entry: " + runner1);
-            }
-        }
     }
 }

@@ -53,21 +53,6 @@ public class RelayRaceInput extends SingleRaceInput {
     }
 
     @Override
-    protected void checkForDuplicateEntries(final List<RaceEntry> entries) {
-
-        for (final RaceEntry entry1 : entries) {
-            for (final RaceEntry entry2 : entries) {
-
-                final RelayRaceEntry relay_race_entry1 = ((RelayRaceEntry) entry1);
-                final RelayRaceEntry relay_race_entry2 = ((RelayRaceEntry) entry2);
-
-                if (relay_race_entry1 != relay_race_entry2 && relay_race_entry1.team.name().equals(relay_race_entry2.team.name()))
-                    throw new RuntimeException("duplicate entry: " + relay_race_entry1);
-            }
-        }
-    }
-
-    @Override
     public List<RawResult> loadRawResults() throws IOException {
 
         final List<RawResult> raw_results = loadRawResults(race.getPath(raw_results_path));

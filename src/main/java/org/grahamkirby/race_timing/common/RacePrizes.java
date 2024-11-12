@@ -46,12 +46,10 @@ public class RacePrizes {
 
     private boolean notYetWonPrize(final RaceResult potential_winner) {
 
-        for (final List<RaceResult> winners : race.prize_winners.values())
-            for (final RaceResult result : winners)
-                if (result.sameEntrant(potential_winner))
-                    return false;
-
-        return true;
+        return !race.prize_winners.values().stream().
+                flatMap(winners -> winners.stream().map(result -> result.sameEntrant(potential_winner))).
+                reduce(Boolean::logicalOr).
+                orElse(false);
     }
 
     private List<RaceResult> getPrizeWinners(final PrizeCategory category) {

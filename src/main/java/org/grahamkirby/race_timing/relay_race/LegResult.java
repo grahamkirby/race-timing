@@ -44,6 +44,25 @@ public class LegResult extends RaceResult {
         return DNF ? Race.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
+//    @Override
+//    public List<Comparator<RaceResult>> getComparators() {
+//        return List.of(LegResult::compareDuration, LegResult::compareLastLegPosition);
+//    }
+
+    public static int compareDuration(final RaceResult r1, final RaceResult r2) {
+
+        return ((RelayRaceResult) r1).duration().compareTo(((RelayRaceResult) r2).duration());
+    }
+
+    public static int compareLastLegPosition(final RaceResult r1, final RaceResult r2) {
+
+        final int this_recorded_position = ((RelayRace)(r1.race)).getRecordedLegPosition(((LegResult)r1).entry.bib_number, ((LegResult)r1).leg_number);
+        final int other_recorded_position = ((RelayRace)(r1.race)).getRecordedLegPosition(((LegResult)r2).entry.bib_number, ((LegResult)r2).leg_number);
+
+        return Integer.compare(this_recorded_position, other_recorded_position);
+    }
+
+
     @Override
     public int compareTo(final RaceResult result) {
 

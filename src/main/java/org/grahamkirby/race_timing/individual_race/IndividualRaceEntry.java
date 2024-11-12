@@ -41,7 +41,7 @@ public class IndividualRaceEntry extends RaceEntry {
         final List<String> mapped_elements = mapElements(elements, race.entry_column_map_string);
 
         if (mapped_elements.size() != EXPECTED_NUMBER_OF_ENTRY_ELEMENTS)
-            throw new RuntimeException("illegal composition for runner: " + mapped_elements.get(0));
+            throw new RuntimeException("illegal composition for runner: " + mapped_elements.get(BIB_NUMBER_INDEX));
 
         try {
             bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
@@ -52,7 +52,7 @@ public class IndividualRaceEntry extends RaceEntry {
 
             runner = new Runner(name, club, category);
         }
-        catch (RuntimeException e) {
+        catch (RuntimeException _) {
             throw new RuntimeException("illegal category for runner: " + bib_number);
         }
     }
@@ -62,22 +62,17 @@ public class IndividualRaceEntry extends RaceEntry {
         // Expected format of map string: "1,3-2,4,5",
         // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
 
-        return Arrays.stream(entry_column_map_string.split(",")).map(s -> getMappedElement(elements, s)).toList();
+        return Arrays.stream(entry_column_map_string.split(",")).
+                map(s -> getMappedElement(elements, s)).
+                toList();
     }
 
     private static String getMappedElement(final List<String> elements, final String element_combination_map) {
-        
-        final StringBuilder element_builder = new StringBuilder();
 
-        for (final String column_number_as_string : element_combination_map.split("-")) {
-
-            final int index = Integer.parseInt(column_number_as_string) - 1;
-
-            if (!element_builder.isEmpty()) element_builder.append(" ");
-            element_builder.append(elements.get(index));
-        }
-        
-        return element_builder.toString();
+        return Arrays.stream(element_combination_map.split("-")).
+                map(column_number_as_string -> elements.get(Integer.parseInt(column_number_as_string) - 1)).
+                reduce((s1, s2) -> s1 + " " + s2).
+                orElse("");
     }
 
     @Override

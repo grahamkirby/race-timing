@@ -27,12 +27,18 @@ public abstract class RaceResult implements Comparable<RaceResult> {
         this.race = race;
     }
 
-    public int compareCompletionTo(final RaceResult o) {
+    public int compareCompletionTo(final RaceResult other) {
 
-        if (completed() && !o.completed()) return -1;
-        if (!completed() && o.completed()) return 1;
+        return compareCompletion(this, other);
+    }
+
+    public static int compareCompletion(final RaceResult r1, final RaceResult r2) {
+
+        if (r1.completed() && !r2.completed()) return -1;
+        if (!r1.completed() && r2.completed()) return 1;
         return 0;
     }
+
 
     public abstract int comparePerformanceTo(final RaceResult other);
     public abstract boolean sameEntrant(final RaceResult other);
