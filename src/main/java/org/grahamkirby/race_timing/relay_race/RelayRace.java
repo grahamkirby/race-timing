@@ -88,6 +88,7 @@ public class RelayRace extends SingleRace {
         return List.of(this::compareLastLegPosition, RelayRace::compareDuration, RaceResult::compareCompletion);
     }
 
+    @Override
     public List<Comparator<RaceResult>> getDNFComparators() {
         return List.of(RelayRace::compareBibNumber);
     }
@@ -120,7 +121,7 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    public boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category) {
+    public boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
 
         return entry_category.getGender().equals(prize_category.getGender()) ||
                 entry_category.getGender().equals("Women") && prize_category.getGender().equals("Open") ||
@@ -133,6 +134,7 @@ public class RelayRace extends SingleRace {
     public void configure() throws IOException {
 
         super.configure();
+
         readProperties();
 
         configureHelpers();
@@ -202,20 +204,23 @@ public class RelayRace extends SingleRace {
         printDetailedResults();
         printLegResults();
         printPrizes();
+        printNotes();
         printCombined();
         printCollatedTimes();
-        printNotes();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void readProperties() {
+    @Override
+    protected void readProperties() {
 
+        super.readProperties();
         number_of_legs = Integer.parseInt(getProperty(KEY_NUMBER_OF_LEGS));
         start_offset = parseTime(getProperty(KEY_START_OFFSET, ZERO_TIME_STRING));
     }
 
-    private void configureHelpers() {
+    @Override
+    protected void configureHelpers() {
 
         input = new RelayRaceInput(this);
 
@@ -543,7 +548,8 @@ public class RelayRace extends SingleRace {
         }
     }
 
-    private void printOverallResults() throws IOException {
+    @Override
+    protected void printOverallResults() throws IOException {
 
         output_CSV.printResults();
         output_HTML.printResults();
@@ -561,19 +567,22 @@ public class RelayRace extends SingleRace {
         ((RelayRaceOutputHTML)output_HTML).printLegResults(true);
     }
 
-    private void printPrizes() throws IOException {
+    @Override
+    protected void printPrizes() throws IOException {
 
         output_PDF.printPrizes();
         output_HTML.printPrizes();
         output_text.printPrizes();
     }
 
-    private void printNotes() throws IOException {
+    @Override
+    protected void printNotes() throws IOException {
 
         output_text.printNotes();
     }
 
-    private void printCombined() throws IOException {
+    @Override
+    protected void printCombined() throws IOException {
 
         output_HTML.printCombined();
     }

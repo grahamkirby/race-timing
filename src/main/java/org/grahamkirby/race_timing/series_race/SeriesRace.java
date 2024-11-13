@@ -42,9 +42,29 @@ public abstract class SeriesRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void configure() throws IOException {
+    public void processResults() throws IOException {
 
-        readProperties();
+        initialiseResults();
+
+        calculateResults();
+        allocatePrizes();
+
+        outputResults();
+    }
+
+    @Override
+    public void calculateResults() {
+
+        // TODO unify with RelayRace.calculateResults()
+        overall_results.addAll(combined_runners.stream().map(this::getOverallResult).toList());
+
+        sortResults();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected void configure() throws IOException {
 
         super.configure();
 
@@ -53,18 +73,47 @@ public abstract class SeriesRace extends Race {
     }
 
     @Override
-    public void processResults() throws IOException {
+    protected void configureInputData() throws IOException {
 
-        initialiseResults();
+        races = ((SeriesRaceInput)input).loadRaces();
+    }
 
-        calculateResults();
-        allocatePrizes();
+    @Override
+    protected void initialiseResults() {
+
+        final Set<Runner> combined = new HashSet<>();
+
+        for (final IndividualRace individual_race : races)
+            if (individual_race != null)
+                for (final RaceResult result : individual_race.getOverallResults())
+                    combined.add(((IndividualRaceResult)result).entry.runner);
+
+        combined_runners = new ArrayList<>(combined);
+    }
+
+    @Override
+    protected void outputResults() throws IOException {
 
         printOverallResults();
-        printCombined();
         printPrizes();
         printNotes();
+        printCombined();
     }
+
+    @Override
+    protected void printOverallResults() throws IOException {
+
+        output_CSV.printResults();
+        output_HTML.printResults();
+    }
+
+    @Override
+    protected void printNotes() throws IOException {
+
+        output_text.printNotes();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<IndividualRace> getRaces() {
         return races;
@@ -81,48 +130,5 @@ public abstract class SeriesRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void configureInputData() throws IOException {
-
-        races = ((SeriesRaceInput)input).loadRaces();
-    }
-
-    protected abstract void readProperties();
-
-    private void initialiseResults() {
-
-        final Set<Runner> combined = new HashSet<>();
-
-        for (final IndividualRace individual_race : races)
-            if (individual_race != null)
-                for (final RaceResult result : individual_race.getOverallResults())
-                    combined.add(((IndividualRaceResult)result).entry.runner);
-
-        combined_runners = new ArrayList<>(combined);
-    }
-
-    private void calculateResults() {
-
-        // TODO unify with RelayRace.calculateResults()
-        overall_results.addAll(combined_runners.stream().map(this::getOverallResult).toList());
-
-        sortResults();
-    }
-
-    private void printOverallResults() throws IOException {
-
-        output_CSV.printResults();
-        output_HTML.printResults();
-    }
-
-    private void printNotes() throws IOException {
-
-        output_text.printNotes();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     protected abstract RaceResult getOverallResult(final Runner runner);
-    protected abstract void configureHelpers();
-    protected abstract void printPrizes() throws IOException;
-    protected abstract void printCombined() throws IOException;
 }

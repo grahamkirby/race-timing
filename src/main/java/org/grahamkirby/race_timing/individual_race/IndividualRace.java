@@ -26,7 +26,6 @@ import org.grahamkirby.race_timing.single_race.SingleRace;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,30 +50,6 @@ public class IndividualRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean allowEqualPositions() {
-
-        // No dead heats for overall results, since an ordering is imposed at finish funnel.
-        return false;
-    }
-
-    @Override
-    public boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category) {
-
-        return entry_category.getGender().equals(prize_category.getGender());
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void configure() throws IOException {
-
-        super.configure();
-
-        configureHelpers();
-        configureInputData();
-    }
-
-    @Override
     public void processResults() throws IOException {
 
         calculateResults();
@@ -94,39 +69,10 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    public void outputResults() throws IOException {
+    public boolean allowEqualPositions() {
 
-        printOverallResults();
-        printPrizes();
-        printNotes();
-        printCombined();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public EntryCategory getEntryCategory(RaceResult result) {
-        return ((IndividualRaceResult) result).entry.runner.category;
-    }
-
-    @Override
-    protected void fillDNF(final String dnf_string) {
-        try {
-            final String cleaned = dnf_string.strip();
-
-            if (!cleaned.isEmpty()) {
-
-                final int bib_number = Integer.parseInt(cleaned);
-                final IndividualRaceResult result = getResultWithBibNumber(bib_number);
-
-                result.DNF = true;
-//                result.finish_time = Duration.ZERO;
-                result.finish_time = DUMMY_DURATION;
-            }
-        }
-        catch (Exception e) {
-            throw new RuntimeException("illegal DNF string: " + e.getLocalizedMessage());
-        }
+        // No dead heats for overall results, since an ordering is imposed at finish funnel.
+        return false;
     }
 
     public EntryCategory findCategory(final int bib_number) {
@@ -136,28 +82,16 @@ public class IndividualRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<Comparator<RaceResult>> getComparators() {
+    protected void configure() throws IOException {
 
-        return Arrays.asList(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion);
+        super.configure();
+
+        configureHelpers();
+        configureInputData();
     }
 
     @Override
-    public List<Comparator<RaceResult>> getDNFComparators() {
-
-        return Arrays.asList(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName);
-    }
-
-    private static int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
-
-        final IndividualRace individual_race = (IndividualRace) r1.race;
-
-        final int this_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r1).entry.bib_number);
-        final int other_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r2).entry.bib_number);
-
-        return Integer.compare(this_recorded_position, other_recorded_position);
-    }
-
-    private void configureHelpers() {
+    protected void configureHelpers() {
 
         input = new IndividualRaceInput(this);
 
@@ -174,6 +108,99 @@ public class IndividualRace extends SingleRace {
 
         for (int i = 0; i < raw_results.size(); i++)
             overall_results.add(new IndividualRaceResult(this));
+    }
+
+    @Override
+    protected void outputResults() throws IOException {
+
+        printOverallResults();
+        printPrizes();
+        printNotes();
+        printCombined();
+    }
+
+    @Override
+    protected void printOverallResults() throws IOException {
+
+        output_CSV.printResults();
+        output_HTML.printResults();
+    }
+
+    @Override
+    protected void printPrizes() throws IOException {
+
+        output_text.printPrizes();
+        output_PDF.printPrizes();
+        output_HTML.printPrizes();
+    }
+
+    @Override
+    protected void printNotes() throws IOException {
+
+        output_text.printNotes();
+    }
+
+    @Override
+    protected void printCombined() throws IOException {
+
+        output_HTML.printCombined();
+    }
+
+    @Override
+    public List<Comparator<RaceResult>> getComparators() {
+
+        return List.of(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion);
+    }
+
+    @Override
+    public List<Comparator<RaceResult>> getDNFComparators() {
+
+        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName);
+    }
+
+    @Override
+    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        return entry_category.getGender().equals(prize_category.getGender());
+    }
+
+    @Override
+    protected EntryCategory getEntryCategory(RaceResult result) {
+        return ((IndividualRaceResult) result).entry.runner.category;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected void fillDNF(final String dnf_string) {
+        try {
+            final String cleaned = dnf_string.strip();
+
+            if (!cleaned.isEmpty()) {
+
+                final int bib_number = Integer.parseInt(cleaned);
+                final IndividualRaceResult result = getResultWithBibNumber(bib_number);
+
+                result.DNF = true;
+                result.finish_time = DUMMY_DURATION;
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal DNF string: " + e.getLocalizedMessage());
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // TODO rationalise locations of result comparators
+    private static int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
+
+        final IndividualRace individual_race = (IndividualRace) r1.race;
+
+        final int this_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r1).entry.bib_number);
+        final int other_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r2).entry.bib_number);
+
+        return Integer.compare(this_recorded_position, other_recorded_position);
     }
 
     private void fillFinishTimes() {
@@ -219,28 +246,5 @@ public class IndividualRace extends SingleRace {
             map(_ -> i.get()).
             findFirst().
             orElseThrow();
-    }
-
-    private void printOverallResults() throws IOException {
-
-        output_CSV.printResults();
-        output_HTML.printResults();
-    }
-
-    private void printPrizes() throws IOException {
-
-        output_text.printPrizes();
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-    }
-
-    private void printNotes() throws IOException {
-
-        output_text.printNotes();
-    }
-
-    private void printCombined() throws IOException {
-
-        output_HTML.printCombined();
     }
 }

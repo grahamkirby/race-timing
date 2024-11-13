@@ -92,7 +92,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     private boolean prizeCategoriesIncludesEligible(final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
 
-        return prize_categories.stream().map(category -> race.isEligibleFor(entry_category, category)).reduce(Boolean::logicalOr).orElseThrow();
+        return prize_categories.stream().map(category -> race.entryCategoryIsEligibleForPrizeCategory(entry_category, category)).reduce(Boolean::logicalOr).orElseThrow();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
