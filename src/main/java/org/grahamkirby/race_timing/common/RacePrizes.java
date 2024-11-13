@@ -41,7 +41,7 @@ public class RacePrizes {
 
     protected boolean prizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        return result.completed() && race.isEligibleFor(result.getCategory(), category) && notYetWonPrize(result);
+        return result.completed() && race.entryCategoryIsEligibleForPrizeCategory(result.getCategory(), category) && notYetWonPrize(result);
     }
 
     private boolean notYetWonPrize(final RaceResult potential_winner) {

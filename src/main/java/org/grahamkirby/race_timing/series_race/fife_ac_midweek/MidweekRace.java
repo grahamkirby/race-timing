@@ -62,7 +62,7 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    public boolean isEligibleForByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    public boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
         return entry_category.getGender().equals(prize_category.getGender());
     }
 

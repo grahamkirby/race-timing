@@ -18,12 +18,10 @@ package org.grahamkirby.race_timing.single_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 
 public abstract class SingleRace extends Race {
@@ -34,29 +32,37 @@ public abstract class SingleRace extends Race {
     protected String dnf_string;
 
     public SingleRace(final Path config_file_path) throws IOException {
-
         super(config_file_path);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected void readProperties() {
 
         // Specifies all the bib numbers for runners who did have a finish
         // time recorded but were declared DNF.
         dnf_string = getProperty(KEY_DNF_FINISHERS, "");
     }
 
-    public List<RawResult> getRawResults() {
-        return raw_results;
-    }
-
+    @Override
     protected void configureInputData() throws IOException {
 
         entries = ((SingleRaceInput)input).loadEntries();
         raw_results = ((SingleRaceInput)input).loadRawResults();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
+
     protected void fillDNFs() {
 
         // This fills in the DNF results that were specified explicitly in the config
-        // file, corresponding to cases where the runner_names reported not visiting all
-        // checkpoints.
+        // file, corresponding to cases where the runners reported not completing the
+        // course.
 
         // DNF cases where there is no recorded leg result are captured by the
         // default value of DNF being true.
@@ -66,9 +72,7 @@ public abstract class SingleRace extends Race {
                 fillDNF(individual_dnf_string);
     }
 
-    public abstract void initialiseResults();
-    public abstract void calculateResults();
-    public abstract void outputResults() throws IOException;
-    public abstract List<Comparator<RaceResult>> getDNFComparators();
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected abstract void fillDNF(String individual_dnf_string);
 }

@@ -137,11 +137,22 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract List<Comparator<RaceResult>> getComparators();
-    public abstract List<Comparator<RaceResult>> getDNFComparators();
     public abstract void processResults() throws IOException;
+    public abstract void calculateResults();
     public abstract boolean allowEqualPositions();
-    protected abstract boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category);
+
+    protected abstract void readProperties();
+    protected abstract void configureInputData() throws IOException;
+    protected abstract void configureHelpers();
+    protected abstract void initialiseResults();
+    protected abstract void outputResults() throws IOException;
+    protected abstract void printOverallResults() throws IOException;
+    protected abstract void printPrizes() throws IOException;
+    protected abstract void printNotes() throws IOException;
+    protected abstract void printCombined() throws IOException;
+    protected abstract List<Comparator<RaceResult>> getComparators();
+    protected abstract List<Comparator<RaceResult>> getDNFComparators();
+    protected abstract boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category);
     protected abstract EntryCategory getEntryCategory(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,9 +164,9 @@ public abstract class Race {
                 getPathRelativeToRaceConfigFile(path);
     }
 
-    public final boolean isEligibleFor(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    public final boolean entryCategoryIsEligibleForPrizeCategory(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        return isEligibleForByGender(entry_category, prize_category) && isEligibleForByAge(entry_category, prize_category);
+        return entryCategoryIsEligibleForPrizeCategoryByGender(entry_category, prize_category) && entryCategoryIsEligibleForPrizeCategoryByAge(entry_category, prize_category);
     }
 
     public List<PrizeCategory> getPrizeCategories() {
@@ -196,6 +207,16 @@ public abstract class Race {
         return result == null ? category : result;
     }
 
+    public List<RaceResult> getOverallResultsByCategory(final List<PrizeCategory> categories) {
+
+        return overall_results.stream().
+                filter(result -> categories.stream().
+                        map(prize_category -> entryCategoryIsEligibleForPrizeCategory(getEntryCategory(result), prize_category)).
+                        reduce(Boolean::logicalOr).
+                        orElseThrow()).
+                toList();
+    }
+
     public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
 
         return getPathRelativeToProjectRoot("/src/test/resources/" + individual_test_resource_root);
@@ -208,12 +229,68 @@ public abstract class Race {
         configureNormalisation();
         configureImportCategoryMap();
         configureCategories();
+
+        readProperties();
+    }
+
+    private void configureNormalisation() throws IOException {
+
+        normalisation = new Normalisation(this);
+
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
+        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
+        capitalisation_stop_words = new HashSet<>(Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
+        non_title_case_words = new HashSet<>();
+    }
+
+    private void configureImportCategoryMap() throws IOException {
+
+        entry_map = loadImportCategoryMap(KEY_ENTRY_MAP_PATH, DEFAULT_ENTRY_MAP_PATH);
     }
 
     private void configureCategories() throws IOException {
 
         entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
         prize_category_groups = getPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+    }
+
+    private Properties loadProperties(final Path config_file_path) throws IOException {
+
+        try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
+
+            final Properties properties = new Properties();
+            properties.load(stream);
+            return properties;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void allocatePrizes() {
+        prizes.allocatePrizes();
+    }
+
+    protected void sortResults() {
+
+        sortAllResults();
+        sortDNFResults();
+    }
+
+    private void sortAllResults() {
+
+        for (Comparator<RaceResult> comparator : getComparators())
+            overall_results.sort(comparator);
+    }
+
+    private void sortDNFResults() {
+
+        for (Comparator<RaceResult> comparator : getDNFComparators())
+            overall_results.sort(dnfOnly(comparator));
+    }
+
+    private Comparator<RaceResult> dnfOnly(Comparator<RaceResult> comparator) {
+
+        return (r1, r2) -> r1.shouldDisplayPosition() || r2.shouldDisplayPosition() ? 0 : comparator.compare(r1, r2);
     }
 
     private List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
@@ -242,60 +319,13 @@ public abstract class Race {
         return groups.stream().filter(group -> group.group_title().equals(group_name)).findFirst().orElse(null);
     }
 
-    public List<RaceResult> getOverallResultsByCategory(final List<PrizeCategory> categories_required) {
-
-        return overall_results.stream().
-                filter(result -> categories_required.stream().
-                        map(prize_category -> isEligibleFor(getEntryCategory(result), prize_category)).
-                        reduce(Boolean::logicalOr).
-                        orElseThrow()).
-                toList();
-    }
-
-    protected void allocatePrizes() {
-        prizes.allocatePrizes();
-    }
-
-    protected void sortResults() {
-
-        for (Comparator<RaceResult> comparator : getComparators())
-            overall_results.sort(comparator);
-
-        for (Comparator<RaceResult> comparator : getDNFComparators())
-            overall_results.sort(dnfOnly(comparator));
-    }
-
-    protected Comparator<RaceResult> dnfOnly(Comparator<RaceResult> comparator) {
-        return (r1, r2) -> r1.shouldDisplayPosition() || r2.shouldDisplayPosition() ? 0 : comparator.compare(r1, r2);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static Properties loadProperties(final Path config_file_path) throws IOException {
-
-        try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
-
-            final Properties properties = new Properties();
-            properties.load(stream);
-            return properties;
-        }
-    }
-
-    protected void configureNormalisation() throws IOException {
-
-        normalisation = new Normalisation(this);
-
-        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
-        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
-        capitalisation_stop_words = new HashSet<>(Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
-        non_title_case_words = new HashSet<>();
-    }
-
-    private boolean isEligibleForByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    private boolean entryCategoryIsEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
         return entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
                 entry_category.getMaximumAge() <= prize_category.getMaximumAge();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Path getPathRelativeToProjectRoot(final String path) {
 
@@ -305,11 +335,6 @@ public abstract class Race {
     private Path getPathRelativeToRaceConfigFile(final String path) {
 
         return config_file_path.getParent().resolve(path);
-    }
-
-    protected void configureImportCategoryMap() throws IOException {
-
-        entry_map = loadImportCategoryMap(KEY_ENTRY_MAP_PATH, DEFAULT_ENTRY_MAP_PATH);
     }
 
     private Map<String, String> loadImportCategoryMap(final String path_key, final String default_path) throws IOException {

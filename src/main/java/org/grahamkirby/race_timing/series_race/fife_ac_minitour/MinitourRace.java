@@ -40,10 +40,6 @@ public class MinitourRace extends SeriesRace {
         minimum_number_of_races = races.size();
     }
 
-    @Override
-    protected void readProperties() {
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(final String[] args) throws IOException {
@@ -64,7 +60,7 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
-    public boolean isEligibleForByGender(EntryCategory entry_category, PrizeCategory prize_category) {
+    public boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
         return entry_category.getGender().equals(prize_category.getGender());
     }
 
@@ -127,6 +123,10 @@ public class MinitourRace extends SeriesRace {
             result.times.add(getRaceTime(individual_race, runner));
 
         return result;
+    }
+
+    @Override
+    protected void readProperties() {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
