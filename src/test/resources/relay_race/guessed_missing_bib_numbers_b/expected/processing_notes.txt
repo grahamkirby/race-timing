@@ -1,0 +1,12 @@
+
+Discrepancies:
+-------------
+
+Bib numbers with missing times: 3, 4, 4, 5, 5
+
+Times with missing bib numbers:
+
+00:45:35
+01:47:23
+01:47:44
+03:48:29

@@ -29,13 +29,13 @@ public class RelayRaceResult extends RaceResult {
     public final RelayRaceEntry entry;
     final List<LegResult> leg_results;
 
-    public RelayRaceResult(final RelayRaceEntry entry, final int number_of_legs, final Race race) {
+    public RelayRaceResult(final RelayRaceEntry entry, final int number_of_legs, final RelayRace race) {
 
         super(race);
         this.entry = entry;
         leg_results = new ArrayList<>();
 
-        for (int i = 0; i < number_of_legs; i++)
+        for (int i = 0; i < race.number_of_legs; i++)
             leg_results.add(new LegResult(entry, race));
     }
 
@@ -89,5 +89,13 @@ public class RelayRaceResult extends RaceResult {
             if (leg_result.DNF) return true;
 
         return false;
+    }
+
+    protected boolean allLegsDnf() {
+
+        for (final LegResult leg_result : leg_results)
+            if (!leg_result.DNF) return false;
+
+        return true;
     }
 }

@@ -86,9 +86,11 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MidweekRaceResult result = ((MidweekRaceResult)r);
+            final MidweekRaceResult result = ((MidweekRaceResult) r);
 
-            writer.append(STR."""
+            if (result.hasCompletedAnyRace()) {
+
+                writer.append(STR."""
                         <tr>
                             <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
                             <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
@@ -96,17 +98,18 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
                             <td>\{result.runner.club}</td>
                 """);
 
-            for (int i = 0; i < result.scores.size(); i++)
-                if (result.scores.get(i) >= 0)
-                    writer.append(STR."""
+                for (int i = 0; i < result.scores.size(); i++)
+                    if (result.scores.get(i) >= 0)
+                        writer.append(STR."""
                                     <td>\{result.scores.get(i)}</td>
                         """);
 
-            writer.append(STR."""
+                writer.append(STR."""
                             <td>\{result.totalScore()}</td>
                             <td>\{result.completed() ? "Y" : "N"}</td>
                         </tr>
-                """);
+                    """);
+            }
         }
     }
 

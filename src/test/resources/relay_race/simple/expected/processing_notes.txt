@@ -1,0 +1,8 @@
+
+Discrepancies:
+-------------
+
+Bib numbers with missing times: 114, 114, 114, 114
+
+Times with missing bib numbers:
+

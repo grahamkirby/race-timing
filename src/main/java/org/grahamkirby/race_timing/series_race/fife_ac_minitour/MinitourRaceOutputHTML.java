@@ -137,7 +137,9 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
             final MinitourRace race = (MinitourRace) result.race;
             final List<IndividualRace> races = race.getRaces();
 
-            writer.append(STR."""
+            if (result.completedAnyRacesSoFar()) {
+
+                writer.append(STR."""
                         <tr>
                             <td>\{result.completedAllRacesSoFar() ? result.position_string : "-"}</td>
                             <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
@@ -145,17 +147,22 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
                             <td>\{result.runner.club}</td>
                 """);
 
-            for (int i = 0; i < result.times.size(); i++)
-                if (result.times.get(i) != null)
-                    writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
-                else
-                    if (races.get(i) != null)
+                for (int i = 0; i < result.times.size(); i++)
+
+
+                    if (result.times.get(i) != null && result.times.get(i) != Race.DUMMY_DURATION)
+//                    if (result.times.get(i) != null)
+
+
+                        writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
+                    else if (races.get(i) != null)
                         writer.append("            <td>-</td>\n");
 
-            writer.append(STR."""
+                writer.append(STR."""
                             <td>\{result.completedAllRacesSoFar() ? format(result.duration()) : "-"}</td>
                         </tr>
-                """);
+                    """);
+            }
         }
     }
 
@@ -220,15 +227,17 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final IndividualRaceResult result = (IndividualRaceResult) r;
 
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.DNF ? "" : result.position_string}</td>
-                        <td>\{result.entry.bib_number}</td>
-                        <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
-                        <td>\{result.entry.runner.category.getShortName()}</td>
-                        <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
-                    </tr>
-            """);
+            if (result.completed())
+
+                writer.append(STR."""
+                        <tr>
+                            <td>\{result.DNF ? "" : result.position_string}</td>
+                            <td>\{result.entry.bib_number}</td>
+                            <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
+                            <td>\{result.entry.runner.category.getShortName()}</td>
+                            <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
+                        </tr>
+                """);
         }
     }
 }

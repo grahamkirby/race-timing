@@ -40,10 +40,24 @@ public abstract class RaceResult {
 
     public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
-        return r1.race.normalisation.getFirstName(r1.getIndividualRunnerName()).compareTo(r1.race.normalisation.getFirstName(r2.getIndividualRunnerName()));
+        String individualRunnerName1 = r1.getIndividualRunnerName();
+        String individualRunnerName2 = r2.getIndividualRunnerName();
+
+        if (individualRunnerName1 == null && individualRunnerName2 == null) return 0;
+        if (individualRunnerName1 == null) return -1;
+        if (individualRunnerName2 == null) return 1;
+
+        return r1.race.normalisation.getFirstName(individualRunnerName1).compareTo(r1.race.normalisation.getFirstName(individualRunnerName2));
     }
 
     public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+
+        String individualRunnerName1 = r1.getIndividualRunnerName();
+        String individualRunnerName2 = r2.getIndividualRunnerName();
+
+        if (individualRunnerName1 == null && individualRunnerName2 == null) return 0;
+        if (individualRunnerName1 == null) return -1;
+        if (individualRunnerName2 == null) return 1;
 
         return r1.race.normalisation.getLastName(r1.getIndividualRunnerName()).compareTo(r1.race.normalisation.getLastName(r2.getIndividualRunnerName()));
     }

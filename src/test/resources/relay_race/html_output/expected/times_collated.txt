@@ -17,11 +17,3 @@
 2	03:48:22
 3	03:48:29
 4	03:49:21
-
-Discrepancies:
--------------
-
-Bib numbers with missing times: 5
-
-Times with missing bib numbers:
-

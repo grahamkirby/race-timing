@@ -47,6 +47,21 @@ public class MidweekRaceResult extends SeriesRaceResult {
         return -Integer.compare(totalScore(), ((MidweekRaceResult) o).totalScore());
     }
 
+    public boolean hasCompletedAnyRace() {
+
+//        final List<IndividualRace> races = ((MinitourRace)race).getRaces();
+
+        // TODO with case where a runner did complete a large race with over 200 m/f finishers but got zero
+        for (int i = 0; i < scores.size(); i++)
+//            for (int i = 0; i < races.size(); i++)
+            if (scores.get(i) > 0)
+//                if (races.get(i) != null && !times.get(i).equals(Race.DUMMY_DURATION))
+//                if (races.get(i) != null && times.get(i) == null)
+                return true;
+
+        return false;
+    }
+
     protected int totalScore() {
 
         int total = 0;

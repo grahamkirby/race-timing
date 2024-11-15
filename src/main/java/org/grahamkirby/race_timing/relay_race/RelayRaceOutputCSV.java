@@ -123,18 +123,21 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
         final RelayRaceResult result = (RelayRaceResult) race.getOverallResults().get(result_index);
+// TODO use text blocks
+        if (!result.allLegsDnf()) {
 
-        if (result.shouldDisplayPosition())
-            writer.append(result.position_string);
+            if (result.shouldDisplayPosition())
+                writer.append(result.position_string);
 
-        writer.append(",");
-        writer.append(String.valueOf(result.entry.bib_number)).append(",");
-        writer.append(result.entry.team.name()).append(",");
-        writer.append(result.entry.team.category().getLongName()).append(",");
+            writer.append(",");
+            writer.append(String.valueOf(result.entry.bib_number)).append(",");
+            writer.append(result.entry.team.name()).append(",");
+            writer.append(result.entry.team.category().getLongName()).append(",");
 
-        printLegDetails(writer, result, result.entry.team);
+            printLegDetails(writer, result, result.entry.team);
 
-        writer.append("\n");
+            writer.append("\n");
+        }
     }
 
     private void printLegDetails(final OutputStreamWriter writer, final RelayRaceResult result, final Team team) throws IOException {
@@ -196,15 +199,18 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            if (result.shouldDisplayPosition())
-                writer.append(result.position_string);
+            if (!result.allLegsDnf()) {
 
-            writer.append(",").
-                    append(String.valueOf(result.entry.bib_number)).append(",").
-                    append(result.entry.team.name()).append(",").
+                if (result.shouldDisplayPosition())
+                    writer.append(result.position_string);
+
+                writer.append(",").
+                        append(String.valueOf(result.entry.bib_number)).append(",").
+                        append(result.entry.team.name()).append(",").
 //                    append(result.entry.team.category().getLongName()).append(",").
-                    append(result.entry.team.category().getShortName()).append(",").
-                    append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
+        append(result.entry.team.category().getShortName()).append(",").
+                        append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
+            }
         }
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
@@ -64,6 +65,7 @@ public class IndividualRace extends SingleRace {
 
         fillFinishTimes();
         fillDNFs();
+
         sortResults();
         allocatePrizes();
     }
@@ -82,15 +84,6 @@ public class IndividualRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void configure() throws IOException {
-
-        super.configure();
-
-        configureHelpers();
-        configureInputData();
-    }
-
-    @Override
     protected void configureHelpers() {
 
         input = new IndividualRaceInput(this);
@@ -104,16 +97,23 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    public void initialiseResults() {
+    protected void initialiseResults() {
 
-        for (int i = 0; i < raw_results.size(); i++)
-            overall_results.add(new IndividualRaceResult(this));
+        for (final RaceEntry entry : entries) {
+            IndividualRaceResult e = new IndividualRaceResult(this);
+            e.entry = (IndividualRaceEntry) entry;
+            overall_results.add(e);
+        }
+
+//        for (int i = 0; i < raw_results.size(); i++)
+//            overall_results.add(new IndividualRaceResult(this));
     }
 
     @Override
     protected void outputResults() throws IOException {
 
         printOverallResults();
+
         printPrizes();
         printNotes();
         printCombined();
@@ -129,9 +129,9 @@ public class IndividualRace extends SingleRace {
     @Override
     protected void printPrizes() throws IOException {
 
-        output_text.printPrizes();
         output_PDF.printPrizes();
         output_HTML.printPrizes();
+        output_text.printPrizes();
     }
 
     @Override
@@ -169,21 +169,15 @@ public class IndividualRace extends SingleRace {
         return ((IndividualRaceResult) result).entry.runner.category;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     @Override
     protected void fillDNF(final String dnf_string) {
+
         try {
-            final String cleaned = dnf_string.strip();
+            final int bib_number = Integer.parseInt(dnf_string);
+            final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
-            if (!cleaned.isEmpty()) {
-
-                final int bib_number = Integer.parseInt(cleaned);
-                final IndividualRaceResult result = getResultWithBibNumber(bib_number);
-
-                result.DNF = true;
-                result.finish_time = DUMMY_DURATION;
-            }
+            result.DNF = true;
+//            result.finish_time = DUMMY_DURATION;
         }
         catch (Exception e) {
             throw new RuntimeException("illegal DNF string: " + e.getLocalizedMessage());
@@ -197,8 +191,17 @@ public class IndividualRace extends SingleRace {
 
         final IndividualRace individual_race = (IndividualRace) r1.race;
 
-        final int this_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r1).entry.bib_number);
-        final int other_recorded_position = individual_race.getRecordedPosition(((IndividualRaceResult)r2).entry.bib_number);
+        IndividualRaceEntry entry1 = ((IndividualRaceResult) r1).entry;
+        IndividualRaceEntry entry2 = ((IndividualRaceResult) r2).entry;
+
+        if (entry1 == null && entry2 == null) return 0;
+        if (entry1 == null) return -1;
+        if (entry2 == null) return 1;
+
+
+
+        final int this_recorded_position = individual_race.getRecordedPosition(entry1.bib_number);
+        final int other_recorded_position = individual_race.getRecordedPosition(entry2.bib_number);
 
         return Integer.compare(this_recorded_position, other_recorded_position);
     }
@@ -208,15 +211,35 @@ public class IndividualRace extends SingleRace {
         for (int results_index = 0; results_index < raw_results.size(); results_index++) {
 
             final RawResult raw_result = raw_results.get(results_index);
-            final IndividualRaceResult result = (IndividualRaceResult)overall_results.get(results_index);
 
-            result.entry = getEntryWithBibNumber(raw_result.getBibNumber());
+
+
+//            final IndividualRaceResult result = (IndividualRaceResult)overall_results.get(results_index);
+//
+//            result.entry = getEntryWithBibNumber(raw_result.getBibNumber());
+
+            final IndividualRaceResult result = getOverallResultWithBibNumber(raw_result.getBibNumber());
+
+
+
+
+
+
+
             result.finish_time = raw_result.getRecordedFinishTime();
 
             // Provisionally this leg is not DNF since a finish time was recorded.
             // However, it might still be set to DNF in fillDNF() if the runner didn't complete the course.
             result.DNF = false;
         }
+
+
+
+
+//        for (RaceResult result : overall_results) {
+//            if (((IndividualRaceResult)result).entry == null)
+//
+//        }
     }
 
     private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
@@ -237,6 +260,15 @@ public class IndividualRace extends SingleRace {
                 orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
     }
 
+    private IndividualRaceResult getOverallResultWithBibNumber(final int bib_number) {
+
+        return overall_results.stream().
+                map(result -> ((IndividualRaceResult) result)).
+                filter(result -> result.entry.bib_number == bib_number).
+                findFirst().
+                orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
+    }
+
     protected int getRecordedPosition(final int bib_number) {
 
         final AtomicInteger i = new AtomicInteger();
@@ -245,6 +277,6 @@ public class IndividualRace extends SingleRace {
             filter(r -> { i.getAndIncrement(); return r.getBibNumber() == bib_number;}).
             map(_ -> i.get()).
             findFirst().
-            orElseThrow();
+            orElse(Integer.MAX_VALUE);
     }
 }

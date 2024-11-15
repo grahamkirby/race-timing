@@ -28,3 +28,4 @@
 28	Myles  Christie	Fife AC	F40
 29	Isabel Ritchie	Fife AC	FS
 30	Scott Kelly	Fife AC	MS
+31	Non Starter	Dummy Club	MS

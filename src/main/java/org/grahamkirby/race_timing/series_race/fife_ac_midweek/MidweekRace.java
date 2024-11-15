@@ -41,8 +41,6 @@ public class MidweekRace extends SeriesRace {
         super(config_file_path);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     public static void main(final String[] args) throws IOException {
 
         // Path to configuration file should be first argument.
@@ -54,6 +52,8 @@ public class MidweekRace extends SeriesRace {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean allowEqualPositions() {
 
@@ -61,21 +61,21 @@ public class MidweekRace extends SeriesRace {
         return true;
     }
 
-    @Override
-    public boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
-        return entry_category.getGender().equals(prize_category.getGender());
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<Comparator<RaceResult>> getComparators() {
+    protected void readProperties() {
 
-        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName, RaceResult::comparePerformanceTo, RaceResult::compareCompletion);
+        minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
     }
 
-    public List<Comparator<RaceResult>> getDNFComparators() {
-        return List.of();
+    @Override
+    protected void configureInputData() throws IOException {
+
+        super.configureInputData();
+
+        for (final String runner_name : getRunnerNames())
+            checkClubsForRunner(runner_name);
     }
 
     @Override
@@ -106,6 +106,27 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
+    protected List<Comparator<RaceResult>> getComparators() {
+
+        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName, RaceResult::comparePerformanceTo, RaceResult::compareCompletion);
+    }
+
+    @Override
+    protected List<Comparator<RaceResult>> getDNFComparators() {
+        return List.of();
+    }
+
+    @Override
+    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+        return entry_category.getGender().equals(prize_category.getGender());
+    }
+
+    @Override
+    protected EntryCategory getEntryCategory(final RaceResult result) {
+        return ((MidweekRaceResult) result).runner.category;
+    }
+
+    @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
         final MidweekRaceResult result = new MidweekRaceResult(runner, this);
@@ -114,26 +135,6 @@ public class MidweekRace extends SeriesRace {
             result.scores.add(calculateRaceScore(individual_race, runner));
 
         return result;
-    }
-
-    @Override
-    protected void configureInputData() throws IOException {
-
-        super.configureInputData();
-
-        for (final String runner_name : getRunnerNames())
-            checkClubsForRunner(runner_name);
-    }
-
-    @Override
-    protected void readProperties() {
-
-        minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
-    }
-
-    @Override
-    public EntryCategory getEntryCategory(final RaceResult result) {
-        return ((MidweekRaceResult) result).runner.category;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,9 +218,10 @@ public class MidweekRace extends SeriesRace {
         // The first finisher of each gender gets the maximum score, the next one less, and so on.
         for (final RaceResult result : individual_race.getOverallResults()) {
 
-            final Runner result_runner = ((IndividualRaceResult)result).entry.runner;
+            IndividualRaceResult result1 = (IndividualRaceResult) result;
+            final Runner result_runner = result1.entry.runner;
 
-            if (result_runner.equals(runner)) return Math.max(score, 0);
+            if (result1.completed() && result_runner.equals(runner)) return Math.max(score, 0);
             if (gender.equals(result_runner.category.getGender())) score--;
         }
 

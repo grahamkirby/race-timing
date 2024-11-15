@@ -24,9 +24,10 @@ import java.time.Duration;
 
 public class IndividualRaceResult extends RaceResult {
 
-    public IndividualRaceEntry entry;
+    public IndividualRaceEntry entry;  // Initialised in IndividualRace.fillFinishTimes().
     public boolean DNF;
-    public Duration finish_time;
+//    public Duration finish_time;
+    public Duration finish_time = Race.DUMMY_DURATION;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,7 +58,7 @@ public class IndividualRaceResult extends RaceResult {
 
     @Override
     protected String getIndividualRunnerName() {
-        return entry.runner.name;
+        return entry == null ? null : entry.runner.name;
     }
 
     @Override
@@ -77,7 +78,10 @@ public class IndividualRaceResult extends RaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+//    public Duration duration() {
+//        return DNF ? Race.DUMMY_DURATION : finish_time;
+//    }
     public Duration duration() {
-        return DNF ? Race.DUMMY_DURATION : finish_time;
+        return finish_time;
     }
 }

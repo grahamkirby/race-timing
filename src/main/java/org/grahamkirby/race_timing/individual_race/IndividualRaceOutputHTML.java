@@ -94,7 +94,10 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
             final IndividualRaceResult result = ((IndividualRaceResult)r);
 
-            writer.append(STR."""
+            // Check for case where no time recorded for runner, as opposed to finished but didn't complete course.
+            if (!result.duration().equals(Race.DUMMY_DURATION)) {
+
+                writer.append(STR."""
                         <tr>
                             <td>\{result.DNF ? "" : result.position_string}</td>
                             <td>\{result.entry.bib_number}</td>
@@ -103,7 +106,8 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
                             <td>\{result.entry.runner.category.getShortName()}</td>
                             <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
                         </tr>
-                """);
+                    """);
+            }
         }
     }
 

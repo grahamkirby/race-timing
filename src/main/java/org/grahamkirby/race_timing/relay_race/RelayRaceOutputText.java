@@ -120,8 +120,9 @@ public class RelayRaceOutputText extends RaceOutputText {
         return bib_numbers_with_missing_times;
     }
 
-    private void printDiscrepancies(final OutputStreamWriter writer, final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers) throws IOException {
+    private void printDiscrepancies(final OutputStreamWriter writerx, final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers) throws IOException {
 
+        StringBuilder writer = race.getNotes();
         bib_numbers_with_missing_times.sort(Integer::compareTo);
 
         writer.append("\nDiscrepancies:\n-------------\n\nBib numbers with missing times: ");
