@@ -37,8 +37,11 @@ public abstract class RaceOutputText extends RaceOutput {
 
     @Override
     protected String getPrizesSectionHeader() {
-        return race_name_for_results + " Results " + year +"\n" +
-                "============================\n\n";
+        return STR."""
+            \{race_name_for_results} Results \{year}
+            ============================
+
+            """;
     }
 
     @Override

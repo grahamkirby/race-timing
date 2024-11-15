@@ -100,13 +100,11 @@ public class IndividualRace extends SingleRace {
     protected void initialiseResults() {
 
         for (final RaceEntry entry : entries) {
-            IndividualRaceResult e = new IndividualRaceResult(this);
-            e.entry = (IndividualRaceEntry) entry;
-            overall_results.add(e);
-        }
 
-//        for (int i = 0; i < raw_results.size(); i++)
-//            overall_results.add(new IndividualRaceResult(this));
+            IndividualRaceResult result = new IndividualRaceResult(this);
+            result.entry = (IndividualRaceEntry) entry;
+            overall_results.add(result);
+        }
     }
 
     @Override
@@ -177,7 +175,6 @@ public class IndividualRace extends SingleRace {
             final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
             result.DNF = true;
-//            result.finish_time = DUMMY_DURATION;
         }
         catch (Exception e) {
             throw new RuntimeException("illegal DNF string: " + e.getLocalizedMessage());
@@ -198,8 +195,6 @@ public class IndividualRace extends SingleRace {
         if (entry1 == null) return -1;
         if (entry2 == null) return 1;
 
-
-
         final int this_recorded_position = individual_race.getRecordedPosition(entry1.bib_number);
         final int other_recorded_position = individual_race.getRecordedPosition(entry2.bib_number);
 
@@ -208,38 +203,16 @@ public class IndividualRace extends SingleRace {
 
     private void fillFinishTimes() {
 
-        for (int results_index = 0; results_index < raw_results.size(); results_index++) {
+        for (final RawResult raw_result : raw_results) {
 
-            final RawResult raw_result = raw_results.get(results_index);
-
-
-
-//            final IndividualRaceResult result = (IndividualRaceResult)overall_results.get(results_index);
-//
-//            result.entry = getEntryWithBibNumber(raw_result.getBibNumber());
-
-            final IndividualRaceResult result = getOverallResultWithBibNumber(raw_result.getBibNumber());
-
-
-
-
-
-
+            final IndividualRaceResult result = getResultWithBibNumber(raw_result.getBibNumber());
 
             result.finish_time = raw_result.getRecordedFinishTime();
 
-            // Provisionally this leg is not DNF since a finish time was recorded.
+            // Provisionally this result is not DNF since a finish time was recorded.
             // However, it might still be set to DNF in fillDNF() if the runner didn't complete the course.
             result.DNF = false;
         }
-
-
-
-
-//        for (RaceResult result : overall_results) {
-//            if (((IndividualRaceResult)result).entry == null)
-//
-//        }
     }
 
     private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
@@ -248,7 +221,7 @@ public class IndividualRace extends SingleRace {
                 map(result -> ((IndividualRaceResult) result)).
                 filter(result -> result.entry.bib_number == bib_number).
                 findFirst().
-                orElseThrow(() -> new RuntimeException("unrecorded bib number: " + bib_number));
+                orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
     }
 
     private IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
@@ -256,15 +229,6 @@ public class IndividualRace extends SingleRace {
         return entries.stream().
                 map(entry -> ((IndividualRaceEntry) entry)).
                 filter(entry -> entry.bib_number == bib_number).
-                findFirst().
-                orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
-    }
-
-    private IndividualRaceResult getOverallResultWithBibNumber(final int bib_number) {
-
-        return overall_results.stream().
-                map(result -> ((IndividualRaceResult) result)).
-                filter(result -> result.entry.bib_number == bib_number).
                 findFirst().
                 orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
     }

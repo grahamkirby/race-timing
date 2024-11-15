@@ -26,7 +26,6 @@ public class IndividualRaceResult extends RaceResult {
 
     public IndividualRaceEntry entry;  // Initialised in IndividualRace.fillFinishTimes().
     public boolean DNF;
-//    public Duration finish_time;
     public Duration finish_time = Race.DUMMY_DURATION;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,9 +77,6 @@ public class IndividualRaceResult extends RaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    public Duration duration() {
-//        return DNF ? Race.DUMMY_DURATION : finish_time;
-//    }
     public Duration duration() {
         return finish_time;
     }

@@ -74,7 +74,6 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
                         append(result.runner.category.getShortName()).append(",");
 
                 for (final Duration time : result.times)
-//                writer.append(time != null ? format(time) : "-").append(",");
                     writer.append(time != null && time != Race.DUMMY_DURATION ? format(time) : "-").append(",");
 
                 writer.append(result.completedAllRacesSoFar() ? format(result.duration()) : "-").append("\n");

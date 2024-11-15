@@ -27,10 +27,6 @@ public abstract class RaceResult {
         this.race = race;
     }
 
-    public int compareCompletionTo(final RaceResult other) {
-        return compareCompletion(this, other);
-    }
-
     public static int compareCompletion(final RaceResult r1, final RaceResult r2) {
 
         if (r1.completed() && !r2.completed()) return -1;

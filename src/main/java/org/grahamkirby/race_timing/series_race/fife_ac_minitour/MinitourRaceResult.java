@@ -60,7 +60,6 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
         for (int i = 0; i < races.size(); i++)
             if (races.get(i) != null && times.get(i).equals(Race.DUMMY_DURATION))
-//                if (races.get(i) != null && times.get(i) == null)
                 return false;
 
         return true;
@@ -68,13 +67,8 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     public boolean completedAnyRacesSoFar() {
 
-        final List<IndividualRace> races = ((MinitourRace)race).getRaces();
-
-        for (int i = 0; i < times.size(); i++)
-//            for (int i = 0; i < races.size(); i++)
-            if (times.get(i) != null && !times.get(i).equals(Race.DUMMY_DURATION))
-//                if (races.get(i) != null && !times.get(i).equals(Race.DUMMY_DURATION))
-//                if (races.get(i) != null && times.get(i) == null)
+        for (Duration time : times)
+            if (time != null && !time.equals(Race.DUMMY_DURATION))
                 return true;
 
         return false;
@@ -87,8 +81,8 @@ public class MinitourRaceResult extends SeriesRaceResult {
         Duration overall = Duration.ZERO;
 
         for (int i = 0; i < ((MinitourRace)race).getNumberOfRacesTakenPlace(); i++) {
-            Duration time = times.get(i);
-//            if (time == null) return IndividualRace.DUMMY_DURATION;
+
+            final Duration time = times.get(i);
             if (time.equals(Race.DUMMY_DURATION)) return Race.DUMMY_DURATION;
             overall = overall.plus(time);
         }

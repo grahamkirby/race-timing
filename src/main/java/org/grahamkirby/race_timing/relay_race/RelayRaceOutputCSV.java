@@ -123,7 +123,8 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     private void printDetailedResult(final OutputStreamWriter writer, final int result_index) throws IOException {
 
         final RelayRaceResult result = (RelayRaceResult) race.getOverallResults().get(result_index);
-// TODO use text blocks
+
+        // TODO use text blocks
         if (!result.allLegsDnf()) {
 
             if (result.shouldDisplayPosition())
@@ -207,8 +208,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
                 writer.append(",").
                         append(String.valueOf(result.entry.bib_number)).append(",").
                         append(result.entry.team.name()).append(",").
-//                    append(result.entry.team.category().getLongName()).append(",").
-        append(result.entry.team.category().getShortName()).append(",").
+                        append(result.entry.team.category().getShortName()).append(",").
                         append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
             }
         }

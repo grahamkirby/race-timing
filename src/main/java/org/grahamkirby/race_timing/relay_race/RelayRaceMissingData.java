@@ -152,7 +152,7 @@ public class RelayRaceMissingData {
         }
     }
 
-    private static Duration roundToIntegerSeconds(final Duration duration) {
+    private Duration roundToIntegerSeconds(final Duration duration) {
 
         long seconds = duration.getSeconds();
         if (duration.getNano() > HALF_A_SECOND_IN_NANOSECONDS) seconds++;
