@@ -40,8 +40,6 @@ public class MinitourRace extends SeriesRace {
         minimum_number_of_races = races.size();
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     public static void main(final String[] args) throws IOException {
 
         // Path to configuration file should be first argument.
@@ -52,6 +50,13 @@ public class MinitourRace extends SeriesRace {
             new MinitourRace(Paths.get(args[0])).processResults();
     }
 
+    public static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
+
+        return ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean allowEqualPositions() {
 
@@ -59,31 +64,10 @@ public class MinitourRace extends SeriesRace {
         return true;
     }
 
-    @Override
-    public boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
-        return entry_category.getGender().equals(prize_category.getGender());
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public EntryCategory getEntryCategory(RaceResult result) {
-        return ((MinitourRaceResult) result).runner.category;
-    }
-
-    @Override
-    public List<Comparator<RaceResult>> getComparators() {
-        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName, RaceResult::comparePerformanceTo, MinitourRace::compareCompletionSoFar, RaceResult::compareCompletion);
-    }
-
-    @Override
-    public List<Comparator<RaceResult>> getDNFComparators() {
-        return List.of();
-    }
-
-    public static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
-
-        return ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
+    protected void readProperties() {
     }
 
     @Override
@@ -115,6 +99,26 @@ public class MinitourRace extends SeriesRace {
     }
 
     @Override
+    protected List<Comparator<RaceResult>> getComparators() {
+        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName, RaceResult::comparePerformanceTo, MinitourRace::compareCompletionSoFar, RaceResult::compareCompletion);
+    }
+
+    @Override
+    protected List<Comparator<RaceResult>> getDNFComparators() {
+        return List.of();
+    }
+
+    @Override
+    protected EntryCategory getEntryCategory(RaceResult result) {
+        return ((MinitourRaceResult) result).runner.category;
+    }
+
+    @Override
+    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
+        return entry_category.getGender().equals(prize_category.getGender());
+    }
+
+    @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
         final MinitourRaceResult result = new MinitourRaceResult(runner, this);
@@ -123,10 +127,6 @@ public class MinitourRace extends SeriesRace {
             result.times.add(getRaceTime(individual_race, runner));
 
         return result;
-    }
-
-    @Override
-    protected void readProperties() {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

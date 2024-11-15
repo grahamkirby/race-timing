@@ -3,3 +3,4 @@
 3	Team 3	OS	Jackbruce	Martin King & Leland Donaldson	Neil MacDonald & Myles  Christie	Hubert Gray
 4	Team 4	W50	Sofia O'Connor	Philip O’Donohue & Hasan Robertson	Lena K. Maclean & Isabel Ritchie	Martha Gibson
 5	Team 5	OS	Clark O' Connor	Nina Joan Fiona Walker & Hope Christie	Cayla Duncan & Scott Kelly	Amelia Muir
+114	Non-Starters	OS	Dummy	Dummy	Dummy	Dummy

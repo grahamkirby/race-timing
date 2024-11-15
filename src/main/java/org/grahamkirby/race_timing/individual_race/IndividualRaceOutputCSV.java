@@ -60,10 +60,14 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final IndividualRaceResult result = (IndividualRaceResult)r;
+            final IndividualRaceResult result = (IndividualRaceResult) r;
 
-            writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""}, \{result.entry.bib_number}, \{result.entry.runner.name}, ").
-                    append(STR."\{result.entry.runner.club}, \{result.entry.runner.category.getShortName()}, \{!result.completed() ? "DNF" : format(result.duration())}");
+            // Check for case where no time recorded for runner, as opposed to finished but didn't complete course.
+            if (!result.duration().equals(Race.DUMMY_DURATION)) {
+
+                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""}, \{result.entry.bib_number}, \{result.entry.runner.name}, ").
+                        append(STR."\{result.entry.runner.club}, \{result.entry.runner.category.getShortName()}, \{!result.completed() ? "DNF" : format(result.duration())}\n");
+            }
         }
     }
 }

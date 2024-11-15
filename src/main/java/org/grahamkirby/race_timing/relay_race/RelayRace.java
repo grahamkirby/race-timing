@@ -79,7 +79,133 @@ public class RelayRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<Comparator<RaceResult>> getComparators() {
+    public void processResults() throws IOException {
+
+        calculateResults();
+        outputResults();
+    }
+
+    @Override
+    public void calculateResults() {
+
+        initialiseResults();
+
+        interpolateMissingTimes();
+        guessMissingBibNumbers();
+
+        fillFinishTimes();
+        fillDNFs();
+
+        fillLegResultDetails();
+
+        sortResults();
+        allocatePrizes();
+
+        addPaperRecordingComments();
+    }
+
+    @Override
+    public boolean allowEqualPositions() {
+
+        // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runner_names.
+        return false;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected void configure() throws IOException {
+
+        super.configure();
+
+        configureMassStarts();
+        configurePairedLegs();
+        configureIndividualLegStarts();
+    }
+
+    @Override
+    protected void readProperties() {
+
+        super.readProperties();
+
+        number_of_legs = Integer.parseInt(getProperty(KEY_NUMBER_OF_LEGS));
+        start_offset = parseTime(getProperty(KEY_START_OFFSET, ZERO_TIME_STRING));
+    }
+
+    @Override
+    protected void configureInputData() throws IOException {
+
+        super.configureInputData();
+
+        ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
+    }
+
+    @Override
+    protected void configureHelpers() {
+
+        input = new RelayRaceInput(this);
+
+        output_CSV = new RelayRaceOutputCSV(this);
+        output_HTML = new RelayRaceOutputHTML(this);
+        output_text = new RelayRaceOutputText(this);
+        output_PDF = new RelayRaceOutputPDF(this);
+
+        missing_data = new RelayRaceMissingData(this);
+        prizes = new RelayRacePrizes(this);
+    }
+
+    @Override
+    protected void initialiseResults() {
+
+        // TODO rationalise with IndividualRace with respect to treatment of non-starts or no finishers.
+
+        for (final RaceEntry entry : entries)
+            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
+    }
+
+    @Override
+    protected void outputResults() throws IOException {
+
+        printOverallResults();
+        printDetailedResults();
+        printLegResults();
+        printCollatedTimes();
+
+        printPrizes();
+        printNotes();
+        printCombined();
+
+    }
+
+    @Override
+    protected void printOverallResults() throws IOException {
+
+        output_CSV.printResults();
+        output_HTML.printResults();
+    }
+
+    @Override
+    protected void printPrizes() throws IOException {
+
+        output_PDF.printPrizes();
+        output_HTML.printPrizes();
+        output_text.printPrizes();
+    }
+
+    @Override
+    protected void printNotes() throws IOException {
+
+        output_text.printNotes();
+    }
+
+    @Override
+    protected void printCombined() throws IOException {
+
+        output_HTML.printCombined();
+    }
+
+    @Override
+    protected List<Comparator<RaceResult>> getComparators() {
 
         // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
         // DNF results are sorted in increasing order of bib number.
@@ -89,9 +215,38 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    public List<Comparator<RaceResult>> getDNFComparators() {
+    protected List<Comparator<RaceResult>> getDNFComparators() {
         return List.of(RelayRace::compareBibNumber);
     }
+
+    @Override
+    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
+
+        return entry_category.getGender().equals(prize_category.getGender()) ||
+                entry_category.getGender().equals("Women") && prize_category.getGender().equals("Open") ||
+                entry_category.getGender().equals("Mixed") && prize_category.getGender().equals("Open");
+    }
+
+    @Override
+    protected EntryCategory getEntryCategory(RaceResult result) {
+        return ((RelayRaceResult) result).entry.team.category();
+    }
+
+    @Override
+    protected void fillDNF(final String dnf_string) {
+
+        try {
+            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
+            final LegResult result = result_with_leg.result.leg_results.get(result_with_leg.leg_index);
+
+            result.DNF = true;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("illegal DNF time");
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static int compareBibNumber(final RaceResult r1, final RaceResult r2) {
 
@@ -108,129 +263,37 @@ public class RelayRace extends SingleRace {
         return Integer.compare(getRecordedLastLegPosition(((RelayRaceResult) r1)), getRecordedLastLegPosition(((RelayRaceResult) r2)));
     }
 
-    private  int getRecordedLastLegPosition(final RelayRaceResult result) {
-
-        return getRecordedLegPosition(result.entry.bib_number, number_of_legs);
-    }
-
-    @Override
-    public boolean allowEqualPositions() {
-
-        // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runner_names.
-        return false;
-    }
-
-    @Override
-    public boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
-
-        return entry_category.getGender().equals(prize_category.getGender()) ||
-                entry_category.getGender().equals("Women") && prize_category.getGender().equals("Open") ||
-                entry_category.getGender().equals("Mixed") && prize_category.getGender().equals("Open");
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void configure() throws IOException {
+    protected List<LegResult> getLegResults(final int leg_number) {
 
-        super.configure();
+        final List<LegResult> leg_results = new ArrayList<>();
 
-        readProperties();
+        for (final RaceResult overall_result : getOverallResults())
+            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
 
-        configureHelpers();
-        configureInputData();
+        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
+        // Ordering for DNF results doesn't matter since they're omitted in output.
+        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
+        // OutputCSV.printLegResults deals with dead heats.
+        leg_results.sort(LegResult::compareTo);
 
-        configureMassStarts();
-        configurePairedLegs();
-        configureIndividualLegStarts();
+        return leg_results;
     }
 
-    @Override
-    public void processResults() throws IOException {
+    protected String getMassStartAnnotation(final LegResult leg_result, final int leg) {
 
-        initialiseResults();
-        calculateResults();
-        outputResults();
-    }
+        // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
+        if (leg_result.in_mass_start) {
 
-    @Override
-    protected void configureInputData() throws IOException {
+            // Find the next mass start.
+            int mass_start_leg = leg;
+            while (!(mass_start_legs.get(mass_start_leg-1)))
+                mass_start_leg++;
 
-        super.configureInputData();
-        ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
-    }
-
-    @Override
-    protected void fillDNF(final String dnf_string) {
-
-        try {
-            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
-            result_with_leg.result.leg_results.get(result_with_leg.leg_index).DNF = true;
+            return STR." (M\{mass_start_leg})";
         }
-        catch (Exception e) {
-            throw new RuntimeException("illegal DNF time");
-        }
-    }
-
-    @Override
-    public EntryCategory getEntryCategory(RaceResult result) {
-        return ((RelayRaceResult) result).entry.team.category();
-    }
-
-    @Override
-    public void initialiseResults() {
-
-        for (final RaceEntry entry : entries)
-            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
-    }
-
-    @Override
-    public void calculateResults() {
-
-        interpolateMissingTimes();
-        guessMissingBibNumbers();
-        fillLegFinishTimes();
-        fillDNFs();
-        fillLegResultDetails();
-        sortResults();
-        allocatePrizes();
-        addPaperRecordingComments();
-    }
-
-    @Override
-    public void outputResults() throws IOException {
-
-        printOverallResults();
-        printDetailedResults();
-        printLegResults();
-        printPrizes();
-        printNotes();
-        printCombined();
-        printCollatedTimes();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    protected void readProperties() {
-
-        super.readProperties();
-        number_of_legs = Integer.parseInt(getProperty(KEY_NUMBER_OF_LEGS));
-        start_offset = parseTime(getProperty(KEY_START_OFFSET, ZERO_TIME_STRING));
-    }
-
-    @Override
-    protected void configureHelpers() {
-
-        input = new RelayRaceInput(this);
-
-        output_CSV = new RelayRaceOutputCSV(this);
-        output_HTML = new RelayRaceOutputHTML(this);
-        output_text = new RelayRaceOutputText(this);
-        output_PDF = new RelayRaceOutputPDF(this);
-
-        missing_data = new RelayRaceMissingData(this);
-        prizes = new RelayRacePrizes(this);
+        else return "";
     }
 
     protected int getRecordedLegPosition(final int bib_number, final int leg_number) {
@@ -248,6 +311,21 @@ public class RelayRace extends SingleRace {
         }
 
         return Integer.MAX_VALUE;
+    }
+
+    protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+
+        Duration total = Duration.ZERO;
+        for (int i = 0; i < leg; i++)
+            total = total.plus(leg_results.get(i).duration());
+        return total;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private int getRecordedLastLegPosition(final RelayRaceResult result) {
+
+        return getRecordedLegPosition(result.entry.bib_number, number_of_legs);
     }
 
     private void interpolateMissingTimes() {
@@ -357,7 +435,7 @@ public class RelayRace extends SingleRace {
         return new IndividualLegStart(bib_number, leg_number, start_time);
     }
 
-    private void fillLegFinishTimes() {
+    private void fillFinishTimes() {
 
         recordLegResults();
         sortLegResults();
@@ -417,45 +495,6 @@ public class RelayRace extends SingleRace {
         final RelayRaceResult result = (RelayRaceResult)overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
 
         return new ResultWithLegIndex(result, leg_number - 1);
-    }
-
-    protected List<LegResult> getLegResults(final int leg_number) {
-
-        final List<LegResult> leg_results = new ArrayList<>();
-
-        for (final RaceResult overall_result : getOverallResults())
-            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
-
-        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
-        // Ordering for DNF results doesn't matter since they're omitted in output.
-        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
-        // OutputCSV.printLegResults deals with dead heats.
-        leg_results.sort(LegResult::compareTo);
-
-        return leg_results;
-    }
-
-    protected String getMassStartAnnotation(final LegResult leg_result, final int leg) {
-
-        // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
-        if (leg_result.in_mass_start) {
-
-            // Find the next mass start.
-            int mass_start_leg = leg;
-            while (!(mass_start_legs.get(mass_start_leg-1)))
-                mass_start_leg++;
-
-            return STR." (M\{mass_start_leg})";
-        }
-        else return "";
-    }
-
-    protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
-
-        Duration total = Duration.ZERO;
-        for (int i = 0; i < leg; i++)
-            total = total.plus(leg_results.get(i).duration());
-        return total;
     }
 
     private void fillLegResultDetails() {
@@ -548,13 +587,6 @@ public class RelayRace extends SingleRace {
         }
     }
 
-    @Override
-    protected void printOverallResults() throws IOException {
-
-        output_CSV.printResults();
-        output_HTML.printResults();
-    }
-
     private void printDetailedResults() throws IOException {
 
         ((RelayRaceOutputCSV)output_CSV).printDetailedResults();
@@ -565,26 +597,6 @@ public class RelayRace extends SingleRace {
 
         ((RelayRaceOutputCSV)output_CSV).printLegResults();
         ((RelayRaceOutputHTML)output_HTML).printLegResults(true);
-    }
-
-    @Override
-    protected void printPrizes() throws IOException {
-
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-        output_text.printPrizes();
-    }
-
-    @Override
-    protected void printNotes() throws IOException {
-
-        output_text.printNotes();
-    }
-
-    @Override
-    protected void printCombined() throws IOException {
-
-        output_HTML.printCombined();
     }
 
     private void printCollatedTimes() throws IOException {

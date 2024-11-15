@@ -66,7 +66,8 @@ public abstract class RaceOutputText extends RaceOutput {
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + getFileSuffix()));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(race.getNotes().toString());
+            String string = race.getNotes().toString();
+            writer.append(string);
         }
     }
 

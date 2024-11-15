@@ -12,4 +12,4 @@ CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_indiv
 
 # Comma-separated sequence of bib-numbers for any runners that have a time
 # recorded but they DNF'd.
-DNF_FINISHERS = 23, 29
+DNF_FINISHERS = 23,29

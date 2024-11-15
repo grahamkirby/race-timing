@@ -176,15 +176,17 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
             RelayRaceResult result = ((RelayRaceResult) r);
 
-            writer.append(STR."""
-                        <tr>
-                            <td>\{result.dnf() ? "" : result.position_string}</td>
-                            <td>\{result.entry.bib_number}</td>
-                            <td>\{race.normalisation.htmlEncode(result.entry.team.name())}</td>
-                            <td>\{result.entry.team.category().getLongName()}</td>
-                            <td>\{result.dnf() ? DNF_STRING : format(result.duration())}</td>
-                        </tr>
-                """);
+            if (!result.allLegsDnf())
+
+                writer.append(STR."""
+                            <tr>
+                                <td>\{result.dnf() ? "" : result.position_string}</td>
+                                <td>\{result.entry.bib_number}</td>
+                                <td>\{race.normalisation.htmlEncode(result.entry.team.name())}</td>
+                                <td>\{result.entry.team.category().getLongName()}</td>
+                                <td>\{result.dnf() ? DNF_STRING : format(result.duration())}</td>
+                            </tr>
+                    """);
         }
     }
 
@@ -307,20 +309,22 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
+            if (!result.allLegsDnf()) {
 
-            writer.append(STR."""
+                writer.append(STR."""
                     <tr>
                         <td>\{result.dnf() ? "" : result.position_string}</td>
                         <td>\{result.entry.bib_number}</td>
                         <td>\{race.normalisation.htmlEncode(result.entry.team.name())}</td>
                         <td>\{result.entry.team.category().getLongName()}</td>
-            """);
-
-            leg_details_printer.printResult(result);
-
-            writer.append("""
-                        </tr>
                 """);
+
+                leg_details_printer.printResult(result);
+
+                writer.append("""
+                                </tr>
+                        """);
+            }
         }
     }
 

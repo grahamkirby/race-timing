@@ -61,20 +61,24 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final MinitourRaceResult result = (MinitourRaceResult) r;
 
-            if (result.shouldDisplayPosition())
-                writer.append(result.position_string);
-            else
-                writer.append("-");
+            if (result.completedAnyRacesSoFar()) {
 
-            writer.append(",").
-                    append(result.runner.name).append(",").
-                    append(result.runner.club).append(",").
-                    append(result.runner.category.getShortName()).append(",");
+                if (result.shouldDisplayPosition())
+                    writer.append(result.position_string);
+                else
+                    writer.append("-");
 
-            for (final Duration time : result.times)
-                writer.append(time != null ? format(time) : "-").append(",");
+                writer.append(",").
+                        append(result.runner.name).append(",").
+                        append(result.runner.club).append(",").
+                        append(result.runner.category.getShortName()).append(",");
 
-            writer.append(result.completedAllRacesSoFar() ? format(result.duration()) : "-").append("\n");
+                for (final Duration time : result.times)
+//                writer.append(time != null ? format(time) : "-").append(",");
+                    writer.append(time != null && time != Race.DUMMY_DURATION ? format(time) : "-").append(",");
+
+                writer.append(result.completedAllRacesSoFar() ? format(result.duration()) : "-").append("\n");
+            }
         }
     }
 }

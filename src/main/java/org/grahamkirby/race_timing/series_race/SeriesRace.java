@@ -64,15 +64,6 @@ public abstract class SeriesRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void configure() throws IOException {
-
-        super.configure();
-
-        configureHelpers();
-        configureInputData();
-    }
-
-    @Override
     protected void configureInputData() throws IOException {
 
         races = ((SeriesRaceInput)input).loadRaces();

@@ -1,13 +1,13 @@
 1	00:42:43
 2	00:43:52
 3	00:44:59
-?	00:45:35		# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
+?	00:45:35	# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
 5	00:45:43
 1	01:27:00
 2	01:43:08
 3	01:43:48
-?	01:47:23		# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
-?	01:47:44		# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
+?	01:47:23	# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
+?	01:47:44	# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
 1	02:35:05
 2	02:35:34
 3	02:35:59
@@ -15,17 +15,5 @@
 5	02:37:19
 1	03:47:58
 2	03:48:22
-?	03:48:29		# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
+?	03:48:29	# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
 4	03:49:21
-
-Discrepancies:
--------------
-
-Bib numbers with missing times: 3, 4, 4, 5, 5
-
-Times with missing bib numbers:
-
-00:45:35
-01:47:23
-01:47:44
-03:48:29

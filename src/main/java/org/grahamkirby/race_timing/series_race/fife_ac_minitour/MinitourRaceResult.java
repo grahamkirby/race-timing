@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
@@ -58,10 +59,25 @@ public class MinitourRaceResult extends SeriesRaceResult {
         final List<IndividualRace> races = ((MinitourRace)race).getRaces();
 
         for (int i = 0; i < races.size(); i++)
-            if (races.get(i) != null && times.get(i) == null)
+            if (races.get(i) != null && times.get(i).equals(Race.DUMMY_DURATION))
+//                if (races.get(i) != null && times.get(i) == null)
                 return false;
 
         return true;
+    }
+
+    public boolean completedAnyRacesSoFar() {
+
+        final List<IndividualRace> races = ((MinitourRace)race).getRaces();
+
+        for (int i = 0; i < times.size(); i++)
+//            for (int i = 0; i < races.size(); i++)
+            if (times.get(i) != null && !times.get(i).equals(Race.DUMMY_DURATION))
+//                if (races.get(i) != null && !times.get(i).equals(Race.DUMMY_DURATION))
+//                if (races.get(i) != null && times.get(i) == null)
+                return true;
+
+        return false;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +88,8 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
         for (int i = 0; i < ((MinitourRace)race).getNumberOfRacesTakenPlace(); i++) {
             Duration time = times.get(i);
-            if (time == null) return IndividualRace.DUMMY_DURATION;
+//            if (time == null) return IndividualRace.DUMMY_DURATION;
+            if (time.equals(Race.DUMMY_DURATION)) return Race.DUMMY_DURATION;
             overall = overall.plus(time);
         }
 

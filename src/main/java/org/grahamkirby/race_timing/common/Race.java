@@ -36,6 +36,8 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
 
+    // TODO enum for completion status - normal, DNS, DNF, recorded but DNF
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final String DUMMY_DURATION_STRING = "23:59:59";
@@ -231,6 +233,9 @@ public abstract class Race {
         configureCategories();
 
         readProperties();
+
+        configureHelpers();
+        configureInputData();
     }
 
     private void configureNormalisation() throws IOException {
