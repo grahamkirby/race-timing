@@ -33,10 +33,11 @@ public abstract class SeriesRaceOutputCSV extends RaceOutputCSV {
 
     public String getSeriesResultsHeader() {
 
-        return OVERALL_RESULTS_HEADER +
-                ((SeriesRace)race).getRaces().stream().filter(Objects::nonNull).
-                map(race -> "," + race.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
-                reduce(String::concat).
-                orElseThrow();
+        return OVERALL_RESULTS_HEADER + "," +
+                ((SeriesRace)race).getRaces().stream().
+                        filter(Objects::nonNull).
+                        map(race -> race.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
+                        reduce((s1, s2) -> s1 + "," + s2).
+                        orElseThrow();
     }
 }

@@ -77,7 +77,7 @@ public abstract class SingleRaceInput extends RaceInput {
             try {
                 raw_results.add(loadRawResult(line));
 
-            } catch (final NumberFormatException ignored) {
+            } catch (final NumberFormatException _) {
             }
     }
 
@@ -100,14 +100,14 @@ public abstract class SingleRaceInput extends RaceInput {
             final RawResult result2 = raw_results.get(i+1);
 
             if (resultsAreOutOfOrder(result1, result2))
-                throw new RuntimeException("result " + (i+2) + " out of order");
+                throw new RuntimeException(STR."result \{i + 2} out of order");
         }
     }
 
     private boolean resultsAreOutOfOrder(final RawResult result1, final RawResult result2) {
 
         return result2.getRecordedFinishTime() != null &&
-                result1 != null && result1.getRecordedFinishTime() != null &&
+                result1.getRecordedFinishTime() != null &&
                 result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
     }
 

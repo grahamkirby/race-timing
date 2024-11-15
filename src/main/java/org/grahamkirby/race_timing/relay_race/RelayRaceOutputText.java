@@ -131,7 +131,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         for (final int bib_number : bib_numbers_with_missing_times) {
             if (!first) writer.append(", ");
             first = false;
-            writer.append(String.valueOf(bib_number));
+            writer.append(bib_number);
         }
 
         writer.append("\n\nTimes with missing bib numbers:\n\n");
@@ -183,6 +183,7 @@ public class RelayRaceOutputText extends RaceOutputText {
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
+
     private static class PrizeResultPrinter extends OverallResultPrinterText {
 
         public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
@@ -194,6 +195,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
             final RelayRaceResult result = ((RelayRaceResult)r);
 
+            // TODO text block
             writer.append(result.position_string).append(": ").
                     append(result.entry.team.name()).append(" (").
                     append(result.entry.team.category().getLongName()).append(") ").

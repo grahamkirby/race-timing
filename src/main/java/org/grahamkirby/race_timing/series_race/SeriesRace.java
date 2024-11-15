@@ -106,6 +106,7 @@ public abstract class SeriesRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // TODO tidy logic around number of races completed, possible series completion etc
     public List<IndividualRace> getRaces() {
         return races;
     }

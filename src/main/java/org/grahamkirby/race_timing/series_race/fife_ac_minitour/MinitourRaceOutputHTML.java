@@ -149,10 +149,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
                 for (int i = 0; i < result.times.size(); i++)
 
-
                     if (result.times.get(i) != null && result.times.get(i) != Race.DUMMY_DURATION)
-//                    if (result.times.get(i) != null)
-
 
                         writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
                     else if (races.get(i) != null)
