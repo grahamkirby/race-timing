@@ -47,11 +47,7 @@ public class MidweekRaceOutputText extends RaceOutputText {
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            // TODO text block
-            writer.append(result.position_string).append(": ").
-                    append(result.runner.name).append(" (").
-                    append(result.runner.club).append(") ").
-                    append(String.valueOf(result.totalScore())).append("\n");
+            writer.append(STR."\{result.position_string}: \{result.runner.name} (\{result.runner.club}) \{result.totalScore()}\n");
         }
     }
 }

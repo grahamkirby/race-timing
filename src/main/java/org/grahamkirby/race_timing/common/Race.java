@@ -139,25 +139,68 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract void processResults() throws IOException;
     public abstract void calculateResults();
     public abstract boolean allowEqualPositions();
 
+    protected abstract RaceInput getInput();
+    protected abstract RaceOutputCSV getOutputCSV();
+    protected abstract RaceOutputHTML getOutputHTML();
+    protected abstract RaceOutputText getOutputText();
+    protected abstract RaceOutputPDF getOutputPDF();
+
     protected abstract void readProperties();
     protected abstract void configureInputData() throws IOException;
-    protected abstract void configureHelpers();
     protected abstract void initialiseResults();
     protected abstract void outputResults() throws IOException;
-    protected abstract void printOverallResults() throws IOException;
-    protected abstract void printPrizes() throws IOException;
-    protected abstract void printNotes() throws IOException;
-    protected abstract void printCombined() throws IOException;
     protected abstract List<Comparator<RaceResult>> getComparators();
     protected abstract List<Comparator<RaceResult>> getDNFComparators();
     protected abstract boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category);
     protected abstract EntryCategory getEntryCategory(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void processResults() throws IOException {
+
+        calculateResults();
+        outputResults();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void configureHelpers() {
+
+        input = getInput();
+
+        output_CSV = getOutputCSV();
+        output_HTML = getOutputHTML();
+        output_text = getOutputText();
+        output_PDF = getOutputPDF();
+
+        prizes = new RacePrizes(this);
+    }
+
+    protected void printOverallResults() throws IOException {
+
+        output_CSV.printResults();
+        output_HTML.printResults();
+    }
+
+    protected void printPrizes() throws IOException {
+
+        output_PDF.printPrizes();
+        output_HTML.printPrizes();
+        output_text.printPrizes();
+    }
+
+    protected void printNotes() throws IOException {
+
+        output_text.printNotes();
+    }
+
+    protected void printCombined() throws IOException {
+
+        output_HTML.printCombined();
+    }
 
     public Path getPath(final String path) {
 

@@ -16,10 +16,7 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.output.OverallResultPrinterText;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
@@ -48,6 +45,13 @@ public class RelayRaceOutputText extends RaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @Override
+    protected void constructFilePaths() {
+
+        super.constructFilePaths();
+        collated_times_filename = "times_collated";
+    }
+
     public void printCollatedResults() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(collated_times_filename + ".txt"));
@@ -57,20 +61,45 @@ public class RelayRaceOutputText extends RaceOutputText {
             final Map<Integer, Integer> legs_finished_per_team = countLegsFinishedPerTeam();
 
             printResults(writer, legs_finished_per_team);
-
-            final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(legs_finished_per_team);
-            final List<Duration> times_with_missing_bib_numbers = getTimesWithMissingBibNumbers();
-
-            if (!bib_numbers_with_missing_times.isEmpty())
-                printDiscrepancies(writer, bib_numbers_with_missing_times, times_with_missing_bib_numbers);
+            printBibNumbersWithMissingTimes(legs_finished_per_team);
+            printTimesWithMissingBibNumbers();
         }
     }
 
-    @Override
-    protected void constructFilePaths() {
+    private void printBibNumbersWithMissingTimes(final Map<Integer, Integer> legs_finished_per_team) {
 
-        super.constructFilePaths();
-        collated_times_filename = "times_collated";
+        final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(legs_finished_per_team);
+
+        if (!bib_numbers_with_missing_times.isEmpty()) {
+
+            race.getNotes().append("""
+                
+                Discrepancies:
+                -------------
+                
+                Bib numbers with missing times:\s""");
+
+        race.getNotes().append(bib_numbers_with_missing_times.stream().
+                map(String::valueOf).
+                reduce((i1, i2) -> STR."\{i1}, \{i2}").
+                orElse(""));
+        }
+    }
+
+    private void printTimesWithMissingBibNumbers() {
+
+        final List<Duration> times_with_missing_bib_numbers = getTimesWithMissingBibNumbers();
+
+        race.getNotes().append("""
+            
+            Times with missing bib numbers:
+            
+            """);
+
+        race.getNotes().append(times_with_missing_bib_numbers.stream().
+            map(Normalisation::format).
+            reduce((i1, i2) -> STR."\{i1}\n\{i2}").
+            orElse(""));
     }
 
     private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
@@ -107,6 +136,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
     private List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
 
+        // TODO convert to stream
         final List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
 
         for (final RaceEntry entry : ((RelayRace)race).entries) {
@@ -117,27 +147,9 @@ public class RelayRaceOutputText extends RaceOutputText {
                 bib_numbers_with_missing_times.add(entry.bib_number);
         }
 
-        return bib_numbers_with_missing_times;
-    }
-
-    private void printDiscrepancies(final OutputStreamWriter writerx, final List<Integer> bib_numbers_with_missing_times, final List<Duration> times_with_missing_bib_numbers) throws IOException {
-
-        StringBuilder writer = race.getNotes();
         bib_numbers_with_missing_times.sort(Integer::compareTo);
 
-        writer.append("\nDiscrepancies:\n-------------\n\nBib numbers with missing times: ");
-
-        boolean first = true;
-        for (final int bib_number : bib_numbers_with_missing_times) {
-            if (!first) writer.append(", ");
-            first = false;
-            writer.append(bib_number);
-        }
-
-        writer.append("\n\nTimes with missing bib numbers:\n\n");
-
-        for (final Duration time : times_with_missing_bib_numbers)
-            writer.append(format(time)).append("\n");
+        return bib_numbers_with_missing_times;
     }
 
     private void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
@@ -195,11 +207,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
             final RelayRaceResult result = ((RelayRaceResult)r);
 
-            // TODO text block
-            writer.append(result.position_string).append(": ").
-                    append(result.entry.team.name()).append(" (").
-                    append(result.entry.team.category().getLongName()).append(") ").
-                    append(format(result.duration())).append("\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.team.name()} (\{result.entry.team.category().getLongName()}) \{format(result.duration())}\n");
         }
     }
 }

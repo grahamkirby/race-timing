@@ -24,14 +24,15 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class SeriesRace extends Race {
 
     // TODO add support for Grand Prix series.
 
     protected List<IndividualRace> races;
-    protected List<Runner> combined_runners;
+//    private List<Runner> combined_runners;
 
     protected int minimum_number_of_races;
 
@@ -42,23 +43,19 @@ public abstract class SeriesRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void processResults() throws IOException {
+    public void calculateResults() {
 
         initialiseResults();
 
-        calculateResults();
+        sortResults();
         allocatePrizes();
-
-        outputResults();
     }
 
     @Override
-    public void calculateResults() {
+    public boolean allowEqualPositions() {
 
-        // TODO unify with RelayRace.calculateResults()
-        overall_results.addAll(combined_runners.stream().map(this::getOverallResult).toList());
-
-        sortResults();
+        // There can be dead heats in overall results, since these are determined by sum of results from multiple races.
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,14 +69,14 @@ public abstract class SeriesRace extends Race {
     @Override
     protected void initialiseResults() {
 
-        final Set<Runner> combined = new HashSet<>();
-
-        for (final IndividualRace individual_race : races)
-            if (individual_race != null)
-                for (final RaceResult result : individual_race.getOverallResults())
-                    combined.add(((IndividualRaceResult)result).entry.runner);
-
-        combined_runners = new ArrayList<>(combined);
+        races.stream().
+            filter(Objects::nonNull).
+            flatMap(race -> race.getOverallResults().stream()).
+            map(result -> (IndividualRaceResult) result).
+            map(result -> result.entry.runner).
+            distinct().
+            map(this::getOverallResult).
+            forEach(overall_results::add);
     }
 
     @Override
@@ -89,19 +86,6 @@ public abstract class SeriesRace extends Race {
         printPrizes();
         printNotes();
         printCombined();
-    }
-
-    @Override
-    protected void printOverallResults() throws IOException {
-
-        output_CSV.printResults();
-        output_HTML.printResults();
-    }
-
-    @Override
-    protected void printNotes() throws IOException {
-
-        output_text.printNotes();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -58,22 +58,14 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            //TODO format as text blocks
             if (result.hasCompletedAnyRace()) {
 
-                if (result.shouldDisplayPosition())
-                    writer.append(result.position_string);
-
-                writer.append(",").
-                        append(result.runner.name).append(",").
-                        append(result.runner.club).append(",").
-                        append(result.runner.category.getShortName()).append(",");
+                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""}, \{result.runner.name},\{result.runner.club},\{result.runner.category.getShortName()},");
 
                 for (final int score : result.scores)
                     if (score >= 0) writer.append(String.valueOf(score)).append(",");
 
-                writer.append(String.valueOf(result.totalScore())).append(",").
-                        append(result.completed() ? "Y" : "N").append("\n");
+                writer.append(STR."\{result.totalScore()},\{result.completed() ? "Y" : "N"}\n");
             }
         }
     }

@@ -16,12 +16,13 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RacePrizes;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
+import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -51,16 +52,8 @@ public class IndividualRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void processResults() throws IOException {
-
-        calculateResults();
-        outputResults();
-    }
-
-    @Override
     public void calculateResults() {
 
-        // TODO align structure with SeriesRace
         initialiseResults();
 
         fillFinishTimes();
@@ -70,13 +63,6 @@ public class IndividualRace extends SingleRace {
         allocatePrizes();
     }
 
-    @Override
-    public boolean allowEqualPositions() {
-
-        // No dead heats for overall results, since an ordering is imposed at finish funnel.
-        return false;
-    }
-
     public EntryCategory findCategory(final int bib_number) {
         return getEntryWithBibNumber(bib_number).runner.category;
     }
@@ -84,27 +70,37 @@ public class IndividualRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void configureHelpers() {
+    protected RaceInput getInput() {
+        return new IndividualRaceInput(this);
+    }
 
-        input = new IndividualRaceInput(this);
+    @Override
+    protected RaceOutputCSV getOutputCSV() {
+        return new IndividualRaceOutputCSV(this);
+    }
 
-        output_CSV = new IndividualRaceOutputCSV(this);
-        output_HTML = new IndividualRaceOutputHTML(this);
-        output_text = new IndividualRaceOutputText(this);
-        output_PDF = new IndividualRaceOutputPDF(this);
+    @Override
+    protected RaceOutputHTML getOutputHTML() {
+        return new IndividualRaceOutputHTML(this);
+    }
 
-        prizes = new RacePrizes(this);
+    @Override
+    protected RaceOutputText getOutputText() {
+        return new IndividualRaceOutputText(this);
+    }
+
+    @Override
+    protected RaceOutputPDF getOutputPDF() {
+        return new IndividualRaceOutputPDF(this);
     }
 
     @Override
     protected void initialiseResults() {
 
-        for (final RaceEntry entry : entries) {
-
-            IndividualRaceResult result = new IndividualRaceResult(this);
-            result.entry = (IndividualRaceEntry) entry;
-            overall_results.add(result);
-        }
+        entries.stream().
+            map(entry -> (IndividualRaceEntry)entry).
+            map(entry -> new IndividualRaceResult(this, entry)).
+            forEach(overall_results::add);
     }
 
     @Override
@@ -115,33 +111,6 @@ public class IndividualRace extends SingleRace {
         printPrizes();
         printNotes();
         printCombined();
-    }
-
-    @Override
-    protected void printOverallResults() throws IOException {
-
-        output_CSV.printResults();
-        output_HTML.printResults();
-    }
-
-    @Override
-    protected void printPrizes() throws IOException {
-
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-        output_text.printPrizes();
-    }
-
-    @Override
-    protected void printNotes() throws IOException {
-
-        output_text.printNotes();
-    }
-
-    @Override
-    protected void printCombined() throws IOException {
-
-        output_HTML.printCombined();
     }
 
     @Override

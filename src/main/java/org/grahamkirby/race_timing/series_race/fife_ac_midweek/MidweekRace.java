@@ -16,11 +16,15 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
-import org.grahamkirby.race_timing.common.RacePrizes;
+import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
+import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -55,15 +59,6 @@ public class MidweekRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean allowEqualPositions() {
-
-        // There can be dead heats in overall results, since these are determined by sum of points from multiple races.
-        return true;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
     protected void readProperties() {
 
         minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
@@ -78,31 +73,42 @@ public class MidweekRace extends SeriesRace {
             checkClubsForRunner(runner_name);
     }
 
+//    @Override
+//    protected void configureHelpers() {
+//
+//        input = new SeriesRaceInput(this);
+//
+//        output_CSV = new MidweekRaceOutputCSV(this);
+//        output_HTML = new MidweekRaceOutputHTML(this);
+//        output_text = new MidweekRaceOutputText(this);
+//        output_PDF = new MidweekRaceOutputPDF(this);
+//
+//        prizes = new RacePrizes(this);
+//    }
+
     @Override
-    protected void configureHelpers() {
-
-        input = new SeriesRaceInput(this);
-
-        output_CSV = new MidweekRaceOutputCSV(this);
-        output_HTML = new MidweekRaceOutputHTML(this);
-        output_text = new MidweekRaceOutputText(this);
-        output_PDF = new MidweekRaceOutputPDF(this);
-
-        prizes = new RacePrizes(this);
+    protected RaceInput getInput() {
+        return new SeriesRaceInput(this);
     }
 
     @Override
-    protected void printPrizes() throws IOException {
-
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-        output_text.printPrizes();
+    protected RaceOutputCSV getOutputCSV() {
+        return new MidweekRaceOutputCSV(this);
     }
 
     @Override
-    protected void printCombined() throws IOException {
+    protected RaceOutputHTML getOutputHTML() {
+        return new MidweekRaceOutputHTML(this);
+    }
 
-        output_HTML.printCombined();
+    @Override
+    protected RaceOutputText getOutputText() {
+        return new MidweekRaceOutputText(this);
+    }
+
+    @Override
+    protected RaceOutputPDF getOutputPDF() {
+        return new MidweekRaceOutputPDF(this);
     }
 
     @Override

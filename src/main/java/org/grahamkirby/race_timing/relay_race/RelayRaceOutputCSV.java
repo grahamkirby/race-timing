@@ -124,19 +124,11 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final RelayRaceResult result = (RelayRaceResult) race.getOverallResults().get(result_index);
 
-        // TODO use text blocks
         if (!result.allLegsDnf()) {
 
-            if (result.shouldDisplayPosition())
-                writer.append(result.position_string);
-
-            writer.append(",");
-            writer.append(String.valueOf(result.entry.bib_number)).append(",");
-            writer.append(result.entry.team.name()).append(",");
-            writer.append(result.entry.team.category().getLongName()).append(",");
+            writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{result.entry.team.name()},\{result.entry.team.category().getLongName()},");
 
             printLegDetails(writer, result, result.entry.team);
-
             writer.append("\n");
         }
     }
@@ -200,17 +192,8 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            if (!result.allLegsDnf()) {
-
-                if (result.shouldDisplayPosition())
-                    writer.append(result.position_string);
-
-                writer.append(",").
-                        append(String.valueOf(result.entry.bib_number)).append(",").
-                        append(result.entry.team.name()).append(",").
-                        append(result.entry.team.category().getShortName()).append(",").
-                        append(result.dnf() ? "DNF" : format(result.duration())).append("\n");
-            }
+            if (!result.allLegsDnf())
+                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{result.entry.team.name()},\{result.entry.team.category().getShortName()},\{result.dnf() ? "DNF" : format(result.duration())}\n");
         }
     }
 }
