@@ -67,7 +67,6 @@ public abstract class RaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private Path config_file_path;
-    private Path resources_root_directory;
     private Path resources_input_directory;
     private Path test_directory;
     private Path test_input_directory;
@@ -156,7 +155,7 @@ public abstract class RaceTest {
 
     private void configureDirectories(final String individual_test_resource_root) {
 
-        resources_root_directory = Race.getTestResourcesRootPath(individual_test_resource_root);
+        final Path resources_root_directory = Race.getTestResourcesRootPath(individual_test_resource_root);
 
         resources_input_directory = resources_root_directory.resolve("input");
         expected_output_directory = resources_root_directory.resolve("expected");

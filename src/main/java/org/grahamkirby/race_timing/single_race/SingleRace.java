@@ -38,6 +38,13 @@ public abstract class SingleRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public boolean allowEqualPositions() {
+
+        // No dead heats for overall results, since an ordering is imposed at the finish.
+        return false;
+    }
+
+    @Override
     protected void readProperties() {
 
         // Specifies all the bib numbers for runners who did have a finish

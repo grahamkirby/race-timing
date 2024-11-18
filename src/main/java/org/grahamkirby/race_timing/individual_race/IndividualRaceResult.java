@@ -24,15 +24,16 @@ import java.time.Duration;
 
 public class IndividualRaceResult extends RaceResult {
 
-    public IndividualRaceEntry entry;  // Initialised in IndividualRace.fillFinishTimes().
+    public IndividualRaceEntry entry;
     public boolean DNF;
-    public Duration finish_time = Race.DUMMY_DURATION;
+    public Duration finish_time = Race.DUMMY_DURATION; // Initialised in IndividualRace.fillFinishTimes().
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IndividualRaceResult(final IndividualRace race) {
+    public IndividualRaceResult(final IndividualRace race, final IndividualRaceEntry entry) {
 
         super(race);
+        this.entry = entry;
 
         // Will be set to false later if a time is processed for this runner.
         DNF = true;

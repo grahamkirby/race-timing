@@ -16,11 +16,15 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
-import org.grahamkirby.race_timing.common.RacePrizes;
+import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
+import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -58,37 +62,46 @@ public class MinitourRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean allowEqualPositions() {
-
-        // There can be dead heats in overall results, since these are determined by sum of multiple race times.
-        return true;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
     protected void readProperties() {
     }
 
+//    @Override
+//    protected void configureHelpers() {
+//
+//        input = new MinitourRaceInput(this);
+//
+//        output_CSV = new MinitourRaceOutputCSV(this);
+//        output_HTML = new MinitourRaceOutputHTML(this);
+//        output_text = new MinitourRaceOutputText(this);
+//        output_PDF = new MinitourRaceOutputPDF(this);
+//
+//        prizes = new RacePrizes(this);
+//    }
+
+
     @Override
-    protected void configureHelpers() {
-
-        input = new MinitourRaceInput(this);
-
-        output_CSV = new MinitourRaceOutputCSV(this);
-        output_HTML = new MinitourRaceOutputHTML(this);
-        output_text = new MinitourRaceOutputText(this);
-        output_PDF = new MinitourRaceOutputPDF(this);
-
-        prizes = new RacePrizes(this);
+    protected RaceInput getInput() {
+        return new MinitourRaceInput(this);
     }
 
     @Override
-    protected void printPrizes() throws IOException {
+    protected RaceOutputCSV getOutputCSV() {
+        return new MinitourRaceOutputCSV(this);
+    }
 
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-        output_text.printPrizes();
+    @Override
+    protected RaceOutputHTML getOutputHTML() {
+        return new MinitourRaceOutputHTML(this);
+    }
+
+    @Override
+    protected RaceOutputText getOutputText() {
+        return new MinitourRaceOutputText(this);
+    }
+
+    @Override
+    protected RaceOutputPDF getOutputPDF() {
+        return new MinitourRaceOutputPDF(this);
     }
 
     @Override

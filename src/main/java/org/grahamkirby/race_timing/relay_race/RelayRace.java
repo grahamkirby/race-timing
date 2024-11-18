@@ -17,10 +17,15 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.RaceEntry;
+import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
+import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -79,13 +84,6 @@ public class RelayRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void processResults() throws IOException {
-
-        calculateResults();
-        outputResults();
-    }
-
-    @Override
     public void calculateResults() {
 
         initialiseResults();
@@ -102,13 +100,6 @@ public class RelayRace extends SingleRace {
         allocatePrizes();
 
         addPaperRecordingComments();
-    }
-
-    @Override
-    public boolean allowEqualPositions() {
-
-        // No dead heats for overall results, since an ordering is imposed at finish funnel for final leg runner_names.
-        return false;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,15 +131,49 @@ public class RelayRace extends SingleRace {
         ((RelayRaceInput)input).loadTimeAnnotations(raw_results);
     }
 
+//    @Override
+//    protected void configureHelpers() {
+//
+//        input = new RelayRaceInput(this);
+//
+//        output_CSV = new RelayRaceOutputCSV(this);
+//        output_HTML = new RelayRaceOutputHTML(this);
+//        output_text = new RelayRaceOutputText(this);
+//        output_PDF = new RelayRaceOutputPDF(this);
+//
+//        missing_data = new RelayRaceMissingData(this);
+//        prizes = new RelayRacePrizes(this);
+//    }
+
+    @Override
+    protected RaceInput getInput() {
+        return new RelayRaceInput(this);
+    }
+
+    @Override
+    protected RaceOutputCSV getOutputCSV() {
+        return new RelayRaceOutputCSV(this);
+    }
+
+    @Override
+    protected RaceOutputHTML getOutputHTML() {
+        return new RelayRaceOutputHTML(this);
+    }
+
+    @Override
+    protected RaceOutputText getOutputText() {
+        return new RelayRaceOutputText(this);
+    }
+
+    @Override
+    protected RaceOutputPDF getOutputPDF() {
+        return new RelayRaceOutputPDF(this);
+    }
+
     @Override
     protected void configureHelpers() {
 
-        input = new RelayRaceInput(this);
-
-        output_CSV = new RelayRaceOutputCSV(this);
-        output_HTML = new RelayRaceOutputHTML(this);
-        output_text = new RelayRaceOutputText(this);
-        output_PDF = new RelayRaceOutputPDF(this);
+        super.configureHelpers();
 
         missing_data = new RelayRaceMissingData(this);
         prizes = new RelayRacePrizes(this);
@@ -157,7 +182,7 @@ public class RelayRace extends SingleRace {
     @Override
     protected void initialiseResults() {
 
-        // TODO rationalise with IndividualRace with respect to treatment of non-starts or no finishers.
+        // TODO rationalise with IndividualRace with respect to treatment of non-starts or non finishers.
 
         for (final RaceEntry entry : entries)
             overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
@@ -174,34 +199,6 @@ public class RelayRace extends SingleRace {
         printPrizes();
         printNotes();
         printCombined();
-
-    }
-
-    @Override
-    protected void printOverallResults() throws IOException {
-
-        output_CSV.printResults();
-        output_HTML.printResults();
-    }
-
-    @Override
-    protected void printPrizes() throws IOException {
-
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-        output_text.printPrizes();
-    }
-
-    @Override
-    protected void printNotes() throws IOException {
-
-        output_text.printNotes();
-    }
-
-    @Override
-    protected void printCombined() throws IOException {
-
-        output_HTML.printCombined();
     }
 
     @Override
