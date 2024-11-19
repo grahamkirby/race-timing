@@ -29,10 +29,10 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
     protected final List<Integer> scores;
 
-    public MidweekRaceResult(final Runner runner, final Race race) {
+    public MidweekRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(runner, race);
-        scores = new ArrayList<>();
+        this.scores = scores;
     }
 
     @Override

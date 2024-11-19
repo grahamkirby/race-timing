@@ -35,6 +35,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
@@ -194,12 +195,12 @@ public class RelayRace extends SingleRace {
         // DNF results are sorted in increasing order of bib number.
         // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
 
-//        return List.of(this::compareLastLegPosition, this::comparePerformance, this::compareCompletion);
         return List.of(this::compareCompletion, this::comparePerformance, this::compareLastLegPosition);
     }
 
     @Override
     protected List<Comparator<RaceResult>> getDNFComparators() {
+
         return List.of(this::compareBibNumber);
     }
 
@@ -211,8 +212,8 @@ public class RelayRace extends SingleRace {
         // OutputCSV.printLegResults deals with dead heats.
 
         return leg_number == 1 ?
-                List.of(this::comparePerformance, this::compareRecordedLegPosition):
-                List.of(this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
+            List.of(this::comparePerformance, this::compareRecordedLegPosition):
+            List.of(this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
     }
 
     @Override
@@ -244,17 +245,17 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public int compareBibNumber(final RaceResult r1, final RaceResult r2) {
+    private int compareBibNumber(final RaceResult r1, final RaceResult r2) {
 
         return Integer.compare(((RelayRaceResult) r1).entry.bib_number, ((RelayRaceResult) r2).entry.bib_number);
     }
 
-    public int compareLastLegPosition(final RaceResult r1, final RaceResult r2) {
+    private int compareLastLegPosition(final RaceResult r1, final RaceResult r2) {
 
         return Integer.compare(getRecordedLastLegPosition(((RelayRaceResult) r1)), getRecordedLastLegPosition(((RelayRaceResult) r2)));
     }
 
-    public int compareRecordedLegPosition(final RaceResult r1, final RaceResult r2) {
+    private int compareRecordedLegPosition(final RaceResult r1, final RaceResult r2) {
 
         final int leg_number = ((LegResult) r1).leg_number;
 
@@ -290,24 +291,6 @@ public class RelayRace extends SingleRace {
         else return "";
     }
 
-    protected int getRecordedLegPosition(final int bib_number, final int leg_number) {
-
-        // TODO check whether can be rationalised with overall getRecordedPosition.
-        int legs_completed = 0;
-
-        for (int i = 0; i < raw_results.size(); i++) {
-
-            final int result_bib_number = raw_results.get(i).getBibNumber();
-
-            if (result_bib_number == bib_number) {
-                legs_completed++;
-                if (legs_completed == leg_number) return i + 1;
-            }
-        }
-
-        return Integer.MAX_VALUE;
-    }
-
     protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
 
         Duration total = Duration.ZERO;
@@ -318,7 +301,21 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public int getRecordedLastLegPosition(final RelayRaceResult result) {
+    private int getRecordedLegPosition(final int bib_number, final int leg_number) {
+
+        final AtomicInteger position = new AtomicInteger(0);
+        final AtomicInteger legs_completed = new AtomicInteger(0);
+
+        return raw_results.stream().
+                peek(_ -> position.incrementAndGet()).
+                filter(result -> result.getBibNumber() == bib_number).
+                filter(_ -> legs_completed.incrementAndGet() == leg_number).
+                map(_ -> position.get()).
+                findFirst().
+                orElse(Integer.MAX_VALUE);
+    }
+
+    private int getRecordedLastLegPosition(final RelayRaceResult result) {
 
         return getRecordedLegPosition(result.entry.bib_number, number_of_legs);
     }

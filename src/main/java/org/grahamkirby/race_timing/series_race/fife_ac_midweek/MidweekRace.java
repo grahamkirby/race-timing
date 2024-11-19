@@ -69,22 +69,8 @@ public class MidweekRace extends SeriesRace {
 
         super.configureInputData();
 
-        for (final String runner_name : getRunnerNames())
-            checkClubsForRunner(runner_name);
+        getRunnerNames().forEach(this::checkClubsForRunner);
     }
-
-//    @Override
-//    protected void configureHelpers() {
-//
-//        input = new SeriesRaceInput(this);
-//
-//        output_CSV = new MidweekRaceOutputCSV(this);
-//        output_HTML = new MidweekRaceOutputHTML(this);
-//        output_text = new MidweekRaceOutputText(this);
-//        output_PDF = new MidweekRaceOutputPDF(this);
-//
-//        prizes = new RacePrizes(this);
-//    }
 
     @Override
     protected RaceInput getInput() {
@@ -114,7 +100,6 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-//        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName, this::comparePerformance, this::compareCompletion);
         return List.of(this::compareCompletion, this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
     }
 
@@ -136,12 +121,11 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
-        final MidweekRaceResult result = new MidweekRaceResult(runner, this);
+        final List<Integer> scores = races.stream().
+            map(race -> calculateRaceScore(race, runner)).
+            toList();
 
-        for (final IndividualRace individual_race : races)
-            result.scores.add(calculateRaceScore(individual_race, runner));
-
-        return result;
+        return new MidweekRaceResult(runner, scores, this);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
