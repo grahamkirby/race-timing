@@ -131,13 +131,14 @@ public class IndividualRace extends SingleRace {
     @Override
     public List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(this::compareRecordedPosition, this::comparePerformance, this::compareCompletion);
+//        return List.of(this::compareRecordedPosition, this::comparePerformance, this::compareCompletion);
+        return List.of(this::compareCompletion, this::comparePerformance, this::compareRecordedPosition);
     }
 
     @Override
     public List<Comparator<RaceResult>> getDNFComparators() {
 
-        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName);
+        return List.of(this::compareRunnerLastName, this::compareRunnerFirstName);
     }
 
     @Override

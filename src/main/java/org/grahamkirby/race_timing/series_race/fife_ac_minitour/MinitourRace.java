@@ -105,7 +105,8 @@ public class MinitourRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
         // TODO unify compareCompletionSoFar and compareCompletion into compareCanComplete
-        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName, this::comparePerformance, this::compareCompletionSoFar, this::compareCompletion);
+//        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName, this::comparePerformance, this::compareCompletionSoFar, this::compareCompletion);
+        return List.of(this::compareCompletion, this::compareCompletionSoFar, this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
     }
 
     @Override
