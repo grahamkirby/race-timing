@@ -183,19 +183,26 @@ public abstract class RaceOutput {
             // Skip over any following results with the same performance.
             // Defined in terms of performance rather than duration, since in some races ranking is determined
             // by points rather than times.
-            final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
+            if (allow_equal_positions) {
 
-            if (allow_equal_positions && highest_index_with_same_performance > result_index) {
+                final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
 
-                // Record the same position for all the results with equal times.
-                for (int i = result_index; i <= highest_index_with_same_performance; i++)
-                    results.get(i).position_string = result_index + 1 + "=";
+                if (highest_index_with_same_performance > result_index) {
 
-                result_index = highest_index_with_same_performance;
+                    // Record the same position for all the results with equal times.
+                    for (int i = result_index; i <= highest_index_with_same_performance; i++)
+                        results.get(i).position_string = result_index + 1 + "=";
+
+                    result_index = highest_index_with_same_performance;
+                } else
+                    setPositionStringByPosition(results, result_index);
             }
-            else
-                results.get(result_index).position_string = String.valueOf(result_index + 1);
+            else setPositionStringByPosition(results, result_index);
         }
+    }
+
+    private void setPositionStringByPosition(final List<? extends RaceResult> results, final int result_index) {
+        results.get(result_index).position_string = String.valueOf(result_index + 1);
     }
 
     private boolean prizesInThisOrLaterGroup(final PrizeCategoryGroup group) {

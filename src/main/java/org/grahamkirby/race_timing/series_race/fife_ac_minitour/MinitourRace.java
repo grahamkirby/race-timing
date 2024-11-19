@@ -54,9 +54,14 @@ public class MinitourRace extends SeriesRace {
             new MinitourRace(Paths.get(args[0])).processResults();
     }
 
-    public static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return ((MinitourRaceResult) r1).compareCompletionSoFarTo((MinitourRaceResult) r2);
+    public int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
+
+        if (((MinitourRaceResult) r1).completedAllRacesSoFar() && !((MinitourRaceResult) r2).completedAllRacesSoFar()) return -1;
+        if (!((MinitourRaceResult) r1).completedAllRacesSoFar() && ((MinitourRaceResult) r2).completedAllRacesSoFar()) return 1;
+
+        return 0;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,20 +69,6 @@ public class MinitourRace extends SeriesRace {
     @Override
     protected void readProperties() {
     }
-
-//    @Override
-//    protected void configureHelpers() {
-//
-//        input = new MinitourRaceInput(this);
-//
-//        output_CSV = new MinitourRaceOutputCSV(this);
-//        output_HTML = new MinitourRaceOutputHTML(this);
-//        output_text = new MinitourRaceOutputText(this);
-//        output_PDF = new MinitourRaceOutputPDF(this);
-//
-//        prizes = new RacePrizes(this);
-//    }
-
 
     @Override
     protected RaceInput getInput() {
@@ -113,7 +104,8 @@ public class MinitourRace extends SeriesRace {
 
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
-        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName, RaceResult::comparePerformanceTo, MinitourRace::compareCompletionSoFar, RaceResult::compareCompletion);
+        // TODO unify compareCompletionSoFar and compareCompletion into compareCanComplete
+        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName, this::comparePerformance, this::compareCompletionSoFar, this::compareCompletion);
     }
 
     @Override

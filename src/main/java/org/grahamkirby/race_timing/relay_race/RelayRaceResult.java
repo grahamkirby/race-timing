@@ -46,8 +46,9 @@ public class RelayRaceResult extends RaceResult {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int comparePerformanceTo(final RaceResult other) {
-        return 0;
+        return duration().compareTo(((RelayRaceResult) other).duration());
     }
 
     @Override
@@ -70,7 +71,7 @@ public class RelayRaceResult extends RaceResult {
         return completed();
     }
 
-    protected Duration duration() {
+    public Duration duration() {
 
         Duration overall = Duration.ZERO;
 

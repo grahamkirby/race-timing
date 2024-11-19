@@ -69,6 +69,21 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
+
+        final IndividualRace individual_race = (IndividualRace) r1.race;
+
+        IndividualRaceEntry entry1 = ((IndividualRaceResult) r1).entry;
+        IndividualRaceEntry entry2 = ((IndividualRaceResult) r2).entry;
+
+        final int this_recorded_position = individual_race.getRecordedPosition(entry1.bib_number);
+        final int other_recorded_position = individual_race.getRecordedPosition(entry2.bib_number);
+
+        return Integer.compare(this_recorded_position, other_recorded_position);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected RaceInput getInput() {
         return new IndividualRaceInput(this);
@@ -116,13 +131,13 @@ public class IndividualRace extends SingleRace {
     @Override
     public List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(IndividualRace::compareRecordedPosition,IndividualRaceResult::comparePerformance, RaceResult::compareCompletion);
+        return List.of(this::compareRecordedPosition, this::comparePerformance, this::compareCompletion);
     }
 
     @Override
     public List<Comparator<RaceResult>> getDNFComparators() {
 
-        return List.of(RaceResult::compareRunnerFirstName, RaceResult::compareRunnerLastName);
+        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName);
     }
 
     @Override
@@ -146,29 +161,11 @@ public class IndividualRace extends SingleRace {
             result.DNF = true;
         }
         catch (Exception e) {
-            throw new RuntimeException("illegal DNF string: " + e.getLocalizedMessage());
+            throw new RuntimeException("illegal DNF string: ", e);
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // TODO rationalise locations of result comparators
-    private static int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
-
-        final IndividualRace individual_race = (IndividualRace) r1.race;
-
-        IndividualRaceEntry entry1 = ((IndividualRaceResult) r1).entry;
-        IndividualRaceEntry entry2 = ((IndividualRaceResult) r2).entry;
-
-        if (entry1 == null && entry2 == null) return 0;
-        if (entry1 == null) return -1;
-        if (entry2 == null) return 1;
-
-        final int this_recorded_position = individual_race.getRecordedPosition(entry1.bib_number);
-        final int other_recorded_position = individual_race.getRecordedPosition(entry2.bib_number);
-
-        return Integer.compare(this_recorded_position, other_recorded_position);
-    }
 
     private void fillFinishTimes() {
 
@@ -202,7 +199,7 @@ public class IndividualRace extends SingleRace {
                 orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
     }
 
-    protected int getRecordedPosition(final int bib_number) {
+    public int getRecordedPosition(final int bib_number) {
 
         final AtomicInteger i = new AtomicInteger();
 
