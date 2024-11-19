@@ -348,17 +348,23 @@ public abstract class Race {
 
     private void sortAllResults() {
 
-        for (Comparator<RaceResult> comparator : getComparators())
-            overall_results.sort(comparator);
+        overall_results.sort(combineComparators(getComparators()));
     }
 
     private void sortDNFResults() {
 
-        for (Comparator<RaceResult> comparator : getDNFComparators())
-            overall_results.sort(dnfOnly(comparator));
+        overall_results.sort(dnfOnly(combineComparators(getDNFComparators())));
     }
 
-    private Comparator<RaceResult> dnfOnly(Comparator<RaceResult> comparator) {
+    protected Comparator<RaceResult> combineComparators(final List<Comparator<RaceResult>> comparators) {
+
+        return comparators.
+            stream().
+            reduce(Comparator::thenComparing).
+            orElse((_, _) -> 0);
+    }
+
+    private Comparator<RaceResult> dnfOnly(final Comparator<RaceResult> comparator) {
 
         return (r1, r2) -> r1.shouldDisplayPosition() || r2.shouldDisplayPosition() ? 0 : comparator.compare(r1, r2);
     }

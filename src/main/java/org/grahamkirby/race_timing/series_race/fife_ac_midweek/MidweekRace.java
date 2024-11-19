@@ -114,7 +114,8 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName, this::comparePerformance, this::compareCompletion);
+//        return List.of(this::compareRunnerFirstName, this::compareRunnerLastName, this::comparePerformance, this::compareCompletion);
+        return List.of(this::compareCompletion, this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
     }
 
     @Override

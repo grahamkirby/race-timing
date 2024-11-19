@@ -16,7 +16,10 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.RaceEntry;
+import org.grahamkirby.race_timing.common.RaceInput;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
@@ -191,7 +194,8 @@ public class RelayRace extends SingleRace {
         // DNF results are sorted in increasing order of bib number.
         // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
 
-        return List.of(this::compareLastLegPosition, this::comparePerformance, this::compareCompletion);
+//        return List.of(this::compareLastLegPosition, this::comparePerformance, this::compareCompletion);
+        return List.of(this::compareCompletion, this::comparePerformance, this::compareLastLegPosition);
     }
 
     @Override
@@ -201,9 +205,14 @@ public class RelayRace extends SingleRace {
 
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
 
+        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
+        // Ordering for DNF results doesn't matter since they're omitted in output.
+        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
+        // OutputCSV.printLegResults deals with dead heats.
+
         return leg_number == 1 ?
-                List.of(this::compareRecordedLegPosition, this::comparePerformance):
-                List.of(this::compareRunnerFirstName, this::compareRunnerLastName, this::comparePerformance);
+                List.of(this::comparePerformance, this::compareRecordedLegPosition):
+                List.of(this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
     }
 
     @Override
@@ -259,21 +268,11 @@ public class RelayRace extends SingleRace {
 
     protected List<LegResult> getLegResults(final int leg_number) {
 
-        // TODO convert to stream, write stream function to sort by multiple comparators
-        final List<LegResult> leg_results = new ArrayList<>();
-
-        for (final RaceResult overall_result : getOverallResults())
-            leg_results.add(((RelayRaceResult)overall_result).leg_results.get(leg_number - 1));
-
-        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
-        // Ordering for DNF results doesn't matter since they're omitted in output.
-        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
-        // OutputCSV.printLegResults deals with dead heats.
-
-        for (Comparator<RaceResult> comparator : getLegResultComparators(leg_number))
-            leg_results.sort(comparator);
-
-        return leg_results;
+        return getOverallResults().stream().
+            map(result -> (RelayRaceResult) result).
+            map(result -> result.leg_results.get(leg_number - 1)).
+            sorted(combineComparators(getLegResultComparators(leg_number))).
+            toList();
     }
 
     protected String getMassStartAnnotation(final LegResult leg_result, final int leg) {

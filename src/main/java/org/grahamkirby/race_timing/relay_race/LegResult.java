@@ -67,8 +67,7 @@ public class LegResult extends RaceResult {
     @Override
     public int comparePerformanceTo(final RaceResult result) {
 
-        final LegResult other = (LegResult) result;
-        return duration().compareTo(other.duration());
+        return duration().compareTo(((LegResult) result).duration());
     }
 
     @Override
