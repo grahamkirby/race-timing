@@ -45,7 +45,6 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
-
         return duration().compareTo(((MinitourRaceResult) other).duration());
     }
 
@@ -76,6 +75,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // TODO check which classes have duration().
     protected Duration duration() {
 
         Duration overall = Duration.ZERO;
@@ -88,13 +88,5 @@ public class MinitourRaceResult extends SeriesRaceResult {
         }
 
         return overall;
-    }
-
-    int compareCompletionSoFarTo(final MinitourRaceResult o) {
-
-        if (completedAllRacesSoFar() && !o.completedAllRacesSoFar()) return -1;
-        if (!completedAllRacesSoFar() && o.completedAllRacesSoFar()) return 1;
-
-        return 0;
     }
 }

@@ -16,7 +16,10 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.output.OverallResultPrinterText;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
@@ -30,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -136,20 +140,15 @@ public class RelayRaceOutputText extends RaceOutputText {
 
     private List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
 
-        // TODO convert to stream
-        final List<Integer> bib_numbers_with_missing_times = new ArrayList<>();
+        return ((RelayRace)race).entries.stream().
+            flatMap(entry -> {
+                final int bib_number = entry.bib_number;
+                final int number_of_legs_unfinished = ((RelayRace) race).number_of_legs - leg_finished_count.getOrDefault(bib_number, 0);
 
-        for (final RaceEntry entry : ((RelayRace)race).entries) {
-
-            final int number_of_legs_finished = leg_finished_count.getOrDefault(entry.bib_number, 0);
-
-            for (int i = 0; i < ((RelayRace)race).number_of_legs - number_of_legs_finished; i++)
-                bib_numbers_with_missing_times.add(entry.bib_number);
-        }
-
-        bib_numbers_with_missing_times.sort(Integer::compareTo);
-
-        return bib_numbers_with_missing_times;
+                return Stream.generate(() -> bib_number).limit(number_of_legs_unfinished);
+            }).
+            sorted().
+            toList();
     }
 
     private void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
@@ -175,7 +174,7 @@ public class RelayRaceOutputText extends RaceOutputText {
             writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
 
             if (legs_already_finished >= raw_result.getLegNumber())
-                raw_result.appendComment("Leg "+ raw_result.getLegNumber() + " finisher was runner " + (legs_already_finished + 1) + " to finish for team.");
+                raw_result.appendComment(STR."Leg \{raw_result.getLegNumber()} finisher was runner \{legs_already_finished + 1} to finish for team.");
         }
     }
 

@@ -66,11 +66,6 @@ public class IndividualRaceResult extends RaceResult {
         return duration().compareTo(((IndividualRaceResult) other).duration());
     }
 
-    public static int comparePerformance(final RaceResult r1, final RaceResult r2) {
-
-        return ((IndividualRaceResult) r1).duration().compareTo(((IndividualRaceResult) r2).duration());
-    }
-
     @Override
     public boolean shouldDisplayPosition() {
         return completed();

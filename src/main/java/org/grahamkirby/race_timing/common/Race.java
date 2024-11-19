@@ -269,6 +269,28 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    protected int compareCompletion(final RaceResult r1, final RaceResult r2) {
+
+        return Boolean.compare(!r1.completed(), !r2.completed());
+    }
+
+    protected int comparePerformance(final RaceResult r1, final RaceResult r2) {
+
+        return r1.comparePerformanceTo(r2);
+    }
+
+    protected int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+
+        return normalisation.getFirstName(r1.getIndividualRunnerName()).compareTo(normalisation.getFirstName(r2.getIndividualRunnerName()));
+    }
+
+    protected int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+
+        return normalisation.getLastName(r1.getIndividualRunnerName()).compareTo(normalisation.getLastName(r2.getIndividualRunnerName()));
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected void configure() throws IOException {
 
         configureNormalisation();

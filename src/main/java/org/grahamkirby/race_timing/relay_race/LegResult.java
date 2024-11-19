@@ -44,20 +44,6 @@ public class LegResult extends RaceResult {
         return DNF ? Race.DUMMY_DURATION : finish_time.minus(start_time);
     }
 
-    public int compareTo(final RaceResult result) {
-
-        final LegResult other = (LegResult) result;
-
-        final int compare_duration = duration().compareTo(other.duration());
-        if (compare_duration != 0) return compare_duration;
-
-        // The times are the same, so use the recording order.
-        final int this_recorded_position = ((RelayRace)race).getRecordedLegPosition(entry.bib_number, leg_number);
-        final int other_recorded_position = ((RelayRace)race).getRecordedLegPosition(other.entry.bib_number, leg_number);
-
-        return Integer.compare(this_recorded_position, other_recorded_position);
-    }
-
     @Override
     public boolean sameEntrant(final RaceResult other) {
         return entry.equals(((LegResult) other).entry);
@@ -75,7 +61,7 @@ public class LegResult extends RaceResult {
 
     @Override
     protected String getIndividualRunnerName() {
-        throw new UnsupportedOperationException();
+        return entry.team.runner_names().get(leg_number - 1);
     }
 
     @Override

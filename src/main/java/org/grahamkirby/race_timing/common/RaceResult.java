@@ -27,37 +27,6 @@ public abstract class RaceResult {
         this.race = race;
     }
 
-    public static int compareCompletion(final RaceResult r1, final RaceResult r2) {
-
-        if (r1.completed() && !r2.completed()) return -1;
-        if (!r1.completed() && r2.completed()) return 1;
-        return 0;
-    }
-
-    public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
-
-        String individualRunnerName1 = r1.getIndividualRunnerName();
-        String individualRunnerName2 = r2.getIndividualRunnerName();
-
-        if (individualRunnerName1 == null && individualRunnerName2 == null) return 0;
-        if (individualRunnerName1 == null) return -1;
-        if (individualRunnerName2 == null) return 1;
-
-        return r1.race.normalisation.getFirstName(individualRunnerName1).compareTo(r1.race.normalisation.getFirstName(individualRunnerName2));
-    }
-
-    public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
-
-        String individualRunnerName1 = r1.getIndividualRunnerName();
-        String individualRunnerName2 = r2.getIndividualRunnerName();
-
-        if (individualRunnerName1 == null && individualRunnerName2 == null) return 0;
-        if (individualRunnerName1 == null) return -1;
-        if (individualRunnerName2 == null) return 1;
-
-        return r1.race.normalisation.getLastName(r1.getIndividualRunnerName()).compareTo(r1.race.normalisation.getLastName(r2.getIndividualRunnerName()));
-    }
-
     protected abstract String getIndividualRunnerName();
     public abstract int comparePerformanceTo(final RaceResult other);
     public abstract boolean sameEntrant(final RaceResult other);
