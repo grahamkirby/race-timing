@@ -16,7 +16,8 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.RaceInput;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
@@ -71,15 +72,10 @@ public class IndividualRace extends SingleRace {
 
     private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
-        final IndividualRace individual_race = (IndividualRace) r1.race;
+        final int recorded_position1 = getRecordedPosition(((IndividualRaceResult) r1).entry.bib_number);
+        final int recorded_position2 = getRecordedPosition(((IndividualRaceResult) r2).entry.bib_number);
 
-        IndividualRaceEntry entry1 = ((IndividualRaceResult) r1).entry;
-        IndividualRaceEntry entry2 = ((IndividualRaceResult) r2).entry;
-
-        final int this_recorded_position = individual_race.getRecordedPosition(entry1.bib_number);
-        final int other_recorded_position = individual_race.getRecordedPosition(entry2.bib_number);
-
-        return Integer.compare(this_recorded_position, other_recorded_position);
+        return Integer.compare(recorded_position1, recorded_position2);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +127,6 @@ public class IndividualRace extends SingleRace {
     @Override
     public List<Comparator<RaceResult>> getComparators() {
 
-//        return List.of(this::compareRecordedPosition, this::comparePerformance, this::compareCompletion);
         return List.of(this::compareCompletion, this::comparePerformance, this::compareRecordedPosition);
     }
 
@@ -170,43 +165,43 @@ public class IndividualRace extends SingleRace {
 
     private void fillFinishTimes() {
 
-        for (final RawResult raw_result : raw_results) {
+        raw_results.forEach(raw_result -> {
 
             final IndividualRaceResult result = getResultWithBibNumber(raw_result.getBibNumber());
-
             result.finish_time = raw_result.getRecordedFinishTime();
 
             // Provisionally this result is not DNF since a finish time was recorded.
             // However, it might still be set to DNF in fillDNF() if the runner didn't complete the course.
             result.DNF = false;
-        }
+        });
     }
 
     private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
 
         return overall_results.stream().
-                map(result -> ((IndividualRaceResult) result)).
-                filter(result -> result.entry.bib_number == bib_number).
-                findFirst().
-                orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
+            map(result -> ((IndividualRaceResult) result)).
+            filter(result -> result.entry.bib_number == bib_number).
+            findFirst().
+            orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
     }
 
     private IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
 
         return entries.stream().
-                map(entry -> ((IndividualRaceEntry) entry)).
-                filter(entry -> entry.bib_number == bib_number).
-                findFirst().
-                orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
+            map(entry -> ((IndividualRaceEntry) entry)).
+            filter(entry -> entry.bib_number == bib_number).
+            findFirst().
+            orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
     }
 
-    public int getRecordedPosition(final int bib_number) {
+    private int getRecordedPosition(final int bib_number) {
 
-        final AtomicInteger i = new AtomicInteger();
+        final AtomicInteger position = new AtomicInteger(0);
 
         return raw_results.stream().
-            filter(r -> { i.getAndIncrement(); return r.getBibNumber() == bib_number;}).
-            map(_ -> i.get()).
+            peek(_ -> position.incrementAndGet()).
+            filter(result -> result.getBibNumber() == bib_number).
+            map(_ -> position.get()).
             findFirst().
             orElse(Integer.MAX_VALUE);
     }
