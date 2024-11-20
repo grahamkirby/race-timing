@@ -588,7 +588,7 @@ public class RelayRace extends SingleRace {
     private void printLegResults() throws IOException {
 
         ((RelayRaceOutputCSV)output_CSV).printLegResults();
-        ((RelayRaceOutputHTML)output_HTML).printLegResults(true);
+        ((RelayRaceOutputHTML)output_HTML).printLegResults();
     }
 
     private void printCollatedTimes() throws IOException {

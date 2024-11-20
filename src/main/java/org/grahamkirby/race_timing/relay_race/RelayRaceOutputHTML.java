@@ -118,28 +118,28 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
-        setPositionStrings(results, race.allowEqualPositions());
+        setPositionStrings(results, false);
         new DetailedResultPrinter(race, writer, new LegResultDetailsPrinter(race, writer)).print(results, include_credit_link);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printLegResults(final boolean include_credit_link) throws IOException {
+    protected void printLegResults() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
-            printLegResults(leg, include_credit_link);
+            printLegResults(leg);
     }
 
-    private void printLegResults(final int leg, final boolean include_credit_link) throws IOException {
+    private void printLegResults(final int leg) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html"));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printLegResults(writer, leg, include_credit_link);
+            printLegResults(writer, leg, true);
         }
     }
 
-    private void printLegResults(final OutputStreamWriter writer, final int leg, boolean include_credit_link) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final int leg, final boolean include_credit_link) throws IOException {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
@@ -198,7 +198,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         final int leg;
 
-        public LegResultPrinter(Race race, OutputStreamWriter writer, int leg) {
+        public LegResultPrinter(final Race race, final OutputStreamWriter writer, final int leg) {
 
             super(race, writer);
             this.leg = leg;
