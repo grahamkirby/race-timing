@@ -65,45 +65,62 @@ public class RelayRaceOutputText extends RaceOutputText {
             final Map<Integer, Integer> legs_finished_per_team = countLegsFinishedPerTeam();
 
             printResults(writer, legs_finished_per_team);
-            printBibNumbersWithMissingTimes(legs_finished_per_team);
-            printTimesWithMissingBibNumbers();
+
+            final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(legs_finished_per_team);
+            final List<Duration> times_with_missing_bib_numbers = getTimesWithMissingBibNumbers();
+
+            final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
+
+            if (discrepancies_exist)
+                race.getNotes().append("""
+                
+                Discrepancies:
+                -------------
+                """);
+
+            printBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
+            printTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
+
+            if (discrepancies_exist)
+                race.getNotes().append("""
+                
+                
+                """);
         }
     }
 
-    private void printBibNumbersWithMissingTimes(final Map<Integer, Integer> legs_finished_per_team) {
-
-        final List<Integer> bib_numbers_with_missing_times = getBibNumbersWithMissingTimes(legs_finished_per_team);
+    private void printBibNumbersWithMissingTimes(final List<Integer> bib_numbers_with_missing_times) {
 
         if (!bib_numbers_with_missing_times.isEmpty()) {
 
             race.getNotes().append("""
                 
-                Discrepancies:
-                -------------
-                
                 Bib numbers with missing times:\s""");
 
-        race.getNotes().append(bib_numbers_with_missing_times.stream().
+            race.getNotes().append(
+                bib_numbers_with_missing_times.stream().
                 map(String::valueOf).
                 reduce((i1, i2) -> STR."\{i1}, \{i2}").
                 orElse(""));
         }
     }
 
-    private void printTimesWithMissingBibNumbers() {
+    private void printTimesWithMissingBibNumbers(final List<Duration> times_with_missing_bib_numbers) {
 
-        final List<Duration> times_with_missing_bib_numbers = getTimesWithMissingBibNumbers();
+        if (!times_with_missing_bib_numbers.isEmpty()) {
 
-        race.getNotes().append("""
-            
-            Times with missing bib numbers:
-            
-            """);
+            race.getNotes().append("""
+                
+                Times with missing bib numbers:
+                
+                """);
 
-        race.getNotes().append(times_with_missing_bib_numbers.stream().
-            map(Normalisation::format).
-            reduce((i1, i2) -> STR."\{i1}\n\{i2}").
-            orElse(""));
+            race.getNotes().append(
+                times_with_missing_bib_numbers.stream().
+                map(Normalisation::format).
+                reduce((i1, i2) -> STR."\{i1}\n\{i2}").
+                orElse(""));
+        }
     }
 
     private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {

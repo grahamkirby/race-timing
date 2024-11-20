@@ -43,11 +43,8 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3><strong>Results</strong></h3>\n");
-
             printPrizes(writer);
-
             writer.append("<h4>Overall</h4>\n");
-
             printResults(writer, true);
         }
     }

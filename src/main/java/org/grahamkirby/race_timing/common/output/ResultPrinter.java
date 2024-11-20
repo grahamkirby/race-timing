@@ -22,7 +22,7 @@ public abstract class ResultPrinter {
     protected abstract void printResultsFooter(boolean include_credit_link) throws IOException;
     protected abstract void printNoResults() throws IOException;
 
-    public void print(final List<RaceResult> results, final boolean include_credit_link) throws IOException {
+    public void print(final List<? extends RaceResult> results, final boolean include_credit_link) throws IOException {
 
         if (!results.isEmpty()) {
             printResultsHeader();

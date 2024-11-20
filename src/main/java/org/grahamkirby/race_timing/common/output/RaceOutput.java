@@ -178,6 +178,10 @@ public abstract class RaceOutput {
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
 
+        // The flag is passed in rather than using race.allowEqualPositions() since that applies to the race overall.
+        // In a series race the individual races don't allow equal positions, but the race overall does.
+        // Conversely in a relay race the legs after the first leg do allow equal positions.
+
         for (int result_index = 0; result_index < results.size(); result_index++) {
 
             // Skip over any following results with the same performance.

@@ -1,0 +1,7 @@
+
+Discrepancies:
+-------------
+
+Bib numbers with missing times: 42, 42, 42, 102, 102
+
+Converted to title case: irving

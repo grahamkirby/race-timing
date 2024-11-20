@@ -49,17 +49,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printDetailedResults() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + SUFFIX_CSV));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            printDetailedResultsHeader(writer);
-            printDetailedResults(writer);
-        }
-    }
-
     @Override
     protected void constructFilePaths() {
 
@@ -77,27 +66,17 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         return new OverallResultPrinter(race, writer);
     }
 
-    protected void printLegResults() throws IOException {
-
-        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
-            printLegResults(leg);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void printLegResults(final int leg_number) throws IOException {
+    // TODO rationalise structure with RelayRaceOutputHTML.
+    public void printDetailedResults() throws IOException {
 
-        final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg_number + "_" + year + ".csv");
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + SUFFIX_CSV));
 
-        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            final List<LegResult> leg_results = ((RelayRace)race).getLegResults(leg_number);
-
-            // Deal with dead heats in legs after the first.
-            setPositionStrings(leg_results, leg_number > 1);
-
-            printLegResultsHeader(csv_writer, leg_number);
-            printLegResults(csv_writer, leg_results);
+            printDetailedResultsHeader(writer);
+            printDetailedResults(writer);
         }
     }
 
@@ -130,6 +109,30 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             printLegDetails(writer, result, result.entry.team);
             writer.append("\n");
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void printLegResults() throws IOException {
+
+        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
+            printLegResults(leg);
+    }
+
+    private void printLegResults(final int leg) throws IOException {
+
+        final Path leg_results_csv_path = output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv");
+
+        try (final OutputStreamWriter csv_writer = new OutputStreamWriter(Files.newOutputStream(leg_results_csv_path))) {
+
+            final List<LegResult> leg_results = ((RelayRace)race).getLegResults(leg);
+
+            // Deal with dead heats in legs after the first.
+            setPositionStrings(leg_results, leg > 1);
+
+            printLegResultsHeader(csv_writer, leg);
+            printLegResults(csv_writer, leg_results);
         }
     }
 
