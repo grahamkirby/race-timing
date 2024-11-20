@@ -118,7 +118,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
-        // TODO compare with RelayRaceOutputCSV re leg 1
         setPositionStrings(results, race.allowEqualPositions());
         new DetailedResultPrinter(race, writer, new LegResultDetailsPrinter(race, writer)).print(results, include_credit_link);
     }
