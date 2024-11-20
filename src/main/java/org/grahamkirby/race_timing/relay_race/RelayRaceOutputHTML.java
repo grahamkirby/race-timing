@@ -44,15 +44,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printDetailedResults(final boolean include_credit_link) throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printDetailedResults(writer, include_credit_link);
-        }
-    }
-
     @Override
     public void printCombined() throws IOException {
 
@@ -96,6 +87,17 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         return new PrizeResultPrinter(race, writer);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void printDetailedResults(final boolean include_credit_link) throws IOException {
+
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".html"));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printDetailedResults(writer, include_credit_link);
+        }
+    }
+
     protected void printDetailedResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
         int group_number = 0;
@@ -116,6 +118,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
 
+        // TODO compare with RelayRaceOutputCSV re leg 1
         setPositionStrings(results, race.allowEqualPositions());
         new DetailedResultPrinter(race, writer, new LegResultDetailsPrinter(race, writer)).print(results, include_credit_link);
     }
@@ -140,9 +143,11 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     private void printLegResults(final OutputStreamWriter writer, final int leg, boolean include_credit_link) throws IOException {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
-        final List<RaceResult> results = leg_results.stream().map(result -> (RaceResult)result).toList();
 
-        new LegResultPrinter(race, writer, leg).print(results, include_credit_link);
+        // Deal with dead heats in legs after the first.
+        setPositionStrings(leg_results, leg > 1);
+
+        new LegResultPrinter(race, writer, leg).print(leg_results, include_credit_link);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

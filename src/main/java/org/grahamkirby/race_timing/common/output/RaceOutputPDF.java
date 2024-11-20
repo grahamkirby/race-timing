@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Race.SUFFIX_PDF;
+
 public abstract class RaceOutputPDF extends RaceOutput {
 
     private static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
@@ -55,7 +57,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
     @Override
     protected String getFileSuffix() {
-        return ".pdf";
+        return SUFFIX_PDF;
     }
 
     @Override
@@ -75,11 +77,11 @@ public abstract class RaceOutputPDF extends RaceOutput {
         printPrizes(category -> {
             try {
                 printPrizes(document, category);
+                return null;
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return null;
         });
     }
 

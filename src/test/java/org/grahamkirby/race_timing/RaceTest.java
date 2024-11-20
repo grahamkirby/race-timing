@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import static org.grahamkirby.race_timing.common.Race.SUFFIX_PDF;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class RaceTest {
@@ -131,13 +132,14 @@ public abstract class RaceTest {
 
         configureTest(configuration_name);
 
-        final Exception thrown = assertThrows(
+        final Exception exception = assertThrows(
             RuntimeException.class,
             () -> makeRace(config_file_path).processResults()
         );
 
-        assertEquals(expected_error_message, thrown.getMessage());
+        assertEquals(expected_error_message, exception.getMessage());
 
+        // Test has passed if this line is reached.
         failed_test = false;
      }
 
@@ -148,6 +150,7 @@ public abstract class RaceTest {
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
 
+        // Test has passed if this line is reached.
         failed_test = false;
     }
 
@@ -210,16 +213,16 @@ public abstract class RaceTest {
         final String file_content2 = removeWhiteSpace(getFileContent(path2));
 
         if (!file_content1.equals(file_content2))
-            fail("Files differ: " + path1 + ", " + path2);
+            fail(STR."Files differ: \{path1}, \{path2}");
     }
 
     private static String getFileContent(final Path path) {
 
         try {
-            if (!path.toString().endsWith(".pdf"))
+            if (!path.toString().endsWith(SUFFIX_PDF))
                 return Files.readAllLines(path).stream().
-                        reduce(String::concat).
-                        orElse("");
+                    reduce(String::concat).
+                    orElse("");
 
             else {
                 try (final PdfDocument document = new PdfDocument(new PdfReader(path.toString()))) {
