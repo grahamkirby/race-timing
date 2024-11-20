@@ -2,6 +2,7 @@ package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public abstract class OverallResultPrinterCSV extends ResultPrinter {
@@ -11,7 +12,7 @@ public abstract class OverallResultPrinterCSV extends ResultPrinter {
     }
 
     @Override
-    public void printResultsHeader() {
+    public void printResultsHeader() throws IOException {
     }
 
     @Override
