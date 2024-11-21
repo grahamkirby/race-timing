@@ -49,4 +49,9 @@ public class MidweekTest extends RaceTest {
     public void largeRace() throws Exception {
         testExpectedCompletion("series_race/midweek/large_race");
     }
+
+    @Test
+    public void nameIncludesComma() throws Exception {
+        testExpectedCompletion("series_race/midweek/name_includes_comma");
+    }
 }

@@ -60,7 +60,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
             if (result.hasCompletedAnyRace()) {
 
-                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.runner.name},\{result.runner.club},\{result.runner.category.getShortName()},");
+                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
                 for (final int score : result.scores)
                     if (score >= 0) writer.append(String.valueOf(score)).append(",");

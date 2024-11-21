@@ -54,4 +54,8 @@ public abstract class RaceOutputCSV extends RaceOutput {
     public String getPrizesCategoryFooter() {
         return "";
     }
+
+    protected static String encode(String s) {
+        return s.contains(",") ? "\"" + s + "\"" : s;
+    }
 }

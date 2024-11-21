@@ -1,0 +1,86 @@
+1	Amy Arita	Unatt.	FU11
+2	Theo Milne-Akermo	Fife Athletic Club	MU15
+3	Luca Anderson	Anster Haddies	MU15
+4	Hal Arita	Unatt.	MU13
+5	Joe Barrable	Fife Athletic Club	MU11
+6	Ollie Barrable	Fife Athletic Club	MU11
+7	Isla Beere	Strathkinness Primary School	FU9
+8	Lola Rowan Bowditch	Strathkinness Primary School	FU9
+9	Eden Hall	Unatt.	FU11
+10	Freya Brown	Fife Athletic Club	FU9
+11	Eilidh Christie	Unatt.	FU11
+12	Penny Coulston	Unatt.	FU11
+13	Owen Cutler	Fife Athletic Club	MU13
+14	Oscar Burgess	Anster Haddies	MU15
+15	Zander Douglas	Unatt.	MU9
+16	Katie Duff	Strathkinness Primary School	FU9
+17	Darcey Drummond	Cupar and District Swimming Club	FU15
+18	Alfie Edwards	East Fife Triathlon Club	MU11
+19	Orla Gage	Anster Haddies	FU18
+20	Heather Graham	Unatt.	FU11
+21	Jenna Graham	Unatt.	FU13
+23	Lexi Graham	Unatt.	FU13
+24	Declan Greer	Unatt.	MU11
+25	Callum Henry	Unatt.	MU13
+26	Adam Harvie	Unatt.	MU15
+27	Eden Hislop	Lawhead Primary School	MU13
+28	Iona Hislop	Lawhead Primary School	FU11
+29	Isla Kinnaird	Fife Athletic Club	FU15
+30	Francesca Jarrett	Dundee Hawkhill Harriers	FU13
+31	Gabriella Jarrett	Unatt.	FU13
+32	Nico Kitching	Letham Primary School	MU11
+33	Murray Kinnaird	Fife Athletic Club	MU13
+34	Vienna Kitching	Letham Primary School	FU13
+35	Angus Logan	Unatt.	MU11
+36	Lewis Laws	Unatt.	MU15
+39	Nellie Luxford	Fife Athletic Club	FU18
+40	Arwen McKelvie	East Fife Triathlon Club	FU9
+41	Lewis McKelvie	Fife Athletic Club	MU11
+42	Lyle McKelvie	East Fife Triathlon Club	MU13
+43	Amaya McLean	Unatt.	FU11
+44	Corey Lymsden	Anster Haddies	MU15
+45	Alice Sophie Metayer	Strathkinness Primary School	FU11
+46	Leonie Helena Metayer	Strathkinness Primary School	FU9
+47	Jamie Milne	Unatt.	MU9
+48	Alfie Naughton	St Columbas Primary School	MU9
+49	Peter Naughton	St Columbas Primary School	MU13
+50	Magnus Niven	Fife Athletic Club	MU15
+51	Ben Paterson	East Fife Triathlon Club	MU15
+52	Anna Purves	Fife Athletic Club	FU11
+53	Sam Rainey	Anster Haddies	MU9
+54	Lucy Redfern	Unatt.	FU11
+56	Holly Riach	Unatt.	FU13
+57	Sophie Robertson	East Fife Triathlon Club	FU15
+59	Phoebe Scanlon	Unatt.	FU11
+60	Ruairi Seeley	East Fife Triathlon Club	MU9
+61	Cameron Seeley	East Fife Triathlon Club	MU13
+62	Eilidh Smith	Fife Athletic Club	FU9
+63	Joey Smith	Fife Athletic Club	MU15
+64	Amelia Stephen	Fife Athletic Club	FU11
+65	Noah Stone	East Fife Triathlon Club	MU9
+66	Ruaridh Stone	East Fife Triathlon Club	MU11
+67	Hugo Strachan	Unatt.	MU9
+68	Annie Strang	Fife Athletic Club	FU11
+69	Mac Strang	Fife Athletic Club	MU9
+70	Danny Suttie	East Fife Triathlon Club	MU13
+71	Joe Suttie	Unatt.	MU9
+72	Cillian Sweeney	Dundee Hawkhill Harriers	MU15
+73	Zoe Tello	Canongate Primary School	FU9
+74	Anna Torrance	Unatt.	FU15
+75	Bertran Penacchio Torres	Fife Athletic Club	MU13
+76	Fraser Whittingham	St Columbas Primary School	MU11
+77	Lewis Whittingham	Fife Athletic Club	MU15
+78	Amelie Wild	East Fife Triathlon Club	FU11
+79	Beatrice Yates	Unatt.	FU9
+80	Yining Ye	Canongate Primary School	FU11
+81	Meredith Yates	Unatt.	FU13
+82	Oliver Steven	Unatt.	MU9
+83	Eliza König	Fife Athletic Club	FU18
+84	James Logan	Fife Athletic Club	MU9
+85	Fin Torkington	Unatt.	MU13
+86	Freddie Oxley	Unatt.	MU13
+87	Eddie Niven	Unatt.	MU13
+88	Fergus Broadhurst	Unatt.	MU13
+89	Isla Glasse-Davies	Unatt.	FU9
+90	Jack Bradwell	Unatt.	MU11
+91	John Smith, Sr	Unatt.	MU11

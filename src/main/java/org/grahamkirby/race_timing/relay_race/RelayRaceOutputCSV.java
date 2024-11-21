@@ -35,7 +35,7 @@ import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
-    // TODO test with comma in team name.
+    // TODO test other race types with comma names.
 
     private String detailed_results_filename;
 
@@ -155,7 +155,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
             final RelayRaceResult result = (RelayRaceResult) r;
 
             if (!result.allLegsDnf())
-                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{result.entry.team.name()},\{result.entry.team.category().getShortName()},\{result.dnf() ? "DNF" : format(result.duration())}\n");
+                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.team.name())},\{result.entry.team.category().getShortName()},\{result.dnf() ? "DNF" : format(result.duration())}\n");
         }
     }
 
@@ -182,7 +182,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
             final LegResult result = (LegResult) r;
 
             if (!result.DNF)
-                writer.append(STR."\{result.position_string},\{result.entry.team.runner_names().get(result.leg_number - 1)},\{format(result.duration())}\n");
+                writer.append(STR."\{result.position_string},\{encode(result.entry.team.runner_names().get(result.leg_number - 1))},\{format(result.duration())}\n");
         }
     }
 
@@ -208,7 +208,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
                 final String leg_time = leg_result.DNF ? DNF_STRING : format(leg_result.duration());
                 final String split_time = leg_result.DNF || any_previous_leg_dnf ? DNF_STRING : format(((RelayRace) race).sumDurationsUpToLeg(result.leg_results, leg));
 
-                writer.append(STR."\{leg_runner_names}\{leg_mass_start_annotation},\{leg_time},\{split_time}");
+                writer.append(STR."\{encode(leg_runner_names)}\{leg_mass_start_annotation},\{leg_time},\{split_time}");
 
                 if (leg < ((RelayRace)race).number_of_legs) writer.append(",");
                 if (leg_result.DNF) any_previous_leg_dnf = true;
@@ -232,7 +232,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             if (!result.allLegsDnf()) {
 
-                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{result.entry.team.name()},\{result.entry.team.category().getLongName()},");
+                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.team.name())},\{result.entry.team.category().getLongName()},");
 
                 leg_details_printer.printResult(result);
 

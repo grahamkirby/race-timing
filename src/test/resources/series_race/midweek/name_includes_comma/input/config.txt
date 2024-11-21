@@ -1,0 +1,10 @@
+YEAR = 2023
+RACE_NAME_FOR_RESULTS = Midweek Series
+RACE_NAME_FOR_FILENAMES = midweek
+
+RACES = st_andrews/input/config.txt,strath_blebo/input/config.txt,tarvit/input/config.txt,,
+MINIMUM_NUMBER_OF_RACES = 4
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv

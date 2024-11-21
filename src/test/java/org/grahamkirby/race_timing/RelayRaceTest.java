@@ -327,4 +327,9 @@ public class RelayRaceTest extends RaceTest {
     public void prizeCategoryGroups() throws Exception {
         testExpectedCompletion("relay_race/prize_category_groups");
     }
+
+    @Test
+    public void teamNameIncludesComma() throws Exception {
+        testExpectedCompletion("relay_race/team_name_includes_comma");
+    }
 }
