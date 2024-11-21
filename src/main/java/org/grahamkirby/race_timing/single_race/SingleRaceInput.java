@@ -51,7 +51,10 @@ public abstract class SingleRaceInput extends RaceInput {
     protected List<RaceEntry> loadEntries() throws IOException {
 
         final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
-        final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().map(race_entry_mapper).toList();
+        final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
+                filter(line -> !line.isEmpty()).
+                map(race_entry_mapper).
+                toList();
 
         checkForDuplicateBibNumbers(entries);
         checkForDuplicateEntries(entries);

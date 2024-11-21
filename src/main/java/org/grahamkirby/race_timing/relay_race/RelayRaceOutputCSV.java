@@ -35,6 +35,8 @@ import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
+    // TODO test with comma in team name.
+
     private String detailed_results_filename;
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";

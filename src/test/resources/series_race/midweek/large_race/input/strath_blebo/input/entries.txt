@@ -1,0 +1,85 @@
+85	Ben Hukins	?	M40
+84	Tom Harris	?	MSen
+83	Patrick O'Hare	?	MSen
+82	Adam Hart	?	MSen
+81	James Barnet	?	MSen
+80	Mark Harris	Fife AC	M50
+79	Rhona Van Rensburg	?	F50
+78	Bryan McLaren	?	MSen
+77	Tom Rainey	?	M40
+76	Matthew Beaney	?	MSen
+75	Iain Wallace	?	M50
+74	Dominic Williams	?	MSen
+73	Vince MacPherson	?	M40
+72	Alison McGill	?	F40
+71	Michael Mitchell	?	M50
+70	Thomas Robertson	?	MU20
+69	Gordon Coull	?	MSen
+68	Rachel Callaghan	?	FSen
+67	Alison McNeilly	?	F40
+66	Dominic Hughes	?	MSen
+65	Hendrik Van Rensburg	?	M50
+64	Hannah Tippetts	?	FSen
+63	Fiona Cruickshanks	?	FSen
+62	Jim Morton	?	M50
+61	David Place	?	M50
+60	George Young	?	M40
+59	Fiona Callaghan	?	FSen
+58	Eric Anderson	?	M40
+57	Hilary Ritchie	?	F60
+56	Ross McArthur	?	MSen
+55	Jennifer Massie	?	FSen
+54	Louise Lessels	?	F40
+53	Will Gage	?	M50
+52	Susanne Lumsden	?	F40
+51	Philip Suttie	?	M40
+50	John McIntosh	?	M50
+49	Robyn Graham	?	FSen
+48	Malcolm Forbes	?	M60
+47	Fiona Canavan	?	FSen
+46	Abigail Mason	?	FSen
+45	Mike Murdoch	?	M40
+44	Steven Brand	?	MSen
+43	Mark Feely	?	M50
+42	Merce Torres	?	F40
+41	Pamela Cruickshanks	?	F50
+40	David Dunleavey	?	M60
+39	Lyle Allan	?	M60
+38	Allen Marr	?	M60
+37	John Mill	?	M50
+36	Christian Harding	?	M40
+35	Huw Watkins	?	MSen
+34	John Wilmot	?	M70
+33	Martin Rollo	?	M50
+32	Jeff Taylor	?	M50
+31	John Kinninmonth	?	M60
+30	Margaret Martin	Fife AC	F60
+29	Joseph Smith	?	MSen
+28	David Pease	?	M50
+27	Tracy Knox	Anster Haddies	F60
+26	Bill Gillan	?	M70
+25	Grant Whytock	?	M50
+24	Ian Donaldson	?	M50
+23	Alice Hall	?	F60
+22	Martin Kirkbride	?	M60
+21	Bethan McRobbie	?	FSen
+20	Allan Gibson	?	M70
+19	Nick Brian	?	M60
+18	Sean Kenyon	?	M50
+17	Catriona Duncan	?	F70
+16	Stewart Davidson	?	M70
+15	Carol Landale	?	F40
+14	Kim Dickson	?	F50
+13	Gillian Murdoch	?	F40
+12	Carolann Kinnear	?	F40
+11	Sandra Gardener	?	F50
+10	Alan McLeod	?	M70
+9	Margaret Robertson	?	F70
+8	Lorraine Hands	?	F40
+7	Paula Roberts	?	F50
+6	John Lee	?	M60
+5	Julia Greig	?	F40
+4	Katrina Johnston	?	F40
+3	Rosemary Lee	?	F60
+2	Dummy X	Dummy Club	M40
+1	Dummy Y	Dummy Club	M40
