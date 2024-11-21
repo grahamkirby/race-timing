@@ -50,8 +50,6 @@ public class MidweekRaceResult extends SeriesRaceResult {
     public boolean hasCompletedAnyRace() {
 
         return scores.stream().map(score -> score > 0).reduce(Boolean::logicalOr).orElseThrow();
-
-        // TODO case where a runner did complete a large race with over 200 m/f finishers but got zero
     }
 
     protected int totalScore() {

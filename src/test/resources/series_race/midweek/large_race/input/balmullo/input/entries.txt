@@ -1,0 +1,242 @@
+242	Ben Kinninmonth	Fife AC	MSen
+241	Patrick O'Hare	Fife AC	MSen
+240	Marcus Sheridan	Dundee Road Runners	MSen
+239	Kai Sedgwick	Dundee Road Runners	M40
+238	Adam Hart	Dundee Road Runners	MSen
+237	Fergus Ingledew	Fife AC	MSen
+236	James Barnet	Dundee Road Runners	MSen
+235	Joe Brown	Unatt.	MSen
+234	Stefan O'Grady	Dundee Road Runners	MSen
+233	Damon Thoms	Fife AC	M50
+232	Vince MacPherson	Unatt.	M40
+231	Jamie Stewart	Dundee Road Runners	M40
+230	Rhona Van Rensburg	Fife AC	F50
+229	Ben Hukins	PH Racing Club	M40
+228	Charlotte Roper	Unatt.	FSen
+227	Jonathan Millar	Carnegie Harriers	M40
+226	Tom Rainey	Anster Haddies	M40
+225	David Aitken	Dundee Road Runners	M40
+224	Kevin Greig	Dundee Road Runners	M40
+223	Hannah Tippetts	Dundee Road Runners	FSen
+222	Morris Roberts	Strathearn Harriers 	MSen
+221	Hendrik Van Rensburg	Fife AC	M50
+220	Iain Wallace	PH Racing Club	M50
+219	Dominic Hughes	Dundee Road Runners	MSen
+218	Anwen Darlington	Dundee Road Runners	FSen
+217	Allan Kettles	Dundee Road Runners	M50
+216	Thomas Robertson	Fife AC	MU20
+215	Colin Birtwistle	Dundee Road Runners 	M50
+214	Paul Harkins	Fife AC	M40
+213	Tony Martin	Falkland Trail Runners	M70
+212	Bryan Whittingham	Fife AC	M40
+211	Mairi Littleson	Dundee Road Runners	FSen
+210	John MacPherson	Fife AC	M40
+209	Will Gage	Anster Haddies 	M50
+208	Christian Harding	Fife AC	M40
+207	Rachel Callaghan	Dundee Road Runners	FSen
+206	Jim Morton	Dundee Road Runners	M50
+205	Andy Gallagher	Strathearn Harriers 	M60
+204	Fiona Callaghan	Dundee Road Runners 	FSen
+203	Ross McArthur	Falkland Trail Runners	MSen
+202	David Baird	Dundee Road Runners	MSen
+201	Fiona Canavan	Dundee Road Runners	FSen
+200	George Young	Falkland Trail Runners	M40
+199	Lauren Roberts	Strathearn Harriers	FSen
+198	Jane O'Donnell	Dundee Road Runners	F40
+197	Louise Menzies	Dundee Road Runners	F40
+196	Abigail Mason	Falkland Trail Runners	FSen
+195	Philip Suttie	Falkland Trail Runners	M40
+194	Mark Feely	Anster Allsorts	M50
+193	Jennifer Massie	Dundee Road Runners	FSen
+192	Alison Cunningham	Strathearn Harriers	F50
+191	Mattias Schøler Field	Strathearn Harriers	MSen
+190	Michael Royden	Dundee Road Runners	M50
+189	Bryan McLaren	Leven Las Vegas RC	MSen
+188	Mike Murdoch	Falkland Trail Runners	M40
+187	Malcolm Forbes	Dundee Road Runners	M60
+186	Robyn Smith	Falkland Trail Runners	FSen
+185	Hilary Ritchie	Fife AC 	F60
+184	Richard Melville	Unatt.	M50
+183	Charlene Junkin	Dundee Road Runners	FSen
+182	David Dunleavey	Stratheden Buttercups	M60
+181	Nicola Watson	Strathearn Harriers	F50
+180	Huw Watkins	STAART	MSen
+179	Morven McIntyre	Dundee Road Runners	FSen
+178	John Kinninmonth	Run Sum Kirkcaldy	M50
+177	Margaret Martin	Fife AC	F60
+176	Bethan McRobbie	STAART	FSen
+175	Tony McClelland	Strathearn Harriers	M50
+174	Nigel Fowler	Unatt.	M50
+173	John Mill	Dundee Road Runners	M50
+172	John McIntosh	Dundee Road Runners	M50
+171	Lee Cessford	Falkland Trail Runners	M40
+170	Martin Rollo	Dundee Road Runners	M50
+169	Gail Stirling	Dundee Road Runners 	F50
+168	Ron Milne	Forfar Road Runners	M60
+167	Elizabeth Milne	Forfar Road Runners	F50
+166	David Pease	Falkland Trail Runners 	M50
+165	Carrie Fox	Fife AC	F50
+164	Steven Davidson	Unatt.	M40
+163	Amy Tavendale	Dundee Road Runners 	F40
+162	Josh McKay	Dundee Road Runners	MSen
+161	Lissa Stewart	Dundee Road Runners	F40
+160	Keith Gelly	Dundee Road Runners	M50
+159	Allan Gibson	Anster Haddies	M70
+158	Clare Martin	Strathearn Harriers	F60
+157	Karen Campbell	Falkland Trail Runners 	F60
+156	Clare McClelland	Strathearn Harriers	F50
+155	Susan Smith	Dundee Road Runners	F40
+154	Rebecca Garside	Dundee Road Runners	F40
+153	Robert Garside	Dundee Road Runners	M40
+152	Iain Luke	Dundee Road Runners	M70
+151	Sandra Gardener	Falkland Trail Runners	F50
+150	Eric Nachman	Falkland Trail Runners	M70
+149	John Lee	Falkland Trail Runners	M60
+148	Rosemary Lee	Falkland Trail Runners	F60
+147	Myra Campbell	Falkland Trail Runners	F50
+146	Jude Alcock	Falkland Trail Runners	F70
+145	Bill Duff	Falkland Trail Runners 	M70
+144	Jacqueline Cook	Falkland Trail Runners 	F40
+143	Ann Davidson	Falkland Trail Runners	F60
+142	Laura Robertson	Falkland Trail Runners	F50
+141	Karen Spence	Falkland Trail Runners 	F50
+140	Barbara Brown	Dundee Road Runners	F70
+139	Dummy 1	Dummy Club	M40
+138	Dummy 2	Dummy Club	M40
+137	Dummy 3	Dummy Club	M40
+136	Dummy 4	Dummy Club	M40
+135	Dummy 5	Dummy Club	M40
+134	Dummy 6	Dummy Club	M40
+133	Dummy 7	Dummy Club	M40
+132	Dummy 8	Dummy Club	M40
+131	Dummy 9	Dummy Club	M40
+130	Dummy 10	Dummy Club	M40
+129	Dummy 11	Dummy Club	M40
+128	Dummy 12	Dummy Club	M40
+127	Dummy 13	Dummy Club	M40
+126	Dummy 14	Dummy Club	M40
+125	Dummy 15	Dummy Club	M40
+124	Dummy 16	Dummy Club	M40
+123	Dummy 17	Dummy Club	M40
+122	Dummy 18	Dummy Club	M40
+121	Dummy 19	Dummy Club	M40
+120	Dummy 20	Dummy Club	M40
+119	Dummy 21	Dummy Club	M40
+118	Dummy 22	Dummy Club	M40
+117	Dummy 23	Dummy Club	M40
+116	Dummy 24	Dummy Club	M40
+115	Dummy 25	Dummy Club	M40
+114	Dummy 26	Dummy Club	M40
+113	Dummy 27	Dummy Club	M40
+112	Dummy 28	Dummy Club	M40
+111	Dummy 29	Dummy Club	M40
+110	Dummy 30	Dummy Club	M40
+109	Dummy 31	Dummy Club	M40
+108	Dummy 32	Dummy Club	M40
+107	Dummy 33	Dummy Club	M40
+106	Dummy 34	Dummy Club	M40
+105	Dummy 35	Dummy Club	M40
+104	Dummy 36	Dummy Club	M40
+103	Dummy 37	Dummy Club	M40
+102	Dummy 38	Dummy Club	M40
+101	Dummy 39	Dummy Club	M40
+100	Dummy 40	Dummy Club	M40
+99	Dummy 41	Dummy Club	M40
+98	Dummy 42	Dummy Club	M40
+97	Dummy 43	Dummy Club	M40
+96	Dummy 44	Dummy Club	M40
+95	Dummy 45	Dummy Club	M40
+94	Dummy 46	Dummy Club	M40
+93	Dummy 47	Dummy Club	M40
+92	Dummy 48	Dummy Club	M40
+91	Dummy 49	Dummy Club	M40
+90	Dummy 50	Dummy Club	M40
+89	Dummy 51	Dummy Club	M40
+88	Dummy 52	Dummy Club	M40
+87	Dummy 53	Dummy Club	M40
+86	Dummy 54	Dummy Club	M40
+85	Dummy 55	Dummy Club	M40
+84	Dummy 56	Dummy Club	M40
+83	Dummy 57	Dummy Club	M40
+82	Dummy 58	Dummy Club	M40
+81	Dummy 59	Dummy Club	M40
+80	Dummy 60	Dummy Club	M40
+79	Dummy 61	Dummy Club	M40
+78	Dummy 62	Dummy Club	M40
+77	Dummy 63	Dummy Club	M40
+76	Dummy 64	Dummy Club	M40
+75	Dummy 65	Dummy Club	M40
+74	Dummy 66	Dummy Club	M40
+73	Dummy 67	Dummy Club	M40
+72	Dummy 68	Dummy Club	M40
+71	Dummy 69	Dummy Club	M40
+70	Dummy 70	Dummy Club	M40
+69	Dummy 71	Dummy Club	M40
+68	Dummy 72	Dummy Club	M40
+67	Dummy 73	Dummy Club	M40
+66	Dummy 74	Dummy Club	M40
+65	Dummy 75	Dummy Club	M40
+64	Dummy 76	Dummy Club	M40
+63	Dummy 77	Dummy Club	M40
+62	Dummy 78	Dummy Club	M40
+61	Dummy 79	Dummy Club	M40
+60	Dummy 80	Dummy Club	M40
+59	Dummy 81	Dummy Club	M40
+58	Dummy 82	Dummy Club	M40
+57	Dummy 83	Dummy Club	M40
+56	Dummy 84	Dummy Club	M40
+55	Dummy 85	Dummy Club	M40
+54	Dummy 86	Dummy Club	M40
+53	Dummy 87	Dummy Club	M40
+52	Dummy 88	Dummy Club	M40
+51	Dummy 89	Dummy Club	M40
+50	Dummy 90	Dummy Club	M40
+49	Dummy 91	Dummy Club	M40
+48	Dummy 92	Dummy Club	M40
+47	Dummy 93	Dummy Club	M40
+46	Dummy 94	Dummy Club	M40
+45	Dummy 95	Dummy Club	M40
+44	Dummy 96	Dummy Club	M40
+43	Dummy 97	Dummy Club	M40
+42	Dummy 98	Dummy Club	M40
+41	Dummy 99	Dummy Club	M40
+40	Dummy 100	Dummy Club	M40
+39	Dummy 101	Dummy Club	M40
+38	Dummy 102	Dummy Club	M40
+37	Dummy 103	Dummy Club	M40
+36	Dummy 104	Dummy Club	M40
+35	Dummy 105	Dummy Club	M40
+34	Dummy 106	Dummy Club	M40
+33	Dummy 107	Dummy Club	M40
+32	Dummy 108	Dummy Club	M40
+31	Dummy 109	Dummy Club	M40
+30	Dummy 110	Dummy Club	M40
+29	Dummy 111	Dummy Club	M40
+28	Dummy 112	Dummy Club	M40
+27	Dummy 113	Dummy Club	M40
+26	Dummy 114	Dummy Club	M40
+25	Dummy 115	Dummy Club	M40
+24	Dummy 116	Dummy Club	M40
+23	Dummy 117	Dummy Club	M40
+22	Dummy 118	Dummy Club	M40
+21	Dummy 119	Dummy Club	M40
+20	Dummy 120	Dummy Club	M40
+19	Dummy 121	Dummy Club	M40
+18	Dummy 122	Dummy Club	M40
+17	Dummy 123	Dummy Club	M40
+16	Dummy 124	Dummy Club	M40
+15	Dummy 125	Dummy Club	M40
+14	Dummy 126	Dummy Club	M40
+13	Dummy 127	Dummy Club	M40
+12	Dummy 128	Dummy Club	M40
+11	Dummy 129	Dummy Club	M40
+10	Dummy 130	Dummy Club	M40
+9	Dummy 131	Dummy Club	M40
+8	Dummy 132	Dummy Club	M40
+7	Dummy 133	Dummy Club	M40
+6	Dummy 134	Dummy Club	M40
+5	Dummy 135	Dummy Club	M40
+4	Dummy 136	Dummy Club	M40
+3	Dummy 137	Dummy Club	M40
+2	Dummy X	Dummy Club	M40
+1	Dummy Y	Dummy Club	M40

@@ -44,4 +44,9 @@ public class MidweekTest extends RaceTest {
     public void prizeCategoryGroups() throws Exception {
         testExpectedCompletion("series_race/midweek/prize_category_groups");
     }
+
+    @Test
+    public void largeRace() throws Exception {
+        testExpectedCompletion("series_race/midweek/large_race");
+    }
 }
