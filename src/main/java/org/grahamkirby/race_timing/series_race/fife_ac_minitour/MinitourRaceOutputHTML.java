@@ -150,7 +150,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
                 for (int i = 0; i < result.times.size(); i++)
 
                     if (result.times.get(i) != null && result.times.get(i) != Race.DUMMY_DURATION)
-
                         writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
                     else if (races.get(i) != null)
                         writer.append("            <td>-</td>\n");
@@ -158,7 +157,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
                 writer.append(STR."""
                             <td>\{result.completedAllRacesSoFar() ? format(result.duration()) : "-"}</td>
                         </tr>
-                    """);
+                """);
             }
         }
     }

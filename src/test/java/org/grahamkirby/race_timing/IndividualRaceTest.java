@@ -114,4 +114,9 @@ public class IndividualRaceTest extends RaceTest {
     public void prizeCategoryGroups() throws Exception {
         testExpectedCompletion("individual_race/prize_category_groups");
     }
+
+    @Test
+    public void nameIncludesComma() throws Exception {
+        testExpectedCompletion("individual_race/name_includes_comma");
+    }
 }
