@@ -5,9 +5,9 @@ import org.grahamkirby.race_timing.common.Race;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public abstract class OverallResultPrinterText extends ResultPrinter {
+public abstract class ResultPrinterText extends ResultPrinter {
 
-    public OverallResultPrinterText(final Race race, final OutputStreamWriter writer) {
+    public ResultPrinterText(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 

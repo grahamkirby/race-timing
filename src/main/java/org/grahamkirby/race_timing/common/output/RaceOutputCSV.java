@@ -31,8 +31,8 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
     protected String getResultsHeader() { return ""; }
 
-    protected void printResults(final OutputStreamWriter writer, final List<PrizeCategory> categories, final String sub_heading, boolean include_credit_link) throws IOException {
-        super.printResults(writer, categories, "", false);
+    protected void printResults(final OutputStreamWriter writer, ResultPrinter printer, final List<PrizeCategory> categories, final String sub_heading, boolean include_credit_link) throws IOException {
+        super.printResults(writer, printer, categories, "", false);
     }
 
     @Override

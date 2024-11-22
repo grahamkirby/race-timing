@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
@@ -211,6 +212,11 @@ public abstract class Race {
         return entryCategoryIsEligibleForPrizeCategoryByGender(entry_category, prize_category) && entryCategoryIsEligibleForPrizeCategoryByAge(entry_category, prize_category);
     }
 
+    public boolean entryCategoryIsEligibleInSomePrizeCategory(final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
+
+        return prize_categories.stream().map(category -> entryCategoryIsEligibleForPrizeCategory(entry_category, category)).reduce(Boolean::logicalOr).orElseThrow();
+    }
+
     public List<PrizeCategory> getPrizeCategories() {
 
         return prize_category_groups.stream().flatMap(group -> group.categories().stream()).toList();
@@ -218,7 +224,27 @@ public abstract class Race {
 
     public List<RaceResult> getOverallResults() {
 
-        return getOverallResultsByCategory(getPrizeCategories());
+        return getOverallResults(getPrizeCategories());
+    }
+
+    public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
+
+        final Predicate<RaceResult> prize_category_filter = result -> entryCategoryIsEligibleInSomePrizeCategory(getEntryCategory(result), prize_categories);
+        return getOverallResults(prize_category_filter);
+    }
+
+    public List<RaceResult> getOverallResults(final Predicate<RaceResult> inclusion_filter) {
+
+        final List<RaceResult> results = overall_results.stream().filter(inclusion_filter).toList();
+        setPositionStrings(results, allowEqualPositions());
+        return results;
+    }
+
+    public List<RaceResult> getPrizeWinners(final PrizeCategory category) {
+
+        final List<RaceResult> results = prize_winners.get(category);
+        setPositionStrings(results, allowEqualPositions());
+        return results;
     }
 
     public String getProperty(final String key) {
@@ -249,16 +275,6 @@ public abstract class Race {
         return result == null ? category : result;
     }
 
-    public List<RaceResult> getOverallResultsByCategory(final List<PrizeCategory> categories) {
-
-        return overall_results.stream().
-            filter(result -> categories.stream().
-                map(prize_category -> entryCategoryIsEligibleForPrizeCategory(getEntryCategory(result), prize_category)).
-                reduce(Boolean::logicalOr).
-                orElseThrow()).
-            toList();
-    }
-
     public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
 
         return getPathRelativeToProjectRoot("/src/test/resources/" + individual_test_resource_root);
@@ -284,6 +300,55 @@ public abstract class Race {
     protected int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
         return normalisation.getLastName(r1.getIndividualRunnerName()).compareTo(normalisation.getLastName(r2.getIndividualRunnerName()));
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
+
+        // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
+        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
+
+        // The flag is passed in rather than using race.allowEqualPositions() since that applies to the race overall.
+        // In a series race the individual races don't allow equal positions, but the race overall does.
+        // Conversely in a relay race the legs after the first leg do allow equal positions.
+
+        for (int result_index = 0; result_index < results.size(); result_index++) {
+
+            // Skip over any following results with the same performance.
+            // Defined in terms of performance rather than duration, since in some races ranking is determined
+            // by points rather than times.
+            if (allow_equal_positions) {
+
+                final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
+
+                if (highest_index_with_same_performance > result_index) {
+
+                    // Record the same position for all the results with equal times.
+                    for (int i = result_index; i <= highest_index_with_same_performance; i++)
+                        results.get(i).position_string = result_index + 1 + "=";
+
+                    result_index = highest_index_with_same_performance;
+                } else
+                    setPositionStringByPosition(results, result_index);
+            }
+            else setPositionStringByPosition(results, result_index);
+        }
+    }
+
+    private int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
+
+        int highest_index_with_same_result = start_index;
+
+        while (highest_index_with_same_result + 1 < results.size() &&
+                results.get(start_index).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
+            highest_index_with_same_result++;
+
+        return highest_index_with_same_result;
+    }
+
+    private void setPositionStringByPosition(final List<? extends RaceResult> results, final int result_index) {
+        results.get(result_index).position_string = String.valueOf(result_index + 1);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

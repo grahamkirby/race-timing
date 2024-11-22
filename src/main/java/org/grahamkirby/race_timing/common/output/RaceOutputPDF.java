@@ -89,9 +89,8 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         document.add(getPrizesCategoryHeaderPDF(category));
 
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = race.getPrizeWinners(category);
 
-        setPositionStrings(category_prize_winners, race.allowEqualPositions());
         new PrizeResultPrinter(race, document).print(category_prize_winners, false);
     }
 

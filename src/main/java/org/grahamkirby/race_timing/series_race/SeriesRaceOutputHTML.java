@@ -43,7 +43,7 @@ public abstract class SeriesRaceOutputHTML extends RaceOutputHTML {
             printPrizes(writer);
 
             writer.append("<h4>Overall</h4>\n");
-            printResults(writer, true);
+            printResults(writer, getOverallResultPrinter(writer), true);
         }
     }
 }
