@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.OverallResultPrinterHTML;
+import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 
@@ -45,7 +45,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             writer.append("<h3><strong>Results</strong></h3>\n");
             printPrizes(writer);
             writer.append("<h4>Overall</h4>\n");
-            printResults(writer, true);
+            printResults(writer, getOverallResultPrinter(writer), true);
         }
     }
 
@@ -61,7 +61,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends OverallResultPrinterHTML {
+    private static class OverallResultPrinter extends ResultPrinterHTML {
 
         public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -108,7 +108,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private static class PrizeResultPrinter extends OverallResultPrinterHTML {
+    private static class PrizeResultPrinter extends ResultPrinterHTML {
 
         public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);

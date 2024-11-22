@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.common.output.OverallResultPrinterCSV;
+import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
@@ -51,7 +51,7 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends OverallResultPrinterCSV {
+    private static class OverallResultPrinter extends ResultPrinterCSV {
 
         public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -68,14 +68,6 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
                 final Runner runner = result.runner;
 
                 writer.append(STR."\{position},\{encode(runner.name)},\{encode(runner.club)},\{ runner.category.getShortName()},");
-
-
-
-
-//                writer.append(",").
-//                        append(runner.name).append(",").
-//                        append(runner.club).append(",").
-//                        append(runner.category.getShortName()).append(",");
 
                 for (final Duration time : result.times)
                     writer.append(time != null && time != Race.DUMMY_DURATION ? format(time) : "-").append(",");

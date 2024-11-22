@@ -20,7 +20,7 @@ import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.common.output.OverallResultPrinterText;
+import org.grahamkirby.race_timing.common.output.ResultPrinterText;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 
@@ -44,7 +44,6 @@ public class RelayRaceOutputText extends RaceOutputText {
     public RelayRaceOutputText(final RelayRace results) {
 
         super(results);
-        constructFilePaths();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         return new PrizeResultPrinter(race, writer);
     }
 
-    private static class PrizeResultPrinter extends OverallResultPrinterText {
+    private static class PrizeResultPrinter extends ResultPrinterText {
 
         public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);

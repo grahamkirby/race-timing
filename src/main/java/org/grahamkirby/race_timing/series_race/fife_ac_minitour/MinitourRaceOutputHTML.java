@@ -18,11 +18,10 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.OverallResultPrinterHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -62,6 +61,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // TODO rationalise with IndividualRace output code.
     private void printIndividualRaceResults(final int race_number) throws IOException {
 
         final IndividualRace individual_race = ((SeriesRace)race).getRaces().get(race_number - 1);
@@ -79,25 +79,15 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
     }
 
     private void printIndividualRaceResults(final OutputStreamWriter writer, final IndividualRace individual_race, final List<PrizeCategory> prize_categories, final String sub_heading) throws IOException {
-        
-        final List<RaceResult> category_results =
-                individual_race.getOverallResults().
-                stream().
-                filter(result -> prizeCategoriesIncludesEligible(((IndividualRaceResult)result).entry.runner.category, prize_categories)).
-                toList();
 
-        setPositionStrings(category_results, false);
+        final List<RaceResult> category_results = individual_race.getOverallResults(prize_categories);
+
         new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, false);
-    }
-
-    private boolean prizeCategoriesIncludesEligible(final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
-
-        return prize_categories.stream().map(category -> race.entryCategoryIsEligibleForPrizeCategory(entry_category, category)).reduce(Boolean::logicalOr).orElseThrow();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends OverallResultPrinterHTML {
+    private static class OverallResultPrinter extends ResultPrinterHTML {
 
         public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -162,7 +152,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private static class PrizeResultPrinter extends OverallResultPrinterHTML {
+    private static class PrizeResultPrinter extends ResultPrinterHTML {
 
         public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
             super(race, writer);
@@ -189,7 +179,8 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private static class IndividualRaceResultPrinter extends OverallResultPrinterHTML {
+    // TODO unify with IndividualRace
+    private static class IndividualRaceResultPrinter extends ResultPrinterHTML {
 
         private final String sub_heading;
 

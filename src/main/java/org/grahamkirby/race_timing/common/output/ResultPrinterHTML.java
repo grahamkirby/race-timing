@@ -7,9 +7,9 @@ import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 
-public abstract class OverallResultPrinterHTML extends ResultPrinter {
+public abstract class ResultPrinterHTML extends ResultPrinter {
 
-    public OverallResultPrinterHTML(Race race, OutputStreamWriter writer) {
+    public ResultPrinterHTML(Race race, OutputStreamWriter writer) {
         super(race, writer);
     }
 

@@ -18,11 +18,10 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.OverallResultPrinterCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,8 +34,6 @@ import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
-    // TODO test other race types with comma names.
-
     private String detailed_results_filename;
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
@@ -46,7 +43,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     public RelayRaceOutputCSV(final Race race) {
         
         super(race);
-        constructFilePaths();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,18 +92,13 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
+        final ResultPrinter printer = new DetailedResultPrinter(race, writer, new LegResultDetailsPrinter(race, writer));
+
         for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
-            printDetailedResults(writer, group.categories());
+            final List<RaceResult> results = race.getOverallResults(group.categories());
+            printer.print(results, false);
         }
-    }
-
-    private void printDetailedResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories) throws IOException {
-
-        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
-
-        setPositionStrings(results, false);
-        new DetailedResultPrinter(race, writer, new LegResultDetailsPrinter(race, writer)).print(results, false);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,9 +122,6 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        // Deal with dead heats in legs after the first.
-        setPositionStrings(leg_results, leg > 1);
-
         new LegResultPrinter(race, writer, leg).print(leg_results, false);
     }
 
@@ -143,7 +131,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
-    private static class OverallResultPrinter extends OverallResultPrinterCSV {
+    private static class OverallResultPrinter extends ResultPrinterCSV {
 
         public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -159,7 +147,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    private static class LegResultPrinter extends OverallResultPrinterCSV {
+    private static class LegResultPrinter extends ResultPrinterCSV {
 
         final int leg;
 
@@ -186,7 +174,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    private static class LegResultDetailsPrinter extends OverallResultPrinterCSV {
+    private static class LegResultDetailsPrinter extends ResultPrinterCSV {
 
         public LegResultDetailsPrinter(Race race, OutputStreamWriter writer) {
             super(race, writer);
@@ -216,7 +204,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    private static class DetailedResultPrinter extends OverallResultPrinterCSV {
+    private static class DetailedResultPrinter extends ResultPrinterCSV {
 
         private final ResultPrinter leg_details_printer;
 

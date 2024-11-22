@@ -23,7 +23,7 @@ public class EntryCategory extends Category {
         super(long_name, short_name, gender, minimum_age, maximum_age);
     }
 
-    public EntryCategory(String line) {
+    public EntryCategory(final String line) {
 
         this(
             line.split(",")[0],

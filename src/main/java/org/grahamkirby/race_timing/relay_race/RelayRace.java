@@ -206,11 +206,6 @@ public class RelayRace extends SingleRace {
 
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
 
-        // Sort in order of increasing overall leg time, as defined in LegResult.compareTo().
-        // Ordering for DNF results doesn't matter since they're omitted in output.
-        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
-        // OutputCSV.printLegResults deals with dead heats.
-
         return leg_number == 1 ?
             List.of(this::comparePerformance, this::compareRecordedLegPosition):
             List.of(this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
@@ -267,13 +262,19 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // TODO review all methods returning lists of results.
     protected List<LegResult> getLegResults(final int leg_number) {
 
-        return getOverallResults().stream().
-            map(result -> (RelayRaceResult) result).
-            map(result -> result.leg_results.get(leg_number - 1)).
-            sorted(combineComparators(getLegResultComparators(leg_number))).
-            toList();
+        final List<LegResult> results = getOverallResults().stream().
+                map(result -> (RelayRaceResult) result).
+                map(result -> result.leg_results.get(leg_number - 1)).
+                sorted(combineComparators(getLegResultComparators(leg_number))).
+                toList();
+
+        // Deal with dead heats in legs after the first.
+        setPositionStrings(results, leg_number > 1);
+
+        return results;
     }
 
     protected String getMassStartAnnotation(final LegResult leg_result, final int leg) {

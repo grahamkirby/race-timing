@@ -18,11 +18,9 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.OverallResultPrinterHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,7 +37,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     public RelayRaceOutputHTML(final RelayRace race) {
 
         super(race);
-        constructFilePaths();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +52,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             printPrizes(writer);
 
             writer.append("<h4>Overall</h4>\n");
-            printResults(writer, false);
+            printResults(writer, getOverallResultPrinter(writer), false);
 
             writer.append("<h4>Full Results</h4>\n");
             printDetailedResults(writer, false);
@@ -100,30 +97,13 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     protected void printDetailedResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
 
-        int group_number = 0;
-        for (final PrizeCategoryGroup group : race.prize_category_groups) {
-
-            final String group_title = group.group_title();
-            final List<PrizeCategory> prize_categories = group.categories();
-
-            final String sub_heading = race.prize_category_groups.size() == 1 ? "" : makeSubHeading(group_title);
-
-            printDetailedResults(writer, prize_categories, sub_heading, include_credit_link && group_number++ == race.prize_category_groups.size() - 1);
-        }
-    }
-
-    private void printDetailedResults(final OutputStreamWriter writer, final List<PrizeCategory> prize_categories, final String sub_heading, boolean include_credit_link) throws IOException {
-
-        writer.append(sub_heading);
-
-        final List<RaceResult> results = race.getOverallResultsByCategory(prize_categories);
-
-        setPositionStrings(results, false);
-        new DetailedResultPrinter(race, writer, new LegResultDetailsPrinter(race, writer)).print(results, include_credit_link);
+        printResults(writer, new DetailedResultPrinter(race, writer, new LegResultDetailsPrinter(race, writer)), include_credit_link);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // TODO consider treating leg results as an individual race.
+    // TODO rationalise with RaceOutput.printResults.
     protected void printLegResults() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
@@ -143,15 +123,12 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        // Deal with dead heats in legs after the first.
-        setPositionStrings(leg_results, leg > 1);
-
         new LegResultPrinter(race, writer, leg).print(leg_results, include_credit_link);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends OverallResultPrinterHTML {
+    private static class OverallResultPrinter extends ResultPrinterHTML {
 
         public OverallResultPrinter(Race race, OutputStreamWriter writer) {
             super(race, writer);
@@ -194,7 +171,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private static class LegResultPrinter extends OverallResultPrinterHTML {
+    private static class LegResultPrinter extends ResultPrinterHTML {
 
         final int leg;
 
@@ -237,7 +214,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private static class LegResultDetailsPrinter extends OverallResultPrinterHTML {
+    private static class LegResultDetailsPrinter extends ResultPrinterHTML {
 
         public LegResultDetailsPrinter(Race race, OutputStreamWriter writer) {
             super(race, writer);
@@ -270,7 +247,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private static class DetailedResultPrinter extends OverallResultPrinterHTML {
+    private static class DetailedResultPrinter extends ResultPrinterHTML {
 
         private final ResultPrinter leg_details_printer;
 
@@ -332,7 +309,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private static class PrizeResultPrinter extends OverallResultPrinterHTML {
+    private static class PrizeResultPrinter extends ResultPrinterHTML {
 
         public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
             super(race, writer);

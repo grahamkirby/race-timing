@@ -71,7 +71,7 @@ public abstract class RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getResultsHeader());
-            printResults(writer, false);
+            printResults(writer, getOverallResultPrinter(writer), false);
         }
     }
 
@@ -113,28 +113,30 @@ public abstract class RaceOutput {
         return s;
     }
 
-    protected void printResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
+    protected void printResults(final OutputStreamWriter writer, ResultPrinter printer, final boolean include_credit_link) throws IOException {
 
-        int group_number = 0;
-        for (final PrizeCategoryGroup group : race.prize_category_groups) {
+        for (int i = 0; i < race.prize_category_groups.size(); i++) {
 
+            final PrizeCategoryGroup group = race.prize_category_groups.get(i);
             final String group_title = group.group_title();
             final List<PrizeCategory> prize_categories = group.categories();
 
-            final String sub_heading = race.prize_category_groups.size() == 1 ? "" : "\n" + makeSubHeading(group_title);
+            final boolean only_one_group = race.prize_category_groups.size() == 1;
+            final boolean last_group = i == race.prize_category_groups.size() - 1;
 
-            printResults(writer, prize_categories, sub_heading, include_credit_link && group_number++ == race.prize_category_groups.size() - 1);
+            final String sub_heading = only_one_group ? "" : "\n" + makeSubHeading(group_title);
+
+            printResults(writer, printer, prize_categories, sub_heading, include_credit_link && last_group);
         }
     }
 
-    protected void printResults(final OutputStreamWriter writer, final List<PrizeCategory> categories, final String sub_heading, final boolean include_credit_link) throws IOException {
+    protected void printResults(final OutputStreamWriter writer, ResultPrinter printer, final List<PrizeCategory> categories, final String sub_heading, final boolean include_credit_link) throws IOException {
 
         writer.append(sub_heading);
 
-        final List<RaceResult> results = race.getOverallResultsByCategory(categories);
+        final List<RaceResult> results = race.getOverallResults(categories);
 
-        setPositionStrings(results, race.allowEqualPositions());
-        getOverallResultPrinter(writer).print(results, include_credit_link);
+        printer.print(results, include_credit_link);
     }
 
     protected void printPrizes(final OutputStreamWriter writer) throws IOException {
@@ -165,50 +167,14 @@ public abstract class RaceOutput {
 
         writer.append(getPrizesCategoryHeader(category));
 
-        final List<RaceResult> category_prize_winners = race.prize_winners.get(category);
+        final List<RaceResult> category_prize_winners = race.getPrizeWinners(category);
 
-        setPositionStrings(category_prize_winners, race.allowEqualPositions());
         getPrizeResultPrinter(writer).print(category_prize_winners, false);
 
         writer.append(getPrizesCategoryFooter());
     }
 
-    protected void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
-
-        // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
-        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
-
-        // The flag is passed in rather than using race.allowEqualPositions() since that applies to the race overall.
-        // In a series race the individual races don't allow equal positions, but the race overall does.
-        // Conversely in a relay race the legs after the first leg do allow equal positions.
-
-        for (int result_index = 0; result_index < results.size(); result_index++) {
-
-            // Skip over any following results with the same performance.
-            // Defined in terms of performance rather than duration, since in some races ranking is determined
-            // by points rather than times.
-            if (allow_equal_positions) {
-
-                final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
-
-                if (highest_index_with_same_performance > result_index) {
-
-                    // Record the same position for all the results with equal times.
-                    for (int i = result_index; i <= highest_index_with_same_performance; i++)
-                        results.get(i).position_string = result_index + 1 + "=";
-
-                    result_index = highest_index_with_same_performance;
-                } else
-                    setPositionStringByPosition(results, result_index);
-            }
-            else setPositionStringByPosition(results, result_index);
-        }
-    }
-
-    private void setPositionStringByPosition(final List<? extends RaceResult> results, final int result_index) {
-        results.get(result_index).position_string = String.valueOf(result_index + 1);
-    }
-
+    // TODO move prize logic to prizes class
     private boolean prizesInThisOrLaterGroup(final PrizeCategoryGroup group) {
 
         for (final PrizeCategoryGroup group2 : race.prize_category_groups.reversed()) {
@@ -237,16 +203,5 @@ public abstract class RaceOutput {
             if (!c.equals(category) && c.getMinimumAge() == category.getMinimumAge() && !race.prize_winners.get(c).isEmpty()) return true;
 
         return false;
-    }
-
-    private int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
-
-        int highest_index_with_same_result = start_index;
-
-        while (highest_index_with_same_result + 1 < results.size() &&
-                results.get(start_index).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
-            highest_index_with_same_result++;
-
-        return highest_index_with_same_result;
     }
 }

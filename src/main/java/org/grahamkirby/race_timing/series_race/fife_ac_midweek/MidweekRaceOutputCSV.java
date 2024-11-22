@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.OverallResultPrinterCSV;
+import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
@@ -47,7 +47,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends OverallResultPrinterCSV {
+    private static class OverallResultPrinter extends ResultPrinterCSV {
 
         public OverallResultPrinter(Race race, OutputStreamWriter writer) {
             super(race, writer);

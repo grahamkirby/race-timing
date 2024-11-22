@@ -26,7 +26,7 @@ public class PrizeCategory extends Category {
         this.number_of_prizes = number_of_prizes;
     }
 
-    public PrizeCategory(String line) {
+    public PrizeCategory(final String line) {
 
         this(
             line.split(",")[0],
