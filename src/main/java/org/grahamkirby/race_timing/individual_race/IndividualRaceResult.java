@@ -26,7 +26,7 @@ public class IndividualRaceResult extends RaceResult {
 
     public IndividualRaceEntry entry;
     public boolean DNF;
-    public Duration finish_time = Race.DUMMY_DURATION; // Initialised in IndividualRace.fillFinishTimes().
+    public Duration finish_time;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,16 +35,14 @@ public class IndividualRaceResult extends RaceResult {
         super(race);
         this.entry = entry;
 
+        // Initialised in IndividualRace.fillFinishTimes().
+        finish_time = Race.DUMMY_DURATION;
+
         // Will be set to false later if a time is processed for this runner.
         DNF = true;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public boolean sameEntrant(final RaceResult other) {
-        return entry.equals(((IndividualRaceResult) other).entry);
-    }
 
     @Override
     public boolean completed() {

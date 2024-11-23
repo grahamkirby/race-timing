@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class RelayRacePrizes extends RacePrizes {
@@ -39,9 +40,6 @@ public class RelayRacePrizes extends RacePrizes {
     @Override
     public void allocatePrizes() {
 
-        for (final PrizeCategory category : race.getPrizeCategories())
-            race.prize_winners.put(category, new ArrayList<>());
-
         // Allocate first prize in each category first, in decreasing order of category breadth.
         // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
         // prize in open category.
@@ -49,24 +47,16 @@ public class RelayRacePrizes extends RacePrizes {
         final List<PrizeCategory> categories_sorted_by_decreasing_generality = sortByDecreasingGenerality(race.getPrizeCategories());
 
         allocateFirstPrizes(categories_sorted_by_decreasing_generality);
-
-        // Now consider other prizes.
         allocateMinorPrizes(categories_sorted_by_decreasing_generality);
     }
 
-    public static List<PrizeCategory> sortByDecreasingGenerality(final List<PrizeCategory> prize_categories) {
+    private static List<PrizeCategory> sortByDecreasingGenerality(final List<PrizeCategory> prize_categories) {
 
-        final List<PrizeCategory> result = new ArrayList<>(prize_categories);
-        result.sort((category1, category2) -> {
+        final List<PrizeCategory> sorted_categories = new ArrayList<>(prize_categories);
 
-            if (category1.equals(category2)) return 0;
+        sorted_categories.sort(Comparator.comparingInt((PrizeCategory category) -> category.getMinimumAge()).thenComparingInt(category -> GENDER_ORDER.indexOf(category.getGender())));
 
-            final int compare_minimum_age = Integer.compare(category1.getMinimumAge(), category2.getMinimumAge());
-            if (compare_minimum_age != 0) return compare_minimum_age;
-
-            return Integer.compare(GENDER_ORDER.indexOf(category1.getGender()), GENDER_ORDER.indexOf(category2.getGender()));
-        });
-        return result;
+        return sorted_categories;
     }
 
     private void allocateFirstPrizes(final List<PrizeCategory> prize_categories) {
@@ -74,7 +64,7 @@ public class RelayRacePrizes extends RacePrizes {
         for (final PrizeCategory category : prize_categories)
             for (final RaceResult result : race.getOverallResults())
                 if (prizeWinner(result, category)) {
-                    race.prize_winners.get(category).add(result);
+                    setPrizeWinner(result, category);
                     break;
                 }
     }
@@ -94,7 +84,7 @@ public class RelayRacePrizes extends RacePrizes {
             if (position > category.numberOfPrizes()) return;
 
             if (prizeWinner(result, category)) {
-                race.prize_winners.get(category).add(result);
+                setPrizeWinner(result, category);
                 position++;
             }
         }
