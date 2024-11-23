@@ -204,13 +204,6 @@ public class RelayRace extends SingleRace {
         return List.of(this::compareBibNumber);
     }
 
-    private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
-
-        return leg_number == 1 ?
-            List.of(this::comparePerformance, this::compareRecordedLegPosition):
-            List.of(this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
-    }
-
     @Override
     protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
 
@@ -240,6 +233,13 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
+
+        return leg_number == 1 ?
+                List.of(this::comparePerformance, this::compareRecordedLegPosition):
+                List.of(this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
+    }
+
     private int compareBibNumber(final RaceResult r1, final RaceResult r2) {
 
         return Integer.compare(((RelayRaceResult) r1).entry.bib_number, ((RelayRaceResult) r2).entry.bib_number);
@@ -262,7 +262,6 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO review all methods returning lists of results.
     protected List<LegResult> getLegResults(final int leg_number) {
 
         final List<LegResult> results = getOverallResults().stream().
@@ -277,13 +276,13 @@ public class RelayRace extends SingleRace {
         return results;
     }
 
-    protected String getMassStartAnnotation(final LegResult leg_result, final int leg) {
+    protected String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
         if (leg_result.in_mass_start) {
 
             // Find the next mass start.
-            int mass_start_leg = leg;
+            int mass_start_leg = leg_number;
             while (!(mass_start_legs.get(mass_start_leg-1)))
                 mass_start_leg++;
 
@@ -292,10 +291,10 @@ public class RelayRace extends SingleRace {
         else return "";
     }
 
-    protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg) {
+    protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg_number) {
 
         Duration total = Duration.ZERO;
-        for (int i = 0; i < leg; i++)
+        for (int i = 0; i < leg_number; i++)
             total = total.plus(leg_results.get(i).duration());
         return total;
     }
@@ -308,12 +307,12 @@ public class RelayRace extends SingleRace {
         final AtomicInteger legs_completed = new AtomicInteger(0);
 
         return raw_results.stream().
-                peek(_ -> position.incrementAndGet()).
-                filter(result -> result.getBibNumber() == bib_number).
-                filter(_ -> legs_completed.incrementAndGet() == leg_number).
-                map(_ -> position.get()).
-                findFirst().
-                orElse(Integer.MAX_VALUE);
+            peek(_ -> position.incrementAndGet()).
+            filter(result -> result.getBibNumber() == bib_number).
+            filter(_ -> legs_completed.incrementAndGet() == leg_number).
+            map(_ -> position.get()).
+            findFirst().
+            orElse(Integer.MAX_VALUE);
     }
 
     private int getRecordedLastLegPosition(final RelayRaceResult result) {

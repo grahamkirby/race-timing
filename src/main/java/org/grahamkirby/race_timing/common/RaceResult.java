@@ -17,11 +17,13 @@
 package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 public abstract class RaceResult {
 
     public final Race race;
     public String position_string;
+    public PrizeCategory category_of_prize_awarded = null;
 
     protected RaceResult(Race race) {
         this.race = race;
@@ -29,7 +31,6 @@ public abstract class RaceResult {
 
     protected abstract String getIndividualRunnerName();
     public abstract int comparePerformanceTo(final RaceResult other);
-    public abstract boolean sameEntrant(final RaceResult other);
     public abstract boolean completed();
     public abstract boolean shouldDisplayPosition();
     public abstract EntryCategory getCategory();

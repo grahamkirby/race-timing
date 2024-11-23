@@ -101,10 +101,9 @@ public abstract class Race {
     private final Path config_file_path;
     private final Properties properties;
 
-    public Map<PrizeCategory, List<RaceResult>> prize_winners;
     protected List<RaceResult> overall_results;
 
-    protected RacePrizes prizes;
+    public RacePrizes prizes;
     protected StringBuilder notes;
 
     protected RaceInput input;
@@ -240,13 +239,6 @@ public abstract class Race {
         return results;
     }
 
-    public List<RaceResult> getPrizeWinners(final PrizeCategory category) {
-
-        final List<RaceResult> results = prize_winners.get(category);
-        setPositionStrings(results, allowEqualPositions());
-        return results;
-    }
-
     public String getProperty(final String key) {
         return properties.getProperty(key);
     }
@@ -369,7 +361,6 @@ public abstract class Race {
 
     private void initialise() {
 
-        prize_winners = new HashMap<>();
         overall_results = new ArrayList<>();
         notes = new StringBuilder();
     }
@@ -443,14 +434,6 @@ public abstract class Race {
     private List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
 
         List<PrizeCategoryGroup> groups = new ArrayList<>();
-
-//        for (final String line : Files.readAllLines(prize_categories_path)) {
-//
-//            final String group_name = line.split(",")[5];
-//
-//            addGroupIfAbsent(groups, group_name);
-//            getGroupWithName(groups, group_name).categories().add(new PrizeCategory(line));
-//        }
 
         Files.readAllLines(prize_categories_path).forEach(line -> {
 

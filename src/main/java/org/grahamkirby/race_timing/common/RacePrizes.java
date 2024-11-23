@@ -18,8 +18,8 @@ package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RacePrizes {
 
@@ -36,36 +36,43 @@ public class RacePrizes {
     public void allocatePrizes() {
 
         for (final PrizeCategory category : race.getPrizeCategories())
-            race.prize_winners.put(category, getPrizeWinners(category));
+            setPrizeWinners(category);
     }
 
     protected boolean prizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        return result.completed() && race.entryCategoryIsEligibleForPrizeCategory(result.getCategory(), category) && notYetWonPrize(result);
+        return !alreadyWonPrize(result) && result.completed() && race.entryCategoryIsEligibleForPrizeCategory(result.getCategory(), category);
     }
 
-    private boolean notYetWonPrize(final RaceResult potential_winner) {
+    protected boolean alreadyWonPrize(RaceResult result) {
 
-        return !race.prize_winners.values().stream().
-                flatMap(winners -> winners.stream().map(result -> result.sameEntrant(potential_winner))).
-                reduce(Boolean::logicalOr).
-                orElse(false);
+        return result.category_of_prize_awarded != null;
     }
 
-    private List<RaceResult> getPrizeWinners(final PrizeCategory category) {
+    protected void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        final List<RaceResult> prize_winners = new ArrayList<>();
+        result.category_of_prize_awarded = category;
+    }
 
-        int position = 1;
+    public List<RaceResult> getPrizeWinners(final PrizeCategory category) {
 
-        for (final RaceResult result : race.getOverallResults()) {
+        final List<RaceResult> prize_results = race.getOverallResults().stream().
+            filter(result -> result.category_of_prize_awarded != null).
+            filter(result -> result.category_of_prize_awarded.equals(category)).
+            toList();
 
-            if (position <= category.numberOfPrizes() && prizeWinner(result, category)) {
+        race.setPositionStrings(prize_results, race.allowEqualPositions());
 
-                prize_winners.add(result);
-                position++;
-            }
-        }
-        return prize_winners;
+        return prize_results;
+    }
+
+    public void setPrizeWinners(final PrizeCategory category) {
+
+        final AtomicInteger position = new AtomicInteger(1);
+
+        race.getOverallResults().stream().
+            filter(result -> position.get() <= category.numberOfPrizes() && prizeWinner(result, category)).
+            peek(result -> setPrizeWinner(result, category)).
+            forEach(_ -> position.getAndIncrement());
     }
 }

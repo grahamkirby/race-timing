@@ -45,11 +45,6 @@ public class LegResult extends RaceResult {
     }
 
     @Override
-    public boolean sameEntrant(final RaceResult other) {
-        return entry.equals(((LegResult) other).entry);
-    }
-
-    @Override
     public boolean completed() {
         return !DNF;
     }

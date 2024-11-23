@@ -167,7 +167,7 @@ public abstract class RaceOutput {
 
         writer.append(getPrizesCategoryHeader(category));
 
-        final List<RaceResult> category_prize_winners = race.getPrizeWinners(category);
+        final List<RaceResult> category_prize_winners = race.prizes.getPrizeWinners(category);
 
         getPrizeResultPrinter(writer).print(category_prize_winners, false);
 
@@ -191,7 +191,7 @@ public abstract class RaceOutput {
 
         for (final PrizeCategory category2 : race.getPrizeCategories().reversed()) {
 
-            if (!race.prize_winners.get(category2).isEmpty()) return true;
+            if (!race.prizes.getPrizeWinners(category2).isEmpty()) return true;
             if (category.equals(category2) && !prizesInOtherCategorySameAge(category)) return false;
         }
         return false;
@@ -200,7 +200,7 @@ public abstract class RaceOutput {
     private boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
 
         for (final PrizeCategory c : race.getPrizeCategories())
-            if (!c.equals(category) && c.getMinimumAge() == category.getMinimumAge() && !race.prize_winners.get(c).isEmpty()) return true;
+            if (!c.equals(category) && c.getMinimumAge() == category.getMinimumAge() && !race.prizes.getPrizeWinners(c).isEmpty()) return true;
 
         return false;
     }

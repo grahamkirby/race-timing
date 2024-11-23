@@ -47,11 +47,6 @@ public abstract class SeriesRaceResult extends RaceResult {
         return runner.category;
     }
 
-    @Override
-    public boolean sameEntrant(final RaceResult other) {
-        return runner.equals(((SeriesRaceResult) other).runner);
-    }
-
     private int numberCompleted() {
 
         return (int) ((SeriesRace)race).races.stream().
