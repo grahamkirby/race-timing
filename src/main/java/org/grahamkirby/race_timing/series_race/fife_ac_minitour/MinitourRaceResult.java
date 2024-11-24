@@ -75,7 +75,6 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO check which classes have duration().
     protected Duration duration() {
 
         Duration overall = Duration.ZERO;

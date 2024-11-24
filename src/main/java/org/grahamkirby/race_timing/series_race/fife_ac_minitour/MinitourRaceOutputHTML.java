@@ -61,7 +61,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO rationalise with IndividualRace output code.
     private void printIndividualRaceResults(final int race_number) throws IOException {
 
         final IndividualRace individual_race = ((SeriesRace)race).getRaces().get(race_number - 1);
@@ -179,7 +178,6 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    // TODO unify with IndividualRace
     private static class IndividualRaceResultPrinter extends ResultPrinterHTML {
 
         private final String sub_heading;

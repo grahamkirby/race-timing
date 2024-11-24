@@ -75,4 +75,22 @@ public class RacePrizes {
             peek(result -> setPrizeWinner(result, category)).
             forEach(_ -> position.getAndIncrement());
     }
+
+    public boolean prizesInThisOrLaterCategory(final PrizeCategory category) {
+
+        for (final PrizeCategory category2 : race.getPrizeCategories().reversed()) {
+
+            if (!race.prizes.getPrizeWinners(category2).isEmpty()) return true;
+            if (category.equals(category2) && !prizesInOtherCategorySameAge(category)) return false;
+        }
+        return false;
+    }
+
+    public boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
+
+        for (final PrizeCategory c : race.getPrizeCategories())
+            if (!c.equals(category) && c.getMinimumAge() == category.getMinimumAge() && !race.prizes.getPrizeWinners(c).isEmpty()) return true;
+
+        return false;
+    }
 }

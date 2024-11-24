@@ -37,11 +37,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public abstract class Race {
 
-    // TODO enum for completion status - normal, DNS, DNF, recorded but DNF
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static final String DUMMY_DURATION_STRING = "23:59:59";
+    public static final String DUMMY_DURATION_STRING = "00:00:00";
     public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     public static final String COMMENT_SYMBOL = "#";
 
