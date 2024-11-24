@@ -102,8 +102,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO consider treating leg results as an individual race.
-    // TODO rationalise with RaceOutput.printResults.
     protected void printLegResults() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)

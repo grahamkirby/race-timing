@@ -109,9 +109,7 @@ public abstract class RaceOutput {
         output_directory_path = race.getPath("../output");
     }
 
-    protected String makeSubHeading(String s) {
-        return s;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void printResults(final OutputStreamWriter writer, ResultPrinter printer, final boolean include_credit_link) throws IOException {
 
@@ -139,6 +137,12 @@ public abstract class RaceOutput {
         printer.print(results, include_credit_link);
     }
 
+    protected String makeSubHeading(String s) {
+        return s;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         writer.append(getPrizesSectionHeader());
@@ -157,10 +161,9 @@ public abstract class RaceOutput {
     protected void printPrizes(final Function<PrizeCategory, Void> prize_printer) {
 
         race.prize_category_groups.stream().
-                filter(this::prizesInThisOrLaterGroup).
-                flatMap(group -> group.categories().stream()).
-                filter(this::prizesInThisOrLaterCategory).
-                forEach(prize_printer::apply);
+            flatMap(group -> group.categories().stream()).
+            filter(race.prizes::prizesInThisOrLaterCategory).
+            forEach(prize_printer::apply);
     }
 
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
@@ -172,36 +175,5 @@ public abstract class RaceOutput {
         getPrizeResultPrinter(writer).print(category_prize_winners, false);
 
         writer.append(getPrizesCategoryFooter());
-    }
-
-    // TODO move prize logic to prizes class
-    private boolean prizesInThisOrLaterGroup(final PrizeCategoryGroup group) {
-
-        for (final PrizeCategoryGroup group2 : race.prize_category_groups.reversed()) {
-
-            for (final PrizeCategory category : group2.categories())
-                if (prizesInThisOrLaterCategory(category)) return true;
-
-            if (group2.group_title().equals(group.group_title())) return false;
-        }
-        return false;
-    }
-
-    private boolean prizesInThisOrLaterCategory(final PrizeCategory category) {
-
-        for (final PrizeCategory category2 : race.getPrizeCategories().reversed()) {
-
-            if (!race.prizes.getPrizeWinners(category2).isEmpty()) return true;
-            if (category.equals(category2) && !prizesInOtherCategorySameAge(category)) return false;
-        }
-        return false;
-    }
-
-    private boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
-
-        for (final PrizeCategory c : race.getPrizeCategories())
-            if (!c.equals(category) && c.getMinimumAge() == category.getMinimumAge() && !race.prizes.getPrizeWinners(c).isEmpty()) return true;
-
-        return false;
     }
 }

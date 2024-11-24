@@ -12,5 +12,5 @@ RAW_RESULTS_PATH = rawtimes.txt
 CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_relay.csv
 CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_relay.csv
 # Elapsed duration from start of leg 1 to mass start time for each leg.
-# 23:59:59 indicates no mass start.
+# 00:00:00 indicates no mass start.
 MASS_START_ELAPSED_TIMES = 2:36:0,1:58:0

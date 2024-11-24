@@ -169,8 +169,6 @@ public class RelayRace extends SingleRace {
     @Override
     protected void initialiseResults() {
 
-        // TODO rationalise with IndividualRace with respect to treatment of non-starts or non finishers.
-
         for (final RaceEntry entry : entries)
             overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
     }
@@ -236,8 +234,8 @@ public class RelayRace extends SingleRace {
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
 
         return leg_number == 1 ?
-                List.of(this::comparePerformance, this::compareRecordedLegPosition):
-                List.of(this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
+                List.of(this::compareCompletion, this::comparePerformance, this::compareRecordedLegPosition):
+                List.of(this::compareCompletion, this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
     }
 
     private int compareBibNumber(final RaceResult r1, final RaceResult r2) {
@@ -344,7 +342,7 @@ public class RelayRace extends SingleRace {
 
     private String getMassStartElapsedTimesString() {
 
-        // Example: MASS_START_ELAPSED_TIMES = 23:59:59,23:59:59,23:59:59,2:36:00
+        // Example: MASS_START_ELAPSED_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
 
         final String default_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
         return getProperty(KEY_MASS_START_ELAPSED_TIMES, default_string);
@@ -537,7 +535,7 @@ public class RelayRace extends SingleRace {
         if (previous_team_member_finish_time == null) return null;
 
         // Use the earlier of the mass start time and the previous runner's finish time.
-        return mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+        return !mass_start_time.equals(DUMMY_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
@@ -545,11 +543,11 @@ public class RelayRace extends SingleRace {
         // Not in mass start if there is an individually recorded time, or it's the first leg.
         if (individual_start_time != null || leg_index == 0) return false;
 
-        // No previously record leg time, so record this runner as starting in mass start if it's a mass start leg.
+        // No previously recorded leg time, so record this runner as starting in mass start if it's a mass start leg.
         if (previous_runner_finish_time == null) return mass_start_legs.get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-        return mass_start_time.compareTo(previous_runner_finish_time) < 0;
+        return !mass_start_time.equals(DUMMY_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
     private int findIndexOfNextUnfilledLegResult(final List<LegResult> leg_results) {
