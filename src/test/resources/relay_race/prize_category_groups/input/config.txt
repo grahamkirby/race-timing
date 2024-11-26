@@ -18,6 +18,7 @@ ANNOTATIONS_PATH = times_annotations.txt
 
 # Relative to project root directory.
 CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_relay.csv
+GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibility_relay.csv
 
 CATEGORIES_PRIZE_PATH = categories_prize_relay.csv
 
