@@ -45,7 +45,7 @@ public abstract class SingleRace extends Race {
     }
 
     @Override
-    protected void readProperties() {
+    protected void readProperties() throws IOException {
 
         // Specifies all the bib numbers for runners who did have a finish
         // time recorded but were declared DNF.

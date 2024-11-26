@@ -16,7 +16,9 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.CompletionStatus;
+import org.grahamkirby.race_timing.common.RaceInput;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
@@ -26,13 +28,13 @@ import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
@@ -59,6 +61,7 @@ public class RelayRace extends SingleRace {
     protected List<Boolean> paired_legs;
     private List<IndividualLegStart> individual_leg_starts;
     private Duration start_offset;
+    private Map<String, String> gender_eligibility_map;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -88,9 +91,8 @@ public class RelayRace extends SingleRace {
         guessMissingBibNumbers();
 
         fillFinishTimes();
+        fillStartTimes();
         fillDNFs();
-
-        fillLegResultDetails();
 
         sortResults();
         allocatePrizes();
@@ -108,10 +110,11 @@ public class RelayRace extends SingleRace {
         configureMassStarts();
         configurePairedLegs();
         configureIndividualLegStarts();
+        configureGenderEligibilityMap();
     }
 
     @Override
-    protected void readProperties() {
+    protected void readProperties() throws IOException {
 
         super.readProperties();
 
@@ -164,8 +167,7 @@ public class RelayRace extends SingleRace {
     @Override
     protected void initialiseResults() {
 
-        for (final RaceEntry entry : entries)
-            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, this));
+        entries.forEach(entry -> overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, this)));
     }
 
     @Override
@@ -198,15 +200,17 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
+    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        return entry_category.getGender().equals(prize_category.getGender()) ||
-                entry_category.getGender().equals("Women") && prize_category.getGender().equals("Open") ||
-                entry_category.getGender().equals("Mixed") && prize_category.getGender().equals("Open");
+        if (entry_category.getGender().equals(prize_category.getGender())) return true;
+
+        return gender_eligibility_map.keySet().stream().
+            filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
+            anyMatch(entry_gender -> prize_category.getGender().equals(gender_eligibility_map.get(entry_gender)));
     }
 
     @Override
-    protected EntryCategory getEntryCategory(RaceResult result) {
+    protected EntryCategory getEntryCategory(final RaceResult result) {
         return ((RelayRaceResult) result).entry.team.category();
     }
 
@@ -258,10 +262,10 @@ public class RelayRace extends SingleRace {
     protected List<LegResult> getLegResults(final int leg_number) {
 
         final List<LegResult> results = getOverallResults().stream().
-                map(result -> (RelayRaceResult) result).
-                map(result -> result.leg_results.get(leg_number - 1)).
-                sorted(combineComparators(getLegResultComparators(leg_number))).
-                toList();
+            map(result -> (RelayRaceResult) result).
+            map(result -> result.leg_results.get(leg_number - 1)).
+            sorted(combineComparators(getLegResultComparators(leg_number))).
+            toList();
 
         // Deal with dead heats in legs after the first.
         setPositionStrings(results, leg_number > 1);
@@ -272,24 +276,23 @@ public class RelayRace extends SingleRace {
     protected String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
-        if (leg_result.in_mass_start) {
+        return leg_result.in_mass_start ? STR." (M\{getNextMassStartLeg(leg_number)})" : "";
+    }
 
-            // Find the next mass start.
-            int mass_start_leg = leg_number;
-            while (!(mass_start_legs.get(mass_start_leg-1)))
-                mass_start_leg++;
+    private int getNextMassStartLeg(final int leg_number) {
 
-            return STR." (M\{mass_start_leg})";
-        }
-        else return "";
+        return leg_number +
+            (int) mass_start_legs.subList(leg_number - 1, number_of_legs).stream().
+            filter(b -> !b).
+            count();
     }
 
     protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg_number) {
 
         return leg_results.subList(0, leg_number).stream().
-                map(LegResult::duration).
-                reduce(Duration::plus).
-                orElse(Duration.ZERO);
+            map(LegResult::duration).
+            reduce(Duration::plus).
+            orElse(Duration.ZERO);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,7 +331,7 @@ public class RelayRace extends SingleRace {
         start_times_for_mass_starts = new ArrayList<>();
         mass_start_legs = new ArrayList<>();
 
-        setMassStartTimes(getMassStartElapsedTimesString().split(","));
+        setMassStartTimes();
 
         // If there is no mass start configured for legs 2 and above, use the first actual mass start time.
         // This covers the case where an early leg runner finishes after a mass start.
@@ -341,13 +344,14 @@ public class RelayRace extends SingleRace {
 
         final String default_string = Stream.generate(() -> format(Duration.ZERO)).
             limit(number_of_legs).
-            reduce((s1, s2) -> s1 + "," + s2).
-            orElseThrow();
+            collect(Collectors.joining(","));
 
         return getProperty(KEY_MASS_START_ELAPSED_TIMES, default_string);
     }
 
-    private void setMassStartTimes(final String[] mass_start_elapsed_times_strings) {
+    private void setMassStartTimes() {
+
+        final String[] mass_start_elapsed_times_strings = getMassStartElapsedTimesString().split(",");
 
         for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
             setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
@@ -356,7 +360,7 @@ public class RelayRace extends SingleRace {
     private void setMassStartTime(final String time_as_string, final int leg_index) {
 
         final Duration mass_start_time = parseTime(time_as_string);
-        final Duration previous_mass_start_time = leg_index > 0 ? start_times_for_mass_starts.get(leg_index -1) : null;
+        final Duration previous_mass_start_time = leg_index > 0 ? start_times_for_mass_starts.get(leg_index - 1) : null;
 
         checkMassStartTimesOrder(previous_mass_start_time, mass_start_time);
 
@@ -381,7 +385,21 @@ public class RelayRace extends SingleRace {
         for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--)
 
             if (start_times_for_mass_starts.get(leg_index).equals(Duration.ZERO))
-                start_times_for_mass_starts.set(leg_index, start_times_for_mass_starts.get(leg_index+1));
+                start_times_for_mass_starts.set(leg_index, start_times_for_mass_starts.get(leg_index + 1));
+    }
+
+    private void configureGenderEligibilityMap() throws IOException {
+
+        final String gender_eligibility_map_path = getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH);
+
+        gender_eligibility_map = new HashMap<>();
+
+        Files.readAllLines(getPath(gender_eligibility_map_path)).stream().
+            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+            forEach(line -> {
+                final String[] elements = line.split(",");
+                gender_eligibility_map.put(elements[0],elements[1]);
+            });
     }
 
     private void configurePairedLegs() {
@@ -390,10 +408,7 @@ public class RelayRace extends SingleRace {
 
         // Example: PAIRED_LEGS = 2,3
 
-        paired_legs = new ArrayList<>();
-
-        for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-            paired_legs.add(false);
+        paired_legs = new ArrayList<>(Collections.nCopies(number_of_legs, false));
 
         for (final String leg_number_as_string : paired_legs_string.split(","))
             paired_legs.set(Integer.parseInt(leg_number_as_string) - 1, true);
@@ -432,9 +447,9 @@ public class RelayRace extends SingleRace {
 
     private void recordLegResults() {
 
-        for (final RawResult raw_result : raw_results)
-            if (raw_result.getBibNumber() > -1)
-                recordLegResult((RelayRaceRawResult)raw_result);
+        raw_results.stream().
+            filter(result -> result.getBibNumber() > -1).
+            forEach(result -> recordLegResult((RelayRaceRawResult) result));
     }
 
     private void recordLegResult(final RelayRaceRawResult raw_result) {
@@ -457,8 +472,7 @@ public class RelayRace extends SingleRace {
 
     private void sortLegResults() {
 
-        for (final RaceResult result : overall_results)
-            sortLegResults(result);
+        overall_results.forEach(this::sortLegResults);
     }
 
     private void sortLegResults(final RaceResult result) {
@@ -486,10 +500,9 @@ public class RelayRace extends SingleRace {
         return new ResultWithLegIndex(result, leg_number - 1);
     }
 
-    private void fillLegResultDetails() {
+    private void fillStartTimes() {
 
-        for (final RaceResult result : overall_results)
-            fillLegResultDetails(result);
+        overall_results.forEach(this::fillLegResultDetails);
     }
 
     private void fillLegResultDetails(final RaceResult result) {
@@ -514,11 +527,12 @@ public class RelayRace extends SingleRace {
 
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
-        for (final IndividualLegStart individual_leg_start : individual_leg_starts)
-            if (individual_leg_start.bib_number == leg_result.entry.bib_number && individual_leg_start.leg_number == leg_index + 1)
-                return individual_leg_start.start_time;
-
-        return null;
+        return individual_leg_starts.stream().
+            filter(individual_leg_start -> individual_leg_start.bib_number == leg_result.entry.bib_number).
+            filter(individual_leg_start -> individual_leg_start.leg_number == leg_index + 1).
+            map(individual_leg_start -> individual_leg_start.start_time).
+            findFirst().
+            orElse(null);
     }
 
     private Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time, final int leg_index) {

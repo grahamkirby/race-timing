@@ -57,6 +57,7 @@ public abstract class Race {
     public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
 
     // Relay race.
+    public static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
     public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
     public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
@@ -136,7 +137,7 @@ public abstract class Race {
     protected abstract RaceOutputText getOutputText();
     protected abstract RaceOutputPDF getOutputPDF();
 
-    protected abstract void readProperties();
+    protected abstract void readProperties() throws IOException;
     protected abstract void configureInputData() throws IOException;
     protected abstract void initialiseResults();
     protected abstract void outputResults() throws IOException;
@@ -296,13 +297,13 @@ public abstract class Race {
         // In a series race the individual races don't allow equal positions, but the race overall does.
         // Conversely in a relay race the legs after the first leg do allow equal positions.
 
-        for (int result_index = 0; result_index < results.size(); result_index++) {
+        if (allow_equal_positions) {
 
-            // Skip over any following results with the same performance.
-            // Defined in terms of performance rather than duration, since in some races ranking is determined
-            // by points rather than times.
-            if (allow_equal_positions) {
+            for (int result_index = 0; result_index < results.size(); result_index++) {
 
+                // Skip over any following results with the same performance.
+                // Defined in terms of performance rather than duration, since in some races ranking is determined
+                // by points rather than times.
                 final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
 
                 if (highest_index_with_same_performance > result_index) {
@@ -315,8 +316,10 @@ public abstract class Race {
                 } else
                     setPositionStringByPosition(results, result_index);
             }
-            else setPositionStringByPosition(results, result_index);
         }
+        else
+            for (int result_index = 0; result_index < results.size(); result_index++)
+                setPositionStringByPosition(results, result_index);
     }
 
     private int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
@@ -426,13 +429,14 @@ public abstract class Race {
 
         List<PrizeCategoryGroup> groups = new ArrayList<>();
 
-        Files.readAllLines(prize_categories_path).forEach(line -> {
+        Files.readAllLines(prize_categories_path).stream().
+            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+            forEach(line -> {
+                final String group_name = line.split(",")[5];
 
-            final String group_name = line.split(",")[5];
-
-            addGroupIfAbsent(groups, group_name);
-            getGroupWithName(groups, group_name).categories().add(new PrizeCategory(line));
-        });
+                addGroupIfAbsent(groups, group_name);
+                getGroupWithName(groups, group_name).categories().add(new PrizeCategory(line));
+            });
 
         return groups;
     }

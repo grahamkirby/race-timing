@@ -11,6 +11,7 @@ RAW_RESULTS_PATH = rawtimes.txt
 # Relative to project root directory.
 CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_relay.csv
 CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_relay.csv
+GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibility_relay.csv
 
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
 # recorded but the runners DNF'd the leg.
