@@ -88,7 +88,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
 
-            if (result.hasCompletedAnyRace()) {
+            if (result.shouldBeDisplayedInResults()) {
 
                 writer.append(STR."""
                         <tr>
@@ -106,7 +106,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
                 writer.append(STR."""
                             <td>\{result.totalScore()}</td>
-                            <td>\{result.completed() ? "Y" : "N"}</td>
+                            <td>\{result.completedSeries() ? "Y" : "N"}</td>
                         </tr>
                     """);
             }

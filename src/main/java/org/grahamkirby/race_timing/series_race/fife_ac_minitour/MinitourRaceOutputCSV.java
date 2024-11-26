@@ -62,7 +62,7 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final MinitourRaceResult result = (MinitourRaceResult) r;
 
-            if (result.completedAnyRacesSoFar()) {
+            if (result.shouldBeDisplayedInResults()) {
 
                 final String position = result.shouldDisplayPosition() ? result.position_string : "-";
                 final Runner runner = result.runner;
@@ -70,9 +70,9 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
                 writer.append(STR."\{position},\{encode(runner.name)},\{encode(runner.club)},\{ runner.category.getShortName()},");
 
                 for (final Duration time : result.times)
-                    writer.append(time != null && time != Race.DUMMY_DURATION ? format(time) : "-").append(",");
+                    writer.append(time != null ? format(time) : "-").append(",");
 
-                writer.append(result.completedAllRacesSoFar() ? format(result.duration()) : "-").append("\n");
+                writer.append(result.shouldDisplayPosition() ? format(result.duration()) : "-").append("\n");
             }
         }
     }

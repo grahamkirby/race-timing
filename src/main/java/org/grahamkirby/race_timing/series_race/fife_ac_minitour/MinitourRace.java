@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class MinitourRace extends SeriesRace {
 
@@ -126,12 +127,11 @@ public class MinitourRace extends SeriesRace {
     @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
-        final MinitourRaceResult result = new MinitourRaceResult(runner, this);
+        final List<Duration> times = races.stream().
+            map(race -> getRaceTime(race, runner)).
+            toList();
 
-        for (final IndividualRace individual_race : races)
-            result.times.add(getRaceTime(individual_race, runner));
-
-        return result;
+        return new MinitourRaceResult(runner, times, this);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,9 +140,13 @@ public class MinitourRace extends SeriesRace {
 
         if (individual_race == null) return null;
 
-        for (RaceResult result : individual_race.getOverallResults())
-            if (((IndividualRaceResult)result).entry.runner.equals(runner)) return ((IndividualRaceResult)result).duration();
-
-        return null;
+        return individual_race.getOverallResults().stream().
+            map(result -> (IndividualRaceResult)result).
+            filter(result -> result.entry.runner.equals(runner)).
+            map(IndividualRaceResult::duration).
+            map(Optional::ofNullable).
+            findFirst().
+            orElseThrow().
+            orElse(null);
     }
 }

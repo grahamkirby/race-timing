@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -29,6 +30,7 @@ public abstract class SeriesRaceResult extends RaceResult {
     // This refers directly to a runner rather than to an intermediate entry object as in
     // IndividualRaceResult and RelayRaceResult, because in a series race the runner enters
     // (and receives a bib number for) the individual component races, not the overall series.
+
     public final Runner runner;
 
     public SeriesRaceResult(final Runner runner, final Race race) {
@@ -37,23 +39,44 @@ public abstract class SeriesRaceResult extends RaceResult {
         this.runner = runner;
     }
 
-    @Override
-    public boolean completed() {
-        return numberCompleted() >= ((SeriesRace)race).minimum_number_of_races;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public EntryCategory getCategory() {
         return runner.category;
     }
 
-    private int numberCompleted() {
+    @Override
+    public CompletionStatus getCompletionStatus() {
+
+        if (completedSeries()) return CompletionStatus.COMPLETED;
+        if (numberOfRacesCompleted() == 0) return CompletionStatus.DNS;
+
+        return CompletionStatus.DNF;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public boolean completedSeries() {
+
+        return numberOfRacesCompleted() >= ((SeriesRace)race).getMinimumNumberOfRaces();
+    }
+
+    protected boolean canCompleteSeries() {
+
+        final SeriesRace series_race = (SeriesRace) race;
+        final int number_of_races_remaining = series_race.getNumberOfRacesInSeries() - series_race.getNumberOfRacesTakenPlace();
+
+        return numberOfRacesCompleted() + number_of_races_remaining >= series_race.getMinimumNumberOfRaces();
+    }
+
+    protected int numberOfRacesCompleted() {
 
         return (int) ((SeriesRace)race).races.stream().
-                filter(Objects::nonNull).
-                flatMap(race -> race.getOverallResults().stream()).
-                map(result -> (IndividualRaceResult)result).
-                filter(result -> result.entry.runner.equals(runner) && result.completed()).
-                count();
+            filter(Objects::nonNull).
+            flatMap(race -> race.getOverallResults().stream()).
+            map(result -> (IndividualRaceResult)result).
+            filter(result -> result.entry.runner.equals(runner) && result.getCompletionStatus() == CompletionStatus.COMPLETED).
+            count();
     }
 }

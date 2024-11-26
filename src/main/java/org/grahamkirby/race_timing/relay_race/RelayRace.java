@@ -16,10 +16,7 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
@@ -36,17 +33,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public class RelayRace extends SingleRace {
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
     private record ResultWithLegIndex(RelayRaceResult result, int leg_index) {}
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final String ZERO_TIME_STRING = "0:0:0";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -121,7 +116,7 @@ public class RelayRace extends SingleRace {
         super.readProperties();
 
         number_of_legs = Integer.parseInt(getProperty(KEY_NUMBER_OF_LEGS));
-        start_offset = parseTime(getProperty(KEY_START_OFFSET, ZERO_TIME_STRING));
+        start_offset = parseTime(getProperty(KEY_START_OFFSET, format(Duration.ZERO)));
     }
 
     @Override
@@ -170,7 +165,7 @@ public class RelayRace extends SingleRace {
     protected void initialiseResults() {
 
         for (final RaceEntry entry : entries)
-            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, number_of_legs, this));
+            overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, this));
     }
 
     @Override
@@ -222,7 +217,7 @@ public class RelayRace extends SingleRace {
             final ResultWithLegIndex result_with_leg = getResultWithLegIndex(dnf_string);
             final LegResult result = result_with_leg.result.leg_results.get(result_with_leg.leg_index);
 
-            result.DNF = true;
+            result.completion_status = CompletionStatus.DNF;
         }
         catch (Exception e) {
             throw new RuntimeException("illegal DNF time");
@@ -291,10 +286,10 @@ public class RelayRace extends SingleRace {
 
     protected Duration sumDurationsUpToLeg(final List<LegResult> leg_results, final int leg_number) {
 
-        Duration total = Duration.ZERO;
-        for (int i = 0; i < leg_number; i++)
-            total = total.plus(leg_results.get(i).duration());
-        return total;
+        return leg_results.subList(0, leg_number).stream().
+                map(LegResult::duration).
+                reduce(Duration::plus).
+                orElse(Duration.ZERO);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,7 +339,11 @@ public class RelayRace extends SingleRace {
 
         // Example: MASS_START_ELAPSED_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
 
-        final String default_string = (DUMMY_DURATION_STRING + ",").repeat(number_of_legs - 1) + DUMMY_DURATION_STRING;
+        final String default_string = Stream.generate(() -> format(Duration.ZERO)).
+            limit(number_of_legs).
+            reduce((s1, s2) -> s1 + "," + s2).
+            orElseThrow();
+
         return getProperty(KEY_MASS_START_ELAPSED_TIMES, default_string);
     }
 
@@ -362,13 +361,13 @@ public class RelayRace extends SingleRace {
         checkMassStartTimesOrder(previous_mass_start_time, mass_start_time);
 
         start_times_for_mass_starts.add(mass_start_time);
-        mass_start_legs.add(!mass_start_time.equals(DUMMY_DURATION));
+        mass_start_legs.add(!mass_start_time.equals(Duration.ZERO));
     }
 
     private void checkMassStartTimesOrder(final Duration previous_mass_start_time, final Duration current_mass_start_time) {
 
         if (previous_mass_start_time != null &&
-            !previous_mass_start_time.equals(DUMMY_DURATION) &&
+            !previous_mass_start_time.equals(Duration.ZERO) &&
             previous_mass_start_time.compareTo(current_mass_start_time) > 0)
 
             throw new RuntimeException("illegal mass start time order");
@@ -381,7 +380,7 @@ public class RelayRace extends SingleRace {
 
         for (int leg_index = number_of_legs - 2; leg_index > 0; leg_index--)
 
-            if (start_times_for_mass_starts.get(leg_index).equals(DUMMY_DURATION))
+            if (start_times_for_mass_starts.get(leg_index).equals(Duration.ZERO))
                 start_times_for_mass_starts.set(leg_index, start_times_for_mass_starts.get(leg_index+1));
     }
 
@@ -453,7 +452,7 @@ public class RelayRace extends SingleRace {
 
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
-        leg_result.DNF = false;
+        leg_result.completion_status = CompletionStatus.COMPLETED;
     }
 
     private void sortLegResults() {
@@ -535,7 +534,7 @@ public class RelayRace extends SingleRace {
         if (previous_team_member_finish_time == null) return null;
 
         // Use the earlier of the mass start time and the previous runner's finish time.
-        return !mass_start_time.equals(DUMMY_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+        return !mass_start_time.equals(Duration.ZERO) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
@@ -547,7 +546,7 @@ public class RelayRace extends SingleRace {
         if (previous_runner_finish_time == null) return mass_start_legs.get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-        return !mass_start_time.equals(DUMMY_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
+        return !mass_start_time.equals(Duration.ZERO) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
     private int findIndexOfNextUnfilledLegResult(final List<LegResult> leg_results) {

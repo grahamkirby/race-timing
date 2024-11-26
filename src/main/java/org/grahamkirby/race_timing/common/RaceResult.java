@@ -23,8 +23,7 @@ public abstract class RaceResult {
 
     public final Race race;
     public String position_string;
-    public PrizeCategory category_of_prize_awarded = null;
-    public CompletionStatus completion_status;
+    public PrizeCategory category_of_prize_awarded;
 
     protected RaceResult(Race race) {
         this.race = race;
@@ -32,7 +31,8 @@ public abstract class RaceResult {
 
     protected abstract String getIndividualRunnerName();
     public abstract int comparePerformanceTo(final RaceResult other);
-    public abstract boolean completed();
+    public abstract CompletionStatus getCompletionStatus();
     public abstract boolean shouldDisplayPosition();
+    public abstract boolean shouldBeDisplayedInResults();
     public abstract EntryCategory getCategory();
 }

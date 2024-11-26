@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
@@ -144,6 +145,7 @@ public class IndividualRace extends SingleRace {
 
     @Override
     protected EntryCategory getEntryCategory(RaceResult result) {
+
         return ((IndividualRaceResult) result).entry.runner.category;
     }
 
@@ -154,7 +156,7 @@ public class IndividualRace extends SingleRace {
             final int bib_number = Integer.parseInt(dnf_string);
             final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
-            result.DNF = true;
+            result.completion_status = CompletionStatus.DNF;
         }
         catch (Exception e) {
             throw new RuntimeException("illegal DNF string: ", e);
@@ -172,7 +174,7 @@ public class IndividualRace extends SingleRace {
 
             // Provisionally this result is not DNF since a finish time was recorded.
             // However, it might still be set to DNF in fillDNF() if the runner didn't complete the course.
-            result.DNF = false;
+            result.completion_status = CompletionStatus.COMPLETED;
         });
     }
 

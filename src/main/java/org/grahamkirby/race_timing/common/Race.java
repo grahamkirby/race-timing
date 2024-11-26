@@ -29,16 +29,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-
 public abstract class Race {
 
-    public static final String DUMMY_DURATION_STRING = "00:00:00";
-    public static final Duration DUMMY_DURATION = parseTime(DUMMY_DURATION_STRING);
     public static final String COMMENT_SYMBOL = "#";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,9 +247,9 @@ public abstract class Race {
     public EntryCategory lookupEntryCategory(final String short_name) {
 
         return entry_categories.stream().
-                filter(category -> category.getShortName().equals(short_name)).
-                findFirst().
-                orElseThrow(() -> new RuntimeException("Category not found: " + short_name));
+            filter(category -> category.getShortName().equals(short_name)).
+            findFirst().
+            orElseThrow(() -> new RuntimeException("Category not found: " + short_name));
     }
 
     public String mapCategory(final String category) {
@@ -272,7 +267,7 @@ public abstract class Race {
 
     protected int compareCompletion(final RaceResult r1, final RaceResult r2) {
 
-        return Boolean.compare(!r1.completed(), !r2.completed());
+        return Boolean.compare(r1.getCompletionStatus() != CompletionStatus.COMPLETED, r2.getCompletionStatus() != CompletionStatus.COMPLETED);
     }
 
     protected int comparePerformance(final RaceResult r1, final RaceResult r2) {
