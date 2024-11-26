@@ -53,7 +53,8 @@ public abstract class SeriesRace extends Race {
     @Override
     public boolean allowEqualPositions() {
 
-        // There can be dead heats in overall results, since these are determined by sum of results from multiple races.
+        // There can be dead heats in overall results, since these are determined by sum of results
+        // from multiple races, rather than there being an ordering imposed at a single funnel.
         return true;
     }
 
@@ -91,6 +92,10 @@ public abstract class SeriesRace extends Race {
 
     public List<IndividualRace> getRaces() {
         return races;
+    }
+
+    public int getNumberOfRacesInSeries() {
+        return races.size();
     }
 
     public int getMinimumNumberOfRaces() {

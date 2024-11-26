@@ -16,12 +16,13 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class RelayRaceResult extends RaceResult {
@@ -29,7 +30,7 @@ public class RelayRaceResult extends RaceResult {
     public final RelayRaceEntry entry;
     final List<LegResult> leg_results;
 
-    public RelayRaceResult(final RelayRaceEntry entry, final int number_of_legs, final RelayRace race) {
+    public RelayRaceResult(final RelayRaceEntry entry, final RelayRace race) {
 
         super(race);
         this.entry = entry;
@@ -48,12 +49,20 @@ public class RelayRaceResult extends RaceResult {
 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
-        return duration().compareTo(((RelayRaceResult) other).duration());
+
+        final Duration duration = duration();
+        final Duration other_duration = ((RelayRaceResult) other).duration();
+
+        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
 
     @Override
-    public boolean completed() {
-        return !dnf();
+    public CompletionStatus getCompletionStatus() {
+
+        if (!completedAnyLegs()) return CompletionStatus.DNS;
+        if (!completedAllLegs()) return CompletionStatus.DNF;
+
+        return CompletionStatus.COMPLETED;
     }
 
     @Override
@@ -63,36 +72,34 @@ public class RelayRaceResult extends RaceResult {
 
     @Override
     public boolean shouldDisplayPosition() {
-        return completed();
+        return getCompletionStatus() == CompletionStatus.COMPLETED;
     }
+
+    @Override
+    public boolean shouldBeDisplayedInResults() {
+        return getCompletionStatus() != CompletionStatus.DNS;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {
 
-        Duration overall = Duration.ZERO;
-
-        for (final LegResult leg_result : leg_results) {
-
-            final Duration time = leg_result.duration();
-            if (time.equals(Race.DUMMY_DURATION)) return Race.DUMMY_DURATION;
-            overall = overall.plus(time);
-        }
-
-        return overall;
+        return completedAllLegs() ?
+            leg_results.stream().
+            map(LegResult::duration).
+            reduce(Duration::plus).
+            orElse(Duration.ZERO) : null;
     }
 
-    protected boolean dnf() {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        for (final LegResult leg_result : leg_results)
-            if (leg_result.DNF) return true;
+    private boolean completedAllLegs() {
 
-        return false;
+        return leg_results.stream().allMatch(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED);
     }
 
-    protected boolean allLegsDnf() {
+    protected boolean completedAnyLegs() {
 
-        for (final LegResult leg_result : leg_results)
-            if (!leg_result.DNF) return false;
-
-        return true;
+        return leg_results.stream().anyMatch(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED);
     }
 }

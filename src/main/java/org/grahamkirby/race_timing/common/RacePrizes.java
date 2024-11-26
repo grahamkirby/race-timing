@@ -41,7 +41,9 @@ public class RacePrizes {
 
     protected boolean prizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        return !alreadyWonPrize(result) && result.completed() && race.entryCategoryIsEligibleForPrizeCategory(result.getCategory(), category);
+        return !alreadyWonPrize(result) &&
+                result.getCompletionStatus() == CompletionStatus.COMPLETED &&
+                race.entryCategoryIsEligibleForPrizeCategory(result.getCategory(), category);
     }
 
     protected boolean alreadyWonPrize(RaceResult result) {
@@ -71,9 +73,12 @@ public class RacePrizes {
         final AtomicInteger position = new AtomicInteger(1);
 
         race.getOverallResults().stream().
-            filter(result -> position.get() <= category.numberOfPrizes() && prizeWinner(result, category)).
-            peek(result -> setPrizeWinner(result, category)).
-            forEach(_ -> position.getAndIncrement());
+            filter(_ -> position.get() <= category.numberOfPrizes()).
+            filter(result -> prizeWinner(result, category)).
+            forEach(result -> {
+                setPrizeWinner(result, category);
+                position.getAndIncrement();
+            });
     }
 
     public boolean prizesInThisOrLaterCategory(final PrizeCategory category) {
@@ -88,9 +93,9 @@ public class RacePrizes {
 
     public boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
 
-        for (final PrizeCategory c : race.getPrizeCategories())
-            if (!c.equals(category) && c.getMinimumAge() == category.getMinimumAge() && !race.prizes.getPrizeWinners(c).isEmpty()) return true;
-
-        return false;
+        return race.getPrizeCategories().stream().
+            filter(c -> !c.equals(category)).
+            filter(c -> c.getMinimumAge() == category.getMinimumAge()).
+            anyMatch(c -> !race.prizes.getPrizeWinners(c).isEmpty());
     }
 }

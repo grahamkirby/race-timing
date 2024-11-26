@@ -16,10 +16,10 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.ArrayList;
@@ -47,9 +47,14 @@ public class MidweekRaceResult extends SeriesRaceResult {
         return -Integer.compare(totalScore(), ((MidweekRaceResult) o).totalScore());
     }
 
-    public boolean hasCompletedAnyRace() {
+    @Override
+    public boolean shouldBeDisplayedInResults() {
+        return getCompletionStatus() != CompletionStatus.DNS;
+    }
 
-        return scores.stream().map(score -> score > 0).reduce(Boolean::logicalOr).orElseThrow();
+    public boolean shouldDisplayPosition() {
+
+        return canCompleteSeries();
     }
 
     protected int totalScore() {
@@ -59,19 +64,12 @@ public class MidweekRaceResult extends SeriesRaceResult {
         final List<Integer> sorted_scores = new ArrayList<>(scores);
         sorted_scores.sort(Integer::compareTo);
 
+        // TODO use stream.
         for (int i = 0; i < ((MidweekRace)race).getMinimumNumberOfRaces(); i++) {
             final int score = sorted_scores.get(sorted_scores.size() - 1 - i);
             if (score > 0) total += score;
         }
 
         return total;
-    }
-
-    public boolean shouldDisplayPosition() {
-
-        final SeriesRace series_race = (SeriesRace) race;
-        final int number_of_races_taken_place = series_race.getNumberOfRacesTakenPlace();
-
-        return number_of_races_taken_place < series_race.getRaces().size() || completed();
     }
 }

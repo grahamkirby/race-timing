@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
@@ -92,16 +93,15 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             final IndividualRaceResult result = ((IndividualRaceResult)r);
 
             // Check for case where no time recorded for runner, as opposed to finished but didn't complete course.
-            if (!result.duration().equals(Race.DUMMY_DURATION)) {
-
+            if (result.shouldBeDisplayedInResults()) {
                 writer.append(STR."""
                         <tr>
-                            <td>\{result.DNF ? "" : result.position_string}</td>
+                            <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
                             <td>\{result.entry.bib_number}</td>
                             <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
                             <td>\{result.entry.runner.club}</td>
                             <td>\{result.entry.runner.category.getShortName()}</td>
-                            <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
+                            <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? DNF_STRING : format(result.duration())}</td>
                         </tr>
                     """);
             }

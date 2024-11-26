@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
@@ -126,11 +127,11 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
             final MinitourRace race = (MinitourRace) result.race;
             final List<IndividualRace> races = race.getRaces();
 
-            if (result.completedAnyRacesSoFar()) {
+            if (result.shouldBeDisplayedInResults()) {
 
                 writer.append(STR."""
                         <tr>
-                            <td>\{result.completedAllRacesSoFar() ? result.position_string : "-"}</td>
+                            <td>\{result.shouldDisplayPosition() ? result.position_string : "-"}</td>
                             <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
                             <td>\{result.runner.category.getShortName()}</td>
                             <td>\{result.runner.club}</td>
@@ -138,13 +139,13 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
                 for (int i = 0; i < result.times.size(); i++)
 
-                    if (result.times.get(i) != null && result.times.get(i) != Race.DUMMY_DURATION)
+                    if (result.times.get(i) != null)
                         writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
                     else if (races.get(i) != null)
                         writer.append("            <td>-</td>\n");
 
                 writer.append(STR."""
-                            <td>\{result.completedAllRacesSoFar() ? format(result.duration()) : "-"}</td>
+                            <td>\{result.shouldDisplayPosition() ? format(result.duration()) : "-"}</td>
                         </tr>
                 """);
             }
@@ -212,15 +213,15 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final IndividualRaceResult result = (IndividualRaceResult) r;
 
-            if (result.completed())
+            if (result.shouldBeDisplayedInResults())
 
                 writer.append(STR."""
                         <tr>
-                            <td>\{result.DNF ? "" : result.position_string}</td>
+                            <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
                             <td>\{result.entry.bib_number}</td>
                             <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
                             <td>\{result.entry.runner.category.getShortName()}</td>
-                            <td>\{result.DNF ? DNF_STRING : format(result.duration())}</td>
+                            <td>\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : DNF_STRING}</td>
                         </tr>
                 """);
         }

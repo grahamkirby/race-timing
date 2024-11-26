@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
@@ -63,10 +64,10 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
             final IndividualRaceResult result = (IndividualRaceResult) r;
 
             // Check for case where no time recorded for runner, as opposed to finished but didn't complete course.
-            if (!result.duration().equals(Race.DUMMY_DURATION)) {
+            if (result.duration() != null) {
 
                 writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.runner.name)},").
-                        append(STR."\{encode(result.entry.runner.club)},\{result.entry.runner.category.getShortName()},\{!result.completed() ? "DNF" : format(result.duration())}\n");
+                        append(STR."\{encode(result.entry.runner.club)},\{result.entry.runner.category.getShortName()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : "DNF"}\n");
             }
         }
     }

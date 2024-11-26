@@ -16,24 +16,23 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class MinitourRaceResult extends SeriesRaceResult {
 
     public final List<Duration> times;
 
-    public MinitourRaceResult(final Runner runner, final MinitourRace race) {
+    public MinitourRaceResult(final Runner runner, final List<Duration> times, final MinitourRace race) {
 
         super(runner, race);
-        times = new ArrayList<>();
+        this.times = times;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +44,11 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
-        return duration().compareTo(((MinitourRaceResult) other).duration());
+
+        final Duration duration = duration();
+        final Duration other_duration = ((MinitourRaceResult) other).duration();
+
+        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
 
     @Override
@@ -53,39 +56,30 @@ public class MinitourRaceResult extends SeriesRaceResult {
         return completedAllRacesSoFar();
     }
 
-    public boolean completedAllRacesSoFar() {
-
-        final List<IndividualRace> races = ((MinitourRace)race).getRaces();
-
-        for (int i = 0; i < races.size(); i++)
-            if (races.get(i) != null && times.get(i).equals(Race.DUMMY_DURATION))
-                return false;
-
-        return true;
+    @Override
+    public boolean shouldBeDisplayedInResults() {
+        return completedAnyRacesSoFar();
     }
 
-    public boolean completedAnyRacesSoFar() {
+    public boolean completedAllRacesSoFar() {
 
-        for (Duration time : times)
-            if (time != null && !time.equals(Race.DUMMY_DURATION))
-                return true;
-
-        return false;
+        return getTimesInRacesTakenPlace().stream().allMatch(Objects::nonNull);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected Duration duration() {
 
-        Duration overall = Duration.ZERO;
+        return completedAllRacesSoFar() ? getTimesInRacesTakenPlace().stream().reduce(Duration::plus).orElse(Duration.ZERO) : null;
+    }
 
-        for (int i = 0; i < ((MinitourRace)race).getNumberOfRacesTakenPlace(); i++) {
+    private boolean completedAnyRacesSoFar() {
 
-            final Duration time = times.get(i);
-            if (time.equals(Race.DUMMY_DURATION)) return Race.DUMMY_DURATION;
-            overall = overall.plus(time);
-        }
+        return times.stream().anyMatch(Objects::nonNull);
+    }
 
-        return overall;
+    private List<Duration> getTimesInRacesTakenPlace() {
+
+        return times.subList(0, ((MinitourRace) race).getNumberOfRacesTakenPlace());
     }
 }

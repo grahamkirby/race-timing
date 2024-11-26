@@ -16,17 +16,19 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.time.Duration;
+import java.util.Comparator;
 
 public class LegResult extends RaceResult {
 
     final RelayRaceEntry entry;
     int leg_number;
-    boolean DNF;
+    CompletionStatus completion_status;
     boolean in_mass_start;
 
     Duration start_time;  // Relative to start of leg 1.
@@ -36,17 +38,17 @@ public class LegResult extends RaceResult {
 
         super(race);
         this.entry = entry;
-        this.DNF = true;
+        this.completion_status = CompletionStatus.DNF;
         this.in_mass_start = false;
     }
 
     public Duration duration() {
-        return DNF ? Race.DUMMY_DURATION : finish_time.minus(start_time);
+        return completion_status == CompletionStatus.COMPLETED ? finish_time.minus(start_time) : null;
     }
 
     @Override
-    public boolean completed() {
-        return !DNF;
+    public CompletionStatus getCompletionStatus() {
+        return completion_status;
     }
 
     @Override
@@ -60,13 +62,21 @@ public class LegResult extends RaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(final RaceResult result) {
+    public int comparePerformanceTo(final RaceResult other) {
 
-        return duration().compareTo(((LegResult) result).duration());
+        final Duration duration = duration();
+        final Duration other_duration = ((LegResult) other).duration();
+
+        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
 
     @Override
     public boolean shouldDisplayPosition() {
         return true;
+    }
+
+    @Override
+    public boolean shouldBeDisplayedInResults() {
+        return getCompletionStatus() == CompletionStatus.COMPLETED;
     }
 }

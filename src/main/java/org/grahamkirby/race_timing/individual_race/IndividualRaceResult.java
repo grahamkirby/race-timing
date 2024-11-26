@@ -16,17 +16,18 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.time.Duration;
+import java.util.Comparator;
 
 public class IndividualRaceResult extends RaceResult {
 
     public IndividualRaceEntry entry;
-    public boolean DNF;
     public Duration finish_time;
+    CompletionStatus completion_status;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,17 +37,17 @@ public class IndividualRaceResult extends RaceResult {
         this.entry = entry;
 
         // Initialised in IndividualRace.fillFinishTimes().
-        finish_time = Race.DUMMY_DURATION;
+        finish_time = null;
 
-        // Will be set to false later if a time is processed for this runner.
-        DNF = true;
+        // Will be changed later if a time is processed for this runner.
+        completion_status = CompletionStatus.DNS;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean completed() {
-        return !DNF;
+    public CompletionStatus getCompletionStatus () {
+        return completion_status;
     }
 
     @Override
@@ -61,12 +62,21 @@ public class IndividualRaceResult extends RaceResult {
 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
-        return duration().compareTo(((IndividualRaceResult) other).duration());
+
+        final Duration duration = duration();
+        final Duration other_duration = ((IndividualRaceResult) other).duration();
+
+        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
 
     @Override
     public boolean shouldDisplayPosition() {
-        return completed();
+        return completion_status == CompletionStatus.COMPLETED;
+    }
+
+    @Override
+    public boolean shouldBeDisplayedInResults() {
+        return completion_status == CompletionStatus.COMPLETED || completion_status == CompletionStatus.DNF;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
