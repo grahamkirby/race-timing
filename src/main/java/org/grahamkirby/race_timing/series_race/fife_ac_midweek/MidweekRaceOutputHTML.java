@@ -18,14 +18,13 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
@@ -66,13 +65,10 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
                             <th>Club</th>
                 """);
 
-            final List<IndividualRace> races = ((MidweekRace)race).getRaces();
-
-            for (int i = 0; i < races.size(); i++)
-                if (races.get(i) != null)
-                    writer.append(STR."""
-                                    <th>Race \{i + 1}</th>
-                        """);
+            for (int i = 0; i < ((MidweekRace)race).getNumberOfRacesTakenPlace(); i++)
+                writer.append(STR."""
+                                <th>Race \{i + 1}</th>
+                    """);
 
             writer.append("""
                         <th>Total</th>
@@ -87,6 +83,8 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
+            final MidweekRace midweek_race = (MidweekRace)race;
+            final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
 
             if (result.shouldBeDisplayedInResults()) {
 
@@ -98,11 +96,13 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
                             <td>\{result.runner.club}</td>
                 """);
 
-                for (int i = 0; i < result.scores.size(); i++)
-                    if (result.scores.get(i) >= 0)
-                        writer.append(STR."""
-                                    <td>\{result.scores.get(i)}</td>
-                        """);
+                writer.append(
+                    midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
+                        map(individual_race -> STR."""
+                                            <td>\{midweek_race.calculateRaceScore(individual_race, result.runner)}</td>
+                            """).
+                        collect(Collectors.joining())
+                );
 
                 writer.append(STR."""
                             <td>\{result.totalScore()}</td>
