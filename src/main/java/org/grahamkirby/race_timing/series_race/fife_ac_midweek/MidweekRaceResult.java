@@ -26,9 +26,12 @@ import java.util.List;
 
 public class MidweekRaceResult extends SeriesRaceResult {
 
+    protected final List<Integer> scores;
+
     public MidweekRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(runner, race);
+        this.scores = scores;
     }
 
     @Override
@@ -55,19 +58,15 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
     protected int totalScore() {
 
-        MidweekRace midweek_race = (MidweekRace)race;
+        final int number_of_races_to_count = Math.min(
+            ((MidweekRace)race).getNumberOfRacesTakenPlace(),
+            ((MidweekRace)race).getMinimumNumberOfRaces());
 
-        final int minimum_number_of_races = midweek_race.getMinimumNumberOfRaces();
-        final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
-
-        return midweek_race.getRaces().
-                subList(0, number_of_races_taken_place).stream().
-                map(race -> midweek_race.calculateRaceScore(race, runner)).
-                sorted().
-                toList().
-                reversed().
-                subList(0, Math.min(number_of_races_taken_place, minimum_number_of_races)).stream().
-                reduce(Integer::sum).
-                orElse(0);
+        return scores.stream().
+            sorted().
+            toList().
+            reversed().
+            subList(0, number_of_races_to_count).stream().
+            reduce(0, Integer::sum);
     }
 }

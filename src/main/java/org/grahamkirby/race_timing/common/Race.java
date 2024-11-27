@@ -83,6 +83,10 @@ public abstract class Race {
     public static final String SUFFIX_CSV = ".csv";
     public static final String SUFFIX_PDF = ".pdf";
 
+    public static final int UNKNOWN_BIB_NUMBER = 0;
+    public static final int UNKNOWN_LEG_NUMBER = 0;
+    public static final int UNKNOWN_RACE_POSITION = 0;
+
     private static final String DEFAULT_ENTRY_MAP_PATH = "/src/main/resources/configuration/default_entry_map" + SUFFIX_CSV;
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "/src/main/resources/configuration/html_entities" + SUFFIX_CSV;
     private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = "/src/main/resources/configuration/club_names" + SUFFIX_CSV;
@@ -194,8 +198,8 @@ public abstract class Race {
     public Path getPath(final String path) {
 
         return path.startsWith("/") ?
-                getPathRelativeToProjectRoot(path) :
-                getPathRelativeToRaceConfigFile(path);
+            getPathRelativeToProjectRoot(path) :
+            getPathRelativeToRaceConfigFile(path);
     }
 
     public final boolean entryCategoryIsEligibleForPrizeCategory(final EntryCategory entry_category, final PrizeCategory prize_category) {
@@ -205,12 +209,17 @@ public abstract class Race {
 
     public boolean entryCategoryIsEligibleInSomePrizeCategory(final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
 
-        return prize_categories.stream().map(category -> entryCategoryIsEligibleForPrizeCategory(entry_category, category)).reduce(Boolean::logicalOr).orElseThrow();
+        return prize_categories.stream().
+            map(category -> entryCategoryIsEligibleForPrizeCategory(entry_category, category)).
+            reduce(Boolean::logicalOr).
+            orElseThrow();
     }
 
     public List<PrizeCategory> getPrizeCategories() {
 
-        return prize_category_groups.stream().flatMap(group -> group.categories().stream()).toList();
+        return prize_category_groups.stream().
+            flatMap(group -> group.categories().stream()).
+            toList();
     }
 
     public List<RaceResult> getOverallResults() {

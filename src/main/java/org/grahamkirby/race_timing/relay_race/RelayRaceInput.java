@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_ANNOTATIONS_PATH;
 import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAPER_RESULTS_PATH;
 
@@ -97,7 +98,7 @@ public class RelayRaceInput extends SingleRaceInput {
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);
 
-        if (elements[2].equals("?")) raw_result.setBibNumber(-1);
+        if (elements[2].equals("?")) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
         if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);

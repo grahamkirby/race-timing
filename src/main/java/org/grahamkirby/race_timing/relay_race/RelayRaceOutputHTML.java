@@ -188,7 +188,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                     <thead>
                         <tr>
                             <th>Pos</th>
-                            <th>Runner\{((RelayRace)race).paired_legs.get(leg-1) ? "s" : ""}</th>
+                            <th>Runner\{((RelayRace)race).paired_legs.get(leg - 1) ? "s" : ""}</th>
                             <th>Time</th>
                         </tr>
                     </thead>
@@ -205,7 +205,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 writer.append(STR."""
                             <tr>
                                 <td>\{leg_result.position_string}</td>
-                                <td>\{race.normalisation.htmlEncode(leg_result.entry.team.runner_names().get(leg_result.leg_number-1))}</td>
+                                <td>\{race.normalisation.htmlEncode(leg_result.entry.team.runner_names().get(leg_result.leg_number - 1))}</td>
                                 <td>\{format(leg_result.duration())}</td>
                             </tr>
                     """);
@@ -271,7 +271,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
 
                 writer.append(STR."""
-                                <th>Runner\{((RelayRace)race).paired_legs.get(leg_number-1) ? "s" : ""} \{leg_number}</th>
+                                <th>Runner\{((RelayRace)race).paired_legs.get(leg_number - 1) ? "s" : ""} \{leg_number}</th>
                                 <th>Leg \{leg_number}</th>
                                 <th>\{leg_number < ((RelayRace)race).number_of_legs ? STR."Split \{leg_number}" : "Total"}</th>
                     """);
