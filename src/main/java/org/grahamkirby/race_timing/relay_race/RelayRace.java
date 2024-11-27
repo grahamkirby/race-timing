@@ -58,7 +58,7 @@ public class RelayRace extends SingleRace {
     // mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
     private List<Duration> start_times_for_mass_starts;
 
-    protected List<Boolean> paired_legs;
+    protected Set<Integer> paired_legs;
     private List<IndividualLegStart> individual_leg_starts;
     private Duration start_offset;
     private Map<String, String> gender_eligibility_map;
@@ -206,7 +206,8 @@ public class RelayRace extends SingleRace {
 
         return gender_eligibility_map.keySet().stream().
             filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
-            anyMatch(entry_gender -> prize_category.getGender().equals(gender_eligibility_map.get(entry_gender)));
+            filter(entry_gender -> prize_category.getGender().equals(gender_eligibility_map.get(entry_gender))).
+            count() > 0;
     }
 
     @Override
@@ -408,12 +409,10 @@ public class RelayRace extends SingleRace {
 
         // Example: PAIRED_LEGS = 2,3
 
-        paired_legs = Stream.generate(() -> false).
-            limit(number_of_legs).
-            collect(Collectors.toList());
+        paired_legs = new HashSet<>();
 
         for (final String leg_number_as_string : paired_legs_string.split(","))
-            paired_legs.set(Integer.parseInt(leg_number_as_string) - 1, true);
+            paired_legs.add(Integer.parseInt(leg_number_as_string));
     }
 
     private void configureIndividualLegStarts() {

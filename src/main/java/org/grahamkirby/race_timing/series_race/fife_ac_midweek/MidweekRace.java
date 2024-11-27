@@ -35,11 +35,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MidweekRace extends SeriesRace {
 
-    // TODO Move to config.
-    private static final int MAX_RACE_SCORE = 200;
+    private int max_race_score;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +64,7 @@ public class MidweekRace extends SeriesRace {
     protected void readProperties() {
 
         minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
+        max_race_score = Integer.parseInt(getProperty(KEY_MAX_RACE_SCORE));
     }
 
     @Override
@@ -203,24 +204,21 @@ public class MidweekRace extends SeriesRace {
 
     public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
-        // TODO try writing as stream.
         if (individual_race == null) return 0;
 
-        int score = MAX_RACE_SCORE;
-
         final String gender = runner.category.getGender();
+        final AtomicInteger score = new AtomicInteger(max_race_score + 1);
 
         // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
-        for (final RaceResult result : individual_race.getOverallResults()) {
 
-            IndividualRaceResult result1 = (IndividualRaceResult) result;
-            final Runner result_runner = result1.entry.runner;
-
-            if (result1.getCompletionStatus() == CompletionStatus.COMPLETED && result_runner.equals(runner)) return Math.max(score, 0);
-            if (gender.equals(result_runner.category.getGender())) score--;
-        }
-
-        // Runner didn't compete in this race.
-        return 0;
+        return individual_race.getOverallResults().stream().
+            map(result -> (IndividualRaceResult) result).
+            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
+            map(result -> result.entry.runner).
+            peek(result_runner -> { if (gender.equals(result_runner.category.getGender())) score.decrementAndGet(); }).
+            filter(result_runner -> result_runner.equals(runner)).
+            findFirst().
+            map(_ -> Math.max(score.get(), 0)).
+            orElse(0);                             // Runner didn't compete in this race.
     }
 }
