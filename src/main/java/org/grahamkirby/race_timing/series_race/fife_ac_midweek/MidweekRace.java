@@ -201,16 +201,16 @@ public class MidweekRace extends SeriesRace {
             forEach(runner -> runner.club = defined_club);
     }
 
-    private int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
-        // TODO investigate not using special value.
-        if (individual_race == null) return -1;
+        // TODO try writing as stream.
+        if (individual_race == null) return 0;
 
         int score = MAX_RACE_SCORE;
 
         final String gender = runner.category.getGender();
 
-        // The first finisher of each gender gets the maximum score, the next one less, and so on.
+        // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
         for (final RaceResult result : individual_race.getOverallResults()) {
 
             IndividualRaceResult result1 = (IndividualRaceResult) result;

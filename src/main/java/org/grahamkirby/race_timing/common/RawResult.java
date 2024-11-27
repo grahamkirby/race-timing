@@ -33,6 +33,7 @@ public class RawResult {
         final String bib_number_as_string = elements[0];
         final String time_as_string = elements[1];
 
+        // TODO investigate not using special value.
         bib_number = bib_number_as_string.equals("?") ? -1 : Integer.parseInt(bib_number_as_string);
         recorded_finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
     }

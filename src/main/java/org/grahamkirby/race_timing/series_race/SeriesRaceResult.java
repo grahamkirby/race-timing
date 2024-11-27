@@ -76,7 +76,8 @@ public abstract class SeriesRaceResult extends RaceResult {
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
             map(result -> (IndividualRaceResult)result).
-            filter(result -> result.entry.runner.equals(runner) && result.getCompletionStatus() == CompletionStatus.COMPLETED).
+            filter(result -> result.entry.runner.equals(runner)).
+            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
             count();
     }
 }

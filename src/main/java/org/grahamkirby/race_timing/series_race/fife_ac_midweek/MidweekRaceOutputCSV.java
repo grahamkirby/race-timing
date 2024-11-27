@@ -19,12 +19,13 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.stream.Collectors;
 
 public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
@@ -57,16 +58,21 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MidweekRaceResult result = (MidweekRaceResult) r;
+            final MidweekRaceResult result = ((MidweekRaceResult) r);
+            final MidweekRace midweek_race = (MidweekRace)race;
+            final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
 
             if (result.shouldBeDisplayedInResults()) {
 
                 writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
-                for (final int score : result.scores)
-                    if (score >= 0) writer.append(String.valueOf(score)).append(",");
+                writer.append(
+                    midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
+                        map(individual_race -> String.valueOf(midweek_race.calculateRaceScore(individual_race, result.runner))).
+                        collect(Collectors.joining(","))
+                );
 
-                writer.append(STR."\{result.totalScore()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}\n");
+                writer.append(STR.",\{result.totalScore()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}\n");
             }
         }
     }
