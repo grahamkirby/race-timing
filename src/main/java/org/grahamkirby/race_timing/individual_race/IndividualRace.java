@@ -205,7 +205,6 @@ public class IndividualRace extends SingleRace {
             filter(result -> result.getBibNumber() == bib_number).
             map(_ -> position.get()).
             findFirst().
-                // TODO investigate getting rid of special value.
-            orElse(Integer.MAX_VALUE);
+            orElse(UNKNOWN_RACE_POSITION);
     }
 }

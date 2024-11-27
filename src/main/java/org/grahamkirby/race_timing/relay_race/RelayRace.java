@@ -308,7 +308,7 @@ public class RelayRace extends SingleRace {
             filter(_ -> legs_completed.incrementAndGet() == leg_number).
             map(_ -> position.get()).
             findFirst().
-            orElse(Integer.MAX_VALUE);
+            orElse(UNKNOWN_RACE_POSITION);
     }
 
     private int getRecordedLastLegPosition(final RelayRaceResult result) {
@@ -408,7 +408,9 @@ public class RelayRace extends SingleRace {
 
         // Example: PAIRED_LEGS = 2,3
 
-        paired_legs = new ArrayList<>(Collections.nCopies(number_of_legs, false));
+        paired_legs = Stream.generate(() -> false).
+            limit(number_of_legs).
+            collect(Collectors.toList());
 
         for (final String leg_number_as_string : paired_legs_string.split(","))
             paired_legs.set(Integer.parseInt(leg_number_as_string) - 1, true);
@@ -416,16 +418,15 @@ public class RelayRace extends SingleRace {
 
     private void configureIndividualLegStarts() {
 
-        final String individual_leg_starts_string = getProperty(KEY_INDIVIDUAL_LEG_STARTS, "");
+        final String individual_leg_starts_string = getProperty(KEY_INDIVIDUAL_LEG_STARTS);
 
         // bib number / leg number / start time
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20
 
-        individual_leg_starts = new ArrayList<>();
-
-        if (!individual_leg_starts_string.isBlank())
-            for (final String s : individual_leg_starts_string.split(","))
-                individual_leg_starts.add(getIndividualLegStart(s));
+        individual_leg_starts = individual_leg_starts_string == null ? new ArrayList<>() :
+            Arrays.stream(individual_leg_starts_string.split(",")).
+                map(this::getIndividualLegStart).
+                toList();
     }
 
     private IndividualLegStart getIndividualLegStart(final String individual_leg_starts_string) {
@@ -448,7 +449,7 @@ public class RelayRace extends SingleRace {
     private void recordLegResults() {
 
         raw_results.stream().
-            filter(result -> result.getBibNumber() > -1).
+            filter(result -> result.getBibNumber() != UNKNOWN_BIB_NUMBER).
             forEach(result -> recordLegResult((RelayRaceRawResult) result));
     }
 
@@ -565,18 +566,25 @@ public class RelayRace extends SingleRace {
 
     private int findIndexOfNextUnfilledLegResult(final List<LegResult> leg_results) {
 
-        for (int i = 0; i < leg_results.size(); i++)
-            if (leg_results.get(i).finish_time == null) return i;
+        final int index = (int) leg_results.stream().
+            takeWhile(result -> result.finish_time != null).
+            count();
 
-        throw new RuntimeException("surplus result recorded for team: " + leg_results.getFirst().entry.bib_number);
+        if (index == leg_results.size()) throw new RuntimeException("surplus result recorded for team: " + leg_results.getFirst().entry.bib_number);
+
+        return index;
     }
 
     private int findIndexOfTeamWithBibNumber(final int bib_number) {
 
-        for (int i = 0; i < overall_results.size(); i++)
-            if (((RelayRaceResult)overall_results.get(i)).entry.bib_number == bib_number) return i;
+        final int index = (int) overall_results.stream().
+            map(result -> (RelayRaceResult) result).
+            takeWhile(result -> result.entry.bib_number != bib_number).
+            count();
 
-        throw new RuntimeException("unregistered team: " + bib_number);
+        if (index == overall_results.size()) throw new RuntimeException("unregistered team: " + bib_number);
+
+        return index;
     }
 
     private void addPaperRecordingComments() {

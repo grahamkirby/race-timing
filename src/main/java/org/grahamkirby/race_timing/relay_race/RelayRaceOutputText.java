@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 
 public class RelayRaceOutputText extends RaceOutputText {
 
@@ -147,7 +148,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         for (final RawResult raw_result : ((RelayRace)race).getRawResults()) {
 
-            if (raw_result.getBibNumber() == -1)
+            if (raw_result.getBibNumber() == UNKNOWN_BIB_NUMBER)
                 times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());
         }
 
@@ -178,7 +179,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
         final int bib_number = raw_result.getBibNumber();
 
-        writer.append(bib_number != -1 ? String.valueOf(bib_number) : "?").
+        writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : "?").
                 append("\t").
                 append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
     }
