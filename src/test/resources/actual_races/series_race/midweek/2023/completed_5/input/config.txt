@@ -4,6 +4,7 @@ RACE_NAME_FOR_FILENAMES = midweek
 
 RACES = st_andrews/input/config.txt,strath_blebo/input/config.txt,hill_of_tarvit/input/config.txt,dunnikier/input/config.txt,balmullo/input/config.txt
 MINIMUM_NUMBER_OF_RACES = 4
+MAX_RACE_SCORE = 200
 
 # Relative to config file.
 CATEGORIES_PRIZE_PATH = categories_prize_individual_senior.csv

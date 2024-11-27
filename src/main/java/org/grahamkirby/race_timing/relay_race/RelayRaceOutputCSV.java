@@ -161,7 +161,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String plural = ((RelayRace) race).paired_legs.get(leg - 1) ? "s" : "";
+            final String plural = ((RelayRace) race).paired_legs.contains(leg) ? "s" : "";
             writer.append(STR."Pos,Runner\{plural},Time\n");
         }
 
