@@ -218,6 +218,6 @@ public class MidweekRace extends SeriesRace {
             map(result -> (IndividualRaceResult)result).
             map(result -> result.entry.runner).
             filter(runner -> runner.name.equals(runner_name)).
-            forEach(runner -> runner.club = defined_club);
+            forEachOrdered(runner -> runner.club = defined_club);
     }
 }

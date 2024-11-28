@@ -74,7 +74,7 @@ public abstract class SeriesRace extends Race {
             map(result -> result.entry.runner).
             distinct().
             map(this::getOverallResult).
-            forEach(overall_results::add);
+            forEachOrdered(overall_results::add);
     }
 
     @Override
