@@ -1,0 +1,100 @@
+James Donald	Dundee Hawkhill Harriers	MU20	00:15:16
+Aidan Thompson	Central AC	MU20	00:15:33
+Jozsef Farkas	Unatt.	MS	00:15:36
+Tristan Rees	Fife Athletic Club	MU20	00:15:52
+Sam Fernando	Fife Athletic Club	MU20	00:16:14
+Harvey Rankin	Fife Athletic Club	MU20	00:16:20
+Andrew Taylor	St Andrews University CCC	MS	00:17:09
+Chris Russell	St Andrews University CCC	MS	00:17:18
+Alan Hume	Central AC	MS	00:17:21
+Martin Butcher	PH Racing Club	MS	00:17:23
+Issac Bonisteel	St Andrews University CCC	MS	00:17:28
+Craig Morris	Fife Athletic Club	MU20	00:17:36
+Halina Rees	Fife Athletic Club	FS	00:17:37
+Ben Sandilands	Fife Athletic Club	MU20	00:17:37
+Graeme Doig	PH Racing Club	M40	00:17:40
+Stephen McDougall	St Andrews University CCC	MS	00:17:42
+Akira O'Connor	Unatt.	MS	00:17:46
+Anna Hedley	Fife Athletic Club	FU13	00:17:46
+Philip Wright	St Andrews University CCC	MS	00:17:48
+Charlie Hillman	St Andrews University CCC	MS	00:17:50
+Mike MacDonald	Unatt.	M40	00:17:54
+Mark Webster	Falkland Trail Runners	M40	00:17:55
+Ryan Donald	Dundee Hawkhill Harriers	MU20	00:18:03
+Jennifer Spence	Fife Athletic Club	FS	00:18:08
+Evan Bohan	St Andrews University CCC	MS	00:18:12
+Natalie Milne	Central AC	FS	00:18:14
+John Mathieson	Unatt.	M40	00:18:19
+Fiona Bracegirdle	Fife Athletic Club	FS	00:18:25
+Neil Millar	Fife Athletic Club	M40	00:18:27
+Jacob Howe	Fife Athletic Club	M40	00:18:30
+Rick Booth	Fife Athletic Club	M40	00:18:33
+Willie Rennie	Carnegie Harriers	M40	00:18:42
+Scott Love	PH Racing Club	MS	00:18:55
+John Mill	Dundee Road Runners AC	M50	00:19:00
+Liam Wyse	Fife Athletic Club	MU13	00:19:02
+Ross Wyse	Fife Athletic Club	MU20	00:19:05
+Tony Martin	Falkland Trail Runners	M60	00:19:07
+Bill Hutchison	Anster Haddies Running Club	M60	00:19:14
+Alan McGowan	Carnegie Harriers	M40	00:19:23
+Sam Lesley	St Andrews University CCC	MS	00:19:25
+Kirsti Sharratt	Fife Athletic Club	F40	00:19:26
+Daniel Newman	Fife Athletic Club	M40	00:19:27
+Simon Knox	Dundee Road Runners AC	M50	00:19:29
+Calum Harvie	Fife Athletic Club	M40	00:19:34
+Michael Mitchell	Unatt.	M40	00:19:39
+David Miller	Unatt.	M40	00:19:52
+Portia Brown	Dundee Hawkhill Harriers	FS	00:19:54
+David Sleigh	Fife Athletic Club	M50	00:19:55
+Phil Forte	Dundee Hawkhill Harriers	M60	00:20:16
+Simon Fox	Fife Athletic Club	M50	00:20:21
+Richard Shaw	Anster Haddies Running Club	M60	00:20:23
+Derek Mcdonald	Falkland Trail Runners	M40	00:20:25
+Angela Howe	Fife Athletic Club	F40	00:20:27
+Corrin Blake	St Andrews University CCC	MS	00:20:35
+Dave Morton	Carnegie Harriers	MS	00:20:40
+Rory Sandilands	Unatt.	MS	00:20:44
+Paul McConville	Unatt.	M40	00:20:55
+Robert Armstrong	Fife Athletic Club	M50	00:21:09
+David Norrie	Fife Athletic Club	M60	00:21:37
+John Henderson	Unatt.	M40	00:21:39
+Innes Bracegirdle	Fife Athletic Club	F60	00:21:39
+Laurence Leask	Pitreavie AAC	M60	00:21:44
+George Black	Fife Athletic Club	M70	00:21:53
+Margaret Martin	Fife Athletic Club	F60	00:22:01
+Brian Adams	Fife Athletic Club	M50	00:22:06
+Clare Halpenny	Unatt.	FS	00:22:13
+Steven Peters	Dundee Road Runners AC	MS	00:22:20
+Fiona Green	Texas Running Center	F50	00:22:24
+Angus Donald	Dundee Hawkhill Harriers	M40	00:22:31
+Bob Brown	Perth Road Runners	M70	00:22:41
+John Keenlyside	Fife Athletic Club	M60	00:22:43
+Keith Bonthrone	Falkland Trail Runners	M50	00:22:50
+Jim Dunstan	Leven Las Vegas	M50	00:23:03
+Louisa Bryant	St Andrews University CCC	FS	00:23:05
+Simon Fairlie	Unatt.	M40	00:23:08
+Kenny Gunn-Russell	Harmeny Athletic Club	M60	00:23:18
+Sue Whisler	Fife Athletic Club	F60	00:23:23
+Lorraine Dunbar	Dundee Road Runners AC	F50	00:23:36
+Derek Adamson	Fife Athletic Club	M40	00:23:40
+Rebecca Mudie	Unatt.	FS	00:23:48
+Millie Costa-Sa	Fife Athletic Club	FU20	00:24:01
+Peter Rieu-Clarke	Falkland Trail Runners	M70	00:24:01
+Bill Gillan	Falkland Trail Runners	M60	00:24:26
+Michael Heron	Unatt.	M40	00:24:32
+Pauline Smith	Unatt.	FS	00:24:34
+Jim Close	Falkland Trail Runners	M50	00:24:42
+Robert Thornton	Fife Athletic Club	M60	00:24:56
+Graham Bennison	Fife Athletic Club	M70	00:24:59
+Kenneth McLeod	Fife Athletic Club	M40	00:25:04
+Sharon Hedley	Unatt.	F40	00:25:07
+Joyce Donald	Dundee Hawkhill Harriers	F40	00:25:19
+Lucia Tisnes	Dundee Road Runners AC	FS	00:25:30
+Josh McKay	Unatt.	MS	00:25:34
+Irene Miller	Jog Cowdenbeath	F50	00:25:54
+Brian Dunbar	Dundee Road Runners AC	M60	00:26:28
+Sarah Christie	Unatt.	F40	00:26:35
+Elaine Downie	N/A	F40	00:26:55
+Allan Mudie	Havana Plodding Club	M40	00:27:21
+Grace Booth	Fife Athletic Club	FU20	00:27:35
+Susan Gourlay	Unatt.	F60	00:28:47

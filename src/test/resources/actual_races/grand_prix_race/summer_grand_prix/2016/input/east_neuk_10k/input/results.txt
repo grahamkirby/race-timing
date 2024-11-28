@@ -1,0 +1,266 @@
+Michael	Carroll	Perth Road Runners	M40	32.28
+Triston	Rees	Fife Athletic Club	MJ	33.33
+George	Rees	Fife Athletic Club	MJ	34.29
+Sam	Fernando	Fife Athletic Club	MJ	34.49
+Johnny	Lawson	Portobello Running Club	M40	34.56
+Ryan	Lafferty	PH Racing Club	MS	36.14
+Steve	Clark	Fife Athletic Club	M40	36.35
+Andy	Laycock	Kinross Road Runners	M50	36.41
+Graeme	Doig	PH Racing Club	M40	37.25
+Joe	Smithyman		MS	38.05
+Bryce	Aitken	Fife Athletic Club	M50	38.12
+Halina	Rees	Fife Athletic Club	FS	38.24
+Thomas	Knox	Anster Haddies Running Club	MS	38.52
+Akira	O'Connor	Leven Las Vegas Running Club	MS	38.54
+Jimmy	McIntyre	Fife Athletic Club	M40	39.04
+Iain	Sheerins		M50	39.14
+Richard	Grieve	Dundee Road Runners	MS	39.25
+Craig	Morris	Fife Athletic Club	MJ	39.26
+Neil	Millar	Fife Athletic Club	M40	39.34
+Andrew	Leech		MS	39.48
+David	Milroy	PH Racing Club	M40	39.53
+Rick	Booth	Fife Athletic Club	M40	39.59
+John	Hynd	Carnegie Harriers	M50	40.09
+Bill	Hutchison	Anster Haddies Running Club	M60	40.12
+Willie	Rennie	Carnegie Harriers	M40	40.19
+Craig	Milligan	Falkland Trail Runners	MS	40.24
+Rory	Morris		MS	40.28
+Yana	Thandrayen	Portobello Running Club	F40	40.29
+Mary	Western	PH Racing Club	F50	40.31
+Christopher	McDougall	Time Fitness	MS	40.36
+Daniel	Newman	Fife Athletic Club	M40	40.37
+Bill	Watson	Stonehaven Running Club	M50	40.39
+Hendrik	Van Rensburg		M40	40.59
+Bryan	McLaren	Leven Las Vegas Running Club	MS	41.07
+Michael	Mitchell		M40	41.07
+Rhona	Van Rensburg		F40	41.09
+Mark	Western	Falkland Trail Runners	M50	41.11
+Alan	Gibson		M50	41.13
+Kirsti	Sharratt	Fife Athletic Club	F40	41.14
+Iain	Wallace	Leven Las Vegas Running Club	M40	41.18
+Mhairi	Boyle	Kinross Road Runners	FJ	41.19
+Tom	Scott	Fife Athletic Club	M60	41.24
+Mark	Stewart	Dundee Road Runners	M40	41.28
+Jennifer	Cruickshanks	Fife Athletic Club	FS	41.36
+Neil	Maclachlan	Pitreavie AAC	MS	41.39
+David	Brisland	Anster Haddies Running Club	M40	41.43
+David	Sleigh	Fife Athletic Club	M50	41.55
+John	Babraj		M40	41.59
+Ailsa	Cruickshanks	Anster Haddies Running Club	FS	42.05
+Graeme	Barker	Fife Athletic Club	MS	42.09
+Adrian	Wood	East Fife Triathlon Club	M40	42.11
+Zoey	Johnston	Falkland Trail Runners	F40	42.13
+Gordon	Laing	STAART	M40	42.14
+Colin	McKie	Anster Haddies Running Club	MJ	42.52
+Paul	Allcoat	Kinross Road Runners	M50	42.56
+Phil	Forte	Dundee Hawkhill Harriers	M60	42.59
+Stewart	Leckie	Fife Athletic Club	M50	43.07
+Paul	Forbes		M50	43.13
+Craig	Trewartha	STAART	M40	43.14
+Jan-Bert	van den Berg	Corstorphine AAC	M50	43.16
+Dave	Morton	Carnegie Harriers	MS	43.19
+Allan	Brannigan	Carnegie Harriers	M50	43.23
+Darran	Neilson	PH Racing Club	MS	43.24
+Martin	Hill	Kinross Road Runners	MS	43.29
+Ivan	Carus		M40	43.39
+Eric	Anderson		M40	43.43
+David	Henderson	Corstorphine AAC	M50	43.45
+Allen	Marr	Anster Haddies Running Club	M60	43.46
+Roderick	Burton	Caistor Running Club	M60	43.47
+Mark	Ayre	Roundhay Runners	M40	43.49
+Jonathan	Knox	Anster Haddies Running Club	M50	43.52
+Steven	Blair	Kinross Road Runners	MS	43.55
+Stewart	Nisbet		M40	44.01
+Alison	Sutherland	Falkland Trail Runners	FS	44.02
+Steven	Robbie	Forfar Road Runners	MS	44.05
+George	Findlay	Anster Haddies Running Club	M50	44.07
+Sarah	Hutt	Kinross Road Runners	FS	44.08
+Chris	Campbell		M40	44.08
+Clare	Webster		FS	44.09
+Fiona	Nisbet		F40	44.29
+Rosie	Knox	Anster Haddies Running Club	FJ	44.33
+Campbell	Blair	Pitreavie AAC	M40	44.37
+Peter	Derrick	Dundee Road Runners	M50	44.39
+Paul	McConville		M40	44.46
+Judith	Dobson	Kinross Road Runners	F50	44.51
+John	Penman		M50	44.53
+Hailey	Marshall	STAART	FS	44.54
+stuart	gray	Motherwell AC	MS	44.57
+Robert	Armstrong	Fife Athletic Club	M50	44.58
+Yvonne	Dehn	Anster Haddies Running Club	FS	44.59
+Gemma	Dolan	Dundee Hawkhill Harriers	FS	45.01
+Andy	Lafferty	Falkland Trail Runners	M50	45.02
+Laura	Muir	Falkland Trail Runners	FS	45.03
+Paul	Hendrie		MS	45.05
+Alistair	Urquhart	Roundhay Runners	M40	45.08
+Andrew	Fraser		M40	45.12
+John	Tierney	Dundee Road Runners	M40	45.21
+David	Norrie	Fife Athletic Club	M60	45.33
+Jennifer	Massie	Dundee Road Runners	FS	45.36
+Martin	McHale	Kinross Road Runners	M40	45.37
+Innes	Bracegirdle	Fife Athletic Club	F60	45.38
+John	Dryburgh		M50	45.41
+Mark	Hunter		MS	45.42
+Tony	Gallagher	Falkland Trail Runners	M50	45.48
+Steve	McCormack		M40	45.52
+John	Henderson		M40	45.59
+David	Moyes		MS	46.02
+Neil	Edwards		MS	46.04
+Anne	Peat	Edinburgh Athletic Club	F40	46.07
+Elaine	Renouf	Pitreavie AAC	FS	46.09
+John	Boyle	Kinross Road Runners	M50	46.09
+Iain	Thomson	Strathearn Harriers	M60	46.24
+Margaret	Martin	Fife Athletic Club	F60	46.29
+Steve	Adam	Carnegie Harriers	M50	47.03
+Susanne	Lumsden	Falkland Trail Runners	F40	47.09
+Clive	Thomson	UnderDogZ Running	M40	47.19
+David	Dunleavey	Dundee Road Runners	M50	47.19
+Derek	Duncan	Pitreavie AAC	M60	47.22
+Gordon	Barrie		M40	47.25
+Steven	ferguson	staart	M40	47.29
+Gillian	Smith	Fife Athletic Club	F40	47.29
+Jim	Macgregor	Moray Road Runners	M60	47.31
+Pippa	Coutts	Kinross Road Runners	F40	47.43
+Nicola	Watson	Strathearn Harriers	F40	47.44
+Martin	Kay	Pitreavie AAC	M40	47.47
+Peter	Edgerton	Kinross Road Runners	M60	47.49
+Alexander	Chalmers		M50	47.56
+Deborah	Kenward	Forfar Road Runners	F50	48.01
+Steven	Graham	Kinross Road Runners	MS	48.03
+Karen	Campbell		F40	48.07
+Ronnie	Ritchie	Pitreavie AAC	M50	48.14
+Anna	Hendrie		FS	48.23
+Andrew	McManus	STAART	M40	48.24
+John	Keenlyside	Fife Athletic Club	M60	48.29
+Mardie	Templeman		F40	48.35
+Martin	McKelvie		M40	48.37
+Steven	Murray		M40	48.45
+Sandra	Aitken	Fife Athletic Club	F50	48.51
+Jocelyn	Scott	Fife Athletic Club	F60	49.03
+Bob	Brown	Perth Road Runners	M70	49.14
+Keith	Bonthrone	Falkland Trail Runners	M50	49.14
+Mark	Watt	Forfar Road Runners	M40	49.18
+Jim	Scobie		M70	49.23
+Connor	Kelly	Dundee Road Runners	M50	49.28
+Ian	Gent		M50	49.29
+Joseph	Jennings	Arbroath Footers Running Club	M40	49.32
+Fiona	Cruickshanks	Anster Haddies Running Club	FS	49.39
+Ally	Tulleth	Staart	F40	49.48
+Sarah	Cackette		FS	49.57
+Nanette	Heaney	Falkland Trail Runners	F50	49.59
+Michael	Royden	Leven Las Vegas Running Club	M40	50.11
+Derek	Adamson	Fife Athletic Club	M40	50.19
+Wendy	Grieve	Kinross Road Runners	F50	50.32
+George	Smith		M40	50.34
+Louise	Millar	Pitreavie AAC	F40	50.35
+David	Albon		M50	50.44
+Jill	Thomson	Anster Haddies Running Club	FS	51.12
+Christine	Davies	Arbroath Footers Running Club	F50	51.14
+Wendy	Rundle	Anster Haddies Running Club	FS	51.17
+Louise	Johnstone		FS	51.19
+Davie	Hogg	Leven Las Vegas Running Club	M40	51.22
+Rebecca	Mudie		FS	51.29
+Ken	Milligan	Falkland Trail Runners	M60	51.32
+Peter	Rieu-Clarke	Falkland Trail Runners	M70	51.43
+George	Wilson		M40	51.45
+Alison	Murray	Inverkeithing Jog Scotland	F40	51.46
+Raymond	Young		M60	51.47
+Valerie	Findlay	Kinross Road Runners	F50	52.05
+Rosemary	Lee	Falkland Trail Runners	F50	52.06
+Lynne	Herd	Anster allsorts	F40	52.09
+Linda	Palmer	Kinross Road Runners	F50	52.17
+Geoff	Bilton	Kinross Road Runners	M60	52.21
+Gloria	Laurini	Pitreavie AAC	FS	52.22
+Ronnie	Hunter Blair	Carnegie Harriers	M70	52.41
+Julie	Jordan		F50	52.46
+Jacqueline	Cook		FS	52.49
+Sarah	Wenn	Dundee Road Runners	FS	52.54
+Sandy	Fraser		M50	52.55
+Martin Alexander	Watson		MS	52.59
+Katie	Garner	Time Fitness	FS	53.19
+Clare	McCance		FS	53.22
+Catriona	Duncan	Anster Haddies Running Club	F60	53.24
+Caroline	Whiteford		FS	53.29
+Graham	Bennison	Fife Athletic Club	M70	53.37
+Marti	Redford	Vegan Runners UK	FS	53.48
+Kim	Forbes		F50	54.08
+Stuart	Dobson	Kinross Road Runners	M60	54.09
+Alex	Burns	Roundhay Runners	FS	54.28
+Tom	Burton	Scottish Athletic League	M60	54.31
+Robert	Thornton	Fife Athletic Club	M60	54.36
+Jill	Hamilton		FS	54.38
+David	Sheerins		M50	54.39
+Alistair	Lawson		M70	54.42
+Maria	Dale	Perth Road Runners	F60	54.47
+Jenni	Milroy	Jog scotland	F40	54.48
+Kirsten	Munro		FS	54.51
+Dougie	Hain		MS	54.51
+Bill	Gillan	Falkland Trail Runners	M60	54.54
+Tracy	McAusland	Anster Haddies Running Club	F40	54.55
+Lauren	Fairweather	Strathearn Harriers	FS	55.04
+Liz	Begg	Arbroath Footers Running Club	F50	55.05
+Shelly	Watson		FS	55.11
+Lynne	Dair	Jog Scotland cowdenbeath	F40	55.18
+Rachel	Smith		F40	55.19
+Nicola	Innes		FS	55.42
+Daniel	Herron		MS	55.47
+Steve	Laird		M40	55.53
+Jennifer	Morris	Fife Athletic Club	F50	55.57
+Stephen	McGowan		MS	56.03
+Angie	Sleep		F40	56.12
+Allison	Smith	Kinross Road Runners	F60	56.16
+Rhona	Guild	Forfar Road Runners	F50	56.21
+Stewart	Davidson	Fife Athletic Club	M60	56.29
+Susan	McLean	Kinross Road Runners	F40	56.35
+Louise	McManus	STAART	F40	56.37
+Graham	Duncan	Fife Athletic Club	M60	56.42
+Martin	Sleep		M50	56.58
+Rowena	Spence	STAART	F50	57.36
+Teresa-Katharina	Neumann	Vegan Runners UK	FS	57.45
+David	Buchan	Vegan Runners UK	MS	57.45
+Dick	Westwater		M60	57.56
+Jennifer	Park		F40	58.01
+Kenneth	Hodge	bogward trotters	M50	58.08
+Kerin	Watson		FS	58.11
+Ian	Brooks		M40	58.12
+F.	Dale		M60	58.16
+Jane	Lindsay		F40	58.22
+Julie	Rowlinson	Inverkeithing Jog Scotland	F40	58.23
+John	Mcintyre		M40	58.38
+Wendy	Ritchie	Fife Athletic Club	F50	58.49
+Ailsa	McKelvie		FS	59.09
+Jacqui	Mcdonald		F40	59.15
+Emine Zehra	Akgun		FS	59.15
+Tracey	Millar	Leven Las Vegas Running Club	F40	59.21
+Audrey	Gilmour		F40	59.31
+Kate	Gammie		FS	59.32
+Tracey	Hudson		F40	59.56
+Pam	Hudson		FS	59.56
+Adrian	Flatman		M60	60.09
+Kat	Hart		F40	60.18
+Val	Herkes	Fife Athletic Club	F50	60.27
+Sabrina	Flatman		FS	60.27
+Lucy	Wilson	Anster Allsorts	F40	62.05
+Joanne	Taylor		F40	62.06
+Ozgur	Akgun		MS	62.26
+Stuart	Wardlaw		M40	62.37
+Linda	Mcwhinnie		F40	62.49
+John	Lee	Falkland Trail Runners	M50	62.58
+Shauna	Doherty		FS	63.06
+Sandy	Chalmers	Anster Haddies Running Club	M80	63.19
+Diane	Turner		FS	64.26
+Marie	Paterson	Anster Allsorts	F50	64.27
+Susan	Duncan	Anster Allsorts	F40	65.43
+Lynn	Barker	Anster allsorts	F40	65.43
+Rhona	Graham	Metro Aberdeen	F50	66.09
+Louise	Wanless		F40	66.55
+Jane	Blake		F50	66.55
+Helen	Forrest	Jogging Buddies	F60	66.59
+Sue	Burton	Caistor Running Club	F50	67.04
+Lynsey	Wardlaw		F40	69.55
+Saunderson	Kate		FS	71.38
+Donaldson	Hamish		MS	71.39
+Shirley	Nuttall	Anster allsorts	F40	72.09
+Seona	MacDonald	Anster Allsorts	F40	72.16
+Jennifer	Gallagher	Anster Haddies Running Club	F40	73.54
+Karolina	Gibson	Time Fitness	F50	79.28

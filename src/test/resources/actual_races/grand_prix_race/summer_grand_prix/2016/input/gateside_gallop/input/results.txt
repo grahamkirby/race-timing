@@ -1,0 +1,110 @@
+Sam Fernando	Fife AC	MJ	24.45
+Neil Smith	Anster Haddies	MV40	25.03
+Alan Budd	Unatt	MS	25.32
+David Scott	Kinross RR	MS	26.48
+Brian Cruickshank	Falkland Trail Runners	MV50	26.57
+David Downey	Dunblane Runners	MV50	27.08
+Willie Rennie	Carnegie Harriers	MV40	27.21
+Paul Foster	#teamfozzy	MS	27.53
+Daniel Newman	Fife AC	MV40	28.01
+Kevin Davie	Carnegie Harriers	MS	28.17
+Ross Wyse	Fife AC	MJ	28.19
+Neil McLure	Carnegie Harriers	MV40	28.22
+Scott Strachan	Kinross RR	MV40	28.28
+Neil Millar	Fife AC	MV40	28.30
+Jennifer Cruickshanks	Fife AC	FS	28.39
+Andy Johns	Kinross RR	MV40	28.49
+Mhairi Boyle	Kinross RR	FS	28.52
+Phil Forte	Dundee Hawkhill	MV50	29.35
+David Sinclair	Unattached	MS	29.39
+Ailsa Cruickshanks	Anster Haddies	FS	29.41
+Andy Gallagher	Strathearn Harriers	MV50	29.43
+Simon Knox	Dundee RR	MV50	29.45
+Angela Irving	Perth RR	FS	29.46
+Steven Blair	Kinross RR	MS	29.51
+Stewart Reid	Perth RR	MS	29.58
+Kenneth Telfer	Kinross RR	MV50	29.59
+Mark McLean	Leven Las Vegas	MV40	30.04
+John Kay	Leven Las Vegas	MV50	30.07
+Barry Davie	Carnegie Harriers	MV40	30.11
+Gordon Halliday	Anster Haddies	MV40	30.12
+Tony Martin	Flakland Trail Runners	MV60	30.25
+Mark Stewart	Dundee RR	MJ	30.35
+Graham Kemp	Kinross RR	MS	30.35
+Sonjia Crow	Perth RR	FS	30.39
+Richard Ward	Perth RR	MV40	30.41
+Gregor Maclean	Unattached	MS	30.47
+Jane Dunlop	Dundee RR	FS	30.48
+Morag Taggart	Dundee RR	FV50	30.52
+Paul Allcoat	Kinross RR	MV50	30.56
+Ron Milne	Forfar RR	MV60	30.59
+Gordon Pryde	Lomond Hill Runners	MV50	31.07
+Paul Lomas	Unatt	MV40	31.11
+Lyle Allan	Unattached	MV50	31.26
+Allen Marr	Anster Haddies	MV60	31.29
+John Boyle	Kinross RR	MV50	31.31
+Brian R Smith	Fife AC	MV50	31.41
+Yvonne Dehn	Anster Haddies	FS	32.16
+George Findlay	Anster Haddies	MV50	32.35
+Ken Morris	Fife AC	MV60	32.53
+Aileen Morton	Team Pointer	FV40	33.14
+Rosalind Shanks	Forfar Road Runners	FS	33.22
+Judith Dobson	Kinross RR	FV50	33.27
+Pippa Coutts	Kinross RR	FV40	33.29
+Barry Campbell	Perth RR	MS	33.30
+Richard Grieve	Unatt	MS	33.31
+Susanne Lumsden	Falkland Trail Runners	FV40	33.33
+Findlay Hunter	Kinross RR	MJ	33.38
+Innes Bracegirdle	Fife AC	FV60	33.41
+Iain Simpson	Falkland Trail Runners	MV40	33.47
+John Henderson	Unatt	MV40	33.49
+Fiona Cruickshanks	Anster Haddies	FS	33.57
+Pamela Cruickshanks	Anster Haddies	FV50	34.04
+Donna Pass	Forfar RR	FV40	34.16
+Ken Chalmers	Kinross RR	MV50	34.29
+Keith Bonthrone	Falkland Trail Runners	MV50	34.40
+Stuart Knowles	Fife AC	MV60	34.50
+John Keenlyside	Fife AC	MV60	35.05
+Eddy Petrie	Falkland Trail Runners	MV40	35.09
+Deborah Kenward	Forfar RR	FV50	35.26
+Stuart Dobson	Kinross RR	MV60	35.35
+Bill Simpson	Anster Haddies	MV60	35.36
+Elizabeth Milne	Forfar RR	FV50	35.49
+James Keenan	Forfar RR	MV50	36.26
+Mark Watt	Forfar Road Runners	MV40	36.40
+Malcolm Mactavish	Falkland Trail Runners	MV60	37.01
+Rosemary Lee	Falkland Trail Runners	FV50	37.13
+Alison Downey	Dunblane Runners	FV40	37.18
+Geoff Bilton	Kinross RR	MV60	37.49
+Karen Forsyth	Carnegie Harriers	FS	38.03
+Robert Thornton	Fife AC	MV60	38.17
+Neil Hunter	Kinross RR	MV40	38.18
+Derek Adamson	Fife AC	MV40	38.30
+Steve Cromar	Dundee Hawkhill	MV70	38.32
+Valerie Findlay	Kinross RR	FS	38.44
+Linsey Neilson	JCB Cowdenbeath	FS	38.46
+Bill Gillan	Falkland Trail Runners	MV60	39.01
+Anne MacIntyre	Kinross RR	FV60	39.04
+Ronnie Stalker	Fife AC	MV50	39.09
+Alison Robertson	Kinross RR	FV50	39.27
+Sophie Telfer	Kinross RR	FJ	39.41
+Alison Houston	Kinross RR	FV60	39.47
+Karen Cunningham	Anster Haddies	FV40	39.49
+Peter Rieu-Clarke	Falkland Trail Runners	MV70	40.12
+Graham Bennison	Fife AC	MV70	41.35
+Angela Small	Anster Haddies	FV40	41.55
+Jackie Galloway	Anster Haddies	FV50	42.22
+Tracy Chalmers	Anster Haddies	FV40	42.22
+Calum McTavish	Unattached	MS	43.29
+John Lee	Falkland Trail Runners	MV50	43.35
+Katie Chalmers	Kinross RR	FV50	43.43
+Ian Brooks	Unatt	MV40	44.25
+Susan McLean	Kinross RR	FV40	46.19
+Sarah Eaton	Kinross RR	FV50	46.19
+Norman Smith	Kinross RR	MV80	46.25
+Andrea Habershaw	Unattached	FV40	46.36
+Alister Robert	Fife AC	MV70	49.49
+Jane Askey	Fife AC	FV70	50.36
+Sandy MacCalman	Kinross RR	MV70	52.21
+Sue Hogg	Get Fit Falkland	FV40	53.11
+Carla Halkett	Get Fit Falkland	FV40	53.12

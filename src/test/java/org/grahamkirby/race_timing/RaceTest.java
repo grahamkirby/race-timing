@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
@@ -36,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class RaceTest {
 
     // File names that may be present in list of expected output files for a given test, but should be ignored.
-    private static final Set<String> IGNORED_FILE_NAMES = Set.of(".DS_Store");
+    private static final List<String> ignored_file_names = loadIgnoredFileNames();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,6 +54,7 @@ public abstract class RaceTest {
     private static final boolean RETAIN_FIRST_OUTPUT = false;
 
     private static final String USER_TEST_DIRECTORY_PATH = "/Users/gnck/Desktop/tests";
+    private static final String IGNORED_FILE_NAMES_PATH = "src/main/resources/configuration/test_ignored_file_names.csv";
 
     // Whether the current test is the first test in the run.
     private static boolean first_test = true;
@@ -106,7 +106,7 @@ public abstract class RaceTest {
             deleteDirectory(test_directory);
     }
 
-    private void cleanUpDirectories(boolean output_directory_retained_from_previous_run, boolean output_directory_should_be_retained) throws IOException {
+    private void cleanUpDirectories(final boolean output_directory_retained_from_previous_run, final boolean output_directory_should_be_retained) throws IOException {
 
         if (output_directory_retained_from_previous_run)
             deleteDirectory(retained_output_directory);
@@ -241,12 +241,20 @@ public abstract class RaceTest {
         }
     }
 
+    private static List<String> loadIgnoredFileNames() {
+
+        try {
+            return Files.readAllLines(Paths.get(IGNORED_FILE_NAMES_PATH)).stream().toList();
+        }
+        catch (IOException e) {throw new RuntimeException(e);}
+    }
+
     private static String removeWhiteSpace(final String s) {
         return s.replaceAll("\t", "").replaceAll("\n", "").replaceAll(" ", "");
     }
 
     private static boolean fileInExpectedDirectoryShouldBeIgnored(final String file_name) {
-        return IGNORED_FILE_NAMES.contains(file_name);
+        return ignored_file_names.contains(file_name);
     }
 
     private static void copyDirectory(final Path source_directory, final Path destination_directory) throws IOException {
