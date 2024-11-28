@@ -34,6 +34,10 @@ import java.util.function.Predicate;
 
 public abstract class Race {
 
+    // TODO add support for Grand Prix series.
+    // TODO add support for Tour of Fife series.
+    // TODO add support for Junior Hill Running Champs.
+
     public static final String COMMENT_SYMBOL = "#";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

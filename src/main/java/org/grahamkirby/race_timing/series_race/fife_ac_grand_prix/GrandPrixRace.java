@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
+package org.grahamkirby.race_timing.series_race.fife_ac_grand_prix;
 
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceInput;
@@ -29,7 +29,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
-import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,14 +36,15 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class MidweekRace extends SeriesRace {
+public class GrandPrixRace extends SeriesRace {
 
     private int max_race_score;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public MidweekRace(final Path config_file_path) throws IOException {
+    public GrandPrixRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -53,9 +53,9 @@ public class MidweekRace extends SeriesRace {
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java MidweekRace <config file path>");
+            System.out.println("usage: java GrandPrixRace <config file path>");
         else {
-            new MidweekRace(Paths.get(args[0])).processResults();
+            new GrandPrixRace(Paths.get(args[0])).processResults();
         }
     }
 
@@ -77,27 +77,32 @@ public class MidweekRace extends SeriesRace {
 
     @Override
     protected RaceInput getInput() {
-        return new SeriesRaceInput(this);
+//        return new GrandPrixRaceInput(this);
+        return null;
     }
 
     @Override
     protected RaceOutputCSV getOutputCSV() {
-        return new MidweekRaceOutputCSV(this);
+//        return new GrandPrixRaceOutputCSV(this);
+        return null;
     }
 
     @Override
     protected RaceOutputHTML getOutputHTML() {
-        return new MidweekRaceOutputHTML(this);
+//        return new GrandPrixRaceOutputHTML(this);
+        return null;
     }
 
     @Override
     protected RaceOutputText getOutputText() {
-        return new MidweekRaceOutputText(this);
+//        return new GrandPrixRaceOutputText(this);
+        return null;
     }
 
     @Override
     protected RaceOutputPDF getOutputPDF() {
-        return new MidweekRaceOutputPDF(this);
+//        return new GrandPrixRaceOutputPDF(this);
+        return null;
     }
 
     @Override
@@ -118,7 +123,8 @@ public class MidweekRace extends SeriesRace {
 
     @Override
     protected EntryCategory getEntryCategory(final RaceResult result) {
-        return ((MidweekRaceResult) result).runner.category;
+//        return ((GrandPrixRaceResult) result).runner.category;
+        return null;
     }
 
     @Override
@@ -128,26 +134,8 @@ public class MidweekRace extends SeriesRace {
             map(race -> calculateRaceScore(race, runner)).
             toList();
 
-        return new MidweekRaceResult(runner, scores, this);
-    }
-
-    public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
-
-        if (individual_race == null) return 0;
-
-        // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
-
-        final List<IndividualRaceResult> gender_results = individual_race.getOverallResults().stream().
-                map(result -> (IndividualRaceResult) result).
-                filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
-                filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
-                toList();
-
-        final int gender_position = (int) gender_results.stream().
-                takeWhile(result -> !result.entry.runner.equals(runner)).
-                count() + 1;
-
-        return gender_position <= gender_results.size() ? Math.max(max_race_score - gender_position + 1, 0) : 0;
+//        return new GrandPrixRaceResult(runner, scores, this);
+        return null;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,5 +207,25 @@ public class MidweekRace extends SeriesRace {
             map(result -> result.entry.runner).
             filter(runner -> runner.name.equals(runner_name)).
             forEach(runner -> runner.club = defined_club);
+    }
+
+    public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+
+        if (individual_race == null) return 0;
+
+        final String gender = runner.category.getGender();
+        final AtomicInteger score = new AtomicInteger(max_race_score + 1);
+
+        // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
+
+        return individual_race.getOverallResults().stream().
+            map(result -> (IndividualRaceResult) result).
+            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
+            map(result -> result.entry.runner).
+            peek(result_runner -> { if (gender.equals(result_runner.category.getGender())) score.decrementAndGet(); }).
+            filter(result_runner -> result_runner.equals(runner)).
+            findFirst().
+            map(_ -> Math.max(score.get(), 0)).
+            orElse(0);                             // Runner didn't compete in this race.
     }
 }

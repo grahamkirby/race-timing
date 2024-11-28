@@ -29,8 +29,6 @@ import java.util.Objects;
 
 public abstract class SeriesRace extends Race {
 
-    // TODO add support for Grand Prix series.
-
     protected List<IndividualRace> races;
 
     protected int minimum_number_of_races;
