@@ -300,16 +300,14 @@ public class RelayRace extends SingleRace {
 
     private int getRecordedLegPosition(final int bib_number, final int leg_number) {
 
-        final AtomicInteger position = new AtomicInteger(0);
         final AtomicInteger legs_completed = new AtomicInteger(0);
 
-        return raw_results.stream().
-            peek(_ -> position.incrementAndGet()).
-            filter(result -> result.getBibNumber() == bib_number).
-            filter(_ -> legs_completed.incrementAndGet() == leg_number).
-            map(_ -> position.get()).
-            findFirst().
-            orElse(UNKNOWN_RACE_POSITION);
+        final int position = (int) raw_results.stream().
+            peek(result -> { if (result.getBibNumber() == bib_number) legs_completed.incrementAndGet(); }).
+            takeWhile(result -> result.getBibNumber() != bib_number || legs_completed.get() < leg_number).
+            count() + 1;
+
+        return position <= raw_results.size() ? position : UNKNOWN_RACE_POSITION;
     }
 
     private int getRecordedLastLegPosition(final RelayRaceResult result) {
@@ -397,7 +395,7 @@ public class RelayRace extends SingleRace {
 
         Files.readAllLines(getPath(gender_eligibility_map_path)).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEach(line -> {
+            forEachOrdered(line -> {
                 final String[] elements = line.split(",");
                 gender_eligibility_map.put(elements[0],elements[1]);
             });
@@ -449,7 +447,7 @@ public class RelayRace extends SingleRace {
 
         raw_results.stream().
             filter(result -> result.getBibNumber() != UNKNOWN_BIB_NUMBER).
-            forEach(result -> recordLegResult((RelayRaceRawResult) result));
+            forEachOrdered(result -> recordLegResult((RelayRaceRawResult) result));
     }
 
     private void recordLegResult(final RelayRaceRawResult raw_result) {

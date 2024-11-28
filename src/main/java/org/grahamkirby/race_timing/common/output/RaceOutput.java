@@ -163,7 +163,7 @@ public abstract class RaceOutput {
         race.prize_category_groups.stream().
             flatMap(group -> group.categories().stream()).
             filter(race.prizes::prizesInThisOrLaterCategory).
-            forEach(prize_printer::apply);
+            forEachOrdered(prize_printer::apply);
     }
 
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {

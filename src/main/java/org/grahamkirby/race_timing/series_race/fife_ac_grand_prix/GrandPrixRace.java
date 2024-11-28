@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.series_race.fife_ac_grand_prix;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -27,7 +26,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
@@ -35,8 +33,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class GrandPrixRace extends SeriesRace {
 
@@ -175,57 +171,20 @@ public class GrandPrixRace extends SeriesRace {
 
     private List<String> getRunnerClubs(final String runner_name) {
 
-        return races.stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
-            map(result -> result.entry.runner).
-            filter(runner -> runner.name.equals(runner_name)).
-            map(runner -> runner.club).
-            distinct().
-            sorted().
-            toList();
+        return null;
     }
 
     private List<String> getRunnerNames() {
 
-        return races.stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
-            map(result -> result.entry.runner.name).
-            distinct().
-            toList();
+        return null;
     }
 
     private void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
 
-        races.stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
-            map(result -> result.entry.runner).
-            filter(runner -> runner.name.equals(runner_name)).
-            forEach(runner -> runner.club = defined_club);
     }
 
     public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
-        if (individual_race == null) return 0;
-
-        final String gender = runner.category.getGender();
-        final AtomicInteger score = new AtomicInteger(max_race_score + 1);
-
-        // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
-
-        return individual_race.getOverallResults().stream().
-            map(result -> (IndividualRaceResult) result).
-            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
-            map(result -> result.entry.runner).
-            peek(result_runner -> { if (gender.equals(result_runner.category.getGender())) score.decrementAndGet(); }).
-            filter(result_runner -> result_runner.equals(runner)).
-            findFirst().
-            map(_ -> Math.max(score.get(), 0)).
-            orElse(0);                             // Runner didn't compete in this race.
+        return 0;
     }
 }

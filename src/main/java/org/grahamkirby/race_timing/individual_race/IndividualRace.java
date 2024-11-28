@@ -32,7 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class IndividualRace extends SingleRace {
 
@@ -112,7 +111,7 @@ public class IndividualRace extends SingleRace {
         entries.stream().
             map(entry -> (IndividualRaceEntry)entry).
             map(entry -> new IndividualRaceResult(this, entry)).
-            forEach(overall_results::add);
+            forEachOrdered(overall_results::add);
     }
 
     @Override
@@ -198,13 +197,10 @@ public class IndividualRace extends SingleRace {
 
     private int getRecordedPosition(final int bib_number) {
 
-        final AtomicInteger position = new AtomicInteger(0);
+        final int position = (int) raw_results.stream().
+            takeWhile(result -> result.getBibNumber() != bib_number).
+            count();
 
-        return raw_results.stream().
-            peek(_ -> position.incrementAndGet()).
-            filter(result -> result.getBibNumber() == bib_number).
-            map(_ -> position.get()).
-            findFirst().
-            orElse(UNKNOWN_RACE_POSITION);
+        return position <= raw_results.size() ? position : UNKNOWN_RACE_POSITION;
     }
 }

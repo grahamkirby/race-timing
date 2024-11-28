@@ -445,7 +445,7 @@ public abstract class Race {
 
         Files.readAllLines(prize_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEach(line -> {
+            forEachOrdered(line -> {
                 final String group_name = line.split(",")[5];
 
                 addGroupIfAbsent(groups, group_name);
@@ -494,7 +494,7 @@ public abstract class Race {
 
         Files.readAllLines(category_map_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEach(line -> {
+            forEachOrdered(line -> {
 
                 if (entry_column_map_string == null)
 

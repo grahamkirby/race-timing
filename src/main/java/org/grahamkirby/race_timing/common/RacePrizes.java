@@ -75,7 +75,7 @@ public class RacePrizes {
         race.getOverallResults().stream().
             filter(_ -> position.get() <= category.numberOfPrizes()).
             filter(result -> prizeWinner(result, category)).
-            forEach(result -> {
+            forEachOrdered(result -> {
                 setPrizeWinner(result, category);
                 position.getAndIncrement();
             });
