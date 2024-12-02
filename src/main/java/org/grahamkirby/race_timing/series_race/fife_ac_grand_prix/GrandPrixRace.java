@@ -26,17 +26,22 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
+import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 public class GrandPrixRace extends SeriesRace {
 
-    private int max_race_score;
+    public static final int SCORE_FOR_MEDIAN_POSITION = 1000;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +66,29 @@ public class GrandPrixRace extends SeriesRace {
     protected void readProperties() {
 
         minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
-        max_race_score = Integer.parseInt(getProperty(KEY_MAX_RACE_SCORE));
+    }
+
+    protected void printOverallResults() throws IOException {
+
+        output_CSV.printResults();
+//        output_HTML.printResults();
+    }
+
+    protected void printPrizes() throws IOException {
+
+//        output_PDF.printPrizes();
+//        output_HTML.printPrizes();
+//        output_text.printPrizes();
+    }
+
+    protected void printNotes() throws IOException {
+
+//        output_text.printNotes();
+    }
+
+    protected void printCombined() throws IOException {
+
+//        output_HTML.printCombined();
     }
 
     @Override
@@ -73,14 +100,13 @@ public class GrandPrixRace extends SeriesRace {
 
     @Override
     protected RaceInput getInput() {
-//        return new GrandPrixRaceInput(this);
-        return null;
+        return new SeriesRaceInput(this);
     }
 
     @Override
     protected RaceOutputCSV getOutputCSV() {
-//        return new GrandPrixRaceOutputCSV(this);
-        return null;
+        return new GrandPrixRaceOutputCSV(this);
+
     }
 
     @Override
@@ -114,24 +140,37 @@ public class GrandPrixRace extends SeriesRace {
 
     @Override
     protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+if (entry_category == null) {
+    int x = 3;
+    return false;
+}
         return entry_category.getGender().equals(prize_category.getGender());
     }
 
     @Override
     protected EntryCategory getEntryCategory(final RaceResult result) {
-//        return ((GrandPrixRaceResult) result).runner.category;
-        return null;
+if (  ((GrandPrixRaceResult) result).runner.category == null
+) {
+    int x = 3;
+}
+        return ((GrandPrixRaceResult) result).runner.category;
+
     }
 
     @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
-        final List<Integer> scores = races.stream().
+        final List<Double> scores = races.stream().
             map(race -> calculateRaceScore(race, runner)).
             toList();
 
-//        return new GrandPrixRaceResult(runner, scores, this);
-        return null;
+        return new GrandPrixRaceResult(runner, scores, this);
+    }
+
+    @Override
+    protected Predicate<RaceResult> getResultInclusionPredicate() {
+
+        return (result -> ((IndividualRaceResult) result).entry.runner.club.equals("Fife AC"));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,20 +210,57 @@ public class GrandPrixRace extends SeriesRace {
 
     private List<String> getRunnerClubs(final String runner_name) {
 
-        return null;
+        return races.stream().
+                filter(Objects::nonNull).
+                flatMap(race -> race.getOverallResults().stream()).
+                map(result -> (IndividualRaceResult)result).
+                map(result -> result.entry.runner).
+                filter(runner -> runner.name.equals(runner_name)).
+                map(runner -> runner.club).
+                distinct().
+                sorted().
+                toList();
     }
 
     private List<String> getRunnerNames() {
 
-        return null;
+        return races.stream().
+                filter(Objects::nonNull).
+                flatMap(race -> race.getOverallResults().stream()).
+                map(result -> (IndividualRaceResult)result).
+                map(result -> result.entry.runner.name).
+                distinct().
+                toList();
     }
 
     private void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
 
+        races.stream().
+                filter(Objects::nonNull).
+                flatMap(race -> race.getOverallResults().stream()).
+                map(result -> (IndividualRaceResult)result).
+                map(result -> result.entry.runner).
+                filter(runner -> runner.name.equals(runner_name)).
+                forEachOrdered(runner -> runner.club = defined_club);
     }
 
-    public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    public double calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
-        return 0;
+        Duration median_time = individual_race.getMedianTime();
+        Duration runner_time = getResult(individual_race, runner);
+
+        if (runner_time == null) return 0.0;
+
+        return (double)runner_time.toMillis() / (double)median_time.toMillis() * SCORE_FOR_MEDIAN_POSITION;
+    }
+
+    private Duration getResult(IndividualRace individualRace, Runner runner) {
+
+        return individualRace.getOverallResults().stream().
+                map(result -> ((IndividualRaceResult)result)).
+                filter(result -> runner.equals(result.entry.runner)).
+                map(IndividualRaceResult::duration).
+                findFirst().
+                orElse(null);
     }
 }

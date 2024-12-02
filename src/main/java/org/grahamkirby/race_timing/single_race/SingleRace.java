@@ -57,6 +57,8 @@ public abstract class SingleRace extends Race {
 
         entries = ((SingleRaceInput)input).loadEntries();
         raw_results = ((SingleRaceInput)input).loadRawResults();
+
+        overall_results = ((SingleRaceInput)input).loadOverallResults();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

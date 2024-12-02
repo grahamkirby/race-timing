@@ -27,7 +27,7 @@ public class IndividualRaceResult extends RaceResult {
 
     public IndividualRaceEntry entry;
     public Duration finish_time;
-    CompletionStatus completion_status;
+    public CompletionStatus completion_status;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

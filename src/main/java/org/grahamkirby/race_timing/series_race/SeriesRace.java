@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public abstract class SeriesRace extends Race {
 
@@ -67,15 +68,19 @@ public abstract class SeriesRace extends Race {
     @Override
     protected void initialiseResults() {
 
+        final Predicate<RaceResult> inclusion_predicate = getResultInclusionPredicate();
+
         races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
+            filter(inclusion_predicate).
             map(result -> (IndividualRaceResult) result).
             map(result -> result.entry.runner).
             distinct().
             map(this::getOverallResult).
             forEachOrdered(overall_results::add);
     }
+
 
     @Override
     protected void outputResults() throws IOException {
@@ -108,4 +113,5 @@ public abstract class SeriesRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected abstract RaceResult getOverallResult(final Runner runner);
+    protected abstract Predicate<RaceResult> getResultInclusionPredicate();
 }

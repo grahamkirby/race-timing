@@ -56,9 +56,13 @@ public abstract class Race {
     // Single race.
     public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
     public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
+    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
     public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
     public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
     public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
+
+    // Individual race.
+    public static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
 
     // Relay race.
     public static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
@@ -202,6 +206,9 @@ public abstract class Race {
 
     public Path getPath(final String path) {
 
+        if (path == null) {
+            int x = 3;
+        }
         return path.startsWith("/") ?
             getPathRelativeToProjectRoot(path) :
             getPathRelativeToRaceConfigFile(path);
@@ -229,7 +236,8 @@ public abstract class Race {
 
     public List<RaceResult> getOverallResults() {
 
-        return getOverallResults(getPrizeCategories());
+        return overall_results;
+//        return getOverallResults(getPrizeCategories());
     }
 
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
@@ -240,7 +248,7 @@ public abstract class Race {
 
     public List<RaceResult> getOverallResults(final Predicate<RaceResult> inclusion_filter) {
 
-        final List<RaceResult> results = overall_results.stream().filter(inclusion_filter).toList();
+        final List<RaceResult> results = getOverallResults().stream().filter(inclusion_filter).toList();
         setPositionStrings(results, allowEqualPositions());
         return results;
     }
@@ -282,6 +290,9 @@ public abstract class Race {
 
     protected int compareCompletion(final RaceResult r1, final RaceResult r2) {
 
+        if (r1 == null) {
+            int x = 3;
+        }
         return Boolean.compare(r1.getCompletionStatus() != CompletionStatus.COMPLETED, r2.getCompletionStatus() != CompletionStatus.COMPLETED);
     }
 
@@ -416,12 +427,12 @@ public abstract class Race {
         sortDNFResults();
     }
 
-    private void sortAllResults() {
+    protected void sortAllResults() {
 
         overall_results.sort(combineComparators(getComparators()));
     }
 
-    private void sortDNFResults() {
+    protected void sortDNFResults() {
 
         overall_results.sort(dnfOnly(combineComparators(getDNFComparators())));
     }
@@ -471,6 +482,7 @@ public abstract class Race {
 
     private boolean entryCategoryIsEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
+        if (entry_category == null) return true;
         return entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
                 entry_category.getMaximumAge() <= prize_category.getMaximumAge();
     }

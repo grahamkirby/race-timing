@@ -1,0 +1,106 @@
+Scott Fraser	Unattached	M	01:27:07
+Duncan Coombs	HBT	M	01:33:52
+Daniel Stansfield	Forth Valley O	M Jun	01:34:32
+Iain Gilmore	Carnethy	M	01:37:27
+Colin Doig	HBT	M	01:38:17
+James Waldie	Carnethy	M	01:38:45
+Thomas Knox	Anster Haddies	M	01:41:35
+Billy Gibson	Dundee Hawks	M40	01:41:39
+Jonny Knox	Anster Haddies	M50	01:42:26
+Chris Walsh	Dundee Hawks	M	01:42:40
+Peter Gardner	HBT	M	01:44:12
+Neil Arnott	Lomonds	M40	01:45:37
+Steve Mathews	Dundee Hawks	M40	01:46:13
+Peter Simpson	Carnegie	M50	01:46:50
+Simon Titmuss	Carnethy	M40	01:48:39
+Stuart Sanderson	Penicuik	M50	01:49:07
+Steven King	Carnegie	M40	01:50:33
+Andy Howett	Carnethy	M	01:50:36
+Bruce Smith	Carnethy	M50	01:51:04
+Neil Burnett	Carnethy	M40	01:51:57
+Munro Stewart	Dundee Hawks	M	01:52:35
+Tim McCall	Norham	M50	01:52:56
+Willie Rennie	Carnegie	M40	01:53:02
+Atis Calejis	Latvia	M40	01:53:56
+Rob Wilson	Penicuik	M40	01:54:41
+David Scott	Ochils	M60	01:54:58
+Neil Gilmore	Carnethy	M50	01:55:26
+Robert MacLean	Lochaber	M40	01:55:28
+David Lamont	Unattached	M40	01:56:34
+Manny Gorman	Westerlands	M40	01:57:21
+Kevin Davie	Carnegie	M	01:57:25
+Neil McLure	Carnegie	M40	01:57:36
+Ben Stansfield	Forth Valley O	M40	02:00:30
+Scott Strachan	Kinross	M40	02:01:04
+Dave Turner	Lomonds	M40	02:02:06
+Douglas McQueen	Carnethy	M	02:02:10
+Ian Poolman	Fife	M40	02:02:35
+Mark Ferguson	Fife	M	02:02:45
+Jan Ackesko	Lomonds	M50	02:03:22
+Michael Greens	Penicuik	M Jun	02:03:58
+Les Turnbull	Norham	M60	02:04:04
+Roddy Cunningham	Westerlands	M	02:05:14
+Gus Bowman	Lomonds	M50	02:05:31
+Euan MacKinnon	Carnethy	M40	02:07:15
+Colin Wilson	Lomonds	M50	02:08:08
+Rachel Dance	Unattached	F	02:08:14
+Rosie Knox	Anster Haddies	F Jun	02:08:40
+Pat Bartlett	Interlopers	M40	02:08:55
+Billy Pillet	Norham	M50	02:09:00
+Alison Whyte	Carnegie	F40	02:09:27
+Simon Fox	Fife	M50	02:09:41
+Chloe Haines	HBT	F	02:09:54
+Daniel Newman	Fife	M40	02:12:08
+Torun Purba	Unattached	M	02:12:28
+Gillian Cairns	Penicuik	F40	02:12:32
+Zoe Johnston	Falkland Trail R	F40	02:12:33
+Ross Murdoch	Falkland Trail R	M	02:12:40
+Paul Sleggs	Unattached	M	02:13:49
+Kevin Banks	Unattached	M	02:13:50
+Joan Wilson	Lomonds	F50	02:14:20
+Phil Forte	Dundee Hawks	F50	02:14:36
+Gregor Garston	Penicuik	M	02:14:39
+Jocelyn Scott	Fife	F60	02:15:00
+Robert Summers	Beacon	M40	02:15:20
+Barry Davie	Carnegie	M40	02:15:26
+Kevin Smith	Lomonds	M40	02:16:20
+Roderick Pugh	Kilmarnock	M60	02:18:07
+Fraser Munro	Carnegie	M40	02:18:13
+Seona Burnett	Harmeny	F40	02:18:14
+Gina McAllister	Carnethy	F	02:19:41
+Louise Johnston	Unattached	F	02:22:02
+Christopher McKiddie	Westerlands	M	02:24:26
+Lucy Taylor	HBT	F	02:24:48
+Chris Downie	Penicuik	M50	02:24:59
+Gordon Bulloch	Westerlands	M40	02:25:15
+Lorna Ascroft	Carnethy	F40	02:25:18
+Lynn Hunter	Kinross	F40	02:25:25
+Susan Harley	Falkland Trail R	F40	02:25:28
+Suzanne Lumsden	Falkland Trail R	F40	02:25:31
+Carole Mowbary	Falkland Trail R	F50	02:25:35
+Steven Clough	Norham	M60	02:26:07
+Sadie Kemp	Penicuik	F40	02:26:22
+Roy Gorres	Unattached	M50	02:26:57
+Inge Smit	Unattached	F50	02:26:57
+Andy Sim	Carnegie	M40	02:27:39
+Grant Devon	Unattached	M40	02:28:44
+Liz Killean	Fife	F50	02:29:07
+Margaret Martin	Fife	F60	02:29:29
+Fionna McKinnon	Carnethy	F40	02:30:53
+Chris Huntly	Tinto	M50	02:33:04
+Ron Fraser	Dundee Hawks	M50	02:35:25
+Yvonne Dehn	Anster Haddies	F	02:35:40
+Pamela Cruikshank	Anster Haddies	F50	02:35:40
+Jasmine Hay	Anster Haddies	F	02:35:40
+Brian R Smith	Fife	M50	02:37:33
+Don Dawson	Unattached	M60	02:39:18
+Karen Forsyth	Carnegie	F	02:42:31
+Lucy Murdoch	Unattached	F40	02:47:43
+Neil Hunter	Kinross	M40	02:51:15
+Tony Dellros	Lomonds	M50	02:52:29
+Carole Mallet	Lomonds	F50	02:53:12
+Rhona Bennie	Westerlands	F40	02:55:10
+Brenda Paul	Westerlands	F	02:55:15
+Norman Smith	Kinross	M80	03:25:00
+Billy Gillan	Falkland Trail R	M60	03:25:55
+Alan Vigrow	Dundee Hawks	M50	03:30:40

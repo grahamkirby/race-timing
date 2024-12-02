@@ -131,12 +131,23 @@ public class Normalisation {
 
     public static Duration parseTime(String element) {
 
+        try {
+            return parseTime(element, ":");
+        }
+        catch (Exception _) {
+            return parseTime(element, "\\.");
+        }
+    }
+
+
+    private static Duration parseTime(String element, String separator) {
+
         element = element.strip();
-        if (element.startsWith(":")) element = "0" + element;
-        if (element.endsWith(":")) element = element + "0";
+        if (element.startsWith(separator)) element = "0" + element;
+        if (element.endsWith(separator)) element = element + "0";
 
         try {
-            final String[] parts = element.split(":");
+            final String[] parts = element.split(separator);
             final String time_as_ISO = STR."PT\{hours(parts)}\{minutes(parts)}\{seconds(parts)}";
 
             return Duration.parse(time_as_ISO);

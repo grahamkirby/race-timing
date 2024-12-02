@@ -16,10 +16,10 @@
  */
 package org.grahamkirby.race_timing.single_race;
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceEntry;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,6 +33,8 @@ import static org.grahamkirby.race_timing.common.Race.*;
 
 public abstract class SingleRaceInput extends RaceInput {
 
+    final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+
     public SingleRaceInput(final Race race) {
 
         super(race);
@@ -44,13 +46,16 @@ public abstract class SingleRaceInput extends RaceInput {
 
         entries_path = race.getProperty(KEY_ENTRIES_PATH);
         raw_results_path = race.getProperty(KEY_RAW_RESULTS_PATH);
+        results_path = race.getProperty(KEY_RESULTS_PATH);
         categories_entry_path = race.getProperty(KEY_CATEGORIES_ENTRY_PATH);
         categories_prize_path = race.getProperty(KEY_CATEGORIES_PRIZE_PATH);
     }
 
     protected List<RaceEntry> loadEntries() throws IOException {
 
-        final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+//        final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+        if (entries_path == null) return List.of();
+
         final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
                 filter(line -> !line.isEmpty()).
                 map(race_entry_mapper).
@@ -62,7 +67,33 @@ public abstract class SingleRaceInput extends RaceInput {
         return entries;
     }
 
+    protected List<RaceResult> loadOverallResults() throws IOException {
+
+//        final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+        if (results_path == null) return new ArrayList<>();
+
+        return Files.readAllLines(race.getPath(results_path)).stream().
+                filter(line -> !line.isEmpty()).
+                map(line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()))).
+                toList();
+    }
+
+    int next_fake_bib_number = 1;
+
+    private RaceResult makeRaceResult(List<String> elements) {
+
+        elements.addFirst(String.valueOf(next_fake_bib_number++));
+
+        IndividualRaceEntry entry = new IndividualRaceEntry(elements, race);
+        IndividualRaceResult result = new IndividualRaceResult((IndividualRace) race, entry);
+        result.finish_time = Normalisation.parseTime(elements.getLast());
+        result.completion_status = CompletionStatus.COMPLETED;
+        return result;
+    }
+
     protected List<RawResult> loadRawResults(final Path results_path) throws IOException {
+
+        if (raw_results_path == null) return List.of();
 
         final List<RawResult> raw_results = new ArrayList<>();
 
