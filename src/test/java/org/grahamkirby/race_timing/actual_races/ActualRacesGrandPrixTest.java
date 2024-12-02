@@ -14,31 +14,29 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.individual_race;
+package org.grahamkirby.race_timing.actual_races;
 
+import org.grahamkirby.race_timing.RaceTest;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceInput;
+import org.grahamkirby.race_timing.series_race.fife_ac_grand_prix.GrandPrixRace;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.List;
+import java.nio.file.Path;
 
-public class IndividualRaceInput extends SingleRaceInput {
+public class ActualRacesGrandPrixTest extends RaceTest {
 
-    public IndividualRaceInput(final Race race) {
-        super(race);
+    // TODO test for runner competing as more than one of eligible clubs.
+    // TODO test for runner scores differing only in fractional part.
+    @Override
+    protected Race makeRace(final Path config_file_path) throws IOException {
+        return new GrandPrixRace(config_file_path);
     }
 
-    @Override
-    protected RaceEntry makeRaceEntry(final List<String> elements) {
-        return new IndividualRaceEntry(elements, race);
-    }
-
-    @Override
-    public List<RawResult> loadRawResults() throws IOException {
-
-        if (raw_results_path == null) return null;
-        return loadRawResults(race.getPath(raw_results_path));
+    @Test
+    @Disabled
+    public void grandPrix2016Completed() throws Exception {
+        testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_12");
     }
 }

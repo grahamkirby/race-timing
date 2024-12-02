@@ -1,0 +1,11 @@
+YEAR = 2016
+RACE_NAME_FOR_RESULTS = Grand Prix
+RACE_NAME_FOR_FILENAMES = grand_prix
+
+RACES = normans_law/input/config.txt,kinnoull/input/config.txt,largo/input/config.txt,lomonds/input/config.txt,kinross_10k/input/config.txt,stirling_10k/input/config.txt,east_neuk_10k/input/config.txt,giffordtown_5k/input/config.txt,black_rock/input/config.txt,sandy_slither/input/config.txt,trail_champs/input/config.txt,gateside_gallop/input/config.txt
+MINIMUM_NUMBER_OF_RACES = 6
+
+CATEGORIES_PRIZE_PATH = categories_prize_individual_senior.csv
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv

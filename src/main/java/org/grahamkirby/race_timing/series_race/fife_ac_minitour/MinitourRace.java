@@ -36,6 +36,7 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class MinitourRace extends SeriesRace {
 
@@ -132,6 +133,12 @@ public class MinitourRace extends SeriesRace {
             toList();
 
         return new MinitourRaceResult(runner, times, this);
+    }
+
+    @Override
+    protected Predicate<RaceResult> getResultInclusionPredicate() {
+
+        return (_ -> true);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

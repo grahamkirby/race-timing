@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class MidweekRace extends SeriesRace {
 
@@ -129,6 +130,12 @@ public class MidweekRace extends SeriesRace {
             toList();
 
         return new MidweekRaceResult(runner, scores, this);
+    }
+
+    @Override
+    protected Predicate<RaceResult> getResultInclusionPredicate() {
+
+        return (_ -> true);
     }
 
     public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
