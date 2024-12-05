@@ -38,7 +38,6 @@ public class IndividualRaceInput extends SingleRaceInput {
     @Override
     public List<RawResult> loadRawResults() throws IOException {
 
-        if (raw_results_path == null) return null;
-        return loadRawResults(race.getPath(raw_results_path));
+        return raw_results_path != null ? loadRawResults(race.getPath(raw_results_path)) : null;
     }
 }

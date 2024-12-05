@@ -21,11 +21,15 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
 public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
@@ -35,7 +39,21 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
     @Override
     public String getResultsHeader() {
-        return getSeriesResultsHeader() + ",Total,Completed\n";
+
+        return STR."Pos,Runner,Category,\{((SeriesRace) race).getRaces().stream().
+                filter(Objects::nonNull).
+                map(race1 -> race1.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
+                collect(Collectors.joining(","))}" + STR.",Total,Qualified\{getRaceCategoriesHeader()}\n";
+    }
+
+    private String getRaceCategoriesHeader() {
+
+        final StringBuilder builder = new StringBuilder();
+
+        for (final RaceCategory category : ((GrandPrixRace)race).race_categories)
+            builder.append(",").append(category.category_title()).append("?");
+
+        return builder.toString();
     }
 
     @Override
@@ -64,15 +82,24 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
             if (result.shouldBeDisplayedInResults()) {
 
-                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
+                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{result.runner.category.getShortName()},");
 
                 writer.append(
                     grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
-                        map(individual_race -> String.valueOf(Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner)))).
+                        map(individual_race -> {
+                            String s = String.valueOf(Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner)));
+                            return s.equals("0") ? "-" : s;
+                        }).
                         collect(Collectors.joining(","))
                 );
 
-                writer.append(STR.",\{Math.round(result.totalScore())},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}\n");
+                writer.append(STR.",\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? Math.round(result.totalScore()) : "-"},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}");
+
+                for (RaceCategory category : ((GrandPrixRace)race).race_categories) {
+                    writer.append(",").append(grand_prix_race.hasCompletedCategory(result, category) ? "Y" : "N");
+                }
+
+                writer.append("\n");
             }
         }
     }

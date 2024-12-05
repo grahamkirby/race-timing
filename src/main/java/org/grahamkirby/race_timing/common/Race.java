@@ -34,7 +34,6 @@ import java.util.function.Predicate;
 
 public abstract class Race {
 
-    // TODO add support for Grand Prix series.
     // TODO add support for Tour of Fife series.
     // TODO add support for Junior Hill Running Champs.
 
@@ -76,6 +75,10 @@ public abstract class Race {
 
     // Series race.
     public static final String KEY_RACES = "RACES";
+
+    // Grand Prix race.
+    public static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
+    public static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
 
     // Midweek race.
     public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
@@ -206,9 +209,6 @@ public abstract class Race {
 
     public Path getPath(final String path) {
 
-        if (path == null) {
-            int x = 3;
-        }
         return path.startsWith("/") ?
             getPathRelativeToProjectRoot(path) :
             getPathRelativeToRaceConfigFile(path);
@@ -237,7 +237,6 @@ public abstract class Race {
     public List<RaceResult> getOverallResults() {
 
         return overall_results;
-//        return getOverallResults(getPrizeCategories());
     }
 
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
@@ -290,9 +289,6 @@ public abstract class Race {
 
     protected int compareCompletion(final RaceResult r1, final RaceResult r2) {
 
-        if (r1 == null) {
-            int x = 3;
-        }
         return Boolean.compare(r1.getCompletionStatus() != CompletionStatus.COMPLETED, r2.getCompletionStatus() != CompletionStatus.COMPLETED);
     }
 
@@ -333,10 +329,7 @@ public abstract class Race {
 
                 if (highest_index_with_same_performance > result_index) {
 
-                    // Record the same position for all the results with equal times.
-                    for (int i = result_index; i <= highest_index_with_same_performance; i++)
-                        results.get(i).position_string = result_index + 1 + "=";
-
+                    recordEqualPositions(results, result_index, highest_index_with_same_performance);
                     result_index = highest_index_with_same_performance;
                 } else
                     setPositionStringByPosition(results, result_index);
@@ -347,13 +340,26 @@ public abstract class Race {
                 setPositionStringByPosition(results, result_index);
     }
 
+    private void recordEqualPositions(List<? extends RaceResult> results, int start_index, int end_index) {
+
+        final int equal_position = start_index + 1;
+
+        // Record the same position for all the results with equal times.
+        for (int i = start_index; i <= end_index; i++)
+            results.get(i).position_string = equal_position + "=";
+    }
+
     private int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
 
+        final RaceResult first_result_considered = results.get(start_index);
         int highest_index_with_same_result = start_index;
 
-        while (highest_index_with_same_result + 1 < results.size() &&
-                results.get(start_index).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
+        while (highest_index_with_same_result + 1 < results.size()) {
+
+            final RaceResult next_result_considered = results.get(highest_index_with_same_result + 1);
+            if (first_result_considered.comparePerformanceTo(next_result_considered) != 0) break;
             highest_index_with_same_result++;
+        }
 
         return highest_index_with_same_result;
     }

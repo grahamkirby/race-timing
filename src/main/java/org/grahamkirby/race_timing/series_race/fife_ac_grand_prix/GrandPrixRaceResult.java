@@ -20,6 +20,7 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.List;
@@ -52,7 +53,8 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
 
     public boolean shouldDisplayPosition() {
 
-        return canCompleteSeries();
+        if (((SeriesRace)race).seriesHasCompleted()) return completedSeries();
+        else return canCompleteSeries();
     }
 
     protected double totalScore() {
@@ -61,11 +63,13 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
             ((GrandPrixRace)race).getNumberOfRacesTakenPlace(),
             ((GrandPrixRace)race).getMinimumNumberOfRaces());
 
-        return scores.stream().
-            sorted().
-            toList().
-            reversed().
-            subList(0, number_of_races_to_count).stream().
+        List<Double> reversed = scores.stream().
+                sorted().
+                filter(score -> score > 0).
+                toList();
+//                reversed();
+        return reversed.
+            subList(0, Math.min(number_of_races_to_count, reversed.size())).stream().
             reduce(0.0, Double::sum);
     }
 }

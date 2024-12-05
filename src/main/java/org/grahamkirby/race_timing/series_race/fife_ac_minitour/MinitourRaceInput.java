@@ -166,8 +166,8 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
         final EntryCategory runner_entry_category = individual_race.findCategory(bib_number);
 
-        return second_wave_categories.stream().map(
-                second_wave_category -> second_wave_category.equalGenderAndAgeCategory(runner_entry_category)).
-                reduce(Boolean::logicalOr).orElseThrow();
+        return second_wave_categories.stream().
+            map(second_wave_category -> second_wave_category.equalGenderAndAgeCategory(runner_entry_category)).
+            reduce(Boolean::logicalOr).orElseThrow();
     }
 }

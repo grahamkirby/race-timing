@@ -70,7 +70,7 @@ public abstract class SeriesRaceResult extends RaceResult {
         return numberOfRacesCompleted() + number_of_races_remaining >= series_race.getMinimumNumberOfRaces();
     }
 
-    protected int numberOfRacesCompleted() {
+    public int numberOfRacesCompleted() {
 
         return (int) ((SeriesRace)race).races.stream().
             filter(Objects::nonNull).
