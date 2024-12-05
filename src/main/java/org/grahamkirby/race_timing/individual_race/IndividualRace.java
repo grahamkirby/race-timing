@@ -134,15 +134,11 @@ public class IndividualRace extends SingleRace {
     @Override
     protected void initialiseResults() {
 
-        if (entries != null) {
+        if (entries != null)
             entries.stream().
-                    map(entry -> (IndividualRaceEntry) entry).
-                    map(entry -> new IndividualRaceResult(this, entry)).
-                    forEachOrdered(overall_results::add);
-        }
-        else {
-
-        }
+                map(entry -> (IndividualRaceEntry) entry).
+                map(entry -> new IndividualRaceResult(this, entry)).
+                forEachOrdered(overall_results::add);
     }
 
     @Override
@@ -200,15 +196,18 @@ public class IndividualRace extends SingleRace {
 
         if (median_time_string != null) return Normalisation.parseTime(median_time_string);
 
-        List<RaceResult> results = getOverallResults();
+        final List<RaceResult> results = getOverallResults();
+
         if (results.size() % 2 == 0) {
-            RaceResult result1 = results.get(results.size() / 2);
-            RaceResult result2 = results.get(results.size() / 2 + 1);
-            return ((IndividualRaceResult) result1).finish_time.plus(((IndividualRaceResult) result2).finish_time).dividedBy(2);
+
+            final IndividualRaceResult median_result1 = (IndividualRaceResult) results.get(results.size() / 2);
+            final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2 + 1);
+
+            return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
         }
         else {
-            RaceResult result = results.get(results.size() / 2);
-            return ((IndividualRaceResult) result).finish_time;
+            final IndividualRaceResult median_result = (IndividualRaceResult) results.get(results.size() / 2);
+            return median_result.finish_time;
         }
     }
 

@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IndividualRaceEntry extends RaceEntry {
 
@@ -64,18 +65,16 @@ public class IndividualRaceEntry extends RaceEntry {
         // Expected format of map string: "1,3-2,4,5",
         // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
 
-        List<String> list = Arrays.stream(entry_column_map_string.split(",")).
-                map(s -> getMappedElement(elements, s)).
-                toList();
-        return list;
+        return Arrays.stream(entry_column_map_string.split(",")).
+            map(s -> getMappedElement(elements, s)).
+            toList();
     }
 
     private static String getMappedElement(final List<String> elements, final String element_combination_map) {
 
         return Arrays.stream(element_combination_map.split("-")).
-                map(column_number_as_string -> elements.get(Integer.parseInt(column_number_as_string) - 1)).
-                reduce((s1, s2) -> s1 + " " + s2).
-                orElse("");
+            map(column_number_as_string -> elements.get(Integer.parseInt(column_number_as_string) - 1)).
+            collect(Collectors.joining(" "));
     }
 
     @Override
@@ -86,7 +85,7 @@ public class IndividualRaceEntry extends RaceEntry {
     @Override
     public boolean equals(Object other) {
         return other instanceof IndividualRaceEntry other_entry &&
-                runner.name.equals(other_entry.runner.name) &&
-                runner.club.equals(other_entry.runner.club);
+            runner.name.equals(other_entry.runner.name) &&
+            runner.club.equals(other_entry.runner.club);
     }
 }

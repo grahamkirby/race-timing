@@ -81,7 +81,6 @@ public abstract class SeriesRace extends Race {
             forEachOrdered(overall_results::add);
     }
 
-
     @Override
     protected void outputResults() throws IOException {
 
@@ -108,6 +107,10 @@ public abstract class SeriesRace extends Race {
     public int getNumberOfRacesTakenPlace() {
 
         return (int) getRaces().stream().filter(Objects::nonNull).count();
+    }
+
+    public boolean seriesHasCompleted() {
+        return getNumberOfRacesTakenPlace() == getNumberOfRacesInSeries();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
