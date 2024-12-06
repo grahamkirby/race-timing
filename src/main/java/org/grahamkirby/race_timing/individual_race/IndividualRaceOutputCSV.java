@@ -63,12 +63,8 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
             final IndividualRaceResult result = (IndividualRaceResult) r;
 
-            // Check for case where no time recorded for runner, as opposed to finished but didn't complete course.
-            if (result.duration() != null) {
-
-                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.runner.name)},").
-                        append(STR."\{encode(result.entry.runner.club)},\{result.entry.runner.category.getShortName()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : "DNF"}\n");
-            }
+            writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.runner.name)},").
+                    append(STR."\{encode(result.entry.runner.club)},\{result.entry.runner.category.getShortName()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : "DNF"}\n");
         }
     }
 }

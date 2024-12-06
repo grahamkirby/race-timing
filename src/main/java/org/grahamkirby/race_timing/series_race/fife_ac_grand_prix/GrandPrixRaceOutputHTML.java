@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
+package org.grahamkirby.race_timing.series_race.fife_ac_grand_prix;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
@@ -26,9 +26,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.stream.Collectors;
 
-public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
+import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
-    public MidweekRaceOutputHTML(final Race race) {
+public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
+
+    public GrandPrixRaceOutputHTML(final Race race) {
         super(race);
     }
 
@@ -62,49 +64,68 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
                             <th>Pos</th>
                             <th>Runner</th>
                             <th>Category</th>
-                            <th>Club</th>
                 """);
 
-            for (int i = 0; i < ((MidweekRace)race).getNumberOfRacesTakenPlace(); i++)
+            for (int i = 0; i < ((GrandPrixRace)race).getNumberOfRacesTakenPlace(); i++)
                 writer.append(STR."""
-                                <th>Race \{i + 1}</th>
+                                <th>\{((GrandPrixRace)race).getRaces().get(i).getProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
                     """);
 
-            writer.append("""
+            writer.append(STR."""
                         <th>Total</th>
                         <th>Completed</th>
+                        \{getRaceCategoriesHeader()}
                     </tr>
                 </thead>
                 <tbody>
             """);
         }
 
+        private String getRaceCategoriesHeader() {
+
+            final StringBuilder builder = new StringBuilder();
+
+            for (final RaceCategory category : ((GrandPrixRace)race).race_categories)
+                builder.append("<th>").append(category.category_title()).append("?").append("</th>");
+
+            return builder.toString();
+        }
+
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MidweekRaceResult result = ((MidweekRaceResult) r);
-            final MidweekRace midweek_race = (MidweekRace)race;
-            final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
+            final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
+            final GrandPrixRace grand_prix_race = (GrandPrixRace)race;
+            final int number_of_races_taken_place = grand_prix_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."""
                     <tr>
                         <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
                         <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
                         <td>\{result.runner.category.getShortName()}</td>
-                        <td>\{result.runner.club}</td>
             """);
 
             writer.append(
-                midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
-                    map(individual_race -> STR."""
-                                        <td>\{midweek_race.calculateRaceScore(individual_race, result.runner)}</td>
-                        """).
-                    collect(Collectors.joining())
+                grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
+                map(individual_race -> {
+                    long s = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
+                    return STR."""
+                                        <td>\{s == 0 ? "-" : String.valueOf(s)}</td>
+                        """;
+                }).
+                collect(Collectors.joining())
             );
 
             writer.append(STR."""
-                        <td>\{result.totalScore()}</td>
+                        <td>\{Math.round(result.totalScore())}</td>
                         <td>\{result.completedSeries() ? "Y" : "N"}</td>
+                """);
+
+            for (RaceCategory category : ((GrandPrixRace)race).race_categories) {
+                writer.append("<td>").append(grand_prix_race.hasCompletedCategory(result, category) ? "Y" : "N").append("</td>");
+            }
+
+            writer.append("""
                     </tr>
                 """);
         }
@@ -131,10 +152,10 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MidweekRaceResult result = ((MidweekRaceResult)r);
+            final GrandPrixRaceResult result = ((GrandPrixRaceResult)r);
 
             writer.append(STR."""
-                    <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{result.totalScore()}</li>
+                    <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{Math.round(result.totalScore())}</li>
                 """);
         }
     }

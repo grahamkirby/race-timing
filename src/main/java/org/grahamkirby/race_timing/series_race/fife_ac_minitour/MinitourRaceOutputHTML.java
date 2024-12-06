@@ -127,28 +127,25 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
             final MinitourRace race = (MinitourRace) result.race;
             final List<IndividualRace> races = race.getRaces();
 
-            if (result.shouldBeDisplayedInResults()) {
+            writer.append(STR."""
+                    <tr>
+                        <td>\{result.shouldDisplayPosition() ? result.position_string : "-"}</td>
+                        <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
+                        <td>\{result.runner.category.getShortName()}</td>
+                        <td>\{result.runner.club}</td>
+            """);
 
-                writer.append(STR."""
-                        <tr>
-                            <td>\{result.shouldDisplayPosition() ? result.position_string : "-"}</td>
-                            <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
-                            <td>\{result.runner.category.getShortName()}</td>
-                            <td>\{result.runner.club}</td>
-                """);
+            for (int i = 0; i < result.times.size(); i++)
 
-                for (int i = 0; i < result.times.size(); i++)
+                if (result.times.get(i) != null)
+                    writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
+                else if (races.get(i) != null)
+                    writer.append("            <td>-</td>\n");
 
-                    if (result.times.get(i) != null)
-                        writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
-                    else if (races.get(i) != null)
-                        writer.append("            <td>-</td>\n");
-
-                writer.append(STR."""
-                            <td>\{result.shouldDisplayPosition() ? format(result.duration()) : "-"}</td>
-                        </tr>
-                """);
-            }
+            writer.append(STR."""
+                        <td>\{result.shouldDisplayPosition() ? format(result.duration()) : "-"}</td>
+                    </tr>
+            """);
         }
     }
 
@@ -213,17 +210,15 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final IndividualRaceResult result = (IndividualRaceResult) r;
 
-            if (result.shouldBeDisplayedInResults())
-
-                writer.append(STR."""
-                        <tr>
-                            <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
-                            <td>\{result.entry.bib_number}</td>
-                            <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
-                            <td>\{result.entry.runner.category.getShortName()}</td>
-                            <td>\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : DNF_STRING}</td>
-                        </tr>
-                """);
+            writer.append(STR."""
+                    <tr>
+                        <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
+                        <td>\{result.entry.bib_number}</td>
+                        <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
+                        <td>\{result.entry.runner.category.getShortName()}</td>
+                        <td>\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : DNF_STRING}</td>
+                    </tr>
+            """);
         }
     }
 }

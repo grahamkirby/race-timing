@@ -48,9 +48,11 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
     @Override
     public boolean shouldBeDisplayedInResults() {
+
         return getCompletionStatus() != CompletionStatus.DNS;
     }
 
+    @Override
     public boolean shouldDisplayPosition() {
 
         return canCompleteSeries();

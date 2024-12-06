@@ -19,8 +19,6 @@ package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
@@ -115,15 +113,6 @@ public class MinitourRace extends SeriesRace {
         return List.of();
     }
 
-    @Override
-    protected EntryCategory getEntryCategory(RaceResult result) {
-        return ((MinitourRaceResult) result).runner.category;
-    }
-
-    @Override
-    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category) {
-        return entry_category.getGender().equals(prize_category.getGender());
-    }
 
     @Override
     protected RaceResult getOverallResult(final Runner runner) {
@@ -139,6 +128,14 @@ public class MinitourRace extends SeriesRace {
     protected Predicate<RaceResult> getResultInclusionPredicate() {
 
         return (_ -> true);
+    }
+
+    @Override
+    protected void processMultipleClubsForRunner(String ignore1, List<String> ignore2) {
+    }
+
+    @Override
+    protected void checkClubsForRunner(String ignore) {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

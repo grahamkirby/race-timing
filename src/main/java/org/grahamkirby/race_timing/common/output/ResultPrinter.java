@@ -25,10 +25,12 @@ public abstract class ResultPrinter {
     public void print(final List<? extends RaceResult> results, final boolean include_credit_link) throws IOException {
 
         if (!results.isEmpty()) {
+
             printResultsHeader();
 
             for (final RaceResult result : results)
-                printResult(result);
+                if (result.shouldBeDisplayedInResults())
+                    printResult(result);
 
             printResultsFooter(include_credit_link);
         }

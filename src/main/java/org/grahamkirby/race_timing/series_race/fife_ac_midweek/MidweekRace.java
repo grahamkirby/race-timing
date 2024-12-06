@@ -20,8 +20,6 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
@@ -36,12 +34,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class MidweekRace extends SeriesRace {
 
-    private int max_race_score;
+    private int score_for_first_place;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -63,17 +60,17 @@ public class MidweekRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void readProperties() {
+    protected void configure() throws IOException {
 
-        minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
-        max_race_score = Integer.parseInt(getProperty(KEY_MAX_RACE_SCORE));
+        super.configure();
+        configureClubs();
     }
 
     @Override
-    protected void configureInputData() throws IOException {
+    protected void readProperties() {
 
-        super.configureInputData();
-        getRunnerNames().forEach(this::checkClubsForRunner);
+        super.readProperties();
+        score_for_first_place = Integer.parseInt(getProperty(KEY_SCORE_FOR_FIRST_PLACE));
     }
 
     @Override
@@ -113,16 +110,6 @@ public class MidweekRace extends SeriesRace {
     }
 
     @Override
-    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
-        return entry_category.getGender().equals(prize_category.getGender());
-    }
-
-    @Override
-    protected EntryCategory getEntryCategory(final RaceResult result) {
-        return ((MidweekRaceResult) result).runner.category;
-    }
-
-    @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = races.stream().
@@ -145,86 +132,22 @@ public class MidweekRace extends SeriesRace {
         // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
 
         final List<IndividualRaceResult> gender_results = individual_race.getOverallResults().stream().
-                map(result -> (IndividualRaceResult) result).
-                filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
-                filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
-                toList();
+            map(result -> (IndividualRaceResult) result).
+            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
+            filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
+            toList();
 
         final int gender_position = (int) gender_results.stream().
-                takeWhile(result -> !result.entry.runner.equals(runner)).
-                count() + 1;
+            takeWhile(result -> !result.entry.runner.equals(runner)).
+            count() + 1;
 
-        return gender_position <= gender_results.size() ? Math.max(max_race_score - gender_position + 1, 0) : 0;
+        return gender_position <= gender_results.size() ? Math.max(score_for_first_place - gender_position + 1, 0) : 0;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void checkClubsForRunner(final String runner_name) {
+    protected void processMultipleClubsForRunner(final String runner_name, final List<String> clubs) {
 
-        // Where a runner name is associated with a single entry with a defined club
-        // plus some other entries with no club defined, add the club to those entries.
-
-        // Where a runner name is associated with multiple clubs, leave as is, under
-        // assumption that they are separate runner_names.
-        final List<String> clubs_for_runner = getRunnerClubs(runner_name);
-        final List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
-
-        final int number_of_defined_clubs = defined_clubs.size();
-        final int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
-
-        if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
-            recordDefinedClubForRunnerName(runner_name, defined_clubs.getFirst());
-
-        if (number_of_defined_clubs > 1)
-            noteMultipleClubsForRunnerName(runner_name, defined_clubs);
-    }
-
-    private void noteMultipleClubsForRunnerName(String runner_name, List<String> defined_clubs) {
-
-        getNotes().append(STR."Runner name \{runner_name} recorded for multiple clubs: \{String.join(", ", defined_clubs)}\n");
-    }
-
-    private List<String> getDefinedClubs(final List<String> clubs) {
-        return clubs.stream().filter(this::clubIsDefined).toList();
-    }
-
-    private boolean clubIsDefined(final String club) {
-        return !club.equals("?");
-    }
-
-    private List<String> getRunnerClubs(final String runner_name) {
-
-        return races.stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
-            map(result -> result.entry.runner).
-            filter(runner -> runner.name.equals(runner_name)).
-            map(runner -> runner.club).
-            distinct().
-            sorted().
-            toList();
-    }
-
-    private List<String> getRunnerNames() {
-
-        return races.stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
-            map(result -> result.entry.runner.name).
-            distinct().
-            toList();
-    }
-
-    private void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
-
-        races.stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
-            map(result -> result.entry.runner).
-            filter(runner -> runner.name.equals(runner_name)).
-            forEachOrdered(runner -> runner.club = defined_club);
+        noteMultipleClubsForRunnerName(runner_name, clubs);
     }
 }

@@ -62,18 +62,15 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
             final MidweekRace midweek_race = (MidweekRace)race;
             final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
 
-            if (result.shouldBeDisplayedInResults()) {
+            writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
-                writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
+            writer.append(
+                midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
+                    map(individual_race -> String.valueOf(midweek_race.calculateRaceScore(individual_race, result.runner))).
+                    collect(Collectors.joining(","))
+            );
 
-                writer.append(
-                    midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
-                        map(individual_race -> String.valueOf(midweek_race.calculateRaceScore(individual_race, result.runner))).
-                        collect(Collectors.joining(","))
-                );
-
-                writer.append(STR.",\{result.totalScore()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}\n");
-            }
+            writer.append(STR.",\{result.totalScore()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}\n");
         }
     }
 }
