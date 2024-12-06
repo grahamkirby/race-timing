@@ -48,28 +48,24 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
 
     @Override
     public boolean shouldBeDisplayedInResults() {
+
         return getCompletionStatus() != CompletionStatus.DNS;
     }
 
+    @Override
     public boolean shouldDisplayPosition() {
 
-        if (((SeriesRace)race).seriesHasCompleted()) return completedSeries();
-        else return canCompleteSeries();
+        return ((SeriesRace)race).seriesHasCompleted() ? completedSeries() : canCompleteSeries();
     }
 
     protected double totalScore() {
 
-        final int number_of_races_to_count = Math.min(
-            ((GrandPrixRace)race).getNumberOfRacesTakenPlace(),
-            ((GrandPrixRace)race).getMinimumNumberOfRaces());
+        final int number_of_counting_scores = Math.min(((GrandPrixRace) race).getMinimumNumberOfRaces(), numberOfRacesCompleted());
 
-        List<Double> reversed = scores.stream().
-                sorted().
-                filter(score -> score > 0).
-                toList();
-//                reversed();
-        return reversed.
-            subList(0, Math.min(number_of_races_to_count, reversed.size())).stream().
+        return scores.stream().
+            sorted().
+            filter(score -> score > 0).
+            limit(number_of_counting_scores).
             reduce(0.0, Double::sum);
     }
 }

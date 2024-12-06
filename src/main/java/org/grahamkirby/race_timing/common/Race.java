@@ -82,7 +82,7 @@ public abstract class Race {
 
     // Midweek race.
     public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
-    public static final String KEY_MAX_RACE_SCORE = "MAX_RACE_SCORE";
+    public static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
 
     // Minitour race.
     public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";

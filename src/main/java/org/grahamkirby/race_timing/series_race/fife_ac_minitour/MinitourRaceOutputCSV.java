@@ -62,18 +62,15 @@ public class MinitourRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final MinitourRaceResult result = (MinitourRaceResult) r;
 
-            if (result.shouldBeDisplayedInResults()) {
+            final String position = result.shouldDisplayPosition() ? result.position_string : "-";
+            final Runner runner = result.runner;
 
-                final String position = result.shouldDisplayPosition() ? result.position_string : "-";
-                final Runner runner = result.runner;
+            writer.append(STR."\{position},\{encode(runner.name)},\{encode(runner.club)},\{ runner.category.getShortName()},");
 
-                writer.append(STR."\{position},\{encode(runner.name)},\{encode(runner.club)},\{ runner.category.getShortName()},");
+            for (final Duration time : result.times)
+                writer.append(time != null ? format(time) : "-").append(",");
 
-                for (final Duration time : result.times)
-                    writer.append(time != null ? format(time) : "-").append(",");
-
-                writer.append(result.shouldDisplayPosition() ? format(result.duration()) : "-").append("\n");
-            }
+            writer.append(result.shouldDisplayPosition() ? format(result.duration()) : "-").append("\n");
         }
     }
 }

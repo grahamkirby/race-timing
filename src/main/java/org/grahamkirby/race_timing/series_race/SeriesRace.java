@@ -19,6 +19,8 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
@@ -90,6 +92,24 @@ public abstract class SeriesRace extends Race {
         printCombined();
     }
 
+    @Override
+    protected void readProperties() {
+
+        minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
+    }
+
+    @Override
+    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        return entry_category != null && entry_category.getGender().equals(prize_category.getGender());
+    }
+
+    @Override
+    protected EntryCategory getEntryCategory(final RaceResult result) {
+
+        return ((SeriesRaceResult) result).runner.category;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<IndividualRace> getRaces() {
@@ -115,6 +135,83 @@ public abstract class SeriesRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    protected void configureClubs() {
+        getRunnerNames().forEach(this::checkClubsForRunner);
+    }
+
+    protected void checkClubsForRunner(final String runner_name) {
+
+        // Where a runner name is associated with a single entry with a defined club
+        // plus some other entries with no club defined, add the club to those entries.
+
+        // Where a runner name is associated with multiple clubs, leave as is, under
+        // assumption that they are separate runner_names.
+        final List<String> clubs_for_runner = getRunnerClubs(runner_name);
+        final List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
+
+        final int number_of_defined_clubs = defined_clubs.size();
+        final int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
+
+        if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
+            recordDefinedClubForRunnerName(runner_name, defined_clubs.getFirst());
+
+        if (number_of_defined_clubs > 1) {
+            processMultipleClubsForRunner(runner_name, defined_clubs);
+        }
+    }
+
+    protected void noteMultipleClubsForRunnerName(String runner_name, List<String> defined_clubs) {
+
+        getNotes().append(STR."Runner name \{runner_name} recorded for multiple clubs: \{String.join(", ", defined_clubs)}\n");
+    }
+
+    protected List<String> getDefinedClubs(final List<String> clubs) {
+        return clubs.stream().filter(this::clubIsDefined).toList();
+    }
+
+    protected boolean clubIsDefined(final String club) {
+        return !club.equals("?");
+    }
+
+    protected List<String> getRunnerClubs(final String runner_name) {
+
+        return races.stream().
+            filter(Objects::nonNull).
+            flatMap(race -> race.getOverallResults().stream()).
+            map(result -> (IndividualRaceResult)result).
+            map(result -> result.entry.runner).
+            filter(runner -> runner.name.equals(runner_name)).
+            map(runner -> runner.club).
+            distinct().
+            sorted().
+            toList();
+    }
+
+    protected void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
+
+        races.stream().
+            filter(Objects::nonNull).
+            flatMap(race -> race.getOverallResults().stream()).
+            map(result -> (IndividualRaceResult)result).
+            map(result -> result.entry.runner).
+            filter(runner -> runner.name.equals(runner_name)).
+            forEachOrdered(runner -> runner.club = defined_club);
+    }
+
+    protected List<String> getRunnerNames() {
+
+        return races.stream().
+            filter(Objects::nonNull).
+            flatMap(race -> race.getOverallResults().stream()).
+            map(result -> (IndividualRaceResult)result).
+            map(result -> result.entry.runner.name).
+            distinct().
+            toList();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected abstract RaceResult getOverallResult(final Runner runner);
     protected abstract Predicate<RaceResult> getResultInclusionPredicate();
+    protected abstract void processMultipleClubsForRunner(String runner_name, List<String> defined_clubs);
 }

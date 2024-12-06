@@ -92,19 +92,16 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
             final IndividualRaceResult result = ((IndividualRaceResult)r);
 
-            // Check for case where no time recorded for runner, as opposed to finished but didn't complete course.
-            if (result.shouldBeDisplayedInResults()) {
-                writer.append(STR."""
-                        <tr>
-                            <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
-                            <td>\{result.entry.bib_number}</td>
-                            <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
-                            <td>\{result.entry.runner.club}</td>
-                            <td>\{result.entry.runner.category.getShortName()}</td>
-                            <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? DNF_STRING : format(result.duration())}</td>
-                        </tr>
-                    """);
-            }
+            writer.append(STR."""
+                    <tr>
+                        <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
+                        <td>\{result.entry.bib_number}</td>
+                        <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
+                        <td>\{result.entry.runner.club}</td>
+                        <td>\{result.entry.runner.category.getShortName()}</td>
+                        <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? DNF_STRING : format(result.duration())}</td>
+                    </tr>
+                """);
         }
     }
 
