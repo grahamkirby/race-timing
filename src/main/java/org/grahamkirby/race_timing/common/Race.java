@@ -34,9 +34,6 @@ import java.util.function.Predicate;
 
 public abstract class Race {
 
-    // TODO add support for Tour of Fife series.
-    // TODO add support for Junior Hill Running Champs.
-
     public static final String COMMENT_SYMBOL = "#";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,19 +72,21 @@ public abstract class Race {
 
     // Series race.
     public static final String KEY_RACES = "RACES";
+    public static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
+    public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
 
     // Grand Prix race.
     public static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
     public static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
 
     // Midweek race.
-    public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
     public static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
 
     // Minitour race.
     public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
     public static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
-    public static final String KEY_TIME_TRIAL = "TIME_TRIAL";
+    public static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
+    public static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
     public static final String KEY_SELF_TIMED = "SELF_TIMED";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -453,7 +452,7 @@ public abstract class Race {
 
     private Comparator<RaceResult> dnfOnly(final Comparator<RaceResult> comparator) {
 
-        return (r1, r2) -> r1.shouldDisplayPosition() || r2.shouldDisplayPosition() ? 0 : comparator.compare(r1, r2);
+        return (r1, r2) -> r1.getCompletionStatus() != CompletionStatus.DNF || r2.getCompletionStatus() != CompletionStatus.DNF ? 0 : comparator.compare(r1, r2);
     }
 
     private List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {

@@ -51,7 +51,8 @@ public class SeriesRaceInput extends RaceInput {
 
         final String race_config_path = race_config_paths.get(i);
 
-        return race_config_path.isEmpty() ? null : getIndividualRace(race_config_path, i + 1);
+        return getIndividualRace(race_config_path, i + 1);
+//        return race_config_path.isEmpty() ? null : getIndividualRace(race_config_path, i + 1);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

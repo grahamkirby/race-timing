@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
+package org.grahamkirby.race_timing.series_race.fife_ac_tour;
 
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
@@ -36,9 +36,9 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
-public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
+public class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
-    public MinitourRaceOutputHTML(final Race race) {
+    public TourRaceOutputHTML(final Race race) {
         super(race);
     }
 
@@ -123,8 +123,8 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MinitourRaceResult result = (MinitourRaceResult)r;
-            final MinitourRace race = (MinitourRace) result.race;
+            final TourRaceResult result = (TourRaceResult)r;
+            final TourRace race = (TourRace) result.race;
             final List<IndividualRace> races = race.getRaces();
 
             writer.append(STR."""
@@ -170,7 +170,7 @@ public class MinitourRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MinitourRaceResult result = (MinitourRaceResult)r;
+            final TourRaceResult result = (TourRaceResult)r;
 
             writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.runner.name)} (\{result.runner.club}) \{format(result.duration())}</li>\n");
         }

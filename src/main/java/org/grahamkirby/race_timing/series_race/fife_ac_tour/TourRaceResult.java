@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
+package org.grahamkirby.race_timing.series_race.fife_ac_tour;
 
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -25,11 +25,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class MinitourRaceResult extends SeriesRaceResult {
+public class TourRaceResult extends SeriesRaceResult {
 
     public final List<Duration> times;
 
-    public MinitourRaceResult(final Runner runner, final List<Duration> times, final MinitourRace race) {
+    public TourRaceResult(final Runner runner, final List<Duration> times, final TourRace race) {
 
         super(runner, race);
         this.times = times;
@@ -46,7 +46,7 @@ public class MinitourRaceResult extends SeriesRaceResult {
     public int comparePerformanceTo(final RaceResult other) {
 
         final Duration duration = duration();
-        final Duration other_duration = ((MinitourRaceResult) other).duration();
+        final Duration other_duration = ((TourRaceResult) other).duration();
 
         return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
@@ -80,6 +80,6 @@ public class MinitourRaceResult extends SeriesRaceResult {
 
     private List<Duration> getTimesInRacesTakenPlace() {
 
-        return times.subList(0, ((MinitourRace) race).getNumberOfRacesTakenPlace());
+        return times.subList(0, ((TourRace) race).getNumberOfRacesTakenPlace());
     }
 }

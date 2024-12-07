@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
+package org.grahamkirby.race_timing.series_race.fife_ac_tour;
 
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
@@ -25,13 +25,15 @@ import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.*;
 
-public class MinitourRaceInput extends SeriesRaceInput {
+public class TourRaceInput extends SeriesRaceInput {
 
     private record SelfTimedRun(int bib_number, int race_number) {}
 
@@ -44,10 +46,11 @@ public class MinitourRaceInput extends SeriesRaceInput {
     private int time_trial_race_number;
     private int time_trial_runners_per_wave;
     private Duration time_trial_inter_wave_interval;
+    private Map<Integer, Duration> time_trial_starts;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public MinitourRaceInput(final Race race) {
+    public TourRaceInput(final Race race) {
         super(race);
     }
 
@@ -93,7 +96,10 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private List<EntryCategory> readSecondWaveCategories() {
 
-        final String[] second_wave_category_strings = race.getProperty(KEY_SECOND_WAVE_CATEGORIES).split(",", -1);
+        final String second_wave_categories_string = race.getProperty(KEY_SECOND_WAVE_CATEGORIES);
+        if (second_wave_categories_string == null) return List.of();
+
+        final String[] second_wave_category_strings = second_wave_categories_string.split(",", -1);
 
         return extractConfigFromPropertyStrings(second_wave_category_strings, race::lookupEntryCategory);
     }
@@ -107,11 +113,26 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private void readTimeTrialProperties() {
 
-        final String[] parts = race.getProperty(KEY_TIME_TRIAL).split("/", -1);
+        time_trial_race_number = Integer.parseInt(race.getProperty(KEY_TIME_TRIAL_RACE));
 
-        time_trial_race_number = Integer.parseInt(parts[0]);
-        time_trial_runners_per_wave = Integer.parseInt(parts[1]);
-        time_trial_inter_wave_interval = parseTime(parts[2]);
+        final String[] parts = race.getProperty(KEY_TIME_TRIAL_STARTS).split(",", -1);
+
+        if (parts.length == 2) {
+            time_trial_runners_per_wave = Integer.parseInt(parts[0]);
+            time_trial_inter_wave_interval = parseTime(parts[1]);
+        }
+        else
+            time_trial_starts = loadTimeTrialStarts(parts);
+    }
+
+    private Map<Integer, Duration> loadTimeTrialStarts(final String[] parts) {
+
+        Map<Integer, Duration> starts = new HashMap<>();
+        for (final String part: parts) {
+            final String[] split = part.split("/");
+            starts.put(Integer.parseInt(split[0]), parseTime(split[1]));
+        }
+        return starts;
     }
 
     private void applyRunnerStartOffsets(final IndividualRace individual_race, final int race_number) {
@@ -139,11 +160,17 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private Duration getTimeTrialOffset(final int bib_number) {
 
-        // This assumes that time-trial runner_names are assigned to waves in order of bib number,
+        // The first option applies when time-trial runners are assigned to waves in order of bib number,
         // with incomplete waves if there are any gaps in bib numbers.
+        // The second option applies when start order is manually determined (e.g. to start current leaders first or last).
 
-        final int wave_number = runnerIndexInBibOrder(bib_number) / time_trial_runners_per_wave;
-        return time_trial_inter_wave_interval.multipliedBy(wave_number);
+        if (time_trial_starts == null) {
+
+            final int wave_number = runnerIndexInBibOrder(bib_number) / time_trial_runners_per_wave;
+            return time_trial_inter_wave_interval.multipliedBy(wave_number);
+        }
+        else
+            return time_trial_starts.get(bib_number);
     }
 
     private int runnerIndexInBibOrder(final int bib_number) {
@@ -156,10 +183,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
     private boolean runnerIsSelfTimed(final int race_number, final int bib_number) {
 
-        for (final SelfTimedRun self_timed_run : self_timed_runs)
-            if (self_timed_run.bib_number == bib_number && self_timed_run.race_number == race_number) return true;
-
-        return false;
+        return self_timed_runs.stream().anyMatch(self_timed_run -> self_timed_run.race_number == race_number && self_timed_run.bib_number == bib_number);
     }
 
     private boolean runnerIsInSecondWave(final IndividualRace individual_race, final int bib_number) {
@@ -168,6 +192,7 @@ public class MinitourRaceInput extends SeriesRaceInput {
 
         return second_wave_categories.stream().
             map(second_wave_category -> second_wave_category.equalGenderAndAgeCategory(runner_entry_category)).
-            reduce(Boolean::logicalOr).orElseThrow();
+            reduce(Boolean::logicalOr).
+            orElse(false);
     }
 }

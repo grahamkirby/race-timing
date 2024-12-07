@@ -80,4 +80,9 @@ public class ActualRacesIndividualTest extends RaceTest {
     public void strathBlebo2024() throws Exception {
         testExpectedCompletion("actual_races/individual_race/strath_blebo/2024");
     }
+
+    @Test
+    public void juniorHillRaces2017() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/junior_hill_races/2017");
+    }
  }

@@ -27,6 +27,7 @@ import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
+import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -111,7 +112,8 @@ public class GrandPrixRace extends SeriesRace {
 
     @Override
     protected List<Comparator<RaceResult>> getDNFComparators() {
-        return List.of(this::compareNumberOfRacesCompleted);
+
+        return List.of(this::comparePossibleCompletion, this::compareNumberOfRacesCompleted);
     }
 
     @Override
@@ -127,23 +129,28 @@ public class GrandPrixRace extends SeriesRace {
     @Override
     protected Predicate<RaceResult> getResultInclusionPredicate() {
 
-        return (result -> qualifying_clubs.contains(((IndividualRaceResult) result).entry.runner.club));
+        return result -> qualifying_clubs.contains(((IndividualRaceResult) result).entry.runner.club);
     }
 
     public double calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
-        final Duration runner_time = getResult(individual_race, runner);
+        final Duration runner_time = individual_race.getRunnerTime(runner);
 
         return runner_time != null ? divide(runner_time, individual_race.getMedianTime()) * SCORE_FOR_MEDIAN_POSITION : 0.0;
     }
 
-    public boolean hasCompletedCategory(GrandPrixRaceResult result, RaceCategory category) {
+    public boolean hasCompletedRaceCategory(GrandPrixRaceResult result, RaceCategory category) {
 
         return category.race_numbers().stream().
             anyMatch(race_number -> race_number <= result.scores.size() && result.scores.get(race_number - 1) > 0.0);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
+
+        return Boolean.compare(((SeriesRaceResult)r2).canCompleteSeries(), ((SeriesRaceResult)r1).canCompleteSeries());
+    }
 
     private double divide(final Duration d1, final Duration d2) {
 
@@ -157,22 +164,23 @@ public class GrandPrixRace extends SeriesRace {
 
     private void configureRaceCategories() throws IOException {
 
-        final String race_categories_path = getProperty(KEY_RACE_CATEGORIES_PATH);
-
         race_categories = new ArrayList<>();
 
-        Files.readAllLines(getPath(race_categories_path)).stream().
+        Files.readAllLines(getPath(getProperty(KEY_RACE_CATEGORIES_PATH))).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(line -> {
-                final String[] elements = line.split(",");
+            forEachOrdered(this::configureRaceCategory);
+    }
 
-                final String category_name = elements[0];
-                final int minimum_number = Integer.parseInt(elements[1]);
+    private void configureRaceCategory(final String line) {
 
-                final List<Integer> race_numbers = Arrays.stream(elements).skip(2).map(Integer::parseInt).toList();
+        final String[] elements = line.split(",");
 
-                race_categories.add(new RaceCategory(category_name, minimum_number, race_numbers));
-            });
+        final String category_name = elements[0];
+        final int minimum_number = Integer.parseInt(elements[1]);
+
+        final List<Integer> race_numbers = Arrays.stream(elements).skip(2).map(Integer::parseInt).toList();
+
+        race_categories.add(new RaceCategory(category_name, minimum_number, race_numbers));
     }
 
     protected void processMultipleClubsForRunner(final String runner_name, final List<String> clubs) {
@@ -181,15 +189,5 @@ public class GrandPrixRace extends SeriesRace {
             recordDefinedClubForRunnerName(runner_name, qualifying_clubs.getFirst());
         else
             noteMultipleClubsForRunnerName(runner_name, clubs);
-    }
-
-    private Duration getResult(final IndividualRace individual_race, final Runner runner) {
-
-        return individual_race.getOverallResults().stream().
-            map(result -> ((IndividualRaceResult)result)).
-            filter(result -> runner.equals(result.entry.runner)).
-            map(IndividualRaceResult::duration).
-            findFirst().
-            orElse(null);
     }
 }

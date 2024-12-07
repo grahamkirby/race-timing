@@ -1,0 +1,41 @@
+21	James Connelly	Garscube Harriers	MU15
+22	Ben Cameron	Forres Harriers	MU15
+23	Andrew Winter	Inverclyde	MU15
+24	James Grant	Strathearn Harriers	MU15
+25	Anna Hedley	Fife AC	FU15
+26	Esmee Thoms	Fife AC	FU15
+27	Finlay Muir	Central AC	MU15
+28	Harriet Whelan	Moray Road Runners	FU15
+29	Sam Griffin	Aberdeen AC	MU15
+30	Eilidh Mooney	Moorfoots	FU15
+31	Mia Crickmar	Fife AC	FU15
+32	Struan Bennet	Fife AC	MU15
+33	Ailsa Bennet	Fife AC	FU15
+34	Orla McGeehan	Inverclyde	FU15
+35	Ross Davidson	Inverclyde	MU15
+36	Hannah McGeehan	Inverclyde	FU15
+37	Libby Smith	Fife AC	FU15
+38	Anna Dalgleish	Fife AC	FU15
+39	Abby Hammerman	Inverclyde	FU15
+55	Cameron Corrigan	Kilbarchan	MU17
+56	Jack Trainer	Garscube Harriers	MU17
+57	Luke Nelson	Giffnock North	MU17
+58	Charlotte McKenna	Giffnock North	FU17
+59	Lynn McKenna	Giffnock North	FU17
+60	Cliona McCheyne	Inverclyde	FU17
+61	Ross Wyse	Fife AC	MU17
+62	Beth Hobbs	Moorfoots	FU17
+63	Levi Sweeney	Strathearn Harriers	MU17
+64	Robert Sparks	Fife AC	MU17
+65	Owen Keddie	Fife AC	MU17
+66	Zoe Nicholson	Pitreavie	FU17
+67	Gavin McWhinnie	Fife AC	MU17
+68	Iain McWhinnie	Fife AC	MU17
+69	Colin McKie	Anster Haddies	MU17
+70	Cody Stevenson	Garscube Harriers	MU20
+71	Cameron Watson	Inverclyde	MU20
+72	Grace Whelan	Moray Road Runners	FU20
+73	Mairi Wallace	Moorfoots	FU20
+74	Anisha Badial	Aberdeen AAC	FU20
+75	Craig Morris	Fife AC	MU20
+76	George Rees	Fife AC	MU20

@@ -122,7 +122,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
                 """);
 
             for (RaceCategory category : ((GrandPrixRace)race).race_categories) {
-                writer.append("<td>").append(grand_prix_race.hasCompletedCategory(result, category) ? "Y" : "N").append("</td>");
+                writer.append("<td>").append(grand_prix_race.hasCompletedRaceCategory(result, category) ? "Y" : "N").append("</td>");
             }
 
             writer.append("""
