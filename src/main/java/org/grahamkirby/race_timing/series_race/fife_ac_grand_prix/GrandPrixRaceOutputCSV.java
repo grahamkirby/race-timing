@@ -91,7 +91,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
             writer.append(STR.",\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? Math.round(result.totalScore()) : "-"},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}");
 
             for (RaceCategory category : ((GrandPrixRace)race).race_categories) {
-                writer.append(",").append(grand_prix_race.hasCompletedCategory(result, category) ? "Y" : "N");
+                writer.append(",").append(grand_prix_race.hasCompletedRaceCategory(result, category) ? "Y" : "N");
             }
 
             writer.append("\n");

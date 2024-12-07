@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
+package org.grahamkirby.race_timing.series_race.fife_ac_tour;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
@@ -27,9 +27,9 @@ import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
-public class MinitourRaceOutputText extends RaceOutputText {
+public class TourRaceOutputText extends RaceOutputText {
 
-    public MinitourRaceOutputText(final MinitourRace race) {
+    public TourRaceOutputText(final TourRace race) {
         super(race);
     }
 
@@ -48,7 +48,7 @@ public class MinitourRaceOutputText extends RaceOutputText {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MinitourRaceResult result = (MinitourRaceResult) r;
+            final TourRaceResult result = (TourRaceResult) r;
 
             writer.append(result.position_string).append(": ").
                     append(result.runner.name).append(" (").

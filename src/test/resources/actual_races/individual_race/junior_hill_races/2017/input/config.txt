@@ -1,0 +1,10 @@
+YEAR = 2017
+RACE_NAME_FOR_RESULTS = Junior Hill Races
+RACE_NAME_FOR_FILENAMES = junior_hill
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+CATEGORIES_ENTRY_PATH = categories_entry_individual_junior.csv
+CATEGORIES_PRIZE_PATH = categories_prize_individual_junior.csv

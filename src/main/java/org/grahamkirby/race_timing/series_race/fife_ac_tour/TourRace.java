@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with race-timing. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race.fife_ac_minitour;
+package org.grahamkirby.race_timing.series_race.fife_ac_tour;
 
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
@@ -24,7 +24,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
@@ -33,15 +32,13 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
-public class MinitourRace extends SeriesRace {
+public class TourRace extends SeriesRace {
 
-    public MinitourRace(final Path config_file_path) throws IOException {
+    public TourRace(final Path config_file_path) throws IOException {
 
         super(config_file_path);
-        minimum_number_of_races = races.size();
     }
 
     public static void main(final String[] args) throws IOException {
@@ -51,15 +48,15 @@ public class MinitourRace extends SeriesRace {
         if (args.length < 1)
             System.out.println("usage: java MinitourRace <config file path>");
         else
-            new MinitourRace(Paths.get(args[0])).processResults();
+            new TourRace(Paths.get(args[0])).processResults();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
 
-        final boolean r1_completed_all_races_so_far = ((MinitourRaceResult) r1).completedAllRacesSoFar();
-        final boolean r2_completed_all_races_so_far = ((MinitourRaceResult) r2).completedAllRacesSoFar();
+        final boolean r1_completed_all_races_so_far = ((TourRaceResult) r1).completedAllRacesSoFar();
+        final boolean r2_completed_all_races_so_far = ((TourRaceResult) r2).completedAllRacesSoFar();
 
         return Boolean.compare(r2_completed_all_races_so_far, r1_completed_all_races_so_far);
     }
@@ -67,39 +64,35 @@ public class MinitourRace extends SeriesRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void readProperties() {
-    }
-
-    @Override
     protected RaceInput getInput() {
-        return new MinitourRaceInput(this);
+        return new TourRaceInput(this);
     }
 
     @Override
     protected RaceOutputCSV getOutputCSV() {
-        return new MinitourRaceOutputCSV(this);
+        return new TourRaceOutputCSV(this);
     }
 
     @Override
     protected RaceOutputHTML getOutputHTML() {
-        return new MinitourRaceOutputHTML(this);
+        return new TourRaceOutputHTML(this);
     }
 
     @Override
     protected RaceOutputText getOutputText() {
-        return new MinitourRaceOutputText(this);
+        return new TourRaceOutputText(this);
     }
 
     @Override
     protected RaceOutputPDF getOutputPDF() {
-        return new MinitourRaceOutputPDF(this);
+        return new TourRaceOutputPDF(this);
     }
 
     @Override
     protected void printCombined() throws IOException {
 
         output_HTML.printCombined();
-        ((MinitourRaceOutputHTML) output_HTML).printIndividualRaces();
+        ((TourRaceOutputHTML) output_HTML).printIndividualRaces();
     }
 
     @Override
@@ -113,15 +106,15 @@ public class MinitourRace extends SeriesRace {
         return List.of();
     }
 
-
     @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Duration> times = races.stream().
-            map(race -> getRaceTime(race, runner)).
+//                map(race -> getRaceTime(race, runner)).
+                map(race -> race == null ? null : ((IndividualRace)race).getRunnerTime(runner)).
             toList();
 
-        return new MinitourRaceResult(runner, times, this);
+        return new TourRaceResult(runner, times, this);
     }
 
     @Override
@@ -136,21 +129,5 @@ public class MinitourRace extends SeriesRace {
 
     @Override
     protected void checkClubsForRunner(String ignore) {
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private Duration getRaceTime(final IndividualRace individual_race, final Runner runner) {
-
-        if (individual_race == null) return null;
-
-        return individual_race.getOverallResults().stream().
-            map(result -> (IndividualRaceResult)result).
-            filter(result -> result.entry.runner.equals(runner)).
-            map(IndividualRaceResult::duration).
-            map(Optional::ofNullable).
-            findFirst().
-            orElseThrow().
-            orElse(null);
     }
 }

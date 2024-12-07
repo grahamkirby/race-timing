@@ -34,11 +34,13 @@ import static org.grahamkirby.race_timing.common.Race.*;
 public abstract class SingleRaceInput extends RaceInput {
 
     final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+    final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
+
+    int next_fake_bib_number = 1;
 
     public SingleRaceInput(final Race race) {
 
         super(race);
-
         readProperties();
     }
 
@@ -53,13 +55,12 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected List<RaceEntry> loadEntries() throws IOException {
 
-//        final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
         if (entries_path == null) return List.of();
 
         final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
-                filter(line -> !line.isEmpty()).
-                map(race_entry_mapper).
-                toList();
+            filter(line -> !line.isEmpty()).
+            map(race_entry_mapper).
+            toList();
 
         checkForDuplicateBibNumbers(entries);
         checkForDuplicateEntries(entries);
@@ -69,25 +70,24 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected List<RaceResult> loadOverallResults() throws IOException {
 
-//        final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
         if (results_path == null) return new ArrayList<>();
 
         return Files.readAllLines(race.getPath(results_path)).stream().
-                filter(line -> !line.isEmpty()).
-                map(line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()))).
-                toList();
+            filter(line -> !line.isEmpty()).
+            map(race_result_mapper).
+            toList();
     }
 
-    int next_fake_bib_number = 1;
-
-    private RaceResult makeRaceResult(List<String> elements) {
+    private RaceResult makeRaceResult(final List<String> elements) {
 
         elements.addFirst(String.valueOf(next_fake_bib_number++));
 
-        IndividualRaceEntry entry = new IndividualRaceEntry(elements, race);
-        IndividualRaceResult result = new IndividualRaceResult((IndividualRace) race, entry);
+        final IndividualRaceEntry entry = new IndividualRaceEntry(elements, race);
+        final IndividualRaceResult result = new IndividualRaceResult((IndividualRace) race, entry);
+
         result.finish_time = Normalisation.parseTime(elements.getLast());
         result.completion_status = CompletionStatus.COMPLETED;
+
         return result;
     }
 

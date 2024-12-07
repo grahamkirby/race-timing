@@ -55,12 +55,14 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
     @Override
     public boolean shouldDisplayPosition() {
 
-        return ((SeriesRace)race).seriesHasCompleted() ? completedSeries() : canCompleteSeries();
+        return ((SeriesRace) race).seriesHasCompleted() ? completedSeries() : canCompleteSeries();
     }
 
     protected double totalScore() {
 
-        final int number_of_counting_scores = Math.min(((GrandPrixRace) race).getMinimumNumberOfRaces(), numberOfRacesCompleted());
+        final int minimum_number_of_races = ((GrandPrixRace) race).getMinimumNumberOfRaces();
+        final int number_of_races_completed = numberOfRacesCompleted();
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, number_of_races_completed);
 
         return scores.stream().
             sorted().

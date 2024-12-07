@@ -59,10 +59,12 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     public boolean completedSeries() {
 
-        return numberOfRacesCompleted() >= ((SeriesRace)race).getMinimumNumberOfRaces();
+        int i = numberOfRacesCompleted();
+        int minimumNumberOfRaces = ((SeriesRace) race).getMinimumNumberOfRaces();
+        return i >= minimumNumberOfRaces;
     }
 
-    protected boolean canCompleteSeries() {
+    public boolean canCompleteSeries() {
 
         final SeriesRace series_race = (SeriesRace) race;
         final int number_of_races_remaining = series_race.getNumberOfRacesInSeries() - series_race.getNumberOfRacesTakenPlace();

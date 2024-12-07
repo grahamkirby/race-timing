@@ -17,7 +17,7 @@
 package org.grahamkirby.race_timing;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.series_race.fife_ac_minitour.MinitourRace;
+import org.grahamkirby.race_timing.series_race.fife_ac_tour.TourRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class MinitourTest extends RaceTest {
 
     @Override
     protected Race makeRace(final Path config_file_path) throws IOException {
-        return new MinitourRace(config_file_path);
+        return new TourRace(config_file_path);
     }
 
     @Test

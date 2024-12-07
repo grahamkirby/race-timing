@@ -1,0 +1,149 @@
+1	Dave	Morton	Morton Running Company	M Sen
+2	Stuart	Gilbert	Morton Running Company	M Sen
+3	Scott	Love	PH Racing Club	M Sen
+4	Rosemary	Lee	Fife AC	F50
+5	Jennifer	Massie	Dundee RR AC	F Sen
+6	Michael	Bisset	Carnegie H	M40
+7	Steven	Dick	Arbroath Footers	M50
+8	Mark	Johnstone	Falkirk Victoria H	M40
+9	Ewan	Cameron	Anster Haddies RC	M50
+10	Alison	Mcneilly	Dundee RR AC	F40
+11	Paul	McGlynn	Fife AC	M50
+12	John	Lee	Falkland TR	M50
+13	Josh	McKay	Dundee RR AC	M Sen
+14	Christine	Bowie	Anster Haddies RC	F50
+15	Neill	Porterfield	Corstorphine AAC	M40
+16	Arnaud	Richard	Dundee RR AC	M Sen
+17	Jazmin	Hay	Anster Haddies RC	F Sen
+18	Paul	Dunning	PH Racing Club	M40
+19	CJ	Macphail	Anster Haddies RC	F Sen
+20	Ben	Hukins	Cambuslang H	M Sen
+21	Innes	Bracegirdle	Fife AC	F60
+22	Stewart	Dillon	Fife AC	M50
+23	Brian	Lees	Lothian RC	M50
+24	Kerry	Wheadon	U/N	F Sen
+25	Alan	Cameron	Corstorphine AAC	M40
+26	Derek	Grant	Dundee and Angus Cani-Cross	M40
+27	Peter	Rieu-Clarke	Leven Las Vegas	M70
+28	Gillian	Smith	Fife AC	F40
+29	Jennifer	Cruickshanks	Fife AC	F Sen
+30	Akira	O'Connor	Fife AC	M Sen
+31	Duncan	Edward	Dundee RR AC	M Sen
+32	Iain	Wallace	Leven Las Vegas	M40
+33	Debz Way	Hay	Anster Haddies RC	F50
+34	Christopher	McKiddie	Westerlands CCC	M Sen
+35	Heather	Anderson	Fife AC	F Sen
+36	Maneesh	Kuruvilla	U/N	M Sen
+37	Ruth	Letham	Fife AC	F Sen
+38	Big George	Hay	Anster Haddies RC	M50
+39	Karen	Spence	Falkland TR	F40
+40	Jocelyn	Scott	Fife AC	F60
+41	Susanne	Lumsden	Falkland TR	F40
+42	Morna	Fleming	Pitreavie AAC	F60
+43	Mike	Murdoch	Falkland TR	M40
+44	Kirsty	Gibson	U/N	F Sen
+45	Pamela	Cruickshanks	Anster Haddies RC	F50
+46	Fiona	Cruickshanks	Anster Haddies RC	F Sen
+47	David	Nuttall	Anster Haddies RC	M40
+48	Alice	Hall	Anster Haddies RC	F50
+49	Tom	Scott	Fife AC	M60
+50	Elaine	Omand	Dundee RR AC	F Sen
+51	Gordon	Donnachie	Kinross RR	M50
+52	Louise	Andrew	Dundee and Angus Cani-Cross	F Sen
+53	Peter	Buchanan	Portobello RC	M50
+54	Bill	Duff	Falkland TR	M60
+55	Steve	Cromar	Dundee Hawkhill H	M70
+56	Gary	Ovenstone	STAART	M40
+57	Paul	Reed	Dundee RR AC	M40
+58	Rhona	Van Rensburg	Fife AC	F40
+59	Hendrik	Van Rensburg	U/N	M40
+60	Ross	Johnston	Leven Las Vegas RC	M50
+61	Angela	Johnston	Leven Las Vegas RC	F50
+62	Merce	Torres	Fife AC	F40
+63	Kevin	Greig	Dundee RR AC	M40
+64	Mark	Lessells	U/N	M40
+65	George	Stewart	Calderglen H	M50
+66	Derek	Adamson	Fife AC	M40
+67	Joanne	McEvoy	Calderglen H	F Sen
+68	Michael	Geoghegan	Portobello RC	M Sen
+69	Zuleika	Brett	Carnegie H	F Sen
+70	John	Henderson	Fife AC	M40
+71	Bob	Wylie	Leven Las Vegas RC	M Sen
+72	Wendy	Wylie	Leven Las Vegas RC	F Sen
+73	Claire	Duncan	Beacon Runners	F40
+74	Jonathan	Millar	Carnegie H	M Sen
+75	Nick	Brian	Fife AC	M60
+76	Christie	Ford	Shettleston H	F Sen
+77	Brian R	Smith	Fife AC	M50
+78	Robbie	Dunlop	Dundee RR AC	M Sen
+79	Fergus	Ingledew	Fife AC	MU20
+80	Isobel	Burnett	Carnegie H	F60
+81	Simon	Fox	Fife AC	M50
+82	Jan-Bert	van den Berg	Corstorphine AAC	M50
+83	Andrew	Stavert	Portobello RC	M50
+84	Sam	Newington	Durham City H & AC	F40
+85	Christopher	O'Brien	Corstorphine AAC	M Sen
+86	Bryan	McLaren	Leven Las Vagas	M Sen
+87	William	Arnot	Anster Haddies RC	M50
+88	Jonny	Logan	Fife AC	M Sen
+89	Claire	Houston	Central AC	F Sen
+90	Jim	Morton	Dundee RR AC	M50
+91	Matthew	Low	Dundee RR AC	M Sen
+92	Jason	Grant	Dundee and Angus Cani-Cross	M Sen
+93	Fiona	Callaghan	Dundee RR AC	F Sen
+94	Peter	Connolly	Dundee RR AC	M50
+95	Jacqueline	Cook	Falkland TR	F40
+96	Simon	Knox	Dundee RR AC	M50
+97	Lee	O'Connor	Dundee RR AC	M40
+98	Robert	Thornton	Fife AC	M60
+99	Lilian	Stock	The Meedies RC	F Sen
+100	Joanne	Clancy	Dundee RR AC	F Sen
+101	David	Dunleavey	Dundee RR AC	M50
+102	Joanna	Gray	U/N	F Sen
+103	Brian	Stewart	Dundee RR AC	M Sen
+104	Malcolm	Mactavish	Falkland TR	M60
+105	Robyn	Morrocco	Carnegie H	F Sen
+106	Nicola	Freedman	Harmeny AC	F40
+107	David	Henderson	Corstorphine AAC	M50
+108	Sophie	Mullins	Fife AC	F Sen
+109	Gordon	Somerville	Carnegie H	M60
+110	Tam	Nicol's	Stilton Striders	M50
+111	Kenny	Gorman	Fife AC	M Sen
+112	Steph	Barlow	Stilton Striders	F50
+113	Christina	Grant	Dundee and Angus Cani-Cross	F Sen
+114	Bryan	Innes	Falkland TR	M Sen
+115	Kieran	Morgan	Carnegie H	M50
+116	Phil	Smithard	Carnegie H	M60
+117	Kristin	Lownie	Carnegie H	F Sen
+118	Sarah	Winter	Dundee RR AC	F Sen
+119	Cyndi	Svee	U/N	F50
+120	Kara	Christine	Run Mummy Run	F40
+121	Bill	Gillan	Falkland TR	M60
+122	Stuart	Tite	PH Racing Club	M Sen
+123	Willie	Rennie	Carnegie H	M40
+124	Louis	Leslie	Fife AC	MU20
+125	Peter	Peddie	U/N	M50
+126	David	Norrie	Fife AC	M60
+127	Daniel	Hale	University of St. Andrews CCC	M Sen
+128	Innes	Petrie	Fife AC	M50
+129	Maya	Stone	Fife AC	F Sen
+130	Colin	Mcwilliam	Fife AC	M Sen
+131	Catherine	Leonard	Fife AC	F50
+132	John	Mcintyre	Fife AC	M Sen
+133	James	Bowden	Hunters Bog T	M Sen
+134	Sharon	Brown	Anster Haddies RC	F Sen
+135	Stuart	Fraser	Perth RR	M Sen
+136	Jane	Askey	Fife AC	F70
+137	Greg	Milne	Fife AC	M Sen
+139	Andrew	Leech	Dundee Hawkhill H	M Sen
+140	Jennifer	Spence	Fife AC	F Sen
+141	Pauline	Smith	Dundee RR AC	F Sen
+142	Hannah	Allum	Anster Allsorts	F Sen
+143	Gary	Scott	Anster Allsorts	M40
+144	Gary	Howe	Fife AC	M40
+145	Susan	Ridley	Edinburgh AC	F50
+146	Jon	Cross	Forth Valley Orienteers	M40
+147	Fiona	Plain	Dundee RR AC	F Sen
+148	Gary	Barker	Fife AC	M60
+149	Keith	Copland	Corstorphine AAC	M40
+151	Oliver	Lever	Lomond Hill Runners	M Sen

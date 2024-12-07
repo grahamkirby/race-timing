@@ -34,6 +34,7 @@ public abstract class SeriesRace extends Race {
 
     protected List<IndividualRace> races;
 
+    protected int number_of_races_in_series;
     protected int minimum_number_of_races;
 
     public SeriesRace(final Path config_file_path) throws IOException {
@@ -95,6 +96,7 @@ public abstract class SeriesRace extends Race {
     @Override
     protected void readProperties() {
 
+        number_of_races_in_series = Integer.parseInt(getProperty(KEY_NUMBER_OF_RACES_IN_SERIES));
         minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
     }
 
@@ -117,7 +119,7 @@ public abstract class SeriesRace extends Race {
     }
 
     public int getNumberOfRacesInSeries() {
-        return races.size();
+        return number_of_races_in_series;
     }
 
     public int getMinimumNumberOfRaces() {

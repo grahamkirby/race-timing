@@ -16,10 +16,7 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
-import org.grahamkirby.race_timing.common.Normalisation;
-import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
@@ -74,6 +71,39 @@ public class IndividualRace extends SingleRace {
         return getEntryWithBibNumber(bib_number).runner.category;
     }
 
+    public Duration getRunnerTime(final Runner runner) {
+
+        final List<RaceResult> results = getOverallResults();
+
+        for (final RaceResult result : results) {
+
+            final IndividualRaceResult individual_result = (IndividualRaceResult) result;
+            if (individual_result.entry.runner.equals(runner))
+                return individual_result.duration();
+        }
+
+        return null;
+    }
+
+    public Duration getMedianTime() {
+
+        if (median_time_string != null) return Normalisation.parseTime(median_time_string);
+
+        final List<RaceResult> results = getOverallResults();
+
+        if (results.size() % 2 == 0) {
+
+            final IndividualRaceResult median_result1 = (IndividualRaceResult) results.get(results.size() / 2);
+            final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2 + 1);
+
+            return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
+        }
+        else {
+            final IndividualRaceResult median_result = (IndividualRaceResult) results.get(results.size() / 2);
+            return median_result.finish_time;
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
@@ -101,8 +131,6 @@ public class IndividualRace extends SingleRace {
 
         super.readProperties();
 
-        // Specifies all the bib numbers for runners who did have a finish
-        // time recorded but were declared DNF.
         median_time_string = getProperty(KEY_MEDIAN_TIME);
     }
 
@@ -134,11 +162,10 @@ public class IndividualRace extends SingleRace {
     @Override
     protected void initialiseResults() {
 
-        if (entries != null)
-            entries.stream().
-                map(entry -> (IndividualRaceEntry) entry).
-                map(entry -> new IndividualRaceResult(this, entry)).
-                forEachOrdered(overall_results::add);
+        entries.stream().
+            map(entry -> (IndividualRaceEntry) entry).
+            map(entry -> new IndividualRaceResult(this, entry)).
+            forEachOrdered(overall_results::add);
     }
 
     @Override
@@ -166,12 +193,11 @@ public class IndividualRace extends SingleRace {
     @Override
     protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        if (entry_category == null) return true;
-        return entry_category.getGender().equals(prize_category.getGender());
+        return entry_category == null || entry_category.getGender().equals(prize_category.getGender());
     }
 
     @Override
-    protected EntryCategory getEntryCategory(RaceResult result) {
+    protected EntryCategory getEntryCategory(final RaceResult result) {
 
         return ((IndividualRaceResult) result).entry.runner.category;
     }
@@ -192,37 +218,17 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public Duration getMedianTime() {
-
-        if (median_time_string != null) return Normalisation.parseTime(median_time_string);
-
-        final List<RaceResult> results = getOverallResults();
-
-        if (results.size() % 2 == 0) {
-
-            final IndividualRaceResult median_result1 = (IndividualRaceResult) results.get(results.size() / 2);
-            final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2 + 1);
-
-            return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
-        }
-        else {
-            final IndividualRaceResult median_result = (IndividualRaceResult) results.get(results.size() / 2);
-            return median_result.finish_time;
-        }
-    }
-
     private void fillFinishTimes() {
 
-        if (raw_results != null)
-            raw_results.forEach(raw_result -> {
+        raw_results.forEach(raw_result -> {
 
-                final IndividualRaceResult result = getResultWithBibNumber(raw_result.getBibNumber());
-                result.finish_time = raw_result.getRecordedFinishTime();
+            final IndividualRaceResult result = getResultWithBibNumber(raw_result.getBibNumber());
+            result.finish_time = raw_result.getRecordedFinishTime();
 
-                // Provisionally this result is not DNF since a finish time was recorded.
-                // However, it might still be set to DNF in fillDNF() if the runner didn't complete the course.
-                result.completion_status = CompletionStatus.COMPLETED;
-            });
+            // Provisionally this result is not DNF since a finish time was recorded.
+            // However, it might still be set to DNF in fillDNF() if the runner didn't complete the course.
+            result.completion_status = CompletionStatus.COMPLETED;
+        });
     }
 
     private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
