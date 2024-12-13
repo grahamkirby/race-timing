@@ -36,9 +36,11 @@ public class RelayRaceEntry extends RaceEntry {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
-        if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace)race).number_of_legs)
+        if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace) race).getNumberOfLegs())
+            //noinspection SequencedCollectionMethodCanBeUsed
             throw new RuntimeException("illegal composition for team: " + elements.get(BIB_NUMBER_INDEX));
 
+        //noinspection SequencedCollectionMethodCanBeUsed
         bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {
             final String name = elements.get(TEAM_NAME_INDEX);

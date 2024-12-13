@@ -160,7 +160,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         return ((RelayRace)race).entries.stream().
             flatMap(entry -> {
                 final int bib_number = entry.bib_number;
-                final int number_of_legs_unfinished = ((RelayRace) race).number_of_legs - leg_finished_count.getOrDefault(bib_number, 0);
+                final int number_of_legs_unfinished = ((RelayRace) race).getNumberOfLegs() - leg_finished_count.getOrDefault(bib_number, 0);
 
                 return Stream.generate(() -> bib_number).limit(number_of_legs_unfinished);
             }).

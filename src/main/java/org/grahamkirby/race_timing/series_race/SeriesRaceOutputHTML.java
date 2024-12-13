@@ -17,6 +17,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.output.CreditLink;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
@@ -24,9 +25,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+
 public abstract class SeriesRaceOutputHTML extends RaceOutputHTML {
 
-    public SeriesRaceOutputHTML(final Race race) {
+    protected SeriesRaceOutputHTML(final Race race) {
         super(race);
     }
 
@@ -35,15 +38,15 @@ public abstract class SeriesRaceOutputHTML extends RaceOutputHTML {
     @Override
     public void printCombined() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined" + getFileSuffix()));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."combined\{getFileSuffix()}"));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append("<h3><strong>Results</strong></h3>\n");
+            writer.append("<h3><strong>Results</strong></h3>").append(LINE_SEPARATOR);
             printPrizes(writer);
 
-            writer.append("<h4>Overall</h4>\n");
-            printResults(writer, getOverallResultPrinter(writer), true);
+            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+            printResults(writer, getOverallResultPrinter(writer), CreditLink.INCLUDE_CREDIT_LINK);
         }
     }
 }

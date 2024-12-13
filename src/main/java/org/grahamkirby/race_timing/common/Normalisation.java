@@ -139,8 +139,7 @@ public class Normalisation {
         }
     }
 
-
-    private static Duration parseTime(String element, String separator) {
+    private static Duration parseTime(String element, final String separator) {
 
         element = element.strip();
         if (element.startsWith(separator)) element = "0" + element;

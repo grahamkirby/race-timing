@@ -16,7 +16,15 @@
  */
 package org.grahamkirby.race_timing.common.categories;
 
+/**
+ * Category defining eligibility for a particular prize.
+ * This is separate from entry category since multiple entry categories
+ * may be eligible for a prize category e.g. an open prize category
+ * may include multiple age categories.
+ */
 public class PrizeCategory extends Category {
+
+    public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
     private final int number_of_prizes;
 
@@ -26,15 +34,18 @@ public class PrizeCategory extends Category {
         this.number_of_prizes = number_of_prizes;
     }
 
-    public PrizeCategory(final String line) {
+    public static PrizeCategory makePrizeCategory(final String line) {
 
-        this(
-            line.split(",")[0],
-            line.split(",")[1],
-            line.split(",")[2],
-            Integer.parseInt(line.split(",")[3]),
-            Integer.parseInt(line.split(",")[4]),
-            Integer.parseInt(line.split(",")[6]));
+        final String[] parts = line.split(",");
+
+        final String long_name = parts[0];
+        final String short_name = parts[1];
+        final String gender = parts[2];
+        final int minimum_age = Integer.parseInt(parts[3]);
+        final int maximum_age = Integer.parseInt(parts[4]);
+        final int number_of_prizes = Integer.parseInt(parts[5]);
+
+        return new PrizeCategory(long_name, short_name, gender, minimum_age, maximum_age, number_of_prizes);
     }
 
     public int numberOfPrizes() {

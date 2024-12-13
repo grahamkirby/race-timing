@@ -36,7 +36,7 @@ public class RelayRaceResult extends RaceResult {
         this.entry = entry;
         leg_results = new ArrayList<>();
 
-        for (int i = 0; i < race.number_of_legs; i++)
+        for (int i = 0; i < race.getNumberOfLegs(); i++)
             leg_results.add(new LegResult(entry, race));
     }
 

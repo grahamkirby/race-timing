@@ -50,8 +50,12 @@ public abstract class RaceOutputText extends RaceOutput {
     @Override
     protected String getPrizesCategoryHeader(final PrizeCategory category) {
 
-        final String header = "Category: " + category.getLongName();
-        return header + "\n" + "-".repeat(header.length()) + "\n\n";
+        final String header = STR."Category: \{category.getLongName()}";
+        return STR."""
+\{header}
+\{"-".repeat(header.length())}
+
+""";
     }
 
     @Override
@@ -63,7 +67,7 @@ public abstract class RaceOutputText extends RaceOutput {
 
         race.non_title_case_words.stream().
                 sorted().
-                reduce((s1, s2) -> s1 + ", " + s2).
+                reduce((s1, s2) -> STR."\{s1}, \{s2}").
                 ifPresent(s -> race.getNotes().append("Converted to title case: ").append(s));
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + getFileSuffix()));

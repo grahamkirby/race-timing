@@ -18,8 +18,10 @@ package org.grahamkirby.race_timing.series_race.fife_ac_grand_prix;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.CreditLink;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
@@ -27,30 +29,31 @@ import java.io.OutputStreamWriter;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 
-    public GrandPrixRaceOutputHTML(final Race race) {
+    GrandPrixRaceOutputHTML(final Race race) {
         super(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+    protected final ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
         return new OverallResultPrinter(race, writer);
     }
 
     @Override
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+    protected final ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterHTML {
+    private static final class OverallResultPrinter extends ResultPrinterHTML {
 
-        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -66,9 +69,9 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
                             <th>Category</th>
                 """);
 
-            for (int i = 0; i < ((GrandPrixRace)race).getNumberOfRacesTakenPlace(); i++)
+            for (int i = 0; i < ((SeriesRace) race).getNumberOfRacesTakenPlace(); i++)
                 writer.append(STR."""
-                                <th>\{((GrandPrixRace)race).getRaces().get(i).getProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
+                                <th>\{((SeriesRace) race).getRaces().get(i).getProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
                     """);
 
             writer.append(STR."""
@@ -85,7 +88,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final StringBuilder builder = new StringBuilder();
 
-            for (final RaceCategory category : ((GrandPrixRace)race).race_categories)
+            for (final RaceCategory category : ((GrandPrixRace) race).race_categories)
                 builder.append("<th>").append(category.category_title()).append("?").append("</th>");
 
             return builder.toString();
@@ -95,7 +98,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
-            final GrandPrixRace grand_prix_race = (GrandPrixRace)race;
+            final GrandPrixRace grand_prix_race = (GrandPrixRace) race;
             final int number_of_races_taken_place = grand_prix_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."""
@@ -107,13 +110,13 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(
                 grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
-                map(individual_race -> {
-                    long s = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
-                    return STR."""
-                                        <td>\{s == 0 ? "-" : String.valueOf(s)}</td>
+                    map(individual_race -> {
+                        final long score = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
+                        return STR."""
+                                        <td>\{score == 0 ? "-" : String.valueOf(score)}</td>
                         """;
-                }).
-                collect(Collectors.joining())
+                    }).
+                    collect(Collectors.joining())
             );
 
             writer.append(STR."""
@@ -121,7 +124,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
                         <td>\{result.completedSeries() ? "Y" : "N"}</td>
                 """);
 
-            for (RaceCategory category : ((GrandPrixRace)race).race_categories) {
+            for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
                 writer.append("<td>").append(grand_prix_race.hasCompletedRaceCategory(result, category) ? "Y" : "N").append("</td>");
             }
 
@@ -131,28 +134,28 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private static class PrizeResultPrinter extends ResultPrinterHTML {
+    private static final class PrizeResultPrinter extends ResultPrinterHTML {
 
-        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append("<ul>\n");
+            writer.append("<ul>").append(LINE_SEPARATOR);
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+        public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
 
-            writer.append("</ul>\n\n");
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final GrandPrixRaceResult result = ((GrandPrixRaceResult)r);
+            final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
 
             writer.append(STR."""
                     <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{Math.round(result.totalScore())}</li>

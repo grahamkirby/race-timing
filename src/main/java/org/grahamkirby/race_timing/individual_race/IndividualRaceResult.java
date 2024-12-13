@@ -25,7 +25,7 @@ import java.util.Comparator;
 
 public class IndividualRaceResult extends RaceResult {
 
-    public IndividualRaceEntry entry;
+    public final IndividualRaceEntry entry;
     public Duration finish_time;
     public CompletionStatus completion_status;
 

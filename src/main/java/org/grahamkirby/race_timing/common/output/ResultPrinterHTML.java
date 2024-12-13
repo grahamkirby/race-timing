@@ -5,27 +5,29 @@ import org.grahamkirby.race_timing.common.Race;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 
 public abstract class ResultPrinterHTML extends ResultPrinter {
 
-    public ResultPrinterHTML(Race race, OutputStreamWriter writer) {
+    protected ResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 
     @Override
-    public void printResultsFooter(final boolean include_credit_link) throws IOException {
+    public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
 
         writer.append("""
-            </tbody>
-        </table>
-        """);
+                </tbody>
+            </table>
+            """);
 
-        if (include_credit_link) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+        if (credit_link_option == CreditLink.INCLUDE_CREDIT_LINK) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 
     @Override
     public void printNoResults() throws IOException {
-        writer.append("<p>No results</p>\n");
+
+        writer.append("<p>No results</p>").append(LINE_SEPARATOR);
     }
 }

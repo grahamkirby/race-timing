@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.CreditLink;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
@@ -46,7 +47,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
             writer.append("<h3><strong>Results</strong></h3>\n");
             printPrizes(writer);
             writer.append("<h4>Overall</h4>\n");
-            printResults(writer, getOverallResultPrinter(writer), true);
+            printResults(writer, getOverallResultPrinter(writer), CreditLink.INCLUDE_CREDIT_LINK);
         }
     }
 
@@ -118,7 +119,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+        public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
 
             writer.append("</ul>\n\n");
         }

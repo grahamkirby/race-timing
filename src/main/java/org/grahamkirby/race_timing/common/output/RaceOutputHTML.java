@@ -21,11 +21,13 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
 
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+
 public abstract class RaceOutputHTML extends RaceOutput {
 
-    public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
+    static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
-    public RaceOutputHTML(final Race race) {
+    protected RaceOutputHTML(final Race race) {
         super(race);
     }
 
@@ -36,12 +38,14 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     @Override
     public String getPrizesSectionHeader() {
-        return "<h4>Prizes</h4>\n";
+        return STR."<h4>Prizes</h4>\{LINE_SEPARATOR}";
     }
 
     @Override
     public String getPrizesCategoryHeader(final PrizeCategory category) {
-        return "<p><strong>" + category.getLongName() + "</strong></p>\n";
+        return STR."""
+        <p><strong>\{category.getLongName()}</strong></p>
+        """;
     }
 
     @Override
@@ -50,12 +54,16 @@ public abstract class RaceOutputHTML extends RaceOutput {
     }
 
     @Override
-    public String makeSubHeading(String s) {
-        return "<h4>" + s + "</h4>\n";
+    public String makeSubHeading(final String s) {
+        return STR."""
+            <h4>\{s}</h4>
+            """;
     }
 
     @Override
-    public String getResultsHeader() { return ""; }
+    public String getResultsHeader() {
+        return "";
+    }
 
     public abstract void printCombined() throws IOException;
 }

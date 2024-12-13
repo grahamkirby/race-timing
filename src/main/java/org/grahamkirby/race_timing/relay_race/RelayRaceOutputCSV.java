@@ -20,6 +20,7 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing.common.output.CreditLink;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
@@ -31,33 +32,27 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public class RelayRaceOutputCSV extends RaceOutputCSV {
 
-    private String detailed_results_filename;
+    private final String detailed_results_filename = STR."\{race_name_for_filenames}_detailed_\{year}";
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public RelayRaceOutputCSV(final Race race) {
-        
+    RelayRaceOutputCSV(final Race race) {
+
         super(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-        detailed_results_filename = race_name_for_filenames + "_detailed_" + year;
-    }
-
-    @Override
     public String getResultsHeader() {
-        return OVERALL_RESULTS_HEADER + "Total\n";
+        return STR."\{OVERALL_RESULTS_HEADER}Total\{LINE_SEPARATOR}";
     }
 
     @Override
@@ -67,7 +62,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printDetailedResults() throws IOException {
+    void printDetailedResults() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + SUFFIX_CSV));
 
@@ -80,15 +75,17 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
 
+        final int number_of_legs = ((RelayRace) race).getNumberOfLegs();
+
         writer.append(OVERALL_RESULTS_HEADER);
 
-        for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
+        for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
-            writer.append("Runners ").append(String.valueOf(leg_number)).append(",Leg ").append(String.valueOf(leg_number)).append(",");
-            if (leg_number < ((RelayRace)race).number_of_legs) writer.append("Split ").append(String.valueOf(leg_number)).append(",");
+            writer.append(STR."Runners \{leg_number},Leg \{leg_number},");
+            if (leg_number < number_of_legs) writer.append(STR."Split \{leg_number},");
         }
 
-        writer.append("Total\n");
+        writer.append("Total").append(LINE_SEPARATOR);
     }
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
@@ -98,21 +95,21 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
             final List<RaceResult> results = race.getOverallResults(group.categories());
-            printer.print(results, false);
+            printer.print(results, CreditLink.DONT_INCLUDE_CREDIT_LINK);
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printLegResults() throws IOException {
+    void printLegResults() throws IOException {
 
-        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
+        for (int leg = 1; leg <= ((RelayRace) race).getNumberOfLegs(); leg++)
             printLegResults(leg);
     }
 
     private void printLegResults(final int leg) throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".csv"));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."\{race_name_for_filenames}_leg_\{leg}_\{year}.csv"));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResults(writer, leg);
@@ -123,18 +120,20 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        new LegResultPrinter(race, writer, leg).print(leg_results, false);
+        new LegResultPrinter(race, writer, leg).print(leg_results, CreditLink.DONT_INCLUDE_CREDIT_LINK);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Prize results not printed to text file.
     @Override
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
 
-    private static class OverallResultPrinter extends ResultPrinterCSV {
+    private static final class OverallResultPrinter extends ResultPrinterCSV {
 
-        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -146,11 +145,11 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    private static class LegResultPrinter extends ResultPrinterCSV {
+    private static final class LegResultPrinter extends ResultPrinterCSV {
 
         final int leg;
 
-        public LegResultPrinter(final Race race, final OutputStreamWriter writer, final int leg) {
+        private LegResultPrinter(final Race race, final OutputStreamWriter writer, final int leg) {
 
             super(race, writer);
             this.leg = leg;
@@ -159,7 +158,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String plural = ((RelayRace) race).paired_legs.contains(leg) ? "s" : "";
+            final String plural = ((RelayRace) race).getPairedLegs().contains(leg) ? "s" : "";
             writer.append(STR."Pos,Runner\{plural},Time\n");
         }
 
@@ -171,9 +170,9 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    private static class DetailedResultPrinter extends ResultPrinterCSV {
+    private static final class DetailedResultPrinter extends ResultPrinterCSV {
 
-        public DetailedResultPrinter(Race race, OutputStreamWriter writer) {
+        private DetailedResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -185,9 +184,9 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.team.name())},\{result.entry.team.category().getLongName()},");
 
-            boolean any_previous_leg_dnf = false;
+            boolean all_previous_legs_completed = true;
 
-            for (int leg = 1; leg <= relay_race.number_of_legs; leg++) {
+            for (int leg = 1; leg <= relay_race.getNumberOfLegs(); leg++) {
 
                 final LegResult leg_result = result.leg_results.get(leg - 1);
                 final boolean completed = leg_result.getCompletionStatus() == CompletionStatus.COMPLETED;
@@ -195,15 +194,15 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
                 final String leg_runner_names = leg_result.entry.team.runner_names().get(leg - 1);
                 final String leg_mass_start_annotation = relay_race.getMassStartAnnotation(leg_result, leg);
                 final String leg_time = completed ? format(leg_result.duration()) : DNF_STRING;
-                final String split_time = completed && !any_previous_leg_dnf ? format(relay_race.sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
+                final String split_time = completed && all_previous_legs_completed ? format(relay_race.sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
 
                 writer.append(STR."\{encode(leg_runner_names)}\{leg_mass_start_annotation},\{leg_time},\{split_time}");
 
-                if (leg < relay_race.number_of_legs) writer.append(",");
-                if (!completed) any_previous_leg_dnf = true;
+                if (leg < relay_race.getNumberOfLegs()) writer.append(",");
+                if (!completed) all_previous_legs_completed = false;
             }
 
-            writer.append("\n");
+            writer.append(LINE_SEPARATOR);
         }
     }
 }

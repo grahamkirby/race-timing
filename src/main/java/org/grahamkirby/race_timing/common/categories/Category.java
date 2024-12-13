@@ -16,12 +16,22 @@
  */
 package org.grahamkirby.race_timing.common.categories;
 
+/**
+ * Parent class for entry category and prize category,
+ * each including a gender and age range.
+ */
 public abstract class Category {
 
+    // E.g. "Men Senior", "Men 40-49".
     private final String long_name;
+
+    // E.g. "MS", "M40".
     private final String short_name;
+
+    // e.g "Women", "Female", "Mixed", "Open".
     private final String gender;
 
+    // Both ages are inclusive.
     private final int minimum_age;
     private final int maximum_age;
 
@@ -54,17 +64,7 @@ public abstract class Category {
         return maximum_age;
     }
 
-    public boolean equalGenderAndAgeCategory(final Category other) {
-        return gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof Category other && equalGenderAndAgeCategory(other);
-    }
-
-    @Override
-    public int hashCode() {
-        return short_name.hashCode();
+    public boolean equals(final Object o) {
+        return o instanceof Category other && gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
     }
 }

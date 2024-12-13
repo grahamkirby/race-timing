@@ -42,9 +42,11 @@ public class IndividualRaceEntry extends RaceEntry {
         final List<String> mapped_elements = mapElements(elements, race.entry_column_map_string);
 
         if (mapped_elements.size() != EXPECTED_NUMBER_OF_ENTRY_ELEMENTS)
+            //noinspection SequencedCollectionMethodCanBeUsed
             throw new RuntimeException("illegal composition for runner: " + mapped_elements.get(BIB_NUMBER_INDEX));
 
         try {
+            //noinspection SequencedCollectionMethodCanBeUsed
             bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
 
             final String name = race.normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));

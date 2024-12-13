@@ -33,27 +33,27 @@ import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
 public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
-    public GrandPrixRaceOutputCSV(final Race race) {
+    GrandPrixRaceOutputCSV(final Race race) {
         super(race);
     }
 
     @Override
-    public String getResultsHeader() {
+    public final String getResultsHeader() {
 
         return STR."Pos,Runner,Category,\{((SeriesRace) race).getRaces().stream().
-                filter(Objects::nonNull).
-                map(race1 -> race1.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
-                collect(Collectors.joining(","))}" + STR.",Total,Qualified\{getRaceCategoriesHeader()}\n";
+            filter(Objects::nonNull).
+            map(race1 -> race1.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
+            collect(Collectors.joining(","))}" + STR.",Total,Qualified\{getRaceCategoriesHeader()}\n";
     }
 
     @Override
-    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+    protected final ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
         return new OverallResultPrinter(race, writer);
     }
 
     // Prize results not printed to text file.
     @Override
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected final ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
 
     private String getRaceCategoriesHeader() {
 
@@ -64,9 +64,9 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterCSV {
+    private static final class OverallResultPrinter extends ResultPrinterCSV {
 
-        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
