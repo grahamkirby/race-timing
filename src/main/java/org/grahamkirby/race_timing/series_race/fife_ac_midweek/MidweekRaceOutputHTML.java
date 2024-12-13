@@ -18,17 +18,21 @@ package org.grahamkirby.race_timing.series_race.fife_ac_midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.CreditLink;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.stream.Collectors;
 
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+
 public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
-    public MidweekRaceOutputHTML(final Race race) {
+    MidweekRaceOutputHTML(final Race race) {
         super(race);
     }
 
@@ -46,9 +50,9 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterHTML {
+    private static final class OverallResultPrinter extends ResultPrinterHTML {
 
-        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -65,25 +69,25 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
                             <th>Club</th>
                 """);
 
-            for (int i = 0; i < ((MidweekRace)race).getNumberOfRacesTakenPlace(); i++)
+            for (int i = 0; i < ((SeriesRace) race).getNumberOfRacesTakenPlace(); i++)
                 writer.append(STR."""
                                 <th>Race \{i + 1}</th>
                     """);
 
             writer.append("""
-                        <th>Total</th>
-                        <th>Completed</th>
-                    </tr>
-                </thead>
-                <tbody>
-            """);
+                            <th>Total</th>
+                            <th>Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                """);
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
-            final MidweekRace midweek_race = (MidweekRace)race;
+            final MidweekRace midweek_race = (MidweekRace) race;
             final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."""
@@ -110,28 +114,28 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private static class PrizeResultPrinter extends ResultPrinterHTML {
+    private static final class PrizeResultPrinter extends ResultPrinterHTML {
 
-        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append("<ul>\n");
+            writer.append("<ul>").append(LINE_SEPARATOR);
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+        public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
 
-            writer.append("</ul>\n\n");
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MidweekRaceResult result = ((MidweekRaceResult)r);
+            final MidweekRaceResult result = ((MidweekRaceResult) r);
 
             writer.append(STR."""
                     <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{result.totalScore()}</li>

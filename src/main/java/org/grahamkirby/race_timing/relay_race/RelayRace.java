@@ -21,10 +21,7 @@ import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
-import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
-import org.grahamkirby.race_timing.common.output.RaceOutputText;
+import org.grahamkirby.race_timing.common.output.*;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -42,12 +39,28 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public class RelayRace extends SingleRace {
 
+    public int getNumberOfLegs() {
+        return number_of_legs;
+    }
+
+    public void setNumber_of_legs(int number_of_legs) {
+        this.number_of_legs = number_of_legs;
+    }
+
+    public Set<Integer> getPairedLegs() {
+        return paired_legs;
+    }
+
+    public void setPaired_legs(Set<Integer> paired_legs) {
+        this.paired_legs = paired_legs;
+    }
+
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {}
     private record ResultWithLegIndex(RelayRaceResult result, int leg_index) {}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected int number_of_legs;
+    private int number_of_legs;
     private RelayRaceMissingData missing_data;
 
     // For each leg, records whether there was a mass start.
@@ -58,7 +71,7 @@ public class RelayRace extends SingleRace {
     // mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
     private List<Duration> start_times_for_mass_starts;
 
-    protected Set<Integer> paired_legs;
+    private Set<Integer> paired_legs;
     private List<IndividualLegStart> individual_leg_starts;
     private Duration start_offset;
     private Map<String, String> gender_eligibility_map;
@@ -164,7 +177,7 @@ public class RelayRace extends SingleRace {
         prizes = new RelayRacePrizes(this);
     }
 
-    @Override
+//    @Override
     protected void initialiseResults() {
 
         entries.forEach(entry -> overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, this)));
@@ -598,7 +611,7 @@ public class RelayRace extends SingleRace {
     private void printDetailedResults() throws IOException {
 
         ((RelayRaceOutputCSV)output_CSV).printDetailedResults();
-        ((RelayRaceOutputHTML)output_HTML).printDetailedResults(true);
+        ((RelayRaceOutputHTML)output_HTML).printDetailedResults(CreditLink.INCLUDE_CREDIT_LINK);
     }
 
     private void printLegResults() throws IOException {

@@ -91,7 +91,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         final List<RaceResult> category_prize_winners = race.prizes.getPrizeWinners(category);
 
-        new PrizeResultPrinter(race, document).print(category_prize_winners, false);
+        new PrizeResultPrinter(race, document).print(category_prize_winners, CreditLink.DONT_INCLUDE_CREDIT_LINK);
     }
 
     private Paragraph getPrizesSectionHeaderPDF() throws IOException {
@@ -99,12 +99,12 @@ public abstract class RaceOutputPDF extends RaceOutput {
         return new Paragraph().
                 setFont(getFont(PRIZE_FONT_NAME)).
                 setFontSize(PRIZE_FONT_SIZE).
-                add(race_name_for_results + " " + year + " Category Prizes");
+                add(STR."\{race_name_for_results} \{year} Category Prizes");
     }
 
     private Paragraph getPrizesCategoryHeaderPDF(final PrizeCategory category) throws IOException {
 
-        return new Paragraph("Category: " + category.getLongName()).
+        return new Paragraph(STR."Category: \{category.getLongName()}").
                 setFont(getFont(PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
                 setPaddingTop(PRIZE_FONT_SIZE);
@@ -118,9 +118,9 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
         final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
-        paragraph.add(new Text(position_string + ": ").setFont(font));
+        paragraph.add(new Text(STR."\{position_string}: ").setFont(font));
         paragraph.add(new Text(name).setFont(bold_font));
-        paragraph.add(new Text(" (" + detail1 + ") " + detail2).setFont(font));
+        paragraph.add(new Text(STR." (\{detail1}) \{detail2}").setFont(font));
 
         document.add(paragraph);
     }
@@ -147,7 +147,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) {
+        public void printResultsFooter(final CreditLink credit_link_option) {
         }
 
         @Override

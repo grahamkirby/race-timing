@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing.common.output.CreditLink;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
@@ -35,18 +36,19 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class TourRaceOutputHTML extends SeriesRaceOutputHTML {
+class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
-    public TourRaceOutputHTML(final Race race) {
+    TourRaceOutputHTML(final Race race) {
         super(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printIndividualRaces() throws IOException {
+    void printIndividualRaces() throws IOException {
 
-        for (int i = 1; i <= ((SeriesRace)race).getRaces().size(); i++)
+        for (int i = 1; i <= ((SeriesRace) race).getRaces().size(); i++)
             printIndividualRaceResults(i);
     }
 
@@ -64,11 +66,11 @@ public class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     private void printIndividualRaceResults(final int race_number) throws IOException {
 
-        final IndividualRace individual_race = ((SeriesRace)race).getRaces().get(race_number - 1);
+        final IndividualRace individual_race = ((SeriesRace) race).getRaces().get(race_number - 1);
 
         if (individual_race != null) {
 
-            final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve("race" + race_number + ".html"));
+            final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve(STR."race\{race_number}.html"));
 
             try (final OutputStreamWriter writer = new OutputStreamWriter(race_stream)) {
 
@@ -82,14 +84,14 @@ public class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
         final List<RaceResult> category_results = individual_race.getOverallResults(prize_categories);
 
-        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, false);
+        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, CreditLink.DONT_INCLUDE_CREDIT_LINK);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterHTML {
+    private static final class OverallResultPrinter extends ResultPrinterHTML {
 
-        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -123,7 +125,7 @@ public class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TourRaceResult result = (TourRaceResult)r;
+            final TourRaceResult result = (TourRaceResult) r;
             final TourRace race = (TourRace) result.race;
             final List<IndividualRace> races = race.getRaces();
 
@@ -140,7 +142,7 @@ public class TourRaceOutputHTML extends SeriesRaceOutputHTML {
                 if (result.times.get(i) != null)
                     writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
                 else if (races.get(i) != null)
-                    writer.append("            <td>-</td>\n");
+                    writer.append("            <td>-</td>").append(LINE_SEPARATOR);
 
             writer.append(STR."""
                         <td>\{result.shouldDisplayPosition() ? format(result.duration()) : "-"}</td>
@@ -149,38 +151,38 @@ public class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private static class PrizeResultPrinter extends ResultPrinterHTML {
+    private static final class PrizeResultPrinter extends ResultPrinterHTML {
 
-        public PrizeResultPrinter(Race race, OutputStreamWriter writer) {
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append("<ul>\n");
+            writer.append("<ul>").append(LINE_SEPARATOR);
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+        public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
 
-            writer.append("</ul>\n\n");
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TourRaceResult result = (TourRaceResult)r;
+            final TourRaceResult result = (TourRaceResult) r;
 
             writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.runner.name)} (\{result.runner.club}) \{format(result.duration())}</li>\n");
         }
     }
 
-    private static class IndividualRaceResultPrinter extends ResultPrinterHTML {
+    private static final class IndividualRaceResultPrinter extends ResultPrinterHTML {
 
         private final String sub_heading;
 
-        public IndividualRaceResultPrinter(final Race race, final String sub_heading, final OutputStreamWriter writer) {
+        private IndividualRaceResultPrinter(final Race race, final String sub_heading, final OutputStreamWriter writer) {
             super(race, writer);
             this.sub_heading = sub_heading;
         }

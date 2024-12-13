@@ -69,7 +69,7 @@ public class RelayRaceMissingData {
 
     private boolean timesAreRecordedForAllRunners() {
 
-        return race.getRawResults().size() == race.entries.size() * race.number_of_legs;
+        return race.getRawResults().size() == race.entries.size() * race.getNumberOfLegs();
     }
 
     private int getIndexOfFirstResultWithRecordedTime() {

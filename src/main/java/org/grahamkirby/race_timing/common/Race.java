@@ -32,6 +32,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.common.categories.PrizeCategory.PRIZE_CATEGORY_GROUP_NAME_INDEX;
+import static org.grahamkirby.race_timing.common.categories.PrizeCategory.makePrizeCategory;
+
 public abstract class Race {
 
     public static final String COMMENT_SYMBOL = "#";
@@ -44,10 +47,10 @@ public abstract class Race {
     public static final String KEY_YEAR = "YEAR";
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
-    public static final String KEY_ENTRY_MAP_PATH = "ENTRY_MAP_PATH";
-    public static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
-    public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
-    public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
+    private static final String KEY_ENTRY_MAP_PATH = "ENTRY_MAP_PATH";
+    private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
+    private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
+    private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
     // Single race.
     public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
@@ -55,32 +58,32 @@ public abstract class Race {
     public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
     public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
     public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
-    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
+    protected static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
 
     // Individual race.
-    public static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
+    protected static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
 
     // Relay race.
-    public static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
+    protected static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
     public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
-    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
-    public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
-    public static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
-    public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
-    public static final String KEY_START_OFFSET = "START_OFFSET";
+    protected static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
+    protected static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
+    protected static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
+    protected static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
+    protected static final String KEY_START_OFFSET = "START_OFFSET";
 
     // Series race.
     public static final String KEY_RACES = "RACES";
-    public static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
-    public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
+    protected static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
+    protected static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
 
     // Grand Prix race.
-    public static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
-    public static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
+    protected static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
+    protected static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
 
     // Midweek race.
-    public static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
+    protected static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
 
     // Minitour race.
     public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
@@ -91,12 +94,14 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static final String LINE_SEPARATOR = System.lineSeparator();
+
     public static final String SUFFIX_CSV = ".csv";
     public static final String SUFFIX_PDF = ".pdf";
 
     public static final int UNKNOWN_BIB_NUMBER = 0;
     public static final int UNKNOWN_LEG_NUMBER = 0;
-    public static final int UNKNOWN_RACE_POSITION = 0;
+    protected static final int UNKNOWN_RACE_POSITION = 0;
 
     private static final String DEFAULT_ENTRY_MAP_PATH = "/src/main/resources/configuration/default_entry_map" + SUFFIX_CSV;
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = "/src/main/resources/configuration/html_entities" + SUFFIX_CSV;
@@ -154,7 +159,6 @@ public abstract class Race {
 
     protected abstract void readProperties() throws IOException;
     protected abstract void configureInputData() throws IOException;
-    protected abstract void initialiseResults();
     protected abstract void outputResults() throws IOException;
     protected abstract List<Comparator<RaceResult>> getComparators();
     protected abstract List<Comparator<RaceResult>> getDNFComparators();
@@ -406,7 +410,7 @@ public abstract class Race {
 
     private void configureCategories() throws IOException {
 
-        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
+        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::makeEntryCategory).toList();
         prize_category_groups = getPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
     }
 
@@ -462,10 +466,10 @@ public abstract class Race {
         Files.readAllLines(prize_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             forEachOrdered(line -> {
-                final String group_name = line.split(",")[5];
+                final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
 
                 addGroupIfAbsent(groups, group_name);
-                getGroupWithName(groups, group_name).categories().add(new PrizeCategory(line));
+                getGroupWithName(groups, group_name).categories().add(makePrizeCategory(line));
             });
 
         return groups;

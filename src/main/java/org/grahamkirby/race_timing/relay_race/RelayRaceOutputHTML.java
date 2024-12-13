@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.output.CreditLink;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
@@ -53,17 +54,17 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             printPrizes(writer);
 
             writer.append("<h4>Overall</h4>\n");
-            printResults(writer, getOverallResultPrinter(writer), false);
+            printResults(writer, getOverallResultPrinter(writer), CreditLink.DONT_INCLUDE_CREDIT_LINK);
 
             writer.append("<h4>Full Results</h4>\n");
-            printDetailedResults(writer, false);
+            printDetailedResults(writer, CreditLink.DONT_INCLUDE_CREDIT_LINK);
 
             writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>\n");
 
-            for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
+            for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {
 
                 writer.append("<p></p>\n<h4>Leg ").append(String.valueOf(leg_number)).append(" Results</h4>\n");
-                printLegResults(writer, leg_number, leg_number == ((RelayRace)race).number_of_legs);
+                printLegResults(writer, leg_number, (leg_number == ((RelayRace) race).getNumberOfLegs()) ? CreditLink.INCLUDE_CREDIT_LINK : CreditLink.DONT_INCLUDE_CREDIT_LINK);
             }
         }
     }
@@ -87,42 +88,42 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printDetailedResults(final boolean include_credit_link) throws IOException {
+    public void printDetailedResults(final CreditLink credit_link_option) throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + ".html"));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printDetailedResults(writer, include_credit_link);
+            printDetailedResults(writer, credit_link_option);
         }
     }
 
-    protected void printDetailedResults(final OutputStreamWriter writer, final boolean include_credit_link) throws IOException {
+    protected void printDetailedResults(final OutputStreamWriter writer, final CreditLink credit_link_option) throws IOException {
 
-        printResults(writer, new DetailedResultPrinter(race, writer), include_credit_link);
+        printResults(writer, new DetailedResultPrinter(race, writer), credit_link_option);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void printLegResults() throws IOException {
 
-        for (int leg = 1; leg <= ((RelayRace)race).number_of_legs; leg++)
+        for (int leg = 1; leg <= ((RelayRace) race).getNumberOfLegs(); leg++)
             printLegResults(leg);
     }
 
     private void printLegResults(final int leg) throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(race_name_for_filenames + "_leg_" + leg + "_" + year + ".html"));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."\{race_name_for_filenames}_leg_\{leg}_\{year}.html"));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printLegResults(writer, leg, true);
+            printLegResults(writer, leg, CreditLink.INCLUDE_CREDIT_LINK);
         }
     }
 
-    private void printLegResults(final OutputStreamWriter writer, final int leg, final boolean include_credit_link) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final int leg, final CreditLink credit_link_option) throws IOException {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        new LegResultPrinter(race, writer, leg).print(leg_results, include_credit_link);
+        new LegResultPrinter(race, writer, leg).print(leg_results, credit_link_option);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +187,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                     <thead>
                         <tr>
                             <th>Pos</th>
-                            <th>Runner\{((RelayRace)race).paired_legs.contains(leg) ? "s" : ""}</th>
+                            <th>Runner\{((RelayRace) race).getPairedLegs().contains(leg) ? "s" : ""}</th>
                             <th>Time</th>
                         </tr>
                     </thead>
@@ -228,12 +229,12 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                             <th>Category</th>
                 """);
 
-            for (int leg_number = 1; leg_number <= ((RelayRace)race).number_of_legs; leg_number++) {
+            for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {
 
                 writer.append(STR."""
-                                <th>Runner\{((RelayRace)race).paired_legs.contains(leg_number) ? "s" : ""} \{leg_number}</th>
+                                <th>Runner\{((RelayRace) race).getPairedLegs().contains(leg_number) ? "s" : ""} \{leg_number}</th>
                                 <th>Leg \{leg_number}</th>
-                                <th>\{leg_number < ((RelayRace)race).number_of_legs ? STR."Split \{leg_number}" : "Total"}</th>
+                                <th>\{leg_number < ((RelayRace) race).getNumberOfLegs() ? STR."Split \{leg_number}" : "Total"}</th>
                     """);
             }
 
@@ -260,7 +261,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
             boolean any_previous_leg_dnf = false;
 
-            for (int leg = 1; leg <= relay_race.number_of_legs; leg++) {
+            for (int leg = 1; leg <= relay_race.getNumberOfLegs(); leg++) {
 
                 final LegResult leg_result = result.leg_results.get(leg - 1);
                 final boolean completed = leg_result.getCompletionStatus() == CompletionStatus.COMPLETED;
@@ -298,7 +299,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsFooter(final boolean include_credit_link) throws IOException {
+        public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
 
             writer.append("</ul>\n\n");
         }

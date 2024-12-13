@@ -16,6 +16,9 @@
  */
 package org.grahamkirby.race_timing.common.categories;
 
+/**
+ * Category specific to a particular entry.
+ */
 public class EntryCategory extends Category {
 
     public EntryCategory(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
@@ -23,13 +26,16 @@ public class EntryCategory extends Category {
         super(long_name, short_name, gender, minimum_age, maximum_age);
     }
 
-    public EntryCategory(final String line) {
+    public static EntryCategory makeEntryCategory(final String line) {
 
-        this(
-            line.split(",")[0],
-            line.split(",")[1],
-            line.split(",")[2],
-            Integer.parseInt(line.split(",")[3]),
-            Integer.parseInt(line.split(",")[4]));
+        final String[] parts = line.split(",");
+
+        final String long_name = parts[0];
+        final String short_name = parts[1];
+        final String gender = parts[2];
+        final int minimum_age = Integer.parseInt(parts[3]);
+        final int maximum_age = Integer.parseInt(parts[4]);
+
+        return new EntryCategory(long_name, short_name, gender, minimum_age, maximum_age);
     }
 }

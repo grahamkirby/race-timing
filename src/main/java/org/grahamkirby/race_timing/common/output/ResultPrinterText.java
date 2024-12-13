@@ -16,7 +16,7 @@ public abstract class ResultPrinterText extends ResultPrinter {
     }
 
     @Override
-    public void printResultsFooter(final boolean include_credit_link) {
+    public void printResultsFooter(final CreditLink credit_link_option) {
     }
 
     @Override

@@ -68,7 +68,7 @@ public abstract class SeriesRace extends Race {
         races = ((SeriesRaceInput)input).loadRaces();
     }
 
-    @Override
+//    @Override
     protected void initialiseResults() {
 
         final Predicate<RaceResult> inclusion_predicate = getResultInclusionPredicate();

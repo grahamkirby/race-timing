@@ -23,7 +23,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
@@ -110,8 +109,7 @@ public class TourRace extends SeriesRace {
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Duration> times = races.stream().
-//                map(race -> getRaceTime(race, runner)).
-                map(race -> race == null ? null : ((IndividualRace)race).getRunnerTime(runner)).
+            map(race -> race == null ? null : race.getRunnerTime(runner)).
             toList();
 
         return new TourRaceResult(runner, times, this);

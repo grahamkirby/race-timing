@@ -16,7 +16,7 @@ public abstract class ResultPrinterCSV extends ResultPrinter {
     }
 
     @Override
-    public void printResultsFooter(final boolean include_credit_link) {
+    public void printResultsFooter(final CreditLink include_credit_link) {
     }
 
     @Override

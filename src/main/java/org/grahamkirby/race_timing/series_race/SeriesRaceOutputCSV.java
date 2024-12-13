@@ -20,6 +20,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
@@ -36,7 +37,6 @@ public abstract class SeriesRaceOutputCSV extends RaceOutputCSV {
         return STR."\{OVERALL_RESULTS_HEADER},\{((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).
             map(race -> race.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
-            reduce((s1, s2) -> s1 + "," + s2).
-            orElseThrow()}";
+            collect(Collectors.joining(","))}";
     }
 }

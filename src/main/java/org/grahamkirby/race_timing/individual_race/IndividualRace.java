@@ -159,7 +159,7 @@ public class IndividualRace extends SingleRace {
         return new IndividualRaceOutputPDF(this);
     }
 
-    @Override
+//    @Override
     protected void initialiseResults() {
 
         entries.stream().
