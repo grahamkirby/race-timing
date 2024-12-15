@@ -209,8 +209,10 @@ public abstract class RaceTest {
 
     private static void assertThatFilesHaveSameContentIgnoringWhitespace(final Path path1, final Path path2) throws IOException {
 
-        final String file_content1 = removeWhiteSpace(getFileContent(path1));
-        final String file_content2 = removeWhiteSpace(getFileContent(path2));
+//        final String file_content1 = removeWhiteSpace(getFileContent(path1));
+//        final String file_content2 = removeWhiteSpace(getFileContent(path2));
+        final String file_content1 = (getFileContent(path1));
+        final String file_content2 = (getFileContent(path2));
 
         if (!file_content1.equals(file_content2))
             fail(STR."Files differ: \{path1}, \{path2}");

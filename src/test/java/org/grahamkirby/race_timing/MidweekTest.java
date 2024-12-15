@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.junit.jupiter.api.Test;
-import org.grahamkirby.race_timing.series_race.fife_ac_midweek.MidweekRace;
+import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
 
 import java.io.IOException;
 import java.nio.file.Path;

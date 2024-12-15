@@ -18,7 +18,7 @@ package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.series_race.fife_ac_grand_prix.GrandPrixRace;
+import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
