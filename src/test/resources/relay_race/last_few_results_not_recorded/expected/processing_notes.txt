@@ -1,0 +1,7 @@
+
+Discrepancies:
+-------------
+
+Bib numbers with missing times: 5, 9, 17, 28, 42, 42, 42, 43, 57, 81, 85, 97, 98, 99, 100, 102, 102, 105, 112, 124, 140, 142, 148, 154
+
+Converted to title case: irving
