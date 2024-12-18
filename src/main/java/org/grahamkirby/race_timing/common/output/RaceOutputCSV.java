@@ -21,23 +21,27 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
+import java.util.Collection;
+
+import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
 public abstract class RaceOutputCSV extends RaceOutput {
 
-    public RaceOutputCSV(final Race race) {
+    protected RaceOutputCSV(final Race race) {
         super(race);
     }
 
-    protected String getResultsHeader() { return ""; }
+    protected String getResultsHeader() {
+        return "";
+    }
 
-    protected void printResults(final OutputStreamWriter writer, ResultPrinter printer, final List<PrizeCategory> categories, final String sub_heading, final CreditLink credit_link_option) throws IOException {
+    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading, final CreditLink credit_link_option) throws IOException {
         super.printResults(writer, printer, categories, "", credit_link_option);
     }
 
     @Override
     public String getFileSuffix() {
-        return ".csv";
+        return SUFFIX_CSV;
     }
 
     @Override
@@ -55,7 +59,7 @@ public abstract class RaceOutputCSV extends RaceOutput {
         return "";
     }
 
-    protected static String encode(String s) {
+    protected static String encode(final String s) {
         return s.contains(",") ? STR."\"\{s}\"" : s;
     }
 }

@@ -27,12 +27,13 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
-    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time\n";
+    private static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
 
-    public IndividualRaceOutputCSV(final Race race) {
+    IndividualRaceOutputCSV(final Race race) {
         super(race);
     }
 
@@ -48,13 +49,15 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
 
     // Prize results not printed to CSV file.
     @Override
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterCSV {
+    private static final class OverallResultPrinter extends ResultPrinterCSV {
 
-        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -64,7 +67,7 @@ public class IndividualRaceOutputCSV extends RaceOutputCSV {
             final IndividualRaceResult result = (IndividualRaceResult) r;
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.runner.name)},").
-                    append(STR."\{encode(result.entry.runner.club)},\{result.entry.runner.category.getShortName()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : "DNF"}\n");
+                append(STR."\{encode(result.entry.runner.club)},\{result.entry.runner.category.getShortName()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : "DNF"}\n");
         }
     }
 }

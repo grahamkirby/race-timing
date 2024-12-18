@@ -24,9 +24,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+
 public abstract class RaceOutputText extends RaceOutput {
 
-    public RaceOutputText(final Race race) {
+    protected RaceOutputText(final Race race) {
         super(race);
     }
 
@@ -45,36 +47,37 @@ public abstract class RaceOutputText extends RaceOutput {
     }
 
     @Override
-    protected String getResultsHeader() { return ""; }
+    protected String getResultsHeader() {
+        return "";
+    }
 
     @Override
     protected String getPrizesCategoryHeader(final PrizeCategory category) {
 
         final String header = STR."Category: \{category.getLongName()}";
         return STR."""
-\{header}
-\{"-".repeat(header.length())}
+            \{header}
+            \{"-".repeat(header.length())}
 
-""";
+            """;
     }
 
     @Override
     protected String getPrizesCategoryFooter() {
-        return "\n\n";
+        return LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     public void printNotes() throws IOException {
 
         race.non_title_case_words.stream().
-                sorted().
-                reduce((s1, s2) -> STR."\{s1}, \{s2}").
-                ifPresent(s -> race.getNotes().append("Converted to title case: ").append(s));
+            sorted().
+            reduce((s1, s2) -> STR."\{s1}, \{s2}").
+            ifPresent(s -> race.getNotes().append("Converted to title case: ").append(s));
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + getFileSuffix()));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            String string = race.getNotes().toString();
-            writer.append(string);
+            writer.append(race.getNotes().toString());
         }
     }
 
@@ -82,5 +85,7 @@ public abstract class RaceOutputText extends RaceOutput {
 
     // Full results not printed to text file.
     @Override
-    protected ResultPrinter getOverallResultPrinter(OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
 }

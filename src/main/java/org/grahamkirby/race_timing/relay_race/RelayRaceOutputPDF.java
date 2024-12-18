@@ -21,9 +21,9 @@ import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
-public class RelayRaceOutputPDF extends RaceOutputPDF {
+class RelayRaceOutputPDF extends RaceOutputPDF {
 
-    public RelayRaceOutputPDF(final RelayRace results) {
+    RelayRaceOutputPDF(final RelayRace results) {
         super(results);
     }
 

@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RelayRaceEntry extends RaceEntry {
 
@@ -32,15 +33,14 @@ public class RelayRaceEntry extends RaceEntry {
 
     public Team team;
 
-    public RelayRaceEntry(final List<String> elements, final Race race) {
+    @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
+    RelayRaceEntry(final List<String> elements, final Race race) {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
         if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace) race).getNumberOfLegs())
-            //noinspection SequencedCollectionMethodCanBeUsed
-            throw new RuntimeException("illegal composition for team: " + elements.get(BIB_NUMBER_INDEX));
+            throw new RuntimeException(STR."illegal composition for team: \{elements.get(BIB_NUMBER_INDEX)}");
 
-        //noinspection SequencedCollectionMethodCanBeUsed
         bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {
             final String name = elements.get(TEAM_NAME_INDEX);
@@ -49,9 +49,9 @@ public class RelayRaceEntry extends RaceEntry {
             final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.normalisation.cleanRunnerName(s)).toList();
 
             team = new Team(name, category, runners);
-        }
-        catch (RuntimeException e) {
-            throw new RuntimeException("illegal category for team: " + bib_number);
+
+        } catch (final RuntimeException _) {
+            throw new RuntimeException(STR."illegal category for team: \{bib_number}");
         }
     }
 
@@ -61,8 +61,13 @@ public class RelayRaceEntry extends RaceEntry {
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof RelayRaceEntry other_entry &&
-                team.name().equals(other_entry.team.name());
+    public boolean equals(final Object obj) {
+        return obj instanceof final RelayRaceEntry other_entry &&
+            team.name().equals(other_entry.team.name());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(team.name());
     }
 }

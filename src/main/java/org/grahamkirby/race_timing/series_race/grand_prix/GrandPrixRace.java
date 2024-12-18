@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.grand_prix;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -107,7 +108,7 @@ public class GrandPrixRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(this::compareCompletion, this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
+        return List.of(Race::compareCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override

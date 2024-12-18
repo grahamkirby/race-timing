@@ -39,19 +39,19 @@ public class RacePrizes {
             setPrizeWinners(category);
     }
 
-    protected boolean prizeWinner(final RaceResult result, final PrizeCategory category) {
+    protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        return !alreadyWonPrize(result) &&
-                result.getCompletionStatus() == CompletionStatus.COMPLETED &&
-                race.entryCategoryIsEligibleForPrizeCategory(result.getCategory(), category);
+        return !hasAlreadyWonPrize(result) &&
+            result.getCompletionStatus() == CompletionStatus.COMPLETED &&
+            race.isEntryCategoryEligibleForPrizeCategory(result.getCategory(), category);
     }
 
-    protected boolean alreadyWonPrize(RaceResult result) {
+    private static boolean hasAlreadyWonPrize(final RaceResult result) {
 
         return result.category_of_prize_awarded != null;
     }
 
-    protected void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
+    protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
         result.category_of_prize_awarded = category;
     }
@@ -63,39 +63,39 @@ public class RacePrizes {
             filter(result -> result.category_of_prize_awarded.equals(category)).
             toList();
 
-        race.setPositionStrings(prize_results, race.allowEqualPositions());
+        Race.setPositionStrings(prize_results, race.areEqualPositionsAllowed());
 
         return prize_results;
     }
 
-    public void setPrizeWinners(final PrizeCategory category) {
+    private void setPrizeWinners(final PrizeCategory category) {
 
         final AtomicInteger position = new AtomicInteger(1);
 
         race.getOverallResults().stream().
             filter(_ -> position.get() <= category.numberOfPrizes()).
-            filter(result -> prizeWinner(result, category)).
+            filter(result -> isPrizeWinner(result, category)).
             forEachOrdered(result -> {
                 setPrizeWinner(result, category);
                 position.getAndIncrement();
             });
     }
 
-    public boolean prizesInThisOrLaterCategory(final PrizeCategory category) {
+    public boolean arePrizesInThisOrLaterCategory(final PrizeCategory category) {
 
         for (final PrizeCategory category2 : race.getPrizeCategories().reversed()) {
 
             if (!race.prizes.getPrizeWinners(category2).isEmpty()) return true;
-            if (category.equals(category2) && !prizesInOtherCategorySameAge(category)) return false;
+            if (category.equals(category2) && !arePrizesInOtherCategorySameAge(category)) return false;
         }
         return false;
     }
 
-    public boolean prizesInOtherCategorySameAge(final PrizeCategory category) {
+    private boolean arePrizesInOtherCategorySameAge(final PrizeCategory category) {
 
         return race.getPrizeCategories().stream().
-            filter(c -> !c.equals(category)).
-            filter(c -> c.getMinimumAge() == category.getMinimumAge()).
-            anyMatch(c -> !race.prizes.getPrizeWinners(c).isEmpty());
+            filter(cat -> !cat.equals(category)).
+            filter(cat -> cat.getMinimumAge() == category.getMinimumAge()).
+            anyMatch(cat -> !race.prizes.getPrizeWinners(cat).isEmpty());
     }
 }

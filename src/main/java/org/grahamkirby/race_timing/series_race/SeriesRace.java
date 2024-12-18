@@ -53,7 +53,7 @@ public abstract class SeriesRace extends Race {
     }
 
     @Override
-    public boolean allowEqualPositions() {
+    public boolean areEqualPositionsAllowed() {
 
         // There can be dead heats in overall results, since these are determined by sum of results
         // from multiple races, rather than there being an ordering imposed at a single funnel.
@@ -101,7 +101,7 @@ public abstract class SeriesRace extends Race {
     }
 
     @Override
-    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
         return entry_category != null && entry_category.getGender().equals(prize_category.getGender());
     }

@@ -23,9 +23,9 @@ public abstract class RaceResult {
 
     public final Race race;
     public String position_string;
-    public PrizeCategory category_of_prize_awarded;
+    PrizeCategory category_of_prize_awarded;
 
-    protected RaceResult(Race race) {
+    protected RaceResult(final Race race) {
         this.race = race;
     }
 

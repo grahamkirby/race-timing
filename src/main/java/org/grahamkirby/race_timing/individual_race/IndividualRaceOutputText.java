@@ -27,9 +27,9 @@ import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
-public class IndividualRaceOutputText extends RaceOutputText {
+class IndividualRaceOutputText extends RaceOutputText {
 
-    public IndividualRaceOutputText(final IndividualRace race) {
+    IndividualRaceOutputText(final IndividualRace race) {
         super(race);
     }
 
@@ -39,9 +39,9 @@ public class IndividualRaceOutputText extends RaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class PrizeResultPrinter extends ResultPrinterText {
+    private static final class PrizeResultPrinter extends ResultPrinterText {
 
-        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

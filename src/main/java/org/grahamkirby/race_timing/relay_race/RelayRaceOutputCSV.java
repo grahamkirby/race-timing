@@ -95,7 +95,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
             final List<RaceResult> results = race.getOverallResults(group.categories());
-            printer.print(results, CreditLink.DONT_INCLUDE_CREDIT_LINK);
+            printer.print(results, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
         }
     }
 
@@ -120,7 +120,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        new LegResultPrinter(race, writer, leg).print(leg_results, CreditLink.DONT_INCLUDE_CREDIT_LINK);
+        new LegResultPrinter(race, writer, leg).print(leg_results, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +194,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
                 final String leg_runner_names = leg_result.entry.team.runner_names().get(leg - 1);
                 final String leg_mass_start_annotation = relay_race.getMassStartAnnotation(leg_result, leg);
                 final String leg_time = completed ? format(leg_result.duration()) : DNF_STRING;
-                final String split_time = completed && all_previous_legs_completed ? format(relay_race.sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
+                final String split_time = completed && all_previous_legs_completed ? format(RelayRace.sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
 
                 writer.append(STR."\{encode(leg_runner_names)}\{leg_mass_start_annotation},\{leg_time},\{split_time}");
 

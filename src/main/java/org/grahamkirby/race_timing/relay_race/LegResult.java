@@ -34,12 +34,13 @@ public class LegResult extends RaceResult {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
-    public LegResult(final RelayRaceEntry entry, final Race race) {
+    LegResult(final RelayRaceEntry entry, final Race race) {
 
         super(race);
+
         this.entry = entry;
-        this.completion_status = CompletionStatus.DNF;
-        this.in_mass_start = false;
+        completion_status = CompletionStatus.DNF;
+        in_mass_start = false;
     }
 
     public Duration duration() {
@@ -77,6 +78,6 @@ public class LegResult extends RaceResult {
 
     @Override
     public boolean shouldBeDisplayedInResults() {
-        return getCompletionStatus() == CompletionStatus.COMPLETED;
+        return completion_status == CompletionStatus.COMPLETED;
     }
 }

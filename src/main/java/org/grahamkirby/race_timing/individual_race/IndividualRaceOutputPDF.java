@@ -23,7 +23,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 public class IndividualRaceOutputPDF extends RaceOutputPDF {
 
-    public IndividualRaceOutputPDF(final IndividualRace results) {
+    IndividualRaceOutputPDF(final IndividualRace results) {
         super(results);
     }
 

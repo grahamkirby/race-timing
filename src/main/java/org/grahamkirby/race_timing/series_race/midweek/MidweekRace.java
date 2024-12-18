@@ -16,10 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.midweek;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
-import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
@@ -101,7 +98,7 @@ public class MidweekRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(this::compareCompletion, this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
+        return List.of(Race::compareCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override
