@@ -46,7 +46,7 @@ public class IndividualRaceResult extends RaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public CompletionStatus getCompletionStatus () {
+    public CompletionStatus getCompletionStatus() {
         return completion_status;
     }
 

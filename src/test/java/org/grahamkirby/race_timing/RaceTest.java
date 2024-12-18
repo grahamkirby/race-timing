@@ -60,7 +60,7 @@ public abstract class RaceTest {
     private static boolean first_test = true;
 
     // Whether at least one test failed earlier in the run.
-    private static boolean some_previous_test_failed = false;
+    private static boolean no_previous_test_failed = true;
 
     // Whether the current test failed.
     private boolean failed_test = true;
@@ -85,7 +85,7 @@ public abstract class RaceTest {
         if (DEBUG) {
 
             // Whether this is the first test in the run to have failed.
-            final boolean first_failed_test = failed_test && !some_previous_test_failed;
+            final boolean first_failed_test = failed_test && no_previous_test_failed;
 
             // Whether the retained output directory is present from a previous run (in which case it should be deleted).
             final boolean output_directory_retained_from_previous_run = first_test && Files.exists(retained_output_directory);
@@ -100,9 +100,9 @@ public abstract class RaceTest {
             cleanUpDirectories(output_directory_retained_from_previous_run, output_directory_should_be_retained);
 
             first_test = false;
-            if (first_failed_test) some_previous_test_failed = true;
-        }
-        else
+            if (first_failed_test) no_previous_test_failed = false;
+
+        } else
             deleteDirectory(test_directory);
     }
 
@@ -120,7 +120,7 @@ public abstract class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void configureTest(final String individual_test_resource_root) throws IOException {
+    private void configureTest(final String individual_test_resource_root) throws IOException {
 
         test_directory = DEBUG ? Paths.get(USER_TEST_DIRECTORY_PATH) : Files.createTempDirectory(null);
 
@@ -128,7 +128,7 @@ public abstract class RaceTest {
         configureDirectoryContents(resources_input_directory);
     }
 
-    protected void testExpectedException(final String configuration_name, final String expected_error_message) throws IOException {
+    void testExpectedException(final String configuration_name, final String expected_error_message) throws IOException {
 
         configureTest(configuration_name);
 
@@ -137,11 +137,11 @@ public abstract class RaceTest {
             () -> makeRace(config_file_path).processResults()
         );
 
-        assertEquals(expected_error_message, exception.getMessage());
+        assertEquals(expected_error_message, exception.getMessage(), "Unexpected exception message");
 
         // Test has passed if this line is reached.
         failed_test = false;
-     }
+    }
 
     protected void testExpectedCompletion(final String configuration_name) throws IOException {
 
@@ -182,19 +182,19 @@ public abstract class RaceTest {
 
         for (final String expected_file_name : getDirectoryEntries(expected)) {
 
-            if (!fileInExpectedDirectoryShouldBeIgnored(expected_file_name)) {
+            if (!shouldFileInExpectedDirectoryBeIgnored(expected_file_name)) {
 
                 final Path path_expected = expected.resolve(expected_file_name);
                 final Path path_actual = actual.resolve(expected_file_name);
 
                 if (Files.isDirectory(path_expected)) {
 
-                    assertTrue(Files.isDirectory(path_actual));
+                    assertTrue(Files.isDirectory(path_actual), "Expected directory missing");
                     assertThatDirectoryContainsAllExpectedContent(path_expected, path_actual);
-                }
-                else {
-                    assertFalse(Files.isDirectory(path_actual));
-                    assertThatFilesHaveSameContentIgnoringWhitespace(path_expected, path_actual);
+
+                } else {
+                    assertFalse(Files.isDirectory(path_actual), "Unexpected directory");
+                    assertThatFilesHaveSameContent(path_expected, path_actual);
                 }
             }
         }
@@ -207,26 +207,16 @@ public abstract class RaceTest {
         }
     }
 
-    private static void assertThatFilesHaveSameContentIgnoringWhitespace(final Path path1, final Path path2) throws IOException {
+    private static void assertThatFilesHaveSameContent(final Path path1, final Path path2) {
 
-//        final String file_content1 = removeWhiteSpace(getFileContent(path1));
-//        final String file_content2 = removeWhiteSpace(getFileContent(path2));
-        final String file_content1 = (getFileContent(path1));
-        final String file_content2 = (getFileContent(path2));
-
-        if (!file_content1.equals(file_content2))
+        if (!getFileContent(path1).equals(getFileContent(path2)))
             fail(STR."Files differ: \{path1}, \{path2}");
     }
 
     private static String getFileContent(final Path path) {
 
         try {
-            if (!path.toString().endsWith(SUFFIX_PDF))
-                return Files.readAllLines(path).stream().
-                    reduce(String::concat).
-                    orElse("");
-
-            else {
+            if (path.toString().endsWith(SUFFIX_PDF)) {
                 try (final PdfDocument document = new PdfDocument(new PdfReader(path.toString()))) {
 
                     final StringBuilder text = new StringBuilder();
@@ -235,10 +225,10 @@ public abstract class RaceTest {
 
                     return text.toString();
                 }
-            }
-        }
-        catch (final IOException e) {
-            fail("Expected output file not found: " + path);
+            } else return String.join("", Files.readAllLines(path));
+
+        } catch (final IOException e) {
+            fail(STR."Expected output file not found: \{path}");
             throw new RuntimeException(e);
         }
     }
@@ -247,15 +237,12 @@ public abstract class RaceTest {
 
         try {
             return Files.readAllLines(Paths.get(IGNORED_FILE_NAMES_PATH)).stream().toList();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
-        catch (IOException e) {throw new RuntimeException(e);}
     }
 
-    private static String removeWhiteSpace(final String s) {
-        return s.replaceAll("\t", "").replaceAll("\n", "").replaceAll(" ", "");
-    }
-
-    private static boolean fileInExpectedDirectoryShouldBeIgnored(final String file_name) {
+    private static boolean shouldFileInExpectedDirectoryBeIgnored(final String file_name) {
         return ignored_file_names.contains(file_name);
     }
 
@@ -264,14 +251,14 @@ public abstract class RaceTest {
         Files.walkFileTree(source_directory, new SimpleFileVisitor<>() {
 
             @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes ignore) throws IOException {
+            public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
 
                 Files.copy(dir, destination_directory.resolve(source_directory.relativize(dir)));
                 return CONTINUE;
             }
 
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes ignore) throws IOException {
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 
                 Files.copy(file, destination_directory.resolve(source_directory.relativize(file)));
                 return CONTINUE;
@@ -284,17 +271,17 @@ public abstract class RaceTest {
         Files.walkFileTree(directory, new SimpleFileVisitor<>() {
 
             @Override
-            public FileVisitResult postVisitDirectory(final Path dir, final IOException ignore) throws IOException {
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
 
                 Files.delete(dir);
-                return FileVisitResult.CONTINUE;
+                return CONTINUE;
             }
 
             @Override
-            public FileVisitResult visitFile(final Path file, final BasicFileAttributes ignore) throws IOException {
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 
                 Files.delete(file);
-                return FileVisitResult.CONTINUE;
+                return CONTINUE;
             }
         });
     }

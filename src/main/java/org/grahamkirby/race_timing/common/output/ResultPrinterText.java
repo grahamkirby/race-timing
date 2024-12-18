@@ -5,9 +5,10 @@ import org.grahamkirby.race_timing.common.Race;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+@SuppressWarnings("NoopMethodInAbstractClass")
 public abstract class ResultPrinterText extends ResultPrinter {
 
-    public ResultPrinterText(final Race race, final OutputStreamWriter writer) {
+    protected ResultPrinterText(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 

@@ -23,8 +23,8 @@ import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 
 public class RawResult {
 
-    int bib_number;
-    String comment = "";
+    private int bib_number;
+    private String comment = "";
     public Duration recorded_finish_time;
 
     public RawResult(final String file_line) {

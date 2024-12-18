@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 
+@SuppressWarnings("VariableNotUsedInsideIf")
 public class IndividualRace extends SingleRace {
 
     private String median_time_string;
@@ -97,8 +98,8 @@ public class IndividualRace extends SingleRace {
             final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2 + 1);
 
             return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
-        }
-        else {
+
+        } else {
             final IndividualRaceResult median_result = (IndividualRaceResult) results.get(results.size() / 2);
             return median_result.finish_time;
         }
@@ -159,15 +160,6 @@ public class IndividualRace extends SingleRace {
         return new IndividualRaceOutputPDF(this);
     }
 
-//    @Override
-    protected void initialiseResults() {
-
-        entries.stream().
-            map(entry -> (IndividualRaceEntry) entry).
-            map(entry -> new IndividualRaceResult(this, entry)).
-            forEachOrdered(overall_results::add);
-    }
-
     @Override
     protected void outputResults() throws IOException {
 
@@ -181,17 +173,17 @@ public class IndividualRace extends SingleRace {
     @Override
     public List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(this::compareCompletion, this::comparePerformance, this::compareRecordedPosition);
+        return List.of(Race::compareCompletion, Race::comparePerformance, this::compareRecordedPosition);
     }
 
     @Override
     public List<Comparator<RaceResult>> getDNFComparators() {
 
-        return List.of(this::compareRunnerLastName, this::compareRunnerFirstName);
+        return List.of(Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override
-    protected boolean entryCategoryIsEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
         return entry_category == null || entry_category.getGender().equals(prize_category.getGender());
     }
@@ -203,20 +195,28 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    protected void fillDNF(final String dnf_string) {
+    protected void fillDNF(final String individual_dnf_string) {
 
         try {
-            final int bib_number = Integer.parseInt(dnf_string);
+            final int bib_number = Integer.parseInt(individual_dnf_string);
             final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
             result.completion_status = CompletionStatus.DNF;
-        }
-        catch (Exception e) {
+
+        } catch (final NumberFormatException e) {
             throw new RuntimeException("illegal DNF string: ", e);
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void initialiseResults() {
+
+        entries.stream().
+            map(entry -> (IndividualRaceEntry) entry).
+            map(entry -> new IndividualRaceResult(this, entry)).
+            forEachOrdered(overall_results::add);
+    }
 
     private void fillFinishTimes() {
 
@@ -237,7 +237,7 @@ public class IndividualRace extends SingleRace {
             map(result -> ((IndividualRaceResult) result)).
             filter(result -> result.entry.bib_number == bib_number).
             findFirst().
-            orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
+            orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
     }
 
     private IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
@@ -246,7 +246,7 @@ public class IndividualRace extends SingleRace {
             map(entry -> ((IndividualRaceEntry) entry)).
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
-            orElseThrow(() -> new RuntimeException("unregistered bib number: " + bib_number));
+            orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
     }
 
     private int getRecordedPosition(final int bib_number) {

@@ -35,7 +35,7 @@ public class RelayRaceInput extends SingleRaceInput {
     private String paper_results_path, annotations_path;
     private int number_of_raw_results;
 
-    public RelayRaceInput(final Race race) {
+    RelayRaceInput(final Race race) {
         super(race);
     }
 
@@ -71,11 +71,11 @@ public class RelayRaceInput extends SingleRaceInput {
         return new RelayRaceRawResult(line);
     }
 
-    protected int getNumberOfRawResults() {
+    int getNumberOfRawResults() {
         return number_of_raw_results;
     }
 
-    protected void loadTimeAnnotations(final List<RawResult> raw_results) throws IOException {
+    void loadTimeAnnotations(final List<? extends RawResult> raw_results) throws IOException {
 
         if (annotations_path != null) {
 
@@ -93,7 +93,7 @@ public class RelayRaceInput extends SingleRaceInput {
         }
     }
 
-    private static void updateResult(final List<RawResult> raw_results, final String[] elements) {
+    private static void updateResult(final List<? extends RawResult> raw_results, final String[] elements) {
 
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);

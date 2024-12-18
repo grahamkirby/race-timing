@@ -33,11 +33,11 @@ public class Runner {
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(final Object obj) {
 
-        return other instanceof Runner other_runner &&
-                name.equals(other_runner.name) &&
-                club.equals(other_runner.club);
+        return obj instanceof final Runner other_runner &&
+            name.equals(other_runner.name) &&
+            club.equals(other_runner.club);
     }
 
     @Override
@@ -47,6 +47,6 @@ public class Runner {
 
     @Override
     public String toString() {
-        return name + ", " + club;
+        return STR."\{name}, \{club}";
     }
 }

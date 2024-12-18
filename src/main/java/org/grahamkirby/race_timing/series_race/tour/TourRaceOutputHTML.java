@@ -84,7 +84,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
         final List<RaceResult> category_results = individual_race.getOverallResults(prize_categories);
 
-        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, CreditLink.DONT_INCLUDE_CREDIT_LINK);
+        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

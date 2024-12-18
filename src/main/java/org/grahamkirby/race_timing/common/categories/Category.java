@@ -16,6 +16,8 @@
  */
 package org.grahamkirby.race_timing.common.categories;
 
+import java.util.Objects;
+
 /**
  * Parent class for entry category and prize category,
  * each including a gender and age range.
@@ -35,7 +37,7 @@ public abstract class Category {
     private final int minimum_age;
     private final int maximum_age;
 
-    public Category(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
+    protected Category(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
 
         this.long_name = long_name;
         this.short_name = short_name;
@@ -64,7 +66,13 @@ public abstract class Category {
         return maximum_age;
     }
 
-    public boolean equals(final Object o) {
-        return o instanceof Category other && gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
+    @Override
+    public boolean equals(final Object obj) {
+        return obj instanceof final Category other && gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gender, minimum_age, maximum_age);
     }
 }

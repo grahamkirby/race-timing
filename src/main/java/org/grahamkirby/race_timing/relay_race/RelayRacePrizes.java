@@ -63,7 +63,7 @@ public class RelayRacePrizes extends RacePrizes {
 
         for (final PrizeCategory category : prize_categories)
             for (final RaceResult result : race.getOverallResults())
-                if (prizeWinner(result, category)) {
+                if (isPrizeWinner(result, category)) {
                     setPrizeWinner(result, category);
                     break;
                 }
@@ -83,7 +83,7 @@ public class RelayRacePrizes extends RacePrizes {
 
             if (position > category.numberOfPrizes()) return;
 
-            if (prizeWinner(result, category)) {
+            if (isPrizeWinner(result, category)) {
                 setPrizeWinner(result, category);
                 position++;
             }

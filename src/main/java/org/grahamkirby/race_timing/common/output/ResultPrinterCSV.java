@@ -5,9 +5,10 @@ import org.grahamkirby.race_timing.common.Race;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+@SuppressWarnings("NoopMethodInAbstractClass")
 public abstract class ResultPrinterCSV extends ResultPrinter {
 
-    public ResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+    protected ResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 
@@ -16,7 +17,7 @@ public abstract class ResultPrinterCSV extends ResultPrinter {
     }
 
     @Override
-    public void printResultsFooter(final CreditLink include_credit_link) {
+    public void printResultsFooter(final CreditLink credit_link_option) {
     }
 
     @Override

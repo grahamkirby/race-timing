@@ -26,7 +26,7 @@ import java.util.List;
 
 public class IndividualRaceInput extends SingleRaceInput {
 
-    public IndividualRaceInput(final Race race) {
+    IndividualRaceInput(final Race race) {
         super(race);
     }
 

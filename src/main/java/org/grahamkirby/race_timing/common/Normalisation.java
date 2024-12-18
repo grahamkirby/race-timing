@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("StringTemplateMigration")
 public class Normalisation {
 
     private static final int SECONDS_PER_HOUR = 3600;
@@ -20,11 +21,11 @@ public class Normalisation {
         this.race = race;
     }
 
-    public String getFirstName(final String name) {
+    static String getFirstName(final String name) {
         return name.split(" ")[0];
     }
 
-    public String getLastName(final String name) {
+    static String getLastName(final String name) {
 
         return Arrays.stream(name.split(" ")).toList().getLast();
     }
@@ -106,35 +107,35 @@ public class Normalisation {
 
         // Try case insensitive match.
         return race.capitalisation_stop_words.stream().
-                filter(w -> w.equalsIgnoreCase(word)).
-                findFirst().
-                orElse(null);
+            filter(w -> w.equalsIgnoreCase(word)).
+            findFirst().
+            orElse(null);
     }
 
-    private boolean isTitleCase(final String input) {
+    @SuppressWarnings("TypeMayBeWeakened")
+    private static boolean isTitleCase(final String input) {
 
         return !Character.isLowerCase(input.charAt(0)) &&
-                input.chars().boxed().skip(1).noneMatch(Character::isUpperCase);
+            input.chars().boxed().skip(1).noneMatch(Character::isUpperCase);
     }
 
     private static String replaceAllMapEntries(final String s, final Map<String, String> normalisation_map) {
 
         String result = s;
 
-        for (final String key : normalisation_map.keySet()) {
+        for (final Map.Entry<String, String> entry : normalisation_map.entrySet()) {
 
-            final String value = normalisation_map.get(key);
-            result = result.replaceAll("(?i)" + key, value);
+            final String value = entry.getValue();
+            result = result.replaceAll(STR."(?i)\{entry.getKey()}", value);
         }
         return result;
     }
 
-    public static Duration parseTime(String element) {
+    public static Duration parseTime(final String element) {
 
         try {
             return parseTime(element, ":");
-        }
-        catch (Exception _) {
+        } catch (final RuntimeException _) {
             return parseTime(element, "\\.");
         }
     }
@@ -142,28 +143,27 @@ public class Normalisation {
     private static Duration parseTime(String element, final String separator) {
 
         element = element.strip();
-        if (element.startsWith(separator)) element = "0" + element;
-        if (element.endsWith(separator)) element = element + "0";
+        if (element.startsWith(separator)) element = STR."0\{element}";
+        if (element.endsWith(separator)) element = STR."\{element}0";
 
         try {
             final String[] parts = element.split(separator);
-            final String time_as_ISO = STR."PT\{hours(parts)}\{minutes(parts)}\{seconds(parts)}";
 
-            return Duration.parse(time_as_ISO);
-        }
-        catch (Exception _) {
-            throw new RuntimeException("illegal time: " + element);
+            return Duration.parse(STR."PT\{hours(parts)}\{minutes(parts)}\{seconds(parts)}");
+
+        } catch (final RuntimeException _) {
+            throw new RuntimeException(STR."illegal time: \{element}");
         }
     }
 
     public static String format(final Duration duration) {
 
-        final long s = duration.getSeconds();
+        final long seconds = duration.getSeconds();
         final int n = duration.getNano();
 
-        String result = String.format("0%d:%02d:%02d", s / SECONDS_PER_HOUR, (s % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE, (s % SECONDS_PER_MINUTE));
+        String result = String.format("0%d:%02d:%02d", seconds / SECONDS_PER_HOUR, (seconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE, (seconds % SECONDS_PER_MINUTE));
         if (n > 0) {
-            double fractional_seconds = n / NANOSECONDS_PER_SECOND;
+            final double fractional_seconds = n / NANOSECONDS_PER_SECOND;
             result += String.format("%1$,.3f", fractional_seconds).substring(1);
             while (result.endsWith("0")) result = result.substring(0, result.length() - 1);
         }
@@ -171,11 +171,13 @@ public class Normalisation {
     }
 
     private static String hours(final String[] parts) {
-        return parts.length > 2 ? parts[0] + "H" : "";
+        return parts.length > 2 ? STR."\{parts[0]}H" : "";
     }
+
     private static String minutes(final String[] parts) {
         return (parts.length > 2 ? parts[1] : parts[0]) + "M";
     }
+
     private static String seconds(final String[] parts) {
         return (parts.length > 2 ? parts[2] : parts[1]) + "S";
     }

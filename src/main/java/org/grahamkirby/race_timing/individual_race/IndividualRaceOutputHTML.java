@@ -30,10 +30,11 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class IndividualRaceOutputHTML extends RaceOutputHTML {
+class IndividualRaceOutputHTML extends RaceOutputHTML {
 
-    public IndividualRaceOutputHTML(final IndividualRace race) {
+    IndividualRaceOutputHTML(final IndividualRace race) {
         super(race);
     }
 
@@ -44,9 +45,9 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append("<h3><strong>Results</strong></h3>\n");
+            writer.append("<h3><strong>Results</strong></h3>").append(LINE_SEPARATOR);
             printPrizes(writer);
-            writer.append("<h4>Overall</h4>\n");
+            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             printResults(writer, getOverallResultPrinter(writer), CreditLink.INCLUDE_CREDIT_LINK);
         }
     }
@@ -63,9 +64,9 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterHTML {
+    private static final class OverallResultPrinter extends ResultPrinterHTML {
 
-        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -91,7 +92,7 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final IndividualRaceResult result = ((IndividualRaceResult)r);
+            final IndividualRaceResult result = ((IndividualRaceResult) r);
 
             writer.append(STR."""
                     <tr>
@@ -106,28 +107,28 @@ public class IndividualRaceOutputHTML extends RaceOutputHTML {
         }
     }
 
-    private static class PrizeResultPrinter extends ResultPrinterHTML {
+    private static final class PrizeResultPrinter extends ResultPrinterHTML {
 
-        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append("<ul>\n");
+            writer.append("<ul>").append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
 
-            writer.append("</ul>\n\n");
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final IndividualRaceResult result = ((IndividualRaceResult)r);
+            final IndividualRaceResult result = ((IndividualRaceResult) r);
 
             writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.runner.name)} (\{result.entry.runner.club}) \{format(result.duration())}</li>\n");
         }

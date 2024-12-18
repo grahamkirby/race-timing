@@ -19,13 +19,14 @@ package org.grahamkirby.race_timing.common.categories;
 /**
  * Category specific to a particular entry.
  */
-public class EntryCategory extends Category {
+public final class EntryCategory extends Category {
 
-    public EntryCategory(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
+    private EntryCategory(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
 
         super(long_name, short_name, gender, minimum_age, maximum_age);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public static EntryCategory makeEntryCategory(final String line) {
 
         final String[] parts = line.split(",");

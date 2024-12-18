@@ -42,7 +42,7 @@ public class RelayRaceOutputText extends RaceOutputText {
 
     private String collated_times_filename;
 
-    public RelayRaceOutputText(final RelayRace results) {
+    RelayRaceOutputText(final RelayRace results) {
 
         super(results);
     }
@@ -56,7 +56,7 @@ public class RelayRaceOutputText extends RaceOutputText {
         collated_times_filename = "times_collated";
     }
 
-    public void printCollatedResults() throws IOException {
+    void printCollatedResults() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(collated_times_filename + ".txt"));
 

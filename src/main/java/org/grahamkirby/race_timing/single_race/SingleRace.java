@@ -38,7 +38,7 @@ public abstract class SingleRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean allowEqualPositions() {
+    public boolean areEqualPositionsAllowed() {
 
         // No dead heats for overall results, since an ordering is imposed at the finish.
         return false;

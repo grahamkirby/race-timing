@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.tour;
 
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -97,7 +98,7 @@ public class TourRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(this::compareCompletion, this::compareCompletionSoFar, this::comparePerformance, this::compareRunnerLastName, this::compareRunnerFirstName);
+        return List.of(Race::compareCompletion, this::compareCompletionSoFar, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override
