@@ -111,7 +111,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
             writer.append(
                 grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
                     map(individual_race -> {
-                        final long score = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
+                        final long score = Math.round(GrandPrixRace.calculateRaceScore(individual_race, result.runner));
                         return STR."""
                                         <td>\{score == 0 ? "-" : String.valueOf(score)}</td>
                         """;
@@ -121,11 +121,11 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(STR."""
                         <td>\{Math.round(result.totalScore())}</td>
-                        <td>\{result.completedSeries() ? "Y" : "N"}</td>
+                        <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
                 """);
 
             for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
-                writer.append("<td>").append(grand_prix_race.hasCompletedRaceCategory(result, category) ? "Y" : "N").append("</td>");
+                writer.append("<td>").append(GrandPrixRaceResult.hasCompletedRaceCategory(result, category) ? "Y" : "N").append("</td>");
             }
 
             writer.append("""

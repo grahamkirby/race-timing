@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
@@ -53,11 +54,13 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
     // Prize results not printed to text file.
     @Override
-    protected final ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected final ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
 
     private String getRaceCategoriesHeader() {
 
-        return ((GrandPrixRace)race).race_categories.stream().
+        return ((GrandPrixRace) race).race_categories.stream().
             map(category -> STR.",\{category.category_title()}?").
             collect(Collectors.joining());
     }
@@ -74,7 +77,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
-            final GrandPrixRace grand_prix_race = (GrandPrixRace)race;
+            final GrandPrixRace grand_prix_race = (GrandPrixRace) race;
             final int number_of_races_taken_place = grand_prix_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{result.runner.category.getShortName()},");
@@ -82,7 +85,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
             writer.append(
                 grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
                     map(individual_race -> {
-                        final long score = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
+                        final long score = Math.round(GrandPrixRace.calculateRaceScore(individual_race, result.runner));
                         return score == 0 ? "-" : String.valueOf(score);
                     }).
                     collect(Collectors.joining(","))
@@ -90,11 +93,11 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
             writer.append(STR.",\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? Math.round(result.totalScore()) : "-"},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}");
 
-            for (RaceCategory category : ((GrandPrixRace)race).race_categories) {
-                writer.append(",").append(grand_prix_race.hasCompletedRaceCategory(result, category) ? "Y" : "N");
+            for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
+                writer.append(",").append(GrandPrixRaceResult.hasCompletedRaceCategory(result, category) ? "Y" : "N");
             }
 
-            writer.append("\n");
+            writer.append(LINE_SEPARATOR);
         }
     }
 }

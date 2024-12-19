@@ -35,7 +35,8 @@ import static org.grahamkirby.race_timing.common.Race.*;
 
 public class TourRaceInput extends SeriesRaceInput {
 
-    private record SelfTimedRun(int bib_number, int race_number) {}
+    private record SelfTimedRun(int bib_number, int race_number) {
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +51,7 @@ public class TourRaceInput extends SeriesRaceInput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public TourRaceInput(final Race race) {
+    TourRaceInput(final Race race) {
         super(race);
     }
 
@@ -83,7 +84,7 @@ public class TourRaceInput extends SeriesRaceInput {
 
     private List<SelfTimedRun> readSelfTimedRuns() {
 
-        final String[] self_timed_strings = race.getProperty(KEY_SELF_TIMED,"").split(",", -1);
+        final String[] self_timed_strings = race.getProperty(KEY_SELF_TIMED, "").split(",", -1);
 
         final Function<String, SelfTimedRun> extract_run_function = s -> {
 
@@ -104,7 +105,8 @@ public class TourRaceInput extends SeriesRaceInput {
         return extractConfigFromPropertyStrings(second_wave_category_strings, race::lookupEntryCategory);
     }
 
-    private <T> List<T> extractConfigFromPropertyStrings(final String[] strings, final Function<String, T> mapper) {
+    @SuppressWarnings("ZeroLengthArrayAllocation")
+    private static <T> List<T> extractConfigFromPropertyStrings(final String[] strings, final Function<? super String, T> mapper) {
 
         final String[] non_empty_strings = strings.length == 1 && strings[0].isEmpty() ? new String[0] : strings;
 
@@ -120,15 +122,15 @@ public class TourRaceInput extends SeriesRaceInput {
         if (parts.length == 2) {
             time_trial_runners_per_wave = Integer.parseInt(parts[0]);
             time_trial_inter_wave_interval = parseTime(parts[1]);
-        }
-        else
+
+        } else
             time_trial_starts = loadTimeTrialStarts(parts);
     }
 
-    private Map<Integer, Duration> loadTimeTrialStarts(final String[] parts) {
+    private static Map<Integer, Duration> loadTimeTrialStarts(final String[] parts) {
 
-        Map<Integer, Duration> starts = new HashMap<>();
-        for (final String part: parts) {
+        final Map<Integer, Duration> starts = new HashMap<>();
+        for (final String part : parts) {
             final String[] split = part.split("/");
             starts.put(Integer.parseInt(split[0]), parseTime(split[1]));
         }
@@ -146,13 +148,13 @@ public class TourRaceInput extends SeriesRaceInput {
 
     private Duration getRunnerStartOffset(final IndividualRace individual_race, final int race_number, final int bib_number) {
 
-        if (runnerIsSelfTimed(race_number, bib_number))
+        if (isRunnerSelfTimed(race_number, bib_number))
             return Duration.ZERO;
 
-        if (raceIsTimeTrial(race_number))
+        if (isRaceTimeTrial(race_number))
             return getTimeTrialOffset(bib_number);
 
-        if (runnerIsInSecondWave(individual_race, bib_number))
+        if (isRunnerInSecondWave(individual_race, bib_number))
             return wave_start_offsets.get(race_number - 1);
 
         return Duration.ZERO;
@@ -168,25 +170,25 @@ public class TourRaceInput extends SeriesRaceInput {
 
             final int wave_number = runnerIndexInBibOrder(bib_number) / time_trial_runners_per_wave;
             return time_trial_inter_wave_interval.multipliedBy(wave_number);
-        }
-        else
+
+        } else
             return time_trial_starts.get(bib_number);
     }
 
-    private int runnerIndexInBibOrder(final int bib_number) {
+    private static int runnerIndexInBibOrder(final int bib_number) {
         return bib_number - 1;
     }
 
-    private boolean raceIsTimeTrial(final int race_number) {
+    private boolean isRaceTimeTrial(final int race_number) {
         return race_number == time_trial_race_number;
     }
 
-    private boolean runnerIsSelfTimed(final int race_number, final int bib_number) {
+    private boolean isRunnerSelfTimed(final int race_number, final int bib_number) {
 
         return self_timed_runs.stream().anyMatch(self_timed_run -> self_timed_run.race_number == race_number && self_timed_run.bib_number == bib_number);
     }
 
-    private boolean runnerIsInSecondWave(final IndividualRace individual_race, final int bib_number) {
+    private boolean isRunnerInSecondWave(final IndividualRace individual_race, final int bib_number) {
 
         final EntryCategory runner_entry_category = individual_race.findCategory(bib_number);
 

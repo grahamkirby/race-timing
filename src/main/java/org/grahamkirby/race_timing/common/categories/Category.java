@@ -37,7 +37,7 @@ public abstract class Category {
     private final int minimum_age;
     private final int maximum_age;
 
-    protected Category(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
+    Category(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
 
         this.long_name = long_name;
         this.short_name = short_name;

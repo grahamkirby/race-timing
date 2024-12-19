@@ -122,7 +122,7 @@ public class MidweekRace extends SeriesRace {
         return (_ -> true);
     }
 
-    public int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
         if (individual_race == null) return 0;
 
@@ -143,8 +143,8 @@ public class MidweekRace extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void processMultipleClubsForRunner(final String runner_name, final List<String> clubs) {
+    protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
 
-        noteMultipleClubsForRunnerName(runner_name, clubs);
+        noteMultipleClubsForRunnerName(runner_name, defined_clubs);
     }
 }

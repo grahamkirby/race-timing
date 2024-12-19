@@ -19,9 +19,9 @@ package org.grahamkirby.race_timing.series_race.grand_prix;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 
-public class GrandPrixRaceOutputPDF extends RaceOutputPDF {
+class GrandPrixRaceOutputPDF extends RaceOutputPDF {
 
-    public GrandPrixRaceOutputPDF(final GrandPrixRace race) {
+    GrandPrixRaceOutputPDF(final GrandPrixRace race) {
         super(race);
     }
 

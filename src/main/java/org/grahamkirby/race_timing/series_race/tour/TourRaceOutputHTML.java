@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
@@ -80,7 +81,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private void printIndividualRaceResults(final OutputStreamWriter writer, final IndividualRace individual_race, final List<PrizeCategory> prize_categories, final String sub_heading) throws IOException {
+    private void printIndividualRaceResults(final OutputStreamWriter writer, final IndividualRace individual_race, final Collection<PrizeCategory> prize_categories, final String sub_heading) throws IOException {
 
         final List<RaceResult> category_results = individual_race.getOverallResults(prize_categories);
 

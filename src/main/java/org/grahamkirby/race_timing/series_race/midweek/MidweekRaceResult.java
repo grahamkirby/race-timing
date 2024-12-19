@@ -20,15 +20,16 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.List;
 
 public class MidweekRaceResult extends SeriesRaceResult {
 
-    protected final List<Integer> scores;
+    private final List<Integer> scores;
 
-    public MidweekRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
+    MidweekRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(runner, race);
         this.scores = scores;
@@ -40,10 +41,10 @@ public class MidweekRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(final RaceResult o) {
+    public int comparePerformanceTo(final RaceResult other) {
 
         // Negate so that a higher score gives an earlier ranking.
-        return -Integer.compare(totalScore(), ((MidweekRaceResult) o).totalScore());
+        return -Integer.compare(totalScore(), ((MidweekRaceResult) other).totalScore());
     }
 
     @Override
@@ -58,11 +59,11 @@ public class MidweekRaceResult extends SeriesRaceResult {
         return canCompleteSeries();
     }
 
-    protected int totalScore() {
+    int totalScore() {
 
         final int number_of_races_to_count = Math.min(
-            ((MidweekRace)race).getNumberOfRacesTakenPlace(),
-            ((MidweekRace)race).getMinimumNumberOfRaces());
+            ((SeriesRace) race).getNumberOfRacesTakenPlace(),
+            ((SeriesRace) race).getMinimumNumberOfRaces());
 
         return scores.stream().
             sorted().

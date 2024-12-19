@@ -108,7 +108,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(STR."""
                         <td>\{result.totalScore()}</td>
-                        <td>\{result.completedSeries() ? "Y" : "N"}</td>
+                        <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
                     </tr>
                 """);
         }

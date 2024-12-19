@@ -27,7 +27,7 @@ import java.io.OutputStreamWriter;
 
 public class GrandPrixRaceOutputText extends RaceOutputText {
 
-    public GrandPrixRaceOutputText(final Race race) {
+    GrandPrixRaceOutputText(final Race race) {
         super(race);
     }
 
@@ -38,7 +38,7 @@ public class GrandPrixRaceOutputText extends RaceOutputText {
 
     static class PrizeResultPrinter extends ResultPrinterText {
 
-        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

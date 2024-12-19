@@ -21,9 +21,9 @@ import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
-public class TourRaceOutputPDF extends RaceOutputPDF {
+class TourRaceOutputPDF extends RaceOutputPDF {
 
-    public TourRaceOutputPDF(final TourRace race) {
+    TourRaceOutputPDF(final TourRace race) {
         super(race);
     }
 

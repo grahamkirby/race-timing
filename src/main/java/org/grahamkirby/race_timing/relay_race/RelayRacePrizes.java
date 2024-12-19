@@ -28,7 +28,7 @@ import java.util.List;
 
 public class RelayRacePrizes extends RacePrizes {
 
-    public RelayRacePrizes(final Race race) {
+    RelayRacePrizes(final Race race) {
 
         super(race);
     }
@@ -59,7 +59,7 @@ public class RelayRacePrizes extends RacePrizes {
         return sorted_categories;
     }
 
-    private void allocateFirstPrizes(final List<PrizeCategory> prize_categories) {
+    private void allocateFirstPrizes(final Iterable<PrizeCategory> prize_categories) {
 
         for (final PrizeCategory category : prize_categories)
             for (final RaceResult result : race.getOverallResults())
@@ -69,7 +69,7 @@ public class RelayRacePrizes extends RacePrizes {
                 }
     }
 
-    private void allocateMinorPrizes(final List<PrizeCategory> prize_categories) {
+    private void allocateMinorPrizes(final Iterable<PrizeCategory> prize_categories) {
 
         for (final PrizeCategory category : prize_categories)
             allocateMinorPrizes(category);

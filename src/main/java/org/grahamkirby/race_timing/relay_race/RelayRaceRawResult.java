@@ -20,12 +20,12 @@ import org.grahamkirby.race_timing.common.RawResult;
 
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_LEG_NUMBER;
 
-public class RelayRaceRawResult extends RawResult {
+class RelayRaceRawResult extends RawResult {
 
     // Leg number is optional, depending on whether it was recorded on paper sheet.
     private final int leg_number;
 
-    public RelayRaceRawResult(final String file_line) {
+    RelayRaceRawResult(final String file_line) {
 
         super(file_line);
 
@@ -33,7 +33,7 @@ public class RelayRaceRawResult extends RawResult {
         leg_number = elements.length == 2 ? UNKNOWN_LEG_NUMBER : Integer.parseInt(elements[2]);
     }
 
-    public int getLegNumber() {
+    int getLegNumber() {
         return leg_number;
     }
 }

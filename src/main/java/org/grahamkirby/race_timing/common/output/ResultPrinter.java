@@ -12,12 +12,12 @@ public abstract class ResultPrinter {
     protected final Race race;
     protected final OutputStreamWriter writer;
 
-    protected ResultPrinter(final Race race, final OutputStreamWriter writer) {
+    ResultPrinter(final Race race, final OutputStreamWriter writer) {
         this.race = race;
         this.writer = writer;
     }
 
-    public abstract void printResult(RaceResult r) throws IOException;
+    protected abstract void printResult(RaceResult r) throws IOException;
     protected abstract void printResultsHeader() throws IOException;
     protected abstract void printResultsFooter(CreditLink credit_link_option) throws IOException;
     protected abstract void printNoResults() throws IOException;

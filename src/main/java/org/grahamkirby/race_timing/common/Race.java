@@ -148,7 +148,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract void calculateResults();
+    protected abstract void calculateResults();
     public abstract boolean areEqualPositionsAllowed();
 
     protected abstract RaceInput getInput();
@@ -248,7 +248,7 @@ public abstract class Race {
         return getOverallResults(prize_category_filter);
     }
 
-    public List<RaceResult> getOverallResults(final Predicate<? super RaceResult> inclusion_filter) {
+    private List<RaceResult> getOverallResults(final Predicate<? super RaceResult> inclusion_filter) {
 
         final List<RaceResult> results = overall_results.stream().filter(inclusion_filter).toList();
         setPositionStrings(results, areEqualPositionsAllowed());

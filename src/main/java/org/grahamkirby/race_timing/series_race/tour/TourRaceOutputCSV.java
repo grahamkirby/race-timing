@@ -28,16 +28,17 @@ import java.io.OutputStreamWriter;
 import java.time.Duration;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 public class TourRaceOutputCSV extends SeriesRaceOutputCSV {
 
-    public TourRaceOutputCSV(final Race race) {
+    TourRaceOutputCSV(final Race race) {
         super(race);
     }
 
     @Override
     public String getResultsHeader() {
-        return getSeriesResultsHeader() + ",Total\n";
+        return STR."\{getSeriesResultsHeader()},Total\{LINE_SEPARATOR}";
     }
 
     @Override
@@ -47,13 +48,15 @@ public class TourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     // Prize results not printed to text file.
     @Override
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterCSV {
+    private static final class OverallResultPrinter extends ResultPrinterCSV {
 
-        public OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -65,12 +68,12 @@ public class TourRaceOutputCSV extends SeriesRaceOutputCSV {
             final String position = result.shouldDisplayPosition() ? result.position_string : "-";
             final Runner runner = result.runner;
 
-            writer.append(STR."\{position},\{encode(runner.name)},\{encode(runner.club)},\{ runner.category.getShortName()},");
+            writer.append(STR."\{position},\{encode(runner.name)},\{encode(runner.club)},\{runner.category.getShortName()},");
 
             for (final Duration time : result.times)
                 writer.append(time != null ? format(time) : "-").append(",");
 
-            writer.append(result.shouldDisplayPosition() ? format(result.duration()) : "-").append("\n");
+            writer.append(result.shouldDisplayPosition() ? format(result.duration()) : "-").append(LINE_SEPARATOR);
         }
     }
 }
