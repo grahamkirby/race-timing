@@ -53,10 +53,10 @@ public class TourRace extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
+    private static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
 
-        final boolean r1_completed_all_races_so_far = ((TourRaceResult) r1).completedAllRacesSoFar();
-        final boolean r2_completed_all_races_so_far = ((TourRaceResult) r2).completedAllRacesSoFar();
+        final boolean r1_completed_all_races_so_far = ((TourRaceResult) r1).areAllRacesCompletedSoFar();
+        final boolean r2_completed_all_races_so_far = ((TourRaceResult) r2).areAllRacesCompletedSoFar();
 
         return Boolean.compare(r2_completed_all_races_so_far, r1_completed_all_races_so_far);
     }
@@ -98,7 +98,7 @@ public class TourRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(Race::compareCompletion, this::compareCompletionSoFar, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
+        return List.of(Race::compareCompletion, TourRace::compareCompletionSoFar, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override
@@ -123,10 +123,10 @@ public class TourRace extends SeriesRace {
     }
 
     @Override
-    protected void processMultipleClubsForRunner(String ignore1, List<String> ignore2) {
+    protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
     }
 
     @Override
-    protected void checkClubsForRunner(String ignore) {
+    protected void normaliseClubsForRunner(final String runner_name) {
     }
 }

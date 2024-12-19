@@ -40,9 +40,10 @@ import java.util.function.Predicate;
 
 public class GrandPrixRace extends SeriesRace {
 
-    public static final int SCORE_FOR_MEDIAN_POSITION = 1000;
+    // TODO read from config.
+    private static final int SCORE_FOR_MEDIAN_POSITION = 1000;
 
-    public List<RaceCategory> race_categories;
+    List<RaceCategory> race_categories;
     private List<String> qualifying_clubs;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +115,7 @@ public class GrandPrixRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getDNFComparators() {
 
-        return List.of(this::comparePossibleCompletion, this::compareNumberOfRacesCompleted);
+        return List.of(GrandPrixRace::comparePossibleCompletion, GrandPrixRace::compareNumberOfRacesCompleted);
     }
 
     @Override
@@ -133,34 +134,28 @@ public class GrandPrixRace extends SeriesRace {
         return result -> qualifying_clubs.contains(((IndividualRaceResult) result).entry.runner.club);
     }
 
-    public double calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    static double calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
         final Duration runner_time = individual_race.getRunnerTime(runner);
 
         return runner_time != null ? divide(runner_time, individual_race.getMedianTime()) * SCORE_FOR_MEDIAN_POSITION : 0.0;
     }
 
-    public boolean hasCompletedRaceCategory(GrandPrixRaceResult result, RaceCategory category) {
-
-        return category.race_numbers().stream().
-            anyMatch(race_number -> race_number <= result.scores.size() && result.scores.get(race_number - 1) > 0.0);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
+    private static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
-        return Boolean.compare(((SeriesRaceResult)r2).canCompleteSeries(), ((SeriesRaceResult)r1).canCompleteSeries());
+        return Boolean.compare(((SeriesRaceResult) r2).canCompleteSeries(), ((SeriesRaceResult) r1).canCompleteSeries());
     }
 
-    private double divide(final Duration d1, final Duration d2) {
+    private static double divide(final Duration d1, final Duration d2) {
 
-        return (double)d1.toMillis() / (double)d2.toMillis();
+        return d1.toMillis() / (double) d2.toMillis();
     }
 
-    private int compareNumberOfRacesCompleted(RaceResult r1, RaceResult r2) {
+    private static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
 
-        return -Integer.compare(((GrandPrixRaceResult) r1).numberOfRacesCompleted(), ((GrandPrixRaceResult) r2).numberOfRacesCompleted());
+        return -Integer.compare(((SeriesRaceResult) r1).numberOfRacesCompleted(), ((SeriesRaceResult) r2).numberOfRacesCompleted());
     }
 
     private void configureRaceCategories() throws IOException {
@@ -184,11 +179,11 @@ public class GrandPrixRace extends SeriesRace {
         race_categories.add(new RaceCategory(category_name, minimum_number, race_numbers));
     }
 
-    protected void processMultipleClubsForRunner(final String runner_name, final List<String> clubs) {
+    protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
 
-        if (new HashSet<>(qualifying_clubs).containsAll(clubs))
+        if (new HashSet<>(qualifying_clubs).containsAll(defined_clubs))
             recordDefinedClubForRunnerName(runner_name, qualifying_clubs.getFirst());
         else
-            noteMultipleClubsForRunnerName(runner_name, clubs);
+            noteMultipleClubsForRunnerName(runner_name, defined_clubs);
     }
 }

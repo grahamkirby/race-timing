@@ -26,6 +26,7 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -34,10 +35,10 @@ public abstract class SeriesRace extends Race {
 
     protected List<IndividualRace> races;
 
-    protected int number_of_races_in_series;
-    protected int minimum_number_of_races;
+    private int number_of_races_in_series;
+    private int minimum_number_of_races;
 
-    public SeriesRace(final Path config_file_path) throws IOException {
+    protected SeriesRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -65,23 +66,7 @@ public abstract class SeriesRace extends Race {
     @Override
     protected void configureInputData() throws IOException {
 
-        races = ((SeriesRaceInput)input).loadRaces();
-    }
-
-//    @Override
-    protected void initialiseResults() {
-
-        final Predicate<RaceResult> inclusion_predicate = getResultInclusionPredicate();
-
-        races.stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getOverallResults().stream()).
-            filter(inclusion_predicate).
-            map(result -> (IndividualRaceResult) result).
-            map(result -> result.entry.runner).
-            distinct().
-            map(this::getOverallResult).
-            forEachOrdered(overall_results::add);
+        races = ((SeriesRaceInput) input).loadRaces();
     }
 
     @Override
@@ -118,7 +103,7 @@ public abstract class SeriesRace extends Race {
         return races;
     }
 
-    public int getNumberOfRacesInSeries() {
+    int getNumberOfRacesInSeries() {
         return number_of_races_in_series;
     }
 
@@ -128,20 +113,35 @@ public abstract class SeriesRace extends Race {
 
     public int getNumberOfRacesTakenPlace() {
 
-        return (int) getRaces().stream().filter(Objects::nonNull).count();
+        return (int) races.stream().filter(Objects::nonNull).count();
     }
 
-    public boolean seriesHasCompleted() {
-        return getNumberOfRacesTakenPlace() == getNumberOfRacesInSeries();
+    public boolean hasSeriesCompleted() {
+        return getNumberOfRacesTakenPlace() == number_of_races_in_series;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void configureClubs() {
-        getRunnerNames().forEach(this::checkClubsForRunner);
+    private void initialiseResults() {
+
+        final Predicate<RaceResult> inclusion_predicate = getResultInclusionPredicate();
+
+        races.stream().
+            filter(Objects::nonNull).
+            flatMap(race -> race.getOverallResults().stream()).
+            filter(inclusion_predicate).
+            map(result -> (IndividualRaceResult) result).
+            map(result -> result.entry.runner).
+            distinct().
+            map(this::getOverallResult).
+            forEachOrdered(overall_results::add);
     }
 
-    protected void checkClubsForRunner(final String runner_name) {
+    protected void configureClubs() {
+        getRunnerNames().forEach(this::normaliseClubsForRunner);
+    }
+
+    protected void normaliseClubsForRunner(final String runner_name) {
 
         // Where a runner name is associated with a single entry with a defined club
         // plus some other entries with no club defined, add the club to those entries.
@@ -162,25 +162,26 @@ public abstract class SeriesRace extends Race {
         }
     }
 
-    protected void noteMultipleClubsForRunnerName(String runner_name, List<String> defined_clubs) {
+    protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
 
         getNotes().append(STR."Runner name \{runner_name} recorded for multiple clubs: \{String.join(", ", defined_clubs)}\n");
     }
 
-    protected List<String> getDefinedClubs(final List<String> clubs) {
-        return clubs.stream().filter(this::clubIsDefined).toList();
+    private static List<String> getDefinedClubs(final Collection<String> clubs) {
+
+        return clubs.stream().filter(SeriesRace::isClubDefined).toList();
     }
 
-    protected boolean clubIsDefined(final String club) {
+    private static boolean isClubDefined(final String club) {
         return !club.equals("?");
     }
 
-    protected List<String> getRunnerClubs(final String runner_name) {
+    private List<String> getRunnerClubs(final String runner_name) {
 
         return races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
+            map(result -> (IndividualRaceResult) result).
             map(result -> result.entry.runner).
             filter(runner -> runner.name.equals(runner_name)).
             map(runner -> runner.club).
@@ -194,18 +195,18 @@ public abstract class SeriesRace extends Race {
         races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
+            map(result -> (IndividualRaceResult) result).
             map(result -> result.entry.runner).
             filter(runner -> runner.name.equals(runner_name)).
             forEachOrdered(runner -> runner.club = defined_club);
     }
 
-    protected List<String> getRunnerNames() {
+    private List<String> getRunnerNames() {
 
         return races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
+            map(result -> (IndividualRaceResult) result).
             map(result -> result.entry.runner.name).
             distinct().
             toList();

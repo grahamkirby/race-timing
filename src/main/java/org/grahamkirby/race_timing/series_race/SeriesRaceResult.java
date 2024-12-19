@@ -33,7 +33,7 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     public final Runner runner;
 
-    public SeriesRaceResult(final Runner runner, final Race race) {
+    protected SeriesRaceResult(final Runner runner, final Race race) {
 
         super(race);
         this.runner = runner;
@@ -49,7 +49,7 @@ public abstract class SeriesRaceResult extends RaceResult {
     @Override
     public CompletionStatus getCompletionStatus() {
 
-        if (completedSeries()) return CompletionStatus.COMPLETED;
+        if (hasCompletedSeries()) return CompletionStatus.COMPLETED;
         if (numberOfRacesCompleted() == 0) return CompletionStatus.DNS;
 
         return CompletionStatus.DNF;
@@ -57,11 +57,9 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public boolean completedSeries() {
+    public boolean hasCompletedSeries() {
 
-        int i = numberOfRacesCompleted();
-        int minimumNumberOfRaces = ((SeriesRace) race).getMinimumNumberOfRaces();
-        return i >= minimumNumberOfRaces;
+        return numberOfRacesCompleted() >= ((SeriesRace) race).getMinimumNumberOfRaces();
     }
 
     public boolean canCompleteSeries() {
@@ -74,10 +72,10 @@ public abstract class SeriesRaceResult extends RaceResult {
 
     public int numberOfRacesCompleted() {
 
-        return (int) ((SeriesRace)race).races.stream().
+        return (int) ((SeriesRace) race).races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult)result).
+            map(result -> (IndividualRaceResult) result).
             filter(result -> result.entry.runner.equals(runner)).
             filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
             count();

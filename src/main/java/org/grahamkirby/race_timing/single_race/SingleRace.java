@@ -29,9 +29,9 @@ public abstract class SingleRace extends Race {
     public List<RaceEntry> entries;
     protected List<RawResult> raw_results;
 
-    protected String dnf_string;
+    private String dnf_string;
 
-    public SingleRace(final Path config_file_path) throws IOException {
+    protected SingleRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -55,10 +55,10 @@ public abstract class SingleRace extends Race {
     @Override
     protected void configureInputData() throws IOException {
 
-        entries = ((SingleRaceInput)input).loadEntries();
-        raw_results = ((SingleRaceInput)input).loadRawResults();
+        entries = ((SingleRaceInput) input).loadEntries();
+        raw_results = ((SingleRaceInput) input).loadRawResults();
 
-        overall_results = ((SingleRaceInput)input).loadOverallResults();
+        overall_results = ((SingleRaceInput) input).loadOverallResults();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

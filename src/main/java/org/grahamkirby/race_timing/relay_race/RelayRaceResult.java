@@ -30,7 +30,7 @@ public class RelayRaceResult extends RaceResult {
     public final RelayRaceEntry entry;
     final List<LegResult> leg_results;
 
-    public RelayRaceResult(final RelayRaceEntry entry, final RelayRace race) {
+    RelayRaceResult(final RelayRaceEntry entry, final RelayRace race) {
 
         super(race);
         this.entry = entry;
@@ -59,8 +59,8 @@ public class RelayRaceResult extends RaceResult {
     @Override
     public CompletionStatus getCompletionStatus() {
 
-        if (!completedAnyLegs()) return CompletionStatus.DNS;
-        if (!completedAllLegs()) return CompletionStatus.DNF;
+        if (!wereAnyLegsCompleted()) return CompletionStatus.DNS;
+        if (!wereAllLegsCompleted()) return CompletionStatus.DNF;
 
         return CompletionStatus.COMPLETED;
     }
@@ -84,21 +84,21 @@ public class RelayRaceResult extends RaceResult {
 
     public Duration duration() {
 
-        return completedAllLegs() ?
+        return wereAllLegsCompleted() ?
             leg_results.stream().
-            map(LegResult::duration).
-            reduce(Duration::plus).
-            orElse(Duration.ZERO) : null;
+                map(LegResult::duration).
+                reduce(Duration::plus).
+                orElse(Duration.ZERO) : null;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private boolean completedAllLegs() {
+    private boolean wereAllLegsCompleted() {
 
         return leg_results.stream().allMatch(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED);
     }
 
-    protected boolean completedAnyLegs() {
+    private boolean wereAnyLegsCompleted() {
 
         return leg_results.stream().anyMatch(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED);
     }

@@ -19,9 +19,9 @@ package org.grahamkirby.race_timing.series_race.midweek;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 
-public class MidweekRaceOutputPDF extends RaceOutputPDF {
+class MidweekRaceOutputPDF extends RaceOutputPDF {
 
-    public MidweekRaceOutputPDF(final MidweekRace race) {
+    MidweekRaceOutputPDF(final MidweekRace race) {
         super(race);
     }
 

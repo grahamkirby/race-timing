@@ -26,13 +26,13 @@ import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 
 public abstract class SeriesRaceOutputCSV extends RaceOutputCSV {
 
-    public static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
+    private static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
 
-    public SeriesRaceOutputCSV(final Race race) {
+    protected SeriesRaceOutputCSV(final Race race) {
         super(race);
     }
 
-    public String getSeriesResultsHeader() {
+    protected String getSeriesResultsHeader() {
 
         return STR."\{OVERALL_RESULTS_HEADER},\{((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).

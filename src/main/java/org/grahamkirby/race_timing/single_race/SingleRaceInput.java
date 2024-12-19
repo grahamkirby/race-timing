@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -33,12 +34,12 @@ import static org.grahamkirby.race_timing.common.Race.*;
 
 public abstract class SingleRaceInput extends RaceInput {
 
-    final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
-    final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
+    private final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+    private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
 
-    int next_fake_bib_number = 1;
+    private int next_fake_bib_number = 1;
 
-    public SingleRaceInput(final Race race) {
+    protected SingleRaceInput(final Race race) {
 
         super(race);
         readProperties();
@@ -53,7 +54,7 @@ public abstract class SingleRaceInput extends RaceInput {
         categories_prize_path = race.getProperty(KEY_CATEGORIES_PRIZE_PATH);
     }
 
-    protected List<RaceEntry> loadEntries() throws IOException {
+    List<RaceEntry> loadEntries() throws IOException {
 
         if (entries_path == null) return List.of();
 
@@ -62,13 +63,13 @@ public abstract class SingleRaceInput extends RaceInput {
             map(race_entry_mapper).
             toList();
 
-        checkForDuplicateBibNumbers(entries);
-        checkForDuplicateEntries(entries);
+        assertNoDuplicateBibNumbers(entries);
+        assertNoDuplicateEntries(entries);
 
         return entries;
     }
 
-    protected List<RaceResult> loadOverallResults() throws IOException {
+    List<RaceResult> loadOverallResults() throws IOException {
 
         if (results_path == null) return new ArrayList<>();
 
@@ -100,12 +101,12 @@ public abstract class SingleRaceInput extends RaceInput {
         for (final String line : Files.readAllLines(results_path))
             addResult(stripComment(line), raw_results);
 
-        checkOrdering(raw_results);
+        assertCorrectlyOrdered(raw_results);
 
         return raw_results;
     }
 
-    private void addResult(final String line, final List<RawResult> raw_results) {
+    private void addResult(final String line, final Collection<? super RawResult> raw_results) {
 
         if (!line.isBlank())
             try {
@@ -120,45 +121,45 @@ public abstract class SingleRaceInput extends RaceInput {
         return new RawResult(line);
     }
 
-    protected static String stripComment(final String line) {
+    private static String stripComment(final String line) {
 
-        final int comment_start_index = line.indexOf(Race.COMMENT_SYMBOL);
+        final int comment_start_index = line.indexOf(COMMENT_SYMBOL);
         return (comment_start_index > -1) ? line.substring(0, comment_start_index) : line;
     }
 
-    private void checkOrdering(final List<RawResult> raw_results) {
+    private static void assertCorrectlyOrdered(final List<? extends RawResult> raw_results) {
 
         for (int i = 0; i < raw_results.size() - 1; i++) {
 
             final RawResult result1 = raw_results.get(i);
-            final RawResult result2 = raw_results.get(i+1);
+            final RawResult result2 = raw_results.get(i + 1);
 
-            if (resultsAreOutOfOrder(result1, result2))
+            if (areResultsOutOfOrder(result1, result2))
                 throw new RuntimeException(STR."result \{i + 2} out of order");
         }
     }
 
-    private boolean resultsAreOutOfOrder(final RawResult result1, final RawResult result2) {
+    private static boolean areResultsOutOfOrder(final RawResult result1, final RawResult result2) {
 
         return result2.getRecordedFinishTime() != null &&
-                result1.getRecordedFinishTime() != null &&
-                result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
+            result1.getRecordedFinishTime() != null &&
+            result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
     }
 
-    protected void checkForDuplicateBibNumbers(final List<RaceEntry> entries) {
+    private static void assertNoDuplicateBibNumbers(final Iterable<? extends RaceEntry> entries) {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1 != entry2 && entry1.bib_number == entry2.bib_number)
-                    throw new RuntimeException("duplicate bib number: " + entry1.bib_number);
+                    throw new RuntimeException(STR."duplicate bib number: \{entry1.bib_number}");
     }
 
-    protected void checkForDuplicateEntries(final List<RaceEntry> entries) {
+    private static void assertNoDuplicateEntries(final Iterable<? extends RaceEntry> entries) {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1 != entry2 && entry1.equals(entry2))
-                    throw new RuntimeException("duplicate entry: " + entry1);
+                    throw new RuntimeException(STR."duplicate entry: \{entry1}");
     }
 
     protected abstract List<RawResult> loadRawResults() throws IOException;

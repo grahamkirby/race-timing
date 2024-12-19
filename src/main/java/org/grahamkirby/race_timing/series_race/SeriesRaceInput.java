@@ -29,7 +29,7 @@ import static org.grahamkirby.race_timing.common.Race.KEY_RACES;
 
 public class SeriesRaceInput extends RaceInput {
 
-    public List<String> race_config_paths;
+    private List<String> race_config_paths;
 
     public SeriesRaceInput(final Race race) {
 
@@ -37,7 +37,7 @@ public class SeriesRaceInput extends RaceInput {
         readProperties();
     }
 
-    public List<IndividualRace> loadRaces() throws IOException {
+    List<IndividualRace> loadRaces() throws IOException {
 
         final List<IndividualRace> races = new ArrayList<>();
 
@@ -47,12 +47,11 @@ public class SeriesRaceInput extends RaceInput {
         return races;
     }
 
-    private IndividualRace getIndividualRace(int i) throws IOException {
+    private IndividualRace getIndividualRace(final int i) throws IOException {
 
         final String race_config_path = race_config_paths.get(i);
 
         return getIndividualRace(race_config_path, i + 1);
-//        return race_config_path.isEmpty() ? null : getIndividualRace(race_config_path, i + 1);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

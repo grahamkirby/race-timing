@@ -27,12 +27,18 @@ import java.util.List;
 
 public class GrandPrixRaceResult extends SeriesRaceResult {
 
-    protected final List<Double> scores;
+    private final List<Double> scores;
 
-    public GrandPrixRaceResult(final Runner runner, final List<Double> scores, final Race race) {
+    GrandPrixRaceResult(final Runner runner, final List<Double> scores, final Race race) {
 
         super(runner, race);
         this.scores = scores;
+    }
+
+    static boolean hasCompletedRaceCategory(final GrandPrixRaceResult result, final RaceCategory category) {
+
+        return category.race_numbers().stream().
+            anyMatch(race_number -> race_number <= result.scores.size() && result.scores.get(race_number - 1) > 0.0);
     }
 
     @Override
@@ -41,9 +47,9 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(final RaceResult o) {
+    public int comparePerformanceTo(final RaceResult other) {
 
-        return Double.compare(totalScore(), ((GrandPrixRaceResult) o).totalScore());
+        return Double.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
     }
 
     @Override
@@ -55,12 +61,12 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
     @Override
     public boolean shouldDisplayPosition() {
 
-        return ((SeriesRace) race).seriesHasCompleted() ? completedSeries() : canCompleteSeries();
+        return ((SeriesRace) race).hasSeriesCompleted() ? hasCompletedSeries() : canCompleteSeries();
     }
 
-    protected double totalScore() {
+    double totalScore() {
 
-        final int minimum_number_of_races = ((GrandPrixRace) race).getMinimumNumberOfRaces();
+        final int minimum_number_of_races = ((SeriesRace) race).getMinimumNumberOfRaces();
         final int number_of_races_completed = numberOfRacesCompleted();
         final int number_of_counting_scores = Math.min(minimum_number_of_races, number_of_races_completed);
 

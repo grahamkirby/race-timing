@@ -27,15 +27,17 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.stream.Collectors;
 
-public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-    public MidweekRaceOutputCSV(final Race race) {
+class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
+
+    MidweekRaceOutputCSV(final Race race) {
         super(race);
     }
 
     @Override
     public String getResultsHeader() {
-        return getSeriesResultsHeader() + ",Total,Completed\n";
+        return STR."\{getSeriesResultsHeader()},Total,Completed\{LINE_SEPARATOR}";
     }
 
     @Override
@@ -45,13 +47,15 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
     // Prize results not printed to text file.
     @Override
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) { throw new UnsupportedOperationException(); }
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class OverallResultPrinter extends ResultPrinterCSV {
+    private static final class OverallResultPrinter extends ResultPrinterCSV {
 
-        public OverallResultPrinter(Race race, OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -59,7 +63,7 @@ public class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
-            final MidweekRace midweek_race = (MidweekRace)race;
+            final MidweekRace midweek_race = (MidweekRace) race;
             final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");

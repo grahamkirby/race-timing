@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.series_race.tour;
 
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.time.Duration;
@@ -29,7 +30,7 @@ public class TourRaceResult extends SeriesRaceResult {
 
     public final List<Duration> times;
 
-    public TourRaceResult(final Runner runner, final List<Duration> times, final TourRace race) {
+    TourRaceResult(final Runner runner, final List<Duration> times, final TourRace race) {
 
         super(runner, race);
         this.times = times;
@@ -53,15 +54,16 @@ public class TourRaceResult extends SeriesRaceResult {
 
     @Override
     public boolean shouldDisplayPosition() {
-        return completedAllRacesSoFar();
+        return areAllRacesCompletedSoFar();
     }
 
     @Override
     public boolean shouldBeDisplayedInResults() {
-        return completedAnyRacesSoFar();
+        return areAnyRacesCompletedSoFar();
     }
 
-    public boolean completedAllRacesSoFar() {
+    // TODO check against series/midweek race.
+    boolean areAllRacesCompletedSoFar() {
 
         return getTimesInRacesTakenPlace().stream().allMatch(Objects::nonNull);
     }
@@ -70,16 +72,16 @@ public class TourRaceResult extends SeriesRaceResult {
 
     protected Duration duration() {
 
-        return completedAllRacesSoFar() ? getTimesInRacesTakenPlace().stream().reduce(Duration::plus).orElse(Duration.ZERO) : null;
+        return areAllRacesCompletedSoFar() ? getTimesInRacesTakenPlace().stream().reduce(Duration::plus).orElse(Duration.ZERO) : null;
     }
 
-    private boolean completedAnyRacesSoFar() {
+    private boolean areAnyRacesCompletedSoFar() {
 
         return times.stream().anyMatch(Objects::nonNull);
     }
 
     private List<Duration> getTimesInRacesTakenPlace() {
 
-        return times.subList(0, ((TourRace) race).getNumberOfRacesTakenPlace());
+        return times.subList(0, ((SeriesRace) race).getNumberOfRacesTakenPlace());
     }
 }

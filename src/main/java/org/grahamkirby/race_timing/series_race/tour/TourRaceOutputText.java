@@ -26,10 +26,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class TourRaceOutputText extends RaceOutputText {
+class TourRaceOutputText extends RaceOutputText {
 
-    public TourRaceOutputText(final TourRace race) {
+    TourRaceOutputText(final TourRace race) {
         super(race);
     }
 
@@ -39,9 +40,9 @@ public class TourRaceOutputText extends RaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static class PrizeResultPrinter extends ResultPrinterText {
+    private static final class PrizeResultPrinter extends ResultPrinterText {
 
-        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -50,10 +51,7 @@ public class TourRaceOutputText extends RaceOutputText {
 
             final TourRaceResult result = (TourRaceResult) r;
 
-            writer.append(result.position_string).append(": ").
-                    append(result.runner.name).append(" (").
-                    append(result.runner.club).append(") ").
-                    append(format(result.duration())).append("\n");
+            writer.append(STR."\{result.position_string}: \{result.runner.name} (\{result.runner.club}) \{format(result.duration())}\{LINE_SEPARATOR}");
         }
     }
 }
