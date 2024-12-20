@@ -18,35 +18,23 @@ package org.grahamkirby.race_timing.common.categories;
 
 /**
  * Category defining eligibility for a particular prize.
- * This is separate from entry category since multiple entry categories
- * may be eligible for a prize category e.g. an open prize category
+ * This is different from entry category, since multiple entry categories
+ * may be eligible for a given prize category e.g. an open prize category
  * may include multiple age categories.
  */
 public final class PrizeCategory extends Category {
 
-    public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
-
     private final int number_of_prizes;
 
-    private PrizeCategory(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age, final int number_of_prizes) {
+    /**
+     * Creates an instance from a comma-separated string containing:
+     * long name, short name, gender, minimum age, maximum age, number of prizes.
+     * Minimum and maximum ages are inclusive.
+     */
+    public PrizeCategory(final String components) {
 
-        super(long_name, short_name, gender, minimum_age, maximum_age);
-        this.number_of_prizes = number_of_prizes;
-    }
-
-    @SuppressWarnings("DuplicatedCode")
-    public static PrizeCategory makePrizeCategory(final String line) {
-
-        final String[] parts = line.split(",");
-
-        final String long_name = parts[0];
-        final String short_name = parts[1];
-        final String gender = parts[2];
-        final int minimum_age = Integer.parseInt(parts[3]);
-        final int maximum_age = Integer.parseInt(parts[4]);
-        final int number_of_prizes = Integer.parseInt(parts[5]);
-
-        return new PrizeCategory(long_name, short_name, gender, minimum_age, maximum_age, number_of_prizes);
+        super(components);
+        number_of_prizes = Integer.parseInt(components.split(",")[5]);
     }
 
     public int numberOfPrizes() {

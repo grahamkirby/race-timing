@@ -17,26 +17,17 @@
 package org.grahamkirby.race_timing.common.categories;
 
 /**
- * Category specific to a particular entry.
+ * Category specific to a particular runner or team entry.
  */
 public final class EntryCategory extends Category {
 
-    private EntryCategory(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
+    /**
+     * Creates an instance from a comma-separated string containing:
+     * long name, short name, gender, minimum age, maximum age.
+     * Minimum and maximum ages are inclusive.
+     */
+    public EntryCategory(final String components) {
 
-        super(long_name, short_name, gender, minimum_age, maximum_age);
-    }
-
-    @SuppressWarnings("DuplicatedCode")
-    public static EntryCategory makeEntryCategory(final String line) {
-
-        final String[] parts = line.split(",");
-
-        final String long_name = parts[0];
-        final String short_name = parts[1];
-        final String gender = parts[2];
-        final int minimum_age = Integer.parseInt(parts[3]);
-        final int maximum_age = Integer.parseInt(parts[4]);
-
-        return new EntryCategory(long_name, short_name, gender, minimum_age, maximum_age);
+        super(components);
     }
 }

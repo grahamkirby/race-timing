@@ -5,6 +5,8 @@ import org.grahamkirby.race_timing.common.Race;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+
 @SuppressWarnings("NoopMethodInAbstractClass")
 public abstract class ResultPrinterText extends ResultPrinter {
 
@@ -22,6 +24,6 @@ public abstract class ResultPrinterText extends ResultPrinter {
 
     @Override
     public void printNoResults() throws IOException {
-        writer.append("No results\n");
+        writer.append("No results").append(LINE_SEPARATOR);
     }
 }

@@ -32,6 +32,7 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.*;
 
+@SuppressWarnings("IncorrectFormatting")
 abstract class RaceOutput {
 
     protected static final String DNF_STRING = "DNF";
