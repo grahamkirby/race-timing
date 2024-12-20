@@ -32,9 +32,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing.common.categories.PrizeCategory.PRIZE_CATEGORY_GROUP_NAME_INDEX;
-import static org.grahamkirby.race_timing.common.categories.PrizeCategory.makePrizeCategory;
-
 public abstract class Race {
 
     public static final String COMMENT_SYMBOL = "#";
@@ -102,6 +99,7 @@ public abstract class Race {
     public static final int UNKNOWN_BIB_NUMBER = 0;
     public static final int UNKNOWN_LEG_NUMBER = 0;
     protected static final int UNKNOWN_RACE_POSITION = 0;
+    private static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
     private static final String DEFAULT_ENTRY_MAP_PATH = STR."/src/main/resources/configuration/default_entry_map\{SUFFIX_CSV}";
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = STR."/src/main/resources/configuration/html_entities\{SUFFIX_CSV}";
@@ -409,7 +407,7 @@ public abstract class Race {
 
     private void configureCategories() throws IOException {
 
-        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::makeEntryCategory).toList();
+        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
         prize_category_groups = getPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
     }
 
@@ -465,28 +463,32 @@ public abstract class Race {
 
         Files.readAllLines(prize_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(line -> {
-                final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
-
-                addGroupIfAbsent(groups, group_name);
-                getGroupWithName(groups, group_name).categories().add(makePrizeCategory(line));
-            });
+            forEachOrdered(line -> recordGroup(line, groups));
 
         return groups;
     }
 
-    private static void addGroupIfAbsent(final Collection<PrizeCategoryGroup> groups, final String group_name) {
+    private static void recordGroup(final String line, final Collection<PrizeCategoryGroup> groups) {
 
-        if (getGroupWithName(groups, group_name) == null)
-            groups.add(new PrizeCategoryGroup(group_name, new ArrayList<>()));
+        final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
+        final PrizeCategoryGroup group = getGroupWithName(groups, group_name);
+
+        group.categories().add(new PrizeCategory(line));
     }
 
     private static PrizeCategoryGroup getGroupWithName(final Collection<PrizeCategoryGroup> groups, final String group_name) {
 
-        return groups.stream().
-            filter(group -> group.group_title().equals(group_name)).
+        PrizeCategoryGroup group = groups.stream().
+            filter(g -> g.group_title().equals(group_name)).
             findFirst().
             orElse(null);
+
+        if (group == null) {
+            group = new PrizeCategoryGroup(group_name, new ArrayList<>());
+            groups.add(group);
+        }
+
+        return group;
     }
 
     private static boolean isEntryCategoryEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {

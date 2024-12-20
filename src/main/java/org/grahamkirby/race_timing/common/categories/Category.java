@@ -24,6 +24,12 @@ import java.util.Objects;
  */
 public abstract class Category {
 
+    private record CategoryComponents(String long_name, String short_name, String gender,
+                                      int minimum_age, int maximum_age) {
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     // E.g. "Men Senior", "Men 40-49".
     private final String long_name;
 
@@ -37,14 +43,36 @@ public abstract class Category {
     private final int minimum_age;
     private final int maximum_age;
 
-    Category(final String long_name, final String short_name, final String gender, final int minimum_age, final int maximum_age) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        this.long_name = long_name;
-        this.short_name = short_name;
-        this.gender = gender;
-        this.minimum_age = minimum_age;
-        this.maximum_age = maximum_age;
+    Category(final String components) {
+
+        this(getCategoryComponents(components));
     }
+
+    private Category(final CategoryComponents components) {
+
+        long_name = components.long_name();
+        short_name = components.short_name();
+        gender = components.gender();
+        minimum_age = components.minimum_age();
+        maximum_age = components.maximum_age();
+    }
+
+    private static CategoryComponents getCategoryComponents(final String components) {
+
+        final String[] parts = components.split(",");
+
+        final String long_name = parts[0];
+        final String short_name = parts[1];
+        final String gender = parts[2];
+        final int minimum_age = Integer.parseInt(parts[3]);
+        final int maximum_age = Integer.parseInt(parts[4]);
+
+        return new CategoryComponents(long_name, short_name, gender, minimum_age, maximum_age);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public String getLongName() {
         return long_name;
@@ -66,11 +94,19 @@ public abstract class Category {
         return maximum_age;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Equality defined in terms of gender and age range.
+     */
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof final Category other && gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
     }
 
+    /**
+     * Hash code defined in terms of gender and age range.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(gender, minimum_age, maximum_age);
