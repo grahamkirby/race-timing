@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+@SuppressWarnings("IncorrectFormatting")
 public abstract class SeriesRace extends Race {
 
     protected List<IndividualRace> races;
@@ -41,6 +42,12 @@ public abstract class SeriesRace extends Race {
     protected SeriesRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected abstract RaceResult getOverallResult(final Runner runner);
+    protected abstract Predicate<RaceResult> getResultInclusionPredicate();
+    protected abstract void processMultipleClubsForRunner(String runner_name, List<String> defined_clubs);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -211,10 +218,4 @@ public abstract class SeriesRace extends Race {
             distinct().
             toList();
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected abstract RaceResult getOverallResult(final Runner runner);
-    protected abstract Predicate<RaceResult> getResultInclusionPredicate();
-    protected abstract void processMultipleClubsForRunner(String runner_name, List<String> defined_clubs);
 }

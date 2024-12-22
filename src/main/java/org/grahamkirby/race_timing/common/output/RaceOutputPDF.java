@@ -89,7 +89,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
             final List<RaceResult> category_prize_winners = race.prizes.getPrizeWinners(category);
 
-            new PrizeResultPrinter(race, document).print(category_prize_winners, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
+            new PrizeResultPrinter(race, document).print(category_prize_winners, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
 
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -135,7 +135,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
 
         @Override
-        public void printResultsFooter(final CreditLink credit_link_option) {
+        public void printResultsFooter(final CreditLinkOption credit_link_option) {
         }
 
         @Override

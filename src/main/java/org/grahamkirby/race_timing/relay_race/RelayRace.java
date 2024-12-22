@@ -22,7 +22,10 @@ import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.output.*;
+import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
+import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
+import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
@@ -32,11 +35,13 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 
 public class RelayRace extends SingleRace {
 
@@ -46,6 +51,10 @@ public class RelayRace extends SingleRace {
 
     Set<Integer> getPairedLegs() {
         return paired_legs;
+    }
+
+    record LegOutputInfo(String leg_runner_names, String leg_mass_start_annotation,
+                         String leg_time, String split_time) {
     }
 
     private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {
@@ -281,7 +290,7 @@ public class RelayRace extends SingleRace {
         return results;
     }
 
-    String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
+    private String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
         return leg_result.in_mass_start ? STR." (M\{getNextMassStartLeg(leg_number)})" : "";
@@ -295,7 +304,7 @@ public class RelayRace extends SingleRace {
                 count();
     }
 
-    static Duration sumDurationsUpToLeg(final List<? extends LegResult> leg_results, final int leg_number) {
+    private static Duration sumDurationsUpToLeg(final List<? extends LegResult> leg_results, final int leg_number) {
 
         return leg_results.subList(0, leg_number).stream().
             map(LegResult::duration).
@@ -541,6 +550,29 @@ public class RelayRace extends SingleRace {
             map(individual_leg_start -> individual_leg_start.start_time).
             findFirst().
             orElse(null);
+    }
+
+    List<String> outputLegs(final RelayRaceResult result, final Function<? super LegOutputInfo, String> leg_output_formatter) {
+
+        final List<String> leg_details = new ArrayList<>();
+        boolean all_previous_legs_completed = true;
+
+        for (int leg = 1; leg <= number_of_legs; leg++) {
+
+            final LegResult leg_result = result.leg_results.get(leg - 1);
+            final boolean completed = leg_result.getCompletionStatus() == CompletionStatus.COMPLETED;
+
+            final String leg_runner_names = leg_result.entry.team.runner_names().get(leg - 1);
+            final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
+            final String leg_time = completed ? format(leg_result.duration()) : DNF_STRING;
+            final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
+
+            leg_details.add(leg_output_formatter.apply(new LegOutputInfo(leg_runner_names, leg_mass_start_annotation, leg_time, split_time)));
+
+            if (!completed) all_previous_legs_completed = false;
+        }
+
+        return leg_details;
     }
 
     private static Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time, final int leg_index) {

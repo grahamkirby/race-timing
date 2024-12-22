@@ -21,7 +21,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.CreditLink;
+import org.grahamkirby.race_timing.common.output.CreditLinkOption;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
@@ -85,7 +85,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
         final List<RaceResult> category_results = individual_race.getOverallResults(prize_categories);
 
-        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
+        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
 
         @Override
-        public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
+        public void printResultsFooter(final CreditLinkOption credit_link_option) throws IOException {
 
             writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }

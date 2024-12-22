@@ -32,6 +32,7 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.*;
 
+@SuppressWarnings("IncorrectFormatting")
 public abstract class SingleRaceInput extends RaceInput {
 
     private final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
@@ -44,6 +45,13 @@ public abstract class SingleRaceInput extends RaceInput {
         super(race);
         readProperties();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected abstract List<RawResult> loadRawResults() throws IOException;
+    protected abstract RaceEntry makeRaceEntry(final List<String> elements);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
 
@@ -161,7 +169,4 @@ public abstract class SingleRaceInput extends RaceInput {
                 if (entry1 != entry2 && entry1.equals(entry2))
                     throw new RuntimeException(STR."duplicate entry: \{entry1}");
     }
-
-    protected abstract List<RawResult> loadRawResults() throws IOException;
-    protected abstract RaceEntry makeRaceEntry(final List<String> elements);
 }

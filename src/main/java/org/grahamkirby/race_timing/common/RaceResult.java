@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
+@SuppressWarnings("IncorrectFormatting")
 public abstract class RaceResult {
 
     public final Race race;

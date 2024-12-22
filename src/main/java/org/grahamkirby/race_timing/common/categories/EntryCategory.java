@@ -18,6 +18,9 @@ package org.grahamkirby.race_timing.common.categories;
 
 /**
  * Category specific to a particular runner or team entry.
+ * <br />
+ * Values are read from a configuration file such as
+ * {@link /src/main/resources/configuration/categories_entry_individual_junior.csv}.
  */
 public final class EntryCategory extends Category {
 

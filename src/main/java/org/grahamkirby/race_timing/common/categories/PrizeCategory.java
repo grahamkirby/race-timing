@@ -21,6 +21,9 @@ package org.grahamkirby.race_timing.common.categories;
  * This is different from entry category, since multiple entry categories
  * may be eligible for a given prize category e.g. an open prize category
  * may include multiple age categories.
+ * <br />
+ * Values are read from a configuration file such as
+ * {@link /src/main/resources/configuration/categories_prize_individual_junior.csv}.
  */
 public final class PrizeCategory extends Category {
 

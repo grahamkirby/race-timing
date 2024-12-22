@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 
+@SuppressWarnings("IncorrectFormatting")
 public abstract class Race {
 
     public static final String COMMENT_SYMBOL = "#";
