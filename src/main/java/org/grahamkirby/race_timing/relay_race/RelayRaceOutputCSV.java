@@ -20,7 +20,7 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.CreditLink;
+import org.grahamkirby.race_timing.common.output.CreditLinkOption;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
@@ -95,7 +95,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
             final List<RaceResult> results = race.getOverallResults(group.categories());
-            printer.print(results, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
+            printer.print(results, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
         }
     }
 
@@ -120,7 +120,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        new LegResultPrinter(race, writer, leg).print(leg_results, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
+        new LegResultPrinter(race, writer, leg).print(leg_results, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,24 +184,10 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.team.name())},\{result.entry.team.category().getLongName()},");
 
-            boolean all_previous_legs_completed = true;
+            final List<String> leg_strings = relay_race.outputLegs(result, info ->
+                STR."\{encode(info.leg_runner_names())}\{info.leg_mass_start_annotation()},\{info.leg_time()},\{info.split_time()}");
 
-            for (int leg = 1; leg <= relay_race.getNumberOfLegs(); leg++) {
-
-                final LegResult leg_result = result.leg_results.get(leg - 1);
-                final boolean completed = leg_result.getCompletionStatus() == CompletionStatus.COMPLETED;
-
-                final String leg_runner_names = leg_result.entry.team.runner_names().get(leg - 1);
-                final String leg_mass_start_annotation = relay_race.getMassStartAnnotation(leg_result, leg);
-                final String leg_time = completed ? format(leg_result.duration()) : DNF_STRING;
-                final String split_time = completed && all_previous_legs_completed ? format(RelayRace.sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
-
-                writer.append(STR."\{encode(leg_runner_names)}\{leg_mass_start_annotation},\{leg_time},\{split_time}");
-
-                if (leg < relay_race.getNumberOfLegs()) writer.append(",");
-                if (!completed) all_previous_legs_completed = false;
-            }
-
+            writer.append(String.join(",", leg_strings));
             writer.append(LINE_SEPARATOR);
         }
     }

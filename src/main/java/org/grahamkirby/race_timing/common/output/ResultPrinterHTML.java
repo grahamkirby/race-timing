@@ -15,14 +15,14 @@ public abstract class ResultPrinterHTML extends ResultPrinter {
     }
 
     @Override
-    public void printResultsFooter(final CreditLink credit_link_option) throws IOException {
+    public void printResultsFooter(final CreditLinkOption credit_link_option) throws IOException {
 
         writer.append("""
                 </tbody>
             </table>
             """);
 
-        if (credit_link_option == CreditLink.INCLUDE_CREDIT_LINK) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+        if (credit_link_option == CreditLinkOption.INCLUDE_CREDIT_LINK) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 
     @Override

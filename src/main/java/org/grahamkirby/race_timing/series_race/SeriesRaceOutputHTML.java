@@ -17,7 +17,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.output.CreditLink;
+import org.grahamkirby.race_timing.common.output.CreditLinkOption;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ public abstract class SeriesRaceOutputHTML extends RaceOutputHTML {
             printPrizes(writer);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            printResults(writer, getOverallResultPrinter(writer), CreditLink.INCLUDE_CREDIT_LINK);
+            printResults(writer, getOverallResultPrinter(writer), CreditLinkOption.INCLUDE_CREDIT_LINK);
         }
     }
 }

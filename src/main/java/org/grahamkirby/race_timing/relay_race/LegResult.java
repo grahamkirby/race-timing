@@ -26,7 +26,7 @@ import java.util.Comparator;
 
 public class LegResult extends RaceResult {
 
-    final RelayRaceEntry entry;
+    public final RelayRaceEntry entry;
     int leg_number;
     CompletionStatus completion_status;
     boolean in_mass_start;

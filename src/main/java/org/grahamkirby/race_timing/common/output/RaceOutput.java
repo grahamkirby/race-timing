@@ -33,9 +33,9 @@ import java.util.function.Function;
 import static org.grahamkirby.race_timing.common.Race.*;
 
 @SuppressWarnings("IncorrectFormatting")
-abstract class RaceOutput {
+public abstract class RaceOutput {
 
-    protected static final String DNF_STRING = "DNF";
+    public static final String DNF_STRING = "DNF";
 
     protected final Race race;
 
@@ -73,7 +73,7 @@ abstract class RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getResultsHeader());
-            printResults(writer, getOverallResultPrinter(writer), CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
+            printResults(writer, getOverallResultPrinter(writer), CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
         }
     }
 
@@ -113,7 +113,7 @@ abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final CreditLink credit_link_option) throws IOException {
+    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final CreditLinkOption credit_link_option) throws IOException {
 
         for (int i = 0; i < race.prize_category_groups.size(); i++) {
 
@@ -125,12 +125,13 @@ abstract class RaceOutput {
             final boolean last_group = i == race.prize_category_groups.size() - 1;
 
             final String sub_heading = only_one_group ? "" : LINE_SEPARATOR + makeSubHeading(group_title);
+            final boolean output_credit_link = last_group && credit_link_option == CreditLinkOption.INCLUDE_CREDIT_LINK;
 
-            printResults(writer, printer, prize_categories, sub_heading, (credit_link_option == CreditLink.INCLUDE_CREDIT_LINK && last_group) ? CreditLink.INCLUDE_CREDIT_LINK : CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
+            printResults(writer, printer, prize_categories, sub_heading, output_credit_link ? CreditLinkOption.INCLUDE_CREDIT_LINK : CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
         }
     }
 
-    void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading, final CreditLink credit_link_option) throws IOException {
+    void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading, final CreditLinkOption credit_link_option) throws IOException {
 
         writer.append(sub_heading);
 
@@ -169,7 +170,7 @@ abstract class RaceOutput {
             writer.append(getPrizesCategoryHeader(category));
 
             final List<RaceResult> category_prize_winners = race.prizes.getPrizeWinners(category);
-            getPrizeResultPrinter(writer).print(category_prize_winners, CreditLink.DO_NOT_INCLUDE_CREDIT_LINK);
+            getPrizeResultPrinter(writer).print(category_prize_winners, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
 
             writer.append(getPrizesCategoryFooter());
 

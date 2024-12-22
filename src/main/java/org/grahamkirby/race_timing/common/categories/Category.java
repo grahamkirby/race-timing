@@ -24,12 +24,6 @@ import java.util.Objects;
  */
 public abstract class Category {
 
-    private record CategoryComponents(String long_name, String short_name, String gender,
-                                      int minimum_age, int maximum_age) {
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     // E.g. "Men Senior", "Men 40-49".
     private final String long_name;
 
@@ -47,29 +41,13 @@ public abstract class Category {
 
     Category(final String components) {
 
-        this(getCategoryComponents(components));
-    }
-
-    private Category(final CategoryComponents components) {
-
-        long_name = components.long_name();
-        short_name = components.short_name();
-        gender = components.gender();
-        minimum_age = components.minimum_age();
-        maximum_age = components.maximum_age();
-    }
-
-    private static CategoryComponents getCategoryComponents(final String components) {
-
         final String[] parts = components.split(",");
 
-        final String long_name = parts[0];
-        final String short_name = parts[1];
-        final String gender = parts[2];
-        final int minimum_age = Integer.parseInt(parts[3]);
-        final int maximum_age = Integer.parseInt(parts[4]);
-
-        return new CategoryComponents(long_name, short_name, gender, minimum_age, maximum_age);
+        long_name = parts[0];
+        short_name = parts[1];
+        gender = parts[2];
+        minimum_age = Integer.parseInt(parts[3]);
+        maximum_age = Integer.parseInt(parts[4]);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
