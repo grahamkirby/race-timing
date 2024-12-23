@@ -22,12 +22,12 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.output.CreditLinkOption;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
-import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,7 +39,7 @@ import java.util.List;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-class TourRaceOutputHTML extends SeriesRaceOutputHTML {
+class TourRaceOutputHTML extends RaceOutputHTML {
 
     TourRaceOutputHTML(final Race race) {
         super(race);
@@ -71,7 +71,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
         if (individual_race != null) {
 
-            final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve(STR."race\{race_number}.html"));
+            final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve(STR."\{race_name_for_filenames}_race\{race_number}_\{year}\{getFileSuffix()}"));
 
             try (final OutputStreamWriter writer = new OutputStreamWriter(race_stream)) {
 

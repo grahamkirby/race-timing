@@ -20,6 +20,9 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
@@ -27,8 +30,42 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
+    protected String combined_results_filename;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected RaceOutputHTML(final Race race) {
         super(race);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void printCombined() throws IOException {
+
+        printCombined(CreditLinkOption.INCLUDE_CREDIT_LINK);
+    }
+
+    protected void printCombined(final CreditLinkOption credit_link_option) throws IOException {
+
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+            printPrizes(writer);
+
+            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+            printResults(writer, getOverallResultPrinter(writer), credit_link_option);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected void constructFilePaths() {
+
+        super.constructFilePaths();
+        combined_results_filename = STR."\{race_name_for_filenames}_combined_\{year}";
     }
 
     @Override
@@ -64,6 +101,4 @@ public abstract class RaceOutputHTML extends RaceOutput {
     public String getResultsHeader() {
         return "";
     }
-
-    public abstract void printCombined() throws IOException;
 }

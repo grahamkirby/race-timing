@@ -20,14 +20,12 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.CreditLinkOption;
-import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
@@ -36,20 +34,6 @@ class IndividualRaceOutputHTML extends RaceOutputHTML {
 
     IndividualRaceOutputHTML(final IndividualRace race) {
         super(race);
-    }
-
-    @Override
-    public void printCombined() throws IOException {
-
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append("<h3><strong>Results</strong></h3>").append(LINE_SEPARATOR);
-            printPrizes(writer);
-            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            printResults(writer, getOverallResultPrinter(writer), CreditLinkOption.INCLUDE_CREDIT_LINK);
-        }
     }
 
     @Override

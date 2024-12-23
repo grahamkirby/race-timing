@@ -31,12 +31,12 @@ public class MinitourTest extends RaceTest {
     }
 
     @Test
-    public void categoryWithoutWinner() throws Exception {
+    void categoryWithoutWinner() throws IOException {
         testExpectedCompletion("series_race/minitour/category_without_winner");
     }
 
     @Test
-    public void nameIncludesComma() throws Exception {
+    void nameIncludesComma() throws IOException {
         testExpectedCompletion("series_race/minitour/name_includes_comma");
     }
 }

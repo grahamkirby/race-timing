@@ -552,7 +552,7 @@ public class RelayRace extends SingleRace {
             orElse(null);
     }
 
-    List<String> outputLegs(final RelayRaceResult result, final Function<? super LegOutputInfo, String> leg_output_formatter) {
+    List<String> getLegDetails(final RelayRaceResult result, final Function<? super LegOutputInfo, String> leg_output_formatter) {
 
         final List<String> leg_details = new ArrayList<>();
         boolean all_previous_legs_completed = true;

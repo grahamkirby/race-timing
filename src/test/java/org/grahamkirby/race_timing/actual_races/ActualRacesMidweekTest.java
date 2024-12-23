@@ -32,32 +32,32 @@ public class ActualRacesMidweekTest extends RaceTest {
     }
 
     @Test
-    public void midweek2023Completed1() throws Exception {
+    void midweek2023Completed1() throws IOException {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_1");
     }
 
     @Test
-    public void midweek2023Completed2() throws Exception {
+    void midweek2023Completed2() throws IOException {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_2");
     }
 
     @Test
-    public void midweek2023Completed3() throws Exception {
+    void midweek2023Completed3() throws IOException {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_3");
     }
 
     @Test
-    public void midweek2023Completed4() throws Exception {
+    void midweek2023Completed4() throws IOException {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_4");
     }
 
     @Test
-    public void midweek2023Completed5() throws Exception {
+    void midweek2023Completed5() throws IOException {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_5");
     }
 
     @Test
-    public void midweek2024() throws Exception {
+    void midweek2024() throws IOException {
         testExpectedCompletion("actual_races/series_race/midweek/2024");
     }
 }

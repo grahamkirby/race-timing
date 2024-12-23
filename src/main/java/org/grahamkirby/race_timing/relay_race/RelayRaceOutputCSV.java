@@ -184,7 +184,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.team.name())},\{result.entry.team.category().getLongName()},");
 
-            final List<String> leg_strings = relay_race.outputLegs(result, info ->
+            final List<String> leg_strings = relay_race.getLegDetails(result, info ->
                 STR."\{encode(info.leg_runner_names())}\{info.leg_mass_start_annotation()},\{info.leg_time()},\{info.split_time()}");
 
             writer.append(String.join(",", leg_strings));
