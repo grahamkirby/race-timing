@@ -32,12 +32,12 @@ public class ActualRacesTourTest extends RaceTest {
     }
 
     @Test
-    public void tour2017Completed3() throws Exception {
+    void tour2017Completed3() throws IOException {
         testExpectedCompletion("actual_races/series_race/tour/2017/completed_3");
     }
 
     @Test
-    public void tour2017Completed5() throws Exception {
+    void tour2017Completed5() throws IOException {
         testExpectedCompletion("actual_races/series_race/tour/2017/completed_5");
     }
 }

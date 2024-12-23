@@ -32,20 +32,25 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.*;
 
+/**
+ * Abstract parent class for various forms of race output.
+ */
 @SuppressWarnings("IncorrectFormatting")
 public abstract class RaceOutput {
 
     public static final String DNF_STRING = "DNF";
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected final Race race;
 
+    protected Path output_directory_path;
     protected String year;
     protected String race_name_for_results;
     protected String race_name_for_filenames;
     private String overall_results_filename;
     String prizes_filename;
     String notes_filename;
-    protected Path output_directory_path;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,6 +70,8 @@ public abstract class RaceOutput {
         this.race = race;
         configure();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void printResults() throws IOException {
 
@@ -106,7 +113,7 @@ public abstract class RaceOutput {
 
         overall_results_filename = STR."\{race_name_for_filenames}_overall_\{year}";
         prizes_filename = STR."\{race_name_for_filenames}_prizes_\{year}";
-        notes_filename = "processing_notes";
+        notes_filename = STR."\{race_name_for_filenames}_processing_notes_\{year}";
 
         output_directory_path = race.getPath("../output");
     }

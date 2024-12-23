@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
@@ -47,18 +48,14 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     @Override
     public void printCombined() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve("combined.html"));
+        printCombined(CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()), StandardOpenOption.APPEND);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append("<h3><strong>Results</strong></h3>").append(LINE_SEPARATOR);
-            printPrizes(writer);
-
-            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            printResults(writer, getOverallResultPrinter(writer), CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
-
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
-            printDetailedResults(writer, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+            printDetailedResults(writer);
 
             writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
 
@@ -91,16 +88,16 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     void printDetailedResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."\{detailed_results_filename}.html"));
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + getFileSuffix()));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printDetailedResults(writer, CreditLinkOption.INCLUDE_CREDIT_LINK);
+            printDetailedResults(writer);
         }
     }
 
-    private void printDetailedResults(final OutputStreamWriter writer, final CreditLinkOption credit_link_option) throws IOException {
+    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        printResults(writer, new DetailedResultPrinter(race, writer), credit_link_option);
+        printResults(writer, new DetailedResultPrinter(race, writer), CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +257,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                     <td>\{result.entry.team.category().getLongName()}</td>
             """);
 
-            final List<String> leg_strings = relay_race.outputLegs(result, info ->
+            final List<String> leg_strings = relay_race.getLegDetails(result, info ->
                 STR."""
                             <td>\{race.normalisation.htmlEncode(info.leg_runner_names())}\{info.leg_mass_start_annotation()}</td>
                             <td>\{info.leg_time()}</td>

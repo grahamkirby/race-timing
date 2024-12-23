@@ -49,7 +49,7 @@ class RelayRaceOutputText extends RaceOutputText {
     protected void constructFilePaths() {
 
         super.constructFilePaths();
-        collated_times_filename = "times_collated";
+        collated_times_filename = STR."\{race_name_for_filenames}_times_collated_\{year}";
     }
 
     @SuppressWarnings("IncorrectFormatting")

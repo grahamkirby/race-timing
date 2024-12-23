@@ -19,10 +19,10 @@ package org.grahamkirby.race_timing.series_race.midweek;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.CreditLinkOption;
+import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
-import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
+public class MidweekRaceOutputHTML extends RaceOutputHTML {
 
     MidweekRaceOutputHTML(final Race race) {
         super(race);

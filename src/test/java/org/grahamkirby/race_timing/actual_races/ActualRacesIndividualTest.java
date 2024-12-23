@@ -32,57 +32,57 @@ public class ActualRacesIndividualTest extends RaceTest {
     }
 
     @Test
-    public void balmullo2023() throws Exception {
+    void balmullo2023() throws IOException {
         testExpectedCompletion("actual_races/individual_race/balmullo/2023");
     }
 
     @Test
-    public void balmullo2024() throws Exception {
+    void balmullo2024() throws IOException {
         testExpectedCompletion("actual_races/individual_race/balmullo/2024");
     }
 
     @Test
-    public void dunnikier2024() throws Exception {
+    void dunnikier2024() throws IOException {
         testExpectedCompletion("actual_races/individual_race/dunnikier/2024");
     }
 
     @Test
-    public void giffordtown2023() throws Exception {
+    void giffordtown2023() throws IOException {
         testExpectedCompletion("actual_races/individual_race/giffordtown/2023");
     }
 
     @Test
-    public void giffordtown2024() throws Exception {
+    void giffordtown2024() throws IOException {
         testExpectedCompletion("actual_races/individual_race/giffordtown/2024");
     }
 
     @Test
-    public void hillOfTarvit2024() throws Exception {
+    void hillOfTarvit2024() throws IOException {
         testExpectedCompletion("actual_races/individual_race/hill_of_tarvit/2024");
     }
 
     @Test
-    public void stAndrews2023() throws Exception {
+    void stAndrews2023() throws IOException {
         testExpectedCompletion("actual_races/individual_race/st_andrews/2023");
     }
 
     @Test
-    public void stAndrews2024() throws Exception {
+    void stAndrews2024() throws IOException {
         testExpectedCompletion("actual_races/individual_race/st_andrews/2024");
     }
 
     @Test
-    public void strathBlebo2023() throws Exception {
+    void strathBlebo2023() throws IOException {
         testExpectedCompletion("actual_races/individual_race/strath_blebo/2023");
     }
 
     @Test
-    public void strathBlebo2024() throws Exception {
+    void strathBlebo2024() throws IOException {
         testExpectedCompletion("actual_races/individual_race/strath_blebo/2024");
     }
 
     @Test
-    public void juniorHillRaces2017() throws Exception {
+    void juniorHillRaces2017() throws IOException {
         testExpectedCompletion("actual_races/individual_race/junior_hill_races/2017");
     }
- }
+}

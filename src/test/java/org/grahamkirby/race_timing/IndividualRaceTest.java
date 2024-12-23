@@ -31,92 +31,92 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
-    public void deadHeats() throws Exception {
+    void deadHeats() throws IOException {
         testExpectedCompletion("individual_race/dead_heats");
     }
 
     @Test
-    public void DNFs() throws Exception {
+    void DNFs() throws IOException {
         testExpectedCompletion("individual_race/dnfs");
     }
 
     @Test
-    public void duplicateBibNumber() throws Exception {
+    void duplicateBibNumber() throws IOException {
         testExpectedException("individual_race/duplicate_bib_number", "duplicate bib number: 3");
     }
 
     @Test
-    public void duplicateRunner() throws Exception {
+    void duplicateRunner() throws IOException {
         testExpectedException("individual_race/duplicate_runner", "duplicate entry: John Smith, Fife AC");
     }
 
     @Test
-    public void duplicateRunnerName() throws Exception {
+    void duplicateRunnerName() throws IOException {
         testExpectedCompletion("individual_race/duplicate_runner_name");
     }
 
     @Test
-    public void illegalCategory() throws Exception {
+    void illegalCategory() throws IOException {
         testExpectedException("individual_race/illegal_category", "illegal category for runner: 92");
     }
 
     @Test
-    public void illegalRawTime() throws Exception {
+    void illegalRawTime() throws IOException {
         testExpectedException("individual_race/illegal_raw_time", "illegal time: XXX");
     }
 
     @Test
-    public void multipleTimeFormats() throws Exception {
+    void multipleTimeFormats() throws IOException {
         testExpectedCompletion("individual_race/multiple_time_formats");
     }
 
     @Test
-    public void resultsOutOfOrder() throws Exception {
+    void resultsOutOfOrder() throws IOException {
         testExpectedException("individual_race/results_out_of_order", "result 15 out of order");
     }
 
     @Test
-    public void seniorNotOpenCategory() throws Exception {
+    void seniorNotOpenCategory() throws IOException {
         testExpectedCompletion("individual_race/senior_not_open_category");
     }
 
     @Test
-    public void unregisteredRunner() throws Exception {
+    void unregisteredRunner() throws IOException {
         testExpectedException("individual_race/unregistered_runner", "unregistered bib number: 4");
     }
 
     @Test
-    public void alternativeClubNameNormalisation() throws Exception {
+    void alternativeClubNameNormalisation() throws IOException {
         testExpectedCompletion("individual_race/alternative_club_name_normalisation");
     }
 
     @Test
-    public void alternativeHtmlEntityNormalisation() throws Exception {
+    void alternativeHtmlEntityNormalisation() throws IOException {
         testExpectedCompletion("individual_race/alternative_html_entity_normalisation");
     }
 
     @Test
-    public void alternativeCapitalisationStopWords() throws Exception {
+    void alternativeCapitalisationStopWords() throws IOException {
         testExpectedCompletion("individual_race/alternative_capitalisation_stop_words");
     }
 
     @Test
-    public void alternativePrizeReportingOrder() throws Exception {
+    void alternativePrizeReportingOrder() throws IOException {
         testExpectedCompletion("individual_race/alternative_prize_reporting_order");
     }
 
     @Test
-    public void openWinnerFromOlderCategory() throws Exception {
+    void openWinnerFromOlderCategory() throws IOException {
         testExpectedCompletion("individual_race/open_winner_from_older_category");
     }
 
     @Test
-    public void prizeCategoryGroups() throws Exception {
+    void prizeCategoryGroups() throws IOException {
         testExpectedCompletion("individual_race/prize_category_groups");
     }
 
     @Test
-    public void nameIncludesComma() throws Exception {
+    void nameIncludesComma() throws IOException {
         testExpectedCompletion("individual_race/name_includes_comma");
     }
 }

@@ -31,27 +31,27 @@ public class MidweekTest extends RaceTest {
     }
 
     @Test
-    public void deadHeats() throws Exception {
+    void deadHeats() throws IOException {
         testExpectedCompletion("series_race/midweek/dead_heats");
     }
 
     @Test
-    public void duplicateRunnerName() throws Exception {
+    void duplicateRunnerName() throws IOException {
         testExpectedCompletion("series_race/midweek/duplicate_runner_name");
     }
 
     @Test
-    public void prizeCategoryGroups() throws Exception {
+    void prizeCategoryGroups() throws IOException {
         testExpectedCompletion("series_race/midweek/prize_category_groups");
     }
 
     @Test
-    public void largeRace() throws Exception {
+    void largeRace() throws IOException {
         testExpectedCompletion("series_race/midweek/large_race");
     }
 
     @Test
-    public void nameIncludesComma() throws Exception {
+    void nameIncludesComma() throws IOException {
         testExpectedCompletion("series_race/midweek/name_includes_comma");
     }
 }

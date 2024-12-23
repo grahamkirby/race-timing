@@ -32,12 +32,12 @@ public class ActualRacesRelayTest extends RaceTest {
     }
 
     @Test
-    public void devilsBurdens2020() throws Exception {
+    void devilsBurdens2020() throws IOException {
         testExpectedCompletion("actual_races/relay_race/devils_burdens/2020");
     }
 
     @Test
-    public void devilsBurdens2024() throws Exception {
+    void devilsBurdens2024() throws IOException {
         testExpectedCompletion("actual_races/relay_race/devils_burdens/2024");
     }
 }

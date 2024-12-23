@@ -32,17 +32,17 @@ public class ActualRacesGrandPrixTest extends RaceTest {
     }
 
     @Test
-    public void grandPrix2016Completed6() throws Exception {
+    void grandPrix2016Completed6() throws IOException {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_6");
     }
 
     @Test
-    public void grandPrix2016Completed10() throws Exception {
+    void grandPrix2016Completed10() throws IOException {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_10");
     }
 
     @Test
-    public void grandPrix2016Completed12() throws Exception {
+    void grandPrix2016Completed12() throws IOException {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_12");
     }
 }
