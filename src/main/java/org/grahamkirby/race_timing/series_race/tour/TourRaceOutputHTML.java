@@ -31,7 +31,6 @@ import org.grahamkirby.race_timing.series_race.SeriesRace;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.util.Collection;
 import java.util.List;
 
@@ -70,7 +69,7 @@ class TourRaceOutputHTML extends RaceOutputHTML {
 
         if (individual_race != null) {
 
-            final OutputStream race_stream = Files.newOutputStream(output_directory_path.resolve(STR."\{race_name_for_filenames}_race\{race_number}_\{year}\{getFileSuffix()}"));
+            final OutputStream race_stream = getOutputStream(race_name_for_filenames, STR."race\{race_number}", year);
 
             try (final OutputStreamWriter writer = new OutputStreamWriter(race_stream)) {
 

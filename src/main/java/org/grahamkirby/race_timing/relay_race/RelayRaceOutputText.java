@@ -17,15 +17,14 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.common.output.ResultPrinterText;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.common.output.ResultPrinterText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Stream;
@@ -36,8 +35,6 @@ import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 
 class RelayRaceOutputText extends RaceOutputText {
 
-    private String collated_times_filename;
-
     RelayRaceOutputText(final RelayRace results) {
 
         super(results);
@@ -45,17 +42,10 @@ class RelayRaceOutputText extends RaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-        collated_times_filename = STR."\{race_name_for_filenames}_times_collated_\{year}";
-    }
-
     @SuppressWarnings("IncorrectFormatting")
     void printCollatedResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."\{collated_times_filename}.txt"));
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "times_collated", year);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

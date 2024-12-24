@@ -26,7 +26,6 @@ import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
         super.printCombined();
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()), StandardOpenOption.APPEND);
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "combined", year, StandardOpenOption.APPEND);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -87,7 +86,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     void printDetailedResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + getFileSuffix()));
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "detailed", year);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResults(writer);
@@ -109,7 +108,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     private void printLegResults(final int leg) throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."\{race_name_for_filenames}_leg_\{leg}_\{year}.html"));
+        final OutputStream stream = getOutputStream(race_name_for_filenames, STR."leg_\{leg}", year);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResults(writer, leg);

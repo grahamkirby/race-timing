@@ -45,7 +45,7 @@ public abstract class RaceOutputCSV extends RaceOutput {
     }
 
     @Override
-    public String getPrizesSectionHeader() {
+    public String getPrizesHeader() {
         return "";
     }
 

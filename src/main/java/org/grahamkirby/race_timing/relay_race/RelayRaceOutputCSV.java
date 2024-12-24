@@ -25,18 +25,13 @@ import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
-public class RelayRaceOutputCSV extends RaceOutputCSV {
-
-    private final String detailed_results_filename = STR."\{race_name_for_filenames}_detailed_\{year}";
+class RelayRaceOutputCSV extends RaceOutputCSV {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
@@ -63,9 +58,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     void printDetailedResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(detailed_results_filename + SUFFIX_CSV));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race_name_for_filenames, "detailed", year))) {
 
             printDetailedResultsHeader(writer);
             printDetailedResults(writer);
@@ -91,11 +84,8 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final ResultPrinter printer = new DetailedResultPrinter(race, writer);
 
-        for (final PrizeCategoryGroup group : race.prize_category_groups) {
-
-            final List<RaceResult> results = race.getOverallResults(group.categories());
-            printer.print(results);
-        }
+        for (final PrizeCategoryGroup group : race.prize_category_groups)
+            printer.print(race.getOverallResults(group.categories()));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,9 +98,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
     private void printLegResults(final int leg) throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."\{race_name_for_filenames}_leg_\{leg}_\{year}.csv"));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race_name_for_filenames, STR."leg_\{leg}", year))) {
             printLegResults(writer, leg);
         }
     }
