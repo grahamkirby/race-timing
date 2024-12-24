@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.CreditLinkOption;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
@@ -48,7 +47,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     @Override
     public void printCombined() throws IOException {
 
-        printCombined(CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+        super.printCombined();
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()), StandardOpenOption.APPEND);
 
@@ -62,7 +61,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
             for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {
 
                 writer.append(STR."<p></p>\{LINE_SEPARATOR}<h4>Leg \{leg_number} Results</h4>\{LINE_SEPARATOR}");
-                printLegResults(writer, leg_number, (leg_number == ((RelayRace) race).getNumberOfLegs()) ? CreditLinkOption.INCLUDE_CREDIT_LINK : CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+                printLegResults(writer, leg_number);
             }
         }
     }
@@ -97,7 +96,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        printResults(writer, new DetailedResultPrinter(race, writer), CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+        printResults(writer, new DetailedResultPrinter(race, writer));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,15 +112,15 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(STR."\{race_name_for_filenames}_leg_\{leg}_\{year}.html"));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printLegResults(writer, leg, CreditLinkOption.INCLUDE_CREDIT_LINK);
+            printLegResults(writer, leg);
         }
     }
 
-    private void printLegResults(final OutputStreamWriter writer, final int leg, final CreditLinkOption credit_link_option) throws IOException {
+    private void printLegResults(final OutputStreamWriter writer, final int leg) throws IOException {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        new LegResultPrinter(race, writer, leg).print(leg_results, credit_link_option);
+        new LegResultPrinter(race, writer, leg).print(leg_results);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,7 +283,7 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsFooter(final CreditLinkOption credit_link_option) throws IOException {
+        public void printResultsFooter() throws IOException {
 
             writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }

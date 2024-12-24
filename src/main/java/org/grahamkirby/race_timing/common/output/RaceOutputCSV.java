@@ -35,8 +35,8 @@ public abstract class RaceOutputCSV extends RaceOutput {
         return "";
     }
 
-    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading, final CreditLinkOption credit_link_option) throws IOException {
-        super.printResults(writer, printer, categories, "", credit_link_option);
+    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading) throws IOException {
+        super.printResults(writer, printer, categories, "");
     }
 
     @Override
@@ -50,12 +50,12 @@ public abstract class RaceOutputCSV extends RaceOutput {
     }
 
     @Override
-    public String getPrizesCategoryHeader(final PrizeCategory category) {
+    public String getPrizeCategoryHeader(final PrizeCategory category) {
         return "";
     }
 
     @Override
-    public String getPrizesCategoryFooter() {
+    public String getPrizeCategoryFooter() {
         return "";
     }
 

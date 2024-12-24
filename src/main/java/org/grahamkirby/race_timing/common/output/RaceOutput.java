@@ -32,12 +32,11 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.*;
 
-/**
- * Abstract parent class for various forms of race output.
- */
+/** Abstract parent class for various forms of race output. */
 @SuppressWarnings("IncorrectFormatting")
 public abstract class RaceOutput {
 
+    /** Displayed in results for runners that did not complete the course. */
     public static final String DNF_STRING = "DNF";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,8 +56,8 @@ public abstract class RaceOutput {
     protected abstract String getFileSuffix();
     protected abstract String getResultsHeader();
     protected abstract String getPrizesSectionHeader();
-    protected abstract String getPrizesCategoryHeader(final PrizeCategory category) ;
-    protected abstract String getPrizesCategoryFooter();
+    protected abstract String getPrizeCategoryHeader(final PrizeCategory category) ;
+    protected abstract String getPrizeCategoryFooter();
 
     protected abstract ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer);
     protected abstract ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer);
@@ -73,6 +72,11 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Prints overall race results. Used for CSV and HTML output.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     public void printResults() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + getFileSuffix()));
@@ -80,7 +84,7 @@ public abstract class RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getResultsHeader());
-            printResults(writer, getOverallResultPrinter(writer), CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+            printResults(writer, getOverallResultPrinter(writer));
         }
     }
 
@@ -89,6 +93,8 @@ public abstract class RaceOutput {
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + getFileSuffix()));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesSectionHeader());
             printPrizes(writer);
         }
     }
@@ -120,7 +126,7 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final CreditLinkOption credit_link_option) throws IOException {
+    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
 
         for (int i = 0; i < race.prize_category_groups.size(); i++) {
 
@@ -129,22 +135,20 @@ public abstract class RaceOutput {
             final List<PrizeCategory> prize_categories = group.categories();
 
             final boolean only_one_group = race.prize_category_groups.size() == 1;
-            final boolean last_group = i == race.prize_category_groups.size() - 1;
 
             final String sub_heading = only_one_group ? "" : LINE_SEPARATOR + makeSubHeading(group_title);
-            final boolean output_credit_link = last_group && credit_link_option == CreditLinkOption.INCLUDE_CREDIT_LINK;
 
-            printResults(writer, printer, prize_categories, sub_heading, output_credit_link ? CreditLinkOption.INCLUDE_CREDIT_LINK : CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+            printResults(writer, printer, prize_categories, sub_heading);
         }
     }
 
-    void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading, final CreditLinkOption credit_link_option) throws IOException {
+    void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading) throws IOException {
 
         writer.append(sub_heading);
 
         final List<RaceResult> results = race.getOverallResults(categories);
 
-        printer.print(results, credit_link_option);
+        printer.print(results);
     }
 
     protected String makeSubHeading(final String s) {
@@ -153,9 +157,7 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void printPrizes(final OutputStreamWriter writer) throws IOException {
-
-        writer.append(getPrizesSectionHeader());
+    void printPrizes(final OutputStreamWriter writer) {
 
         printPrizes(category -> {
             printPrizes(writer, category);
@@ -163,23 +165,23 @@ public abstract class RaceOutput {
         });
     }
 
-    void printPrizes(final Function<? super PrizeCategory, Void> prize_printer) {
+    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
 
         race.prize_category_groups.stream().
             flatMap(group -> group.categories().stream()).
             filter(race.prizes::arePrizesInThisOrLaterCategory).
-            forEachOrdered(prize_printer::apply);
+            forEachOrdered(prize_category_printer::apply);
     }
 
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
 
         try {
-            writer.append(getPrizesCategoryHeader(category));
+            writer.append(getPrizeCategoryHeader(category));
 
             final List<RaceResult> category_prize_winners = race.prizes.getPrizeWinners(category);
-            getPrizeResultPrinter(writer).print(category_prize_winners, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+            getPrizeResultPrinter(writer).print(category_prize_winners);
 
-            writer.append(getPrizesCategoryFooter());
+            writer.append(getPrizeCategoryFooter());
 
         } catch (final IOException e) {
             throw new RuntimeException(e);

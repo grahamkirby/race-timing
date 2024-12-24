@@ -52,7 +52,7 @@ public abstract class RaceOutputText extends RaceOutput {
     }
 
     @Override
-    protected String getPrizesCategoryHeader(final PrizeCategory category) {
+    protected String getPrizeCategoryHeader(final PrizeCategory category) {
 
         final String header = STR."Category: \{category.getLongName()}";
         return STR."""
@@ -63,7 +63,7 @@ public abstract class RaceOutputText extends RaceOutput {
     }
 
     @Override
-    protected String getPrizesCategoryFooter() {
+    protected String getPrizeCategoryFooter() {
         return LINE_SEPARATOR + LINE_SEPARATOR;
     }
 

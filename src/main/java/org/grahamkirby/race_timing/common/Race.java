@@ -207,6 +207,7 @@ public abstract class Race {
     protected void printCombined() throws IOException {
 
         output_HTML.printCombined();
+        output_HTML.printCreditLink();
     }
 
     public Path getPath(final String path) {
@@ -517,6 +518,7 @@ public abstract class Race {
         final Path category_map_path = getPath(getProperty(KEY_ENTRY_MAP_PATH, DEFAULT_ENTRY_MAP_PATH));
 
         Files.readAllLines(category_map_path).stream().
+            filter(line -> !line.isEmpty()).
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             forEachOrdered(line -> processLine(line, map));
 

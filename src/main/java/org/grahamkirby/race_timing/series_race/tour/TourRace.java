@@ -91,7 +91,7 @@ public class TourRace extends SeriesRace {
     @Override
     protected void printCombined() throws IOException {
 
-        output_HTML.printCombined();
+        super.printCombined();
         ((TourRaceOutputHTML) output_HTML).printIndividualRaces();
     }
 

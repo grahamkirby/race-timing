@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 
 public abstract class ResultPrinterHTML extends ResultPrinter {
 
@@ -15,14 +14,12 @@ public abstract class ResultPrinterHTML extends ResultPrinter {
     }
 
     @Override
-    public void printResultsFooter(final CreditLinkOption credit_link_option) throws IOException {
+    public void printResultsFooter() throws IOException {
 
         writer.append("""
                 </tbody>
             </table>
             """);
-
-        if (credit_link_option == CreditLinkOption.INCLUDE_CREDIT_LINK) writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 
     @Override

@@ -20,10 +20,10 @@ public abstract class ResultPrinter {
 
     protected abstract void printResult(RaceResult r) throws IOException;
     protected abstract void printResultsHeader() throws IOException;
-    protected abstract void printResultsFooter(CreditLinkOption credit_link_option) throws IOException;
+    protected abstract void printResultsFooter() throws IOException;
     protected abstract void printNoResults() throws IOException;
 
-    public final void print(final Collection<? extends RaceResult> results, final CreditLinkOption credit_link_option) throws IOException {
+    public final void print(final Collection<? extends RaceResult> results) throws IOException {
 
         if (results.isEmpty())
             printNoResults();
@@ -35,7 +35,7 @@ public abstract class ResultPrinter {
                 if (result.shouldBeDisplayedInResults())
                     printResult(result);
 
-            printResultsFooter(credit_link_option);
+            printResultsFooter();
         }
     }
 }
