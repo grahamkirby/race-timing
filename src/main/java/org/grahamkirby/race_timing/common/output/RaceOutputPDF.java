@@ -48,7 +48,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
     @Override
     public void printPrizes() throws IOException {
 
-        final PdfWriter writer = new PdfWriter(output_directory_path.resolve(prizes_filename + getFileSuffix()).toString());
+        final PdfWriter writer = new PdfWriter(getOutputFilePath(race_name_for_filenames, "prizes", year).toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
             printPrizes(document);
@@ -61,7 +61,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
     }
 
     @Override
-    protected String getPrizesSectionHeader() {
+    protected String getPrizesHeader() {
         return "";
     }
 

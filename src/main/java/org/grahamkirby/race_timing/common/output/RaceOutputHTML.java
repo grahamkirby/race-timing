@@ -22,16 +22,13 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 public abstract class RaceOutputHTML extends RaceOutput {
 
-    protected static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
-
-    protected String combined_results_filename;
+    private static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +40,7 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     public void printCreditLink() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()), StandardOpenOption.APPEND);
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "combined", year, StandardOpenOption.APPEND);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.append(SOFTWARE_CREDIT_LINK_TEXT);
@@ -52,12 +49,12 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     public void printCombined() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()));
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "combined", year);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
-            writer.append(getPrizesSectionHeader());
+            writer.append(getPrizesHeader());
 
             printPrizes(writer);
 
@@ -69,19 +66,12 @@ public abstract class RaceOutputHTML extends RaceOutput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-        combined_results_filename = STR."\{race_name_for_filenames}_combined_\{year}";
-    }
-
-    @Override
     public String getFileSuffix() {
         return ".html";
     }
 
     @Override
-    public String getPrizesSectionHeader() {
+    public String getPrizesHeader() {
         return STR."<h4>Prizes</h4>\{LINE_SEPARATOR}";
     }
 

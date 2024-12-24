@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -43,19 +45,16 @@ public abstract class RaceOutput {
 
     protected final Race race;
 
-    protected Path output_directory_path;
     protected String year;
     protected String race_name_for_results;
     protected String race_name_for_filenames;
-    private String overall_results_filename;
-    String prizes_filename;
-    String notes_filename;
+    private Path output_directory_path;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected abstract String getFileSuffix();
     protected abstract String getResultsHeader();
-    protected abstract String getPrizesSectionHeader();
+    protected abstract String getPrizesHeader();
     protected abstract String getPrizeCategoryHeader(final PrizeCategory category) ;
     protected abstract String getPrizeCategoryFooter();
 
@@ -79,7 +78,7 @@ public abstract class RaceOutput {
      */
     public void printResults() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(overall_results_filename + getFileSuffix()));
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "overall", year);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -90,13 +89,27 @@ public abstract class RaceOutput {
 
     public void printPrizes() throws IOException {
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(prizes_filename + getFileSuffix()));
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "prizes", year);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(getPrizesSectionHeader());
+            writer.append(getPrizesHeader());
             printPrizes(writer);
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
+        return getOutputStream(race_name, output_type, year, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+    }
+
+    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
+        return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
+    }
+
+    Path getOutputFilePath(final String race_name, final String output_type, final String year) {
+        return output_directory_path.resolve(STR."\{race_name}_\{output_type}_\{year}\{getFileSuffix()}");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,10 +129,6 @@ public abstract class RaceOutput {
     }
 
     protected void constructFilePaths() {
-
-        overall_results_filename = STR."\{race_name_for_filenames}_overall_\{year}";
-        prizes_filename = STR."\{race_name_for_filenames}_prizes_\{year}";
-        notes_filename = STR."\{race_name_for_filenames}_processing_notes_\{year}";
 
         output_directory_path = race.getPath("../output");
     }

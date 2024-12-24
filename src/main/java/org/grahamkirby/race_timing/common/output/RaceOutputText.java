@@ -20,9 +20,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
@@ -38,7 +36,7 @@ public abstract class RaceOutputText extends RaceOutput {
     }
 
     @Override
-    protected String getPrizesSectionHeader() {
+    protected String getPrizesHeader() {
         return STR."""
             \{race_name_for_results} Results \{year}
             ============================
@@ -74,9 +72,7 @@ public abstract class RaceOutputText extends RaceOutput {
             reduce((s1, s2) -> STR."\{s1}, \{s2}").
             ifPresent(s -> race.getNotes().append("Converted to title case: ").append(s));
 
-        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(notes_filename + getFileSuffix()));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race_name_for_filenames, "processing_notes", year))) {
             writer.append(race.getNotes().toString());
         }
     }
