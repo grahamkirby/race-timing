@@ -20,7 +20,6 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.CreditLinkOption;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
@@ -95,7 +94,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
         for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
             final List<RaceResult> results = race.getOverallResults(group.categories());
-            printer.print(results, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+            printer.print(results);
         }
     }
 
@@ -120,7 +119,7 @@ public class RelayRaceOutputCSV extends RaceOutputCSV {
 
         final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
-        new LegResultPrinter(race, writer, leg).print(leg_results, CreditLinkOption.DO_NOT_INCLUDE_CREDIT_LINK);
+        new LegResultPrinter(race, writer, leg).print(leg_results);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

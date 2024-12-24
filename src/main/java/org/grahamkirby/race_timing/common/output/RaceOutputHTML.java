@@ -23,12 +23,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 public abstract class RaceOutputHTML extends RaceOutput {
 
-    static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
+    protected static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     protected String combined_results_filename;
 
@@ -40,22 +41,28 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printCombined() throws IOException {
+    public void printCreditLink() throws IOException {
 
-        printCombined(CreditLinkOption.INCLUDE_CREDIT_LINK);
+        final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()), StandardOpenOption.APPEND);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+        }
     }
 
-    protected void printCombined(final CreditLinkOption credit_link_option) throws IOException {
+    public void printCombined() throws IOException {
 
         final OutputStream stream = Files.newOutputStream(output_directory_path.resolve(combined_results_filename + getFileSuffix()));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+            writer.append(getPrizesSectionHeader());
+
             printPrizes(writer);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            printResults(writer, getOverallResultPrinter(writer), credit_link_option);
+            printResults(writer, getOverallResultPrinter(writer));
         }
     }
 
@@ -79,14 +86,14 @@ public abstract class RaceOutputHTML extends RaceOutput {
     }
 
     @Override
-    public String getPrizesCategoryHeader(final PrizeCategory category) {
+    public String getPrizeCategoryHeader(final PrizeCategory category) {
         return STR."""
         <p><strong>\{category.getLongName()}</strong></p>
         """;
     }
 
     @Override
-    public String getPrizesCategoryFooter() {
+    public String getPrizeCategoryFooter() {
         return "";
     }
 
