@@ -24,7 +24,6 @@ import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class TourRaceResult extends SeriesRaceResult {
 
@@ -52,32 +51,11 @@ public class TourRaceResult extends SeriesRaceResult {
         return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
 
-    @Override
-    public boolean shouldDisplayPosition() {
-        return areAllRacesCompletedSoFar();
-    }
-
-    @Override
-    public boolean shouldBeDisplayedInResults() {
-        return areAnyRacesCompletedSoFar();
-    }
-
-    // TODO check against series/midweek race.
-    boolean areAllRacesCompletedSoFar() {
-
-        return getTimesInRacesTakenPlace().stream().allMatch(Objects::nonNull);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected Duration duration() {
 
-        return areAllRacesCompletedSoFar() ? getTimesInRacesTakenPlace().stream().reduce(Duration::plus).orElse(Duration.ZERO) : null;
-    }
-
-    private boolean areAnyRacesCompletedSoFar() {
-
-        return times.stream().anyMatch(Objects::nonNull);
+        return canCompleteSeries() ? getTimesInRacesTakenPlace().stream().reduce(Duration::plus).orElse(Duration.ZERO) : null;
     }
 
     private List<Duration> getTimesInRacesTakenPlace() {

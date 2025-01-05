@@ -76,7 +76,7 @@ public class IndividualRaceResult extends RaceResult {
 
     @Override
     public boolean shouldBeDisplayedInResults() {
-        return completion_status == CompletionStatus.COMPLETED || completion_status == CompletionStatus.DNF;
+        return completion_status != CompletionStatus.DNS;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

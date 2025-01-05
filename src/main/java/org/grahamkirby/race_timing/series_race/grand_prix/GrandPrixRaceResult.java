@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.series_race.grand_prix;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -50,18 +49,6 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
     public int comparePerformanceTo(final RaceResult other) {
 
         return Double.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
-    }
-
-    @Override
-    public boolean shouldBeDisplayedInResults() {
-
-        return getCompletionStatus() != CompletionStatus.DNS;
-    }
-
-    @Override
-    public boolean shouldDisplayPosition() {
-
-        return ((SeriesRace) race).hasSeriesCompleted() ? hasCompletedSeries() : canCompleteSeries();
     }
 
     double totalScore() {

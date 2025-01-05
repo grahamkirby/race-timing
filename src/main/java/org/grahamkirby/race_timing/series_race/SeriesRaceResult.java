@@ -55,6 +55,18 @@ public abstract class SeriesRaceResult extends RaceResult {
         return CompletionStatus.DNF;
     }
 
+    @Override
+    public boolean shouldBeDisplayedInResults() {
+
+        return getCompletionStatus() != CompletionStatus.DNS;
+    }
+
+    @Override
+    public boolean shouldDisplayPosition() {
+
+        return canCompleteSeries();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public boolean hasCompletedSeries() {
@@ -62,7 +74,7 @@ public abstract class SeriesRaceResult extends RaceResult {
         return numberOfRacesCompleted() >= ((SeriesRace) race).getMinimumNumberOfRaces();
     }
 
-    public boolean canCompleteSeries() {
+    protected boolean canCompleteSeries() {
 
         final SeriesRace series_race = (SeriesRace) race;
         final int number_of_races_remaining = series_race.getNumberOfRacesInSeries() - series_race.getNumberOfRacesTakenPlace();

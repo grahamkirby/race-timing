@@ -53,16 +53,6 @@ public class TourRace extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static int compareCompletionSoFar(final RaceResult r1, final RaceResult r2) {
-
-        final boolean r1_completed_all_races_so_far = ((TourRaceResult) r1).areAllRacesCompletedSoFar();
-        final boolean r2_completed_all_races_so_far = ((TourRaceResult) r2).areAllRacesCompletedSoFar();
-
-        return Boolean.compare(r2_completed_all_races_so_far, r1_completed_all_races_so_far);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     @Override
     protected RaceInput getInput() {
         return new TourRaceInput(this);
@@ -89,16 +79,16 @@ public class TourRace extends SeriesRace {
     }
 
     @Override
-    protected void printCombined() throws IOException {
+    protected void outputResults() throws IOException {
 
-        super.printCombined();
+        super.outputResults();
         ((TourRaceOutputHTML) output_HTML).printIndividualRaces();
     }
 
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(Race::compareCompletion, TourRace::compareCompletionSoFar, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
+        return List.of(Race::compareCompletion, SeriesRace::comparePossibleCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override

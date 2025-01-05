@@ -31,12 +31,20 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Race.*;
 
 public class TourRaceInput extends SeriesRaceInput {
 
     private record SelfTimedRun(int bib_number, int race_number) {
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Configuration file keys.
+    private static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
+    private static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
+    private static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
+    private static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
+    private static final String KEY_SELF_TIMED = "SELF_TIMED";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

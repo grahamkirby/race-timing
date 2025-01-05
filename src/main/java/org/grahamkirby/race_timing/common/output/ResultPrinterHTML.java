@@ -7,11 +7,14 @@ import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
+/** Base class for printing results to HTML files. */
 public abstract class ResultPrinterHTML extends ResultPrinter {
 
     protected ResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void printResultsFooter() throws IOException {

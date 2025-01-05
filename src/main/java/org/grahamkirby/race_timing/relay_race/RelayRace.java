@@ -45,6 +45,16 @@ import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 
 public class RelayRace extends SingleRace {
 
+    // Configuration file keys.
+    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
+    private static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
+    private static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
+    private static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
+    private static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
+    private static final String KEY_START_OFFSET = "START_OFFSET";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     int getNumberOfLegs() {
         return number_of_legs;
     }

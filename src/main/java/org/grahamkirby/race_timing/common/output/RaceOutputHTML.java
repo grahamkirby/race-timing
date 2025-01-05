@@ -26,8 +26,10 @@ import java.nio.file.StandardOpenOption;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
+/** Base class for HTML output. */
 public abstract class RaceOutputHTML extends RaceOutput {
 
+    /** Web link to application on GitHub. */
     private static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,16 +40,15 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printCreditLink() throws IOException {
+    /** Prints all details to a single web page. */
+    public void printCombined() throws IOException {
 
-        final OutputStream stream = getOutputStream(race_name_for_filenames, "combined", year, StandardOpenOption.APPEND);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-        }
+        printCombinedDetails();
+        printCreditLink();
     }
 
-    public void printCombined() throws IOException {
+    /** Prints prizes and overall results to a single web page. */
+    protected void printCombinedDetails() throws IOException {
 
         final OutputStream stream = getOutputStream(race_name_for_filenames, "combined", year);
 
@@ -63,11 +64,33 @@ public abstract class RaceOutputHTML extends RaceOutput {
         }
     }
 
+    /** Prints web link to GitHub page for this application. */
+    private void printCreditLink() throws IOException {
+
+        final OutputStream stream = getOutputStream(race_name_for_filenames, "combined", year, StandardOpenOption.APPEND);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public String getFileSuffix() {
         return ".html";
+    }
+
+    @Override
+    public String getResultsHeader() {
+        return "";
+    }
+
+    @Override
+    public String getResultsSubHeader(final String s) {
+        return STR."""
+            <h4>\{s}</h4>
+            """;
     }
 
     @Override
@@ -84,18 +107,6 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
     @Override
     public String getPrizeCategoryFooter() {
-        return "";
-    }
-
-    @Override
-    public String makeSubHeading(final String s) {
-        return STR."""
-            <h4>\{s}</h4>
-            """;
-    }
-
-    @Override
-    public String getResultsHeader() {
         return "";
     }
 }
