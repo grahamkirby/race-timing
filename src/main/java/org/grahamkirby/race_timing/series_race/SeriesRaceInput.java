@@ -25,11 +25,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACES;
-
 public class SeriesRaceInput extends RaceInput {
 
+    // Configuration file keys.
+    private static final String KEY_RACES = "RACES";
+
     private List<String> race_config_paths;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public SeriesRaceInput(final Race race) {
 

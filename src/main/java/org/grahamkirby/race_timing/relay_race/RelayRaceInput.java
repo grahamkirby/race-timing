@@ -27,13 +27,17 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
-import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_ANNOTATIONS_PATH;
-import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAPER_RESULTS_PATH;
 
 public class RelayRaceInput extends SingleRaceInput {
 
+    // Configuration file keys.
+    private static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
+    private static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
+
     private String paper_results_path, annotations_path;
     private int number_of_raw_results;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     RelayRaceInput(final Race race) {
         super(race);

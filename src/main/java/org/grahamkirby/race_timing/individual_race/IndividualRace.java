@@ -35,7 +35,12 @@ import java.util.List;
 @SuppressWarnings("VariableNotUsedInsideIf")
 public class IndividualRace extends SingleRace {
 
+    // Configuration file keys.
+    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
+
     private String median_time_string;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public IndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);

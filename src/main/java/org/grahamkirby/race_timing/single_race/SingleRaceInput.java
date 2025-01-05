@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 
 @SuppressWarnings("IncorrectFormatting")
 public abstract class SingleRaceInput extends RaceInput {

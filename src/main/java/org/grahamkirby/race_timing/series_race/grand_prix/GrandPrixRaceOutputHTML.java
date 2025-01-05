@@ -110,7 +110,7 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
             writer.append(
                 grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
                     map(individual_race -> {
-                        final long score = Math.round(GrandPrixRace.calculateRaceScore(individual_race, result.runner));
+                        final long score = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
                         return STR."""
                                         <td>\{score == 0 ? "-" : String.valueOf(score)}</td>
                         """;

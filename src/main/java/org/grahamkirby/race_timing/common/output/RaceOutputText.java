@@ -24,15 +24,24 @@ import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
+/** Base class for plaintext output. */
 public abstract class RaceOutputText extends RaceOutput {
 
     protected RaceOutputText(final Race race) {
         super(race);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected String getFileSuffix() {
         return ".txt";
+    }
+
+    /** No headings in plaintext file. */
+    @Override
+    protected String getResultsHeader() {
+        return "";
     }
 
     @Override
@@ -42,11 +51,6 @@ public abstract class RaceOutputText extends RaceOutput {
             ============================
 
             """;
-    }
-
-    @Override
-    protected String getResultsHeader() {
-        return "";
     }
 
     @Override
@@ -65,6 +69,7 @@ public abstract class RaceOutputText extends RaceOutput {
         return LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
+    /** Prints out the words converted to title case, and any other processing notes. */
     public void printNotes() throws IOException {
 
         race.non_title_case_words.stream().

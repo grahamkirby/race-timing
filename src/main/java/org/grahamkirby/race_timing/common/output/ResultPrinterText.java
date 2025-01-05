@@ -7,20 +7,14 @@ import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-@SuppressWarnings("NoopMethodInAbstractClass")
+/** Base class for printing results to plaintext files. */
 public abstract class ResultPrinterText extends ResultPrinter {
 
     protected ResultPrinterText(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 
-    @Override
-    public void printResultsHeader() {
-    }
-
-    @Override
-    public void printResultsFooter() {
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void printNoResults() throws IOException {

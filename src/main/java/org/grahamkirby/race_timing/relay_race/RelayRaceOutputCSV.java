@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
-import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -118,7 +117,7 @@ class RelayRaceOutputCSV extends RaceOutputCSV {
         throw new UnsupportedOperationException();
     }
 
-    private static final class OverallResultPrinter extends ResultPrinterCSV {
+    private static final class OverallResultPrinter extends ResultPrinter {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -132,7 +131,7 @@ class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    private static final class LegResultPrinter extends ResultPrinterCSV {
+    private static final class LegResultPrinter extends ResultPrinter {
 
         final int leg;
 
@@ -157,7 +156,7 @@ class RelayRaceOutputCSV extends RaceOutputCSV {
         }
     }
 
-    private static final class DetailedResultPrinter extends ResultPrinterCSV {
+    private static final class DetailedResultPrinter extends ResultPrinter {
 
         private DetailedResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);

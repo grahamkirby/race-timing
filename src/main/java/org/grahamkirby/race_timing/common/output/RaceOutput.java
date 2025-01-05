@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -41,6 +40,8 @@ public abstract class RaceOutput {
     /** Displayed in results for runners that did not complete the course. */
     public static final String DNF_STRING = "DNF";
 
+    private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected final Race race;
@@ -48,7 +49,6 @@ public abstract class RaceOutput {
     protected String year;
     protected String race_name_for_results;
     protected String race_name_for_filenames;
-    private Path output_directory_path;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,7 +66,7 @@ public abstract class RaceOutput {
     RaceOutput(final Race race) {
 
         this.race = race;
-        configure();
+        readProperties();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +87,11 @@ public abstract class RaceOutput {
         }
     }
 
+    /**
+     * Prints race prizes. Used for HTML and text output.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     public void printPrizes() throws IOException {
 
         final OutputStream stream = getOutputStream(race_name_for_filenames, "prizes", year);
@@ -100,25 +105,42 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Constructs an output stream for writing to a file in the project output directory with name constructed from the given components.
+     * The file extension is determined by getFileSuffix().
+     * The file is created if it does not already exist, and overwritten if it does.
+     * Example file name: "balmullo_prizes_2023.html".
+     *
+     * @param race_name the name of the race in format suitable for inclusion with file name
+     * @param output_type the type of output file e.g. "overall", "prizes" etc.
+     * @param year the year of the race
+     * @return an output stream for the file
+     * @throws IOException if an I/O error occurs
+     */
     protected OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
-        return getOutputStream(race_name, output_type, year, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
     }
 
+    /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
     protected OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
         return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
     }
 
+    /**
+     * Constructs a path for a file in the project output directory with name constructed from the given components.
+     * The file extension is determined by getFileSuffix().
+     * Example file name: "balmullo_prizes_2023.html".
+     *
+     * @param race_name the name of the race in format suitable for inclusion with file name
+     * @param output_type the type of output file e.g. "overall", "prizes" etc.
+     * @param year the year of the race
+     * @return the path for the file
+     */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return output_directory_path.resolve(STR."\{race_name}_\{output_type}_\{year}\{getFileSuffix()}");
+        return race.getPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}\{getFileSuffix()}");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void configure() {
-
-        readProperties();
-        constructFilePaths();
-    }
 
     private void readProperties() {
 
@@ -128,44 +150,44 @@ public abstract class RaceOutput {
         race_name_for_filenames = race.getProperty(KEY_RACE_NAME_FOR_FILENAMES);
     }
 
-    protected void constructFilePaths() {
-
-        output_directory_path = race.getPath("../output");
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Prints results using a specified printer, ordered by prize category groups. */
     protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
 
-        for (int i = 0; i < race.prize_category_groups.size(); i++) {
+        // Don't display category group headers if there is only one group.
+        final boolean should_display_category_group_headers = race.prize_category_groups.size() > 1;
 
-            final PrizeCategoryGroup group = race.prize_category_groups.get(i);
-            final String group_title = group.group_title();
-            final List<PrizeCategory> prize_categories = group.categories();
+        for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
-            final boolean only_one_group = race.prize_category_groups.size() == 1;
+            if (should_display_category_group_headers)
+                writer.append(getResultsSubHeader(group.group_title()));
 
-            final String sub_heading = only_one_group ? "" : LINE_SEPARATOR + makeSubHeading(group_title);
-
-            printResults(writer, printer, prize_categories, sub_heading);
+            printer.print(race.getOverallResults(group.categories()));
         }
     }
 
-    void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading) throws IOException {
-
-        writer.append(sub_heading);
-
-        final List<RaceResult> results = race.getOverallResults(categories);
-
-        printer.print(results);
-    }
-
-    protected String makeSubHeading(final String s) {
-        return s;
+    /** Formats a sub-header as appropriate for the output file type. */
+    protected String getResultsSubHeader(final String s) {
+        return LINE_SEPARATOR + s;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Prints prizes using a specified printer, ordered by prize category groups.
+     * The printer abstracts over whether output goes to an output stream writer
+     * (CSV, HTML and text files) or to a PDF writer.
+     */
+    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
+
+        race.prize_category_groups.stream().
+            flatMap(group -> group.categories().stream()).       // Get all prize categories.
+            filter(race.prizes::arePrizesInThisOrLaterCategory). // Discard further categories once all prizes have been output.
+            forEachOrdered(prize_category_printer::apply);       // Print prizes in this category.
+    }
+
+    /** Prints prizes, ordered by prize category groups. */
     void printPrizes(final OutputStreamWriter writer) {
 
         printPrizes(category -> {
@@ -174,14 +196,7 @@ public abstract class RaceOutput {
         });
     }
 
-    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
-
-        race.prize_category_groups.stream().
-            flatMap(group -> group.categories().stream()).
-            filter(race.prizes::arePrizesInThisOrLaterCategory).
-            forEachOrdered(prize_category_printer::apply);
-    }
-
+    /** Prints prizes within a given category. */
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
 
         try {
@@ -192,7 +207,9 @@ public abstract class RaceOutput {
 
             writer.append(getPrizeCategoryFooter());
 
-        } catch (final IOException e) {
+        }
+        // Called from lambda that can't throw checked exception.
+        catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }

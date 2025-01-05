@@ -40,11 +40,14 @@ import java.util.function.Predicate;
 
 public class GrandPrixRace extends SeriesRace {
 
-    // TODO read from config.
-    private static final int SCORE_FOR_MEDIAN_POSITION = 1000;
+    // Configuration file keys.
+    private static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
+    private static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
+    private static final String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
 
     List<RaceCategory> race_categories;
     private List<String> qualifying_clubs;
+    private int score_for_median_position;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,6 +82,7 @@ public class GrandPrixRace extends SeriesRace {
 
         super.readProperties();
         qualifying_clubs = Arrays.asList(getProperty(KEY_QUALIFYING_CLUBS).split(","));
+        score_for_median_position = Integer.parseInt(getProperty(KEY_SCORE_FOR_MEDIAN_POSITION));
     }
 
     @Override
@@ -115,7 +119,7 @@ public class GrandPrixRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getDNFComparators() {
 
-        return List.of(GrandPrixRace::comparePossibleCompletion, GrandPrixRace::compareNumberOfRacesCompleted);
+        return List.of(SeriesRace::comparePossibleCompletion, GrandPrixRace::compareNumberOfRacesCompleted);
     }
 
     @Override
@@ -134,19 +138,14 @@ public class GrandPrixRace extends SeriesRace {
         return result -> qualifying_clubs.contains(((IndividualRaceResult) result).entry.runner.club);
     }
 
-    static double calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    double calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
 
         final Duration runner_time = individual_race.getRunnerTime(runner);
 
-        return runner_time != null ? divide(runner_time, individual_race.getMedianTime()) * SCORE_FOR_MEDIAN_POSITION : 0.0;
+        return runner_time != null ? divide(runner_time, individual_race.getMedianTime()) * score_for_median_position : 0.0;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
-
-        return Boolean.compare(((SeriesRaceResult) r2).canCompleteSeries(), ((SeriesRaceResult) r1).canCompleteSeries());
-    }
 
     private static double divide(final Duration d1, final Duration d2) {
 

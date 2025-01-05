@@ -18,9 +18,9 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.RawResult;
 
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_LEG_NUMBER;
-
 class RelayRaceRawResult extends RawResult {
+
+    private static final int UNKNOWN_LEG_NUMBER = 0;
 
     // Leg number is optional, depending on whether it was recorded on paper sheet.
     private final int leg_number;

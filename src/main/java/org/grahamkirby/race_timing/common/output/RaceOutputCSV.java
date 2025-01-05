@@ -19,47 +19,56 @@ package org.grahamkirby.race_timing.common.output;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Collection;
-
 import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
 
+/** Base class for CSV output. */
 public abstract class RaceOutputCSV extends RaceOutput {
 
     protected RaceOutputCSV(final Race race) {
         super(race);
     }
 
-    protected String getResultsHeader() {
-        return "";
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Encodes a single value by surrounding with quotes if it contains a comma. */
+    protected static String encode(final String s) {
+        return s.contains(",") ? STR."\"\{s}\"" : s;
     }
 
-    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Collection<PrizeCategory> categories, final String sub_heading) throws IOException {
-        super.printResults(writer, printer, categories, "");
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public String getFileSuffix() {
         return SUFFIX_CSV;
     }
 
+    /** No headings in CSV file. */
+    @Override
+    protected String getResultsHeader() {
+        return "";
+    }
+
+    /** No headings in CSV file. */
+    @Override
+    protected String getResultsSubHeader(final String s) {
+        return "";
+    }
+
+    /** No headings in CSV file. */
     @Override
     public String getPrizesHeader() {
         return "";
     }
 
+    /** No headings in CSV file. */
     @Override
     public String getPrizeCategoryHeader(final PrizeCategory category) {
         return "";
     }
 
+    /** No footers in CSV file. */
     @Override
     public String getPrizeCategoryFooter() {
         return "";
-    }
-
-    protected static String encode(final String s) {
-        return s.contains(",") ? STR."\"\{s}\"" : s;
     }
 }

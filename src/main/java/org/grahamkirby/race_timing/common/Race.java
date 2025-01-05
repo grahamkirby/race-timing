@@ -32,73 +32,36 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 
+/** Base class for all types of race. */
 @SuppressWarnings("IncorrectFormatting")
 public abstract class Race {
 
+    /** Comment symbol used within configuration files. */
     public static final String COMMENT_SYMBOL = "#";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Configuration file keys.
-
-    // All races.
     public static final String KEY_YEAR = "YEAR";
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
+    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
+    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
     private static final String KEY_ENTRY_MAP_PATH = "ENTRY_MAP_PATH";
     private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
     private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
     private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
-    // Single race.
-    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
-    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
-    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
-    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
-    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
-    protected static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
-
-    // Individual race.
-    protected static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
-
-    // Relay race.
-    protected static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
-    public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
-    public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
-    protected static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
-    protected static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
-    protected static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
-    protected static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
-    protected static final String KEY_START_OFFSET = "START_OFFSET";
-
-    // Series race.
-    public static final String KEY_RACES = "RACES";
-    protected static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
-    protected static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
-
-    // Grand Prix race.
-    protected static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
-    protected static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
-
-    // Midweek race.
-    protected static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
-
-    // Minitour race.
-    public static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
-    public static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
-    public static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
-    public static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
-    public static final String KEY_SELF_TIMED = "SELF_TIMED";
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Platform-specific line separator used in creating output files. */
     public static final String LINE_SEPARATOR = System.lineSeparator();
 
     public static final String SUFFIX_CSV = ".csv";
     public static final String SUFFIX_PDF = ".pdf";
 
+    /** Used when a result is recorded without a bib number. */
     public static final int UNKNOWN_BIB_NUMBER = 0;
-    public static final int UNKNOWN_LEG_NUMBER = 0;
     protected static final int UNKNOWN_RACE_POSITION = 0;
     private static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
@@ -207,7 +170,6 @@ public abstract class Race {
     protected void printCombined() throws IOException {
 
         output_HTML.printCombined();
-        output_HTML.printCreditLink();
     }
 
     public Path getPath(final String path) {

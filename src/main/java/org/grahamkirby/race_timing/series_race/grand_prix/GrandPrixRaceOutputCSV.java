@@ -20,7 +20,6 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
-import org.grahamkirby.race_timing.common.output.ResultPrinterCSV;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
@@ -67,7 +66,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class OverallResultPrinter extends ResultPrinterCSV {
+    private static final class OverallResultPrinter extends ResultPrinter {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -85,7 +84,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
             writer.append(
                 grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
                     map(individual_race -> {
-                        final long score = Math.round(GrandPrixRace.calculateRaceScore(individual_race, result.runner));
+                        final long score = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
                         return score == 0 ? "-" : String.valueOf(score);
                     }).
                     collect(Collectors.joining(","))

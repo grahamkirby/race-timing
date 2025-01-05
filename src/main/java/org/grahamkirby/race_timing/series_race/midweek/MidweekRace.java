@@ -35,6 +35,9 @@ import java.util.function.Predicate;
 
 public class MidweekRace extends SeriesRace {
 
+    // Configuration file keys.
+    private static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
+
     private int score_for_first_place;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

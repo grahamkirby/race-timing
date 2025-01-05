@@ -32,9 +32,7 @@ import java.util.List;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class RelayRaceOutputHTML extends RaceOutputHTML {
-
-    private String detailed_results_filename;
+class RelayRaceOutputHTML extends RaceOutputHTML {
 
     RelayRaceOutputHTML(final RelayRace race) {
 
@@ -44,9 +42,9 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void printCombined() throws IOException {
+    public void printCombinedDetails() throws IOException {
 
-        super.printCombined();
+        super.printCombinedDetails();
 
         final OutputStream stream = getOutputStream(race_name_for_filenames, "combined", year, StandardOpenOption.APPEND);
 
@@ -63,13 +61,6 @@ public class RelayRaceOutputHTML extends RaceOutputHTML {
                 printLegResults(writer, leg_number);
             }
         }
-    }
-
-    @Override
-    protected void constructFilePaths() {
-
-        super.constructFilePaths();
-        detailed_results_filename = STR."\{race_name_for_filenames}_detailed_\{year}";
     }
 
     @Override

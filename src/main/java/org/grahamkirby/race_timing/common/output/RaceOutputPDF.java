@@ -34,17 +34,32 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.SUFFIX_PDF;
 
+/** Base class for PDF output. */
 public abstract class RaceOutputPDF extends RaceOutput {
+
+    public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
     private static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
     private static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
     private static final int PRIZE_FONT_SIZE = 24;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected RaceOutputPDF(final Race race) {
         super(race);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Prints race prizes.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void printPrizes() throws IOException {
 
@@ -61,20 +76,25 @@ public abstract class RaceOutputPDF extends RaceOutput {
     }
 
     @Override
-    protected String getPrizesHeader() {
+    protected String getResultsHeader() {
+
+        // Result header not included in PDF output.
         return "";
     }
 
     @Override
-    protected String getResultsHeader() {
+    protected String getPrizesHeader() {
+
+        // Prizes header not included in PDF output.
         return "";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Prints prizes, ordered by prize category groups. */
     private void printPrizes(final Document document) throws IOException {
 
-        document.add(getPrizesSectionHeaderPDF());
+        document.add(getPrizesSectionHeader());
 
         printPrizes(category -> {
             printPrizes(document, category);
@@ -82,10 +102,11 @@ public abstract class RaceOutputPDF extends RaceOutput {
         });
     }
 
+    /** Prints prizes within a given category. */
     private void printPrizes(final Document document, final PrizeCategory category) {
 
         try {
-            document.add(getPrizesCategoryHeaderPDF(category));
+            document.add(getPrizesCategoryHeader(category));
 
             final List<RaceResult> category_prize_winners = race.prizes.getPrizeWinners(category);
 
@@ -96,7 +117,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
     }
 
-    private Paragraph getPrizesSectionHeaderPDF() throws IOException {
+    private Paragraph getPrizesSectionHeader() throws IOException {
 
         return new Paragraph().
             setFont(getFont(PRIZE_FONT_NAME)).
@@ -104,7 +125,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
             add(STR."\{race_name_for_results} \{year} Category Prizes");
     }
 
-    private static Paragraph getPrizesCategoryHeaderPDF(final PrizeCategory category) throws IOException {
+    private static Paragraph getPrizesCategoryHeader(final PrizeCategory category) throws IOException {
 
         return new Paragraph(STR."Category: \{category.getLongName()}").
             setFont(getFont(PRIZE_FONT_BOLD_NAME)).
@@ -117,9 +138,6 @@ public abstract class RaceOutputPDF extends RaceOutput {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {
-    }
 
     private static final class PrizeResultPrinter extends ResultPrinter {
 
@@ -139,10 +157,9 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
+        public void printResult(final RaceResult result) throws IOException {
 
-            final PrizeWinnerDetails details = race.output_PDF.getPrizeWinnerDetails(r);
-            printPrizePDF(document, details.position_string, details.name, details.detail1, details.detail2);
+            printPrize(document, race.output_PDF.getPrizeWinnerDetails(result));
         }
 
         @Override
@@ -151,16 +168,16 @@ public abstract class RaceOutputPDF extends RaceOutput {
             document.add(new Paragraph("No results").setFont(getFont(PRIZE_FONT_ITALIC_NAME)));
         }
 
-        private static void printPrizePDF(final Document document, final String position_string, final String name, final String detail1, final String detail2) throws IOException {
+        private static void printPrize(final Document document, final PrizeWinnerDetails details) throws IOException {
 
             final PdfFont font = getFont(PRIZE_FONT_NAME);
             final PdfFont bold_font = getFont(PRIZE_FONT_BOLD_NAME);
 
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
-            paragraph.add(new Text(STR."\{position_string}: ").setFont(font));
-            paragraph.add(new Text(name).setFont(bold_font));
-            paragraph.add(new Text(STR." (\{detail1}) \{detail2}").setFont(font));
+            paragraph.add(new Text(STR."\{details.position_string}: ").setFont(font));
+            paragraph.add(new Text(details.name).setFont(bold_font));
+            paragraph.add(new Text(STR." (\{details.detail1}) \{details.detail2}").setFont(font));
 
             document.add(paragraph);
         }

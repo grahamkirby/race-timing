@@ -26,6 +26,12 @@ import java.util.List;
 
 public abstract class SingleRace extends Race {
 
+    // Configuration file keys.
+    static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+    static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
+    static final String KEY_RESULTS_PATH = "RESULTS_PATH";
+    private static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
+
     public List<RaceEntry> entries;
     protected List<RawResult> raw_results;
 

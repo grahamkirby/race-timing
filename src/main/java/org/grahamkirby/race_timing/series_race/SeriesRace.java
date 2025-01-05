@@ -34,10 +34,16 @@ import java.util.function.Predicate;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class SeriesRace extends Race {
 
+    // Configuration file keys.
+    private static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
+    private static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
+
     protected List<IndividualRace> races;
 
     private int number_of_races_in_series;
     private int minimum_number_of_races;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected SeriesRace(final Path config_file_path) throws IOException {
         super(config_file_path);
@@ -125,6 +131,11 @@ public abstract class SeriesRace extends Race {
 
     public boolean hasSeriesCompleted() {
         return getNumberOfRacesTakenPlace() == number_of_races_in_series;
+    }
+
+    protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
+
+        return Boolean.compare(((SeriesRaceResult) r2).canCompleteSeries(), ((SeriesRaceResult) r1).canCompleteSeries());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
