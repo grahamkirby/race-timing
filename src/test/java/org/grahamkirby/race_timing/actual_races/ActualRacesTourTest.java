@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Graham Kirby:
+ * Copyright 2025 Graham Kirby:
  * <https://github.com/grahamkirby/race-timing>
  *
  * This file is part of the module race-timing.
