@@ -62,7 +62,8 @@ public abstract class Race {
 
     /** Used when a result is recorded without a bib number. */
     public static final int UNKNOWN_BIB_NUMBER = 0;
-    protected static final int UNKNOWN_RACE_POSITION = 0;
+
+    /** Index of prize category group name within the relevant config file. */
     private static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
     private static final String DEFAULT_ENTRY_MAP_PATH = STR."/src/main/resources/configuration/default_entry_map\{SUFFIX_CSV}";
@@ -84,19 +85,17 @@ public abstract class Race {
     protected RaceOutputCSV output_CSV;
     protected RaceOutputHTML output_HTML;
     protected RaceOutputText output_text;
-    public RaceOutputPDF output_PDF;
+    private RaceOutputPDF output_PDF;
     public Normalisation normalisation;
 
+    public List<PrizeCategoryGroup> prize_category_groups;
+    public String entry_column_map_string;
+    public Set<String> non_title_case_words;
     Map<String, String> normalised_html_entities;
     Set<String> capitalisation_stop_words;
     Map<String, String> normalised_club_names;
-    public Set<String> non_title_case_words;
-
     private Map<String, String> entry_map;
-    public String entry_column_map_string;
-
     private List<EntryCategory> entry_categories;
-    public List<PrizeCategoryGroup> prize_category_groups;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -110,8 +109,8 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract void calculateResults();
     public abstract boolean areEqualPositionsAllowed();
+    protected abstract void calculateResults();
 
     protected abstract RaceInput getInput();
     protected abstract RaceOutputCSV getOutputCSV();
@@ -172,6 +171,10 @@ public abstract class Race {
         output_HTML.printCombined();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Resolves the given path relative to either the project root, if it's specified as an absolute
+     * path, or to the race configuration file. */
     public Path getPath(final String path) {
 
         return path.startsWith("/") ?
@@ -179,17 +182,35 @@ public abstract class Race {
             getPathRelativeToRaceConfigFile(path);
     }
 
-    final boolean isEntryCategoryEligibleForPrizeCategory(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    private static Path getPathRelativeToProjectRoot(final String path) {
 
-        return isEntryCategoryEligibleForPrizeCategoryByGender(entry_category, prize_category) && isEntryCategoryEligibleForPrizeCategoryByAge(entry_category, prize_category);
+        return Paths.get(path.substring(1));
     }
 
+    private Path getPathRelativeToRaceConfigFile(final String path) {
+
+        return config_file_path.getParent().resolve(path);
+    }
+
+    public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
+
+        return getPathRelativeToProjectRoot(STR."/src/test/resources/\{individual_test_resource_root}");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Tests whether the given entry category is eligible for the given prize category. */
+    final boolean isEntryCategoryEligibleForPrizeCategory(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        return isEntryCategoryEligibleForPrizeCategoryByGender(entry_category, prize_category) &&
+            isEntryCategoryEligibleForPrizeCategoryByAge(entry_category, prize_category);
+    }
+
+    /** Tests whether the given entry category is eligible in any of the given prize categories. */
     private boolean isEntryCategoryEligibleInSomePrizeCategory(final EntryCategory entry_category, final Collection<PrizeCategory> prize_categories) {
 
         return prize_categories.stream().
-            map(category -> isEntryCategoryEligibleForPrizeCategory(entry_category, category)).
-            reduce(Boolean::logicalOr).
-            orElseThrow();
+            anyMatch(category -> isEntryCategoryEligibleForPrizeCategory(entry_category, category));
     }
 
     public List<PrizeCategory> getPrizeCategories() {
@@ -204,27 +225,23 @@ public abstract class Race {
         return overall_results;
     }
 
+    /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final Collection<PrizeCategory> prize_categories) {
 
         final Predicate<RaceResult> prize_category_filter = result -> isEntryCategoryEligibleInSomePrizeCategory(getEntryCategory(result), prize_categories);
-        return getOverallResults(prize_category_filter);
-    }
-
-    private List<RaceResult> getOverallResults(final Predicate<? super RaceResult> inclusion_filter) {
-
-        final List<RaceResult> results = overall_results.stream().filter(inclusion_filter).toList();
-        setPositionStrings(results, areEqualPositionsAllowed());
+        final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
+        setPositionStrings(results);
         return results;
     }
 
     public String getProperty(final String key) {
+
         return properties.getProperty(key);
     }
 
-    public String getProperty(final String property_key, final String default_value) {
+    public String getProperty(final String key, final String default_value) {
 
-        final String value = getProperty(property_key);
-        return value == null || value.isBlank() ? default_value : value;
+        return properties.getProperty(key, default_value);
     }
 
     public StringBuilder getNotes() {
@@ -236,37 +253,37 @@ public abstract class Race {
         return entry_categories.stream().
             filter(category -> category.getShortName().equals(short_name)).
             findFirst().
-            orElseThrow(() -> new RuntimeException(STR."Category not found: \{short_name}"));
+            orElseThrow();
     }
 
-    public String mapCategory(final String category) {
+    public String mapCategoryShortName(final String category_short_name) {
 
-        final String result = entry_map.get(category);
-        return result == null ? category : result;
-    }
-
-    public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
-
-        return getPathRelativeToProjectRoot(STR."/src/test/resources/\{individual_test_resource_root}");
+        return entry_map.getOrDefault(category_short_name, category_short_name);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Compares two results based on whether they have completed. Gives a negative result if the first
+     * has completed and the second has not. */
     protected static int compareCompletion(final RaceResult r1, final RaceResult r2) {
 
-        return Boolean.compare(r1.getCompletionStatus() != CompletionStatus.COMPLETED, r2.getCompletionStatus() != CompletionStatus.COMPLETED);
+        return Boolean.compare(r2.getCompletionStatus() == CompletionStatus.COMPLETED, r1.getCompletionStatus() == CompletionStatus.COMPLETED);
     }
 
+    /** Compares two results based on their performances, which may be based on a single or aggregate time,
+     * or a score. Gives a negative result if the first result has a better performance than the second. */
     protected static int comparePerformance(final RaceResult r1, final RaceResult r2) {
 
         return r1.comparePerformanceTo(r2);
     }
 
+    /** Compares two results based on alphabetical ordering of the runners' first names. */
     protected static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
         return Normalisation.getFirstName(r1.getIndividualRunnerName()).compareTo(Normalisation.getFirstName(r2.getIndividualRunnerName()));
     }
 
+    /** Compares two results based on alphabetical ordering of the runners' last names. */
     protected static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
         return Normalisation.getLastName(r1.getIndividualRunnerName()).compareTo(Normalisation.getLastName(r2.getIndividualRunnerName()));
@@ -274,6 +291,17 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Sets the position string for each result. These are recorded as strings rather than ints so
+     * that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
+     * is determined by the particular race type. */
+    void setPositionStrings(final List<? extends RaceResult> results) {
+
+        setPositionStrings(results, areEqualPositionsAllowed());
+    }
+
+    /** Sets the position string for each result. These are recorded as strings rather than ints so
+     * that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
+     * is determined by the second parameter. */
     protected static void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
@@ -289,14 +317,16 @@ public abstract class Race {
 
                 // Skip over any following results with the same performance.
                 // Defined in terms of performance rather than duration, since in some races ranking is determined
-                // by points rather than times.
+                // by scores rather than times.
                 final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
 
                 if (highest_index_with_same_performance > result_index) {
 
+                    // There are results following this one with the same performance.
                     recordEqualPositions(results, result_index, highest_index_with_same_performance);
                     result_index = highest_index_with_same_performance;
                 } else
+                    // The following result has a different performance.
                     setPositionStringByPosition(results, result_index);
             }
         } else
@@ -304,30 +334,29 @@ public abstract class Race {
                 setPositionStringByPosition(results, result_index);
     }
 
+    /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int end_index) {
 
         final int equal_position = start_index + 1;
 
-        // Record the same position for all the results with equal times.
         for (int i = start_index; i <= end_index; i++)
             results.get(i).position_string = STR."\{equal_position}=";
     }
 
+    /** Finds the highest index for which the performance is the same as the given index. */
     private static int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
 
-        final RaceResult first_result_considered = results.get(start_index);
         int highest_index_with_same_result = start_index;
 
-        while (highest_index_with_same_result + 1 < results.size()) {
+        while (highest_index_with_same_result + 1 < results.size() &&
+            results.get(highest_index_with_same_result).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
 
-            final RaceResult next_result_considered = results.get(highest_index_with_same_result + 1);
-            if (first_result_considered.comparePerformanceTo(next_result_considered) != 0) break;
             highest_index_with_same_result++;
-        }
 
         return highest_index_with_same_result;
     }
 
+    /** Sets the position string according to the position itself. */
     private static void setPositionStringByPosition(final List<? extends RaceResult> results, final int result_index) {
         results.get(result_index).position_string = String.valueOf(result_index + 1);
     }
@@ -337,13 +366,11 @@ public abstract class Race {
     protected void configure() throws IOException {
 
         initialise();
+        readProperties();
 
         configureNormalisation();
         configureImportCategoryMap();
         configureCategories();
-
-        readProperties();
-
         configureHelpers();
         configureInputData();
     }
@@ -372,7 +399,7 @@ public abstract class Race {
     private void configureCategories() throws IOException {
 
         entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
-        prize_category_groups = getPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+        prize_category_groups = loadPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
@@ -394,34 +421,29 @@ public abstract class Race {
 
     protected void sortResults() {
 
-        sortAllResults();
-        sortDNFResults();
-    }
-
-    protected void sortAllResults() {
-
         overall_results.sort(combineComparators(getComparators()));
-    }
-
-    protected void sortDNFResults() {
-
         overall_results.sort(dnfOnly(combineComparators(getDNFComparators())));
     }
 
     protected static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
 
-        return comparators.
-            stream().
+        return comparators.stream().
             reduce(Comparator::thenComparing).
             orElse((_, _) -> 0);
     }
 
     private static Comparator<RaceResult> dnfOnly(final Comparator<? super RaceResult> comparator) {
 
-        return (r1, r2) -> r1.getCompletionStatus() != CompletionStatus.DNF || r2.getCompletionStatus() != CompletionStatus.DNF ? 0 : comparator.compare(r1, r2);
+        return (r1, r2) -> areBothDnf(r1, r2) ? comparator.compare(r1, r2) : 0;
     }
 
-    private static List<PrizeCategoryGroup> getPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
+    private static boolean areBothDnf(final RaceResult r1, final RaceResult r2) {
+
+        return r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF;
+    }
+
+    /** Loads prize category groups from the given file. */
+    private static List<PrizeCategoryGroup> loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
 
         final List<PrizeCategoryGroup> groups = new ArrayList<>();
 
@@ -457,22 +479,12 @@ public abstract class Race {
 
     private static boolean isEntryCategoryEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        if (entry_category == null) return true;
-        return entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
+        return entry_category == null ||
+            entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
             entry_category.getMaximumAge() <= prize_category.getMaximumAge();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static Path getPathRelativeToProjectRoot(final String path) {
-
-        return Paths.get(path.substring(1));
-    }
-
-    private Path getPathRelativeToRaceConfigFile(final String path) {
-
-        return config_file_path.getParent().resolve(path);
-    }
 
     private Map<String, String> loadImportCategoryMap() throws IOException {
 
@@ -507,7 +519,6 @@ public abstract class Race {
         final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
         loadMap(getPath(getProperty(path_key, default_path)), map);
-
         return map;
     }
 

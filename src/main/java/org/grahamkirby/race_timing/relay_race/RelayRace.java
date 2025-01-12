@@ -328,14 +328,12 @@ public class RelayRace extends SingleRace {
 
         final AtomicInteger legs_completed = new AtomicInteger(0);
 
-        final int position = (int) raw_results.stream().
+        return (int) raw_results.stream().
             peek(result -> {
                 if (result.getBibNumber() == bib_number) legs_completed.incrementAndGet();
             }).
             takeWhile(result -> result.getBibNumber() != bib_number || legs_completed.get() < leg_number).
             count() + 1;
-
-        return position <= raw_results.size() ? position : UNKNOWN_RACE_POSITION;
     }
 
     private int getRecordedLastLegPosition(final RelayRaceResult result) {

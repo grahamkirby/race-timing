@@ -139,7 +139,7 @@ public abstract class RaceOutputPDF extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class PrizeResultPrinter extends ResultPrinter {
+    private final class PrizeResultPrinter extends ResultPrinter {
 
         private final Document document;
 
@@ -157,9 +157,9 @@ public abstract class RaceOutputPDF extends RaceOutput {
         }
 
         @Override
-        public void printResult(final RaceResult result) throws IOException {
+        public void printResult(final RaceResult r) throws IOException {
 
-            printPrize(document, race.output_PDF.getPrizeWinnerDetails(result));
+            printPrize(document, getPrizeWinnerDetails(r));
         }
 
         @Override

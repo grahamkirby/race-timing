@@ -52,7 +52,7 @@ public class IndividualRaceEntry extends RaceEntry {
             final String name = race.normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
             final String club = race.normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
-            final String category_name = race.mapCategory(mapped_elements.get(CATEGORY_INDEX));
+            final String category_name = race.mapCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
             final EntryCategory category = category_name.isEmpty() ? null : race.lookupEntryCategory(category_name);
 
             runner = new Runner(name, club, category);

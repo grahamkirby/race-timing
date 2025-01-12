@@ -123,16 +123,6 @@ public class IndividualRace extends SingleRace {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void sortAllResults() {
-        if (raw_results != null) super.sortAllResults();
-    }
-
-    @Override
-    protected void sortDNFResults() {
-        if (raw_results != null) super.sortDNFResults();
-    }
-
-    @Override
     protected void readProperties() throws IOException {
 
         super.readProperties();
@@ -256,10 +246,8 @@ public class IndividualRace extends SingleRace {
 
     private int getRecordedPosition(final int bib_number) {
 
-        final int position = (int) raw_results.stream().
+        return (int) raw_results.stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
             count();
-
-        return position <= raw_results.size() ? position : UNKNOWN_RACE_POSITION;
     }
 }
