@@ -39,16 +39,16 @@ public class RacePrizes {
             setPrizeWinners(category);
     }
 
-    protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory category) {
+    protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
 
-        return !hasAlreadyWonPrize(result) &&
+        return hasNotAlreadyWonPrize(result) &&
             result.getCompletionStatus() == CompletionStatus.COMPLETED &&
-            race.isEntryCategoryEligibleForPrizeCategory(result.getCategory(), category);
+            race.isEntryCategoryEligibleForPrizeCategory(result.getCategory(), prize_category);
     }
 
-    private static boolean hasAlreadyWonPrize(final RaceResult result) {
+    private static boolean hasNotAlreadyWonPrize(final RaceResult result) {
 
-        return result.category_of_prize_awarded != null;
+        return result.category_of_prize_awarded == null;
     }
 
     protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
@@ -56,14 +56,13 @@ public class RacePrizes {
         result.category_of_prize_awarded = category;
     }
 
-    public List<RaceResult> getPrizeWinners(final PrizeCategory category) {
+    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
         final List<RaceResult> prize_results = race.getOverallResults().stream().
-            filter(result -> result.category_of_prize_awarded != null).
-            filter(result -> result.category_of_prize_awarded.equals(category)).
+            filter(result -> prize_category.equals(result.category_of_prize_awarded)).
             toList();
 
-        Race.setPositionStrings(prize_results, race.areEqualPositionsAllowed());
+        race.setPositionStrings(prize_results);
 
         return prize_results;
     }
@@ -76,8 +75,8 @@ public class RacePrizes {
             filter(_ -> position.get() <= category.numberOfPrizes()).
             filter(result -> isPrizeWinner(result, category)).
             forEachOrdered(result -> {
-                setPrizeWinner(result, category);
                 position.getAndIncrement();
+                setPrizeWinner(result, category);
             });
     }
 
