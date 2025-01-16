@@ -184,7 +184,7 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    protected void configureHelpers() {
+    protected void configureHelpers() throws IOException {
 
         super.configureHelpers();
 

@@ -5,7 +5,7 @@ RACE_NAME_FOR_FILENAMES = balmullo
 # Relative to directory containing configuration file.
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
-ENTRY_MAP_PATH = entry_map.csv
+CATEGORY_MAP_PATH = category_map.csv
 
 # Relative to project root directory.
 CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv

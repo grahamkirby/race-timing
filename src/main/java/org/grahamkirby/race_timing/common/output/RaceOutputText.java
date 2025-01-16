@@ -72,10 +72,10 @@ public abstract class RaceOutputText extends RaceOutput {
     /** Prints out the words converted to title case, and any other processing notes. */
     public void printNotes() throws IOException {
 
-        race.non_title_case_words.stream().
-            sorted().
-            reduce((s1, s2) -> STR."\{s1}, \{s2}").
-            ifPresent(s -> race.getNotes().append("Converted to title case: ").append(s));
+        final String converted_words = race.normalisation.getNonTitleCaseWords();
+
+        if (!converted_words.isEmpty())
+            race.getNotes().append("Converted to title case: ").append(converted_words);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race_name_for_filenames, "processing_notes", year))) {
             writer.append(race.getNotes().toString());

@@ -16,36 +16,104 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
+
+/** Support for normalisation of runner and club names, and entry categories, also standardised
+ * formatting for times and HTML entities. */
 public class Normalisation {
+
+    public static final String SUFFIX_CSV = ".csv";
+    public static final String SUFFIX_PDF = ".pdf";
 
     private static final int SECONDS_PER_HOUR = 3600;
     private static final int SECONDS_PER_MINUTE = 60;
     private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;
 
+    private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
+    private static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
+    private static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
+    private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
+    private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
+
+    private static final String DEFAULT_CONFIG_ROOT_PATH = "/src/main/resources/configuration";
+    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}";
+    private static final String DEFAULT_ENTRY_COLUMN_MAP_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/default_entry_column_map\{SUFFIX_CSV}";
+    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}";
+    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}";
+
+    /** Characters treated as word separators when converting string to title case. */
     private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '’');
-    private static final Map<String, String> REMOVE_DOUBLE_SPACES = Map.of("  ", " ");
+
+    /** Used when replacing double spaces with single space. */
+    private static final Map<String, String> DOUBLE_SPACE_REMOVAL_MAP = Map.of("  ", " ");
+
+    /** Strings that should not be converted to title case. */
+    private Set<String> capitalisation_stop_words;
+
+    /** */
+    private Map<String, String> category_map;
+
+    /** Mappings for non-standard entry column formats. */
+    private List<String> entry_column_mappings;
+
+    /** Records words within runner, club and team names that are not already in title case in the entry file. */
+    private Set<String> non_title_case_words;
+
+    /** Map from accented strings to corresponding entities. */
+    private Map<String, String> normalised_html_entities;
+
+    /** Map from club name variants to normalised names. */
+    private Map<String, String> normalised_club_names;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Race race;
 
-    public Normalisation(final Race race) {
+    public Normalisation(final Race race) throws IOException {
+
         this.race = race;
+        configure();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public String getNonTitleCaseWords() {
+
+        return non_title_case_words.stream().
+            sorted().
+            collect(Collectors.joining(", "));
+    }
+
+    /** Maps the given category to normalised form if any. */
+    public String normaliseCategoryShortName(final String category_short_name) {
+
+        return category_map.getOrDefault(category_short_name, category_short_name);
+    }
+
+    /** Maps race entry elements as defined by the previously configured mapping. */
+    public List<String> mapRaceEntryElements(final List<String> elements) {
+
+        // Expected format of mappings: "1,3-2,4,5",
+        // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
+
+        return entry_column_mappings.stream().
+            map(s -> getMappedElement(elements, s)).
+            toList();
+    }
 
     /** Cleans name by removing extra whitespace and converting to title case, unless present
      * in stop list file. */
     public String cleanRunnerName(final String name) {
 
         // Remove extra whitespace.
-        final String step1 = replaceAllMapEntries(name, REMOVE_DOUBLE_SPACES);
+        final String step1 = replaceAllMapEntries(name, DOUBLE_SPACE_REMOVAL_MAP);
         final String step2 = step1.strip();
 
         // Convert to title case, unless present in stop list.
@@ -57,11 +125,11 @@ public class Normalisation {
     public String cleanClubOrTeamName(final String name) {
 
         // Remove extra whitespace.
-        final String step1 = replaceAllMapEntries(name, REMOVE_DOUBLE_SPACES);
+        final String step1 = replaceAllMapEntries(name, DOUBLE_SPACE_REMOVAL_MAP);
         final String step2 = step1.strip();
 
         // Check normalisation list (which is case insensitive for keys).
-        if (race.normalised_club_names.containsKey(step2)) return race.normalised_club_names.get(step2);
+        if (normalised_club_names.containsKey(step2)) return normalised_club_names.get(step2);
 
         // Convert to title case, unless present in stop list.
         return toTitleCase(step2);
@@ -69,7 +137,123 @@ public class Normalisation {
 
     /** Replaces any accented characters with HTML entity codes. */
     public String htmlEncode(final String s) {
-        return replaceAllMapEntries(s, race.normalised_html_entities);
+        return replaceAllMapEntries(s, normalised_html_entities);
+    }
+
+    /** Parses the given time string, trying both colon and full stop as separators. */
+    public static Duration parseTime(final String time) {
+
+        try {
+            return parseTime(time, ":");
+        } catch (final RuntimeException _) {
+            return parseTime(time, "\\.");
+        }
+    }
+
+    /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
+    public static String format(final Duration duration) {
+
+        return formatWholePart(duration) + formatFractionalPart(duration);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void configure() throws IOException {
+
+        category_map = loadCategoryMap();
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
+        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
+        capitalisation_stop_words = new HashSet<>(Files.readAllLines(race.getPath(race.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
+        non_title_case_words = new HashSet<>();
+    }
+
+    // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
+    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
+
+    // Columns can be re-ordered by permuting the column numbers, or combined into a single column with an intervening
+// space character, by grouping column numbers with a dash.
+        // E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
+
+
+    private Map<String, String> loadCategoryMap() throws IOException {
+
+        String entry_column_map_string = race.getProperty(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
+//        if (entry_column_map_string == null) {
+//            final Path entry_column_map_path = race.getPath(entry_column_map_string);
+//
+//            entry_column_map_string = Files.readAllLines(entry_column_map_path).stream().
+//                filter(line -> !line.isEmpty()).
+//                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+//                findFirst().orElseThrow();
+////        }
+
+        // Expected format of mapping string: "1,3-2,4,5",
+        // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
+        entry_column_mappings = Arrays.asList(entry_column_map_string.split(","));
+
+
+        final Map<String, String> map = new HashMap<>();
+        String property = race.getProperty(KEY_CATEGORY_MAP_PATH);
+        if (property != null) {
+            final Path category_map_path = race.getPath(property);
+
+            Files.readAllLines(category_map_path).stream().
+                filter(line -> !line.isEmpty()).
+                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+                forEachOrdered(line -> loadCategoryMapEntryOrColumnMap(line, map));
+        }
+
+        return map;
+    }
+
+    @SuppressWarnings("BoundedWildcard")
+    private void loadCategoryMapEntryOrColumnMap(final String line, final Map<String, String> category_map) {
+
+//        if (entry_column_mappings == null)
+//
+//            // First non-comment line contains column mapping.
+//
+//            // Expected format of mapping string: "1,3-2,4,5",
+//            // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
+//            entry_column_mappings = Arrays.asList(line.split(","));
+//
+//        else {
+            // Subsequent non-comment lines contain category mappings.
+            final String[] parts = line.split(",");
+            category_map.put(parts[0], parts[1]);
+//        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private Map<String, String> loadNormalisationMap(final String path_key, final String default_path, final boolean key_case_sensitive) throws IOException {
+
+        final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        loadMap(race.getPath(race.getProperty(path_key, default_path)), map);
+        return map;
+    }
+
+    @SuppressWarnings("BoundedWildcard")
+    private static void loadMap(final Path path, final Map<String, String> map) throws IOException {
+
+        Files.readAllLines(path).forEach(line -> {
+
+            final String[] parts = line.split(",");
+            map.put(parts[0], parts[1]);
+        });
+    }
+
+    private static String getMappedElement(final List<String> elements, final String element_combination_map) {
+
+        // If 'element_combination_map' contains "2" then the result is the second value in 'elements'.
+
+        // If it contains "3-5-4" then the result is formed from the third, fifth and fourth values
+        // in 'elements' concatenated with spaces.
+
+        return Arrays.stream(element_combination_map.split("-")).
+            map(column_number_as_string -> elements.get(Integer.parseInt(column_number_as_string) - 1)).
+            collect(Collectors.joining(" "));
     }
 
     /** Gets the first element of the array resulting from splitting the given name on the space character. */
@@ -103,10 +287,10 @@ public class Normalisation {
     private String lookupInStopWords(final String word) {
 
         // Try case sensitive match first.
-        if (race.capitalisation_stop_words.contains(word)) return word;
+        if (capitalisation_stop_words.contains(word)) return word;
 
         // Try case insensitive match.
-        return race.capitalisation_stop_words.stream().
+        return capitalisation_stop_words.stream().
             filter(w -> w.equalsIgnoreCase(word)).
             findFirst().
             orElse(null);
@@ -140,7 +324,7 @@ public class Normalisation {
 
         if (word.isEmpty() || isTitleCase(word)) return word;
 
-        race.non_title_case_words.add(word);
+        non_title_case_words.add(word);
         return Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase();
     }
 
@@ -165,16 +349,6 @@ public class Normalisation {
         return result;
     }
 
-    /** Parses the given time string, trying both colon and full stop as separators. */
-    public static Duration parseTime(final String time) {
-
-        try {
-            return parseTime(time, ":");
-        } catch (final RuntimeException _) {
-            return parseTime(time, "\\.");
-        }
-    }
-
     /** Parses the given time in format hours/minutes/seconds or minutes/seconds, using the given separator. */
     private static Duration parseTime(String time, final String separator) {
 
@@ -195,8 +369,7 @@ public class Normalisation {
         }
     }
 
-    /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
-    public static String format(final Duration duration) {
+    private static String formatWholePart(final Duration duration) {
 
         final long total_seconds = duration.getSeconds();
 
@@ -204,11 +377,12 @@ public class Normalisation {
         final long minutes = (total_seconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
         final long seconds = total_seconds % SECONDS_PER_MINUTE;
 
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds) + formatFractionalPart(duration.getNano());
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
-    private static String formatFractionalPart(final int fractional_seconds_as_nanoseconds) {
+    private static String formatFractionalPart(final Duration duration) {
 
+        final int fractional_seconds_as_nanoseconds = duration.getNano();
         if (fractional_seconds_as_nanoseconds == 0) return "";
 
         final double fractional_seconds = fractional_seconds_as_nanoseconds / NANOSECONDS_PER_SECOND;
