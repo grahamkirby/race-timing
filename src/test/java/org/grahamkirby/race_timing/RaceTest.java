@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
-import static org.grahamkirby.race_timing.common.Race.SUFFIX_PDF;
+import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class RaceTest {

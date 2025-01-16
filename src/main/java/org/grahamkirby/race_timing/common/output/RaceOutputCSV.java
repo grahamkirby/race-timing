@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.common.output;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
-import static org.grahamkirby.race_timing.common.Race.SUFFIX_CSV;
+import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_CSV;
 
 /** Base class for CSV output. */
 public abstract class RaceOutputCSV extends RaceOutput {

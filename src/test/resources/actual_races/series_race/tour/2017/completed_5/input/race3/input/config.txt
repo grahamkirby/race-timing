@@ -9,4 +9,5 @@ RAW_RESULTS_PATH = rawtimes.txt
 CATEGORIES_ENTRY_PATH = ../../categories_entry.csv
 CATEGORIES_PRIZE_PATH = ../../categories_prize.csv
 
-ENTRY_MAP_PATH = ../../entry_map.csv
+CATEGORY_MAP_PATH = ../../category_map.csv
+ENTRY_COLUMN_MAP = 1,2-3,4,5

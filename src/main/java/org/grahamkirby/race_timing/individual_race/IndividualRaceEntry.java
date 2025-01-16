@@ -21,10 +21,8 @@ import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class IndividualRaceEntry extends RaceEntry {
 
@@ -41,7 +39,7 @@ public class IndividualRaceEntry extends RaceEntry {
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public IndividualRaceEntry(final List<String> elements, final Race race) {
 
-        final List<String> mapped_elements = mapElements(elements, race.entry_column_map_string);
+        final List<String> mapped_elements = race.normalisation.mapRaceEntryElements(elements);
 
         if (mapped_elements.size() != EXPECTED_NUMBER_OF_ENTRY_ELEMENTS)
             throw new RuntimeException(STR."illegal composition for runner: \{mapped_elements.get(BIB_NUMBER_INDEX)}");
@@ -52,31 +50,14 @@ public class IndividualRaceEntry extends RaceEntry {
             final String name = race.normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
             final String club = race.normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
-            final String category_name = race.mapCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
+            final String category_name = race.normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
             final EntryCategory category = category_name.isEmpty() ? null : race.lookupEntryCategory(category_name);
 
             runner = new Runner(name, club, category);
 
-        } catch (final RuntimeException _) {
+        } catch (final RuntimeException e) {
             throw new RuntimeException(STR."illegal category for runner: \{bib_number}");
         }
-    }
-
-    private static List<String> mapElements(final List<String> elements, final String entry_column_map_string) {
-
-        // Expected format of map string: "1,3-2,4,5",
-        // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
-
-        return Arrays.stream(entry_column_map_string.split(",")).
-            map(s -> getMappedElement(elements, s)).
-            toList();
-    }
-
-    private static String getMappedElement(final List<String> elements, final String element_combination_map) {
-
-        return Arrays.stream(element_combination_map.split("-")).
-            map(column_number_as_string -> elements.get(Integer.parseInt(column_number_as_string) - 1)).
-            collect(Collectors.joining(" "));
     }
 
     @Override

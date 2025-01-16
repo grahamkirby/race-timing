@@ -47,29 +47,17 @@ public abstract class Race {
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
     public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
     public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
-    private static final String KEY_ENTRY_MAP_PATH = "ENTRY_MAP_PATH";
-    private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
-    private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
-    private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Platform-specific line separator used in creating output files. */
     public static final String LINE_SEPARATOR = System.lineSeparator();
 
-    public static final String SUFFIX_CSV = ".csv";
-    public static final String SUFFIX_PDF = ".pdf";
-
     /** Used when a result is recorded without a bib number. */
     public static final int UNKNOWN_BIB_NUMBER = 0;
 
     /** Index of prize category group name within the relevant config file. */
     private static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
-
-    private static final String DEFAULT_ENTRY_MAP_PATH = STR."/src/main/resources/configuration/default_entry_map\{SUFFIX_CSV}";
-    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = STR."/src/main/resources/configuration/html_entities\{SUFFIX_CSV}";
-    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = STR."/src/main/resources/configuration/club_names\{SUFFIX_CSV}";
-    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = STR."/src/main/resources/configuration/capitalisation_stop_words\{SUFFIX_CSV}";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,20 +69,14 @@ public abstract class Race {
     public RacePrizes prizes;
     private StringBuilder notes;
 
+    public Normalisation normalisation;
     protected RaceInput input;
     protected RaceOutputCSV output_CSV;
     protected RaceOutputHTML output_HTML;
     protected RaceOutputText output_text;
     private RaceOutputPDF output_PDF;
-    public Normalisation normalisation;
 
     public List<PrizeCategoryGroup> prize_category_groups;
-    public String entry_column_map_string;
-    public Set<String> non_title_case_words;
-    Map<String, String> normalised_html_entities;
-    Set<String> capitalisation_stop_words;
-    Map<String, String> normalised_club_names;
-    private Map<String, String> entry_map;
     private List<EntryCategory> entry_categories;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +118,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void configureHelpers() {
+    protected void configureHelpers() throws IOException {
 
         input = getInput();
 
@@ -146,6 +128,7 @@ public abstract class Race {
         output_PDF = getOutputPDF();
 
         prizes = new RacePrizes(this);
+        normalisation = new Normalisation(this);
     }
 
     protected void printOverallResults() throws IOException {
@@ -256,11 +239,6 @@ public abstract class Race {
             orElseThrow();
     }
 
-    public String mapCategoryShortName(final String category_short_name) {
-
-        return entry_map.getOrDefault(category_short_name, category_short_name);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares two results based on whether they have completed. Gives a negative result if the first
@@ -368,8 +346,6 @@ public abstract class Race {
         initialise();
         readProperties();
 
-        configureNormalisation();
-        configureImportCategoryMap();
         configureCategories();
         configureHelpers();
         configureInputData();
@@ -379,21 +355,6 @@ public abstract class Race {
 
         overall_results = new ArrayList<>();
         notes = new StringBuilder();
-    }
-
-    private void configureNormalisation() throws IOException {
-
-        normalisation = new Normalisation(this);
-
-        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
-        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
-        capitalisation_stop_words = new HashSet<>(Files.readAllLines(getPath(getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
-        non_title_case_words = new HashSet<>();
-    }
-
-    private void configureImportCategoryMap() throws IOException {
-
-        entry_map = loadImportCategoryMap();
     }
 
     private void configureCategories() throws IOException {
@@ -482,53 +443,5 @@ public abstract class Race {
         return entry_category == null ||
             entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
             entry_category.getMaximumAge() <= prize_category.getMaximumAge();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private Map<String, String> loadImportCategoryMap() throws IOException {
-
-        final Map<String, String> map = new HashMap<>();
-        final Path category_map_path = getPath(getProperty(KEY_ENTRY_MAP_PATH, DEFAULT_ENTRY_MAP_PATH));
-
-        Files.readAllLines(category_map_path).stream().
-            filter(line -> !line.isEmpty()).
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(line -> processLine(line, map));
-
-        return map;
-    }
-
-    @SuppressWarnings("BoundedWildcard")
-    private void processLine(final String line, final Map<String, String> category_map) {
-
-        if (entry_column_map_string == null)
-
-            // First non-comment line contains column mapping.
-            entry_column_map_string = line;
-
-        else {
-            // Subsequent non-comment lines contain category mappings.
-            final String[] parts = line.split(",");
-            category_map.put(parts[0], parts[1]);
-        }
-    }
-
-    private Map<String, String> loadNormalisationMap(final String path_key, final String default_path, final boolean key_case_sensitive) throws IOException {
-
-        final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-        loadMap(getPath(getProperty(path_key, default_path)), map);
-        return map;
-    }
-
-    @SuppressWarnings("BoundedWildcard")
-    private static void loadMap(final Path path, final Map<String, String> map) throws IOException {
-
-        Files.readAllLines(path).forEach(line -> {
-
-            final String[] parts = line.split(",");
-            map.put(parts[0], parts[1]);
-        });
     }
 }

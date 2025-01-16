@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.SUFFIX_PDF;
+import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
 
 /** Base class for PDF output. */
 public abstract class RaceOutputPDF extends RaceOutput {

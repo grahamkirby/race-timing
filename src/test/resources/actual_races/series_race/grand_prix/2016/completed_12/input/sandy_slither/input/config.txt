@@ -4,7 +4,7 @@ RACE_NAME_FOR_FILENAMES = sandy_slither
 
 # Relative to directory containing configuration file.
 RESULTS_PATH = results.txt
-ENTRY_MAP_PATH = entry_map.csv
+CATEGORY_MAP_PATH = category_map.csv
 
 # Relative to project root directory.
 CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
