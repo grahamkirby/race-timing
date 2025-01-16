@@ -44,9 +44,11 @@ public class Normalisation {
 
     private static final String DEFAULT_CONFIG_ROOT_PATH = "/src/main/resources/configuration";
     private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}";
-    private static final String DEFAULT_ENTRY_COLUMN_MAP_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/default_entry_column_map\{SUFFIX_CSV}";
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}";
     private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}";
+
+    /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
+    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
 
     /** Characters treated as word separators when converting string to title case. */
     private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '’');
@@ -57,7 +59,7 @@ public class Normalisation {
     /** Strings that should not be converted to title case. */
     private Set<String> capitalisation_stop_words;
 
-    /** */
+    /** Map for entry category normalisation. */
     private Map<String, String> category_map;
 
     /** Mappings for non-standard entry column formats. */
@@ -66,11 +68,11 @@ public class Normalisation {
     /** Records words within runner, club and team names that are not already in title case in the entry file. */
     private Set<String> non_title_case_words;
 
-    /** Map from accented strings to corresponding entities. */
-    private Map<String, String> normalised_html_entities;
-
     /** Map from club name variants to normalised names. */
     private Map<String, String> normalised_club_names;
+
+    /** Map from accented strings to corresponding entities. */
+    private Map<String, String> normalised_html_entities;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -109,7 +111,7 @@ public class Normalisation {
     }
 
     /** Cleans name by removing extra whitespace and converting to title case, unless present
-     * in stop list file. */
+     *  in stop list file. */
     public String cleanRunnerName(final String name) {
 
         // Remove extra whitespace.
@@ -121,7 +123,7 @@ public class Normalisation {
     }
 
     /** Cleans name by removing extra whitespace and normalising if present in normalisation file,
-     * otherwise converting to title case, unless present in stop list file. */
+     *  otherwise converting to title case, unless present in stop list file. */
     public String cleanClubOrTeamName(final String name) {
 
         // Remove extra whitespace.
@@ -160,6 +162,7 @@ public class Normalisation {
 
     private void configure() throws IOException {
 
+        entry_column_mappings = loadEntryColumnMapping();
         category_map = loadCategoryMap();
         normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
         normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
@@ -167,81 +170,50 @@ public class Normalisation {
         non_title_case_words = new HashSet<>();
     }
 
-    // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
-    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
+    private List<String> loadEntryColumnMapping() {
 
-    // Columns can be re-ordered by permuting the column numbers, or combined into a single column with an intervening
-// space character, by grouping column numbers with a dash.
+        // Columns can be re-ordered by permuting the column numbers, or combined into a single column with an intervening
+        // space character, by grouping column numbers with a dash.
         // E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
 
+        final String entry_column_map_string = race.getProperty(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
+
+        return Arrays.asList(entry_column_map_string.split(","));
+    }
 
     private Map<String, String> loadCategoryMap() throws IOException {
 
-        String entry_column_map_string = race.getProperty(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
-//        if (entry_column_map_string == null) {
-//            final Path entry_column_map_path = race.getPath(entry_column_map_string);
-//
-//            entry_column_map_string = Files.readAllLines(entry_column_map_path).stream().
-//                filter(line -> !line.isEmpty()).
-//                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-//                findFirst().orElseThrow();
-////        }
-
-        // Expected format of mapping string: "1,3-2,4,5",
-        // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
-        entry_column_mappings = Arrays.asList(entry_column_map_string.split(","));
-
-
         final Map<String, String> map = new HashMap<>();
-        String property = race.getProperty(KEY_CATEGORY_MAP_PATH);
-        if (property != null) {
-            final Path category_map_path = race.getPath(property);
+
+        final String category_map_path_string = race.getProperty(KEY_CATEGORY_MAP_PATH);
+        if (category_map_path_string != null) {
+
+            final Path category_map_path = race.getPath(category_map_path_string);
 
             Files.readAllLines(category_map_path).stream().
                 filter(line -> !line.isEmpty()).
                 filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-                forEachOrdered(line -> loadCategoryMapEntryOrColumnMap(line, map));
+                forEachOrdered(line -> {
+                    final String[] parts = line.split(",");
+                    map.put(parts[0], parts[1]);
+                });
         }
 
         return map;
     }
 
-    @SuppressWarnings("BoundedWildcard")
-    private void loadCategoryMapEntryOrColumnMap(final String line, final Map<String, String> category_map) {
-
-//        if (entry_column_mappings == null)
-//
-//            // First non-comment line contains column mapping.
-//
-//            // Expected format of mapping string: "1,3-2,4,5",
-//            // meaning elements 2 and 3 should be swapped and concatenated with a space to give compound element.
-//            entry_column_mappings = Arrays.asList(line.split(","));
-//
-//        else {
-            // Subsequent non-comment lines contain category mappings.
-            final String[] parts = line.split(",");
-            category_map.put(parts[0], parts[1]);
-//        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private Map<String, String> loadNormalisationMap(final String path_key, final String default_path, final boolean key_case_sensitive) throws IOException {
 
         final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-        loadMap(race.getPath(race.getProperty(path_key, default_path)), map);
-        return map;
-    }
-
-    @SuppressWarnings("BoundedWildcard")
-    private static void loadMap(final Path path, final Map<String, String> map) throws IOException {
+        final Path path = race.getPath(race.getProperty(path_key, default_path));
 
         Files.readAllLines(path).forEach(line -> {
 
             final String[] parts = line.split(",");
             map.put(parts[0], parts[1]);
         });
+
+        return map;
     }
 
     private static String getMappedElement(final List<String> elements, final String element_combination_map) {
@@ -283,7 +255,7 @@ public class Normalisation {
     }
 
     /** Checks whether the given word is present in the stop word file, first with exact match
-     * and then case insensitive. Returns the matching word if found, otherwise null. */
+     *  and then case insensitive. Returns the matching word if found, otherwise null. */
     private String lookupInStopWords(final String word) {
 
         // Try case sensitive match first.
@@ -297,7 +269,7 @@ public class Normalisation {
     }
 
     /** Finds the next word in the given input not already added to the builder, and adds it
-     * after converting to title case. */
+     *  after converting to title case. */
     private void addNextWord(final String input, final StringBuilder builder) {
 
         char separator = 0;
@@ -337,7 +309,7 @@ public class Normalisation {
     }
 
     /** For each map entry, searches for instances of the key in the given string (case insensitive)
-     * and replaces each one with the corresponding value. */
+     *  and replaces each one with the corresponding value. */
     private static String replaceAllMapEntries(final String s, final Map<String, String> normalisation_map) {
 
         String result = s;
