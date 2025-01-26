@@ -174,7 +174,7 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
                     <thead>
                         <tr>
                             <th>Pos</th>
-                            <th>Runner\{((RelayRace) race).getPairedLegs().contains(leg) ? "s" : ""}</th>
+                            <th>Runner\{((RelayRace) race).getPairedLegs().get(leg - 1) ? "s" : ""}</th>
                             <th>Time</th>
                         </tr>
                     </thead>
@@ -219,7 +219,7 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {
 
                 writer.append(STR."""
-                                <th>Runner\{((RelayRace) race).getPairedLegs().contains(leg_number) ? "s" : ""} \{leg_number}</th>
+                                <th>Runner\{((RelayRace) race).getPairedLegs().get(leg_number - 1) ? "s" : ""} \{leg_number}</th>
                                 <th>Leg \{leg_number}</th>
                                 <th>\{leg_number < ((RelayRace) race).getNumberOfLegs() ? STR."Split \{leg_number}" : "Total"}</th>
                     """);

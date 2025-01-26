@@ -183,6 +183,11 @@ public class GrandPrixRace extends SeriesRace {
         if (new HashSet<>(qualifying_clubs).containsAll(defined_clubs))
             recordDefinedClubForRunnerName(runner_name, qualifying_clubs.getFirst());
         else
-            noteMultipleClubsForRunnerName(runner_name, defined_clubs);
+            for (final String qualifying_club : qualifying_clubs) {
+                if (defined_clubs.contains(qualifying_club)) {
+                    noteMultipleClubsForRunnerName(runner_name, defined_clubs);
+                    break;
+                }
+            }
     }
 }

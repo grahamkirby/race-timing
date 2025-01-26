@@ -36,6 +36,8 @@ public class IndividualRaceEntry extends RaceEntry {
 
     public final Runner runner;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public IndividualRaceEntry(final List<String> elements, final Race race) {
 
@@ -55,10 +57,12 @@ public class IndividualRaceEntry extends RaceEntry {
 
             runner = new Runner(name, club, category);
 
-        } catch (final RuntimeException e) {
+        } catch (final RuntimeException _) {
             throw new RuntimeException(STR."illegal category for runner: \{bib_number}");
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public String toString() {

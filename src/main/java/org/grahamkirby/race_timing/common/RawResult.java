@@ -27,6 +27,8 @@ public class RawResult {
     private String comment = "";
     public Duration recorded_finish_time;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public RawResult(final String file_line) {
 
         final String[] elements = file_line.split("\t");
@@ -37,6 +39,8 @@ public class RawResult {
         bib_number = bib_number_as_string.equals("?") ? UNKNOWN_BIB_NUMBER : Integer.parseInt(bib_number_as_string);
         recorded_finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public int getBibNumber() {
         return bib_number;

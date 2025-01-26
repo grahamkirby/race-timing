@@ -24,13 +24,18 @@ public class Runner {
 
     public final String name;
     public String club;
-    public final EntryCategory category;
+    public EntryCategory category;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Runner(final String name, final String club, final EntryCategory category) {
+
         this.name = name;
         this.club = club;
         this.category = category;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public boolean equals(final Object obj) {
