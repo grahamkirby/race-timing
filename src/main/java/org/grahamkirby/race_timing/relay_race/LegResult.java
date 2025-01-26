@@ -34,6 +34,8 @@ public class LegResult extends RaceResult {
     Duration start_time;  // Relative to start of leg 1.
     Duration finish_time; // Relative to start of leg 1.
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     LegResult(final RelayRaceEntry entry, final Race race) {
 
         super(race);
@@ -42,6 +44,8 @@ public class LegResult extends RaceResult {
         completion_status = CompletionStatus.DNF;
         in_mass_start = false;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {
         return completion_status == CompletionStatus.COMPLETED ? finish_time.minus(start_time) : null;

@@ -157,7 +157,7 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Resolves the given path relative to either the project root, if it's specified as an absolute
-     * path, or to the race configuration file. */
+     *  path, or to the race configuration file. */
     public Path getPath(final String path) {
 
         return path.startsWith("/") ?
@@ -242,14 +242,14 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares two results based on whether they have completed. Gives a negative result if the first
-     * has completed and the second has not. */
+     *  has completed and the second has not. */
     protected static int compareCompletion(final RaceResult r1, final RaceResult r2) {
 
         return Boolean.compare(r2.getCompletionStatus() == CompletionStatus.COMPLETED, r1.getCompletionStatus() == CompletionStatus.COMPLETED);
     }
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,
-     * or a score. Gives a negative result if the first result has a better performance than the second. */
+     *  or a score. Gives a negative result if the first result has a better performance than the second. */
     protected static int comparePerformance(final RaceResult r1, final RaceResult r2) {
 
         return r1.comparePerformanceTo(r2);
@@ -270,16 +270,16 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
-     * that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
-     * is determined by the particular race type. */
+     *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
+     *  is determined by the particular race type. */
     void setPositionStrings(final List<? extends RaceResult> results) {
 
         setPositionStrings(results, areEqualPositionsAllowed());
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
-     * that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
-     * is determined by the second parameter. */
+     *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
+     *  is determined by the second parameter. */
     protected static void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
@@ -315,10 +315,10 @@ public abstract class Race {
     /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int end_index) {
 
-        final int equal_position = start_index + 1;
+        final String position_string = STR."\{start_index + 1}=";
 
         for (int i = start_index; i <= end_index; i++)
-            results.get(i).position_string = STR."\{equal_position}=";
+            results.get(i).position_string = position_string;
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */
@@ -326,7 +326,7 @@ public abstract class Race {
 
         int highest_index_with_same_result = start_index;
 
-        while (highest_index_with_same_result + 1 < results.size() &&
+        while (highest_index_with_same_result < results.size() - 1 &&
             results.get(highest_index_with_same_result).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
 
             highest_index_with_same_result++;
@@ -380,12 +380,14 @@ public abstract class Race {
         prizes.allocatePrizes();
     }
 
+    /** Sorts all results by relevant comparators, and then the DNF results separately. */
     protected void sortResults() {
 
         overall_results.sort(combineComparators(getComparators()));
         overall_results.sort(dnfOnly(combineComparators(getDNFComparators())));
     }
 
+    /** Combines multiple comparators into a single comparator. */
     protected static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
 
         return comparators.stream().
@@ -393,6 +395,7 @@ public abstract class Race {
             orElse((_, _) -> 0);
     }
 
+    /** Generates a comparator that has an effect only when both results being compared are DNF. */
     private static Comparator<RaceResult> dnfOnly(final Comparator<? super RaceResult> comparator) {
 
         return (r1, r2) -> areBothDnf(r1, r2) ? comparator.compare(r1, r2) : 0;

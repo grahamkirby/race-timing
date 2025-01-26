@@ -56,6 +56,7 @@ public class RacePrizes {
         result.category_of_prize_awarded = category;
     }
 
+    /** Returns prize winners in given category. */
     public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
         final List<RaceResult> prize_results = race.getOverallResults().stream().
@@ -67,6 +68,7 @@ public class RacePrizes {
         return prize_results;
     }
 
+    /** Sets the prize winners in the given category. */
     private void setPrizeWinners(final PrizeCategory category) {
 
         final AtomicInteger position = new AtomicInteger(1);

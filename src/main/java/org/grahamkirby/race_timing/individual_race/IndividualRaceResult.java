@@ -36,7 +36,7 @@ public class IndividualRaceResult extends RaceResult {
         super(race);
         this.entry = entry;
 
-        // Initialised in IndividualRace.fillFinishTimes().
+        // Initialised in IndividualRace.recordFinishTimes().
         finish_time = null;
 
         // Will be changed later if a time is processed for this runner.

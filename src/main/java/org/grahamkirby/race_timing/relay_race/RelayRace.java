@@ -55,40 +55,64 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int getNumberOfLegs() {
-        return number_of_legs;
+    /** Packages details of a particular leg for output. */
+    record LegOutputDetails(String leg_runner_names, String leg_mass_start_annotation,
+                            String leg_time, String split_time) {
     }
 
-    Set<Integer> getPairedLegs() {
-        return paired_legs;
-    }
-
-    record LegOutputInfo(String leg_runner_names, String leg_mass_start_annotation,
-                         String leg_time, String split_time) {
-    }
-
-    private record IndividualLegStart(int bib_number, int leg_number, Duration start_time) {
-    }
-
-    private record ResultWithLegIndex(RelayRaceResult result, int leg_index) {
+    /** Packages details of an individually recorded leg start (unusual). */
+    private record IndividualStart(int bib_number, int leg_number, Duration start_time) {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private int number_of_legs;
+    /** Provides functionality for inferring missing bib number or timing data in the results. */
     private RelayRaceMissingData missing_data;
 
-    // For each leg, records whether there was a mass start.
+    /**
+     * The number of legs in the relay race.
+     * Value is read from configuration file using key KEY_NUMBER_OF_LEGS.
+     */
+    private int number_of_legs;
+
+    /**
+     * For each leg, records whether there was a mass start.
+     * Values are read from configuration file using key KEY_MASS_START_ELAPSED_TIMES.
+     */
     private List<Boolean> mass_start_legs;
 
-    // Times relative to start of leg 1 at which each mass start occurred.
-    // For leg 2 onward, legs that didn't have a mass start are recorded with the time of the next actual
-    // mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
+    /**
+     * For each leg, records whether it is a leg for paired runners.
+     * Values are read from configuration file using key KEY_PAIRED_LEGS.
+     */
+    private List<Boolean> paired_legs;
+
+    /**
+     * Times relative to start of leg 1 at which each mass start occurred.
+     * For leg 2 onward, legs that didn't have a mass start are recorded with the time of the next actual
+     * mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
+     *
+     * Values are read from configuration file using key KEY_MASS_START_ELAPSED_TIMES.
+     */
     private List<Duration> start_times_for_mass_starts;
 
-    private Set<Integer> paired_legs;
-    private List<IndividualLegStart> individual_leg_starts;
+    /**
+     * List of individually recorded starts (usually empty).
+     * Values are read from configuration file using key KEY_INDIVIDUAL_LEG_STARTS.
+     */
+    private List<IndividualStart> individual_starts;
+
+    /**
+     * Offset between actual race start time, and the time at which timing started.
+     * Usually this is zero. A positive value indicates that the race started before timing started.
+     *
+     * Value is read from configuration file using key KEY_START_OFFSET.
+     */
     private Duration start_offset;
+
+    /**
+     * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
+     */
     private Map<String, String> gender_eligibility_map;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +134,14 @@ public class RelayRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int getNumberOfLegs() {
+        return number_of_legs;
+    }
+
+    List<Boolean> getPairedLegs() {
+        return paired_legs;
+    }
+
     @Override
     public void calculateResults() {
 
@@ -120,7 +152,7 @@ public class RelayRace extends SingleRace {
 
         fillFinishTimes();
         fillStartTimes();
-        fillDNFs();
+        recordDNFs();
 
         sortResults();
         allocatePrizes();
@@ -224,7 +256,7 @@ public class RelayRace extends SingleRace {
     @Override
     protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        if (entry_category.getGender().equals(prize_category.getGender())) return true;
+        if (entry_category != null && entry_category.getGender().equals(prize_category.getGender())) return true;
 
         return gender_eligibility_map.keySet().stream().
             filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
@@ -237,15 +269,20 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    protected void fillDNF(final String individual_dnf_string) {
+    protected void recordDNF(final String dnf_bib_number) {
 
         try {
-            final ResultWithLegIndex result_with_leg = getResultWithLegIndex(individual_dnf_string);
-            final LegResult result = result_with_leg.result.leg_results.get(result_with_leg.leg_index);
+            // String of form "bib-number/leg-number"
+
+            final String[] elements = dnf_bib_number.split("/");
+            final int bib_number = Integer.parseInt(elements[0]);
+            final int leg_number = Integer.parseInt(elements[1]);
+
+            final LegResult result = getLegResult(bib_number, leg_number);
 
             result.completion_status = CompletionStatus.DNF;
 
-        } catch (final RuntimeException _) {
+        } catch (final NumberFormatException _) {
             throw new RuntimeException("illegal DNF time");
         }
     }
@@ -433,11 +470,12 @@ public class RelayRace extends SingleRace {
         final String paired_legs_string = getProperty(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
-
-        paired_legs = new HashSet<>();
+        paired_legs = Stream.generate(() -> false)
+            .limit(number_of_legs)
+            .collect(Collectors.toCollection(ArrayList::new));
 
         for (final String leg_number_as_string : paired_legs_string.split(","))
-            paired_legs.add(Integer.parseInt(leg_number_as_string));
+            paired_legs.set(Integer.parseInt(leg_number_as_string) - 1, true);
     }
 
     private void configureIndividualLegStarts() {
@@ -447,13 +485,13 @@ public class RelayRace extends SingleRace {
         // bib number / leg number / start time
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20
 
-        individual_leg_starts = individual_leg_starts_string == null ? new ArrayList<>() :
+        individual_starts = individual_leg_starts_string == null ? new ArrayList<>() :
             Arrays.stream(individual_leg_starts_string.split(",")).
                 map(RelayRace::getIndividualLegStart).
                 toList();
     }
 
-    private static IndividualLegStart getIndividualLegStart(final String individual_leg_starts_string) {
+    private static IndividualStart getIndividualLegStart(final String individual_leg_starts_string) {
 
         final String[] split = individual_leg_starts_string.split("/");
 
@@ -461,7 +499,7 @@ public class RelayRace extends SingleRace {
         final int leg_number = Integer.parseInt(split[1]);
         final Duration start_time = parseTime(split[2]);
 
-        return new IndividualLegStart(bib_number, leg_number, start_time);
+        return new IndividualStart(bib_number, leg_number, start_time);
     }
 
     private void fillFinishTimes() {
@@ -512,17 +550,11 @@ public class RelayRace extends SingleRace {
             leg_results.get(leg_index - 1).leg_number = leg_index;
     }
 
-    private ResultWithLegIndex getResultWithLegIndex(final String bib_and_leg) {
-
-        // String of form "bib-number/leg-number"
-
-        final String[] elements = bib_and_leg.split("/");
-        final int bib_number = Integer.parseInt(elements[0]);
-        final int leg_number = Integer.parseInt(elements[1]);
+    private LegResult getLegResult(final int bib_number, final int leg_number) {
 
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
 
-        return new ResultWithLegIndex(result, leg_number - 1);
+        return result.leg_results.get(leg_number - 1);
     }
 
     private void fillStartTimes() {
@@ -552,7 +584,7 @@ public class RelayRace extends SingleRace {
 
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
-        return individual_leg_starts.stream().
+        return individual_starts.stream().
             filter(individual_leg_start -> individual_leg_start.bib_number == leg_result.entry.bib_number).
             filter(individual_leg_start -> individual_leg_start.leg_number == leg_index + 1).
             map(individual_leg_start -> individual_leg_start.start_time).
@@ -560,7 +592,7 @@ public class RelayRace extends SingleRace {
             orElse(null);
     }
 
-    List<String> getLegDetails(final RelayRaceResult result, final Function<? super LegOutputInfo, String> leg_output_formatter) {
+    List<String> getLegDetails(final RelayRaceResult result, final Function<? super LegOutputDetails, String> leg_output_formatter) {
 
         final List<String> leg_details = new ArrayList<>();
         boolean all_previous_legs_completed = true;
@@ -575,7 +607,7 @@ public class RelayRace extends SingleRace {
             final String leg_time = completed ? format(leg_result.duration()) : DNF_STRING;
             final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
 
-            leg_details.add(leg_output_formatter.apply(new LegOutputInfo(leg_runner_names, leg_mass_start_annotation, leg_time, split_time)));
+            leg_details.add(leg_output_formatter.apply(new LegOutputDetails(leg_runner_names, leg_mass_start_annotation, leg_time, split_time)));
 
             if (!completed) all_previous_legs_completed = false;
         }

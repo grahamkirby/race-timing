@@ -26,9 +26,7 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 @SuppressWarnings("IncorrectFormatting")
@@ -129,10 +127,6 @@ public abstract class SeriesRace extends Race {
         return (int) races.stream().filter(Objects::nonNull).count();
     }
 
-    public boolean hasSeriesCompleted() {
-        return getNumberOfRacesTakenPlace() == number_of_races_in_series;
-    }
-
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
         return Boolean.compare(((SeriesRaceResult) r2).canCompleteSeries(), ((SeriesRaceResult) r1).canCompleteSeries());
@@ -144,15 +138,111 @@ public abstract class SeriesRace extends Race {
 
         final Predicate<RaceResult> inclusion_predicate = getResultInclusionPredicate();
 
-        races.stream().
+        final List<IndividualRaceResult> results = races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
             filter(inclusion_predicate).
-            map(result -> (IndividualRaceResult) result).
+            map(result -> (IndividualRaceResult) result).toList();
+
+        rationaliseEntryCategories(results);
+
+        results.stream().
             map(result -> result.entry.runner).
             distinct().
             map(this::getOverallResult).
             forEachOrdered(overall_results::add);
+    }
+
+    @SuppressWarnings("KeySetIterationMayUseEntrySet")
+    private void rationaliseEntryCategories(final Iterable<? extends IndividualRaceResult> results) {
+
+        // 'results' contains relevant results from first race, followed by relevant results from second race, ...
+
+        final Map<Runner, List<IndividualRaceResult>> map = getResultsByRunner(results);
+
+        for (final Runner runner : map.keySet())
+            checkCategories(map.get(runner));
+    }
+
+    private static Map<Runner, List<IndividualRaceResult>> getResultsByRunner(final Iterable<? extends IndividualRaceResult> results) {
+
+        final Map<Runner, List<IndividualRaceResult>> map = new HashMap<>();
+
+        for (final IndividualRaceResult result : results) {
+            final Runner runner = result.entry.runner;
+            if (!map.containsKey(runner))
+                map.put(runner, new ArrayList<>());
+            map.get(runner).add(result);
+        }
+
+        return map;
+    }
+
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    private void checkCategories(final List<IndividualRaceResult> runner_results) {
+
+        final EntryCategory earliest_category = getEarliestNonNullCategory(runner_results);
+
+        checkConsistencyOverSeries(runner_results);
+
+        for (final IndividualRaceResult result : runner_results)
+            result.entry.runner.category = earliest_category;
+    }
+
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    private void checkConsistencyOverSeries(final Iterable<? extends IndividualRaceResult> runner_results) {
+
+        EntryCategory previous_category = null;
+
+        for (final IndividualRaceResult result : runner_results) {
+
+            final EntryCategory current_category = result.entry.runner.category;
+
+            if (current_category != null) {
+                if (previous_category != null && !previous_category.equals(current_category)) {
+
+                    final String note = STR."from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{result.race.getProperty(KEY_RACE_NAME_FOR_RESULTS)}";
+
+                    if (isAgeOrderConsistent(previous_category, current_category))
+                        getNotes().append(STR."""
+                            Runner \{result.entry.runner.name} changed category \{note}
+                            """);
+                    else
+                        getNotes().append(STR."""
+                            Runner \{result.entry.runner.name} illegal category change \{note}
+                            """);
+                }
+
+                previous_category = current_category;
+            }
+        }
+    }
+
+    private static EntryCategory getEarliestNonNullCategory(final Iterable<? extends IndividualRaceResult> runner_results) {
+
+        EntryCategory first_non_null_category = null;
+        for (final IndividualRaceResult result : runner_results) {
+            if (result.entry.runner.category != null) {
+                first_non_null_category = result.entry.runner.category;
+                break;
+            }
+        }
+        return first_non_null_category;
+    }
+
+    private static boolean isAgeOrderConsistent(final EntryCategory category1, final EntryCategory category2) {
+        return category1.getMinimumAge() <= category2.getMinimumAge();
+    }
+
+    protected void printOverallResults() throws IOException {
+
+        super.printOverallResults();
+
+        for (final RaceResult result : overall_results)
+            if (((SeriesRaceResult)result).runner.category == null)
+                getNotes().append(STR."""
+                    Runner \{((SeriesRaceResult) result).runner.name} unknown category so omitted from overall results
+                    """);
     }
 
     protected void configureClubs() {
@@ -182,7 +272,7 @@ public abstract class SeriesRace extends Race {
 
     protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
 
-        getNotes().append(STR."Runner name \{runner_name} recorded for multiple clubs: \{String.join(", ", defined_clubs)}\n");
+        getNotes().append(STR."Runner \{runner_name} recorded for multiple clubs: \{String.join(", ", defined_clubs)}\n");
     }
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {

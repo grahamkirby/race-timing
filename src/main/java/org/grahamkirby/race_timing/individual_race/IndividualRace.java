@@ -65,23 +65,25 @@ public class IndividualRace extends SingleRace {
         initialiseResults();
 
         if (raw_results != null) {
-            fillFinishTimes();
-            fillDNFs();
+
+            recordFinishTimes();
+            recordDNFs();
 
             sortResults();
             allocatePrizes();
         }
     }
 
+    /** Gets the entry category for the runner with the given bib number. */
     public EntryCategory findCategory(final int bib_number) {
+
         return getEntryWithBibNumber(bib_number).runner.category;
     }
 
+    /** Gets the finish time for the given runner. */
     public Duration getRunnerTime(final Runner runner) {
 
-        final List<RaceResult> results = getOverallResults();
-
-        for (final RaceResult result : results) {
+        for (final RaceResult result : getOverallResults()) {
 
             final IndividualRaceResult individual_result = (IndividualRaceResult) result;
             if (individual_result.entry.runner.equals(runner))
@@ -91,8 +93,10 @@ public class IndividualRace extends SingleRace {
         return null;
     }
 
+    /** Gets the median finish time for the race. */
     public Duration getMedianTime() {
 
+        // The median time may be recorded explicitly if not all results are recorded.
         if (median_time_string != null) return Normalisation.parseTime(median_time_string);
 
         final List<RaceResult> results = getOverallResults();
@@ -112,6 +116,7 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Compares the given results on the basis of their finish positions. */
     private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
         final int recorded_position1 = getRecordedPosition(((IndividualRaceResult) r1).entry.bib_number);
@@ -126,7 +131,6 @@ public class IndividualRace extends SingleRace {
     protected void readProperties() throws IOException {
 
         super.readProperties();
-
         median_time_string = getProperty(KEY_MEDIAN_TIME);
     }
 
@@ -165,12 +169,14 @@ public class IndividualRace extends SingleRace {
         printCombined();
     }
 
+    /** Compares results first by completion status, then by performance, then by recorded position. */
     @Override
     public List<Comparator<RaceResult>> getComparators() {
 
         return List.of(Race::compareCompletion, Race::comparePerformance, this::compareRecordedPosition);
     }
 
+    /** Compares DNF results first by last name, then by first name. */
     @Override
     public List<Comparator<RaceResult>> getDNFComparators() {
 
@@ -180,7 +186,7 @@ public class IndividualRace extends SingleRace {
     @Override
     protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        return entry_category == null || entry_category.getGender().equals(prize_category.getGender());
+        return entry_category != null && entry_category.getGender().equals(prize_category.getGender());
     }
 
     @Override
@@ -190,10 +196,10 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    protected void fillDNF(final String individual_dnf_string) {
+    protected void recordDNF(final String dnf_bib_number) {
 
         try {
-            final int bib_number = Integer.parseInt(individual_dnf_string);
+            final int bib_number = Integer.parseInt(dnf_bib_number);
             final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
             result.completion_status = CompletionStatus.DNF;
@@ -205,6 +211,7 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Initialises overall results from the entries. */
     private void initialiseResults() {
 
         entries.stream().
@@ -213,7 +220,7 @@ public class IndividualRace extends SingleRace {
             forEachOrdered(overall_results::add);
     }
 
-    private void fillFinishTimes() {
+    private void recordFinishTimes() {
 
         raw_results.forEach(raw_result -> {
 
@@ -221,7 +228,7 @@ public class IndividualRace extends SingleRace {
             result.finish_time = raw_result.getRecordedFinishTime();
 
             // Provisionally this result is not DNF since a finish time was recorded.
-            // However, it might still be set to DNF in fillDNF() if the runner didn't complete the course.
+            // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
             result.completion_status = CompletionStatus.COMPLETED;
         });
     }
