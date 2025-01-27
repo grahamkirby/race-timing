@@ -66,6 +66,11 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
+    void multipleGender() throws IOException {
+        testExpectedCompletion("individual_race/multiple_gender");
+    }
+
+    @Test
     void multipleTimeFormats() throws IOException {
         testExpectedCompletion("individual_race/multiple_time_formats");
     }
