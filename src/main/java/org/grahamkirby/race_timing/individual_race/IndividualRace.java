@@ -18,7 +18,6 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
@@ -183,11 +182,11 @@ public class IndividualRace extends SingleRace {
         return List.of(Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
-    @Override
-    protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
-
-        return entry_category != null && entry_category.getGender().equals(prize_category.getGender());
-    }
+//    @Override
+//    protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+//
+//        return entry_category != null && entry_category.getGender().equals(prize_category.getGender());
+//    }
 
     @Override
     protected EntryCategory getEntryCategory(final RaceResult result) {

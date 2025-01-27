@@ -37,6 +37,8 @@ public abstract class SingleRace extends Race {
 
     private String dnf_string;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected SingleRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }

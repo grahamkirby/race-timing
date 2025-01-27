@@ -20,7 +20,6 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
@@ -94,12 +93,6 @@ public abstract class SeriesRace extends Race {
 
         number_of_races_in_series = Integer.parseInt(getProperty(KEY_NUMBER_OF_RACES_IN_SERIES));
         minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
-    }
-
-    @Override
-    protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
-
-        return entry_category != null && entry_category.getGender().equals(prize_category.getGender());
     }
 
     @Override
@@ -179,7 +172,7 @@ public abstract class SeriesRace extends Race {
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    private void checkCategories(final List<IndividualRaceResult> runner_results) {
+    private void checkCategories(final Iterable<? extends IndividualRaceResult> runner_results) {
 
         final EntryCategory earliest_category = getEarliestNonNullCategory(runner_results);
 

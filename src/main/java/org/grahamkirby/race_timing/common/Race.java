@@ -47,6 +47,7 @@ public abstract class Race {
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
     public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
     public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
+    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,6 +80,11 @@ public abstract class Race {
     public List<PrizeCategoryGroup> prize_category_groups;
     private List<EntryCategory> entry_categories;
 
+    /**
+     * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
+     */
+    private Map<String, String> gender_eligibility_map;
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected Race(final Path config_file_path) throws IOException {
@@ -105,7 +111,6 @@ public abstract class Race {
     protected abstract void outputResults() throws IOException;
     protected abstract List<Comparator<RaceResult>> getComparators();
     protected abstract List<Comparator<RaceResult>> getDNFComparators();
-    protected abstract boolean isEntryCategoryEligibleForPrizeCategoryByGender(EntryCategory entry_category, PrizeCategory prize_category);
     protected abstract EntryCategory getEntryCategory(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +354,7 @@ public abstract class Race {
         configureCategories();
         configureHelpers();
         configureInputData();
+        configureGenderEligibilityMap();
     }
 
     private void initialise() {
@@ -359,8 +365,23 @@ public abstract class Race {
 
     private void configureCategories() throws IOException {
 
-        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().map(EntryCategory::new).toList();
+        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
         prize_category_groups = loadPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+    }
+
+    private void configureGenderEligibilityMap() throws IOException {
+
+        gender_eligibility_map = new HashMap<>();
+
+        final String gender_eligibility_map_path = getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH);
+
+        if (gender_eligibility_map_path != null)
+            Files.readAllLines(getPath(gender_eligibility_map_path)).stream().
+                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+                forEachOrdered(line -> {
+                    final String[] elements = line.split(",");
+                    gender_eligibility_map.put(elements[0], elements[1]);
+                });
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
@@ -441,9 +462,18 @@ public abstract class Race {
         return group;
     }
 
+    private boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        if (entry_category != null && entry_category.getGender().equals(prize_category.getGender())) return true;
+
+        return gender_eligibility_map.keySet().stream().
+            filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
+            anyMatch(entry_gender -> prize_category.getGender().equals(gender_eligibility_map.get(entry_gender)));
+    }
+
     private static boolean isEntryCategoryEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
-        return entry_category == null ||
+        return entry_category != null &&
             entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
             entry_category.getMaximumAge() <= prize_category.getMaximumAge();
     }

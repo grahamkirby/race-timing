@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
@@ -29,11 +28,13 @@ import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,7 +47,6 @@ import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 public class RelayRace extends SingleRace {
 
     // Configuration file keys.
-    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
     private static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     private static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     private static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
@@ -110,11 +110,6 @@ public class RelayRace extends SingleRace {
      */
     private Duration start_offset;
 
-    /**
-     * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
-     */
-    private Map<String, String> gender_eligibility_map;
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RelayRace(final Path config_file_path) throws IOException {
@@ -170,7 +165,6 @@ public class RelayRace extends SingleRace {
         configureMassStarts();
         configurePairedLegs();
         configureIndividualLegStarts();
-        configureGenderEligibilityMap();
     }
 
     @Override
@@ -251,16 +245,6 @@ public class RelayRace extends SingleRace {
     protected List<Comparator<RaceResult>> getDNFComparators() {
 
         return List.of(RelayRace::compareBibNumber);
-    }
-
-    @Override
-    protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
-
-        if (entry_category != null && entry_category.getGender().equals(prize_category.getGender())) return true;
-
-        return gender_eligibility_map.keySet().stream().
-            filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
-            anyMatch(entry_gender -> prize_category.getGender().equals(gender_eligibility_map.get(entry_gender)));
     }
 
     @Override
@@ -449,20 +433,6 @@ public class RelayRace extends SingleRace {
 
             if (start_times_for_mass_starts.get(leg_index).equals(Duration.ZERO))
                 start_times_for_mass_starts.set(leg_index, start_times_for_mass_starts.get(leg_index + 1));
-    }
-
-    private void configureGenderEligibilityMap() throws IOException {
-
-        final String gender_eligibility_map_path = getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH);
-
-        gender_eligibility_map = new HashMap<>();
-
-        Files.readAllLines(getPath(gender_eligibility_map_path)).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(line -> {
-                final String[] elements = line.split(",");
-                gender_eligibility_map.put(elements[0], elements[1]);
-            });
     }
 
     private void configurePairedLegs() {
