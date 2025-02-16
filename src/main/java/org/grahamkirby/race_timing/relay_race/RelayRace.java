@@ -145,8 +145,8 @@ public class RelayRace extends SingleRace {
         interpolateMissingTimes();
         guessMissingBibNumbers();
 
-        fillFinishTimes();
-        fillStartTimes();
+        recordFinishTimes();
+        recordStartTimes();
         recordDNFs();
 
         sortResults();
@@ -472,7 +472,7 @@ public class RelayRace extends SingleRace {
         return new IndividualStart(bib_number, leg_number, start_time);
     }
 
-    private void fillFinishTimes() {
+    private void recordFinishTimes() {
 
         recordLegResults();
         sortLegResults();
@@ -527,7 +527,7 @@ public class RelayRace extends SingleRace {
         return result.leg_results.get(leg_number - 1);
     }
 
-    private void fillStartTimes() {
+    private void recordStartTimes() {
 
         overall_results.forEach(this::fillLegResultDetails);
     }

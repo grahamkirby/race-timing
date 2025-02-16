@@ -63,10 +63,15 @@ public abstract class SingleRace extends Race {
     @Override
     protected void configureInputData() throws IOException {
 
-        entries = ((SingleRaceInput) input).loadEntries();
-        raw_results = ((SingleRaceInput) input).loadRawResults();
+        final SingleRaceInput single_race_output = (SingleRaceInput) input;
 
-        overall_results = ((SingleRaceInput) input).loadOverallResults();
+        // Only one of raw_results and overall_results will be fully initialised at this point,
+        // depending on whether this is a locally organised race, with raw results available,
+        // or an externally organised race, with overall results available.
+        // The other list will be initialised as an empty list.
+        entries = single_race_output.loadEntries();
+        raw_results = single_race_output.loadRawResults();
+        overall_results = single_race_output.loadOverallResults();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

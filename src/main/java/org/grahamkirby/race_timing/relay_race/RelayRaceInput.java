@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
@@ -60,19 +61,24 @@ public class RelayRaceInput extends SingleRaceInput {
     @Override
     public List<RawResult> loadRawResults() throws IOException {
 
-        final List<RawResult> raw_results = loadRawResults(race.getPath(raw_results_path));
+        // Need to copy into a mutable list.
+        final List<RawResult> raw_results = new ArrayList<>(loadRawResults(raw_results_path));
         number_of_raw_results = raw_results.size();
 
         if (paper_results_path != null)
-            raw_results.addAll(loadRawResults(race.getPath(paper_results_path)));
+            raw_results.addAll(loadRawResults(paper_results_path));
 
         return raw_results;
     }
 
     @Override
-    protected RawResult loadRawResult(final String line) {
+    protected RawResult makeRawResult(final String line) {
 
-        return new RelayRaceRawResult(line);
+        try {
+            return new RelayRaceRawResult(line);
+        } catch (final NumberFormatException _) {
+            return null;
+        }
     }
 
     int getNumberOfRawResults() {

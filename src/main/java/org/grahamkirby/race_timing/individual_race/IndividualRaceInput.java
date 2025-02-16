@@ -18,13 +18,11 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
-import java.io.IOException;
 import java.util.List;
 
-public class IndividualRaceInput extends SingleRaceInput {
+class IndividualRaceInput extends SingleRaceInput {
 
     IndividualRaceInput(final Race race) {
         super(race);
@@ -33,11 +31,5 @@ public class IndividualRaceInput extends SingleRaceInput {
     @Override
     protected RaceEntry makeRaceEntry(final List<String> elements) {
         return new IndividualRaceEntry(elements, race);
-    }
-
-    @Override
-    public List<RawResult> loadRawResults() throws IOException {
-
-        return raw_results_path != null ? loadRawResults(race.getPath(raw_results_path)) : null;
     }
 }

@@ -61,9 +61,12 @@ public class IndividualRace extends SingleRace {
     @Override
     public void calculateResults() {
 
-        initialiseResults();
+        // When this race is externally organised as part of a series race, the raw
+        // results are not known, and calculation of results is not necessary. In such
+        // cases the final results are loaded in configureInputData().
+        if (!raw_results.isEmpty()) {
 
-        if (raw_results != null) {
+            initialiseResults();
 
             recordFinishTimes();
             recordDNFs();
@@ -181,12 +184,6 @@ public class IndividualRace extends SingleRace {
 
         return List.of(Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
-
-//    @Override
-//    protected boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
-//
-//        return entry_category != null && entry_category.getGender().equals(prize_category.getGender());
-//    }
 
     @Override
     protected EntryCategory getEntryCategory(final RaceResult result) {
