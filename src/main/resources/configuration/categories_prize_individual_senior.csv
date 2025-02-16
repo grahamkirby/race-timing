@@ -1,3 +1,5 @@
+# Default prize categories for senior races
+# Long name, Short name, Gender, Minimum age, Maximum age, Number of prizes, Category group
 Women Open,FO,Women,13,99,3,Overall
 Men Open,MO,Men,13,99,3,Overall
 Women Junior,FU20,Women,13,19,1,Overall

@@ -1,3 +1,5 @@
+# Default categories for senior races
+# Long name, Short name, Gender, Minimum age, Maximum age
 Women Junior,FU20,Women,13,19
 Men Junior,MU20,Men,13,19
 Women Senior,FS,Women,20,39

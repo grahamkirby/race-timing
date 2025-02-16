@@ -65,8 +65,6 @@ public abstract class Race {
     private final Path config_file_path;
     private final Properties properties;
 
-    protected List<RaceResult> overall_results;
-
     public RacePrizes prizes;
     private StringBuilder notes;
 
@@ -77,10 +75,23 @@ public abstract class Race {
     protected RaceOutputText output_text;
     private RaceOutputPDF output_PDF;
 
-    public List<PrizeCategoryGroup> prize_category_groups;
+    /** Overall race results. */
+    protected List<RaceResult> overall_results;
+
+    /**
+     * List of valid entry categories.
+     * Value is read from configuration file using key KEY_CATEGORIES_ENTRY_PATH.
+     */
     private List<EntryCategory> entry_categories;
 
     /**
+     * List of prize categories.
+     * Value is read from configuration file using key KEY_CATEGORIES_PRIZE_PATH.
+     */
+    public List<PrizeCategoryGroup> prize_category_groups;
+
+    /**
+     * Map from entry gender to eligible prize gender.
      * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
      */
     private Map<String, String> gender_eligibility_map;
@@ -97,6 +108,11 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Defines whether or not equal positions are allowed. Typically this depends on
+     * whether the race is an individual race (no equal positions) or a series race (equal positions).
+     * @return true if equal positions are allowed
+     */
     public abstract boolean areEqualPositionsAllowed();
     protected abstract void calculateResults();
 
@@ -462,8 +478,11 @@ public abstract class Race {
         return group;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     private boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
         if (entry_category != null && entry_category.getGender().equals(prize_category.getGender())) return true;
 
         return gender_eligibility_map.keySet().stream().
@@ -473,6 +492,8 @@ public abstract class Race {
 
     private static boolean isEntryCategoryEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
         return entry_category != null &&
             entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
             entry_category.getMaximumAge() <= prize_category.getMaximumAge();

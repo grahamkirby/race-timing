@@ -1,1 +1,2 @@
+# File names to be ignored when comparing expected test output with actual output
 .DS_Store

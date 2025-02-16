@@ -23,12 +23,9 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
@@ -38,6 +35,7 @@ public abstract class SingleRaceInput extends RaceInput {
 
     private final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
     private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
+    private final Function<String, RawResult> raw_result_mapper = this::makeRawResult;
 
     private int next_fake_bib_number = 1;
 
@@ -49,7 +47,6 @@ public abstract class SingleRaceInput extends RaceInput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract List<RawResult> loadRawResults() throws IOException;
     protected abstract RaceEntry makeRaceEntry(final List<String> elements);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,17 +55,17 @@ public abstract class SingleRaceInput extends RaceInput {
 
         entries_path = race.getProperty(KEY_ENTRIES_PATH);
         raw_results_path = race.getProperty(KEY_RAW_RESULTS_PATH);
-        results_path = race.getProperty(KEY_RESULTS_PATH);
+        overall_results_path = race.getProperty(KEY_RESULTS_PATH);
         categories_entry_path = race.getProperty(KEY_CATEGORIES_ENTRY_PATH);
         categories_prize_path = race.getProperty(KEY_CATEGORIES_PRIZE_PATH);
     }
 
     List<RaceEntry> loadEntries() throws IOException {
 
-        if (entries_path == null) return List.of();
+        if (entries_path == null) return new ArrayList<>();
 
         final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
-            filter(line -> !line.isEmpty()).
+            filter(Predicate.not(String::isBlank)).
             map(race_entry_mapper).
             toList();
 
@@ -80,12 +77,44 @@ public abstract class SingleRaceInput extends RaceInput {
 
     List<RaceResult> loadOverallResults() throws IOException {
 
-        if (results_path == null) return new ArrayList<>();
+        if (overall_results_path == null) return new ArrayList<>();
 
-        return Files.readAllLines(race.getPath(results_path)).stream().
-            filter(line -> !line.isEmpty()).
+        return Files.readAllLines(race.getPath(overall_results_path)).stream().
+            filter(Predicate.not(String::isBlank)).
             map(race_result_mapper).
+            filter(Objects::nonNull).
             toList();
+    }
+
+    protected List<RawResult> loadRawResults(final String raw_results_path) throws IOException {
+
+        if (raw_results_path == null) return new ArrayList<>();
+
+        final List<RawResult> raw_results = Files.readAllLines(race.getPath(raw_results_path)).stream().
+            map(SingleRaceInput::stripComment).
+            filter(Predicate.not(String::isBlank)).
+            map(raw_result_mapper).
+            filter(Objects::nonNull).
+            toList();
+
+        assertCorrectlyOrdered(raw_results);
+
+        return raw_results;
+    }
+
+    public List<RawResult> loadRawResults() throws IOException {
+
+        return loadRawResults(raw_results_path);
+    }
+
+    protected RawResult makeRawResult(final String line) {
+
+        try {
+            return new RawResult(line);
+        }
+        catch (final NumberFormatException _) {
+            return null;
+        }
     }
 
     private RaceResult makeRaceResult(final List<String> elements) {
@@ -99,35 +128,6 @@ public abstract class SingleRaceInput extends RaceInput {
         result.completion_status = CompletionStatus.COMPLETED;
 
         return result;
-    }
-
-    protected List<RawResult> loadRawResults(final Path results_path) throws IOException {
-
-        if (raw_results_path == null) return List.of();
-
-        final List<RawResult> raw_results = new ArrayList<>();
-
-        for (final String line : Files.readAllLines(results_path))
-            addResult(stripComment(line), raw_results);
-
-        assertCorrectlyOrdered(raw_results);
-
-        return raw_results;
-    }
-
-    private void addResult(final String line, final Collection<? super RawResult> raw_results) {
-
-        if (!line.isBlank())
-            try {
-                raw_results.add(loadRawResult(line));
-
-            } catch (final NumberFormatException _) {
-            }
-    }
-
-    protected RawResult loadRawResult(final String line) {
-
-        return new RawResult(line);
     }
 
     private static String stripComment(final String line) {

@@ -60,7 +60,7 @@ public abstract class RaceTest {
     private static boolean first_test = true;
 
     // Whether at least one test failed earlier in the run.
-    private static boolean no_previous_test_failed = true;
+    private static boolean previous_failed_test = false;
 
     // Whether the current test failed.
     private boolean failed_test = true;
@@ -85,7 +85,7 @@ public abstract class RaceTest {
         if (DEBUG) {
 
             // Whether this is the first test in the run to have failed.
-            final boolean first_failed_test = failed_test && no_previous_test_failed;
+            final boolean first_failed_test = failed_test && !previous_failed_test;
 
             // Whether the retained output directory is present from a previous run (in which case it should be deleted).
             final boolean output_directory_retained_from_previous_run = first_test && Files.exists(retained_output_directory);
@@ -100,7 +100,7 @@ public abstract class RaceTest {
             cleanUpDirectories(output_directory_retained_from_previous_run, output_directory_should_be_retained);
 
             first_test = false;
-            if (first_failed_test) no_previous_test_failed = false;
+            if (first_failed_test) previous_failed_test = true;
 
         } else
             deleteDirectory(test_directory);

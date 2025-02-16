@@ -1,3 +1,5 @@
+# Default categories for relay races
+# Long name, Short name, Gender, Minimum age, Maximum age
 Open Senior,OS,Open,15,99
 Mixed Senior,MS,Mixed,15,99
 Women Senior,WS,Women,15,99

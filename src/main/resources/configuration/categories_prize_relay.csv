@@ -1,4 +1,5 @@
-# Long Name, Short Name, Gender, Minimum Age, Maximum Age, Number of Prizes, Category Group
+# Default prize categories for relay races
+# Long name, Short name, Gender, Minimum age, Maximum age, Number of prizes, Category group
 Women Senior,WS,Women,15,99,3,Overall
 Open Senior,OS,Open,15,99,3,Overall
 Women 40+,W40,Women,40,99,1,Overall
