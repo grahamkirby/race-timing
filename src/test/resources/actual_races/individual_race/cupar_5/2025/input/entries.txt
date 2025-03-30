@@ -1,0 +1,221 @@
+1	Douglas	Adamson	Dundee Hawkhill H	M60
+2	David	Aitken	Dundee RR	M50
+3	Bryce	Aitken	Fife AC	M60
+4	Sandra	Aitken	Fife AC	F60
+5	Euan	Alexander	Unattached	M40
+6	Jenni	Alexander	Unattached	F40
+7	Mark	Allan	Unattached	MSen
+8	Hanna	Andrejczuk	Fife AC	FSen
+9	Simon	Anetts	Fife AC	MSen
+10	Gregor	Angus	Unattached	M40
+11	David	Armour	Vegan Runners UK	M60
+12	Sue	Armstrong	Fife AC	F50
+13	Vinnie	Atkinson	Fife AC	M50
+14	David	Baird	Dundee RR	M40
+15	Andy	Ballantyne	Kirkcaldy Wizards	M50
+16	Jenny	Bannerman	Inverness H	FSen
+17	Shona	Barry	Dundee RR	F60
+18	Nick	Bennett	Dundee RR	MSen
+19	Steven	Blair	Corstorphine AAC	M60
+20	Keith	Bonthrone	Fife AC	M60
+21	Romain	Borgeal	Dundee Hawkhill H	MSen
+22	Alan	Bothwell	Perth RR	M60
+23	Susan	Bothwell	Perth RR	F60
+24	Evan	Bowers	Dundee RR	MSen
+25	Nick	Brian	Fife AC	M70
+26	Fiona	Brian	Unattached	FSen
+27	Hilary	Brown	Dundee RR	F50
+28	John	Bryceland	Dundee RR	M50
+29	Fiona	Callaghan	Dundee RR	FSen
+30	Geoff	Campbell	Dundee RR	M40
+31	Colin	Campbell	RunSum running Kirkcaldy	M40
+32	Fiona	Canavan	Dundee RR	FSen
+33	Mireille	Captieux	Fife AC	F40
+34	Steven	Chalmers	Fraserburgh RC	M50
+35	Roger	Clark	PH Racing Club	M50
+36	Craig	Cocker	Unattached	M50
+37	Chris	Corrigan	Unattached	MSen
+38	Jonathan	Creese	Dundee RR	M40
+39	Laura	Darling-Brackenridge	Dundee RR	FSen
+40	Barry	Davie	Carnegie H	M40
+41	Steven	Dick	Edinburgh AC	M60
+42	Brenda	Doig	Dundee RR	F50
+43	Graeme	Doig	PH Racing Club	M50
+44	Lorraine	Dunbar	Dundee RR	F60
+45	Robbie	Dunlop	Dundee RR	MSen
+46	Ryan	Dunning	Fife AC	M40
+47	Ewan	Duthie	Dundee RR	MSen
+48	Daniel	Fields	Dundee RR	M40
+49	Heather	Finlayson	Kirkcaldy Wizards	F50
+50	Donna	Finlayson	VP City Of Glasgow	FSen
+51	Simon	Fletcher	Pitreavie AAC	M40
+52	Malcolm	Forbes	Dundee RR	M60
+53	Shaun	Fullerton	Montrose Flyers RC  	MSen
+54	Lucy	Fyffe	Dundee RR	F50
+55	Orla	Gage	Anster Haddies RC	FU20
+56	Will	Gage	Anster Haddies RC	M50
+57	Alan	Gardener	Falkland TR	M50
+58	Rebecca	Garside	Dundee RR	F40
+59	Keith	Gelly	Dundee RR	M50
+60	Alison	Gelly	Dundee RR	F50
+61	Claire	Gibson	Kinross RR	FSen
+62	Phillip	Gillespie	Dundee RR	M50
+63	Stuart	Goodfellow	Kirkcaldy Wizards	M50
+64	Andrew	Goring	Unattached	M40
+65	Scott	Graves	Unattached	M40
+66	Ryan	Gray	Fife AC	MSen
+67	Wendy	Grieve	Kinross RR	F60
+68	Richard	Grieve	Unattached	MSen
+69	Alistair	Gudgin	Fife AC	MSen
+70	James	Hall	Fife AC	M40
+71	Alex	Hallatt	Dundee RR	MSen
+72	Gill	Hanlon	Dundee RR	F70
+73	Emma	Hargrave	Dundee RR	FSen
+74	Andy	Harley	Fife AC	M40
+75	Debz Way	Hay	Anster Haddies RC	F50
+76	Tristan	Henderson	Unattached	M50
+77	Gillian	Hernandez	Dundee Hawkhill H	F50
+78	Pancho	Hernandez	Dundee Hawkhill H	M70
+79	Nigel	Hetherington	Fife AC	M60
+80	Rosemary	Hill	Scotia Racewalking Club	F70
+81	Jamie	Hughes	Arbroath RR	M40
+82	Hamish	Hughson	Unattached	M50
+83	Scott	Hutchison	STAART	MSen
+84	Gail	Jack	Dundee Hawkhill H	F60
+85	Maximilian	Jamieson	Unattached	MSen
+86	Michelle	Johnstone	Fife AC	F40
+87	Marten	Kats	Perth RR	M40
+88	Harry	Kay	Dundee RR	M70
+89	Connor	Kelly	Dundee RR	M60
+90	Gillian	Kemp	Unattached	F40
+91	Christopher	Kent	Kirkcaldy Wizards	M40
+92	Allan	Kettles	Dundee RR	M50
+93	Paul	Kieran	PH Racing Club	M50
+94	Tim	Kinnaird	Fife AC	M40
+95	Ben	Kinninmonth	Fife AC	MSen
+96	John	Kinninmonth	Fife AC	M60
+97	Vikki	Laing	Kirkcaldy Wizards	F40
+98	Catherine	Law	Arbroath RF	F50
+99	Stuart	Law	Arbroath RR	M50
+100	Jamie	Lessels	Fife AC	MSen
+101	Frances	Liddell	Edinburgh AC	FSen
+102	Gordon	Lindsay	Perth RR	M60
+103	Mairi	Littleson	Dundee RR	FSen
+104	Connor	Livingstone	Dundee RR	MSen
+105	Jocelyn	Lofthouse	Harmeny AC	F50
+106	Iain	Luke	Dundee RR	M70
+107	Mike	MacDonald	Fife AC	M50
+108	George	MacDonald	Kirkcaldy Wizards	M60
+109	Sheenagh	Macdonald	Unattached	F50
+110	Marcas	Macfarlane	Fife AC	MU20
+111	Evan	MacKernan	Fife AC	M40
+112	Margaret Louise	Mackie	Dundee RR	F60
+113	Iain	Maclean	Calderglen H	M50
+114	Harry	Macleod	Kinross RR	MU20
+115	Keren	Macpherson	Fife AC	F50
+116	John	MacPherson	Fife AC	M40
+117	Daniel	Macqueen	Penicuik H	M40
+118	Ruth	Macqueen	Penicuik H	F40
+119	Eoghan	Maguire	Fife AC	M40
+120	Euan	Martin	Falkirk Victoria H	MSen
+121	John	Martin	Unattached	M60
+122	Jennifer	Massie	Dundee RR	F40
+123	David	McColl	Inverness H	M40
+124	Jacqueline	McCulloch	Dundee RR	F50
+125	Sandy	McDougall	Dundee Hawkhill H	F40
+126	Graeme	McDowall	Fife AC	M50
+127	Christopher	McHardy	Central AC	M40
+128	Claire	McHardy	Wee County H	F40
+129	John	Mcintosh	Edinburgh AC	M60
+130	Josh	McKay	Dundee RR	MSen
+131	Laura	McMahon	Dundee RR	FSen
+132	joe	mcmanus	St Cyrus Solos	M60
+133	Alison	McNeilly	Dundee RR	F40
+134	Michael	McQuaid	Falkirk Victoria Harriers	M60
+135	Stephen	McQuistin	North Ayrshire AC	MSen
+136	John	Mill	Dundee RR	M60
+137	Neil	Millar	Fife AC	M50
+138	Mairi-Anne	Miller	Unattached	F40
+139	Chloe	Milne	Unattached	FSen
+140	Michael	Mitchell	Dundee RR	M50
+141	Laura	Muir	Fife AC	F40
+142	Kevin	Norman	Dundee RR	M40
+143	Jane	O'Donnell	Dundee RR	F40
+144	Michael	O'Donnell	Unattached	M40
+145	Stefan	O'Grady	Dundee RR	M40
+146	Damien	O'Looney	Harmeny AC	M40
+147	Jane	Oliver	Deeside Runners	F60
+148	David	Oliver	Deeside Runners	M60
+149	Erin	Peoples	Unattached	FSen
+150	Graeme	Petrie	Dundee Hawkhill H	M50
+151	Birgit	Plietzsch	STAART	F50
+152	Lewis	Prideaux	Unattached	MSen
+153	Amanda	Quick	Unattached	F50
+154	Martyn	Quick	Unattached	M50
+155	Tom	Rainey	Anster Haddies RC	M40
+156	Jennifer	Ramsay	Unattached	F40
+157	Logan	Rees	Fife AC	MSen
+158	Helen	Reid	Kirkcaldy Wizards	F60
+159	Michael	Reilly	Anster Haddies RC	M50
+160	Logan	Reilly	Anster Haddies RC	MU20
+161	Karen	Richards	Fife AC	F50
+162	Michael	Richardson	Dundee RR	MSen
+163	Hilary	Ritchie	Fife AC	F60
+164	Karen	Ritchie	Kinross RR	F40
+165	Jimmy	Robertson	Kirkcaldy Wizards	M50
+166	Kari	Robertson	Unattached	FSen
+167	Iain	Rodger	Unattached	M40
+168	Martin	Rollo	Dundee RR	M50
+169	?	?	?	MSen
+220	Sarah	Ross	Tweed Leader Jed Track	FSen
+170	Michael	Royden	Dundee RR	M50
+171	Linda	Rudd	Dundee RR	F60
+172	sharon	Russell	Dundee RR	F50
+173	Rory	Sandilands	Fife AC	M40
+174	Jim	Scobie	Scottish Athletics	M80
+175	Robert	Sellar	PH Racing Club	M50
+176	Suzanne	Shaw	Anster Haddies RC	F40
+177	Gary	Shaw	Anster Haddies RC	M50
+178	Elaine	Shemilt	Unattached	F70
+179	Rebecca	Shenton	Dundee RR	FSen
+180	Marcus	Sheridan	Dundee RR	MSen
+181	Colin	Simpson	Kirkintilloch Olympians	M60
+182	Shirley	Simpson	Scotia Racewalking Club	F60
+183	Arron	Small	Dundee RR	MSen
+184	Keirra	Small	Dundee RR	FSen
+185	James	Small	Unattached	M50
+186	Carol Ann	Smith	Dundee RR	F50
+187	Mark	Sreeves	Unattached	M60
+188	Eric	Stevenson	Edinburgh AC	M70
+189	Jillian	Stevenson	Kirkcaldy Wizards	F50
+190	Stephen	Stewart	Arbroath RR	M50
+191	Jamie	Stewart	Dundee RR	M40
+192	Gail	Stirling	Dundee RR	F60
+193	Craig	Stokes	Kirkcaldy Wizards	M40
+194	Kasia	Szafarz	Kirkcaldy Wizards	F40
+195	Morag	Taggart	Dundee RR	F60
+196	Carter	Taylor	Fife AC	MSen
+197	John	Tierney	Dundee RR	M40
+198	Keith	Traill	Fife AC	M70
+199	Greg	Turner	Ayrodynamic Triathlon Club	MSen
+200	Ruan	Van Rensburg	Fife AC	MSen
+201	Nico	Van Rensburg	Fife AC	MSen
+202	Alexander	Vassallo	Dundee Hawkhill H	MSen
+203	Nick	Wade	Anster Haddies RC	M50
+204	Fiona	Walker	Fife AC	F50
+205	Kevin	Wallace	Fife AC	M40
+206	Peter	Warland	Stowmarket Striders RC	M60
+207	Sharon	Warland	Stowmarket Striders RC	F50
+208	Megan	Watt	Dundee RR	FSen
+209	David	Webster	Dundee RR	MSen
+210	Kirsten	Webster	Dundee RR	FSen
+211	Grant	Whytock	Dundee RR	M50
+212	Malcolm	Wildgoose	Edinburgh Running Network	MSen
+213	Christine	Wilson	Fife AC	F40
+214	Greg	Wilson	Kirkcaldy Wizards	M40
+215	Mandy	Wojciechowski	St Cyrus Solos	F50
+216	Raymond	Young	Unattached	M70
+217	Ben	Fraser	Fife AC	MSen
+219	India	Arikan	Dundee RR	FSen
+221	Anna	Wojciechowski	St Cyrus Solos	FSen
+218	James	Grecian	Unatt.	M40

@@ -192,10 +192,10 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    protected void recordDNF(final String dnf_bib_number) {
+    protected void recordDNF(final String dnf_specification) {
 
         try {
-            final int bib_number = Integer.parseInt(dnf_bib_number);
+            final int bib_number = Integer.parseInt(dnf_specification);
             final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
             result.completion_status = CompletionStatus.DNF;

@@ -65,11 +65,12 @@ public abstract class SingleRace extends Race {
 
         final SingleRaceInput single_race_output = (SingleRaceInput) input;
 
-        // Only one of raw_results and overall_results will be fully initialised at this point,
-        // depending on whether this is a locally organised race, with raw results available,
-        // or an externally organised race, with overall results available.
-        // The other list will be initialised as an empty list.
         entries = single_race_output.loadEntries();
+
+        // Only one of raw_results and overall_results will be fully initialised at this point,
+        // depending on whether raw results are available, or just overall results (perhaps for
+        // an externally organised race included in a race series).
+        // The other list will be initialised as an empty list.
         raw_results = single_race_output.loadRawResults();
         overall_results = single_race_output.loadOverallResults();
     }
@@ -86,8 +87,8 @@ public abstract class SingleRace extends Race {
         // file, corresponding to cases where the runners reported not completing the
         // course.
 
-        // DNF cases where there is no recorded leg result are captured by the
-        // default value of DNF being true.
+        // Cases where there is no recorded result are captured by the
+        // default completion status being DNS.
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))
@@ -96,5 +97,5 @@ public abstract class SingleRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract void recordDNF(String dnf_bib_number);
+    protected abstract void recordDNF(String dnf_specification);
 }
