@@ -60,6 +60,7 @@ public abstract class RaceTest {
     private static boolean first_test = true;
 
     // Whether at least one test failed earlier in the run.
+    @SuppressWarnings("BooleanVariableAlwaysNegated")
     private static boolean previous_failed_test = false;
 
     // Whether the current test failed.

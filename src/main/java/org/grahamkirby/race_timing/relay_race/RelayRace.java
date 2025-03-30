@@ -253,12 +253,12 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    protected void recordDNF(final String dnf_bib_number) {
+    protected void recordDNF(final String dnf_specification) {
 
         try {
             // String of form "bib-number/leg-number"
 
-            final String[] elements = dnf_bib_number.split("/");
+            final String[] elements = dnf_specification.split("/");
             final int bib_number = Integer.parseInt(elements[0]);
             final int leg_number = Integer.parseInt(elements[1]);
 

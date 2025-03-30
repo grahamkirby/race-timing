@@ -42,6 +42,11 @@ public class ActualRacesIndividualTest extends RaceTest {
     }
 
     @Test
+    void cupar52025() throws IOException {
+        testExpectedCompletion("actual_races/individual_race/cupar_5/2025");
+    }
+
+    @Test
     void dunnikier2024() throws IOException {
         testExpectedCompletion("actual_races/individual_race/dunnikier/2024");
     }
@@ -84,5 +89,10 @@ public class ActualRacesIndividualTest extends RaceTest {
     @Test
     void juniorHillRaces2017() throws IOException {
         testExpectedCompletion("actual_races/individual_race/junior_hill_races/2017");
+    }
+
+    @Test
+    void normansLaw2025() throws IOException {
+        testExpectedCompletion("actual_races/individual_race/normans_law/2025");
     }
 }

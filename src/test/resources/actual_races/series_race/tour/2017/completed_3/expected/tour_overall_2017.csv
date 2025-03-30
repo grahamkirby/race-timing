@@ -1,20 +1,20 @@
 Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 1,Ben Hukins,Cambuslang H,MS,00:24:03,00:27:38,00:04:35,00:56:16
 2,Christopher O'Brien,Corstorphine AAC,MS,00:24:38,00:30:39,00:04:43,01:00:00
-3,Robbie Dunlop,Dundee Rr AC,MS,00:24:43,00:30:41,00:04:47,01:00:11
+3,Robbie Dunlop,Dundee RR AC,MS,00:24:43,00:30:41,00:04:47,01:00:11
 4,Akira O'Connor,Fife AC,MS,00:24:45,00:32:26,00:04:54,01:02:05
 5,Andrew Leech,Dundee Hawkhill Harriers,MS,00:24:49,00:32:53,00:05:02,01:02:44
 6,Oliver Lever,Lomond Hill Runners,MS,00:25:08,00:32:43,00:05:01,01:02:52
-7,Daniel Hale,University of St. Andrews Ccc,MS,00:25:03,00:32:47,00:05:06,01:02:56
+7,Daniel Hale,University of St. Andrews CCC,MS,00:25:03,00:32:47,00:05:06,01:02:56
 8,Bryan McLaren,Leven Las Vagas,MS,00:24:55,00:33:33,00:04:58,01:03:26
 9,James Bowden,Hunters Bog T,MS,00:26:05,00:33:21,00:05:11,01:04:37
 10,Jonny Logan,Fife AC,MS,00:25:23,00:34:51,00:05:18,01:05:32
-11=,Kevin Greig,Dundee Rr AC,M40,00:26:31,00:34:03,00:05:33,01:06:07
-11=,Matthew Low,Dundee Rr AC,MS,00:28:02,00:32:51,00:05:14,01:06:07
+11=,Kevin Greig,Dundee RR AC,M40,00:26:31,00:34:03,00:05:33,01:06:07
+11=,Matthew Low,Dundee RR AC,MS,00:28:02,00:32:51,00:05:14,01:06:07
 13,Hendrik Van Rensburg,U/n,M40,00:26:16,00:34:28,00:05:29,01:06:13
 14,Iain Wallace,Leven Las Vegas RC,M40,00:26:01,00:34:41,00:05:36,01:06:18
 15,Maya Stone,Fife AC,FS,00:27:23,00:33:45,00:05:25,01:06:33
-16,Christopher McKiddie,Westerlands Ccc,MS,00:26:44,00:34:25,00:05:30,01:06:39
+16,Christopher McKiddie,Westerlands CCC,MS,00:26:44,00:34:25,00:05:30,01:06:39
 17,Bryan Innes,Falkland Trail Runners,MS,00:26:21,00:35:17,00:05:21,01:06:59
 18,Scott Love,PH Racing,MS,00:26:14,00:35:30,00:05:17,01:07:01
 19,Alan Cameron,Corstorphine AAC,M40,00:26:27,00:35:13,00:05:24,01:07:04
@@ -25,17 +25,17 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 24,Brian Lees,Lothian RC,M50,00:25:55,00:36:29,00:05:34,01:07:58
 25,Jonathan Millar,Carnegie Harriers,MS,00:26:58,00:35:31,00:05:36,01:08:05
 26,Jennifer Cruickshanks,Fife AC,FS,00:27:14,00:36:07,00:05:28,01:08:49
-27,Elaine Omand,Dundee Rr AC,FS,00:27:05,00:36:11,00:05:35,01:08:51
-28,Lee O'Connor,Dundee Rr AC,M40,00:26:59,00:36:23,00:05:34,01:08:56
+27,Elaine Omand,Dundee RR AC,FS,00:27:05,00:36:11,00:05:35,01:08:51
+28,Lee O'Connor,Dundee RR AC,M40,00:26:59,00:36:23,00:05:34,01:08:56
 29,Colin Mcwilliam,Fife AC,MS,00:26:46,00:37:20,00:05:36,01:09:42
-30,Arnaud Richard,Dundee Rr AC,MS,00:27:37,00:36:17,00:05:50,01:09:44
-31,Simon Knox,Dundee Rr AC,M50,00:27:27,00:36:44,00:05:51,01:10:02
+30,Arnaud Richard,Dundee RR AC,MS,00:27:37,00:36:17,00:05:50,01:09:44
+31,Simon Knox,Dundee RR AC,M50,00:27:27,00:36:44,00:05:51,01:10:02
 32,Susan Ridley,Edinburgh AC,F50,00:28:04,00:36:21,00:06:05,01:10:30
 33,Joanne Mcevoy,Calderglen H,FS,00:27:08,00:38:02,00:05:54,01:11:04
 34,Mike Murdoch,Falkland Trail Runners,M40,00:27:16,00:38:31,00:05:18,01:11:05
-35,Jim Morton,Dundee Rr AC,M50,00:28:15,00:36:50,00:06:02,01:11:07
+35,Jim Morton,Dundee RR AC,M50,00:28:15,00:36:50,00:06:02,01:11:07
 36,Louise Andrew,Dundee and Angus Cani-Cross,FS,00:27:03,00:38:23,00:05:53,01:11:19
-37,Duncan Edward,Dundee Rr AC,MS,00:27:10,00:38:54,00:05:43,01:11:47
+37,Duncan Edward,Dundee RR AC,MS,00:27:10,00:38:54,00:05:43,01:11:47
 38,Gary Barker,Fife AC,M60,00:28:22,00:37:30,00:06:00,01:11:52
 39,Simon Fox,Fife AC,M50,00:28:13,00:37:59,00:05:52,01:12:04
 40,Derek Grant,Dundee and Angus Cani-Cross,M40,00:27:12,00:39:15,00:05:38,01:12:05
@@ -48,12 +48,12 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 47,CJ Macphail,Anster Haddies,FS,00:29:34,00:38:20,00:05:55,01:13:49
 48,Tom Scott,Fife AC,M60,00:28:30,00:39:26,00:06:03,01:13:59
 49,Rhona Van Rensburg,Fife AC,F40,00:27:31,00:40:33,00:05:57,01:14:01
-50,Paul Reed,Dundee Rr AC,M40,00:29:11,00:39:02,00:06:00,01:14:13
-51,David Dunleavey,Dundee Rr AC,M50,00:28:55,00:39:56,00:06:01,01:14:52
-52,Jennifer Massie,Dundee Rr AC,FS,00:28:06,00:41:26,00:05:51,01:15:23
+50,Paul Reed,Dundee RR AC,M40,00:29:11,00:39:02,00:06:00,01:14:13
+51,David Dunleavey,Dundee RR AC,M50,00:28:55,00:39:56,00:06:01,01:14:52
+52,Jennifer Massie,Dundee RR AC,FS,00:28:06,00:41:26,00:05:51,01:15:23
 53,Brian R Smith,Fife AC,M50,00:29:30,00:39:48,00:06:07,01:15:25
 54,Gary Ovenstone,STAART,M40,00:29:19,00:40:19,00:06:06,01:15:44
-55,Fiona Callaghan,Dundee Rr AC,FS,00:29:51,00:39:57,00:05:59,01:15:47
+55,Fiona Callaghan,Dundee RR AC,FS,00:29:51,00:39:57,00:05:59,01:15:47
 56,Gary Howe,Fife AC,M40,00:29:54,00:40:23,00:06:14,01:16:31
 57,David Norrie,Fife AC,M60,00:29:48,00:40:40,00:06:06,01:16:34
 58,Neill Porterfield,Corstorphine AAC,M40,00:29:32,00:41:23,00:05:56,01:16:51
@@ -62,7 +62,7 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 61,Tam Nicol'S,Stilton Striders,M50,00:29:16,00:43:00,00:05:59,01:18:15
 62,Merce Torres,Fife AC,F40,00:30:12,00:41:34,00:06:35,01:18:21
 63,Fiona Cruickshanks,Anster Haddies,FS,00:30:53,00:41:37,00:06:07,01:18:37
-64,Alison McNeilly,Dundee Rr AC,F40,00:29:25,00:42:54,00:06:29,01:18:48
+64,Alison McNeilly,Dundee RR AC,F40,00:29:25,00:42:54,00:06:29,01:18:48
 65,Innes Bracegirdle,Fife AC,F60,00:30:01,00:42:10,00:06:53,01:19:04
 66,Michael Bisset,Carnegie Harriers,M40,00:29:43,00:44:38,00:05:44,01:20:05
 67,David Henderson,Corstorphine AAC,M50,00:30:00,00:44:19,00:06:20,01:20:39
@@ -84,11 +84,11 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 83,Christina Grant,Dundee and Angus Cani-Cross,FS,00:29:38,00:50:09,00:05:54,01:25:41
 84,John Henderson,Fife AC,M40,00:32:21,00:46:56,00:06:25,01:25:42
 85,Sharon Brown,Anster Haddies,FS,00:34:31,00:44:41,00:06:49,01:26:01
-86,Fiona Plain,Dundee Rr AC,FS,00:31:55,00:47:52,00:06:26,01:26:13
+86,Fiona Plain,Dundee RR AC,FS,00:31:55,00:47:52,00:06:26,01:26:13
 87,Morna Fleming,Pitreavie AAC,F60,00:32:52,00:47:36,00:06:44,01:27:12
 88,David Nuttall,Anster Haddies,M40,00:35:12,00:46:32,00:07:15,01:28:59
 89,Zuleika Brett,Carnegie Harriers,FS,00:34:19,00:47:32,00:07:18,01:29:09
-90,Brian Stewart,Dundee Rr AC,MS,00:34:59,00:47:25,00:06:56,01:29:20
+90,Brian Stewart,Dundee RR AC,MS,00:34:59,00:47:25,00:06:56,01:29:20
 91,Nick Brian,Fife AC,M60,00:33:15,00:49:08,00:06:58,01:29:21
 92,Bob Wylie,Leven Las Vegas RC,MS,00:34:10,00:48:27,00:06:50,01:29:27
 93,Bill Gillan,Falkland Trail Runners,M60,00:33:22,00:49:23,00:07:10,01:29:55
@@ -97,7 +97,7 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 96,Paul Mcglynn,Fife AC,M50,00:33:19,00:50:43,00:07:15,01:31:17
 97,Malcolm Mactavish,Falkland Trail Runners,M60,00:35:48,00:51:18,00:07:24,01:34:30
 98,Robert Thornton,Fife AC,M60,00:34:29,00:53:21,00:07:03,01:34:53
-99,Pauline Smith,Dundee Rr AC,FS,00:35:33,00:52:15,00:07:14,01:35:02
+99,Pauline Smith,Dundee RR AC,FS,00:35:33,00:52:15,00:07:14,01:35:02
 100,Claire Duncan,Beacon Runners,F40,00:33:58,00:54:34,00:07:33,01:36:05
 101,Ross Johnston,Leven Las Vegas RC,M50,00:35:04,00:54:44,00:07:31,01:37:19
 102,Derek Adamson,Fife AC,M40,00:35:08,00:55:58,00:07:34,01:38:40
@@ -105,7 +105,7 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 104,Big George Hay,Anster Haddies,M50,00:37:44,00:55:33,00:07:57,01:41:14
 105,Peter Rieu-Clarke,Leven Las Vegas RC,M70,00:38:22,00:56:09,00:07:35,01:42:06
 106,Ruth Letham,Fife AC,FS,00:37:22,00:57:30,00:07:41,01:42:33
-107,Josh McKay,Dundee Rr AC,MS,00:37:52,00:57:57,00:06:46,01:42:35
+107,Josh McKay,Dundee RR AC,MS,00:37:52,00:57:57,00:06:46,01:42:35
 108,Debz Way Hay,Anster Haddies,F50,00:40:26,00:54:37,00:08:26,01:43:29
 109,John Lee,Falkland Trail Runners,M50,00:40:15,00:54:39,00:08:39,01:43:33
 110,Jacqueline Cook,Falkland Trail Runners,F40,00:37:30,00:58:41,00:07:54,01:44:05
@@ -118,8 +118,8 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Total
 -,Heather Anderson,Fife AC,FS,-,00:35:23,-,-
 -,William Arnot,Anster Haddies,M50,-,00:45:33,-,-
 -,Jane Askey,Fife AC,F70,00:50:44,-,-,-
--,Joanne Clancy,Dundee Rr AC,FS,00:30:34,00:46:47,-,-
--,Peter Connolly,Dundee Rr AC,M50,00:30:46,00:47:19,-,-
+-,Joanne Clancy,Dundee RR AC,FS,00:30:34,00:46:47,-,-
+-,Peter Connolly,Dundee RR AC,M50,00:30:46,00:47:19,-,-
 -,Keith Copland,Corstorphine AAC,M40,00:31:07,00:42:28,-,-
 -,Stuart Fraser,Perth Road Runners,MS,00:26:58,-,-,-
 -,Cyndi Svee,U/n,F50,-,-,00:08:40,-
