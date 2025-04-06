@@ -28,16 +28,24 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 @SuppressWarnings("VariableNotUsedInsideIf")
 public class IndividualRace extends SingleRace {
 
     // Configuration file keys.
     private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
+    private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
 
     private String median_time_string;
+
+    /**
+     * List of individual early starts (usually empty).
+     * Values are read from configuration file using key KEY_INDIVIDUAL_EARLY_STARTS.
+     */
+    private Map<Integer, Duration> early_starts;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +82,13 @@ public class IndividualRace extends SingleRace {
             sortResults();
             allocatePrizes();
         }
+    }
+
+    @Override
+    protected void configure() throws IOException {
+
+        super.configure();
+        configureIndividualEarlyStarts();
     }
 
     /** Gets the entry category for the runner with the given bib number. */
@@ -220,8 +235,11 @@ public class IndividualRace extends SingleRace {
 
         raw_results.forEach(raw_result -> {
 
-            final IndividualRaceResult result = getResultWithBibNumber(raw_result.getBibNumber());
-            result.finish_time = raw_result.getRecordedFinishTime();
+            final int bib_number = raw_result.getBibNumber();
+            final IndividualRaceResult result = getResultWithBibNumber(bib_number);
+
+            final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
+            result.finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
 
             // Provisionally this result is not DNF since a finish time was recorded.
             // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
@@ -252,5 +270,29 @@ public class IndividualRace extends SingleRace {
         return (int) raw_results.stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
             count();
+    }
+
+    private void configureIndividualEarlyStarts() {
+
+        final String individual_early_starts_string = getProperty(KEY_INDIVIDUAL_EARLY_STARTS);
+
+        // bib number / start time difference
+        // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
+
+        early_starts = new HashMap<>();
+
+        if (individual_early_starts_string != null)
+            Arrays.stream(individual_early_starts_string.split(",")).
+                forEach(this::recordEarlyStart);
+    }
+
+    private void recordEarlyStart(final String early_starts_string) {
+
+        final String[] split = early_starts_string.split("/");
+
+        final int bib_number = Integer.parseInt(split[0]);
+        final Duration start_time = parseTime(split[1]);
+
+        early_starts.put(bib_number, start_time);
     }
 }

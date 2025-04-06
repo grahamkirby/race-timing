@@ -61,6 +61,11 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
+    void illegalEntry() throws IOException {
+        testExpectedException("individual_race/illegal_entry", "illegal composition for runner: 138 Robbie Dunlop Dundee Road Runners MS");
+    }
+
+    @Test
     void illegalRawTime() throws IOException {
         testExpectedException("individual_race/illegal_raw_time", "illegal time: XXX");
     }
