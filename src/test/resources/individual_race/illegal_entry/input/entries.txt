@@ -11,7 +11,7 @@
 123	Fergus Ingledew	Fife AC	MS
 124	Robert Sparks	Fife AC	MS
 125	Paige Brown	Perth Road Runners	FS
-126	Keri Weatherhogg	Perth Road Runners	F40
+126	Keri Weathering	Perth Road Runners	F40
 127	Tom Harris	Fife AC	MS
 128	Roger Rees	Fife AC	M50
 129	Logan Rees	Fife AC	MS
@@ -25,8 +25,8 @@
 135	Fiona Canavan	Dundee Road Runners	FS
 136	Fiona Callaghan	Dundee Road Runners	FS
 137	Dominic Hughes	Dundee Road Runners	M40
-138	Robbie Dunlop	Dundee Road Runners	MS
-139	Alison Gelly	Dundee Road Runners	F50
+138	Robbie Dunlop	Dundee Road Runners MS
+139	Alison Grey	Dundee Road Runners	F50
 140	Keith Gelly	Dundee Road Runners	M50
 141	Luneau Etienne	Edinburgh Triathletes	MS
 142	Willie Rennie	PH Racing Club	M50

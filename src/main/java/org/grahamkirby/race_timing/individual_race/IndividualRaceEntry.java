@@ -27,24 +27,25 @@ import java.util.Objects;
 public class IndividualRaceEntry extends RaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
-    private static final int EXPECTED_NUMBER_OF_ENTRY_ELEMENTS = 4;
-
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int NAME_INDEX = 1;
     private static final int CLUB_INDEX = 2;
     private static final int CATEGORY_INDEX = 3;
 
     public final Runner runner;
-
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public IndividualRaceEntry(final List<String> elements, final Race race) {
 
-        final List<String> mapped_elements = race.normalisation.mapRaceEntryElements(elements);
-
-        if (mapped_elements.size() != EXPECTED_NUMBER_OF_ENTRY_ELEMENTS)
-            throw new RuntimeException(STR."illegal composition for runner: \{mapped_elements.get(BIB_NUMBER_INDEX)}");
+        final List<String> mapped_elements;
+        try {
+            mapped_elements = race.normalisation.mapRaceEntryElements(elements);
+        }
+        catch (final Exception _) {
+            throw new RuntimeException(STR."illegal composition for runner: \{String.join(" ", elements)}");
+        }
 
         try {
             bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));

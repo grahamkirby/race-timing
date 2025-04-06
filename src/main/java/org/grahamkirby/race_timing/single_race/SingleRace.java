@@ -32,6 +32,8 @@ public abstract class SingleRace extends Race {
     static final String KEY_RESULTS_PATH = "RESULTS_PATH";
     private static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public List<RaceEntry> entries;
     protected List<RawResult> raw_results;
 
