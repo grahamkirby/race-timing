@@ -14,7 +14,7 @@
 126	Keri Weathering	Perth Road Runners	F40
 127	Tom Harris	Fife AC	MS
 128	Roger Rees	Fife AC	M50
-129	Logan Rees	Fife AC	MS
+129	Logan Rees	Kirkcaldy Wizards	MS
 130	Ross Docherty	Falkland Trail Runners	MS
 131	Steph Devlin	Dundee Road Runners	F40
 132	Evan Bowers	Dundee Road Runners	MS

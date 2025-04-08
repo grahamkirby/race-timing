@@ -56,8 +56,6 @@ public abstract class SingleRaceInput extends RaceInput {
         entries_path = race.getProperty(KEY_ENTRIES_PATH);
         raw_results_path = race.getProperty(KEY_RAW_RESULTS_PATH);
         overall_results_path = race.getProperty(KEY_RESULTS_PATH);
-        categories_entry_path = race.getProperty(KEY_CATEGORIES_ENTRY_PATH);
-        categories_prize_path = race.getProperty(KEY_CATEGORIES_PRIZE_PATH);
     }
 
     List<RaceEntry> loadEntries() throws IOException {
