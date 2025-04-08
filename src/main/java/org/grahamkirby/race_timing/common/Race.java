@@ -382,7 +382,8 @@ public abstract class Race {
     private void configureCategories() throws IOException {
 
         entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
-        prize_category_groups = loadPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+        prize_category_groups = new ArrayList<>();
+        loadPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
     }
 
     private void configureGenderEligibilityMap() throws IOException {
@@ -444,37 +445,33 @@ public abstract class Race {
     }
 
     /** Loads prize category groups from the given file. */
-    private static List<PrizeCategoryGroup> loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
-
-        final List<PrizeCategoryGroup> groups = new ArrayList<>();
+    private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
 
         Files.readAllLines(prize_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(line -> recordGroup(line, groups));
-
-        return groups;
+            forEachOrdered(this::recordGroup);
     }
 
-    private static void recordGroup(final String line, final Collection<PrizeCategoryGroup> groups) {
+    private void recordGroup(final String line) {
 
         final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
-        final PrizeCategoryGroup group = getGroupWithName(groups, group_name);
+        final PrizeCategoryGroup group = getGroupByName(group_name);
 
         group.categories().add(new PrizeCategory(line));
     }
 
-    private static PrizeCategoryGroup getGroupWithName(final Collection<PrizeCategoryGroup> groups, final String group_name) {
+    private PrizeCategoryGroup getGroupByName(final String group_name) {
 
-        PrizeCategoryGroup group = groups.stream().
+        return prize_category_groups.stream().
             filter(g -> g.group_title().equals(group_name)).
             findFirst().
-            orElse(null);
+            orElseGet(() -> newGroup(group_name));
+    }
 
-        if (group == null) {
-            group = new PrizeCategoryGroup(group_name, new ArrayList<>());
-            groups.add(group);
-        }
+    private PrizeCategoryGroup newGroup(final String group_name) {
 
+        final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
+        prize_category_groups.add(group);
         return group;
     }
 
