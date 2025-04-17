@@ -20,7 +20,6 @@ import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
@@ -245,11 +244,6 @@ public class RelayRace extends SingleRace {
     protected List<Comparator<RaceResult>> getDNFComparators() {
 
         return List.of(RelayRace::compareBibNumber);
-    }
-
-    @Override
-    protected EntryCategory getEntryCategory(final RaceResult result) {
-        return ((RelayRaceResult) result).entry.team.category();
     }
 
     @Override

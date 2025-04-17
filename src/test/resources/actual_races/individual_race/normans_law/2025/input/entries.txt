@@ -11,9 +11,10 @@
 123	Fergus Ingledew	Fife AC	MS
 124	Robert Sparks	Fife AC	MS
 125	Paige Brown	Perth Road Runners	FS
-126	Keri Weathering	Perth Road Runners	F40
+126	Keri Weatherhogg	Perth Road Runners	F40
 127	Tom Harris	Fife AC	MS
 128	Roger Rees	Fife AC	M50
+# Next entry changed from Fife AC to Kirkcaldy Wizards to test club prize logic
 129	Logan Rees	Kirkcaldy Wizards	MS
 130	Ross Docherty	Falkland Trail Runners	MS
 131	Steph Devlin	Dundee Road Runners	F40

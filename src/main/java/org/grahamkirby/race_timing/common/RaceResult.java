@@ -19,18 +19,26 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("IncorrectFormatting")
 public abstract class RaceResult {
 
     public final Race race;
     public String position_string;
-    PrizeCategory category_of_prize_awarded;
+    List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
     protected RaceResult(final Race race) {
         this.race = race;
     }
 
+    protected String getIndividualRunnerClub() {
+        return null;
+    }
+
     protected abstract String getIndividualRunnerName();
+
     public abstract int comparePerformanceTo(RaceResult other);
     public abstract CompletionStatus getCompletionStatus();
     public abstract boolean shouldBeDisplayedInResults();

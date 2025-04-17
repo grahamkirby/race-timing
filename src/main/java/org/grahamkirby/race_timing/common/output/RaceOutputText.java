@@ -46,9 +46,11 @@ public abstract class RaceOutputText extends RaceOutput {
 
     @Override
     protected String getPrizesHeader() {
+
+        final String header = STR."\{race_name_for_results} Results \{year}";
         return STR."""
-            \{race_name_for_results} Results \{year}
-            ============================
+            \{header}
+            \{"=".repeat(header.length())}
 
             """;
     }

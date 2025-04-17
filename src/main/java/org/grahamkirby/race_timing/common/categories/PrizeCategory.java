@@ -16,6 +16,11 @@
  */
 package org.grahamkirby.race_timing.common.categories;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * Category defining eligibility for a particular prize.
  * This is different from entry category, since multiple entry categories
@@ -28,6 +33,8 @@ package org.grahamkirby.race_timing.common.categories;
 public final class PrizeCategory extends Category {
 
     private final int number_of_prizes;
+    private final Set<String> eligible_clubs;
+    private final boolean exclusive;
 
     /**
      * Creates an instance from a comma-separated string containing:
@@ -37,10 +44,41 @@ public final class PrizeCategory extends Category {
     public PrizeCategory(final String components) {
 
         super(components);
-        number_of_prizes = Integer.parseInt(components.split(",")[5]);
+        final String[] elements = components.split(",");
+        number_of_prizes = Integer.parseInt(elements[5]);
+
+        eligible_clubs = new HashSet<>();
+        if (elements.length >= 8)
+            eligible_clubs.addAll(Arrays.stream(elements[7].split("/")).toList());
+
+        exclusive = elements.length < 9 || elements[8].equals("Y");
     }
 
     public int numberOfPrizes() {
         return number_of_prizes;
+    }
+
+    public Set<String> getEligibleClubs() {
+        return eligible_clubs;
+    }
+
+    public boolean isExclusive() {
+        return exclusive;
+    }
+
+    /**
+     * Equality defined in terms of gender and age range.
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        return super.equals(obj) && obj instanceof final PrizeCategory other && number_of_prizes == other.number_of_prizes && eligible_clubs.equals(other.eligible_clubs) && exclusive == other.exclusive;
+    }
+
+    /**
+     * Hash code defined in terms of gender and age range.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), number_of_prizes, eligible_clubs, exclusive);
     }
 }

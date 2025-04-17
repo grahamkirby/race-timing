@@ -64,6 +64,7 @@ public abstract class SingleRaceInput extends RaceInput {
 
         final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
             filter(Predicate.not(String::isBlank)).
+            filter(s -> !s.startsWith(COMMENT_SYMBOL)).
             map(race_entry_mapper).
             toList();
 

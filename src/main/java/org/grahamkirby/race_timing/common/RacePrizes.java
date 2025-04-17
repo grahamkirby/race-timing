@@ -41,26 +41,31 @@ public class RacePrizes {
 
     protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
 
-        return hasNotAlreadyWonPrize(result) &&
+        return isStillEligibleForPrize(result, prize_category) &&
             result.getCompletionStatus() == CompletionStatus.COMPLETED &&
-            race.isEntryCategoryEligibleForPrizeCategory(result.getCategory(), prize_category);
+            race.isResultEligibleForPrizeCategory(result, prize_category);
     }
 
-    private static boolean hasNotAlreadyWonPrize(final RaceResult result) {
+    private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
 
-        return result.category_of_prize_awarded == null;
+        if (!new_prize_category.isExclusive()) return true;
+
+        for (final PrizeCategory category_already_won : result.categories_of_prizes_awarded)
+            if (category_already_won.isExclusive()) return false;
+
+        return true;
     }
 
     protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        result.category_of_prize_awarded = category;
+        result.categories_of_prizes_awarded.add(category);
     }
 
     /** Returns prize winners in given category. */
     public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
         final List<RaceResult> prize_results = race.getOverallResults().stream().
-            filter(result -> prize_category.equals(result.category_of_prize_awarded)).
+            filter(result -> result.categories_of_prizes_awarded.contains(prize_category)).
             toList();
 
         race.setPositionStrings(prize_results);
