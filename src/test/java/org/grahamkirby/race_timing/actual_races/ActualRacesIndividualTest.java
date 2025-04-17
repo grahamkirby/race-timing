@@ -77,6 +77,11 @@ public class ActualRacesIndividualTest extends RaceTest {
     }
 
     @Test
+    void stAndrews2025() throws IOException {
+        testExpectedCompletion("actual_races/individual_race/st_andrews/2025");
+    }
+
+    @Test
     void strathBlebo2023() throws IOException {
         testExpectedCompletion("actual_races/individual_race/strath_blebo/2023");
     }

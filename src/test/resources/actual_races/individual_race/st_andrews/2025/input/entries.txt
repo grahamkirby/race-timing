@@ -1,0 +1,101 @@
+1	David  Aitken 	Dundee Road Runners 	M50
+2	Manuel Alderete	Dundee Road Runners	MS
+3	Mark Allan	Glenrothes Triathlon Club	MS
+4	Eric Anderson	Anster Haddies 	M50
+5	Laura Anderson	Unatt.	F40
+6	Simon Anetts	Fife AC	MS
+7	Christina  Atkinson 	Kinross Road Runners 	F40
+8	Gordon Barrie	Dundee Hawkhill Harriers	M50
+9	Matthew  Beaney	Dundee Road Runners 	M40
+10	Charles Beer	University of St Andrews Triathlon Club	MS
+11	Mark Bell	Dundee Road Runners 	M40
+12	Lynn Beveridge 	Kinross Road Runners	F50
+13	Karen Birnie	Kinross Road Runners	F60
+14	Ernesto Bonafe	Dundee Road Runners 	M40
+15	Keith Bonthrone	Fife AC	M60
+16	Evan Bowers	Dundee Road Runners	MS
+17	Abigail Brierley 	East Fife Tri Club 	FS
+18	Matt Buck	Dundee Road Runners	MS
+19	Fiona Callaghan	Dundee Road Runners 	FS
+20	Fiona Canavan	Dundee Road Runners	FS
+21	Chris Corrigan	Glenrothes Triathlon Club	MS
+22	Isla Craig	Kinross Road Runners	F50
+23	Steph Devlin	Dundee Road Runners	F40
+24	Jennifer Douglas	Glenrothes Triathlon Club	FS
+25	Sarah Eaton 	Kinross Road Runners	F60
+26	Tim Ennis	Unatt.	M40
+27	Valerie Findlay 	Kinross Road Runners	F60
+28	Simon Fox	Fife AC	M60
+29	Orla Gage	Anster Haddies	FU20
+30	Will Gage	Anster Haddies	M50
+31	Alison Gelly	Dundee Road Runners 	F50
+32	Keith Gelly	Dundee Road Runners 	M50
+33	Billy Gibson	Dundee Hawkhill Harriers	M40
+34	Jason Grant	Strength to Run 	MS
+35	Wendy  Grieve 	Kinross Road Runners 	F60
+36	Jeff Gunnell	Unatt.	M70
+37	Andy Harley 	Fife AC	M40
+38	Adam Hart	Dundee Road Runners	MS
+39	Lynne  Herd	Anster Haddies 	F40
+40	Dominic Hughes	Dundee Road Runners	M40
+41	Fergus  Ingledew	Unatt.	MS
+42	Caroline Jones	Kinross Road Runners	F40
+43	Sean Kenyon	Unatt.	M50
+44	Shania King	Dundee Hawkhill Harriers	FS
+45	Eliza Konig	Fife AC	FU20
+46	Mairi Littleson	Dundee Road Runners	FS
+47	Hannah Lopez	Kinross Road Runners	FS
+48	Susanne  Lumsden	Falkland Trail Runners 	F50
+49	Linda  MacEachen 	Kinross Road Runners 	F60
+50	John MacPherson	Fife AC	M40
+51	Vince MacPherson	Fife AC	M40
+52	Raphael  Magron-Lorenzo	Unatt.	MS
+53	Ann Malcolm	Kinross Road Runners 	F60
+54	Rhonda Manning	Dundee Hawkhill Harriers	F50
+55	Craig  McAdam 	Kinross Road Runners	M70
+56	Kat McManus	Glenrothes Triathlon Club	FS
+57	Alison McNeilly	Dundee Road Runners	F40
+58	Bethan McRobbie	Anster Haddies 	FS
+59	John Mill	Dundee Road Runners	M60
+60	Neil Millar	Fife AC	M50
+61	Matt Newton	Kinross Road Runners	M50
+62	David Norrie	Unatt.	M70
+63	Kevin O Neill	Kirkcaldy Wizards	F50
+64	David Place	Fife AC	M60
+65	Tom Rainey	Anster Haddies	M40
+66	Melissa  Reid	Wormit Runners 	F50
+67	Alex Reily	Kinross Road Runners 	MS
+68	Willie Rennie	PH Racing Club	M50
+69	Michael Richardson	Dundee Road Runners	MS
+70	Hilary Ritchie	Fife AC 	F60
+71	Ryan Ritchie 	Unatt.	MS
+72	Martin Rollo	Dundee Road Runners	M60
+73	Emma Sharratt	Unatt.	FS
+74	Suzanne Shaw	Anster Haddies	F40
+75	Barry Smith	Kinross Road Runners	MS
+76	Gaynor  Thomson	Dundee Road Runners	F40
+77	Ruan van Rensburg	Fife AC	MS
+78	Brigid  Wallen 	Kinross Road Runners 	F60
+79	Tony Wallen 	Kinross Road Runners	M50
+80	Huw Watkins	Unatt.	M40
+81	David Webster	Dundee Road Runners	MS
+82	Billy  Webster 	Kinross Road Runners	M50
+83	Janice  Webster 	Kinross Road Runners 	F40
+84	Christine  Wilson	Fife AC	F40
+85	Ross Young	Anster Haddies	MS
+86	Sarah Young 	Tayport Runners	F40
+91	Allison MacPherson	Falkland Trail Runners	F40
+90	Tony Martin	Fife AC	M70
+89	Margaret Martin	Fife AC	F60
+88	Andrew Weir	Dundee Road Runners	MS
+87	Jamie Lessels	Fife AC	MS
+92	Daniel Fields	Dundee Road Runners	M40
+93	Graham Rena	Dundee Road Runners	M50
+94	Fiona Walker	Fife AC	F50
+95	Jennifer Massie	Dundee Road Runners	F40
+96	Stephen Dickson	Fife AC	M50
+97	Paul Harkins	Fife AC	M40
+98	Debz Hay	Anster Haddies	F50
+99	Lee Cessford	Falkland Trail Runners	M50
+100	Angus Gray	Kinross Road Runners	MS
+136	Yvonne Dehn	Anster Haddies	FS

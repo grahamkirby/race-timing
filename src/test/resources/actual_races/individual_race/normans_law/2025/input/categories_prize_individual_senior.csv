@@ -1,6 +1,6 @@
-# Long Category Name,Short Category Name,Gender,Minimum Age,Maximum Age,Number of Prizes,Category Group
-Women Fife AC,FF,Women,13,99,3,Overall,Fife AC/Kirkcaldy Wizards
-Men Fife AC,MF,Men,13,99,3,Overall,Fife AC/Kirkcaldy Wizards
+# Long Category Name,Short Category Name,Gender,Minimum Age,Maximum Age,Number of Prizes,Category Group,Optional Eligible Clubs,Exclusive (Y/N)
+Men Fife AC,MF,Men,13,99,1,Overall,Fife AC/Kirkcaldy Wizards,N
+Women Fife AC,FF,Women,13,99,1,Overall,Fife AC/Kirkcaldy Wizards,N
 Women Overall,FO,Women,13,99,3,Overall
 Men Overall,MO,Men,13,99,3,Overall
 Women Junior,FU20,Women,13,19,3,Overall

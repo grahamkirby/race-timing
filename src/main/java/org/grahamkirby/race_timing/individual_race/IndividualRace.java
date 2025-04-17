@@ -201,12 +201,6 @@ public class IndividualRace extends SingleRace {
     }
 
     @Override
-    protected EntryCategory getEntryCategory(final RaceResult result) {
-
-        return ((IndividualRaceResult) result).entry.runner.category;
-    }
-
-    @Override
     protected void recordDNF(final String dnf_specification) {
 
         try {

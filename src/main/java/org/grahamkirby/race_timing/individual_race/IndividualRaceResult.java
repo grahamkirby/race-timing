@@ -61,6 +61,11 @@ public class IndividualRaceResult extends RaceResult {
     }
 
     @Override
+    protected String getIndividualRunnerClub() {
+        return entry == null ? null : entry.runner.club;
+    }
+
+    @Override
     public int comparePerformanceTo(final RaceResult other) {
 
         final Duration duration = duration();

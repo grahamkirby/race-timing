@@ -95,12 +95,6 @@ public abstract class SeriesRace extends Race {
         minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
     }
 
-    @Override
-    protected EntryCategory getEntryCategory(final RaceResult result) {
-
-        return ((SeriesRaceResult) result).runner.category;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<IndividualRace> getRaces() {

@@ -36,6 +36,9 @@ import java.util.function.Predicate;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class Race {
 
+    // TODO improve error messages for input file processing.
+    // TODO test non-exclusive prize categories.
+
     /** Comment symbol used within configuration files. */
     public static final String COMMENT_SYMBOL = "#";
 
@@ -45,8 +48,8 @@ public abstract class Race {
     public static final String KEY_YEAR = "YEAR";
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
-    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
-    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
+    private static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
+    private static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
     private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +130,6 @@ public abstract class Race {
     protected abstract void outputResults() throws IOException;
     protected abstract List<Comparator<RaceResult>> getComparators();
     protected abstract List<Comparator<RaceResult>> getDNFComparators();
-    protected abstract EntryCategory getEntryCategory(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -204,17 +206,18 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Tests whether the given entry category is eligible for the given prize category. */
-    final boolean isEntryCategoryEligibleForPrizeCategory(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    final boolean isResultEligibleForPrizeCategory(final RaceResult result, final PrizeCategory prize_category) {
 
-        return isEntryCategoryEligibleForPrizeCategoryByGender(entry_category, prize_category) &&
-            isEntryCategoryEligibleForPrizeCategoryByAge(entry_category, prize_category);
+        return isResultEligibleForPrizeCategoryByGender(result, prize_category) &&
+            isResultEligibleForPrizeCategoryByAge(result, prize_category) &&
+            isResultEligibleForPrizeCategoryByClub(result, prize_category);
     }
 
     /** Tests whether the given entry category is eligible in any of the given prize categories. */
-    private boolean isEntryCategoryEligibleInSomePrizeCategory(final EntryCategory entry_category, final Collection<PrizeCategory> prize_categories) {
+    private boolean isResultEligibleInSomePrizeCategory(final RaceResult result, final Collection<PrizeCategory> prize_categories) {
 
         return prize_categories.stream().
-            anyMatch(category -> isEntryCategoryEligibleForPrizeCategory(entry_category, category));
+            anyMatch(category -> isResultEligibleForPrizeCategory(result, category));
     }
 
     public List<PrizeCategory> getPrizeCategories() {
@@ -232,7 +235,7 @@ public abstract class Race {
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final Collection<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = result -> isEntryCategoryEligibleInSomePrizeCategory(getEntryCategory(result), prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result -> isResultEligibleInSomePrizeCategory(result, prize_categories);
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
         setPositionStrings(results);
         return results;
@@ -476,10 +479,11 @@ public abstract class Race {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    private boolean isEntryCategoryEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    private boolean isResultEligibleForPrizeCategoryByGender(final RaceResult result, final PrizeCategory prize_category) {
 
         // It's possible for the entry category to be null in a series race, where some of the individual
         // race results may not include entry categories.
+        final EntryCategory entry_category = result.getCategory();
         if (entry_category != null && entry_category.getGender().equals(prize_category.getGender())) return true;
 
         return gender_eligibility_map.keySet().stream().
@@ -487,12 +491,25 @@ public abstract class Race {
             anyMatch(entry_gender -> prize_category.getGender().equals(gender_eligibility_map.get(entry_gender)));
     }
 
-    private static boolean isEntryCategoryEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    private static boolean isResultEligibleForPrizeCategoryByAge(final RaceResult result, final PrizeCategory prize_category) {
 
         // It's possible for the entry category to be null in a series race, where some of the individual
         // race results may not include entry categories.
+        final EntryCategory entry_category = result.getCategory();
+
         return entry_category != null &&
             entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
             entry_category.getMaximumAge() <= prize_category.getMaximumAge();
+    }
+
+    private static boolean isResultEligibleForPrizeCategoryByClub(final RaceResult result, final PrizeCategory prize_category) {
+
+        final String club = result.getIndividualRunnerClub();
+        final Set<String> eligible_clubs = prize_category.getEligibleClubs();
+
+        if (club == null || eligible_clubs.isEmpty()) return true;
+
+        boolean contains = eligible_clubs.contains(club);
+        return contains;
     }
 }
