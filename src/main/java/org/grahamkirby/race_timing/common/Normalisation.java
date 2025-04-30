@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -185,7 +186,7 @@ public class Normalisation {
 
         final Map<String, String> map = new HashMap<>();
 
-        final String category_map_path_string = race.getProperty(KEY_CATEGORY_MAP_PATH);
+        final String category_map_path_string = race.getOptionalProperty(KEY_CATEGORY_MAP_PATH);
         if (category_map_path_string != null) {
 
             final Path category_map_path = race.getPath(category_map_path_string);
@@ -336,8 +337,8 @@ public class Normalisation {
             // Construct ISO-8601 duration format.
             return Duration.parse(STR."PT\{hours(parts)}\{minutes(parts)}\{seconds(parts)}");
 
-        } catch (final RuntimeException _) {
-            throw new RuntimeException(STR."illegal time: \{time}");
+        } catch (final RuntimeException e) {
+            throw new DateTimeParseException(time, time, 0);
         }
     }
 

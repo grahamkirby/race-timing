@@ -23,17 +23,26 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 
-@SuppressWarnings("IncorrectFormatting")
+@SuppressWarnings({"IncorrectFormatting", "NonBooleanMethodNameMayNotStartWithQuestion"})
 public abstract class SingleRaceInput extends RaceInput {
 
-    private final Function<String, RaceEntry> race_entry_mapper = line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+    private final Function<String, RaceEntry> race_entry_mapper = line -> {
+        try {
+            return makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+        }
+        catch (RuntimeException e) {
+            throw e;
+        }
+    };
     private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
     private final Function<String, RawResult> raw_result_mapper = this::makeRawResult;
 
@@ -53,9 +62,9 @@ public abstract class SingleRaceInput extends RaceInput {
 
     protected void readProperties() {
 
-        entries_path = race.getProperty(KEY_ENTRIES_PATH);
-        raw_results_path = race.getProperty(KEY_RAW_RESULTS_PATH);
-        overall_results_path = race.getProperty(KEY_RESULTS_PATH);
+        entries_path = race.getOptionalProperty(KEY_ENTRIES_PATH);
+        raw_results_path = race.getOptionalProperty(KEY_RAW_RESULTS_PATH);
+        overall_results_path = race.getOptionalProperty(KEY_RESULTS_PATH);
     }
 
     List<RaceEntry> loadEntries() throws IOException {
@@ -65,13 +74,79 @@ public abstract class SingleRaceInput extends RaceInput {
         final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
             filter(Predicate.not(String::isBlank)).
             filter(s -> !s.startsWith(COMMENT_SYMBOL)).
-            map(race_entry_mapper).
+            map(line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
             toList();
 
         assertNoDuplicateBibNumbers(entries);
         assertNoDuplicateEntries(entries);
 
         return entries;
+    }
+
+    public void validateInputs() {
+
+        checkEntries();
+    }
+
+    private void checkEntries() {
+
+        if (entries_path != null) {
+
+            checkEntriesFileExists();
+            checkEntryCategories();
+            checkDuplicateBibNumbers();
+        }
+    }
+
+    private void checkDuplicateBibNumbers() {
+
+        try {
+            final List<String> lines = Files.readAllLines(race.getPath(entries_path));
+
+
+            Set<String> seen = new HashSet<>();
+            lines.stream().
+                map(line -> line.split("\t")[0]).
+                filter(bib_number -> !seen.add(bib_number)).
+                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number \{bib_number} in file '\{entries_path}'");});
+
+        } catch (final IOException e) {
+            throw new RuntimeException("invalid file: '" + entries_path + "'");
+        }
+    }
+
+    private void checkEntriesFileExists() {
+
+        if (!Files.exists(race.getPath(entries_path)))
+//        final List<String> lines;
+//        try {
+//            lines = Files.readAllLines(race.getPath(entries_path));
+//        } catch (final IOException e) {
+            throw new RuntimeException("invalid file: '" + entries_path + "'");
+//        }
+    }
+
+    private void checkEntryCategories() {
+
+        try {
+            final List<String> lines = Files.readAllLines(race.getPath(entries_path));
+
+            final AtomicInteger counter = new AtomicInteger(0);
+
+            lines.stream().
+                filter(Predicate.not(String::isBlank)).
+                filter(s -> !s.startsWith(COMMENT_SYMBOL)).
+                forEach(line -> {
+                    try {
+                        counter.incrementAndGet();
+                        makeRaceEntry(Arrays.stream(line.split("\t")).toList());
+                    } catch (final RuntimeException e) {
+                        throw new RuntimeException("invalid line " + counter.get() + " in file '" + entries_path + "': " + e.getMessage());
+                    }
+                });
+        } catch (final IOException e) {
+            throw new RuntimeException("invalid file: '" + entries_path + "'");
+        }
     }
 
     List<RaceResult> loadOverallResults() throws IOException {
@@ -89,16 +164,45 @@ public abstract class SingleRaceInput extends RaceInput {
 
         if (raw_results_path == null) return new ArrayList<>();
 
-        final List<RawResult> raw_results = Files.readAllLines(race.getPath(raw_results_path)).stream().
-            map(SingleRaceInput::stripComment).
-            filter(Predicate.not(String::isBlank)).
-            map(raw_result_mapper).
-            filter(Objects::nonNull).
-            toList();
+//        try {
+//            final List<RawResult> raw_results = Files.readAllLines(race.getPath(raw_results_path)).stream().
+//                map(SingleRaceInput::stripComment).
+//                filter(Predicate.not(String::isBlank)).
+//                map(raw_result_mapper).
+//                filter(Objects::nonNull).
+//                toList();
 
-        assertCorrectlyOrdered(raw_results);
+            List<String> lines = Files.readAllLines(race.getPath(raw_results_path));
+            List<RawResult> raw_results = new ArrayList<>();
 
-        return raw_results;
+            for (int i = 0; i < lines.size(); i++) {
+
+                String s = null;
+                try {
+                    s = stripComment(lines.get(i));
+                    if (!s.isBlank()) {
+                        raw_results.add(makeRawResult(s));
+                    }
+                }
+                catch (final RuntimeException e) {
+                    throw new RuntimeException("invalid line " + (i+1) + " in file '" + raw_results_path + "': " + s);
+                }
+            }
+
+//            final List<RawResult> raw_results = lines.stream().
+//                map(SingleRaceInput::stripComment).
+//                filter(Predicate.not(String::isBlank)).
+//                map(raw_result_mapper).
+//                filter(Objects::nonNull).
+//                toList();
+
+            assertCorrectlyOrdered(raw_results);
+
+            return raw_results;
+//        }
+//        catch (final RuntimeException e) {
+//            throw new RuntimeException("invalid line 0 in file '" + raw_results_path + "': " + e.getMessage());
+//        }
     }
 
     public List<RawResult> loadRawResults() throws IOException {
@@ -112,6 +216,7 @@ public abstract class SingleRaceInput extends RaceInput {
             return new RawResult(line);
         }
         catch (final NumberFormatException _) {
+            // TODO is this needed?
             return null;
         }
     }
@@ -162,11 +267,11 @@ public abstract class SingleRaceInput extends RaceInput {
                     throw new RuntimeException(STR."duplicate bib number: \{entry1.bib_number}");
     }
 
-    private static void assertNoDuplicateEntries(final Iterable<? extends RaceEntry> entries) {
+    private void assertNoDuplicateEntries(final Iterable<? extends RaceEntry> entries) {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1 != entry2 && entry1.equals(entry2))
-                    throw new RuntimeException(STR."duplicate entry: \{entry1}");
+                    throw new RuntimeException(STR."duplicate entry in file '\{Paths.get(entries_path).getFileName()}': \{entry1}");
     }
 }

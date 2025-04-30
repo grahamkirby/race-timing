@@ -17,11 +17,15 @@
 package org.grahamkirby.race_timing;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.junit.jupiter.api.Test;
 import org.grahamkirby.race_timing.relay_race.RelayRace;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_MASS_START_ELAPSED_TIMES;
+import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 
 public class RelayRaceTest extends RaceTest {
 
@@ -264,53 +268,57 @@ public class RelayRaceTest extends RaceTest {
     }
 
     @Test
-    void duplicateTeamNumber() throws IOException {
-        testExpectedException("relay_race/duplicate_team_number", "duplicate bib number: 3");
+    void duplicateTeamNumber() throws Exception {
+        testExpectedErrorMessage("relay_race/duplicate_team_number", () -> STR."duplicate bib number 3 in file '\{properties.getProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
-    void duplicateTeamName() throws IOException {
-        testExpectedException("relay_race/duplicate_team_name", "duplicate entry: Team 2");
+    void duplicateTeamName() throws Exception {
+        testExpectedErrorMessage("relay_race/duplicate_team_name", () -> STR."duplicate entry in file '\{properties.getProperty(KEY_ENTRIES_PATH)}': Team 2");
     }
 
     @Test
-    void extraResult() throws IOException {
-        testExpectedException("relay_race/extra_result", "surplus result recorded for team: 2");
+    void extraResult() throws Exception {
+        testExpectedErrorMessage("relay_race/extra_result", () -> STR."invalid entry in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': surplus result recorded for team: 2");
+    }
+
+    // TODO test duplicate bib number in individual raw results.
+
+    @Test
+    void illegalDNFTime() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_dnf_time", () -> STR."invalid entry for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}': XXX");
     }
 
     @Test
-    void illegalDNFTime() throws IOException {
-        testExpectedException("relay_race/illegal_dnf_time", "illegal DNF time");
+    void illegalMassStartTime() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_mass_start_time", () -> STR."invalid entry for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}': XXX");
     }
 
     @Test
-    void illegalMassStartTime() throws IOException {
-        testExpectedException("relay_race/illegal_mass_start_time", "illegal time: XXX");
+    void illegalRawTime() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_raw_time", () -> STR."invalid line 13 in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': 3\tXXX");
+    }
+
+    // TODO test missing property in config file.
+
+    @Test
+    void illegalMassStartTimeOrder() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_mass_start_time_order", () -> STR."invalid entry for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}': illegal mass start time order");
     }
 
     @Test
-    void illegalRawTime() throws IOException {
-        testExpectedException("relay_race/illegal_raw_time", "illegal time: XXX");
+    void illegalCategory() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_category", () -> STR."invalid line 3 in file '\{properties.getProperty(KEY_ENTRIES_PATH)}': 3 Team 3 Men Senior Jackbruce Martin King & Leland Donaldson Neil MacDonald & Myles  Christie Hubert Gray");
     }
 
     @Test
-    void illegalMassStartTimeOrder() throws IOException {
-        testExpectedException("relay_race/illegal_mass_start_time_order", "illegal mass start time order");
+    void illegalTeamComposition() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_team_composition", () -> STR."invalid line 3 in file '\{properties.getProperty(KEY_ENTRIES_PATH)}': 3 Team 3 OS Jackbruce Neil MacDonald & Myles  Christie Hubert Gray");
     }
 
     @Test
-    void illegalCategory() throws IOException {
-        testExpectedException("relay_race/illegal_category", "illegal category for team: 3");
-    }
-
-    @Test
-    void illegalTeamComposition() throws IOException {
-        testExpectedException("relay_race/illegal_team_composition", "illegal composition for team: 3");
-    }
-
-    @Test
-    void switchedResult() throws IOException {
-        testExpectedException("relay_race/switched_result", "surplus result recorded for team: 2");
+    void switchedResult() throws Exception {
+        testExpectedErrorMessage("relay_race/switched_result", () -> STR."invalid entry in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': surplus result recorded for team: 2");
     }
 
     @Test

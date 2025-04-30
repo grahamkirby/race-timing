@@ -70,7 +70,7 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
 
             for (int i = 0; i < ((SeriesRace) race).getNumberOfRacesTakenPlace(); i++)
                 writer.append(STR."""
-                                <th>\{((SeriesRace) race).getRaces().get(i).getProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
+                                <th>\{((SeriesRace) race).getRaces().get(i).getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
                     """);
 
             writer.append(STR."""

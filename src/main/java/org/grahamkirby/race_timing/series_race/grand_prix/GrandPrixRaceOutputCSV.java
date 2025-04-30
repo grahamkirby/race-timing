@@ -42,7 +42,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
         return STR."Pos,Runner,Category,\{((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).
-            map(race1 -> race1.getProperty(KEY_RACE_NAME_FOR_RESULTS)).
+            map(race1 -> race1.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)).
             collect(Collectors.joining(","))}" + STR.",Total,Qualified\{getRaceCategoriesHeader()}\n";
     }
 

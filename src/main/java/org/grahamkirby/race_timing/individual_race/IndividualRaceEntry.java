@@ -42,9 +42,8 @@ public class IndividualRaceEntry extends RaceEntry {
         final List<String> mapped_elements;
         try {
             mapped_elements = race.normalisation.mapRaceEntryElements(elements);
-        }
-        catch (final Exception _) {
-            throw new RuntimeException(STR."illegal composition for runner: \{String.join(" ", elements)}");
+        } catch (final Exception _) {
+            throw new RuntimeException(String.join(" ", elements));
         }
 
         try {
@@ -59,7 +58,7 @@ public class IndividualRaceEntry extends RaceEntry {
             runner = new Runner(name, club, category);
 
         } catch (final RuntimeException _) {
-            throw new RuntimeException(STR."illegal category for runner: \{bib_number}");
+            throw new RuntimeException(String.join(" ", elements));
         }
     }
 

@@ -42,12 +42,12 @@ public class IndividualRaceTest extends RaceTest {
 
     @Test
     void duplicateBibNumber() throws IOException {
-        testExpectedException("individual_race/duplicate_bib_number", "duplicate bib number: 3");
+        testExpectedException("individual_race/duplicate_bib_number", "duplicate bib number 3 in file 'entries.txt'");
     }
 
     @Test
     void duplicateRunner() throws IOException {
-        testExpectedException("individual_race/duplicate_runner", "duplicate entry: John Smith, Fife AC");
+        testExpectedException("individual_race/duplicate_runner", "duplicate entry in file 'entries.txt': John Smith, Fife AC");
     }
 
     @Test
@@ -57,18 +57,20 @@ public class IndividualRaceTest extends RaceTest {
 
     @Test
     void illegalCategory() throws IOException {
-        testExpectedException("individual_race/illegal_category", "illegal category for runner: 92");
+        testExpectedException("individual_race/illegal_category", "invalid line 92 in file 'entries.txt': 92 Hannah Tippetts Dundee Road Runners XXX");
     }
 
     @Test
     void illegalEntry() throws IOException {
-        testExpectedException("individual_race/illegal_entry", "illegal composition for runner: 138 Robbie Dunlop Dundee Road Runners MS");
+        testExpectedException("individual_race/illegal_entry", "invalid line 28 in file 'entries.txt': 138 Robbie Dunlop Dundee Road Runners MS");
     }
 
     @Test
     void illegalRawTime() throws IOException {
-        testExpectedException("individual_race/illegal_raw_time", "illegal time: XXX");
+        testExpectedException("individual_race/illegal_raw_time", "invalid line 4 in file 'rawtimes.txt': 3\tXXX");
     }
+
+    // Test for illegal bib number in raw times.
 
     @Test
     void multipleGender() throws IOException {
@@ -78,6 +80,11 @@ public class IndividualRaceTest extends RaceTest {
     @Test
     void multipleTimeFormats() throws IOException {
         testExpectedCompletion("individual_race/multiple_time_formats");
+    }
+
+    @Test
+    void nonExclusivePrizeCategories() throws IOException {
+        testExpectedCompletion("individual_race/non_exclusive_prize_categories");
     }
 
     @Test

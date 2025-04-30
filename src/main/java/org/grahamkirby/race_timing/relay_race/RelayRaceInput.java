@@ -49,8 +49,8 @@ public class RelayRaceInput extends SingleRaceInput {
 
         super.readProperties();
 
-        paper_results_path = race.getProperty(KEY_PAPER_RESULTS_PATH);
-        annotations_path = race.getProperty(KEY_ANNOTATIONS_PATH);
+        paper_results_path = race.getOptionalProperty(KEY_PAPER_RESULTS_PATH);
+        annotations_path = race.getOptionalProperty(KEY_ANNOTATIONS_PATH);
     }
 
     @Override

@@ -144,10 +144,10 @@ public abstract class RaceOutput {
 
     private void readProperties() {
 
-        year = race.getProperty(KEY_YEAR);
+        year = race.getRequiredProperty(KEY_YEAR);
 
-        race_name_for_results = race.getProperty(KEY_RACE_NAME_FOR_RESULTS);
-        race_name_for_filenames = race.getProperty(KEY_RACE_NAME_FOR_FILENAMES);
+        race_name_for_results = race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS);
+        race_name_for_filenames = race.getRequiredProperty(KEY_RACE_NAME_FOR_FILENAMES);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -37,7 +37,7 @@ import java.util.function.Predicate;
 public abstract class Race {
 
     // TODO improve error messages for input file processing.
-    // TODO test non-exclusive prize categories.
+    // TODO add junior hill races.
 
     /** Comment symbol used within configuration files. */
     public static final String COMMENT_SYMBOL = "#";
@@ -65,8 +65,8 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final Path config_file_path;
-    private final Properties properties;
+    protected final Path config_file_path;
+    protected final Properties properties;
 
     public RacePrizes prizes;
     private StringBuilder notes;
@@ -107,6 +107,27 @@ public abstract class Race {
         properties = loadProperties(config_file_path);
 
         configure();
+    }
+
+    @FunctionalInterface
+    protected interface RaceFactory {
+
+        Race apply(String config_file_path) throws Exception;
+    }
+
+    protected static void commonMain(final String[] args, final RaceFactory factory) {
+
+        // Path to configuration file should be first argument.
+
+        if (args.length < 1)
+            System.out.println("usage: java RelayRace <config file path>");
+        else {
+            try {
+                factory.apply(args[0]).processResults();
+            } catch (@SuppressWarnings("OverlyBroadCatchBlock") final Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,9 +229,12 @@ public abstract class Race {
     /** Tests whether the given entry category is eligible for the given prize category. */
     final boolean isResultEligibleForPrizeCategory(final RaceResult result, final PrizeCategory prize_category) {
 
-        return isResultEligibleForPrizeCategoryByGender(result, prize_category) &&
-            isResultEligibleForPrizeCategoryByAge(result, prize_category) &&
-            isResultEligibleForPrizeCategoryByClub(result, prize_category);
+        boolean resultEligibleForPrizeCategoryByGender = isResultEligibleForPrizeCategoryByGender(result, prize_category);
+        boolean resultEligibleForPrizeCategoryByAge = isResultEligibleForPrizeCategoryByAge(result, prize_category);
+        boolean resultEligibleForPrizeCategoryByClub = isResultEligibleForPrizeCategoryByClub(result, prize_category);
+        return resultEligibleForPrizeCategoryByGender &&
+            resultEligibleForPrizeCategoryByAge &&
+            resultEligibleForPrizeCategoryByClub;
     }
 
     /** Tests whether the given entry category is eligible in any of the given prize categories. */
@@ -241,7 +265,17 @@ public abstract class Race {
         return results;
     }
 
-    public String getProperty(final String key) {
+    public String getRequiredProperty(final String key) {
+
+        final String property = properties.getProperty(key);
+
+        if (property == null)
+            throw new RuntimeException(STR."no entry for key '\{key}' in file '\{config_file_path.getFileName()}'");
+
+        return property;
+    }
+
+    public String getOptionalProperty(final String key) {
 
         return properties.getProperty(key);
     }
@@ -384,16 +418,16 @@ public abstract class Race {
 
     private void configureCategories() throws IOException {
 
-        entry_categories = Files.readAllLines(getPath(getProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+        entry_categories = Files.readAllLines(getPath(getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
         prize_category_groups = new ArrayList<>();
-        loadPrizeCategoryGroups(getPath(getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+        loadPrizeCategoryGroups(getPath(getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH)));
     }
 
     private void configureGenderEligibilityMap() throws IOException {
 
         gender_eligibility_map = new HashMap<>();
 
-        final String gender_eligibility_map_path = getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH);
+        final String gender_eligibility_map_path = getOptionalProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH);
 
         if (gender_eligibility_map_path != null)
             Files.readAllLines(getPath(gender_eligibility_map_path)).stream().
@@ -405,7 +439,7 @@ public abstract class Race {
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
-    private static Properties loadProperties(final Path config_file_path) throws IOException {
+    public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
 

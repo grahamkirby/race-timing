@@ -148,7 +148,7 @@ public class IndividualRace extends SingleRace {
     protected void readProperties() throws IOException {
 
         super.readProperties();
-        median_time_string = getProperty(KEY_MEDIAN_TIME);
+        median_time_string = getOptionalProperty(KEY_MEDIAN_TIME);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class IndividualRace extends SingleRace {
             result.completion_status = CompletionStatus.DNF;
 
         } catch (final NumberFormatException e) {
-            throw new RuntimeException("illegal DNF string: ", e);
+            throw new RuntimeException("illegal DNF string: " + dnf_specification, e);
         }
     }
 
@@ -268,7 +268,7 @@ public class IndividualRace extends SingleRace {
 
     private void configureIndividualEarlyStarts() {
 
-        final String individual_early_starts_string = getProperty(KEY_INDIVIDUAL_EARLY_STARTS);
+        final String individual_early_starts_string = getOptionalProperty(KEY_INDIVIDUAL_EARLY_STARTS);
 
         // bib number / start time difference
         // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
