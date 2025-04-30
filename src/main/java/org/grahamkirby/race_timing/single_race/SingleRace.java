@@ -27,10 +27,10 @@ import java.util.List;
 public abstract class SingleRace extends Race {
 
     // Configuration file keys.
-    static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
-    static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
+    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
     static final String KEY_RESULTS_PATH = "RESULTS_PATH";
-    private static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
+    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,16 +65,19 @@ public abstract class SingleRace extends Race {
     @Override
     protected void configureInputData() throws IOException {
 
-        final SingleRaceInput single_race_output = (SingleRaceInput) input;
+        input.validateInputs();
 
-        entries = single_race_output.loadEntries();
+        final SingleRaceInput single_race_input = (SingleRaceInput) input;
+
+        entries = single_race_input.loadEntries();
 
         // Only one of raw_results and overall_results will be fully initialised at this point,
         // depending on whether raw results are available, or just overall results (perhaps for
         // an externally organised race included in a race series).
         // The other list will be initialised as an empty list.
-        raw_results = single_race_output.loadRawResults();
-        overall_results = single_race_output.loadOverallResults();
+        raw_results = single_race_input.loadRawResults();
+        overall_results = single_race_input.loadOverallResults();
+
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,9 +95,14 @@ public abstract class SingleRace extends Race {
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
-        if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(","))
-                recordDNF(individual_dnf_string);
+        try {
+            if (dnf_string != null && !dnf_string.isBlank())
+                for (final String individual_dnf_string : dnf_string.split(","))
+                    recordDNF(individual_dnf_string);
+        }
+        catch (RuntimeException e) {
+            throw new RuntimeException(STR."invalid entry for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}': \{e.getMessage()}");
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

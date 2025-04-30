@@ -30,6 +30,7 @@ class IndividualRaceInput extends SingleRaceInput {
 
     @Override
     protected RaceEntry makeRaceEntry(final List<String> elements) {
+
         return new IndividualRaceEntry(elements, race);
     }
 }

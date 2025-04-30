@@ -81,8 +81,8 @@ public class GrandPrixRace extends SeriesRace {
     protected void readProperties() {
 
         super.readProperties();
-        qualifying_clubs = Arrays.asList(getProperty(KEY_QUALIFYING_CLUBS).split(","));
-        score_for_median_position = Integer.parseInt(getProperty(KEY_SCORE_FOR_MEDIAN_POSITION));
+        qualifying_clubs = Arrays.asList(getRequiredProperty(KEY_QUALIFYING_CLUBS).split(","));
+        score_for_median_position = Integer.parseInt(getRequiredProperty(KEY_SCORE_FOR_MEDIAN_POSITION));
     }
 
     @Override
@@ -161,7 +161,7 @@ public class GrandPrixRace extends SeriesRace {
 
         race_categories = new ArrayList<>();
 
-        Files.readAllLines(getPath(getProperty(KEY_RACE_CATEGORIES_PATH))).stream().
+        Files.readAllLines(getPath(getRequiredProperty(KEY_RACE_CATEGORIES_PATH))).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             forEachOrdered(this::configureRaceCategory);
     }

@@ -48,8 +48,11 @@ public final class PrizeCategory extends Category {
         number_of_prizes = Integer.parseInt(elements[5]);
 
         eligible_clubs = new HashSet<>();
-        if (elements.length >= 8)
-            eligible_clubs.addAll(Arrays.stream(elements[7].split("/")).toList());
+        if (elements.length >= 8) {
+            final String club_string = elements[7];
+            if (!club_string.isEmpty())
+                eligible_clubs.addAll(Arrays.stream(club_string.split("/")).toList());
+        }
 
         exclusive = elements.length < 9 || elements[8].equals("Y");
     }

@@ -70,7 +70,7 @@ public class MidweekRace extends SeriesRace {
     protected void readProperties() {
 
         super.readProperties();
-        score_for_first_place = Integer.parseInt(getProperty(KEY_SCORE_FOR_FIRST_PLACE));
+        score_for_first_place = Integer.parseInt(getRequiredProperty(KEY_SCORE_FOR_FIRST_PLACE));
     }
 
     @Override

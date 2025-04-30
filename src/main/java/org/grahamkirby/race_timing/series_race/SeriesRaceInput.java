@@ -40,6 +40,10 @@ public class SeriesRaceInput extends RaceInput {
         readProperties();
     }
 
+    public void validateInputs() {
+
+    }
+
     List<IndividualRace> loadRaces() throws IOException {
 
         final List<IndividualRace> races = new ArrayList<>();
@@ -61,7 +65,7 @@ public class SeriesRaceInput extends RaceInput {
 
     protected void readProperties() {
 
-        race_config_paths = Arrays.asList(race.getProperty(KEY_RACES).split(",", -1));
+        race_config_paths = Arrays.asList(race.getRequiredProperty(KEY_RACES).split(",", -1));
     }
 
     private IndividualRace getIndividualRace(final String race_config_path, final int race_number) throws IOException {

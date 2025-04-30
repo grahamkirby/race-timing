@@ -105,7 +105,7 @@ public class TourRaceInput extends SeriesRaceInput {
 
     private List<EntryCategory> readSecondWaveCategories() {
 
-        final String second_wave_categories_string = race.getProperty(KEY_SECOND_WAVE_CATEGORIES);
+        final String second_wave_categories_string = race.getOptionalProperty(KEY_SECOND_WAVE_CATEGORIES);
         if (second_wave_categories_string == null) return List.of();
 
         final String[] second_wave_category_strings = second_wave_categories_string.split(",", -1);
@@ -123,9 +123,9 @@ public class TourRaceInput extends SeriesRaceInput {
 
     private void readTimeTrialProperties() {
 
-        time_trial_race_number = Integer.parseInt(race.getProperty(KEY_TIME_TRIAL_RACE));
+        time_trial_race_number = Integer.parseInt(race.getRequiredProperty(KEY_TIME_TRIAL_RACE));
 
-        final String[] parts = race.getProperty(KEY_TIME_TRIAL_STARTS).split(",", -1);
+        final String[] parts = race.getRequiredProperty(KEY_TIME_TRIAL_STARTS).split(",", -1);
 
         if (parts.length == 2) {
             time_trial_runners_per_wave = Integer.parseInt(parts[0]);

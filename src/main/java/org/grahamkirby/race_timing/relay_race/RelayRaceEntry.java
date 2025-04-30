@@ -39,7 +39,7 @@ public class RelayRaceEntry extends RaceEntry {
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
         if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace) race).getNumberOfLegs())
-            throw new RuntimeException(STR."illegal composition for team: \{elements.get(BIB_NUMBER_INDEX)}");
+            throw new RuntimeException(String.join(" ", elements));
 
         bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {
@@ -51,7 +51,7 @@ public class RelayRaceEntry extends RaceEntry {
             team = new Team(name, category, runners);
 
         } catch (final RuntimeException _) {
-            throw new RuntimeException(STR."illegal category for team: \{bib_number}");
+            throw new RuntimeException(String.join(" ", elements));
         }
     }
 

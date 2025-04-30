@@ -91,8 +91,8 @@ public abstract class SeriesRace extends Race {
     @Override
     protected void readProperties() {
 
-        number_of_races_in_series = Integer.parseInt(getProperty(KEY_NUMBER_OF_RACES_IN_SERIES));
-        minimum_number_of_races = Integer.parseInt(getProperty(KEY_MINIMUM_NUMBER_OF_RACES));
+        number_of_races_in_series = Integer.parseInt(getRequiredProperty(KEY_NUMBER_OF_RACES_IN_SERIES));
+        minimum_number_of_races = Integer.parseInt(getRequiredProperty(KEY_MINIMUM_NUMBER_OF_RACES));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,7 +188,7 @@ public abstract class SeriesRace extends Race {
             if (current_category != null) {
                 if (previous_category != null && !previous_category.equals(current_category)) {
 
-                    final String note = STR."from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{result.race.getProperty(KEY_RACE_NAME_FOR_RESULTS)}";
+                    final String note = STR."from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{result.race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}";
 
                     if (isAgeOrderConsistent(previous_category, current_category))
                         getNotes().append(STR."""

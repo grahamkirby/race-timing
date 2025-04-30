@@ -20,14 +20,18 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.AfterEach;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
+import java.util.Properties;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemErr;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,13 +72,15 @@ public abstract class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private Path config_file_path;
+    protected Path config_file_path;
     private Path resources_input_directory;
     private Path test_directory;
     private Path test_input_directory;
     private Path test_output_directory;
     private Path retained_output_directory;
     private Path expected_output_directory;
+
+    protected Properties properties;
 
     protected abstract Race makeRace(Path config_file_path) throws IOException;
 
@@ -129,7 +135,7 @@ public abstract class RaceTest {
         configureDirectoryContents(resources_input_directory);
     }
 
-    void testExpectedException(final String configuration_name, final String expected_error_message) throws IOException {
+    void testExpectedException(final String configuration_name, final Supplier<String> get_expected_error_message) throws IOException {
 
         configureTest(configuration_name);
 
@@ -138,10 +144,15 @@ public abstract class RaceTest {
             () -> makeRace(config_file_path).processResults()
         );
 
-        assertEquals(expected_error_message, exception.getMessage(), "Unexpected exception message");
+        assertEquals(get_expected_error_message.get(), exception.getMessage(), "Unexpected exception message");
 
         // Test has passed if this line is reached.
         failed_test = false;
+    }
+
+    void testExpectedException(final String configuration_name, final String expected_error_message) throws IOException {
+
+        testExpectedException(configuration_name, () -> expected_error_message);
     }
 
     protected void testExpectedCompletion(final String configuration_name) throws IOException {
@@ -155,9 +166,27 @@ public abstract class RaceTest {
         failed_test = false;
     }
 
+    protected void testExpectedErrorMessage(final String configuration_name, final Supplier<String> get_expected_error_message) throws Exception {
+
+        configureTest(configuration_name);
+
+        final String text = tapSystemErr(() -> {
+            RelayRace.main(new String[]{config_file_path.toString()});
+        });
+
+        assertEquals(STR."""
+            \{get_expected_error_message.get()}
+            """,
+            text,
+            "Unexpected error message");
+
+        // Test has passed if this line is reached.
+        failed_test = false;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void configureDirectories(final String individual_test_resource_root) {
+    private void configureDirectories(final String individual_test_resource_root) throws IOException {
 
         final Path resources_root_directory = Race.getTestResourcesRootPath(individual_test_resource_root);
 
@@ -177,6 +206,8 @@ public abstract class RaceTest {
         if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
 
         copyDirectory(resources_inputs, test_input_directory);
+
+        properties = Race.loadProperties(config_file_path);
     }
 
     private static void assertThatDirectoryContainsAllExpectedContent(final Path expected, final Path actual) throws IOException {

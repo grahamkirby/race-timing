@@ -49,7 +49,7 @@ public class RelayRace extends SingleRace {
     private static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     private static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     private static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
-    private static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
+    public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
     private static final String KEY_START_OFFSET = "START_OFFSET";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,14 +115,23 @@ public class RelayRace extends SingleRace {
         super(config_file_path);
     }
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws Exception {
+
+        commonMain(args, config_file_path -> new RelayRace(Paths.get(config_file_path)));
+    }
+
+    public static void main2(final String[] args) {
 
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
             System.out.println("usage: java RelayRace <config file path>");
         else {
-            new RelayRace(Paths.get(args[0])).processResults();
+            try {
+                new RelayRace(Paths.get(args[0])).processResults();
+            } catch (final Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
 
@@ -171,7 +180,7 @@ public class RelayRace extends SingleRace {
 
         super.readProperties();
 
-        number_of_legs = Integer.parseInt(getProperty(KEY_NUMBER_OF_LEGS));
+        number_of_legs = Integer.parseInt(getRequiredProperty(KEY_NUMBER_OF_LEGS));
         start_offset = parseTime(getProperty(KEY_START_OFFSET, format(Duration.ZERO)));
     }
 
@@ -260,8 +269,8 @@ public class RelayRace extends SingleRace {
 
             result.completion_status = CompletionStatus.DNF;
 
-        } catch (final NumberFormatException _) {
-            throw new RuntimeException("illegal DNF time");
+        } catch (final NumberFormatException e) {
+            throw new RuntimeException(dnf_specification, e);
         }
     }
 
@@ -391,10 +400,14 @@ public class RelayRace extends SingleRace {
 
     private void setMassStartTimes() {
 
-        final String[] mass_start_elapsed_times_strings = getMassStartElapsedTimesString().split(",");
+        try {
+            final String[] mass_start_elapsed_times_strings = getMassStartElapsedTimesString().split(",");
 
-        for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-            setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
+            for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
+                setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
+        } catch (final RuntimeException e) {
+            throw new RuntimeException(STR."invalid entry for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}': \{e.getMessage()}");
+        }
     }
 
     private void setMassStartTime(final String time_as_string, final int leg_index) {
@@ -431,7 +444,7 @@ public class RelayRace extends SingleRace {
 
     private void configurePairedLegs() {
 
-        final String paired_legs_string = getProperty(KEY_PAIRED_LEGS);
+        final String paired_legs_string = getRequiredProperty(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
         paired_legs = Stream.generate(() -> false)
@@ -444,7 +457,7 @@ public class RelayRace extends SingleRace {
 
     private void configureIndividualLegStarts() {
 
-        final String individual_leg_starts_string = getProperty(KEY_INDIVIDUAL_LEG_STARTS);
+        final String individual_leg_starts_string = getOptionalProperty(KEY_INDIVIDUAL_LEG_STARTS);
 
         // bib number / leg number / start time
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20
@@ -609,14 +622,14 @@ public class RelayRace extends SingleRace {
     }
 
     @SuppressWarnings({"TypeMayBeWeakened", "IfCanBeAssertion"})
-    private static int findIndexOfNextUnfilledLegResult(final List<? extends LegResult> leg_results) {
+    private int findIndexOfNextUnfilledLegResult(final List<? extends LegResult> leg_results) {
 
         final int index = (int) leg_results.stream().
             takeWhile(result -> result.finish_time != null).
             count();
 
         if (index == leg_results.size())
-            throw new RuntimeException(STR."surplus result recorded for team: \{leg_results.getFirst().entry.bib_number}");
+            throw new RuntimeException(STR."invalid entry in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': surplus result recorded for team: \{leg_results.getFirst().entry.bib_number}");
 
         return index;
     }
