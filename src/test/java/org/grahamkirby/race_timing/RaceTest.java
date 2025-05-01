@@ -20,7 +20,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.AfterEach;
 
 import java.io.IOException;
@@ -80,11 +79,13 @@ public abstract class RaceTest {
     private Path retained_output_directory;
     private Path expected_output_directory;
 
-    protected Properties properties;
-
-    protected abstract Race makeRace(Path config_file_path) throws IOException;
+    Properties properties;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected String getFileNameForPathProperty(final String property_key) {
+        return Paths.get(properties.getProperty(property_key)).getFileName().toString();
+    }
 
     @AfterEach
     public void tearDown() throws IOException {
@@ -135,30 +136,11 @@ public abstract class RaceTest {
         configureDirectoryContents(resources_input_directory);
     }
 
-    void testExpectedException(final String configuration_name, final Supplier<String> get_expected_error_message) throws IOException {
+    protected void testExpectedCompletion(final String configuration_name) throws Exception {
 
         configureTest(configuration_name);
-
-        final Exception exception = assertThrows(
-            RuntimeException.class,
-            () -> makeRace(config_file_path).processResults()
-        );
-
-        assertEquals(get_expected_error_message.get(), exception.getMessage(), "Unexpected exception message");
-
-        // Test has passed if this line is reached.
-        failed_test = false;
-    }
-
-    void testExpectedException(final String configuration_name, final String expected_error_message) throws IOException {
-
-        testExpectedException(configuration_name, () -> expected_error_message);
-    }
-
-    protected void testExpectedCompletion(final String configuration_name) throws IOException {
-
-        configureTest(configuration_name);
-        makeRace(config_file_path).processResults();
+//        makeRace(config_file_path).processResults();
+        invokeMain(new String[]{config_file_path.toString()});
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
 
@@ -166,12 +148,14 @@ public abstract class RaceTest {
         failed_test = false;
     }
 
-    protected void testExpectedErrorMessage(final String configuration_name, final Supplier<String> get_expected_error_message) throws Exception {
+    protected abstract void invokeMain(String[] args) throws Exception;
+
+    void testExpectedErrorMessage(final String configuration_name, final Supplier<String> get_expected_error_message) throws Exception {
 
         configureTest(configuration_name);
 
         final String text = tapSystemErr(() -> {
-            RelayRace.main(new String[]{config_file_path.toString()});
+            invokeMain(new String[]{config_file_path.toString()});
         });
 
         assertEquals(STR."""

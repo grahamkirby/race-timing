@@ -77,13 +77,13 @@ public abstract class SingleRaceInput extends RaceInput {
             map(line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
             toList();
 
-        assertNoDuplicateBibNumbers(entries);
+//        assertNoDuplicateBibNumbers(entries);
         assertNoDuplicateEntries(entries);
 
         return entries;
     }
 
-    public void validateInputs() {
+    public void validateInputFiles() {
 
         checkEntries();
     }
@@ -108,7 +108,7 @@ public abstract class SingleRaceInput extends RaceInput {
             lines.stream().
                 map(line -> line.split("\t")[0]).
                 filter(bib_number -> !seen.add(bib_number)).
-                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number \{bib_number} in file '\{entries_path}'");});
+                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number '\{bib_number}' in file '\{entries_path}'");});
 
         } catch (final IOException e) {
             throw new RuntimeException("invalid file: '" + entries_path + "'");
@@ -141,7 +141,7 @@ public abstract class SingleRaceInput extends RaceInput {
                         counter.incrementAndGet();
                         makeRaceEntry(Arrays.stream(line.split("\t")).toList());
                     } catch (final RuntimeException e) {
-                        throw new RuntimeException("invalid line " + counter.get() + " in file '" + entries_path + "': " + e.getMessage());
+                        throw new RuntimeException(STR."invalid entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path}'");
                     }
                 });
         } catch (final IOException e) {
@@ -185,7 +185,7 @@ public abstract class SingleRaceInput extends RaceInput {
                     }
                 }
                 catch (final RuntimeException e) {
-                    throw new RuntimeException("invalid line " + (i+1) + " in file '" + raw_results_path + "': " + s);
+                    throw new RuntimeException(STR."invalid record '\{s}' at line \{i + 1} in file '\{raw_results_path}'");
                 }
             }
 
@@ -240,7 +240,7 @@ public abstract class SingleRaceInput extends RaceInput {
         return (comment_start_index > -1) ? line.substring(0, comment_start_index) : line;
     }
 
-    private static void assertCorrectlyOrdered(final List<? extends RawResult> raw_results) {
+    private void assertCorrectlyOrdered(final List<? extends RawResult> raw_results) {
 
         for (int i = 0; i < raw_results.size() - 1; i++) {
 
@@ -248,7 +248,7 @@ public abstract class SingleRaceInput extends RaceInput {
             final RawResult result2 = raw_results.get(i + 1);
 
             if (areResultsOutOfOrder(result1, result2))
-                throw new RuntimeException(STR."result \{i + 2} out of order");
+                throw new RuntimeException(STR."result out of order at line \{i + 2} in file '\{Paths.get(raw_results_path).getFileName()}'");
         }
     }
 
@@ -259,19 +259,19 @@ public abstract class SingleRaceInput extends RaceInput {
             result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
     }
 
-    private static void assertNoDuplicateBibNumbers(final Iterable<? extends RaceEntry> entries) {
-
-        for (final RaceEntry entry1 : entries)
-            for (final RaceEntry entry2 : entries)
-                if (entry1 != entry2 && entry1.bib_number == entry2.bib_number)
-                    throw new RuntimeException(STR."duplicate bib number: \{entry1.bib_number}");
-    }
+//    private static void assertNoDuplicateBibNumbers(final Iterable<? extends RaceEntry> entries) {
+//
+//        for (final RaceEntry entry1 : entries)
+//            for (final RaceEntry entry2 : entries)
+//                if (entry1 != entry2 && entry1.bib_number == entry2.bib_number)
+//                    throw new RuntimeException(STR."duplicate bib number: \{entry1.bib_number}");
+//    }
 
     private void assertNoDuplicateEntries(final Iterable<? extends RaceEntry> entries) {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1 != entry2 && entry1.equals(entry2))
-                    throw new RuntimeException(STR."duplicate entry in file '\{Paths.get(entries_path).getFileName()}': \{entry1}");
+                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{Paths.get(entries_path).getFileName()}'");
     }
 }

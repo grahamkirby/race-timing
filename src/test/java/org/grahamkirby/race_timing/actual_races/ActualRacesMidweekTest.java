@@ -17,47 +17,43 @@
 package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class ActualRacesMidweekTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new MidweekRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        MidweekRace.main(args);
     }
 
     @Test
-    void midweek2023Completed1() throws IOException {
+    void midweek2023Completed1() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_1");
     }
 
     @Test
-    void midweek2023Completed2() throws IOException {
+    void midweek2023Completed2() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_2");
     }
 
     @Test
-    void midweek2023Completed3() throws IOException {
+    void midweek2023Completed3() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_3");
     }
 
     @Test
-    void midweek2023Completed4() throws IOException {
+    void midweek2023Completed4() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_4");
     }
 
     @Test
-    void midweek2023Completed5() throws IOException {
+    void midweek2023Completed5() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_5");
     }
 
     @Test
-    void midweek2024() throws IOException {
+    void midweek2024() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2024");
     }
 }

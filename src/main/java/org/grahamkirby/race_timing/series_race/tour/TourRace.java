@@ -24,6 +24,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
+import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
@@ -43,12 +44,7 @@ public class TourRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        // Path to configuration file should be first argument.
-
-        if (args.length < 1)
-            System.out.println("usage: java MinitourRace <config file path>");
-        else
-            new TourRace(Paths.get(args[0])).processResults();
+        commonMain(args, config_file_path -> new TourRace(Paths.get(config_file_path)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

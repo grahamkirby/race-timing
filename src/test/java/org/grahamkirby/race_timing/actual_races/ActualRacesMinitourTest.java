@@ -17,47 +17,43 @@
 package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class ActualRacesMinitourTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new TourRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        TourRace.main(args);
     }
 
     @Test
-    void minitour2023Completed1() throws IOException {
+    void minitour2023Completed1() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2023/completed_1");
     }
 
     @Test
-    void minitour2023Completed2() throws IOException {
+    void minitour2023Completed2() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2023/completed_2");
     }
 
     @Test
-    void minitour2023Completed3() throws IOException {
+    void minitour2023Completed3() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2023/completed_3");
     }
 
     @Test
-    void minitour2023Completed4() throws IOException {
+    void minitour2023Completed4() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2023/completed_4");
     }
 
     @Test
-    void minitour2023Completed5() throws IOException {
+    void minitour2023Completed5() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2023/completed_5");
     }
 
     @Test
-    void minitour2024() throws IOException {
+    void minitour2024() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2024");
     }
 }

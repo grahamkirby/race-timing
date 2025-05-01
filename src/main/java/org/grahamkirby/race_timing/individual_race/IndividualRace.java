@@ -53,7 +53,12 @@ public class IndividualRace extends SingleRace {
         super(config_file_path);
     }
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws Exception {
+
+        commonMain(args, config_file_path -> new IndividualRace(Paths.get(config_file_path)));
+    }
+
+    public static void main2(final String[] args) throws IOException {
 
         // Path to configuration file should be first argument.
 

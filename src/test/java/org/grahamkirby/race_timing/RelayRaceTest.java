@@ -16,13 +16,8 @@
  */
 package org.grahamkirby.race_timing;
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_MASS_START_ELAPSED_TIMES;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
@@ -33,311 +28,313 @@ public class RelayRaceTest extends RaceTest {
     // https://www.fakenamegenerator.com/gen-random-gd-uk.php
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new RelayRace(config_file_path);
+    protected void invokeMain(final String[] args) throws Exception {
+        RelayRace.main(args);
     }
 
     @Test
-    void simple() throws IOException {
+    void simple() throws Exception {
         testExpectedCompletion("relay_race/simple");
     }
 
     @Test
-    void legs3() throws IOException {
+    void legs3() throws Exception {
         testExpectedCompletion("relay_race/legs_3");
     }
 
     @Test
-    void legs5() throws IOException {
+    void legs5() throws Exception {
         testExpectedCompletion("relay_race/legs_5");
     }
 
     @Test
-    void topTwoResultsWomen() throws IOException {
+    void topTwoResultsWomen() throws Exception {
         testExpectedCompletion("relay_race/top_two_results_women");
     }
 
     @Test
-    void deadHeats() throws IOException {
+    void deadHeats() throws Exception {
         testExpectedCompletion("relay_race/dead_heats");
     }
 
     @Test
-    void htmlOutput() throws IOException {
+    void htmlOutput() throws Exception {
         testExpectedCompletion("relay_race/html_output");
     }
 
     @Test
-    void startOffset() throws IOException {
+    void startOffset() throws Exception {
         testExpectedCompletion("relay_race/start_offset");
     }
 
     @Test
-    void interpolatedRawTimes() throws IOException {
+    void interpolatedRawTimes() throws Exception {
         testExpectedCompletion("relay_race/interpolated_raw_times");
     }
 
     @Test
-    void guessedMissingBibNumbersA() throws IOException {
+    void guessedMissingBibNumbersA() throws Exception {
         testExpectedCompletion("relay_race/guessed_missing_bib_numbers_a");
     }
 
     @Test
-    void guessedMissingBibNumbersB() throws IOException {
+    void guessedMissingBibNumbersB() throws Exception {
         testExpectedCompletion("relay_race/guessed_missing_bib_numbers_b");
     }
 
     @Test
-    void lastFewResultsNotRecorded() throws IOException {
+    void lastFewResultsNotRecorded() throws Exception {
         testExpectedCompletion("relay_race/last_few_results_not_recorded");
     }
 
     @Test
-    void massStartNoneDNFLeg1() throws IOException {
+    void massStartNoneDNFLeg1() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1");
     }
 
     @Test
-    void massStartNoneDNFLeg1And2And3() throws IOException {
+    void massStartNoneDNFLeg1And2And3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1_2_3");
     }
 
     @Test
-    void massStartNoneDNFButCompleted() throws IOException {
+    void massStartNoneDNFButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    void massStartNoneDNFNotCompleted() throws IOException {
+    void massStartNoneDNFNotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    void massStartNoneDNFLeg2() throws IOException {
+    void massStartNoneDNFLeg2() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_2");
     }
 
     @Test
-    void massStartNoneDNFLeg3() throws IOException {
+    void massStartNoneDNFLeg3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_3");
     }
 
     @Test
-    void massStartNoneDNFLeg4() throws IOException {
+    void massStartNoneDNFLeg4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_4");
     }
 
     @Test
-    void massStartNoneDNFLeg3And4NotCompleted() throws IOException {
+    void massStartNoneDNFLeg3And4NotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_3_4a");
     }
 
     @Test
-    void massStartNoneDNFLeg3And4ButCompleted() throws IOException {
+    void massStartNoneDNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_3_4b");
     }
 
     @Test
-    void massStart34AllCompleted() throws IOException {
+    void massStart34AllCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/all_completed");
     }
 
     @Test
-    void massStart34DNFLeg1() throws IOException {
+    void massStart34DNFLeg1() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1");
     }
 
     @Test
-    void massStart34DNFLeg1And2And3() throws IOException {
+    void massStart34DNFLeg1And2And3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1_2_3");
     }
 
     @Test
-    void massStart34DNFButCompleted() throws IOException {
+    void massStart34DNFButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    void massStart34DNFNotCompleted() throws IOException {
+    void massStart34DNFNotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    void massStart34DNFLeg2() throws IOException {
+    void massStart34DNFLeg2() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_2");
     }
 
     @Test
-    void massStart34DNFLeg3() throws IOException {
+    void massStart34DNFLeg3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_3");
     }
 
     @Test
-    void massStart34DNFLeg3And4NoFinishes() throws IOException {
+    void massStart34DNFLeg3And4NoFinishes() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_3_4a");
     }
 
     @Test
-    void massStart34DNFLeg3And4ButCompleted() throws IOException {
+    void massStart34DNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_3_4b");
     }
 
     @Test
-    void massStart34DNFLeg4() throws IOException {
+    void massStart34DNFLeg4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_4");
     }
 
     @Test
-    void massStart34FirstLegFinishAfterMassStart3() throws IOException {
+    void massStart34FirstLegFinishAfterMassStart3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/first_leg_finish_after_mass_start_3");
     }
 
     @Test
-    void massStart34FirstLegFinishAfterMassStart4() throws IOException {
+    void massStart34FirstLegFinishAfterMassStart4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/first_leg_finish_after_mass_start_4");
     }
 
     @Test
-    void massStart4AllCompleted() throws IOException {
+    void massStart4AllCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/all_completed");
     }
 
     @Test
-    void massStart4LegsSwapped() throws IOException {
+    void massStart4LegsSwapped() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/legs_swapped");
     }
 
     @Test
-    void massStart4DNFLeg1() throws IOException {
+    void massStart4DNFLeg1() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1");
     }
 
     @Test
-    void massStart4DNFLeg1And2And3() throws IOException {
+    void massStart4DNFLeg1And2And3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1_2_3");
     }
 
     @Test
-    void massStart4DNFButCompleted() throws IOException {
+    void massStart4DNFButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    void massStart4DNFNotCompleted() throws IOException {
+    void massStart4DNFNotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    void massStart4DNFLeg2() throws IOException {
+    void massStart4DNFLeg2() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_2");
     }
 
     @Test
-    void massStart4DNFLeg3() throws IOException {
+    void massStart4DNFLeg3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_3");
     }
 
     @Test
-    void massStart4DNFLeg3And4NoFinishes() throws IOException {
+    void massStart4DNFLeg3And4NoFinishes() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_3_4a");
     }
 
     @Test
-    void massStart4DNFLeg3And4ButCompleted() throws IOException {
+    void massStart4DNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_3_4b");
     }
 
     @Test
-    void massStart4DNFLeg4() throws IOException {
+    void massStart4DNFLeg4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_4");
     }
 
     @Test
-    void individualRunnerStartTimeLeg1() throws IOException {
+    void individualRunnerStartTimeLeg1() throws Exception {
         testExpectedCompletion("relay_race/individual_runner_start_time/leg_1");
     }
 
     @Test
-    void individualRunnerStartTimeLeg3() throws IOException {
+    void individualRunnerStartTimeLeg3() throws Exception {
         testExpectedCompletion("relay_race/individual_runner_start_time/leg_3");
     }
 
     @Test
-    void unregisteredTeam() throws IOException {
-        testExpectedException("relay_race/unregistered_team", "unregistered team: 4");
+    void alternativePrizeReportingOrder() throws Exception {
+        testExpectedCompletion("relay_race/alternative_prize_reporting_order");
+    }
+
+    @Test
+    void prizeCategoryGroups() throws Exception {
+        testExpectedCompletion("relay_race/prize_category_groups");
+    }
+
+    @Test
+    void teamNameIncludesComma() throws Exception {
+        testExpectedCompletion("relay_race/team_name_includes_comma");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Test
+    void unregisteredTeam() throws Exception {
+        testExpectedErrorMessage("relay_race/unregistered_team", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test
     void duplicateTeamNumber() throws Exception {
-        testExpectedErrorMessage("relay_race/duplicate_team_number", () -> STR."duplicate bib number 3 in file '\{properties.getProperty(KEY_ENTRIES_PATH)}'");
+        testExpectedErrorMessage("relay_race/duplicate_team_number", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
     void duplicateTeamName() throws Exception {
-        testExpectedErrorMessage("relay_race/duplicate_team_name", () -> STR."duplicate entry in file '\{properties.getProperty(KEY_ENTRIES_PATH)}': Team 2");
+        testExpectedErrorMessage("relay_race/duplicate_team_name", () -> STR."duplicate entry 'Team 2' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
     void extraResult() throws Exception {
-        testExpectedErrorMessage("relay_race/extra_result", () -> STR."invalid entry in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': surplus result recorded for team: 2");
+        testExpectedErrorMessage("relay_race/extra_result", () -> STR."surplus result for team '2' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     // TODO test duplicate bib number in individual raw results.
 
     @Test
     void illegalDNFTime() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_dnf_time", () -> STR."invalid entry for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}': XXX");
+        testExpectedErrorMessage("relay_race/illegal_dnf_time", () -> STR."invalid entry 'XXX' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
     }
 
     @Test
     void illegalMassStartTime() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_mass_start_time", () -> STR."invalid entry for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}': XXX");
+        testExpectedErrorMessage("relay_race/illegal_mass_start_time", () -> STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
     }
 
     @Test
     void illegalRawTime() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_raw_time", () -> STR."invalid line 13 in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': 3\tXXX");
+        testExpectedErrorMessage("relay_race/illegal_raw_time", () -> STR."invalid record '3\tXXX' at line 13 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     // TODO test missing property in config file.
 
     @Test
     void illegalMassStartTimeOrder() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_mass_start_time_order", () -> STR."invalid entry for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}': illegal mass start time order");
+        testExpectedErrorMessage("relay_race/illegal_mass_start_time_order", () -> STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
     }
 
     @Test
     void illegalCategory() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_category", () -> STR."invalid line 3 in file '\{properties.getProperty(KEY_ENTRIES_PATH)}': 3 Team 3 Men Senior Jackbruce Martin King & Leland Donaldson Neil MacDonald & Myles  Christie Hubert Gray");
+        testExpectedErrorMessage("relay_race/illegal_category", () -> STR."invalid entry '3 Team 3 Men Senior Jackbruce Martin King & Leland Donaldson Neil MacDonald & Myles  Christie Hubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
     void illegalTeamComposition() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_team_composition", () -> STR."invalid line 3 in file '\{properties.getProperty(KEY_ENTRIES_PATH)}': 3 Team 3 OS Jackbruce Neil MacDonald & Myles  Christie Hubert Gray");
+        testExpectedErrorMessage("relay_race/illegal_team_composition", () -> STR."invalid entry '3 Team 3 OS Jackbruce Neil MacDonald & Myles  Christie Hubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
     void switchedResult() throws Exception {
-        testExpectedErrorMessage("relay_race/switched_result", () -> STR."invalid entry in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': surplus result recorded for team: 2");
+        testExpectedErrorMessage("relay_race/switched_result", () -> STR."surplus result for team '2' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test
-    void resultsOutOfOrder() throws IOException {
-        testExpectedException("relay_race/results_out_of_order", "result 15 out of order");
-    }
-
-    @Test
-    void alternativePrizeReportingOrder() throws IOException {
-        testExpectedCompletion("relay_race/alternative_prize_reporting_order");
-    }
-
-    @Test
-    void prizeCategoryGroups() throws IOException {
-        testExpectedCompletion("relay_race/prize_category_groups");
-    }
-
-    @Test
-    void teamNameIncludesComma() throws IOException {
-        testExpectedCompletion("relay_race/team_name_includes_comma");
+    void resultsOutOfOrder() throws Exception {
+        testExpectedErrorMessage("relay_race/results_out_of_order", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 }

@@ -25,5 +25,5 @@ public abstract class RaceInput {
         this.race = race;
     }
 
-    public abstract void validateInputs();
+    public abstract void validateInputFiles();
 }

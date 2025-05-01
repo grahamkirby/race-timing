@@ -17,27 +17,23 @@
 package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class ActualRacesRelayTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new RelayRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        RelayRace.main(args);
     }
 
     @Test
-    void devilsBurdens2020() throws IOException {
+    void devilsBurdens2020() throws Exception {
         testExpectedCompletion("actual_races/relay_race/devils_burdens/2020");
     }
 
     @Test
-    void devilsBurdens2024() throws IOException {
+    void devilsBurdens2024() throws Exception {
         testExpectedCompletion("actual_races/relay_race/devils_burdens/2024");
     }
 }

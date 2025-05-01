@@ -16,22 +16,18 @@
  */
 package org.grahamkirby.race_timing;
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class GrandPrixTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new GrandPrixRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        GrandPrixRace.main(args);
     }
 
     @Test
-    void changingCategories() throws IOException {
+    void changingCategories() throws Exception {
         testExpectedCompletion("series_race/grand_prix/changing_categories");
     }
 }
