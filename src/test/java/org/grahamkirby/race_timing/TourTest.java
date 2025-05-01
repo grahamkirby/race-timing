@@ -16,27 +16,23 @@
  */
 package org.grahamkirby.race_timing;
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
-public class MinitourTest extends RaceTest {
+public class TourTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new TourRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        TourRace.main(args);
     }
 
     @Test
-    void categoryWithoutWinner() throws IOException {
+    void categoryWithoutWinner() throws Exception {
         testExpectedCompletion("series_race/minitour/category_without_winner");
     }
 
     @Test
-    void nameIncludesComma() throws IOException {
+    void nameIncludesComma() throws Exception {
         testExpectedCompletion("series_race/minitour/name_includes_comma");
     }
 }

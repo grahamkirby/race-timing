@@ -17,27 +17,23 @@
 package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class ActualRacesTourTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new TourRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        TourRace.main(args);
     }
 
     @Test
-    void tour2017Completed3() throws IOException {
+    void tour2017Completed3() throws Exception {
         testExpectedCompletion("actual_races/series_race/tour/2017/completed_3");
     }
 
     @Test
-    void tour2017Completed5() throws IOException {
+    void tour2017Completed5() throws Exception {
         testExpectedCompletion("actual_races/series_race/tour/2017/completed_5");
     }
 }

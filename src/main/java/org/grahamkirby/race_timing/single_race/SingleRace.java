@@ -35,7 +35,7 @@ public abstract class SingleRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<RaceEntry> entries;
-    protected List<RawResult> raw_results;
+    public List<RawResult> raw_results;
 
     private String dnf_string;
 
@@ -65,7 +65,7 @@ public abstract class SingleRace extends Race {
     @Override
     protected void configureInputData() throws IOException {
 
-        input.validateInputs();
+        input.validateInputFiles();
 
         final SingleRaceInput single_race_input = (SingleRaceInput) input;
 
@@ -78,6 +78,7 @@ public abstract class SingleRace extends Race {
         raw_results = single_race_input.loadRawResults();
         overall_results = single_race_input.loadOverallResults();
 
+//        input.validateDataStructures();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +102,7 @@ public abstract class SingleRace extends Race {
                     recordDNF(individual_dnf_string);
         }
         catch (RuntimeException e) {
-            throw new RuntimeException(STR."invalid entry for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}': \{e.getMessage()}");
+            throw new RuntimeException(STR."invalid entry '\{e.getMessage()}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
         }
     }
 

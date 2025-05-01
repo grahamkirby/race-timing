@@ -16,124 +16,124 @@
  */
 package org.grahamkirby.race_timing;
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_ENTRIES_PATH;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
 public class IndividualRaceTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new IndividualRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        IndividualRace.main(args);
     }
 
     @Test
-    void deadHeats() throws IOException {
+    void deadHeats() throws Exception {
         testExpectedCompletion("individual_race/dead_heats");
     }
 
     @Test
-    void DNFs() throws IOException {
+    void DNFs() throws Exception {
         testExpectedCompletion("individual_race/dnfs");
     }
 
     @Test
-    void duplicateBibNumber() throws IOException {
-        testExpectedException("individual_race/duplicate_bib_number", "duplicate bib number 3 in file 'entries.txt'");
+    void duplicateBibNumber() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_bib_number", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
-    void duplicateRunner() throws IOException {
-        testExpectedException("individual_race/duplicate_runner", "duplicate entry in file 'entries.txt': John Smith, Fife AC");
+    void duplicateRunner() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_runner", () -> STR."duplicate entry 'John Smith, Fife AC' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
-    void duplicateRunnerName() throws IOException {
+    void duplicateRunnerName() throws Exception {
         testExpectedCompletion("individual_race/duplicate_runner_name");
     }
 
     @Test
-    void illegalCategory() throws IOException {
-        testExpectedException("individual_race/illegal_category", "invalid line 92 in file 'entries.txt': 92 Hannah Tippetts Dundee Road Runners XXX");
+    void illegalCategory() throws Exception {
+        testExpectedErrorMessage("individual_race/illegal_category", () -> STR."invalid entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
-    void illegalEntry() throws IOException {
-        testExpectedException("individual_race/illegal_entry", "invalid line 28 in file 'entries.txt': 138 Robbie Dunlop Dundee Road Runners MS");
+    void illegalEntry() throws Exception {
+        testExpectedErrorMessage("individual_race/illegal_entry", () -> STR."invalid entry '138 Robbie Dunlop Dundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
-    void illegalRawTime() throws IOException {
-        testExpectedException("individual_race/illegal_raw_time", "invalid line 4 in file 'rawtimes.txt': 3\tXXX");
+    void illegalRawTime() throws Exception {
+        testExpectedErrorMessage("individual_race/illegal_raw_time", () -> STR."invalid record '3\tXXX' at line 4 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+
     }
 
-    // Test for illegal bib number in raw times.
+    // TODO Test for illegal bib number in raw times.
 
     @Test
-    void multipleGender() throws IOException {
+    void multipleGender() throws Exception {
         testExpectedCompletion("individual_race/multiple_gender");
     }
 
     @Test
-    void multipleTimeFormats() throws IOException {
+    void multipleTimeFormats() throws Exception {
         testExpectedCompletion("individual_race/multiple_time_formats");
     }
 
     @Test
-    void nonExclusivePrizeCategories() throws IOException {
+    void nonExclusivePrizeCategories() throws Exception {
         testExpectedCompletion("individual_race/non_exclusive_prize_categories");
     }
 
     @Test
-    void resultsOutOfOrder() throws IOException {
-        testExpectedException("individual_race/results_out_of_order", "result 15 out of order");
+    void resultsOutOfOrder() throws Exception {
+        testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test
-    void seniorNotOpenCategory() throws IOException {
+    void seniorNotOpenCategory() throws Exception {
         testExpectedCompletion("individual_race/senior_not_open_category");
     }
 
     @Test
-    void unregisteredRunner() throws IOException {
-        testExpectedException("individual_race/unregistered_runner", "unregistered bib number: 4");
+    void unregisteredRunner() throws Exception {
+        testExpectedErrorMessage("individual_race/unregistered_runner", () -> "unregistered bib number: 4");
     }
 
     @Test
-    void alternativeClubNameNormalisation() throws IOException {
+    void alternativeClubNameNormalisation() throws Exception {
         testExpectedCompletion("individual_race/alternative_club_name_normalisation");
     }
 
     @Test
-    void alternativeHtmlEntityNormalisation() throws IOException {
+    void alternativeHtmlEntityNormalisation() throws Exception {
         testExpectedCompletion("individual_race/alternative_html_entity_normalisation");
     }
 
     @Test
-    void alternativeCapitalisationStopWords() throws IOException {
+    void alternativeCapitalisationStopWords() throws Exception {
         testExpectedCompletion("individual_race/alternative_capitalisation_stop_words");
     }
 
     @Test
-    void alternativePrizeReportingOrder() throws IOException {
+    void alternativePrizeReportingOrder() throws Exception {
         testExpectedCompletion("individual_race/alternative_prize_reporting_order");
     }
 
     @Test
-    void openWinnerFromOlderCategory() throws IOException {
+    void openWinnerFromOlderCategory() throws Exception {
         testExpectedCompletion("individual_race/open_winner_from_older_category");
     }
 
     @Test
-    void prizeCategoryGroups() throws IOException {
+    void prizeCategoryGroups() throws Exception {
         testExpectedCompletion("individual_race/prize_category_groups");
     }
 
     @Test
-    void nameIncludesComma() throws IOException {
+    void nameIncludesComma() throws Exception {
         testExpectedCompletion("individual_race/name_includes_comma");
     }
 }

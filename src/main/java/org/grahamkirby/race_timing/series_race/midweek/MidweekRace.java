@@ -48,13 +48,7 @@ public class MidweekRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        // Path to configuration file should be first argument.
-
-        if (args.length < 1)
-            System.out.println("usage: java MidweekRace <config file path>");
-        else {
-            new MidweekRace(Paths.get(args[0])).processResults();
-        }
+        commonMain(args, config_file_path -> new MidweekRace(Paths.get(config_file_path)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

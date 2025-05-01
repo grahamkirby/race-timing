@@ -406,7 +406,7 @@ public class RelayRace extends SingleRace {
             for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
                 setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
         } catch (final RuntimeException e) {
-            throw new RuntimeException(STR."invalid entry for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}': \{e.getMessage()}");
+            throw new RuntimeException(STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
         }
     }
 
@@ -629,8 +629,7 @@ public class RelayRace extends SingleRace {
             count();
 
         if (index == leg_results.size())
-            throw new RuntimeException(STR."invalid entry in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}': surplus result recorded for team: \{leg_results.getFirst().entry.bib_number}");
-
+            throw new RuntimeException(STR."surplus result for team '\{leg_results.getFirst().entry.bib_number}' in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}'");
         return index;
     }
 
@@ -642,7 +641,7 @@ public class RelayRace extends SingleRace {
             takeWhile(result -> result.entry.bib_number != bib_number).
             count();
 
-        if (index == overall_results.size()) throw new RuntimeException(STR."unregistered team: \{bib_number}");
+//        if (index == overall_results.size()) throw new RuntimeException(STR."unregistered team: \{bib_number}");
 
         return index;
     }

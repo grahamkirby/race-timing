@@ -16,42 +16,38 @@
  */
 package org.grahamkirby.race_timing;
 
-import org.grahamkirby.race_timing.common.Race;
-import org.junit.jupiter.api.Test;
 import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
-
-import java.io.IOException;
-import java.nio.file.Path;
+import org.junit.jupiter.api.Test;
 
 public class MidweekTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new MidweekRace(config_file_path);
+    protected void invokeMain(String[] args) throws Exception {
+        MidweekRace.main(args);
     }
 
     @Test
-    void deadHeats() throws IOException {
+    void deadHeats() throws Exception {
         testExpectedCompletion("series_race/midweek/dead_heats");
     }
 
     @Test
-    void duplicateRunnerName() throws IOException {
+    void duplicateRunnerName() throws Exception {
         testExpectedCompletion("series_race/midweek/duplicate_runner_name");
     }
 
     @Test
-    void prizeCategoryGroups() throws IOException {
+    void prizeCategoryGroups() throws Exception {
         testExpectedCompletion("series_race/midweek/prize_category_groups");
     }
 
     @Test
-    void largeRace() throws IOException {
+    void largeRace() throws Exception {
         testExpectedCompletion("series_race/midweek/large_race");
     }
 
     @Test
-    void nameIncludesComma() throws IOException {
+    void nameIncludesComma() throws Exception {
         testExpectedCompletion("series_race/midweek/name_includes_comma");
     }
 }

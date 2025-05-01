@@ -57,13 +57,7 @@ public class GrandPrixRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        // Path to configuration file should be first argument.
-
-        if (args.length < 1)
-            System.out.println("usage: java GrandPrixRace <config file path>");
-        else {
-            new GrandPrixRace(Paths.get(args[0])).processResults();
-        }
+        commonMain(args, config_file_path -> new GrandPrixRace(Paths.get(config_file_path)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

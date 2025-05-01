@@ -17,32 +17,28 @@
 package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class ActualRacesGrandPrixTest extends RaceTest {
 
     @Override
-    protected Race makeRace(final Path config_file_path) throws IOException {
-        return new GrandPrixRace(config_file_path);
+    protected void invokeMain(final String[] args) throws Exception {
+        GrandPrixRace.main(args);
     }
 
     @Test
-    void grandPrix2016Completed6() throws IOException {
+    void grandPrix2016Completed6() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_6");
     }
 
     @Test
-    void grandPrix2016Completed10() throws IOException {
+    void grandPrix2016Completed10() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_10");
     }
 
     @Test
-    void grandPrix2016Completed12() throws IOException {
+    void grandPrix2016Completed12() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_12");
     }
 }

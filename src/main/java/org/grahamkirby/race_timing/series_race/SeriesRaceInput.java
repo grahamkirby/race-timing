@@ -40,7 +40,7 @@ public class SeriesRaceInput extends RaceInput {
         readProperties();
     }
 
-    public void validateInputs() {
+    public void validateInputFiles() {
 
     }
 
