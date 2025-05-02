@@ -27,6 +27,8 @@ public class ActualRacesMidweekTest extends RaceTest {
         MidweekRace.main(args);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Test
     void midweek2023Completed1() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2023/completed_1");

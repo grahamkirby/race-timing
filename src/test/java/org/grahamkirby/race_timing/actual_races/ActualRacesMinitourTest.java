@@ -27,6 +27,8 @@ public class ActualRacesMinitourTest extends RaceTest {
         TourRace.main(args);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Test
     void minitour2023Completed1() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2023/completed_1");

@@ -23,9 +23,11 @@ import org.junit.jupiter.api.Test;
 public class ActualRacesTourTest extends RaceTest {
 
     @Override
-    protected void invokeMain(String[] args) throws Exception {
+    protected void invokeMain(final String[] args) throws Exception {
         TourRace.main(args);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
     void tour2017Completed3() throws Exception {

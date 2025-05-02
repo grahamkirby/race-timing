@@ -215,7 +215,7 @@ public class IndividualRace extends SingleRace {
             result.completion_status = CompletionStatus.DNF;
 
         } catch (final NumberFormatException e) {
-            throw new RuntimeException("illegal DNF string: " + dnf_specification, e);
+            throw new RuntimeException(dnf_specification, e);
         }
     }
 
@@ -252,7 +252,8 @@ public class IndividualRace extends SingleRace {
             map(result -> ((IndividualRaceResult) result)).
             filter(result -> result.entry.bib_number == bib_number).
             findFirst().
-            orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
+//            orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
+        orElseThrow();
     }
 
     private IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
@@ -261,7 +262,8 @@ public class IndividualRace extends SingleRace {
             map(entry -> ((IndividualRaceEntry) entry)).
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
-            orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
+            orElseThrow();
+//        orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
     }
 
     private int getRecordedPosition(final int bib_number) {
