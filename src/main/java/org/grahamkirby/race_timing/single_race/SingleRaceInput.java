@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
@@ -96,6 +97,29 @@ public abstract class SingleRaceInput extends RaceInput {
             checkEntryCategories();
             checkDuplicateBibNumbers();
         }
+    }
+
+    protected void checkResultsContainValidBibNumbers() {
+
+        if (entries_path != null && raw_results_path != null)
+            try {
+                final List<String> entries = Files.readAllLines(race.getPath(entries_path));
+                final List<String> results = Files.readAllLines(race.getPath(raw_results_path));
+
+                final Set<String> entered_bib_numbers = entries.stream().
+                    map(line -> line.split("\t")[0]).
+                    collect(Collectors.toSet());
+
+                for (final String result : results) {
+                    if (!result.isEmpty() && !result.startsWith(COMMENT_SYMBOL)) {
+                        final String bib_number = result.split("\t")[0];
+                        if (!bib_number.equals("?") && !entered_bib_numbers.contains(bib_number))
+                            throw new RuntimeException(STR."invalid bib number '\{bib_number}' in file '\{raw_results_path}'");
+                    }
+                }
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
     }
 
     private void checkDuplicateBibNumbers() {

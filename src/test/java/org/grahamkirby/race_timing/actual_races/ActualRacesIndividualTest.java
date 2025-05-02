@@ -27,6 +27,8 @@ public class ActualRacesIndividualTest extends RaceTest {
         IndividualRace.main(args);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Test
     void balmullo2023() throws Exception {
         testExpectedCompletion("actual_races/individual_race/balmullo/2023");

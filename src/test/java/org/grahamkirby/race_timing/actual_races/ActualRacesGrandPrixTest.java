@@ -27,6 +27,8 @@ public class ActualRacesGrandPrixTest extends RaceTest {
         GrandPrixRace.main(args);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Test
     void grandPrix2016Completed6() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_6");

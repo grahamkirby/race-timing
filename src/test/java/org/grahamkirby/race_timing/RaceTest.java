@@ -158,6 +158,20 @@ public abstract class RaceTest {
             invokeMain(new String[]{config_file_path.toString()});
         });
 
+
+//        ByteArrayOutputStream outContent;
+//        @BeforeEach
+//        public void setUp() {
+//            outContent = new ByteArrayOutputStream();
+//            System.setOut(new PrintStream(outContent));
+//        }
+//        @AfterEach
+//        public void tearDown() {
+//            System.setOut(System.out);
+//        }
+
+
+
         assertEquals(STR."""
             \{get_expected_error_message.get()}
             """,

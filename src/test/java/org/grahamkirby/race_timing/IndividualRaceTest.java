@@ -19,15 +19,18 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.junit.jupiter.api.Test;
 
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_ENTRIES_PATH;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 
 public class IndividualRaceTest extends RaceTest {
 
+    // TODO Test for illegal bib number in raw times.
+
     @Override
-    protected void invokeMain(String[] args) throws Exception {
+    protected void invokeMain(final String[] args) throws Exception {
         IndividualRace.main(args);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
     void deadHeats() throws Exception {
@@ -40,37 +43,9 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
-    void duplicateBibNumber() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_bib_number", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void duplicateRunner() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_runner", () -> STR."duplicate entry 'John Smith, Fife AC' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
     void duplicateRunnerName() throws Exception {
         testExpectedCompletion("individual_race/duplicate_runner_name");
     }
-
-    @Test
-    void illegalCategory() throws Exception {
-        testExpectedErrorMessage("individual_race/illegal_category", () -> STR."invalid entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void illegalEntry() throws Exception {
-        testExpectedErrorMessage("individual_race/illegal_entry", () -> STR."invalid entry '138 Robbie Dunlop Dundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void illegalRawTime() throws Exception {
-        testExpectedErrorMessage("individual_race/illegal_raw_time", () -> STR."invalid record '3\tXXX' at line 4 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-
-    }
-
-    // TODO Test for illegal bib number in raw times.
 
     @Test
     void multipleGender() throws Exception {
@@ -88,18 +63,8 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
-    void resultsOutOfOrder() throws Exception {
-        testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-    }
-
-    @Test
     void seniorNotOpenCategory() throws Exception {
         testExpectedCompletion("individual_race/senior_not_open_category");
-    }
-
-    @Test
-    void unregisteredRunner() throws Exception {
-        testExpectedErrorMessage("individual_race/unregistered_runner", () -> "unregistered bib number: 4");
     }
 
     @Test
@@ -135,5 +100,47 @@ public class IndividualRaceTest extends RaceTest {
     @Test
     void nameIncludesComma() throws Exception {
         testExpectedCompletion("individual_race/name_includes_comma");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Test
+    void duplicateBibNumber() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_bib_number", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void duplicateRunner() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_runner", () -> STR."duplicate entry 'John Smith, Fife AC' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void invalidCategory() throws Exception {
+        testExpectedErrorMessage("individual_race/invalid_category", () -> STR."invalid entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void invalidDNF() throws Exception {
+        testExpectedErrorMessage("individual_race/invalid_dnf", () -> STR."invalid entry 'XXX' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void invalidEntry() throws Exception {
+        testExpectedErrorMessage("individual_race/invalid_entry", () -> STR."invalid entry '138 Robbie Dunlop Dundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void invalidRawTime() throws Exception {
+        testExpectedErrorMessage("individual_race/invalid_raw_time", () -> STR."invalid record '3\tXXX' at line 4 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    }
+
+    @Test
+    void resultsOutOfOrder() throws Exception {
+        testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    }
+
+    @Test
+    void unregisteredRunner() throws Exception {
+        testExpectedErrorMessage("individual_race/unregistered_runner", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 }

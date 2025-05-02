@@ -25,11 +25,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 
 public class RelayRaceInput extends SingleRaceInput {
@@ -89,28 +86,6 @@ public class RelayRaceInput extends SingleRaceInput {
 
         super.validateInputFiles();
         checkResultsContainValidBibNumbers();
-    }
-
-    private void checkResultsContainValidBibNumbers() {
-
-        try {
-            final List<String> entries = Files.readAllLines(race.getPath(entries_path));
-            final List<String> results = Files.readAllLines(race.getPath(raw_results_path));
-
-            final Set<String> entered_bib_numbers = entries.stream().
-                map(line -> line.split("\t")[0]).
-                collect(Collectors.toSet());
-
-            for (final String result : results) {
-                if (!result.isEmpty() && !result.startsWith(COMMENT_SYMBOL)) {
-                    final String bib_number = result.split("\t")[0];
-                    if (!bib_number.equals("?") && !entered_bib_numbers.contains(bib_number))
-                        throw new RuntimeException(STR."invalid bib number '\{bib_number}' in file '\{raw_results_path}'");
-                }
-            }
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     int getNumberOfRawResults() {

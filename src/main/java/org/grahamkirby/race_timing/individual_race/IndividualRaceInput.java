@@ -20,7 +20,13 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 
 class IndividualRaceInput extends SingleRaceInput {
 
@@ -33,4 +39,12 @@ class IndividualRaceInput extends SingleRaceInput {
 
         return new IndividualRaceEntry(elements, race);
     }
+
+    @Override
+    public void validateInputFiles() {
+
+        super.validateInputFiles();
+        checkResultsContainValidBibNumbers();
+    }
+
 }

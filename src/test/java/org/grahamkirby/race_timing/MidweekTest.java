@@ -26,6 +26,8 @@ public class MidweekTest extends RaceTest {
         MidweekRace.main(args);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Test
     void deadHeats() throws Exception {
         testExpectedCompletion("series_race/midweek/dead_heats");

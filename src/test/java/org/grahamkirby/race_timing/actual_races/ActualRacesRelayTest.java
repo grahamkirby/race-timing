@@ -23,9 +23,11 @@ import org.junit.jupiter.api.Test;
 public class ActualRacesRelayTest extends RaceTest {
 
     @Override
-    protected void invokeMain(String[] args) throws Exception {
+    protected void invokeMain(final String[] args) throws Exception {
         RelayRace.main(args);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
     void devilsBurdens2020() throws Exception {

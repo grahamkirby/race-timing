@@ -26,6 +26,8 @@ public class GrandPrixTest extends RaceTest {
         GrandPrixRace.main(args);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Test
     void changingCategories() throws Exception {
         testExpectedCompletion("series_race/grand_prix/changing_categories");
