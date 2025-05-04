@@ -120,21 +120,6 @@ public class RelayRace extends SingleRace {
         commonMain(args, config_file_path -> new RelayRace(Paths.get(config_file_path)));
     }
 
-    public static void main2(final String[] args) {
-
-        // Path to configuration file should be first argument.
-
-        if (args.length < 1)
-            System.out.println("usage: java RelayRace <config file path>");
-        else {
-            try {
-                new RelayRace(Paths.get(args[0])).processResults();
-            } catch (final Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     int getNumberOfLegs() {
@@ -400,35 +385,18 @@ public class RelayRace extends SingleRace {
 
     private void setMassStartTimes() {
 
-        try {
-            final String[] mass_start_elapsed_times_strings = getMassStartElapsedTimesString().split(",");
+        final String[] mass_start_elapsed_times_strings = getMassStartElapsedTimesString().split(",");
 
-            for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
-                setMassStartTime(mass_start_elapsed_times_strings[leg_index], leg_index);
-        } catch (final RuntimeException e) {
-            throw new RuntimeException(STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
-        }
+        for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
+            setMassStartTime(mass_start_elapsed_times_strings[leg_index]);
     }
 
-    private void setMassStartTime(final String time_as_string, final int leg_index) {
+    private void setMassStartTime(final String time_as_string) {
 
         final Duration mass_start_time = parseTime(time_as_string);
-        final Duration previous_mass_start_time = leg_index > 0 ? start_times_for_mass_starts.get(leg_index - 1) : null;
-
-        verifyMassStartTimesOrder(previous_mass_start_time, mass_start_time);
 
         start_times_for_mass_starts.add(mass_start_time);
         mass_start_legs.add(!mass_start_time.equals(Duration.ZERO));
-    }
-
-    @SuppressWarnings({"TypeMayBeWeakened", "IfCanBeAssertion"})
-    private static void verifyMassStartTimesOrder(final Duration previous_mass_start_time, final Duration current_mass_start_time) {
-
-        if (previous_mass_start_time != null &&
-            !previous_mass_start_time.equals(Duration.ZERO) &&
-            previous_mass_start_time.compareTo(current_mass_start_time) > 0)
-
-            throw new RuntimeException("illegal mass start time order");
     }
 
     private void setEmptyMassStartTimes() {
@@ -622,28 +590,20 @@ public class RelayRace extends SingleRace {
     }
 
     @SuppressWarnings({"TypeMayBeWeakened", "IfCanBeAssertion"})
-    private int findIndexOfNextUnfilledLegResult(final List<? extends LegResult> leg_results) {
+    private static int findIndexOfNextUnfilledLegResult(final List<? extends LegResult> leg_results) {
 
-        final int index = (int) leg_results.stream().
+        return (int) leg_results.stream().
             takeWhile(result -> result.finish_time != null).
             count();
-
-        if (index == leg_results.size())
-            throw new RuntimeException(STR."surplus result for team '\{leg_results.getFirst().entry.bib_number}' in file '\{Paths.get(properties.getProperty(KEY_RAW_RESULTS_PATH)).getFileName()}'");
-        return index;
     }
 
     @SuppressWarnings({"IfCanBeAssertion"})
     private int findIndexOfTeamWithBibNumber(final int bib_number) {
 
-        final int index = (int) overall_results.stream().
+        return (int) overall_results.stream().
             map(result -> (RelayRaceResult) result).
             takeWhile(result -> result.entry.bib_number != bib_number).
             count();
-
-//        if (index == overall_results.size()) throw new RuntimeException(STR."unregistered team: \{bib_number}");
-
-        return index;
     }
 
     private void addPaperRecordingComments() {

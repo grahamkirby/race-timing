@@ -23,8 +23,13 @@ import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
@@ -85,7 +90,56 @@ public class RelayRaceInput extends SingleRaceInput {
     public void validateInputFiles() {
 
         super.validateInputFiles();
+        checkConfig();
         checkResultsContainValidBibNumbers();
+        checkNumberOfResults();
+    }
+
+    private void checkNumberOfResults() {
+
+        try {
+            final Map<Integer, Integer> bib_counts = new HashMap<>();
+
+            for (final RawResult result : loadRawResults()) {
+                final int bib_number = result.getBibNumber();
+
+                if (bib_number != UNKNOWN_BIB_NUMBER)
+                    bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1);
+            }
+
+            for (final Map.Entry<Integer, Integer> entry : bib_counts.entrySet())
+                if (entry.getValue() > ((RelayRace) race).getNumberOfLegs())
+                    throw new RuntimeException(STR."surplus result for team '\{entry.getKey()}' in file '\{Paths.get(raw_results_path).getFileName()}'");
+        } catch (final IOException e) {
+            throw new RuntimeException("unexpected IO exception", e);
+        }
+    }
+
+    private void checkConfig() {
+
+        final String mass_start_elapsed_times = race.getOptionalProperty(RelayRace.KEY_MASS_START_ELAPSED_TIMES);
+
+        if (mass_start_elapsed_times != null) {
+
+            Duration previous_time = null;
+            for (final String time_string : mass_start_elapsed_times.split(",")) {
+
+                final Duration mass_start_time;
+                try {
+                    mass_start_time = parseTime(time_string);
+                } catch (final DateTimeParseException _) {
+                    throw new RuntimeException(STR."invalid mass start time for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
+                }
+
+                if (previous_time != null &&
+                    !previous_time.equals(Duration.ZERO) &&
+                    previous_time.compareTo(mass_start_time) > 0)
+
+                    throw new RuntimeException(STR."invalid mass start time order for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
+
+                previous_time = mass_start_time;
+            }
+        }
     }
 
     int getNumberOfRawResults() {
