@@ -58,17 +58,6 @@ public class IndividualRace extends SingleRace {
         commonMain(args, config_file_path -> new IndividualRace(Paths.get(config_file_path)));
     }
 
-    public static void main2(final String[] args) throws IOException {
-
-        // Path to configuration file should be first argument.
-
-        if (args.length < 1)
-            System.out.println("usage: java IndividualRace <config file path>");
-        else {
-            new IndividualRace(Paths.get(args[0])).processResults();
-        }
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -208,15 +197,10 @@ public class IndividualRace extends SingleRace {
     @Override
     protected void recordDNF(final String dnf_specification) {
 
-        try {
-            final int bib_number = Integer.parseInt(dnf_specification);
-            final IndividualRaceResult result = getResultWithBibNumber(bib_number);
+        final int bib_number = Integer.parseInt(dnf_specification);
+        final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
-            result.completion_status = CompletionStatus.DNF;
-
-        } catch (final NumberFormatException e) {
-            throw new RuntimeException(dnf_specification, e);
-        }
+        result.completion_status = CompletionStatus.DNF;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,8 +236,7 @@ public class IndividualRace extends SingleRace {
             map(result -> ((IndividualRaceResult) result)).
             filter(result -> result.entry.bib_number == bib_number).
             findFirst().
-//            orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
-        orElseThrow();
+            orElseThrow();
     }
 
     private IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
@@ -263,7 +246,6 @@ public class IndividualRace extends SingleRace {
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();
-//        orElseThrow(() -> new RuntimeException(STR."unregistered bib number: \{bib_number}"));
     }
 
     private int getRecordedPosition(final int bib_number) {

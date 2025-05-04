@@ -20,13 +20,9 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
 class IndividualRaceInput extends SingleRaceInput {
 
@@ -44,7 +40,22 @@ class IndividualRaceInput extends SingleRaceInput {
     public void validateInputFiles() {
 
         super.validateInputFiles();
+        checkConfig();
+
         checkResultsContainValidBibNumbers();
     }
 
+    private void checkConfig() {
+
+        final String dnf_string = race.getOptionalProperty(KEY_DNF_FINISHERS);
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(",")) {
+                try {
+                    Integer.parseInt(individual_dnf_string);
+
+                } catch (final NumberFormatException e) {
+                    throw new RuntimeException(STR."invalid entry '\{individual_dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{race.config_file_path.getFileName()}'", e);
+                }
+            }
+    }
 }

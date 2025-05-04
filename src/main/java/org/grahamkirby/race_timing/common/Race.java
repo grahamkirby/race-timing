@@ -65,7 +65,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected final Path config_file_path;
+    public final Path config_file_path;
     protected final Properties properties;
 
     public RacePrizes prizes;
@@ -79,7 +79,7 @@ public abstract class Race {
     private RaceOutputPDF output_PDF;
 
     /** Overall race results. */
-    protected List<RaceResult> overall_results;
+    public List<RaceResult> overall_results;
 
     /**
      * List of valid entry categories.
