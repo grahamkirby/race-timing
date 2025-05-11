@@ -50,6 +50,8 @@ public abstract class SeriesRaceResult extends RaceResult {
     public CompletionStatus getCompletionStatus() {
 
         if (hasCompletedSeries()) return CompletionStatus.COMPLETED;
+        if (canCompleteSeries()) return CompletionStatus.CAN_COMPLETE;
+        // TODO what if DNF in all?
         if (numberOfRacesCompleted() == 0) return CompletionStatus.DNS;
 
         return CompletionStatus.DNF;

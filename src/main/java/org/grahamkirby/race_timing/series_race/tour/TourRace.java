@@ -24,7 +24,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
@@ -35,9 +34,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class TourRace extends SeriesRace {
+public final class TourRace extends SeriesRace {
 
-    public TourRace(final Path config_file_path) throws IOException {
+    private TourRace(final Path config_file_path) throws IOException {
 
         super(config_file_path);
     }

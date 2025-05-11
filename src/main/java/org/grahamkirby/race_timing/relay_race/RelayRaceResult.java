@@ -59,6 +59,7 @@ public class RelayRaceResult extends RaceResult {
     @Override
     public CompletionStatus getCompletionStatus() {
 
+        // TODO what if all legs were run but DNF?
         if (!wereAnyLegsCompleted()) return CompletionStatus.DNS;
         if (!wereAllLegsCompleted()) return CompletionStatus.DNF;
 

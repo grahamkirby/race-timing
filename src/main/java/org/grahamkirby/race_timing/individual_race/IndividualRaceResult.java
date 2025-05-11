@@ -27,7 +27,7 @@ public class IndividualRaceResult extends RaceResult {
 
     public final IndividualRaceEntry entry;
     public Duration finish_time;
-    public CompletionStatus completion_status;
+    public CompletionStatus completion_status;  // TODO why only stored for individual race?
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

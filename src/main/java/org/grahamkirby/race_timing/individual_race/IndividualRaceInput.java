@@ -45,6 +45,11 @@ class IndividualRaceInput extends SingleRaceInput {
         checkResultsContainValidBibNumbers();
     }
 
+    @Override
+    protected int getNumberOfEntryColumns() {
+        return 4;
+    }
+
     private void checkConfig() {
 
         final String dnf_string = race.getOptionalProperty(KEY_DNF_FINISHERS);

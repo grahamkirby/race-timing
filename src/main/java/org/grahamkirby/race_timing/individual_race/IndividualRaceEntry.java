@@ -33,18 +33,13 @@ public class IndividualRaceEntry extends RaceEntry {
     private static final int CATEGORY_INDEX = 3;
 
     public final Runner runner;
-    
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public IndividualRaceEntry(final List<String> elements, final Race race) {
 
-        final List<String> mapped_elements;
-        try {
-            mapped_elements = race.normalisation.mapRaceEntryElements(elements);
-        } catch (final Exception _) {
-            throw new RuntimeException(String.join(" ", elements));
-        }
+        final List<String> mapped_elements = race.normalisation.mapRaceEntryElements(elements);
 
         try {
             bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));

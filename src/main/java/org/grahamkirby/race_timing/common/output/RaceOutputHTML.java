@@ -55,8 +55,8 @@ public abstract class RaceOutputHTML extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
-            writer.append(getPrizesHeader());
 
+            writer.append(getPrizesHeader());
             printPrizes(writer);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);

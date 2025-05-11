@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.single_race.SingleRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
@@ -32,7 +33,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
 public class RelayRaceInput extends SingleRaceInput {
 
@@ -91,27 +94,69 @@ public class RelayRaceInput extends SingleRaceInput {
 
         super.validateInputFiles();
         checkConfig();
+        checkDNFs();
         checkResultsContainValidBibNumbers();
         checkNumberOfResults();
+    }
+
+    @Override
+    protected int getNumberOfEntryColumns() {
+        return ((RelayRace)race).getNumberOfLegs() + 3;
+    }
+
+    private void checkDNFs() {
+
+        // This fills in the DNF results that were specified explicitly in the config
+        // file, corresponding to cases where the runners reported not completing the
+        // course.
+
+        // Cases where there is no recorded result are captured by the
+        // default completion status being DNS.
+
+        final String dnf_string = ((SingleRace) race).dnf_string;
+
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(","))
+                try {
+                    // String of form "bib-number/leg-number"
+
+                    final String[] elements = individual_dnf_string.split("/");
+                    Integer.parseInt(elements[0]);
+                    Integer.parseInt(elements[1]);
+
+                } catch (final NumberFormatException e) {
+                    throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{race.config_file_path.getFileName()}'");
+                }
     }
 
     private void checkNumberOfResults() {
 
         try {
-            final Map<Integer, Integer> bib_counts = new HashMap<>();
+            final Map<String, Integer> bib_counts = new HashMap<>();
 
-            for (final RawResult result : loadRawResults()) {
-                final int bib_number = result.getBibNumber();
+            countLegResults(bib_counts, raw_results_path);
+            countLegResults(bib_counts, paper_results_path);
 
-                if (bib_number != UNKNOWN_BIB_NUMBER)
-                    bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1);
-            }
-
-            for (final Map.Entry<Integer, Integer> entry : bib_counts.entrySet())
+            for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
                 if (entry.getValue() > ((RelayRace) race).getNumberOfLegs())
                     throw new RuntimeException(STR."surplus result for team '\{entry.getKey()}' in file '\{Paths.get(raw_results_path).getFileName()}'");
+
         } catch (final IOException e) {
             throw new RuntimeException("unexpected IO exception", e);
+        }
+    }
+
+    private void countLegResults(final Map<String, Integer> bib_counts, final String results_path) throws IOException {
+
+        if (results_path != null) {
+            for (final String line : Files.readAllLines(race.getPath(results_path))) {
+                if (!line.startsWith(COMMENT_SYMBOL) && !toString().isBlank()) {
+
+                    final String bib_number = line.split("\t")[0];
+                    if (!bib_number.equals("?"))
+                        bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1);
+                }
+            }
         }
     }
 

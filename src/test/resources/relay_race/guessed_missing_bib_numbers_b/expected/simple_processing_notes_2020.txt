@@ -3,7 +3,6 @@ Discrepancies:
 -------------
 
 Bib numbers with missing times: 3, 4, 4, 5, 5
-
 Times with missing bib numbers:
 
 00:45:35

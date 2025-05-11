@@ -126,7 +126,7 @@ public class IndividualRaceTest extends RaceTest {
 
     @Test
     void invalidEntry() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_entry", () -> STR."invalid entry '138 Robbie Dunlop Dundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+        testExpectedErrorMessage("individual_race/invalid_entry", () -> STR."invalid entry '138\tRobbie Dunlop\tDundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test

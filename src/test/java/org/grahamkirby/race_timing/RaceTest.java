@@ -25,6 +25,7 @@ import org.junit.jupiter.api.AfterEach;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -130,6 +131,7 @@ public abstract class RaceTest {
 
     private void configureTest(final String individual_test_resource_root) throws IOException {
 
+        // TODO try @TempDir parameter
         test_directory = DEBUG ? Paths.get(USER_TEST_DIRECTORY_PATH) : Files.createTempDirectory(null);
 
         configureDirectories(individual_test_resource_root);
@@ -176,7 +178,7 @@ public abstract class RaceTest {
             \{get_expected_error_message.get()}
             """,
             text,
-            "Unexpected error message");
+            "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -239,23 +241,59 @@ public abstract class RaceTest {
 
     private static void assertThatFilesHaveSameContent(final Path path1, final Path path2) {
 
-        if (!getFileContent(path1).equals(getFileContent(path2)))
-            fail(STR."Files differ: \{path1}, \{path2}");
+        final List<String> file_content1 = getFileContent(path1);
+        final List<String> file_content2 = getFileContent(path2);
+
+        for (int i = 0; i < Math.min(file_content1.size(), file_content2.size()); i++) {
+            assertEquals(file_content1.get(i), file_content2.get(i), STR."""
+                Difference in files: \{path1} and \{path2} at line \{i + 1}:
+                \{file_content1.get(i)}
+                \{file_content2.get(i)}""");
+        }
+
+        if (file_content1.size() < file_content2.size()) {
+
+            int i = file_content1.size() + 1;
+            while (i < file_content2.size() && file_content2.get(i).isBlank()) i++;
+
+            if (i < file_content2.size())
+                fail(STR."""
+                    Difference in files: \{path1} and \{path2}: at line \{i}:
+                    \{file_content2.get(file_content1.size())}""");
+        }
+
+        if (file_content1.size() > file_content2.size()) {
+
+            int i = file_content2.size() + 1;
+            while (i < file_content1.size() && !file_content1.get(i).isBlank()) i++;
+
+            if (i < file_content1.size())
+
+                fail(STR."""
+                    Difference in files: \{path1} and \{path2}: at line \{i}:
+                    \{file_content1.get(file_content2.size())}""");
+        }
+
+//        for (int i = 0; i < Math.min(file_content1.size(), file_content2.size()); i++) {
+//
+//        }
+//        if (!file_content1.equals(getFileContent(path2)))
+//            fail(STR."Files differ: \{path1}, \{path2}");
     }
 
-    private static String getFileContent(final Path path) {
+    private static List<String> getFileContent(final Path path) {
 
         try {
             if (path.toString().endsWith(SUFFIX_PDF)) {
                 try (final PdfDocument document = new PdfDocument(new PdfReader(path.toString()))) {
 
-                    final StringBuilder text = new StringBuilder();
+                    final List<String> contents = new ArrayList<>();
                     for (int i = 1; i <= document.getNumberOfPages(); i++)
-                        text.append(PdfTextExtractor.getTextFromPage(document.getPage(i)));
+                        contents.add(PdfTextExtractor.getTextFromPage(document.getPage(i)));
 
-                    return text.toString();
+                    return contents;
                 }
-            } else return String.join("", Files.readAllLines(path));
+            } else return Files.readAllLines(path);
 
         } catch (final IOException e) {
             fail(STR."Expected output file not found: \{path}");

@@ -10,6 +10,7 @@ Pos,No,Runner,Club,Category,Time
 9,33,Ailsa Bennet,Fife AC,FU15,00:20:23
 10,28,Harriet Whelan,Moray Road Runners,FU15,00:21:19
 11,34,Orla McGeehan,Inverclyde,FU15,00:22:14
+
 1,22,Ben Cameron,Forres Harriers,MU15,00:14:30
 2,21,James Connelly,Garscube Harriers,MU15,00:15:16
 3,32,Struan Bennet,Fife AC,MU15,00:15:32
@@ -18,10 +19,12 @@ Pos,No,Runner,Club,Category,Time
 6,23,Andrew Winter,Inverclyde,MU15,00:17:59
 7,24,James Grant,Strathearn Harriers,MU15,00:18:18
 8,35,Ross Davidson,Inverclyde,MU15,00:19:09
+
 1,59,Lynn McKenna,Giffnock North,FU17,00:33:12
 2,66,Zoe Nicholson,Pitreavie,FU17,00:35:25
 3,62,Beth Hobbs,Moorfoots,FU17,00:35:55
 4,60,Cliona McCheyne,Inverclyde,FU17,00:37:03
+
 1,64,Robert Sparks,Fife AC,MU17,00:29:09
 2,68,Iain McWhinnie,Fife AC,MU17,00:30:19
 3,55,Cameron Corrigan,Kilbarchan,MU17,00:30:28
@@ -32,9 +35,11 @@ Pos,No,Runner,Club,Category,Time
 8,67,Gavin McWhinnie,Fife AC,MU17,00:33:57
 9,61,Ross Wyse,Fife AC,MU17,00:34:10
 10,57,Luke Nelson,Giffnock North,MU17,00:36:34
+
 1,74,Anisha Badial,Aberdeen AAC,FU20,00:50:53
 2,72,Grace Whelan,Moray Road Runners,FU20,00:52:48
 3,73,Mairi Wallace,Moorfoots,FU20,01:00:32
+
 1,76,George Rees,Fife AC,MU20,00:43:53
 2,70,Cody Stevenson,Garscube Harriers,MU20,00:46:00
 3,71,Cameron Watson,Inverclyde,MU20,00:48:42

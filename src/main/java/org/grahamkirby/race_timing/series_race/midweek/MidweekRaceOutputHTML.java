@@ -47,6 +47,14 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
         return new PrizeResultPrinter(race, writer);
     }
 
+    // TODO restore current standings header.
+//    @Override
+//    public String getPrizesHeader() {
+//
+//        String header = ((SeriesRace)race).getNumberOfRacesTakenPlace() < ((SeriesRace)race).getNumberOfRacesInSeries() ? "Current Standings" : "Prizes";
+//        return STR."<h4>\{header}</h4>\{LINE_SEPARATOR}";
+//    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final class OverallResultPrinter extends ResultPrinterHTML {

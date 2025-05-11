@@ -35,9 +35,9 @@ public abstract class SingleRace extends Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<RaceEntry> entries;
-    public List<RawResult> raw_results;
+    protected List<RawResult> raw_results;
 
-    private String dnf_string;
+    public String dnf_string;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,8 +77,6 @@ public abstract class SingleRace extends Race {
         // The other list will be initialised as an empty list.
         raw_results = single_race_input.loadRawResults();
         overall_results = single_race_input.loadOverallResults();
-
-//        input.validateDataStructures();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,14 +94,9 @@ public abstract class SingleRace extends Race {
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
-        try {
-            if (dnf_string != null && !dnf_string.isBlank())
-                for (final String individual_dnf_string : dnf_string.split(","))
-                    recordDNF(individual_dnf_string);
-        }
-        catch (RuntimeException e) {
-            throw new RuntimeException(STR."invalid entry '\{e.getMessage()}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
-        }
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(","))
+                recordDNF(individual_dnf_string);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

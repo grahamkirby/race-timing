@@ -170,14 +170,14 @@ public abstract class SeriesRace extends Race {
 
         final EntryCategory earliest_category = getEarliestNonNullCategory(runner_results);
 
-        checkConsistencyOverSeries(runner_results);
+        checkCategoryConsistencyOverSeries(runner_results);
 
         for (final IndividualRaceResult result : runner_results)
             result.entry.runner.category = earliest_category;
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    private void checkConsistencyOverSeries(final Iterable<? extends IndividualRaceResult> runner_results) {
+    private void checkCategoryConsistencyOverSeries(final Iterable<? extends IndividualRaceResult> runner_results) {
 
         EntryCategory previous_category = null;
 

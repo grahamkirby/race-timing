@@ -63,6 +63,8 @@ public class IndividualRace extends SingleRace {
     @Override
     public void calculateResults() {
 
+        // TODO make subclasses for locally and externally organised.
+
         // When this race is externally organised as part of a series race, the raw
         // results are not known, and calculation of results is not necessary. In such
         // cases the final results are loaded in configureInputData().
@@ -108,7 +110,7 @@ public class IndividualRace extends SingleRace {
     public Duration getMedianTime() {
 
         // The median time may be recorded explicitly if not all results are recorded.
-        if (median_time_string != null) return Normalisation.parseTime(median_time_string);
+        if (median_time_string != null) return parseTime(median_time_string);
 
         final List<RaceResult> results = getOverallResults();
 
@@ -208,6 +210,7 @@ public class IndividualRace extends SingleRace {
     /** Initialises overall results from the entries. */
     private void initialiseResults() {
 
+        // TODO why needed if results loaded in SingleRaceInput?
         entries.stream().
             map(entry -> (IndividualRaceEntry) entry).
             map(entry -> new IndividualRaceResult(this, entry)).
@@ -224,7 +227,7 @@ public class IndividualRace extends SingleRace {
             final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
             result.finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
 
-            // Provisionally this result is not DNF since a finish time was recorded.
+            // Provisionally this result is COMPLETED since a finish time was recorded.
             // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
             result.completion_status = CompletionStatus.COMPLETED;
         });
