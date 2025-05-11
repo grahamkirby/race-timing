@@ -108,15 +108,15 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
             writer.append(
                 midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
                     map(individual_race -> STR."""
-                                        <td>\{midweek_race.calculateRaceScore(individual_race, result.runner)}</td>
+                                    <td>\{midweek_race.calculateRaceScore(individual_race, result.runner)}</td>
                         """).
                     collect(Collectors.joining())
             );
 
             writer.append(STR."""
-                        <td>\{result.totalScore()}</td>
-                        <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
-                    </tr>
+                            <td>\{result.totalScore()}</td>
+                            <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
+                        </tr>
                 """);
         }
     }
