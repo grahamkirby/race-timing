@@ -51,7 +51,7 @@ public class GrandPrixRace extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public GrandPrixRace(final Path config_file_path) throws IOException {
+    private GrandPrixRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 

@@ -38,6 +38,14 @@ public abstract class Race {
 
     // TODO improve error messages for input file processing.
     // TODO add junior hill races.
+    // TODO tests - check existence of required config fields.
+    // TODO tests - validate required config fields.
+    // TODO tests - validate optional config fields.
+    // TODO mutation tests.
+    // TODO fuzz tests.
+    // TODO test missing output directory.
+    // TODO test input directory with different name.
+    // TODO prompt for config file if not supplied as arg.
 
     /** Comment symbol used within configuration files. */
     public static final String COMMENT_SYMBOL = "#";
@@ -66,7 +74,7 @@ public abstract class Race {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public final Path config_file_path;
-    protected final Properties properties;
+    private final Properties properties;
 
     public RacePrizes prizes;
     private StringBuilder notes;
@@ -79,7 +87,7 @@ public abstract class Race {
     private RaceOutputPDF output_PDF;
 
     /** Overall race results. */
-    public List<RaceResult> overall_results;
+    protected List<RaceResult> overall_results;
 
     /**
      * List of valid entry categories.
@@ -124,7 +132,7 @@ public abstract class Race {
         else {
             try {
                 factory.apply(args[0]).processResults();
-            } catch (@SuppressWarnings("OverlyBroadCatchBlock") final Exception e) {
+            } catch (@SuppressWarnings("OverlyBroadCatchBlock") final Throwable e) {
                 System.err.println(e.getMessage());
             }
         }
@@ -154,7 +162,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void processResults() throws IOException {
+    private void processResults() throws IOException {
 
         calculateResults();
         outputResults();
@@ -229,12 +237,9 @@ public abstract class Race {
     /** Tests whether the given entry category is eligible for the given prize category. */
     final boolean isResultEligibleForPrizeCategory(final RaceResult result, final PrizeCategory prize_category) {
 
-        boolean resultEligibleForPrizeCategoryByGender = isResultEligibleForPrizeCategoryByGender(result, prize_category);
-        boolean resultEligibleForPrizeCategoryByAge = isResultEligibleForPrizeCategoryByAge(result, prize_category);
-        boolean resultEligibleForPrizeCategoryByClub = isResultEligibleForPrizeCategoryByClub(result, prize_category);
-        return resultEligibleForPrizeCategoryByGender &&
-            resultEligibleForPrizeCategoryByAge &&
-            resultEligibleForPrizeCategoryByClub;
+        return isResultEligibleForPrizeCategoryByGender(result, prize_category) &&
+            isResultEligibleForPrizeCategoryByAge(result, prize_category) &&
+            isResultEligibleForPrizeCategoryByClub(result, prize_category);
     }
 
     /** Tests whether the given entry category is eligible in any of the given prize categories. */
@@ -478,7 +483,9 @@ public abstract class Race {
 
     private static boolean areBothDnf(final RaceResult r1, final RaceResult r2) {
 
-        return r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF;
+        // TODO change check to can both finish
+        return (r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF) ;//||
+//            (r1.getCompletionStatus() == CompletionStatus.CAN_COMPLETE && r2.getCompletionStatus() == CompletionStatus.CAN_COMPLETE);
     }
 
     /** Loads prize category groups from the given file. */
@@ -543,7 +550,6 @@ public abstract class Race {
 
         if (club == null || eligible_clubs.isEmpty()) return true;
 
-        boolean contains = eligible_clubs.contains(club);
-        return contains;
+        return eligible_clubs.contains(club);
     }
 }

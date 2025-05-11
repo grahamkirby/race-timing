@@ -326,7 +326,7 @@ public class RelayRaceTest extends RaceTest {
 
     @Test
     void illegalTeamComposition() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_team_composition", () -> STR."invalid entry '3 Team 3 OS Jackbruce Neil MacDonald & Myles  Christie Hubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+        testExpectedErrorMessage("relay_race/illegal_team_composition", () -> STR."invalid entry '3\tTeam 3\tOS\tJackbruce\tNeil MacDonald & Myles  Christie\tHubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test

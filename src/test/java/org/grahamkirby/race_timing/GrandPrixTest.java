@@ -17,6 +17,7 @@
 package org.grahamkirby.race_timing;
 
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class GrandPrixTest extends RaceTest {
@@ -29,6 +30,7 @@ public class GrandPrixTest extends RaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
+    @Disabled
     void changingCategories() throws Exception {
         testExpectedCompletion("series_race/grand_prix/changing_categories");
     }

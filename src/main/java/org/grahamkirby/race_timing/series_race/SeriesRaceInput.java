@@ -41,7 +41,6 @@ public class SeriesRaceInput extends RaceInput {
     }
 
     public void validateInputFiles() {
-
     }
 
     List<IndividualRace> loadRaces() throws IOException {

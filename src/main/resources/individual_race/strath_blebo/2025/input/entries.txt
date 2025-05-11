@@ -1,0 +1,103 @@
+101	Lyle  Allan 	Falkland Trail Runners 	M60
+102	Simon Anetts	Fife AC	MS
+103	Matthew Beaney	Dundee Road Runners	M40
+104	Charles Beer	University of St Andrews Triathlon Club	MS
+105	Mark  Bell	Dundee Road Runners	M40
+106	Alan Bothwell	Perth Road Runners 	M60
+107	Susan Bothwell 	Perth Road Runners 	F60
+108	Clive Bowman 	Perth Road Runners 	M50
+109	Innes Bracegirdle	Fife AC	F60
+110	Abigail  Brierley 	East Fife Triathlon 	FS
+111	Matt Buck	Dundee Road Runners	MS
+112	Fiona Callaghan	Dundee Road Runners	FS
+113	Lou Cole	Perth Road Runners 	F40
+114	Jacqueline Cook 	Falkland Trail Runners 	F40
+115	Elise Coward	Dundee Road Runners 	FS
+116	Keith Crane		M40
+117	Maria Dale	Perth Road Runners 	F60
+118	Matthew  Dale	Perth Road Runners 	M70
+119	Ana De Miguel 	Perth Road Runners 	F50
+120	Stephen Dickson	Fife AC	M50
+121	Claire Douglas	Perth Road Runners	F50
+122	Daniel  Fields	Dundee Road Runners	M40
+123	James Fotheringham	Perth Road Runners	M60
+124	Orla Gage	Anster Haddies	FU20
+125	Will Gage	Anster Haddies	M50
+126	Jane Gatherer	Falkland Trail Runners	F50
+127	Alison Gelly	Dundee Road Runners	F50
+128	Keith Gelly	Dundee Road Runners	M50
+129	Billy Gibson	Dundee Hawkhill Harriers	M40
+130	Calum Gibson		MU20
+131	Jeff Gunnell		M70
+132	Paul Harkins	Fife AC	M40
+133	Caroline  Hogarth 	Perth Road Runners 	F50
+134	Dominic Hughes	Dundee Road Runners	M40
+135	Marten Kats	Perth Road Runners	M40
+136	Tim Kinnaird	Fife AC	M40
+137	John Lee	Falkland Trail Runners	M60
+138	Rosemary Lee	Falkland Trail Runners	F60
+139	Gordon Lindsay	Perth Road Runners 	M60
+140	Mairi Littleson	Dundee Road Runners	FS
+141	Gillian Lopez	Kinross Roadrunners	F60
+142	Hannah Lopez	Kinross Road Runners	FS
+143	Susanne  Lumsden 	Falkland Trail Runners 	F50
+144	Thomas Macmullan		MS
+145	Allison MacPherson	Falkland Trail Runners	F40
+146	John MacPherson	Fife AC	M40
+147	Vince MacPherson	Fife AC	M40
+148	Rhonda Manning	Dundee Hawkhill Harriers	F50
+149	Ross McArthur	Falkland Trail Runners 	MS
+150	Scott McClung	Fife AC	MS
+151	Alison McNeilly		F40
+152	Bethan McRobbie	Anster Haddies	FS
+153	John Mill	Dundee Road Runners	M60
+154	Mike Murdoch	Falkland Trail Runners 	M40
+155	Gillian  Murdoch 	Falkland Trail Runners 	F40
+156	Sally Newton 	Perth Road Runners	F60
+157	Vicky  Olusanya		F40
+158	David Place	Fife AC	M60
+159	Ann Reed	Perth Road Runners	F70
+160	Laura Robertson	Falkland Trail Runners 	F50
+161	Suzanne Robertson		F40
+162	Kevin Rogers	Perth Road Runners	M50
+163	Martin Rollo	Dundee Road Runners	M60
+164	Merce Torres	Fife AC	F40
+165	Rhona van Rensburg	Fife AC	F50
+166	Ruan van Rensburg 	Fife AC	MS
+167	James Waldie	Perth Road Runners	MS
+168	Fiona  Walker 	Fife AC	F50
+169	Lucy Ward	Perth Road Runners	FU20
+170	Richard Ward	Perth Road Runners	M50
+171	Huw Watkins		M40
+172	David Webster	Dundee Road Runners	MS
+173	Diane White	Perth Road Runners	F50
+174	Dominic  Williams 	Dundee Road Runners	MS
+175	Charles Woodhead	Perth Road Runners 	M50
+176	Grant Wooler	Perth Road Runners	M60
+177	Robert Hunter	East Fife Tri	M50
+178	Tristan Glasse-Davies	Unatt.	MS
+179	Heather Anderson	Fife AC	F40
+180	Debz Hay	Anster Haddies	F50
+181	Adam Hart	Dundee Road Runners	MS
+182	Jamie Lessels	Fife AC	MS
+183	Graham Rena	Dundee Road Runners	M50
+184	Margaret Martin	Fife AC	F60
+185	Tony Martin	Fife AC	M70
+186	Stewart Reid	Perth Road Runners	M40
+187	Peter Warland	Perth Road Runners	M60
+188	Sharon Warland	Perth Road Runners	F50
+189	Philip Suttie	Falkland Trail Runners	M40
+190	Ailsa Cruickshanks	Fife AC	FS
+191	Steph Devlin	Dundee Road Runners	F40
+192	Lynne Herd	Anster Haddies	F40
+193	Sandra Gardener	Falkland Trail Runners	F50
+194	Neil Gray	Fife AC	MS
+195	Tom Rainey	Anster Haddies	M40
+196	June Balgowan	Falkland Trail Runners	F50
+197	Jonny Seeley	East Fife Tri	M40
+198	Nick Wade	Anster Haddies	M50
+199	Catriona Duncan	Anster Haddies	F70
+200	Lee Cessford	Falkland Trail Runners	M50
+31	Yvonne Dehn	Anster Haddies	FS
+34	Ross Young	Anster Haddies	MS
+36	Dave Clark	Fife AC	M40

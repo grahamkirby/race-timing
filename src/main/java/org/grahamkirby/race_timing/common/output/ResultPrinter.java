@@ -32,7 +32,7 @@ public abstract class ResultPrinter {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public ResultPrinter(final Race race, final OutputStreamWriter writer) {
+    protected ResultPrinter(final Race race, final OutputStreamWriter writer) {
         this.race = race;
         this.writer = writer;
     }

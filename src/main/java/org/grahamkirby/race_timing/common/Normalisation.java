@@ -39,7 +39,7 @@ public class Normalisation {
 
     private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
     private static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
-    private static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
+    public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
     private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
     private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
 
@@ -177,6 +177,7 @@ public class Normalisation {
         // space character, by grouping column numbers with a dash.
         // E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
 
+        // TODO update default column map to deal with relay races - move definition to SingleRaceInput.
         final String entry_column_map_string = race.getProperty(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
 
         return Arrays.asList(entry_column_map_string.split(","));

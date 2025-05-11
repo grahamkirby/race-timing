@@ -33,7 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class MidweekRace extends SeriesRace {
+public final class MidweekRace extends SeriesRace {
 
     // Configuration file keys.
     private static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
@@ -42,7 +42,7 @@ public class MidweekRace extends SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public MidweekRace(final Path config_file_path) throws IOException {
+    private MidweekRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
