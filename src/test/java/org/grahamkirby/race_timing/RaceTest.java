@@ -165,7 +165,7 @@ public abstract class RaceTest {
 
             invokeMain(new String[]{config_file_path.toString()});
 
-            error_output = diverted_err.toString(Charset.defaultCharset());
+            error_output = diverted_err.toString();
 
         } finally {
             System.setErr(System.err);
