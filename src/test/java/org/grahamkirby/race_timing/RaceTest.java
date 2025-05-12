@@ -25,6 +25,7 @@ import org.junit.jupiter.api.AfterEach;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public abstract class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected Path config_file_path;
+    Path config_file_path;
     private Path resources_input_directory;
     private Path test_directory;
     private Path test_input_directory;
@@ -164,7 +165,7 @@ public abstract class RaceTest {
 
             invokeMain(new String[]{config_file_path.toString()});
 
-            error_output = diverted_err.toString();
+            error_output = diverted_err.toString(Charset.defaultCharset());
 
         } finally {
             System.setErr(System.err);
