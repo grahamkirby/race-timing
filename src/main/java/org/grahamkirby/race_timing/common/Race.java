@@ -47,7 +47,6 @@ public abstract class Race {
     // TODO test missing output directory.
     // TODO test input directory with different name.
     // TODO prompt for config file if not supplied as arg.
-    // TODO fix Windows build (character set)?
     // TODO divert test output via ByteArrayOutputStream.
     // TODO update README (https://www.makeareadme.com)
 

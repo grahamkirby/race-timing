@@ -286,7 +286,7 @@ public class RelayRaceTest extends RaceTest {
 
     @Test
     void duplicateTeamNumber() throws Exception {
-        testExpectedErrorMessage("relay_race/duplicate_team_number", () -> STR."duplicate bib number 3 in file \{getFileNameForPathProperty(KEY_ENTRIES_PATH)}");
+        testExpectedErrorMessage("relay_race/duplicate_team_number", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test

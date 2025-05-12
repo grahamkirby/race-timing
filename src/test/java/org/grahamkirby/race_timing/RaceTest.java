@@ -170,11 +170,6 @@ public abstract class RaceTest {
             System.setErr(System.err);
         }
 
-//        assertEquals(STR."""
-//            \{get_expected_error_message.get()}
-//            """,
-//            error_output,
-//            "Expected error message was not generated");
         assertEquals(get_expected_error_message.get() + System.lineSeparator(),
             error_output,
             "Expected error message was not generated");
