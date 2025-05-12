@@ -132,7 +132,7 @@ public abstract class SingleRaceInput extends RaceInput {
             lines.stream().
                 map(line -> line.split("\t")[0]).
                 filter(bib_number -> !seen.add(bib_number)).
-                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number \{bib_number} in file \{entries_path}");});
+                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number '\{bib_number}' in file '\{entries_path}'");});
 
         } catch (final IOException _) {
             throw new RuntimeException(STR."invalid file: '\{entries_path}'");
