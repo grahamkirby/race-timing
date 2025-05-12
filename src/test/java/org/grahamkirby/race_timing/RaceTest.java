@@ -25,7 +25,6 @@ import org.junit.jupiter.api.AfterEach;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -171,9 +170,12 @@ public abstract class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals(STR."""
-            \{get_expected_error_message.get()}
-            """,
+//        assertEquals(STR."""
+//            \{get_expected_error_message.get()}
+//            """,
+//            error_output,
+//            "Expected error message was not generated");
+        assertEquals(get_expected_error_message.get() + System.lineSeparator(),
             error_output,
             "Expected error message was not generated");
 
