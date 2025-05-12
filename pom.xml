@@ -39,13 +39,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.stefanbirkner</groupId>
-            <artifactId>system-lambda</artifactId>
-            <version>1.2.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itext-core</artifactId>
             <version>9.0.0</version>

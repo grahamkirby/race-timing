@@ -22,7 +22,9 @@ import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
 import org.junit.jupiter.api.AfterEach;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemErr;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,11 +81,13 @@ public abstract class RaceTest {
     private Path retained_output_directory;
     private Path expected_output_directory;
 
-    Properties properties;
+    private Properties properties;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected String getFileNameForPathProperty(final String property_key) {
+    protected abstract void invokeMain(String[] args) throws Exception;
+
+    String getFileNameForPathProperty(final String property_key) {
         return Paths.get(properties.getProperty(property_key)).getFileName().toString();
     }
 
@@ -141,7 +144,6 @@ public abstract class RaceTest {
     protected void testExpectedCompletion(final String configuration_name) throws Exception {
 
         configureTest(configuration_name);
-//        makeRace(config_file_path).processResults();
         invokeMain(new String[]{config_file_path.toString()});
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
@@ -150,34 +152,28 @@ public abstract class RaceTest {
         failed_test = false;
     }
 
-    protected abstract void invokeMain(String[] args) throws Exception;
-
     void testExpectedErrorMessage(final String configuration_name, final Supplier<String> get_expected_error_message) throws Exception {
 
         configureTest(configuration_name);
 
-        final String text = tapSystemErr(() -> {
+        final String error_output;
+
+        try {
+            final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
+            System.setErr(new PrintStream(diverted_err));
+
             invokeMain(new String[]{config_file_path.toString()});
-        });
 
+            error_output = diverted_err.toString();
 
-//        ByteArrayOutputStream outContent;
-//        @BeforeEach
-//        public void setUp() {
-//            outContent = new ByteArrayOutputStream();
-//            System.setOut(new PrintStream(outContent));
-//        }
-//        @AfterEach
-//        public void tearDown() {
-//            System.setOut(System.out);
-//        }
-
-
+        } finally {
+            System.setErr(System.err);
+        }
 
         assertEquals(STR."""
             \{get_expected_error_message.get()}
             """,
-            text,
+            error_output,
             "Expected error message was not generated");
 
         // Test has passed if this line is reached.
