@@ -1,4 +1,4 @@
-Sam Fernando	Fife AC	MJ	24.45
+Sam Fernando	Fife AC	MS	24.45
 Neil Smith	Anster Haddies	MV40	25.03
 Alan Budd	Unatt	MS	25.32
 David Scott	Kinross RR	MS	26.48
@@ -17,7 +17,7 @@ Andy Johns	Kinross RR	MV40	28.49
 Mhairi Boyle	Kinross RR	FS	28.52
 Phil Forte	Dundee Hawkhill	MV50	29.35
 David Sinclair	Unattached	MS	29.39
-Ailsa Cruickshanks	Anster Haddies	FS	29.41
+Ailsa Cruickshanks	Fife AC	FS	29.41
 Andy Gallagher	Strathearn Harriers	MV50	29.43
 Simon Knox	Dundee RR	MV50	29.45
 Angela Irving	Perth RR	FS	29.46
@@ -73,7 +73,7 @@ Elizabeth Milne	Forfar RR	FV50	35.49
 James Keenan	Forfar RR	MV50	36.26
 Mark Watt	Forfar Road Runners	MV40	36.40
 Malcolm Mactavish	Falkland Trail Runners	MV60	37.01
-Rosemary Lee	Falkland Trail Runners	FV50	37.13
+Rosemary Lee	Fife AC	FV50	37.13
 Alison Downey	Dunblane Runners	FV40	37.18
 Geoff Bilton	Kinross RR	MV60	37.49
 Karen Forsyth	Carnegie Harriers	FS	38.03
@@ -103,7 +103,7 @@ Susan McLean	Kinross RR	FV40	46.19
 Sarah Eaton	Kinross RR	FV50	46.19
 Norman Smith	Kinross RR	MV80	46.25
 Andrea Habershaw	Unattached	FV40	46.36
-Alastair Robertson	Fife AC	MV70	49.49
+Alistair Robertson	Fife AC	MV70	49.49
 Jane Askey	Fife AC	FV70	50.36
 Sandy MacCalman	Kinross RR	MV70	52.21
 Sue Hogg	Get Fit Falkland	FV40	53.11

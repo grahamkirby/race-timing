@@ -1,53 +1,7 @@
-Runner Halina Rees recorded for multiple clubs: Fife AC, Fife/aberdeen Uni
-Runner Ian Poolman recorded for multiple clubs: Fife AC, Glenrothes Tri, Glenrothes Tri Club, Unatt.
-Runner Harvey Rankin recorded for multiple clubs: Fife AC, Unatt.
-Runner Brian Adams recorded for multiple clubs: Falkland Trail Runners, Fife AC
 Runner Gillian Smith recorded for multiple clubs: Fife AC, Perth Road Runners
-Runner Ailsa Cruickshanks recorded for multiple clubs: Anster Haddies, Anster Haddies Running Club, Fife AC
-Runner John Henderson recorded for multiple clubs: Fife AC, Unatt, Unatt.
-Runner Nanette Heaney recorded for multiple clubs: Falkland Trail Runners, Fife AC
-Runner Jennifer Spence recorded for multiple clubs: Fife AC, Fife/abertay Uni
-Runner Tom Scott illegal category change from M60 to M50 at Kinnoull
-Runner Tom Scott changed category from M50 to M60 at East Neuk 10K
 Runner Graham Bennison changed category from M60 to M70 at East Neuk 10K
-Runner Graham Bennison illegal category change from M70 to M60 at Sandy Slither
-Runner Graham Bennison changed category from M60 to M70 at Falkland Trail
 Runner John Keenlyside changed category from M50 to M60 at East Neuk 10K
-Runner Brian R Smith illegal category change from M50 to MS at Largo
-Runner Brian R Smith changed category from MS to M50 at Lomonds
-Runner David Sleigh illegal category change from M50 to MS at Largo
-Runner David Sleigh changed category from MS to M50 at East Neuk 10K
-Runner Grace Booth illegal category change from FS to FU20 at Giffordtown
-Runner Harvey Rankin illegal category change from MS to MU20 at Giffordtown
-Runner David Norrie illegal category change from M60 to M50 at Kinnoull
-Runner David Norrie changed category from M50 to M60 at East Neuk 10K
 Runner Margaret Martin changed category from F50 to F60 at Lomonds
-Runner Innes Bracegirdle illegal category change from F60 to F50 at Kinnoull
-Runner Innes Bracegirdle changed category from F50 to F60 at East Neuk 10K
-Runner Stewart Davidson changed category from M50 to M60 at East Neuk 10K
 Runner Robert Thornton changed category from M50 to M60 at East Neuk 10K
-Runner Jocelyn Scott changed category from F50 to F60 at Lomonds
-Runner Rick Booth illegal category change from M40 to MS at Largo
-Runner Rick Booth changed category from MS to M40 at East Neuk 10K
-Runner Logan Rees changed category from MU20 to MS at Kinnoull
-Runner Sue Whisler illegal category change from F50 to FS at Largo
-Runner Sue Whisler changed category from FS to F60 at Giffordtown
-Runner Eddie Sanders changed category from MS to M60 at Sandy Slither
-Runner Nick Brian unknown category so omitted from overall results
-Runner Dell Rae unknown category so omitted from overall results
-Runner James Rae unknown category so omitted from overall results
-Runner Annabel Simpson unknown category so omitted from overall results
-Runner Jeremy Tomlinson unknown category so omitted from overall results
-Runner Andrea Burke Rae unknown category so omitted from overall results
-Runner Johnny Logan unknown category so omitted from overall results
-Runner Mike Cumming unknown category so omitted from overall results
-Runner Iain Aitken unknown category so omitted from overall results
-Runner Jimmy Mcintyre unknown category so omitted from overall results
-Runner Ailsa Cruickshanks unknown category so omitted from overall results
-Runner Lynne Stephen unknown category so omitted from overall results
-Runner Daniel Urquhart unknown category so omitted from overall results
+Runner Sue Whisler changed category from F50 to F60 at Giffordtown
 Runner Katy Aitken unknown category so omitted from overall results
-Runner John Craig unknown category so omitted from overall results
-Runner Sandra Tulloch unknown category so omitted from overall results
-Runner David Shepherd unknown category so omitted from overall results
-Runner Ruth Hoffmann unknown category so omitted from overall results

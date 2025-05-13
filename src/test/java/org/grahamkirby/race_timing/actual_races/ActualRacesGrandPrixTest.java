@@ -18,7 +18,6 @@ package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class ActualRacesGrandPrixTest extends RaceTest {
@@ -41,7 +40,6 @@ public class ActualRacesGrandPrixTest extends RaceTest {
     }
 
     @Test
-    @Disabled
     void grandPrix2016Completed12() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_12");
     }
