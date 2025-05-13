@@ -36,7 +36,6 @@ public class ActualRacesGrandPrixTest extends RaceTest {
     }
 
     @Test
-    @Disabled
     void grandPrix2016Completed10() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_10");
     }

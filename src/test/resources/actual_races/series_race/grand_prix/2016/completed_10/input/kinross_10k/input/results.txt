@@ -17,7 +17,7 @@ David Macfadyen	Perth RR		00:40:18
 Chester Jarron	Kinross RR		00:40:20
 James Whyte			00:40:33
 John Mell	Dundee RR		00:40:46
-Johnny Logan	Fife AC		00:40:52
+Johnny Logan	Fife AC	MS	00:40:52
 Derek McIntosh	Perth RR		00:41:08
 Alex Jarrett	Falkland Trail Runners		00:41:13
 Andy Lafferty	Falkland Trail Runners		00:41:24
@@ -75,7 +75,7 @@ Stewart Dallas	Perth RR		00:46:44
 John Boyle	Kinross RR		00:46:50
 Kevin Smith	Lomond Hill Runners		00:46:57
 Derek Duncan	Pitreavie		00:46:59
-Lynne Stephen	Fife AC		00:47:05
+Lynne Stephen	Fife AC	F50	00:47:05
 Martin Kay	Pitreavie		00:47:21
 John Keenlyside	Fife AC		00:47:27
 Holly Staples	Perth RR		00:47:31
@@ -87,8 +87,8 @@ Garry Marshall	Perth RR		00:48:21
 Gordon Taylor	Falkland Trail Runners		00:48:26
 Scott Tweddle	Kinross RR		00:48:36
 Angus Donald	Dundee Hawkhill		00:49:00
-Brian Adams	Falkland Trail Runners		00:49:21
-Nick Brian	Fife AC		00:49:30
+Brian Adams	Fife AC	M50	00:49:21
+Nick Brian	Fife AC	M60	00:49:30
 Sarah Hill			00:49:59
 Steven Gilbert	Perth RR		00:50:02
 Mark Stewart	Dundee RR		00:50:11
@@ -118,7 +118,7 @@ Gillian Douglas	Perth RR		00:53:19
 Joyce Donald	Dundee Hawkhill		00:53:38
 Stewart Davidson	Fife AC		00:53:52
 Karen Forsyth	Carnegie Harriers		00:53:53
-Gillian Smith	Perth RR		00:54:04
+Gillian Smith Perth	Perth RR		00:54:04
 Katie McBride			00:54:04
 Lynn Beveridge	Jog Cowdenbeath		00:54:05
 Sophie Telfer	Kinross RR		00:54:39
