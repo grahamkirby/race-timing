@@ -30,9 +30,7 @@ public class ActualRacesGrandPrixTest extends RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO check ground truth
     @Test
-    @Disabled
     void grandPrix2016Completed6() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_6");
     }
@@ -44,6 +42,7 @@ public class ActualRacesGrandPrixTest extends RaceTest {
     }
 
     @Test
+    @Disabled
     void grandPrix2016Completed12() throws Exception {
         testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_12");
     }

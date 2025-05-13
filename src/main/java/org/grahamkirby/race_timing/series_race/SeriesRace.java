@@ -40,6 +40,8 @@ public abstract class SeriesRace extends Race {
     private int number_of_races_in_series;
     private int minimum_number_of_races;
 
+    // TODO output positions in results only for those that can complete series.
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected SeriesRace(final Path config_file_path) throws IOException {
@@ -101,7 +103,7 @@ public abstract class SeriesRace extends Race {
         return races;
     }
 
-    int getNumberOfRacesInSeries() {
+    public int getNumberOfRacesInSeries() {
         return number_of_races_in_series;
     }
 
@@ -117,6 +119,11 @@ public abstract class SeriesRace extends Race {
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
         return Boolean.compare(((SeriesRaceResult) r2).canCompleteSeries(), ((SeriesRaceResult) r1).canCompleteSeries());
+    }
+
+    protected static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
+
+        return -Integer.compare(((SeriesRaceResult) r1).numberOfRacesCompleted(), ((SeriesRaceResult) r2).numberOfRacesCompleted());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

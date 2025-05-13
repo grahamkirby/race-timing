@@ -28,7 +28,6 @@ import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
-import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,6 +47,9 @@ public class GrandPrixRace extends SeriesRace {
     List<RaceCategory> race_categories;
     private List<String> qualifying_clubs;
     private int score_for_median_position;
+
+    // TODO config for temporal order of races.
+    // TODO tests for legal and illegal category change during series.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,19 +109,21 @@ public class GrandPrixRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(Race::compareCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
+        return List.of(SeriesRace::comparePossibleCompletion, SeriesRace::compareNumberOfRacesCompleted, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override
     protected List<Comparator<RaceResult>> getDNFComparators() {
 
-        return List.of(SeriesRace::comparePossibleCompletion, GrandPrixRace::compareNumberOfRacesCompleted);
+        // TODO are these needed?
+//        return List.of(SeriesRace::comparePossibleCompletion, SeriesRace::compareNumberOfRacesCompleted);
+        return List.of();
     }
 
     @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
-        final List<Double> scores = races.stream().
+        final List<Integer> scores = races.stream().
             map(race -> calculateRaceScore(race, runner)).
             toList();
 
@@ -132,11 +136,17 @@ public class GrandPrixRace extends SeriesRace {
         return result -> qualifying_clubs.contains(((IndividualRaceResult) result).entry.runner.club);
     }
 
-    double calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+
+        if (individual_race == null) return 0;
 
         final Duration runner_time = individual_race.getRunnerTime(runner);
 
-        return runner_time != null ? divide(runner_time, individual_race.getMedianTime()) * score_for_median_position : 0.0;
+        if (runner_time != null) {
+            return (int)Math.round(divide(runner_time, individual_race.getMedianTime()) * score_for_median_position);
+        } else {
+            return 0;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,11 +154,6 @@ public class GrandPrixRace extends SeriesRace {
     private static double divide(final Duration d1, final Duration d2) {
 
         return d1.toMillis() / (double) d2.toMillis();
-    }
-
-    private static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
-
-        return -Integer.compare(((SeriesRaceResult) r1).numberOfRacesCompleted(), ((SeriesRaceResult) r2).numberOfRacesCompleted());
     }
 
     private void configureRaceCategories() throws IOException {

@@ -43,7 +43,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
         return STR."Pos,Runner,Category,\{((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).
             map(race1 -> race1.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)).
-            collect(Collectors.joining(","))}" + STR.",Total,Qualified\{getRaceCategoriesHeader()}\n";
+            collect(Collectors.joining(","))}" + STR.",Total,Completed?\{getRaceCategoriesHeader()}\n";
     }
 
     @Override
@@ -77,14 +77,14 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
             final GrandPrixRace grand_prix_race = (GrandPrixRace) race;
-            final int number_of_races_taken_place = grand_prix_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{result.runner.category.getShortName()},");
 
             writer.append(
-                grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
+                grand_prix_race.getRaces().stream().
+                    filter(Objects::nonNull).
                     map(individual_race -> {
-                        final long score = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
+                        final int score = grand_prix_race.calculateRaceScore(individual_race, result.runner);
                         return score == 0 ? "-" : String.valueOf(score);
                     }).
                     collect(Collectors.joining(","))
@@ -93,7 +93,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
             writer.append(STR.",\{Math.round(result.totalScore())},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}");
 
             for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
-                writer.append(",").append(GrandPrixRaceResult.hasCompletedRaceCategory(result, category) ? "Y" : "N");
+                writer.append(",").append(result.hasCompletedRaceCategory(category) ? "Y" : "N");
             }
 
             writer.append(LINE_SEPARATOR);

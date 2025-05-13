@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 public class GrandPrixTest extends RaceTest {
 
     @Override
-    protected void invokeMain(String[] args) throws Exception {
+    protected void invokeMain(final String[] args) throws Exception {
         GrandPrixRace.main(args);
     }
 
