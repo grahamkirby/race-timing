@@ -116,8 +116,8 @@ public class IndividualRace extends SingleRace {
 
         if (results.size() % 2 == 0) {
 
-            final IndividualRaceResult median_result1 = (IndividualRaceResult) results.get(results.size() / 2);
-            final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2 + 1);
+            final IndividualRaceResult median_result1 = (IndividualRaceResult) results.get(results.size() / 2 - 1);
+            final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2);
 
             return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
 

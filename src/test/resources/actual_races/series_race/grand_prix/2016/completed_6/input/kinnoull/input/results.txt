@@ -49,7 +49,7 @@ Joss Hay	Unattached	M	00:33:41
 Lee Cessford 	Falkland Trail Runners	M40	00:33:50
 Claire Douglas	Perth Road Runners	F40	00:33:51
 Dave Turner	Lomond HR	M40	00:33:52
-Ian Poolman	Glenrothes Tri Club	M40	00:33:53
+Ian Poolman	Fife AC	M40	00:33:53
 Mike Galloway	Dundee Hawkhill	M50	00:33:57
 Jonathan Weir	Unattached	M	00:34:05
 Zoey Johnston	Falkland Trail Runners	F40	00:34:10
@@ -74,7 +74,7 @@ Christie Ford	Falkland Trail Runners	F	00:35:45
 Brian McGibbon	Forfar RR	M	00:35:54
 Alan Corsie	Falkland Trail Runners	M50	00:35:59
 Phil Forte	Dundee Hawkhill	M50	00:36:08
-Tom Scott	Fife AC	M50	00:36:09
+Tom Scott	Fife AC	M60	00:36:09
 David Osborn	Lomond HR	M50	00:36:19
 Trevor Shaw	Lochtayside	M50	00:36:23
 Colin Wilson	Lomond HR	M50	00:36:25
@@ -85,7 +85,7 @@ Lesley Crichton	Unattached	F	00:36:36
 Iain Beedie	Lomond HR	M40	00:36:45
 Duncan Edward	Dundee Road Runners	M40	00:36:54
 Denise Burns 	Lomond HR	F40	00:36:59
-Innes Bracegirdle	Fife AC	F50	00:37:07
+Innes Bracegirdle	Fife AC	F60	00:37:07
 Steven Galligan	Westerlands CCC	M40	00:37:08
 Bill Connell	Lomond HR	M40	00:37:10
 Carole Maubray	Falkland Trail Runners	F50	00:37:12
@@ -95,7 +95,7 @@ Kevin Smith	Lomond HR	M	00:37:27
 Hamilton Semple	Westerlands CCC	M50	00:37:29
 Brian Brennan	Westerlands CCC	M50	00:37:38
 Gordon Taylor	Leven Las Vegas	M50	00:37:38
-David Norrie	Fife AC	M50	00:37:39
+David Norrie	Fife AC	M60	00:37:39
 Barry Campbell	Perth Road Runners	M	00:37:39
 Sarah Hutt	Kinross Road Runners	F	00:37:51
 Carol Greig	Unattached	F40	00:38:19
@@ -108,7 +108,7 @@ John McIntosh	Dundee Road Runners	M50	00:38:57
 Margaret Martin	Fife AC	F50	00:39:00
 Clare Shepherd	Unattached	F	00:39:05
 Donna Pass	Forfar RR	F40	00:39:18
-Jocelyn Scott	Fife AC	F50	00:39:37
+Jocelyn Scott	Fife AC	F60	00:39:37
 Laura Jarvis	Unattached	F40	00:39:42
 Unknown Runner	Unattached	M	00:39:43
 David Stokard	Perth Road Runners	M40	00:39:57
@@ -120,7 +120,7 @@ John Keenlyside	Fife AC	M50	00:40:34
 Kenny Mearns	Lothian	M50	00:40:36
 Tim Heilbronn 	Dundee Road Runners	M50	00:40:38
 Daniel Kershaw	North East Marathon Club	M40	00:40:43
-Stewart Davidson	Fife AC	M50	00:40:45
+Stewart Davidson	Fife AC	M60	00:40:45
 Rosalind Shanks	Forfar RR	F	00:40:48
 Gordon Barton	Unattached	M40	00:41:00
 Nicola Henson	Perth Road Runners	F	00:41:03

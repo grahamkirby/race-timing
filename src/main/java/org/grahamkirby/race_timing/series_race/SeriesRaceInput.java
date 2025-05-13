@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +58,7 @@ public class SeriesRaceInput extends RaceInput {
 
         final String race_config_path = race_config_paths.get(i);
 
-        return getIndividualRace(race_config_path, i + 1);
+        return race_config_path.isBlank() ? null : getIndividualRace(race_config_path, i + 1);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

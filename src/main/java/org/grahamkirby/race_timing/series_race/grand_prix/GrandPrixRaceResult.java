@@ -26,18 +26,22 @@ import java.util.List;
 
 public class GrandPrixRaceResult extends SeriesRaceResult {
 
-    private final List<Double> scores;
+    private final List<Integer> scores;
 
-    GrandPrixRaceResult(final Runner runner, final List<Double> scores, final Race race) {
+    GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(runner, race);
         this.scores = scores;
     }
 
-    static boolean hasCompletedRaceCategory(final GrandPrixRaceResult result, final RaceCategory category) {
+    boolean hasCompletedRaceCategory(final RaceCategory category) {
 
         return category.race_numbers().stream().
-            anyMatch(race_number -> race_number <= result.scores.size() && result.scores.get(race_number - 1) > 0.0);
+            anyMatch(this::hasCompletedRace);
+    }
+
+    private boolean hasCompletedRace(final int race_number) {
+        return race_number <= scores.size() && scores.get(race_number - 1) > 0.0;
     }
 
     @Override
@@ -51,7 +55,27 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
         return Double.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
     }
 
-    double totalScore() {
+    @Override
+    protected boolean canCompleteSeries() {
+
+        return super.canCompleteSeries() &&
+            ((GrandPrixRace)race).race_categories.stream().allMatch(this::canCompleteRaceCategory);
+    }
+
+    private boolean canCompleteRaceCategory(final RaceCategory category) {
+
+        final int number_of_races_remaining_in_category = (int) category.race_numbers().stream().
+            filter(race_number -> ((SeriesRace) race).getRaces().get(race_number - 1) != null).count();
+
+        final int number_of_races_required_in_category = category.minimum_number_to_be_completed();
+
+        final int number_of_races_completed_in_category = (int) category.race_numbers().stream().
+            filter(this::hasCompletedRace).count();
+
+        return number_of_races_completed_in_category + number_of_races_remaining_in_category >= number_of_races_required_in_category;
+    }
+
+    int totalScore() {
 
         final int minimum_number_of_races = ((SeriesRace) race).getMinimumNumberOfRaces();
         final int number_of_races_completed = numberOfRacesCompleted();
@@ -61,6 +85,6 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
             sorted().
             filter(score -> score > 0).
             limit(number_of_counting_scores).
-            reduce(0.0, Double::sum);
+            reduce(0, Integer::sum);
     }
 }

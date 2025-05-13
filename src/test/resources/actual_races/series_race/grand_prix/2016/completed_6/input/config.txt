@@ -2,7 +2,7 @@ YEAR = 2016
 RACE_NAME_FOR_RESULTS = Grand Prix
 RACE_NAME_FOR_FILENAMES = grand_prix
 
-RACES = normans_law/input/config.txt,kinnoull/input/config.txt,largo/input/config.txt,kinross_10k/input/config.txt,black_rock/input/config.txt,sandy_slither/input/config.txt
+RACES = normans_law/input/config.txt,kinnoull/input/config.txt,largo/input/config.txt,,kinross_10k/input/config.txt,,,,black_rock/input/config.txt,sandy_slither/input/config.txt,,
 NUMBER_OF_RACES_IN_SERIES = 12
 MINIMUM_NUMBER_OF_RACES = 6
 QUALIFYING_CLUBS = Fife AC,Kirkcaldy Wizards

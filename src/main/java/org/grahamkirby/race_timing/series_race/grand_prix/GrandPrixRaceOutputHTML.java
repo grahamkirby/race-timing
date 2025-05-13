@@ -21,10 +21,12 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
+import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
@@ -68,14 +70,18 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
                             <th>Category</th>
                 """);
 
-            for (int i = 0; i < ((SeriesRace) race).getNumberOfRacesTakenPlace(); i++)
-                writer.append(STR."""
-                                <th>\{((SeriesRace) race).getRaces().get(i).getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
-                    """);
+            for (int i = 0; i < ((SeriesRace) race).getRaces().size(); i++) {
+
+                IndividualRace individualRace = ((SeriesRace) race).getRaces().get(i);
+                if (individualRace != null)
+                    writer.append(STR."""
+                                    <th>\{individualRace.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
+                        """);
+            }
 
             writer.append(STR."""
                         <th>Total</th>
-                        <th>Completed</th>
+                        <th>Completed?</th>
                         \{getRaceCategoriesHeader()}
                     </tr>
                 </thead>
@@ -108,9 +114,10 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
             """);
 
             writer.append(
-                grand_prix_race.getRaces().subList(0, number_of_races_taken_place).stream().
+                grand_prix_race.getRaces().stream().
+                    filter(Objects::nonNull).
                     map(individual_race -> {
-                        final long score = Math.round(grand_prix_race.calculateRaceScore(individual_race, result.runner));
+                        final int score = grand_prix_race.calculateRaceScore(individual_race, result.runner);
                         return STR."""
                                         <td>\{score == 0 ? "-" : String.valueOf(score)}</td>
                         """;
@@ -119,12 +126,12 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
             );
 
             writer.append(STR."""
-                        <td>\{Math.round(result.totalScore())}</td>
+                        <td>\{result.totalScore()}</td>
                         <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
                 """);
 
             for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
-                writer.append("<td>").append(GrandPrixRaceResult.hasCompletedRaceCategory(result, category) ? "Y" : "N").append("</td>");
+                writer.append("<td>").append(result.hasCompletedRaceCategory(category) ? "Y" : "N").append("</td>");
             }
 
             writer.append("""
