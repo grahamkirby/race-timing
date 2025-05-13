@@ -4,17 +4,17 @@ Grand Prix Results 2016
 Category: Women Senior
 ----------------------
 
-1: Innes Bracegirdle (Fife AC) 5974
-2: Margaret Martin (Fife AC) 6335
-3: Sue Whisler (Fife AC) 7131
+1: Innes Bracegirdle (Fife AC) 5987
+2: Margaret Martin (Fife AC) 6340
+3: Sue Whisler (Fife AC) 7152
 
 
 Category: Men Senior
 --------------------
 
-1: Neil Millar (Fife AC) 5207
-2: Daniel Newman (Fife AC) 5304
-3: Rick Booth (Fife AC) 5304
+1: Neil Millar (Fife AC) 5213
+2: Rick Booth (Fife AC) 5321
+3: Daniel Newman (Fife AC) 5448
 
 
 Category: Women 40-49
@@ -26,7 +26,7 @@ No results
 Category: Men 40-49
 -------------------
 
-1: Derek Adamson (Fife AC) 6780
+1: Derek Adamson (Fife AC) 6787
 
 
 Category: Women 50-59
@@ -38,7 +38,7 @@ No results
 Category: Men 50-59
 -------------------
 
-1: David Sleigh (Fife AC) 5538
+1: David Sleigh (Fife AC) 5554
 
 
 Category: Women 60-69
@@ -50,6 +50,6 @@ No results
 Category: Men 60-69
 -------------------
 
-1: David Norrie (Fife AC) 5859
+1: David Norrie (Fife AC) 5871
 
 

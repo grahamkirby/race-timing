@@ -123,7 +123,11 @@ public abstract class SeriesRace extends Race {
 
     protected static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
 
-        return -Integer.compare(((SeriesRaceResult) r1).numberOfRacesCompleted(), ((SeriesRaceResult) r2).numberOfRacesCompleted());
+        int z = ((SeriesRace) r1.race).minimum_number_of_races;
+
+        int x = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), z);
+        int y = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), z);
+        return -Integer.compare(x, y);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

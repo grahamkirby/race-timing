@@ -1,9 +1,9 @@
 James Donald	Dundee Hawkhill Harriers	MU20	00:15:16
 Aidan Thompson	Central AC	MU20	00:15:33
 Jozsef Farkas	Unatt.	MS	00:15:36
-Tristan Rees	Fife Athletic Club	MU20	00:15:52
-Sam Fernando	Fife Athletic Club	MU20	00:16:14
-Harvey Rankin	Fife Athletic Club	MU20	00:16:20
+Tristan Rees	Fife Athletic Club	MS	00:15:52
+Sam Fernando	Fife Athletic Club	MS	00:16:14
+Harvey Rankin	Fife Athletic Club	MS	00:16:20
 Andrew Taylor	St Andrews University CCC	MS	00:17:09
 Chris Russell	St Andrews University CCC	MS	00:17:18
 Alan Hume	Central AC	MS	00:17:21

@@ -15,7 +15,7 @@ Peter Simpson	Carnegie	M50	01:46:50
 Simon Titmuss	Carnethy	M40	01:48:39
 Stuart Sanderson	Penicuik	M50	01:49:07
 Steven King	Carnegie	M40	01:50:33
-Andy Howett	Carnethy	M	01:50:36
+Andrew Howett	Fife AC	M	01:50:36
 Bruce Smith	Carnethy	M50	01:51:04
 Neil Burnett	Carnethy	M40	01:51:57
 Munro Stewart	Dundee Hawks	M	01:52:35

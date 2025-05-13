@@ -1,7 +1,7 @@
 Michael	Carroll	Perth Road Runners	M40	32.28
-Triston	Rees	Fife Athletic Club	MJ	33.33
+Tristan	Rees	Fife Athletic Club	MS	33.33
 George	Rees	Fife Athletic Club	MJ	34.29
-Sam	Fernando	Fife Athletic Club	MJ	34.49
+Sam	Fernando	Fife Athletic Club	MS	34.49
 Johnny	Lawson	Portobello Running Club	M40	34.56
 Ryan	Lafferty	PH Racing Club	MS	36.14
 Steve	Clark	Fife Athletic Club	M40	36.35
@@ -46,7 +46,7 @@ Neil	Maclachlan	Pitreavie AAC	MS	41.39
 David	Brisland	Anster Haddies Running Club	M40	41.43
 David	Sleigh	Fife Athletic Club	M50	41.55
 John	Babraj		M40	41.59
-Ailsa	Cruickshanks	Anster Haddies Running Club	FS	42.05
+Ailsa	Cruickshanks	Fife AC	FS	42.05
 Graeme	Barker	Fife Athletic Club	MS	42.09
 Adrian	Wood	East Fife Triathlon Club	M40	42.11
 Zoey	Johnston	Falkland Trail Runners	F40	42.13
@@ -147,7 +147,7 @@ Joseph	Jennings	Arbroath Footers Running Club	M40	49.32
 Fiona	Cruickshanks	Anster Haddies Running Club	FS	49.39
 Ally	Tulleth	Staart	F40	49.48
 Sarah	Cackette		FS	49.57
-Nanette	Heaney	Falkland Trail Runners	F50	49.59
+Nanette	Heaney	Fife AC	F50	49.59
 Michael	Royden	Leven Las Vegas Running Club	M40	50.11
 Derek	Adamson	Fife Athletic Club	M40	50.19
 Wendy	Grieve	Kinross Road Runners	F50	50.32
@@ -166,7 +166,7 @@ George	Wilson		M40	51.45
 Alison	Murray	Inverkeithing Jog Scotland	F40	51.46
 Raymond	Young		M60	51.47
 Valerie	Findlay	Kinross Road Runners	F50	52.05
-Rosemary	Lee	Falkland Trail Runners	F50	52.06
+Rosemary	Lee	Fife AC	F50	52.06
 Lynne	Herd	Anster allsorts	F40	52.09
 Linda	Palmer	Kinross Road Runners	F50	52.17
 Geoff	Bilton	Kinross Road Runners	M60	52.21
