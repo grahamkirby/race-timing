@@ -3,6 +3,7 @@ RACE_NAME_FOR_RESULTS = Grand Prix
 RACE_NAME_FOR_FILENAMES = grand_prix
 
 RACES = normans_law/input/config.txt,kinnoull/input/config.txt,largo/input/config.txt,lomonds/input/config.txt,kinross_10k/input/config.txt,stirling_10k/input/config.txt,east_neuk_10k/input/config.txt,giffordtown_5k/input/config.txt,black_rock/input/config.txt,sandy_slither/input/config.txt,trail_champs/input/config.txt,gateside_gallop/input/config.txt
+RACE_TEMPORAL_ORDER = 1,5,2,9,3,10,4,11,12,6,7,8
 NUMBER_OF_RACES_IN_SERIES = 12
 MINIMUM_NUMBER_OF_RACES = 6
 QUALIFYING_CLUBS = Fife AC,Kirkcaldy Wizards

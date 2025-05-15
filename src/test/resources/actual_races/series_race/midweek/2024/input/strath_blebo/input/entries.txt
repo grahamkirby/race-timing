@@ -105,6 +105,6 @@
 95	Lee Cessford	Falkland Trail Runners	M40
 97	Lynne Herd	Anster Haddies	F40
 98	Ewan Lumsden	Anster Haddies	M40
-96	Dave Clark	Falkland Trail Runners	M50
+96	Dave Clark	Falkland Trail Runners	M40
 92	John Lee	Falkland Trail Runners	M60
 91	Catriona Duncan	Anster Haddies	F70

@@ -1,0 +1,12 @@
+YEAR = 2016
+RACE_NAME_FOR_RESULTS = Black Rock
+RACE_NAME_FOR_FILENAMES = black_rock
+
+# Relative to directory containing configuration file.
+RESULTS_PATH = results.txt
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv
+
+ENTRY_COLUMN_MAP = 1,2-3,4,5

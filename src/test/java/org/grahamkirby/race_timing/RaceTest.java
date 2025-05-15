@@ -56,7 +56,7 @@ public abstract class RaceTest {
     // first failing test, if any, are retained.
 
     private static final boolean DEBUG = false;
-    private static final boolean RETAIN_FIRST_OUTPUT = false;
+    private static final boolean RETAIN_FIRST_OUTPUT = true;
 
     private static final String USER_TEST_DIRECTORY_PATH = "/Users/gnck/Desktop/tests";
     private static final String IGNORED_FILE_NAMES_PATH = "src/main/resources/configuration/test_ignored_file_names.csv";
@@ -245,34 +245,24 @@ public abstract class RaceTest {
                 \{file_content2.get(i)}""");
         }
 
-        if (file_content1.size() < file_content2.size()) {
+        if (file_content1.size() < file_content2.size())
+            checkLargerFileForFurtherNonBlankContent(path1, path2);
+        if (file_content1.size() > file_content2.size())
+            checkLargerFileForFurtherNonBlankContent(path2, path1);
+    }
 
-            int i = file_content1.size() + 1;
-            while (i < file_content2.size() && file_content2.get(i).isBlank()) i++;
+    private static void checkLargerFileForFurtherNonBlankContent(final Path path_smaller_file, final Path path_larger_file) {
 
-            if (i < file_content2.size())
-                fail(STR."""
-                    Difference in files: \{path1} and \{path2}: at line \{i}:
-                    \{file_content2.get(file_content1.size())}""");
-        }
+        final List<String> content_smaller_file = getFileContent(path_smaller_file);
+        final List<String> content_larger_file = getFileContent(path_larger_file);
 
-        if (file_content1.size() > file_content2.size()) {
+        int i = content_smaller_file.size();
+        while (i < content_larger_file.size() && content_larger_file.get(i).isBlank()) i++;
 
-            int i = file_content2.size() + 1;
-            while (i < file_content1.size() && !file_content1.get(i).isBlank()) i++;
-
-            if (i < file_content1.size())
-
-                fail(STR."""
-                    Difference in files: \{path1} and \{path2}: at line \{i}:
-                    \{file_content1.get(file_content2.size())}""");
-        }
-
-//        for (int i = 0; i < Math.min(file_content1.size(), file_content2.size()); i++) {
-//
-//        }
-//        if (!file_content1.equals(getFileContent(path2)))
-//            fail(STR."Files differ: \{path1}, \{path2}");
+        if (i < content_larger_file.size())
+            fail(STR."""
+                Difference in files: \{path_smaller_file} and \{path_larger_file}: at line \{i+1}:
+                \{content_larger_file.get(i)}""");
     }
 
     private static List<String> getFileContent(final Path path) {

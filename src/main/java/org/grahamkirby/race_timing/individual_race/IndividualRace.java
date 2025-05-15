@@ -32,7 +32,6 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
-@SuppressWarnings("VariableNotUsedInsideIf")
 public class IndividualRace extends SingleRace {
 
     // Configuration file keys.
@@ -182,18 +181,11 @@ public class IndividualRace extends SingleRace {
         printCombined();
     }
 
-    /** Compares results first by completion status, then by performance, then by recorded position. */
+    /** Compares results first by performance with DNFs last, then by recorded position, then by name. */
     @Override
     public List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(Race::compareCompletion, Race::comparePerformance, this::compareRecordedPosition);
-    }
-
-    /** Compares DNF results first by last name, then by first name. */
-    @Override
-    public List<Comparator<RaceResult>> getDNFComparators() {
-
-        return List.of(Race::compareRunnerLastName, Race::compareRunnerFirstName);
+        return List.of(ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)), ignoreIfEitherResultIsDNF(this::compareRecordedPosition), Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override

@@ -41,10 +41,12 @@ public class GrandPrixRace extends SeriesRace {
 
     // Configuration file keys.
     private static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
+    private static final String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
     private static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
     private static final String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
 
     List<RaceCategory> race_categories;
+    private List<Integer> race_temporal_positions;
     private List<String> qualifying_clubs;
     private int score_for_median_position;
 
@@ -70,6 +72,7 @@ public class GrandPrixRace extends SeriesRace {
         super.configure();
 
         configureRaceCategories();
+        configureRaceTemporalPositions();
         configureClubs();
     }
 
@@ -110,14 +113,6 @@ public class GrandPrixRace extends SeriesRace {
     protected List<Comparator<RaceResult>> getComparators() {
 
         return List.of(SeriesRace::comparePossibleCompletion, SeriesRace::compareNumberOfRacesCompleted, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
-    }
-
-    @Override
-    protected List<Comparator<RaceResult>> getDNFComparators() {
-
-        // TODO are these needed?
-//        return List.of(SeriesRace::comparePossibleCompletion, SeriesRace::compareNumberOfRacesCompleted);
-        return List.of();
     }
 
     @Override
@@ -175,6 +170,17 @@ public class GrandPrixRace extends SeriesRace {
         final List<Integer> race_numbers = Arrays.stream(elements).skip(2).map(Integer::parseInt).toList();
 
         race_categories.add(new RaceCategory(category_name, minimum_number, race_numbers));
+    }
+
+    @Override
+    protected int getRaceNumberInTemporalPosition(final int position) {
+        return race_temporal_positions.get(position) - 1;
+    }
+
+    private void configureRaceTemporalPositions() throws IOException {
+
+        race_temporal_positions = Arrays.stream(getRequiredProperty(KEY_RACE_TEMPORAL_ORDER).split(",")).
+            map(Integer::parseInt).toList();
     }
 
     protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {

@@ -50,7 +50,7 @@ public abstract class SeriesRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract RaceResult getOverallResult(final Runner runner);
+    protected abstract RaceResult getOverallResult(Runner runner);
     protected abstract Predicate<RaceResult> getResultInclusionPredicate();
     protected abstract void processMultipleClubsForRunner(String runner_name, List<String> defined_clubs);
 
@@ -103,7 +103,7 @@ public abstract class SeriesRace extends Race {
         return races;
     }
 
-    public int getNumberOfRacesInSeries() {
+    int getNumberOfRacesInSeries() {
         return number_of_races_in_series;
     }
 
@@ -116,6 +116,20 @@ public abstract class SeriesRace extends Race {
         return (int) races.stream().filter(Objects::nonNull).count();
     }
 
+    /**
+     * The order of the individual races in 'races' is set by the order in which they are listed in the config file,
+     * and this defines the order in which the races will be displayed in the results table.
+     *
+     * This method defines the temporal order in which races take place. In this default implementation both orders
+     * are the same, but it may be overridden to allow non-temporal order results listing in some types of series race.
+     *
+     * @param position a temporal position in the series, with zero corresponding to the first race to take place
+     * @return the number of the race taking place in that temporal position, as defined in the ordering in the configuration
+     */
+    protected int getRaceNumberInTemporalPosition(final int position) {
+        return position;
+    }
+
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
         return Boolean.compare(((SeriesRaceResult) r2).canCompleteSeries(), ((SeriesRaceResult) r1).canCompleteSeries());
@@ -123,11 +137,12 @@ public abstract class SeriesRace extends Race {
 
     protected static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
 
-        int z = ((SeriesRace) r1.race).minimum_number_of_races;
+        final int minimum_races_to_qualify = ((SeriesRace) r1.race).minimum_number_of_races;
 
-        int x = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), z);
-        int y = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), z);
-        return -Integer.compare(x, y);
+        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_races_to_qualify);
+        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_races_to_qualify);
+
+        return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +151,9 @@ public abstract class SeriesRace extends Race {
 
         final Predicate<RaceResult> inclusion_predicate = getResultInclusionPredicate();
 
-        final List<IndividualRaceResult> results = races.stream().
+        final List<IndividualRace> races_in_temporal_order = getRacesInTemporalOrder();
+
+        final List<IndividualRaceResult> results = races_in_temporal_order.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
             filter(inclusion_predicate).
@@ -151,6 +168,16 @@ public abstract class SeriesRace extends Race {
             forEachOrdered(overall_results::add);
     }
 
+    private List<IndividualRace> getRacesInTemporalOrder() {
+
+        final List<IndividualRace> races_in_order = new ArrayList<>();
+
+        for (int i = 0; i < number_of_races_in_series; i++)
+            races_in_order.add(races.get(getRaceNumberInTemporalPosition(i)));
+
+        return races_in_order;
+    }
+
     @SuppressWarnings("KeySetIterationMayUseEntrySet")
     private void rationaliseEntryCategories(final Iterable<? extends IndividualRaceResult> results) {
 
@@ -159,7 +186,7 @@ public abstract class SeriesRace extends Race {
         final Map<Runner, List<IndividualRaceResult>> map = getResultsByRunner(results);
 
         for (final Runner runner : map.keySet())
-            checkCategories(map.get(runner));
+            checkCategoryConsistencyOverSeries(map.get(runner));
     }
 
     private static Map<Runner, List<IndividualRaceResult>> getResultsByRunner(final Iterable<? extends IndividualRaceResult> results) {
@@ -176,60 +203,65 @@ public abstract class SeriesRace extends Race {
         return map;
     }
 
-    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    private void checkCategories(final Iterable<? extends IndividualRaceResult> runner_results) {
+    @SuppressWarnings({"NonBooleanMethodNameMayNotStartWithQuestion", "BoundedWildcard"})
+    private void checkCategoryConsistencyOverSeries(final List<IndividualRaceResult> runner_results) {
 
-        final EntryCategory earliest_category = getEarliestNonNullCategory(runner_results);
-
-        checkCategoryConsistencyOverSeries(runner_results);
-
-        for (final IndividualRaceResult result : runner_results)
-            result.entry.runner.category = earliest_category;
-    }
-
-    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    private void checkCategoryConsistencyOverSeries(final Iterable<? extends IndividualRaceResult> runner_results) {
-
+        EntryCategory earliest_category = null;
         EntryCategory previous_category = null;
+        EntryCategory last_category = null;
 
         for (final IndividualRaceResult result : runner_results) {
 
             final EntryCategory current_category = result.entry.runner.category;
 
             if (current_category != null) {
+
+                if (earliest_category == null)
+                    earliest_category = current_category;
+
+                last_category = current_category;
+
                 if (previous_category != null && !previous_category.equals(current_category)) {
 
-                    final String note = STR."from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{result.race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}";
+                    final String race_name = result.race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS);
 
-                    if (isAgeOrderConsistent(previous_category, current_category))
-                        getNotes().append(STR."""
-                            Runner \{result.entry.runner.name} changed category \{note}
-                            """);
-                    else
-                        getNotes().append(STR."""
-                            Runner \{result.entry.runner.name} illegal category change \{note}
-                            """);
+                    checkForChangeToYoungerAgeCategory(result, previous_category, current_category, race_name);
+                    checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
+
+                    getNotes().append(STR."""
+                        Runner \{result.entry.runner.name} changed category from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}
+                        """);
                 }
 
                 previous_category = current_category;
             }
         }
+
+        checkForChangeToTooMuchOlderAgeCategory(runner_results.getFirst(), earliest_category, last_category);
+
+        for (final IndividualRaceResult result : runner_results)
+            result.entry.runner.category = earliest_category;
     }
 
-    private static EntryCategory getEarliestNonNullCategory(final Iterable<? extends IndividualRaceResult> runner_results) {
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    private static void checkForChangeToYoungerAgeCategory(final IndividualRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
 
-        EntryCategory first_non_null_category = null;
-        for (final IndividualRaceResult result : runner_results) {
-            if (result.entry.runner.category != null) {
-                first_non_null_category = result.entry.runner.category;
-                break;
-            }
-        }
-        return first_non_null_category;
+        if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
+            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.runner.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
     }
 
-    private static boolean isAgeOrderConsistent(final EntryCategory category1, final EntryCategory category2) {
-        return category1.getMinimumAge() <= category2.getMinimumAge();
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    private static void checkForChangeToDifferentGenderCategory(final IndividualRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
+
+        if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
+            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.runner.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
+    }
+
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    private static void checkForChangeToTooMuchOlderAgeCategory(final IndividualRaceResult result, final EntryCategory earliest_category, final EntryCategory last_category) {
+
+        if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
+            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.runner.name}' changed from \{earliest_category.getShortName()} to \{last_category.getShortName()} during series");
     }
 
     protected void printOverallResults() throws IOException {
