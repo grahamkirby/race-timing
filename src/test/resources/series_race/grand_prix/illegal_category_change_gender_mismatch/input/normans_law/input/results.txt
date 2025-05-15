@@ -1,0 +1,132 @@
+Logan Rees	Fife AC	MS	00:30:23
+George Rees	Fife AC	MU20	00:32:15
+Jonny Knox	Anster Haddies	MV50	00:34:23
+Mike Andrew	Carnethy Hill Runners	MV50	00:34:48
+Halina Rees	Fife AC	FS	00:34:52
+Alexander Louden	Fife AC	MS	00:35:00
+Alistair Cox	Tinto	MS	00:35:05
+Johnny McBain	Dundee Hawkhill	MS	00:35:11
+Billy Gibson	Dundee Hawkhill	MV40	00:35:15
+Jacob Dobson	Kinross RR	MS	00:35:18
+Craig Morris	Fife AC	MU20	00:35:35
+Bruce Malcolm	Corstorphine AAC	MV50	00:35:39
+Andy Laycock	Kinross RR	MV40	00:35:42
+Sean Duffy	Unatt.	MS	00:36:24
+Ross Coron	St Andrews Uni	MS	00:36:34
+Bryan Innes	Falkland Trail Runners	MS	00:36:44
+Scott Strachan	Kinross RR	MV40	00:36:54
+Mike Macdonald	Unatt.	MV40	00:36:55
+Rick Booth	Fife AC	MV40	00:37:42
+Jimmy McIntyre	Fife AC	MV40	00:37:50
+Andy Cargill	Leven Las Vegas	MS	00:37:53
+Colin Lamont	Strathearn Harriers	MV50	00:37:56
+Ally Black	Carnethy Hill Runners	MS	00:38:10
+Jeff Farquhar	Pitreavie AAC	MV50	00:38:11
+Mary Lye	Carnethy Hill Runners	FV40	00:38:15
+David Cowan	Fife AC	MV50	00:38:24
+Kevin Rogers	Perth RR	MV40	00:38:42
+Ian Poolman	Fife AC	MV40	00:38:49
+Clive Roberts	Fife AC	MV50	00:38:55
+David Miller	Dundee RR	MV40	00:38:57
+Stewart Reid	Perth RR	MS	00:39:05
+Gary Barker	Fife AC	MV50	00:39:12
+Paul Lomas	Unatt.	MV40	00:39:14
+Andy Gallacher	Strathearn Harriers	MV50	00:39:18
+James Hill	Dundee Hawkhill	MS	00:39:30
+Rik Veerboer	St Andrews Uni	MS	00:39:32
+David Alexander	Strathearn Harriers	MU20	00:39:40
+Jonathon Weir	Unatt.	MS	00:39:40
+Craig Roberts	Unatt.	MS	00:39:41
+Andy Milne	Fife AC	MV40	00:39:43
+Gordon Halliday	Anster Haddies	MV40	00:39:43
+Richard Ingram	Cosmic Hill Bashers	MV40	00:39:48
+Ryan Boyd	Glenrothes Tri	MS	00:39:57
+Simon Fox	Fife AC	MV50	00:40:00
+Steven Simkin	Carnethy Hill Runners	MV40	00:40:11
+William Goad	Unatt.	MV40	00:40:20
+David MacKinlay	Central AC	MS	00:40:35
+Phil Forte	Dundee Hawkhill	MV50	00:40:44
+Sonja Crow	Perth RR	FS	00:40:53
+Tim Jones	Unatt.	MS	00:41:00
+Neil Millar	Fife AC	MV40	00:41:01
+Neil Mitchell	Fife AC	MV40	00:41:03
+Don Reid	Westerlands	MV50	00:41:07
+Claire Douglas	Perth RR	FV40	00:41:09
+Richard Shaw	Anster Haddies	MV60	00:41:19
+Paul Reed	Dundee RR	MV40	00:41:49
+Mike Page	York Knavesmire	MS	00:41:50
+Kevin Murray	Falkland Trail Runners	MV40	00:41:52
+Zoey Johnston	Falkland Trail Runners	FV40	00:42:00
+Tony Waite	Strathearn Harriers	MV50	00:42:17
+Kevin Banks	Unatt.	MS	00:42:21
+Adrian Wood	East Fife Tri.	MS	00:42:27
+Gordon Kennovin	Unatt.	MV50	00:42:32
+Lee Cessford	Falkland Trail Runners	MS	00:42:58
+Tony Taylor	Falkland Trail Runners	MV50	00:43:11
+Eva Groeneveld	Fife AC	FS	00:43:16
+Rosie Knox	Anster Haddies	FU20	00:43:20
+Graham Kent	Kinross RR	MS	00:43:21
+Scott Kendal	Unatt.	MS	00:43:35
+Mike Allcock	Wormit RR	MV60	00:43:36
+Fictional Runner4	Fife AC	MS	00:43:39
+Peter Darbyshire	Fife AC	MV50	00:43:47
+Lisa Blackley	Unatt.	FS	00:43:48
+David Norrie	Fife AC	MV60	00:43:51
+Deborah Kilpatrick	Ochil Hill Runners	FS	00:43:54
+Claire Riley	Unatt.	FV40	00:44:00
+Judith Dobson	Kinross RR	FV50	00:44:06
+Richard Ward	Perth RR	MV40	00:44:14
+Allen Marr	Anster Haddies	MV60	00:44:23
+Fiona Manson	Perth RR	FV40	00:44:25
+Jeremy Davies	Unatt.	MS	00:44:27
+Innes Bracegirdle	Fife AC	FV60	00:44:29
+Mark Dillon	Strathearn Harriers	MV40	00:44:31
+Jas Baillie	Anster Haddies	MV50	00:44:37
+Iain Simpson	Falkland Trail Runners	MV40	00:44:57
+Lynn Hunter	Kinross RR	FV40	00:45:30
+David Sinclair	Perth RR	MS	00:45:36
+Pamela Cruickshanks	Anster Haddies	FV50	00:45:41
+Gordon Taylor	Leven Las Vegas	MV50	00:45:42
+Jeff Taylor	Leven Las Vegas	MV50	00:45:44
+Barry Campbell	Perth RR	MS	00:46:04
+David Stokoe	Perth RR	MV40	00:46:22
+Findlay Hunter	Kinross RR	MU20	00:46:54
+Stuart Dobson	Kinross RR	MV50	00:46:56
+Ewan Cameron	Anster Haddies	MV50	00:47:16
+Kenny Mearns	Lothian RC	MV50	00:47:23
+Tracey Knox	Anster Haddies	FV50	00:48:17
+Lorraine MacPherson	Perth RR	FV40	00:48:38
+Neil Hunter	Kinross RR	MV40	00:48:42
+John Wedderburn	Unatt.	MV50	00:48:54
+Alan Gibson	Anster Haddies	MV60	00:48:57
+Nick Fry	Anster Haddies	MV50	00:49:07
+Steve Cromar	Dundee Hawkhill	MV70	00:49:24
+Michael Mitchell	Unatt.	MV40	00:49:38
+Isobel Scott	St Andrews Uni	FU20	00:49:52
+Sharon Brown	Anster Haddies	FS	00:49:56
+Merce Torres	Unatt.	FS	00:52:33
+Alan Vigrow	Dundee Hawkhill	MV50	00:52:47
+Donna Morgan	Fife AC	FV40	00:53:09
+Carole Melville	Fife AC	FV70	00:53:19
+Angela Taylor	Falkland Trail Runners	FV50	00:53:22
+Anne MacIntyre	Kinross RR	FV60	00:53:25
+Alison Houston	Kinross RR	FV60	00:53:47
+Anne Whiteford	Fife AC	FV50	00:53:52
+Mark Stewart	Dundee RR	MV40	00:53:53
+Nina Roberts	Perth RR	FS	00:55:40
+Holly Staples	Perth RR	FS	00:55:42
+Sue Whisler	Fife AC	FV50	00:55:56
+Anna Cuthbert	Unatt.	FV40	00:58:12
+Graham Bennison	Fife AC	MV60	00:58:59
+Eric Nachman	Unatt.	MV60	00:59:09
+Ruth Toller	Dundee RR	FV60	00:59:14
+Tom Scott	Fife AC	MV60	01:00:23
+Annie Gibson	Falkland Trail Runners	FV50	01:01:02
+Fiona Gray	Unatt.	FS	01:02:36
+Karen Spence	Falkland Trail Runners	FV40	01:06:44
+Alexa Tweddle	Falkland Trail Runners	FS	01:07:08
+Norman Smith	Kinross RR	MV70	01:07:24
+Simon Taylor	Unatt.	MV40	01:07:53
+Peter Rieu-Clarke	Falkland Trail Runners	MV70	01:11:06
+Sandy MacCalman	Kinross RR	MV70	01:11:07
+Charlie Love	Dundee Hawkhill	MV70	01:16:58

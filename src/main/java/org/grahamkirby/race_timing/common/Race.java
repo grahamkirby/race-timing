@@ -36,7 +36,6 @@ import java.util.function.Predicate;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class Race {
 
-    // TODO improve error messages for input file processing.
     // TODO consolidate input validation.
     // TODO add junior hill races.
     // TODO tests - check existence of required config fields.
@@ -46,8 +45,8 @@ public abstract class Race {
     // TODO fuzz tests.
     // TODO test missing output directory.
     // TODO test input directory with different name.
+    // TODO test missing config file for individual race in series.
     // TODO prompt for config file if not supplied as arg.
-    // TODO divert test output via ByteArrayOutputStream.
     // TODO update README (https://www.makeareadme.com)
 
     /** Comment symbol used within configuration files. */
@@ -161,7 +160,6 @@ public abstract class Race {
     protected abstract void configureInputData() throws IOException;
     protected abstract void outputResults() throws IOException;
     protected abstract List<Comparator<RaceResult>> getComparators();
-    protected abstract List<Comparator<RaceResult>> getDNFComparators();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -307,12 +305,38 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Compares two results based on whether they have completed. Gives a negative result if the first
-     *  has completed and the second has not. */
-    protected static int compareCompletion(final RaceResult r1, final RaceResult r2) {
+    protected static Comparator<RaceResult> penaliseDNF(final Comparator<? super RaceResult> base_comparator) {
 
-        return Boolean.compare(r2.getCompletionStatus() == CompletionStatus.COMPLETED, r1.getCompletionStatus() == CompletionStatus.COMPLETED);
+        return (r1, r2) -> {
+
+            if (r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() != CompletionStatus.DNF) return 1;
+            if (r1.getCompletionStatus() != CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF) return -1;
+
+            return base_comparator.compare(r1, r2);
+        };
     }
+
+    protected static Comparator<RaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super RaceResult> base_comparator) {
+
+        return (r1, r2) -> {
+
+            if (r1.getCompletionStatus() == CompletionStatus.DNF || r2.getCompletionStatus() == CompletionStatus.DNF) return 0;
+
+            return base_comparator.compare(r1, r2);
+        };
+    }
+
+    protected static Comparator<RaceResult> ignoreIfBothResultsAreDNF(final Comparator<? super RaceResult> base_comparator) {
+
+        return (r1, r2) -> {
+
+            if (r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF) return 0;
+
+            return base_comparator.compare(r1, r2);
+        };
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,
      *  or a score. Gives a negative result if the first result has a better performance than the second. */
@@ -467,7 +491,6 @@ public abstract class Race {
     protected void sortResults() {
 
         overall_results.sort(combineComparators(getComparators()));
-        overall_results.sort(dnfOnly(combineComparators(getDNFComparators())));
     }
 
     /** Combines multiple comparators into a single comparator. */
@@ -476,19 +499,6 @@ public abstract class Race {
         return comparators.stream().
             reduce(Comparator::thenComparing).
             orElse((_, _) -> 0);
-    }
-
-    /** Generates a comparator that has an effect only when both results being compared are DNF. */
-    private static Comparator<RaceResult> dnfOnly(final Comparator<? super RaceResult> comparator) {
-
-        return (r1, r2) -> areBothDnf(r1, r2) ? comparator.compare(r1, r2) : 0;
-    }
-
-    private static boolean areBothDnf(final RaceResult r1, final RaceResult r2) {
-
-        // TODO change check to can both finish
-        return (r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF) ;//||
-//            (r1.getCompletionStatus() == CompletionStatus.CAN_COMPLETE && r2.getCompletionStatus() == CompletionStatus.CAN_COMPLETE);
     }
 
     /** Loads prize category groups from the given file. */

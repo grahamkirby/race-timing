@@ -231,13 +231,7 @@ public class RelayRace extends SingleRace {
         // DNF results are sorted in increasing order of bib number.
         // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
 
-        return List.of(Race::compareCompletion, Race::comparePerformance, this::compareLastLegPosition);
-    }
-
-    @Override
-    protected List<Comparator<RaceResult>> getDNFComparators() {
-
-        return List.of(RelayRace::compareBibNumber);
+        return List.of(ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)), ignoreIfEitherResultIsDNF(this::compareLastLegPosition), RelayRace::compareBibNumber);
     }
 
     @Override
@@ -269,8 +263,8 @@ public class RelayRace extends SingleRace {
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
 
         return leg_number == 1 ?
-            List.of(Race::compareCompletion, Race::comparePerformance, this::compareRecordedLegPosition) :
-            List.of(Race::compareCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
+            List.of(ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)), this::compareRecordedLegPosition) :
+            List.of(ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)), Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     private static int compareBibNumber(final RaceResult r1, final RaceResult r2) {

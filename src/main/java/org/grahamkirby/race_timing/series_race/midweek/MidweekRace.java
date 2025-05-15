@@ -95,12 +95,7 @@ public final class MidweekRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(Race::compareCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
-    }
-
-    @Override
-    protected List<Comparator<RaceResult>> getDNFComparators() {
-        return List.of();
+        return List.of(penaliseDNF(Race::comparePerformance), Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override

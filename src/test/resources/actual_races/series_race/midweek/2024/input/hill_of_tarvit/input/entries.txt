@@ -11,7 +11,7 @@
 111	Tracy Chalmers	Anster Haddies	F50
 112	Michael Creechan	Falkland Trail Runners	M60
 113	Brian Cruickshank	Falkland Trail Runners	M50
-114	Pamela Cruickshanks	Anster Haddies	F60
+114	Pamela Cruickshanks	Anster Haddies	F50
 115	Yvonne Dehn	Anster Haddies	FS
 116	Stephen Dickson	Fife AC	M40
 117	David Dunleavey	Stratheden	M60
@@ -93,7 +93,7 @@
 2	Jamie Anderson	Anster Haddies	MU20
 96	Dave Clark	Falkland Trail Runners	M40
 30	David Webster	Dundee Road Runners	MS
-31	Philip Suttie	Falkland Trail Runners	MS
+31	Philip Suttie	Falkland Trail Runners	M40
 32	Debz Hay	Anster Haddies	F50
 34	Matt Newton	Kinross Road Runners	M50
 35	Graham Rena	Dundee Road Runners	M50

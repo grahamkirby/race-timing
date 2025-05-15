@@ -52,7 +52,7 @@
 52	John Wilmot	?	M70
 53	Martin Rollo	?	M50
 54	Jeff Taylor	?	M50
-55	John Kinninmonth	?	M60
+55	John Kinninmonth	?	M50
 56	Margaret Martin	Fife AC	F60
 57	Joseph Smith	?	MS
 58	David Pease	?	M50

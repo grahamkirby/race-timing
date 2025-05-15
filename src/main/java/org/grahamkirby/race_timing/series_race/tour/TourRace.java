@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public final class TourRace extends SeriesRace {
@@ -83,19 +84,15 @@ public final class TourRace extends SeriesRace {
     @Override
     protected List<Comparator<RaceResult>> getComparators() {
 
-        return List.of(Race::compareCompletion, SeriesRace::comparePossibleCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
-    }
-
-    @Override
-    protected List<Comparator<RaceResult>> getDNFComparators() {
-        return List.of();
+        return List.of(SeriesRace::comparePossibleCompletion, Race::comparePerformance, Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     @Override
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Duration> times = races.stream().
-            map(race -> race == null ? null : race.getRunnerTime(runner)).
+            filter(Objects::nonNull).
+            map(race -> race.getRunnerTime(runner)).
             toList();
 
         return new TourRaceResult(runner, times, this);

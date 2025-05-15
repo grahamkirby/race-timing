@@ -17,10 +17,9 @@
 package org.grahamkirby.race_timing;
 
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-public class GrandPrixTest extends RaceTest {
+class GrandPrixTest extends RaceTest {
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
@@ -30,8 +29,27 @@ public class GrandPrixTest extends RaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
-    @Disabled
-    void changingCategories() throws Exception {
-        testExpectedCompletion("series_race/grand_prix/changing_categories");
+    void legalCategoryChange() throws Exception {
+        testExpectedCompletion("series_race/grand_prix/legal_category_change");
+    }
+
+    @Test
+    void unknownCategory() throws Exception {
+        testExpectedCompletion("series_race/grand_prix/unknown_category");
+    }
+
+    @Test
+    void illegalCategoryChangeAgeReduction() throws Exception {
+        testExpectedErrorMessage("series_race/grand_prix/illegal_category_change_age_reduction", () -> "invalid category change: runner 'Fictional Runner2' changed from F40 to FS at Largo");
+    }
+
+    @Test
+    void illegalCategoryChangeAgeIncreaseTooHigh() throws Exception {
+        testExpectedErrorMessage("series_race/grand_prix/illegal_category_change_age_increase_too_high", () -> "invalid category change: runner 'Fictional Runner3' changed from MS to M50 during series");
+    }
+
+    @Test
+    void illegalCategoryChangeGenderMismatch() throws Exception {
+        testExpectedErrorMessage("series_race/grand_prix/illegal_category_change_gender_mismatch", () -> "invalid category change: runner 'Fictional Runner4' changed from MS to FS at Sandy Slither");
     }
 }
