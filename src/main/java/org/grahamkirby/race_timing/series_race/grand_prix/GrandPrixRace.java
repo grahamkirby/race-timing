@@ -37,7 +37,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class GrandPrixRace extends SeriesRace {
+public final class GrandPrixRace extends SeriesRace {
 
     // Configuration file keys.
     private static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
@@ -49,9 +49,6 @@ public class GrandPrixRace extends SeriesRace {
     private List<Integer> race_temporal_positions;
     private List<String> qualifying_clubs;
     private int score_for_median_position;
-
-    // TODO config for temporal order of races.
-    // TODO tests for legal and illegal category change during series.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -138,7 +135,7 @@ public class GrandPrixRace extends SeriesRace {
         final Duration runner_time = individual_race.getRunnerTime(runner);
 
         if (runner_time != null) {
-            return (int)Math.round(divide(runner_time, individual_race.getMedianTime()) * score_for_median_position);
+            return (int) Math.round(divide(runner_time, individual_race.getMedianTime()) * score_for_median_position);
         } else {
             return 0;
         }
@@ -177,7 +174,7 @@ public class GrandPrixRace extends SeriesRace {
         return race_temporal_positions.get(position) - 1;
     }
 
-    private void configureRaceTemporalPositions() throws IOException {
+    private void configureRaceTemporalPositions() {
 
         race_temporal_positions = Arrays.stream(getRequiredProperty(KEY_RACE_TEMPORAL_ORDER).split(",")).
             map(Integer::parseInt).toList();

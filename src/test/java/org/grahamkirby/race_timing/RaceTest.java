@@ -21,6 +21,7 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -81,6 +82,9 @@ public abstract class RaceTest {
     private Path retained_output_directory;
     private Path expected_output_directory;
 
+    @TempDir
+    private Path temp_dir;
+
     private Properties properties;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,8 +138,7 @@ public abstract class RaceTest {
 
     private void configureTest(final String individual_test_resource_root) throws IOException {
 
-        // TODO try @TempDir parameter
-        test_directory = DEBUG ? Paths.get(USER_TEST_DIRECTORY_PATH) : Files.createTempDirectory(null);
+        test_directory = DEBUG ? Paths.get(USER_TEST_DIRECTORY_PATH) : temp_dir;
 
         configureDirectories(individual_test_resource_root);
         configureDirectoryContents(resources_input_directory);
@@ -180,7 +183,7 @@ public abstract class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void configureDirectories(final String individual_test_resource_root) throws IOException {
+    private void configureDirectories(final String individual_test_resource_root) {
 
         final Path resources_root_directory = Race.getTestResourcesRootPath(individual_test_resource_root);
 
@@ -246,12 +249,12 @@ public abstract class RaceTest {
         }
 
         if (file_content1.size() < file_content2.size())
-            checkLargerFileForFurtherNonBlankContent(path1, path2);
+            assertLargerFileDoesNotContainFurtherNonBlankContent(path1, path2);
         if (file_content1.size() > file_content2.size())
-            checkLargerFileForFurtherNonBlankContent(path2, path1);
+            assertLargerFileDoesNotContainFurtherNonBlankContent(path2, path1);
     }
 
-    private static void checkLargerFileForFurtherNonBlankContent(final Path path_smaller_file, final Path path_larger_file) {
+    private static void assertLargerFileDoesNotContainFurtherNonBlankContent(final Path path_smaller_file, final Path path_larger_file) {
 
         final List<String> content_smaller_file = getFileContent(path_smaller_file);
         final List<String> content_larger_file = getFileContent(path_larger_file);
@@ -261,7 +264,7 @@ public abstract class RaceTest {
 
         if (i < content_larger_file.size())
             fail(STR."""
-                Difference in files: \{path_smaller_file} and \{path_larger_file}: at line \{i+1}:
+                Difference in files: \{path_smaller_file} and \{path_larger_file}: at line \{i + 1}:
                 \{content_larger_file.get(i)}""");
     }
 

@@ -18,11 +18,11 @@ package org.grahamkirby.race_timing.series_race.grand_prix;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
+public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 
     GrandPrixRaceOutputHTML(final Race race) {
         super(race);
@@ -72,10 +72,10 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
 
             for (int i = 0; i < ((SeriesRace) race).getRaces().size(); i++) {
 
-                IndividualRace individualRace = ((SeriesRace) race).getRaces().get(i);
-                if (individualRace != null)
+                final IndividualRace individual_race = ((SeriesRace) race).getRaces().get(i);
+                if (individual_race != null)
                     writer.append(STR."""
-                                    <th>\{individualRace.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
+                                    <th>\{individual_race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
                         """);
             }
 
@@ -104,7 +104,6 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
 
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
             final GrandPrixRace grand_prix_race = (GrandPrixRace) race;
-            final int number_of_races_taken_place = grand_prix_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."""
                     <tr>
@@ -164,7 +163,7 @@ public class GrandPrixRaceOutputHTML extends RaceOutputHTML {
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
 
             writer.append(STR."""
-                    <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{Math.round(result.totalScore())}</li>
+                    <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{result.totalScore()}</li>
                 """);
         }
     }
