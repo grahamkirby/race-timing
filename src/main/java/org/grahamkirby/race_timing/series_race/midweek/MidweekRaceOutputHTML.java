@@ -18,10 +18,10 @@ package org.grahamkirby.race_timing.series_race.midweek;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class MidweekRaceOutputHTML extends RaceOutputHTML {
+public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
     MidweekRaceOutputHTML(final Race race) {
         super(race);
@@ -46,14 +46,6 @@ public class MidweekRaceOutputHTML extends RaceOutputHTML {
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
-
-    // TODO restore current standings header.
-//    @Override
-//    public String getPrizesHeader() {
-//
-//        String header = ((SeriesRace)race).getNumberOfRacesTakenPlace() < ((SeriesRace)race).getNumberOfRacesInSeries() ? "Current Standings" : "Prizes";
-//        return STR."<h4>\{header}</h4>\{LINE_SEPARATOR}";
-//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

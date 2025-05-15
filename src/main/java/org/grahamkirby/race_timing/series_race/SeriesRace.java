@@ -103,7 +103,7 @@ public abstract class SeriesRace extends Race {
         return races;
     }
 
-    int getNumberOfRacesInSeries() {
+    public int getNumberOfRacesInSeries() {
         return number_of_races_in_series;
     }
 
