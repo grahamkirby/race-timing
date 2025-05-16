@@ -117,7 +117,7 @@ public class RelayRace extends SingleRace {
 
     public static void main(final String[] args) throws Exception {
 
-        commonMain(args, config_file_path -> new RelayRace(Paths.get(config_file_path)));
+        commonMain(args, config_file_path -> new RelayRace(Paths.get(config_file_path)), "RelayRace");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

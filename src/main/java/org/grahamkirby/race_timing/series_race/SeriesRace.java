@@ -149,23 +149,35 @@ public abstract class SeriesRace extends Race {
 
     private void initialiseResults() {
 
-        final Predicate<RaceResult> inclusion_predicate = getResultInclusionPredicate();
+        getResultsByRunner().forEach(this::checkCategoryConsistencyOverSeries);
 
-        final List<IndividualRace> races_in_temporal_order = getRacesInTemporalOrder();
+        overall_results.addAll(
+            getRacesInTemporalOrder().stream().
+                filter(Objects::nonNull).
+                flatMap(race -> race.getOverallResults().stream()).
+                filter(getResultInclusionPredicate()).
+                map(result -> ((IndividualRaceResult) result).entry.runner).
+                distinct().
+                map(this::getOverallResult).
+                toList());
+    }
 
-        final List<IndividualRaceResult> results = races_in_temporal_order.stream().
+    private List<List<IndividualRaceResult>> getResultsByRunner() {
+
+        final Map<Runner, List<IndividualRaceResult>> map = new HashMap<>();
+
+        getRacesInTemporalOrder().stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            filter(inclusion_predicate).
-            map(result -> (IndividualRaceResult) result).toList();
+            filter(getResultInclusionPredicate()).
+            map(result -> ((IndividualRaceResult) result)).
+            forEachOrdered(result -> {
+                final Runner runner = result.entry.runner;
+                map.putIfAbsent(runner, new ArrayList<>());
+                map.get(runner).add(result);
+            });
 
-        rationaliseEntryCategories(results);
-
-        results.stream().
-            map(result -> result.entry.runner).
-            distinct().
-            map(this::getOverallResult).
-            forEachOrdered(overall_results::add);
+        return new ArrayList<>(map.values());
     }
 
     private List<IndividualRace> getRacesInTemporalOrder() {
@@ -176,31 +188,6 @@ public abstract class SeriesRace extends Race {
             races_in_order.add(races.get(getRaceNumberInTemporalPosition(i)));
 
         return races_in_order;
-    }
-
-    @SuppressWarnings("KeySetIterationMayUseEntrySet")
-    private void rationaliseEntryCategories(final Iterable<? extends IndividualRaceResult> results) {
-
-        // 'results' contains relevant results from first race, followed by relevant results from second race, ...
-
-        final Map<Runner, List<IndividualRaceResult>> map = getResultsByRunner(results);
-
-        for (final Runner runner : map.keySet())
-            checkCategoryConsistencyOverSeries(map.get(runner));
-    }
-
-    private static Map<Runner, List<IndividualRaceResult>> getResultsByRunner(final Iterable<? extends IndividualRaceResult> results) {
-
-        final Map<Runner, List<IndividualRaceResult>> map = new HashMap<>();
-
-        for (final IndividualRaceResult result : results) {
-            final Runner runner = result.entry.runner;
-            if (!map.containsKey(runner))
-                map.put(runner, new ArrayList<>());
-            map.get(runner).add(result);
-        }
-
-        return map;
     }
 
     @SuppressWarnings({"NonBooleanMethodNameMayNotStartWithQuestion", "BoundedWildcard"})

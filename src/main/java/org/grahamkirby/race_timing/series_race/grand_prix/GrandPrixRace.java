@@ -58,7 +58,7 @@ public final class GrandPrixRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        commonMain(args, config_file_path -> new GrandPrixRace(Paths.get(config_file_path)));
+        commonMain(args, config_file_path -> new GrandPrixRace(Paths.get(config_file_path)), "GrandPrixRace");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
