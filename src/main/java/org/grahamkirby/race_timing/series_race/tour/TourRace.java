@@ -44,7 +44,7 @@ public final class TourRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        commonMain(args, config_file_path -> new TourRace(Paths.get(config_file_path)));
+        commonMain(args, config_file_path -> new TourRace(Paths.get(config_file_path)), "TourRace");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

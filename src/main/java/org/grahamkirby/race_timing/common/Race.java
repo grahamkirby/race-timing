@@ -125,12 +125,12 @@ public abstract class Race {
         Race apply(String config_file_path) throws Exception;
     }
 
-    protected static void commonMain(final String[] args, final RaceFactory factory) {
+    protected static void commonMain(final String[] args, final RaceFactory factory, final String class_name) {
 
         // Path to configuration file should be first argument.
 
         if (args.length < 1)
-            System.out.println("usage: java RelayRace <config file path>");
+            System.out.println(STR."usage: java \{class_name} <config file path>");
         else {
             try {
                 factory.apply(args[0]).processResults();
