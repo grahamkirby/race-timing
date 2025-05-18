@@ -40,8 +40,6 @@ public abstract class SeriesRace extends Race {
     private int number_of_races_in_series;
     private int minimum_number_of_races;
 
-    // TODO output positions in results only for those that can complete series.
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected SeriesRace(final Path config_file_path) throws IOException {
@@ -68,7 +66,7 @@ public abstract class SeriesRace extends Race {
     @Override
     public boolean areEqualPositionsAllowed() {
 
-        // There can be dead heats in overall results, since these are determined by sum of results
+        // There can be dead heats in overall results, since these are determined by combination of results
         // from multiple races, rather than there being an ordering imposed at a single funnel.
         return true;
     }
@@ -103,7 +101,7 @@ public abstract class SeriesRace extends Race {
         return races;
     }
 
-    public int getNumberOfRacesInSeries() {
+    int getNumberOfRacesInSeries() {
         return number_of_races_in_series;
     }
 

@@ -257,7 +257,30 @@ public class RelayRace extends SingleRace {
 
     private void initialiseResults() {
 
-        entries.forEach(entry -> overall_results.add(new RelayRaceResult((RelayRaceEntry) entry, this)));
+        raw_results.forEach(raw_result -> {
+
+            final int bib_number = raw_result.getBibNumber();
+            if (bib_number != 0 && isFirstResultForBibNumber(bib_number)) {
+                final RelayRaceEntry entry = getEntryWithBibNumber(bib_number);
+                overall_results.add(new RelayRaceResult(entry, this));
+            }
+        });
+    }
+
+    private boolean isFirstResultForBibNumber(final int bib_number) {
+
+        return overall_results.stream().
+            map(result -> ((RelayRaceResult) result)).
+            noneMatch(result -> result.entry.bib_number == bib_number);
+    }
+
+    private RelayRaceEntry getEntryWithBibNumber(final int bib_number) {
+
+        return entries.stream().
+            map(entry -> ((RelayRaceEntry) entry)).
+            filter(entry -> entry.bib_number == bib_number).
+            findFirst().
+            orElseThrow();
     }
 
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {

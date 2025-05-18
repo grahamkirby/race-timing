@@ -67,8 +67,7 @@ public class IndividualRaceEntry extends RaceEntry {
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof final IndividualRaceEntry other_entry &&
-            runner.name.equals(other_entry.runner.name) &&
-            runner.club.equals(other_entry.runner.club);
+            runner.equals(other_entry.runner);
     }
 
     @Override
