@@ -51,8 +51,6 @@ public abstract class SeriesRaceResult extends RaceResult {
 
         if (hasCompletedSeries()) return CompletionStatus.COMPLETED;
         if (canCompleteSeries()) return CompletionStatus.CAN_COMPLETE;
-        // TODO what if DNF in all?
-        if (numberOfRacesCompleted() == 0) return CompletionStatus.DNS;
 
         return CompletionStatus.DNF;
     }
@@ -60,7 +58,7 @@ public abstract class SeriesRaceResult extends RaceResult {
     @Override
     public boolean shouldBeDisplayedInResults() {
 
-        return getCompletionStatus() != CompletionStatus.DNS;
+        return true;
     }
 
     @Override

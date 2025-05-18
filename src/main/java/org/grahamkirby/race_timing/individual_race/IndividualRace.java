@@ -70,8 +70,6 @@ public class IndividualRace extends SingleRace {
         if (!raw_results.isEmpty()) {
 
             initialiseResults();
-
-            recordFinishTimes();
             recordDNFs();
 
             sortResults();
@@ -199,29 +197,20 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Initialises overall results from the entries. */
     private void initialiseResults() {
-
-        // TODO why needed if results loaded in SingleRaceInput?
-        entries.stream().
-            map(entry -> (IndividualRaceEntry) entry).
-            map(entry -> new IndividualRaceResult(this, entry)).
-            forEachOrdered(overall_results::add);
-    }
-
-    private void recordFinishTimes() {
 
         raw_results.forEach(raw_result -> {
 
             final int bib_number = raw_result.getBibNumber();
-            final IndividualRaceResult result = getResultWithBibNumber(bib_number);
+            final IndividualRaceEntry entry = getEntryWithBibNumber(bib_number);
 
+            // TODO apply in separate operation
             final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
-            result.finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
+            final Duration finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
 
-            // Provisionally this result is COMPLETED since a finish time was recorded.
-            // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
-            result.completion_status = CompletionStatus.COMPLETED;
+            final IndividualRaceResult result = new IndividualRaceResult(this, entry, finish_time);
+
+            overall_results.add(result);
         });
     }
 

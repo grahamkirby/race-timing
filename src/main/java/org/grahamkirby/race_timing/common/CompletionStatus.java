@@ -24,9 +24,6 @@ public enum CompletionStatus {
 
     CAN_COMPLETE,
 
-    /** Did Not Start: appears in entry list but no finish(es) recorded. */
-    DNS,
-
     /**
      * Did Not Finish: did not complete all legs (relay race), or
      * did not complete sufficient component races (series race),

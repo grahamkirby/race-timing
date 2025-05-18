@@ -53,6 +53,7 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResults(writer);
 
+            // TODO suppress mass start legend if no mass starters
             writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
 
             for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {

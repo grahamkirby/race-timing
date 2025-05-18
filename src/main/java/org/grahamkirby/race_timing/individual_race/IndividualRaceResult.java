@@ -26,21 +26,20 @@ import java.util.Comparator;
 public class IndividualRaceResult extends RaceResult {
 
     public final IndividualRaceEntry entry;
-    public Duration finish_time;
-    public CompletionStatus completion_status;  // TODO why only stored for individual race?
+    Duration finish_time;
+    CompletionStatus completion_status;  // TODO why only stored for individual race?
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IndividualRaceResult(final IndividualRace race, final IndividualRaceEntry entry) {
+    public IndividualRaceResult(final IndividualRace race, final IndividualRaceEntry entry, final Duration finish_time) {
 
         super(race);
         this.entry = entry;
+        this.finish_time = finish_time;
 
-        // Initialised in IndividualRace.recordFinishTimes().
-        finish_time = null;
-
-        // Will be changed later if a time is processed for this runner.
-        completion_status = CompletionStatus.DNS;
+        // Provisionally this result is COMPLETED since a finish time was recorded.
+        // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
+        completion_status = CompletionStatus.COMPLETED;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +80,7 @@ public class IndividualRaceResult extends RaceResult {
 
     @Override
     public boolean shouldBeDisplayedInResults() {
-        return completion_status != CompletionStatus.DNS;
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

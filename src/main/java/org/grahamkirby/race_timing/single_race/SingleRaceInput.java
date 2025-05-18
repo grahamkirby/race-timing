@@ -24,6 +24,7 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -195,6 +196,7 @@ public abstract class SingleRaceInput extends RaceInput {
 
     List<RaceResult> loadOverallResults() throws IOException {
 
+        // Only used when loading external results.
         if (overall_results_path == null) return new ArrayList<>();
 
         return Files.readAllLines(race.getPath(overall_results_path)).stream().
@@ -241,14 +243,16 @@ public abstract class SingleRaceInput extends RaceInput {
     }
 
     private RaceResult makeRaceResult(final List<String> elements) {
+        // Only used when loading external results.
 
         elements.addFirst(String.valueOf(next_fake_bib_number++));
 
+        // TODO why does this know about IndividualRace?
         final IndividualRaceEntry entry = new IndividualRaceEntry(elements, race);
-        final IndividualRaceResult result = new IndividualRaceResult((IndividualRace) race, entry);
+        final Duration finish_time = Normalisation.parseTime(elements.getLast());
+        final IndividualRaceResult result = new IndividualRaceResult((IndividualRace) race, entry, finish_time);
 
-        result.finish_time = Normalisation.parseTime(elements.getLast());
-        result.completion_status = CompletionStatus.COMPLETED;
+//        result.completion_status = CompletionStatus.COMPLETED;
 
         return result;
     }
