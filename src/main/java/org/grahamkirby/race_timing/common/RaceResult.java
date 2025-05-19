@@ -41,7 +41,6 @@ public abstract class RaceResult {
 
     public abstract int comparePerformanceTo(RaceResult other);
     public abstract CompletionStatus getCompletionStatus();
-    public abstract boolean shouldBeDisplayedInResults();
     public abstract boolean shouldDisplayPosition();
     public abstract EntryCategory getCategory();
 }

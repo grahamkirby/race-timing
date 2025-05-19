@@ -63,8 +63,7 @@ public abstract class ResultPrinter {
             printResultsHeader();
 
             for (final RaceResult result : results)
-                if (result.shouldBeDisplayedInResults())
-                    printResult(result);
+                printResult(result);
 
             printResultsFooter();
         }
