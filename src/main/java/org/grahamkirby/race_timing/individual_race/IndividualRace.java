@@ -32,19 +32,19 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
-public class IndividualRace extends SingleRace {
+public abstract class IndividualRace extends SingleRace {
 
     // Configuration file keys.
     private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
-    private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
+//    private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
 
     private String median_time_string;
 
-    /**
-     * List of individual early starts (usually empty).
-     * Values are read from configuration file using key KEY_INDIVIDUAL_EARLY_STARTS.
-     */
-    private Map<Integer, Duration> early_starts;
+//    /**
+//     * List of individual early starts (usually empty).
+//     * Values are read from configuration file using key KEY_INDIVIDUAL_EARLY_STARTS.
+//     */
+//    private Map<Integer, Duration> early_starts;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,7 +54,11 @@ public class IndividualRace extends SingleRace {
 
     public static void main(final String[] args) throws Exception {
 
-        commonMain(args, config_file_path -> new IndividualRace(Paths.get(config_file_path)), "IndividualRace");
+        if (loadProperties(Paths.get(args[0])).containsKey(KEY_RAW_RESULTS_PATH)) {
+            commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)), "TimedIndividualRace");
+        } else {
+            commonMain(args, config_file_path -> new UntimedIndividualRace(Paths.get(config_file_path)), "UntimedIndividualRace");
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +73,7 @@ public class IndividualRace extends SingleRace {
         // cases the final results are loaded in configureInputData().
         if (!raw_results.isEmpty()) {
 
-            initialiseResults();
+//            initialiseResults();
             recordDNFs();
 
             sortResults();
@@ -77,12 +81,12 @@ public class IndividualRace extends SingleRace {
         }
     }
 
-    @Override
-    protected void configure() throws IOException {
-
-        super.configure();
-        configureIndividualEarlyStarts();
-    }
+//    @Override
+//    protected void configure() throws IOException {
+//
+//        super.configure();
+//        configureIndividualEarlyStarts();
+//    }
 
     /** Gets the entry category for the runner with the given bib number. */
     public EntryCategory findCategory(final int bib_number) {
@@ -197,22 +201,22 @@ public class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void initialiseResults() {
-
-        raw_results.forEach(raw_result -> {
-
-            final int bib_number = raw_result.getBibNumber();
-            final IndividualRaceEntry entry = getEntryWithBibNumber(bib_number);
-
-            // TODO apply in separate operation
-            final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
-            final Duration finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
-
-            final IndividualRaceResult result = new IndividualRaceResult(this, entry, finish_time);
-
-            overall_results.add(result);
-        });
-    }
+//    private void initialiseResults() {
+//
+//        raw_results.forEach(raw_result -> {
+//
+//            final int bib_number = raw_result.getBibNumber();
+//            final IndividualRaceEntry entry = getEntryWithBibNumber(bib_number);
+//
+//            // TODO apply in separate operation
+//            final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
+//            final Duration finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
+//
+//            final IndividualRaceResult result = new IndividualRaceResult(this, entry, finish_time);
+//
+//            overall_results.add(result);
+//        });
+//    }
 
     private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
 
@@ -223,7 +227,7 @@ public class IndividualRace extends SingleRace {
             orElseThrow();
     }
 
-    private IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
+    IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
 
         return entries.stream().
             map(entry -> ((IndividualRaceEntry) entry)).
@@ -239,27 +243,27 @@ public class IndividualRace extends SingleRace {
             count();
     }
 
-    private void configureIndividualEarlyStarts() {
-
-        final String individual_early_starts_string = getOptionalProperty(KEY_INDIVIDUAL_EARLY_STARTS);
-
-        // bib number / start time difference
-        // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
-
-        early_starts = new HashMap<>();
-
-        if (individual_early_starts_string != null)
-            Arrays.stream(individual_early_starts_string.split(",")).
-                forEach(this::recordEarlyStart);
-    }
-
-    private void recordEarlyStart(final String early_starts_string) {
-
-        final String[] split = early_starts_string.split("/");
-
-        final int bib_number = Integer.parseInt(split[0]);
-        final Duration start_time = parseTime(split[1]);
-
-        early_starts.put(bib_number, start_time);
-    }
+//    private void configureIndividualEarlyStarts() {
+//
+//        final String individual_early_starts_string = getOptionalProperty(KEY_INDIVIDUAL_EARLY_STARTS);
+//
+//        // bib number / start time difference
+//        // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
+//
+//        early_starts = new HashMap<>();
+//
+//        if (individual_early_starts_string != null)
+//            Arrays.stream(individual_early_starts_string.split(",")).
+//                forEach(this::recordEarlyStart);
+//    }
+//
+//    private void recordEarlyStart(final String early_starts_string) {
+//
+//        final String[] split = early_starts_string.split("/");
+//
+//        final int bib_number = Integer.parseInt(split[0]);
+//        final Duration start_time = parseTime(split[1]);
+//
+//        early_starts.put(bib_number, start_time);
+//    }
 }
