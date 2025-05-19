@@ -19,11 +19,16 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
+import org.grahamkirby.race_timing.individual_race.UntimedIndividualRace;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Race.loadProperties;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
 public class SeriesRaceInput extends RaceInput {
 
@@ -57,13 +62,6 @@ public class SeriesRaceInput extends RaceInput {
         return races;
     }
 
-    private IndividualRace getIndividualRace(final int i) throws IOException {
-
-        final String race_config_path = race_config_paths.get(i);
-
-        return race_config_path.isBlank() ? null : getIndividualRace(race_config_path, i + 1);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void readProperties() {
@@ -73,7 +71,11 @@ public class SeriesRaceInput extends RaceInput {
 
     private IndividualRace getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
-        final IndividualRace individual_race = new IndividualRace(race.getPath(race_config_path));
+        final IndividualRace individual_race;
+        if (loadProperties(race.getPath(race_config_path)).containsKey(KEY_RAW_RESULTS_PATH))
+            individual_race = new TimedIndividualRace(race.getPath(race_config_path));
+        else
+            individual_race = new UntimedIndividualRace(race.getPath(race_config_path));
 
         configureIndividualRace(individual_race, race_number);
         individual_race.calculateResults();
