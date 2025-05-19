@@ -80,9 +80,4 @@ public class LegResult extends RaceResult {
         return true;
     }
 
-    @Override
-    public boolean shouldBeDisplayedInResults() {
-
-        return completion_status == CompletionStatus.COMPLETED;
-    }
 }

@@ -74,11 +74,6 @@ public class RelayRaceResult extends RaceResult {
         return getCompletionStatus() == CompletionStatus.COMPLETED;
     }
 
-    @Override
-    public boolean shouldBeDisplayedInResults() {
-        return true;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {

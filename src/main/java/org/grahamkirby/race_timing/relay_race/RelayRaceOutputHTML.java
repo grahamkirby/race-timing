@@ -190,7 +190,7 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
 
             writer.append(STR."""
                         <tr>
-                            <td>\{leg_result.position_string}</td>
+                            <td>\{leg_result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : leg_result.position_string}</td>
                             <td>\{race.normalisation.htmlEncode(leg_result.entry.team.runner_names().get(leg_result.leg_number - 1))}</td>
                             <td>\{format(leg_result.duration())}</td>
                         </tr>

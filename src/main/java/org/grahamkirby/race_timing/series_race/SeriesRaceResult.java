@@ -56,12 +56,6 @@ public abstract class SeriesRaceResult extends RaceResult {
     }
 
     @Override
-    public boolean shouldBeDisplayedInResults() {
-
-        return true;
-    }
-
-    @Override
     public boolean shouldDisplayPosition() {
 
         return canCompleteSeries();

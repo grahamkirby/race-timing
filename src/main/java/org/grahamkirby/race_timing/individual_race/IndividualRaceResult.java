@@ -78,11 +78,6 @@ public class IndividualRaceResult extends RaceResult {
         return completion_status == CompletionStatus.COMPLETED;
     }
 
-    @Override
-    public boolean shouldBeDisplayedInResults() {
-        return true;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {

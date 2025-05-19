@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
+import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
@@ -156,6 +157,7 @@ public class Normalisation {
     /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
     public static String format(final Duration duration) {
 
+        if (duration == null) return DNF_STRING;
         return formatWholePart(duration) + formatFractionalPart(duration);
     }
 
