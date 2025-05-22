@@ -31,6 +31,6 @@ class RelayRaceOutputPDF extends RaceOutputPDF {
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
         final RelayRaceResult result = ((RelayRaceResult) r);
-        return new PrizeWinnerDetails(result.position_string, result.entry.team.name(), result.entry.team.category().getLongName(), format(result.duration()));
+        return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, result.entry.participant.category.getLongName(), format(result.duration()));
     }
 }

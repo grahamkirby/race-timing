@@ -21,7 +21,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.util.Objects;
 
@@ -81,8 +81,8 @@ public abstract class SeriesRaceResult extends RaceResult {
         return (int) ((SeriesRace) race).races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult) result).
-            filter(result -> result.entry.runner.equals(runner)).
+            map(result -> (SingleRaceResult) result).
+            filter(result -> result.entry.participant.equals(runner)).
             filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
             count();
     }

@@ -17,23 +17,23 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.CompletionStatus;
+import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.individual_race.TimedRaceResult;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class RelayRaceResult extends RaceResult {
+public class RelayRaceResult extends TimedRaceResult {
 
-    public final RelayRaceEntry entry;
     final List<LegResult> leg_results;
 
     RelayRaceResult(final RelayRaceEntry entry, final RelayRace race) {
 
-        super(race);
-        this.entry = entry;
+        super(race, entry, null);
         leg_results = new ArrayList<>();
 
         for (int i = 0; i < race.getNumberOfLegs(); i++)
@@ -45,6 +45,11 @@ public class RelayRaceResult extends RaceResult {
     @Override
     protected String getIndividualRunnerName() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Participant getParticipant() {
+        return null;
     }
 
     @Override
@@ -66,7 +71,7 @@ public class RelayRaceResult extends RaceResult {
 
     @Override
     public EntryCategory getCategory() {
-        return entry.team.category();
+        return entry.participant.category;
     }
 
     @Override

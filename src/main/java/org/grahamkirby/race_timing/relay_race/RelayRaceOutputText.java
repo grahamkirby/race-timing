@@ -16,11 +16,15 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterText;
-import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.individual_race.TimedRace;
+import org.grahamkirby.race_timing.individual_race.TimedRaceEntry;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -114,7 +118,7 @@ class RelayRaceOutputText extends RaceOutputText {
 
     private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
 
-        for (final RawResult result : ((SingleRace) race).getRawResults()) {
+        for (final RawResult result : ((TimedRace) race).getRawResults()) {
 
             final int legs_already_finished = legs_finished_per_team.get(result.getBibNumber()) - 1;
             printResult(writer, (RelayRaceRawResult) result, legs_already_finished);
@@ -125,7 +129,7 @@ class RelayRaceOutputText extends RaceOutputText {
 
         final Map<Integer, Integer> legs_finished_map = new HashMap<>();
 
-        for (final RawResult result : ((SingleRace) race).getRawResults())
+        for (final RawResult result : ((TimedRace) race).getRawResults())
             legs_finished_map.merge(result.getBibNumber(), 1, Integer::sum);
 
         return legs_finished_map;
@@ -135,7 +139,7 @@ class RelayRaceOutputText extends RaceOutputText {
 
         final List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
 
-        for (final RawResult raw_result : ((SingleRace) race).getRawResults()) {
+        for (final RawResult raw_result : ((TimedRace) race).getRawResults()) {
 
             if (raw_result.getBibNumber() == UNKNOWN_BIB_NUMBER)
                 times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());
@@ -146,13 +150,13 @@ class RelayRaceOutputText extends RaceOutputText {
 
     private List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
 
-        return ((SingleRace) race).entries.stream().
+        return ((TimedRace) race).entries.stream().
             flatMap(entry -> getBibNumbersWithMissingTimes(leg_finished_count, entry)).
             sorted().
             toList();
     }
 
-    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final RaceEntry entry) {
+    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final TimedRaceEntry entry) {
 
         final int bib_number = entry.bib_number;
         final int number_of_legs_unfinished = ((RelayRace) race).getNumberOfLegs() - leg_finished_count.getOrDefault(bib_number, 0);
@@ -215,7 +219,7 @@ class RelayRaceOutputText extends RaceOutputText {
 
             final RelayRaceResult result = ((RelayRaceResult) r);
 
-            writer.append(STR."\{result.position_string}: \{result.entry.team.name()} (\{result.entry.team.category().getLongName()}) \{format(result.duration())}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{result.entry.participant.category.getLongName()}) \{format(result.duration())}\n");
         }
     }
 }

@@ -148,7 +148,7 @@ public abstract class Race {
      * @return true if equal positions are allowed
      */
     public abstract boolean areEqualPositionsAllowed();
-    protected abstract void calculateResults();
+    public abstract void calculateResults();
 
     protected abstract RaceInput getInput();
     protected abstract RaceOutputCSV getOutputCSV();
@@ -163,7 +163,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void processResults() throws IOException {
+    public void processResults() throws IOException {
 
         calculateResults();
         outputResults();

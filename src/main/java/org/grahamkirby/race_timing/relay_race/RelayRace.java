@@ -16,15 +16,12 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
-import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.individual_race.TimedRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,7 +40,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 
-public class RelayRace extends SingleRace {
+public class RelayRace extends TimedRace {
 
     // Configuration file keys.
     private static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
@@ -225,7 +222,7 @@ public class RelayRace extends SingleRace {
     }
 
     @Override
-    protected List<Comparator<RaceResult>> getComparators() {
+    public List<Comparator<RaceResult>> getComparators() {
 
         // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
         // DNF results are sorted in increasing order of bib number.
@@ -564,7 +561,7 @@ public class RelayRace extends SingleRace {
             final LegResult leg_result = result.leg_results.get(leg - 1);
             final boolean completed = leg_result.getCompletionStatus() == CompletionStatus.COMPLETED;
 
-            final String leg_runner_names = leg_result.entry.team.runner_names().get(leg - 1);
+            final String leg_runner_names = ((Team)leg_result.entry.participant).runner_names.get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
             final String leg_time = completed ? format(leg_result.duration()) : DNF_STRING;
             final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;

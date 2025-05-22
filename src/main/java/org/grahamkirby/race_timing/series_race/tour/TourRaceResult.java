@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.tour;
 
+import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -40,6 +41,11 @@ public class TourRaceResult extends SeriesRaceResult {
     @Override
     protected String getIndividualRunnerName() {
         return runner.name;
+    }
+
+    @Override
+    public Participant getParticipant() {
+        return runner;
     }
 
     @Override

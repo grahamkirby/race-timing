@@ -17,14 +17,14 @@
 package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.RaceTest;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.junit.jupiter.api.Test;
 
 public class ActualRacesIndividualTest extends RaceTest {
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
-        IndividualRace.main(args);
+        TimedRace.main(args);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

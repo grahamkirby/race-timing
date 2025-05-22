@@ -16,6 +16,7 @@
  */
 package org.grahamkirby.race_timing.series_race.grand_prix;
 
+import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -47,6 +48,11 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
     @Override
     protected String getIndividualRunnerName() {
         return runner.name;
+    }
+
+    @Override
+    public Participant getParticipant() {
+        return runner;
     }
 
     @Override

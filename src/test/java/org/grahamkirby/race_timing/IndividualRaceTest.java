@@ -16,7 +16,7 @@
  */
 package org.grahamkirby.race_timing;
 
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.junit.jupiter.api.Test;
 
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
@@ -27,7 +27,7 @@ public class IndividualRaceTest extends RaceTest {
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
-        IndividualRace.main(args);
+        TimedRace.main(args);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

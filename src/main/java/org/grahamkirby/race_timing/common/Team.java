@@ -20,5 +20,19 @@ import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.List;
 
-public record Team(String name, EntryCategory category, List<String> runner_names) {
+public class Team extends Participant {
+
+    public List<String> runner_names;
+
+    public Team(String name, EntryCategory category, List<String> runner_names) {
+        super(name, category);
+        this.runner_names = runner_names;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+
+        return obj instanceof final Team other_team &&
+            name.equals(other_team.name);
+    }
 }

@@ -20,19 +20,19 @@ import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.Objects;
 
-public class Runner {
+public class Runner extends Participant {
 
-    public final String name;
+//    public final String name;
     public String club;
-    public EntryCategory category;
+//    public EntryCategory category;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Runner(final String name, final String club, final EntryCategory category) {
 
-        this.name = name;
+        super(name, category);
         this.club = club;
-        this.category = category;
+//        this.category = category;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -20,8 +20,9 @@ import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
+import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
+import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -76,9 +77,9 @@ public class TourRaceInput extends SeriesRaceInput {
     }
 
     @Override
-    protected void configureIndividualRace(final IndividualRace individual_race, final int race_number) {
+    protected void configureIndividualRace(final SingleRace individual_race, final int race_number) {
 
-        applyRunnerStartOffsets(individual_race, race_number);
+        applyRunnerStartOffsets((TimedRace) individual_race, race_number);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,7 +146,7 @@ public class TourRaceInput extends SeriesRaceInput {
         return starts;
     }
 
-    private void applyRunnerStartOffsets(final IndividualRace individual_race, final int race_number) {
+    private void applyRunnerStartOffsets(final TimedRace individual_race, final int race_number) {
 
         for (final RawResult result : individual_race.getRawResults()) {
 
@@ -154,7 +155,7 @@ public class TourRaceInput extends SeriesRaceInput {
         }
     }
 
-    private Duration getRunnerStartOffset(final IndividualRace individual_race, final int race_number, final int bib_number) {
+    private Duration getRunnerStartOffset(final TimedRace individual_race, final int race_number, final int bib_number) {
 
         if (isRunnerSelfTimed(race_number, bib_number))
             return Duration.ZERO;
@@ -196,7 +197,7 @@ public class TourRaceInput extends SeriesRaceInput {
         return self_timed_runs.stream().anyMatch(self_timed_run -> self_timed_run.race_number == race_number && self_timed_run.bib_number == bib_number);
     }
 
-    private boolean isRunnerInSecondWave(final IndividualRace individual_race, final int bib_number) {
+    private boolean isRunnerInSecondWave(final TimedRace individual_race, final int bib_number) {
 
         final EntryCategory runner_entry_category = individual_race.findCategory(bib_number);
 

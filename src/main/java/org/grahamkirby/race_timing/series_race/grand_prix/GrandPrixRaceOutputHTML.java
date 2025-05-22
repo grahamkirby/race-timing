@@ -20,9 +20,9 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
+import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -72,7 +72,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 
             for (int i = 0; i < ((SeriesRace) race).getRaces().size(); i++) {
 
-                final IndividualRace individual_race = ((SeriesRace) race).getRaces().get(i);
+                final SingleRace individual_race = ((SeriesRace) race).getRaces().get(i);
                 if (individual_race != null)
                     writer.append(STR."""
                                     <th>\{individual_race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>

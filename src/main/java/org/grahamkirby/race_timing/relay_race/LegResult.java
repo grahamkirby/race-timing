@@ -16,9 +16,7 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.time.Duration;
@@ -58,12 +56,17 @@ public class LegResult extends RaceResult {
 
     @Override
     public EntryCategory getCategory() {
-        return entry.team.category();
+        return entry.participant.category;
     }
 
     @Override
     protected String getIndividualRunnerName() {
-        return entry.team.runner_names().get(leg_number - 1);
+        return ((Team)entry.participant).runner_names.get(leg_number - 1);
+    }
+
+    @Override
+    public Participant getParticipant() {
+        return entry.participant;
     }
 
     @Override
@@ -79,5 +82,4 @@ public class LegResult extends RaceResult {
     public boolean shouldDisplayPosition() {
         return true;
     }
-
 }
