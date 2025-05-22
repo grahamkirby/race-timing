@@ -9,12 +9,18 @@ public abstract class SingleRaceResult extends RaceResult {
 
     public SingleRaceEntry entry;
     protected Duration finish_time;
+    public boolean dnf;
 
-    protected SingleRaceResult(Race race, SingleRaceEntry entry, Duration finish_time) {
+    protected SingleRaceResult(final Race race, final SingleRaceEntry entry, final Duration finish_time) {
         super(race);
         this.entry = entry;
         this.finish_time = finish_time;
     }
 
     public abstract Duration duration();
+
+    @Override
+    public boolean canComplete() {
+        return !dnf;
+    }
 }

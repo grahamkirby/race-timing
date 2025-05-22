@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
@@ -28,7 +27,7 @@ public abstract class TimedRaceResult extends SingleRaceResult {
 
 //    public final TimedRaceEntry entry;
 //    Duration finish_time;
-    CompletionStatus completion_status;  // TODO why only stored for individual race?
+//    CompletionStatus completion_status;  // TODO why only stored for individual race?
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,15 +38,16 @@ public abstract class TimedRaceResult extends SingleRaceResult {
 
         // Provisionally this result is COMPLETED since a finish time was recorded.
         // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
-        completion_status = CompletionStatus.COMPLETED;
+//        completion_status = CompletionStatus.COMPLETED;
+        dnf = false;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public CompletionStatus getCompletionStatus() {
-        return completion_status;
-    }
+//    @Override
+//    public CompletionStatus getCompletionStatus() {
+//        return completion_status;
+//    }
 
     @Override
     public EntryCategory getCategory() {
@@ -75,7 +75,8 @@ public abstract class TimedRaceResult extends SingleRaceResult {
 
     @Override
     public boolean shouldDisplayPosition() {
-        return completion_status == CompletionStatus.COMPLETED;
+//        return completion_status == CompletionStatus.COMPLETED;
+        return canComplete();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

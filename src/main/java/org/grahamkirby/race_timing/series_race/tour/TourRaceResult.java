@@ -61,7 +61,9 @@ public class TourRaceResult extends SeriesRaceResult {
 
     protected Duration duration() {
 
-        return canCompleteSeries() ? getTimesInRacesTakenPlace().stream().reduce(Duration::plus).orElse(Duration.ZERO) : null;
+        return !canComplete() ? null :
+            getTimesInRacesTakenPlace().stream().
+                reduce(Duration.ZERO, Duration::plus);
     }
 
     private List<Duration> getTimesInRacesTakenPlace() {

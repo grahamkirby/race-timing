@@ -24,8 +24,9 @@ import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.List;
+import java.util.Objects;
 
-public class GrandPrixRaceResult extends SeriesRaceResult {
+class GrandPrixRaceResult extends SeriesRaceResult {
 
     private final List<Integer> scores;
 
@@ -62,21 +63,24 @@ public class GrandPrixRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    protected boolean canCompleteSeries() {
+    public boolean canComplete() {
 
-        return super.canCompleteSeries() &&
+        return super.canComplete() &&
             ((GrandPrixRace)race).race_categories.stream().allMatch(this::canCompleteRaceCategory);
     }
 
     private boolean canCompleteRaceCategory(final RaceCategory category) {
 
         final int number_of_races_remaining_in_category = (int) category.race_numbers().stream().
-            filter(race_number -> ((SeriesRace) race).getRaces().get(race_number - 1) != null).count();
+            map(race_number -> ((SeriesRace) race).getRaces().get(race_number - 1)).
+            filter(Objects::nonNull).
+            count();
 
         final int number_of_races_required_in_category = category.minimum_number_to_be_completed();
 
         final int number_of_races_completed_in_category = (int) category.race_numbers().stream().
-            filter(this::hasCompletedRace).count();
+            filter(this::hasCompletedRace).
+            count();
 
         return number_of_races_completed_in_category + number_of_races_remaining_in_category >= number_of_races_required_in_category;
     }

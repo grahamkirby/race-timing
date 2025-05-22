@@ -158,19 +158,19 @@ public abstract class RaceOutput {
         // Don't display category group headers if there is only one group.
         final boolean should_display_category_group_headers = race.prize_category_groups.size() > 1;
 
-        boolean first_category_group = true;
+        boolean not_first_category_group = false;
 
         for (final PrizeCategoryGroup group : race.prize_category_groups) {
 
             if (should_display_category_group_headers) {
-                if (!first_category_group)
+                if (not_first_category_group)
                     writer.append(System.lineSeparator());
                 writer.append(getResultsSubHeader(group.group_title()));
             }
 
             printer.print(race.getOverallResults(group.categories()));
 
-            first_category_group = false;
+            not_first_category_group = true;
         }
     }
 

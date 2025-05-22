@@ -1,6 +1,5 @@
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
@@ -12,7 +11,7 @@ import java.util.Comparator;
 
 public class UntimedIndividualRaceResult extends SingleRaceResult {
 
-    public UntimedIndividualRaceResult(UntimedIndividualRace race, UntimedIndividualRaceEntry entry, Duration finish_time) {
+    UntimedIndividualRaceResult(final UntimedIndividualRace race, final UntimedIndividualRaceEntry entry, final Duration finish_time) {
         super(race, entry, finish_time);
     }
 
@@ -34,14 +33,9 @@ public class UntimedIndividualRaceResult extends SingleRaceResult {
     public int comparePerformanceTo(final RaceResult other) {
 
         final Duration duration = duration();
-        final Duration other_duration = ((UntimedIndividualRaceResult) other).duration();
+        final Duration other_duration = ((SingleRaceResult) other).duration();
 
         return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
-    }
-
-    @Override
-    public CompletionStatus getCompletionStatus() {
-        return CompletionStatus.COMPLETED;
     }
 
     @Override

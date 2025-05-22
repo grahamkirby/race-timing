@@ -16,10 +16,8 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.individual_race.TimedRaceResult;
 
 import java.time.Duration;
@@ -49,7 +47,7 @@ public class RelayRaceResult extends TimedRaceResult {
 
     @Override
     public Participant getParticipant() {
-        return null;
+        return entry.participant;
     }
 
     @Override
@@ -62,21 +60,13 @@ public class RelayRaceResult extends TimedRaceResult {
     }
 
     @Override
-    public CompletionStatus getCompletionStatus() {
-
-        if (!wereAllLegsCompleted()) return CompletionStatus.DNF;
-
-        return CompletionStatus.COMPLETED;
-    }
-
-    @Override
-    public EntryCategory getCategory() {
-        return entry.participant.category;
+    public boolean canComplete() {
+        return wereAllLegsCompleted();
     }
 
     @Override
     public boolean shouldDisplayPosition() {
-        return getCompletionStatus() == CompletionStatus.COMPLETED;
+        return canComplete();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,11 +84,11 @@ public class RelayRaceResult extends TimedRaceResult {
 
     private boolean wereAllLegsCompleted() {
 
-        return leg_results.stream().allMatch(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED);
+        return leg_results.stream().allMatch(LegResult::canComplete);
     }
 
     private boolean wereAnyLegsCompleted() {
 
-        return leg_results.stream().anyMatch(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED);
+        return leg_results.stream().anyMatch(LegResult::canComplete);
     }
 }

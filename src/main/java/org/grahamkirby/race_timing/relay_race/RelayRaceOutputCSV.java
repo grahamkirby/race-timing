@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Team;
@@ -128,7 +127,8 @@ class RelayRaceOutputCSV extends RaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             final RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(STR."\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getShortName()},\{result.duration() == null ? "DNF" : format(result.duration())}\n");
+            writer.append(STR."\{!result.canComplete() ? "" : result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getShortName()},\{result.duration() == null ? "DNF" : format(result.duration())}\n");
+//            writer.append(STR."\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getShortName()},\{result.duration() == null ? "DNF" : format(result.duration())}\n");
         }
     }
 
@@ -153,7 +153,8 @@ class RelayRaceOutputCSV extends RaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             final LegResult result = (LegResult) r;
-            writer.append(STR."\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string},\{encode(((Team)result.entry.participant).runner_names.get(result.leg_number - 1))},\{format(result.duration())}\n");
+            writer.append(STR."\{!result.canComplete() ? "" : result.position_string},\{encode(((Team)result.entry.participant).runner_names.get(result.leg_number - 1))},\{format(result.duration())}\n");
+//            writer.append(STR."\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string},\{encode(((Team)result.entry.participant).runner_names.get(result.leg_number - 1))},\{format(result.duration())}\n");
         }
     }
 
@@ -169,7 +170,8 @@ class RelayRaceOutputCSV extends RaceOutputCSV {
             final RelayRace relay_race = (RelayRace) race;
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(STR."\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getLongName()},");
+            writer.append(STR."\{!result.canComplete() ? "" : result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getLongName()},");
+//            writer.append(STR."\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getLongName()},");
 
             final List<String> leg_strings = relay_race.getLegDetails(result, info ->
                 STR."\{encode(info.leg_runner_names())}\{info.leg_mass_start_annotation()},\{info.leg_time()},\{info.split_time()}");

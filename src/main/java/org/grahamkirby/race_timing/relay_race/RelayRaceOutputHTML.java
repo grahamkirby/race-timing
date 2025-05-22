@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Team;
@@ -148,11 +147,11 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
 
             writer.append(STR."""
                         <tr>
-                            <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string}</td>
+                            <td>\{!result.canComplete() ? "" : result.position_string}</td>
                             <td>\{result.entry.bib_number}</td>
                             <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
                             <td>\{result.entry.participant.category.getLongName()}</td>
-                            <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? DNF_STRING : format(result.duration())}</td>
+                            <td>\{!result.canComplete() ? DNF_STRING : format(result.duration())}</td>
                         </tr>
                 """);
         }
@@ -191,7 +190,7 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
 
             writer.append(STR."""
                         <tr>
-                            <td>\{leg_result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : leg_result.position_string}</td>
+                            <td>\{!leg_result.canComplete() ? "" : leg_result.position_string}</td>
                             <td>\{race.normalisation.htmlEncode(((Team)leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1))}</td>
                             <td>\{format(leg_result.duration())}</td>
                         </tr>

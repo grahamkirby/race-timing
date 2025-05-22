@@ -130,7 +130,7 @@ public abstract class SeriesRace extends Race {
 
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
-        return Boolean.compare(((SeriesRaceResult) r2).canCompleteSeries(), ((SeriesRaceResult) r1).canCompleteSeries());
+        return Boolean.compare(r2.canComplete(), r1.canComplete());
     }
 
     protected static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
@@ -280,9 +280,8 @@ public abstract class SeriesRace extends Race {
         if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
             recordDefinedClubForRunnerName(runner_name, defined_clubs.getFirst());
 
-        if (number_of_defined_clubs > 1) {
+        if (number_of_defined_clubs > 1)
             processMultipleClubsForRunner(runner_name, defined_clubs);
-        }
     }
 
     protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {

@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.series_race.tour;
 
-import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
@@ -24,7 +23,6 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.individual_race.TimedRaceResult;
-import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 import org.grahamkirby.race_timing.single_race.SingleRace;
@@ -66,7 +64,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
     private void printIndividualRaceResults(final int race_number) throws IOException {
 
-        final TimedRace individual_race = (TimedRace) ((SeriesRace) race).getRaces().get(race_number - 1);
+        final SingleRace individual_race = ((SeriesRace) race).getRaces().get(race_number - 1);
 
         if (individual_race != null) {
 
@@ -80,7 +78,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private void printIndividualRaceResults(final OutputStreamWriter writer, final TimedRace individual_race, final Collection<PrizeCategory> prize_categories, final String sub_heading) throws IOException {
+    private void printIndividualRaceResults(final OutputStreamWriter writer, final SingleRace individual_race, final Collection<PrizeCategory> prize_categories, final String sub_heading) throws IOException {
 
         final List<RaceResult> category_results = individual_race.getOverallResults(prize_categories);
 
@@ -214,11 +212,11 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(STR."""
                     <tr>
-                        <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
+                        <td>\{result.canComplete() ? result.position_string : ""}</td>
                         <td>\{result.entry.bib_number}</td>
                         <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
                         <td>\{result.entry.participant.category.getShortName()}</td>
-                        <td>\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : DNF_STRING}</td>
+                        <td>\{result.canComplete() ? format(result.duration()) : DNF_STRING}</td>
                     </tr>
             """);
         }
