@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
@@ -149,8 +150,8 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
                         <tr>
                             <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : result.position_string}</td>
                             <td>\{result.entry.bib_number}</td>
-                            <td>\{race.normalisation.htmlEncode(result.entry.team.name())}</td>
-                            <td>\{result.entry.team.category().getLongName()}</td>
+                            <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
+                            <td>\{result.entry.participant.category.getLongName()}</td>
                             <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? DNF_STRING : format(result.duration())}</td>
                         </tr>
                 """);
@@ -191,7 +192,7 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append(STR."""
                         <tr>
                             <td>\{leg_result.getCompletionStatus() != CompletionStatus.COMPLETED ? "" : leg_result.position_string}</td>
-                            <td>\{race.normalisation.htmlEncode(leg_result.entry.team.runner_names().get(leg_result.leg_number - 1))}</td>
+                            <td>\{race.normalisation.htmlEncode(((Team)leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1))}</td>
                             <td>\{format(leg_result.duration())}</td>
                         </tr>
                 """);
@@ -243,8 +244,8 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
                 <tr>
                     <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
                     <td>\{result.entry.bib_number}</td>
-                    <td>\{race.normalisation.htmlEncode(result.entry.team.name())}</td>
-                    <td>\{result.entry.team.category().getLongName()}</td>
+                    <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
+                    <td>\{result.entry.participant.category.getLongName()}</td>
             """);
 
             final List<String> leg_strings = relay_race.getLegDetails(result, info ->
@@ -285,7 +286,7 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             final RelayRaceResult result = (RelayRaceResult) r;
 
             writer.append(STR."""
-                    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.team.name())} (\{result.entry.team.category().getLongName()}) \{format(result.duration())}</li>
+                    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.participant.name)} (\{result.entry.participant.category.getLongName()}) \{format(result.duration())}</li>
                 """);
         }
     }

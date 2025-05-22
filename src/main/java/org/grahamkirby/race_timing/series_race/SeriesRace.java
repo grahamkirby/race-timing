@@ -20,8 +20,8 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
+import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,7 +35,7 @@ public abstract class SeriesRace extends Race {
     private static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
     private static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
 
-    protected List<IndividualRace> races;
+    protected List<SingleRace> races;
 
     private int number_of_races_in_series;
     private int minimum_number_of_races;
@@ -97,7 +97,7 @@ public abstract class SeriesRace extends Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public List<IndividualRace> getRaces() {
+    public List<SingleRace> getRaces() {
         return races;
     }
 
@@ -154,23 +154,23 @@ public abstract class SeriesRace extends Race {
                 filter(Objects::nonNull).
                 flatMap(race -> race.getOverallResults().stream()).
                 filter(getResultInclusionPredicate()).
-                map(result -> ((IndividualRaceResult) result).entry.runner).
+                map(result -> (Runner)((SingleRaceResult) result).entry.participant).
                 distinct().
                 map(this::getOverallResult).
                 toList());
     }
 
-    private List<List<IndividualRaceResult>> getResultsByRunner() {
+    private List<List<SingleRaceResult>> getResultsByRunner() {
 
-        final Map<Runner, List<IndividualRaceResult>> map = new HashMap<>();
+        final Map<Runner, List<SingleRaceResult>> map = new HashMap<>();
 
         getRacesInTemporalOrder().stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
             filter(getResultInclusionPredicate()).
-            map(result -> ((IndividualRaceResult) result)).
+            map(result -> ((SingleRaceResult) result)).
             forEachOrdered(result -> {
-                final Runner runner = result.entry.runner;
+                final Runner runner = (Runner)result.entry.participant;
                 map.putIfAbsent(runner, new ArrayList<>());
                 map.get(runner).add(result);
             });
@@ -178,9 +178,9 @@ public abstract class SeriesRace extends Race {
         return new ArrayList<>(map.values());
     }
 
-    private List<IndividualRace> getRacesInTemporalOrder() {
+    private List<SingleRace> getRacesInTemporalOrder() {
 
-        final List<IndividualRace> races_in_order = new ArrayList<>();
+        final List<SingleRace> races_in_order = new ArrayList<>();
 
         for (int i = 0; i < number_of_races_in_series; i++)
             races_in_order.add(races.get(getRaceNumberInTemporalPosition(i)));
@@ -189,15 +189,15 @@ public abstract class SeriesRace extends Race {
     }
 
     @SuppressWarnings({"NonBooleanMethodNameMayNotStartWithQuestion", "BoundedWildcard"})
-    private void checkCategoryConsistencyOverSeries(final List<IndividualRaceResult> runner_results) {
+    private void checkCategoryConsistencyOverSeries(final List<SingleRaceResult> runner_results) {
 
         EntryCategory earliest_category = null;
         EntryCategory previous_category = null;
         EntryCategory last_category = null;
 
-        for (final IndividualRaceResult result : runner_results) {
+        for (final SingleRaceResult result : runner_results) {
 
-            final EntryCategory current_category = result.entry.runner.category;
+            final EntryCategory current_category = result.entry.participant.category;
 
             if (current_category != null) {
 
@@ -214,7 +214,7 @@ public abstract class SeriesRace extends Race {
                     checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
 
                     getNotes().append(STR."""
-                        Runner \{result.entry.runner.name} changed category from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}
+                        Runner \{result.entry.participant.name} changed category from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}
                         """);
                 }
 
@@ -224,29 +224,29 @@ public abstract class SeriesRace extends Race {
 
         checkForChangeToTooMuchOlderAgeCategory(runner_results.getFirst(), earliest_category, last_category);
 
-        for (final IndividualRaceResult result : runner_results)
-            result.entry.runner.category = earliest_category;
+        for (final SingleRaceResult result : runner_results)
+            result.entry.participant.category = earliest_category;
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    private static void checkForChangeToYoungerAgeCategory(final IndividualRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
+    private static void checkForChangeToYoungerAgeCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
 
         if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
-            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.runner.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
+            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.participant.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    private static void checkForChangeToDifferentGenderCategory(final IndividualRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
+    private static void checkForChangeToDifferentGenderCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
 
         if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
-            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.runner.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
+            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.participant.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    private static void checkForChangeToTooMuchOlderAgeCategory(final IndividualRaceResult result, final EntryCategory earliest_category, final EntryCategory last_category) {
+    private static void checkForChangeToTooMuchOlderAgeCategory(final SingleRaceResult result, final EntryCategory earliest_category, final EntryCategory last_category) {
 
         if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
-            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.runner.name}' changed from \{earliest_category.getShortName()} to \{last_category.getShortName()} during series");
+            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.participant.name}' changed from \{earliest_category.getShortName()} to \{last_category.getShortName()} during series");
     }
 
     protected void printOverallResults() throws IOException {
@@ -304,10 +304,10 @@ public abstract class SeriesRace extends Race {
         return races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult) result).
-            map(result -> result.entry.runner).
-            filter(runner -> runner.name.equals(runner_name)).
-            map(runner -> runner.club).
+            map(result -> (SingleRaceResult) result).
+            map(result -> result.entry.participant).
+            filter(participant -> participant.name.equals(runner_name)).
+            map(participant -> ((Runner)participant).club).
             distinct().
             sorted().
             toList();
@@ -318,10 +318,10 @@ public abstract class SeriesRace extends Race {
         races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult) result).
-            map(result -> result.entry.runner).
-            filter(runner -> runner.name.equals(runner_name)).
-            forEachOrdered(runner -> runner.club = defined_club);
+            map(result -> (SingleRaceResult) result).
+            map(result -> result.entry.participant).
+            filter(participant -> participant.name.equals(runner_name)).
+            forEachOrdered(participant -> ((Runner)participant).club = defined_club);
     }
 
     private List<String> getRunnerNames() {
@@ -329,8 +329,8 @@ public abstract class SeriesRace extends Race {
         return races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getOverallResults().stream()).
-            map(result -> (IndividualRaceResult) result).
-            map(result -> result.entry.runner.name).
+            map(result -> (SingleRaceResult) result).
+            map(result -> result.entry.participant.name).
             distinct().
             toList();
     }

@@ -16,7 +16,10 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.CompletionStatus;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
@@ -27,18 +30,19 @@ import org.grahamkirby.race_timing.single_race.SingleRace;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+public abstract class TimedRace extends SingleRace {
 
-public abstract class IndividualRace extends SingleRace {
-
-    // Configuration file keys.
-    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
+//    // Configuration file keys.
+//    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
 //    private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
 
-    private String median_time_string;
+    public List<TimedRaceEntry> entries;
+    protected List<RawResult> raw_results;
+
+//    private String median_time_string;
 
 //    /**
 //     * List of individual early starts (usually empty).
@@ -48,7 +52,7 @@ public abstract class IndividualRace extends SingleRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IndividualRace(final Path config_file_path) throws IOException {
+    public TimedRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
@@ -62,6 +66,27 @@ public abstract class IndividualRace extends SingleRace {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected void configureInputData() throws IOException {
+
+        input.validateInputFiles();
+
+        final TimedRaceInput single_race_input = (TimedRaceInput) input;
+
+        entries = single_race_input.loadEntries();
+
+        // Only one of raw_results and overall_results will be fully initialised at this point,
+        // depending on whether raw results are available, or just overall results (perhaps for
+        // an externally organised race included in a race series).
+        // The other list will be initialised as an empty list.
+        raw_results = single_race_input.loadRawResults();
+//        overall_results = single_race_input.loadOverallResults();
+    }
+
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
 
     @Override
     public void calculateResults() {
@@ -91,50 +116,50 @@ public abstract class IndividualRace extends SingleRace {
     /** Gets the entry category for the runner with the given bib number. */
     public EntryCategory findCategory(final int bib_number) {
 
-        return getEntryWithBibNumber(bib_number).runner.category;
+        return getEntryWithBibNumber(bib_number).participant.category;
     }
 
-    /** Gets the finish time for the given runner. */
-    public Duration getRunnerTime(final Runner runner) {
+//    /** Gets the finish time for the given runner. */
+//    public Duration getRunnerTime(final Runner runner) {
+//
+//        for (final RaceResult result : getOverallResults()) {
+//
+//            final IndividualRaceResult individual_result = (IndividualRaceResult) result;
+//            if (individual_result.entry.runner.equals(runner))
+//                return individual_result.duration();
+//        }
+//
+//        return null;
+//    }
 
-        for (final RaceResult result : getOverallResults()) {
-
-            final IndividualRaceResult individual_result = (IndividualRaceResult) result;
-            if (individual_result.entry.runner.equals(runner))
-                return individual_result.duration();
-        }
-
-        return null;
-    }
-
-    /** Gets the median finish time for the race. */
-    public Duration getMedianTime() {
-
-        // The median time may be recorded explicitly if not all results are recorded.
-        if (median_time_string != null) return parseTime(median_time_string);
-
-        final List<RaceResult> results = getOverallResults();
-
-        if (results.size() % 2 == 0) {
-
-            final IndividualRaceResult median_result1 = (IndividualRaceResult) results.get(results.size() / 2 - 1);
-            final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2);
-
-            return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
-
-        } else {
-            final IndividualRaceResult median_result = (IndividualRaceResult) results.get(results.size() / 2);
-            return median_result.finish_time;
-        }
-    }
+//    /** Gets the median finish time for the race. */
+//    public Duration getMedianTime() {
+//
+//        // The median time may be recorded explicitly if not all results are recorded.
+//        if (median_time_string != null) return parseTime(median_time_string);
+//
+//        final List<RaceResult> results = getOverallResults();
+//
+//        if (results.size() % 2 == 0) {
+//
+//            final IndividualRaceResult median_result1 = (IndividualRaceResult) results.get(results.size() / 2 - 1);
+//            final IndividualRaceResult median_result2 = (IndividualRaceResult) results.get(results.size() / 2);
+//
+//            return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
+//
+//        } else {
+//            final IndividualRaceResult median_result = (IndividualRaceResult) results.get(results.size() / 2);
+//            return median_result.finish_time;
+//        }
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares the given results on the basis of their finish positions. */
     private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
-        final int recorded_position1 = getRecordedPosition(((IndividualRaceResult) r1).entry.bib_number);
-        final int recorded_position2 = getRecordedPosition(((IndividualRaceResult) r2).entry.bib_number);
+        final int recorded_position1 = getRecordedPosition(((TimedRaceResult) r1).entry.bib_number);
+        final int recorded_position2 = getRecordedPosition(((TimedRaceResult) r2).entry.bib_number);
 
         return Integer.compare(recorded_position1, recorded_position2);
     }
@@ -145,32 +170,32 @@ public abstract class IndividualRace extends SingleRace {
     protected void readProperties() throws IOException {
 
         super.readProperties();
-        median_time_string = getOptionalProperty(KEY_MEDIAN_TIME);
+//        median_time_string = getOptionalProperty(KEY_MEDIAN_TIME);
     }
 
-    @Override
-    protected RaceInput getInput() {
-        return new IndividualRaceInput(this);
-    }
-
+//    @Override
+//    protected RaceInput getInput() {
+//        return new TimedRaceInput(this);
+//    }
+//
     @Override
     protected RaceOutputCSV getOutputCSV() {
-        return new IndividualRaceOutputCSV(this);
+        return new TimedIndividualRaceOutputCSV(this);
     }
 
     @Override
     protected RaceOutputHTML getOutputHTML() {
-        return new IndividualRaceOutputHTML(this);
+        return new TimedIndividualRaceOutputHTML(this);
     }
 
     @Override
     protected RaceOutputText getOutputText() {
-        return new IndividualRaceOutputText(this);
+        return new TimedIndividualRaceOutputText(this);
     }
 
     @Override
     protected RaceOutputPDF getOutputPDF() {
-        return new IndividualRaceOutputPDF(this);
+        return new TimedIndividualRaceOutputPDF(this);
     }
 
     @Override
@@ -194,7 +219,7 @@ public abstract class IndividualRace extends SingleRace {
     protected void recordDNF(final String dnf_specification) {
 
         final int bib_number = Integer.parseInt(dnf_specification);
-        final IndividualRaceResult result = getResultWithBibNumber(bib_number);
+        final TimedRaceResult result = getResultWithBibNumber(bib_number);
 
         result.completion_status = CompletionStatus.DNF;
     }
@@ -218,19 +243,19 @@ public abstract class IndividualRace extends SingleRace {
 //        });
 //    }
 
-    private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
+    private TimedRaceResult getResultWithBibNumber(final int bib_number) {
 
         return overall_results.stream().
-            map(result -> ((IndividualRaceResult) result)).
+            map(result -> ((TimedRaceResult) result)).
             filter(result -> result.entry.bib_number == bib_number).
             findFirst().
             orElseThrow();
     }
 
-    IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
+    TimedIndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
 
         return entries.stream().
-            map(entry -> ((IndividualRaceEntry) entry)).
+            map(entry -> ((TimedIndividualRaceEntry) entry)).
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();

@@ -18,9 +18,9 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
 import org.grahamkirby.race_timing.individual_race.UntimedIndividualRace;
+import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,9 +48,9 @@ public class SeriesRaceInput extends RaceInput {
     public void validateInputFiles() {
     }
 
-    List<IndividualRace> loadRaces() throws IOException {
+    List<SingleRace> loadRaces() throws IOException {
 
-        final List<IndividualRace> races = new ArrayList<>();
+        final List<SingleRace> races = new ArrayList<>();
 
         for (int i = 0; i < ((SeriesRace)race).getNumberOfRacesInSeries(); i++) {
 
@@ -69,9 +69,9 @@ public class SeriesRaceInput extends RaceInput {
         race_config_paths = Arrays.asList(race.getRequiredProperty(KEY_RACES).split(",", -1));
     }
 
-    private IndividualRace getIndividualRace(final String race_config_path, final int race_number) throws IOException {
+    private SingleRace getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
-        final IndividualRace individual_race;
+        final SingleRace individual_race;
         if (loadProperties(race.getPath(race_config_path)).containsKey(KEY_RAW_RESULTS_PATH))
             individual_race = new TimedIndividualRace(race.getPath(race_config_path));
         else
@@ -83,6 +83,6 @@ public class SeriesRaceInput extends RaceInput {
         return individual_race;
     }
 
-    protected void configureIndividualRace(final IndividualRace individual_race, final int race_number) {
+    protected void configureIndividualRace(final SingleRace individual_race, final int race_number) {
     }
 }

@@ -24,10 +24,10 @@ import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
+import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -125,10 +125,10 @@ public final class GrandPrixRace extends SeriesRace {
     @Override
     protected Predicate<RaceResult> getResultInclusionPredicate() {
 
-        return result -> qualifying_clubs.contains(((IndividualRaceResult) result).entry.runner.club);
+        return result -> qualifying_clubs.contains(((Runner)((SingleRaceResult) result).entry.participant).club);
     }
 
-    int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    int calculateRaceScore(final SingleRace individual_race, final Runner runner) {
 
         if (individual_race == null) return 0;
 

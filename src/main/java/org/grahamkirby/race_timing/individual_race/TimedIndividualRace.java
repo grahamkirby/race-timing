@@ -1,5 +1,7 @@
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.RaceInput;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -9,7 +11,7 @@ import java.util.Map;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
-public class TimedIndividualRace extends IndividualRace {
+public class TimedIndividualRace extends TimedRace {
 
     private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
 
@@ -21,6 +23,11 @@ public class TimedIndividualRace extends IndividualRace {
 
     public TimedIndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
+    }
+
+    @Override
+    protected RaceInput getInput() {
+        return new TimedIndividualRaceInput(this);
     }
 
     @Override
@@ -42,13 +49,13 @@ public class TimedIndividualRace extends IndividualRace {
         raw_results.forEach(raw_result -> {
 
             final int bib_number = raw_result.getBibNumber();
-            final IndividualRaceEntry entry = getEntryWithBibNumber(bib_number);
+            final TimedIndividualRaceEntry entry = getEntryWithBibNumber(bib_number);
 
             // TODO apply in separate operation
             final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
             final Duration finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
 
-            final IndividualRaceResult result = new IndividualRaceResult(this, entry, finish_time);
+            final TimedIndividualRaceResult result = new TimedIndividualRaceResult(this, entry, finish_time);
 
             overall_results.add(result);
         });

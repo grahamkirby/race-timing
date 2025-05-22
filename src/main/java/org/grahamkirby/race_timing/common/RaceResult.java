@@ -39,6 +39,7 @@ public abstract class RaceResult {
 
     protected abstract String getIndividualRunnerName();
 
+    public abstract Participant getParticipant();
     public abstract int comparePerformanceTo(RaceResult other);
     public abstract CompletionStatus getCompletionStatus();
     public abstract boolean shouldDisplayPosition();

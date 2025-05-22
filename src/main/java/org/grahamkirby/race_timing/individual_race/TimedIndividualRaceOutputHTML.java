@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
@@ -29,9 +30,9 @@ import java.io.OutputStreamWriter;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-class IndividualRaceOutputHTML extends RaceOutputHTML {
+class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
 
-    IndividualRaceOutputHTML(final IndividualRace race) {
+    TimedIndividualRaceOutputHTML(final TimedRace race) {
         super(race);
     }
 
@@ -75,15 +76,15 @@ class IndividualRaceOutputHTML extends RaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final IndividualRaceResult result = ((IndividualRaceResult) r);
+            final TimedIndividualRaceResult result = ((TimedIndividualRaceResult) r);
 
             writer.append(STR."""
                     <tr>
                         <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
                         <td>\{result.entry.bib_number}</td>
-                        <td>\{race.normalisation.htmlEncode(result.entry.runner.name)}</td>
-                        <td>\{result.entry.runner.club}</td>
-                        <td>\{result.entry.runner.category.getShortName()}</td>
+                        <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
+                        <td>\{((Runner)result.entry.participant).club}</td>
+                        <td>\{result.entry.participant.category.getShortName()}</td>
                         <td>\{result.getCompletionStatus() != CompletionStatus.COMPLETED ? DNF_STRING : format(result.duration())}</td>
                     </tr>
                 """);
@@ -111,9 +112,9 @@ class IndividualRaceOutputHTML extends RaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final IndividualRaceResult result = ((IndividualRaceResult) r);
+            final TimedRaceResult result = ((TimedRaceResult) r);
 
-            writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.runner.name)} (\{result.entry.runner.club}) \{format(result.duration())}</li>\n");
+            writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{format(result.duration())}</li>\n");
         }
     }
 }

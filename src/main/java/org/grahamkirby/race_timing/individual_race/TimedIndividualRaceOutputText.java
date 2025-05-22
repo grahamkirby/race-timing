@@ -18,18 +18,19 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.output.ResultPrinterText;
+import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.common.output.ResultPrinterText;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
-class IndividualRaceOutputText extends RaceOutputText {
+class TimedIndividualRaceOutputText extends RaceOutputText {
 
-    IndividualRaceOutputText(final IndividualRace race) {
+    TimedIndividualRaceOutputText(final TimedRace race) {
         super(race);
     }
 
@@ -48,9 +49,9 @@ class IndividualRaceOutputText extends RaceOutputText {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final IndividualRaceResult result = ((IndividualRaceResult) r);
+            final TimedIndividualRaceResult result = ((TimedIndividualRaceResult) r);
 
-            writer.append(STR."\{result.position_string}: \{result.entry.runner.name} (\{result.entry.runner.club}) \{format(result.duration())}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner)result.entry.participant).club}) \{format(result.duration())}\n");
         }
     }
 }

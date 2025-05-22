@@ -17,14 +17,13 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 
 import java.util.List;
 import java.util.Objects;
 
-public class IndividualRaceEntry extends RaceEntry {
+public class TimedIndividualRaceEntry extends TimedRaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
     private static final int BIB_NUMBER_INDEX = 0;
@@ -32,12 +31,10 @@ public class IndividualRaceEntry extends RaceEntry {
     private static final int CLUB_INDEX = 2;
     private static final int CATEGORY_INDEX = 3;
 
-    public final Runner runner;
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
-    public IndividualRaceEntry(final List<String> elements, final Race race) {
+    public TimedIndividualRaceEntry(final List<String> elements, final Race race) {
 
         final List<String> mapped_elements = race.normalisation.mapRaceEntryElements(elements);
 
@@ -50,7 +47,7 @@ public class IndividualRaceEntry extends RaceEntry {
             final String category_name = race.normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
             final EntryCategory category = category_name.isEmpty() ? null : race.lookupEntryCategory(category_name);
 
-            runner = new Runner(name, club, category);
+            participant = new Runner(name, club, category);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
@@ -61,17 +58,17 @@ public class IndividualRaceEntry extends RaceEntry {
 
     @Override
     public String toString() {
-        return STR."\{runner.name}, \{runner.club}";
+        return STR."\{participant.name}, \{((Runner)participant).club}";
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof final IndividualRaceEntry other_entry &&
-            runner.equals(other_entry.runner);
+        return obj instanceof final TimedIndividualRaceEntry other_entry &&
+            ((Runner)participant).equals(((Runner)other_entry.participant));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(runner.name, runner.club);
+        return Objects.hash(participant.name, ((Runner)participant).club);
     }
 }

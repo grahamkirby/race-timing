@@ -21,10 +21,10 @@ import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
+import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -114,20 +114,23 @@ public final class MidweekRace extends SeriesRace {
         return (_ -> true);
     }
 
-    int calculateRaceScore(final IndividualRace individual_race, final Runner runner) {
+    int calculateRaceScore(final SingleRace individual_race, final Runner runner) {
 
         if (individual_race == null) return 0;
 
         // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
 
-        final List<IndividualRaceResult> gender_results = individual_race.getOverallResults().stream().
-            map(result -> (IndividualRaceResult) result).
+        final List<SingleRaceResult> gender_results = individual_race.getOverallResults().stream().
+            map(result -> (SingleRaceResult) result).
             filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
             filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
             toList();
 
         final int gender_position = (int) gender_results.stream().
-            takeWhile(result -> !result.entry.runner.equals(runner)).
+            takeWhile(result -> {
+                Runner result_runner = (Runner) result.getParticipant();
+                return !result_runner.equals(runner);
+            }).
             count() + 1;
 
         return gender_position <= gender_results.size() ? Math.max(score_for_first_place - gender_position + 1, 0) : 0;

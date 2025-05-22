@@ -19,23 +19,23 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.CompletionStatus;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.time.Duration;
 import java.util.Comparator;
 
-public class IndividualRaceResult extends RaceResult {
+public abstract class TimedRaceResult extends SingleRaceResult {
 
-    public final IndividualRaceEntry entry;
-    Duration finish_time;
+//    public final TimedRaceEntry entry;
+//    Duration finish_time;
     CompletionStatus completion_status;  // TODO why only stored for individual race?
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IndividualRaceResult(final IndividualRace race, final IndividualRaceEntry entry, final Duration finish_time) {
+    public TimedRaceResult(final TimedRace race, final TimedRaceEntry entry, final Duration finish_time) {
 
-        super(race);
-        this.entry = entry;
-        this.finish_time = finish_time;
+        super(race, entry, finish_time);
+//        this.entry = entry;
 
         // Provisionally this result is COMPLETED since a finish time was recorded.
         // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
@@ -51,24 +51,24 @@ public class IndividualRaceResult extends RaceResult {
 
     @Override
     public EntryCategory getCategory() {
-        return entry.runner.category;
+        return entry.participant.category;
     }
 
     @Override
     protected String getIndividualRunnerName() {
-        return entry == null ? null : entry.runner.name;
+        return entry == null ? null : entry.participant.name;
     }
 
-    @Override
-    protected String getIndividualRunnerClub() {
-        return entry == null ? null : entry.runner.club;
-    }
+//    @Override
+//    protected String getIndividualRunnerClub() {
+//        return entry == null ? null : ((Runner)entry.participant).club;
+//    }
 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
         final Duration duration = duration();
-        final Duration other_duration = ((IndividualRaceResult) other).duration();
+        final Duration other_duration = ((TimedRaceResult) other).duration();
 
         return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }

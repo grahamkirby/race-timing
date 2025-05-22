@@ -17,24 +17,23 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.individual_race.TimedRaceEntry;
 
 import java.util.List;
 import java.util.Objects;
 
-public class RelayRaceEntry extends RaceEntry {
+public class RelayRaceEntry extends TimedRaceEntry {
 
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int TEAM_NAME_INDEX = 1;
     private static final int CATEGORY_INDEX = 2;
     private static final int FIRST_RUNNER_NAME_INDEX = 3;
 
-    public Team team;
-
     @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
     RelayRaceEntry(final List<String> elements, final Race race) {
+        super();
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
@@ -48,7 +47,7 @@ public class RelayRaceEntry extends RaceEntry {
 
             final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.normalisation.cleanRunnerName(s)).toList();
 
-            team = new Team(name, category, runners);
+            participant = new Team(name, category, runners);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
@@ -57,17 +56,17 @@ public class RelayRaceEntry extends RaceEntry {
 
     @Override
     public String toString() {
-        return team.name();
+        return participant.name;
     }
 
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof final RelayRaceEntry other_entry &&
-            team.name().equals(other_entry.team.name());
+            participant.name.equals(other_entry.participant.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(team.name());
+        return Objects.hashCode(participant.name);
     }
 }

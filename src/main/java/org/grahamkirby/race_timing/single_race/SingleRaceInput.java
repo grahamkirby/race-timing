@@ -16,18 +16,15 @@
  */
 package org.grahamkirby.race_timing.single_race;
 
-import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceEntry;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceInput;
+import org.grahamkirby.race_timing.common.RawResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -46,10 +43,10 @@ public abstract class SingleRaceInput extends RaceInput {
 //            throw e;
 //        }
 //    };
-    private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
+//    private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
 //    private final Function<String, RawResult> raw_result_mapper = this::makeRawResult;
 
-    private int next_fake_bib_number = 1;
+//    private int next_fake_bib_number = 1;
 
     protected SingleRaceInput(final Race race) {
 
@@ -59,7 +56,7 @@ public abstract class SingleRaceInput extends RaceInput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract RaceEntry makeRaceEntry(final List<String> elements);
+    protected abstract SingleRaceEntry makeRaceEntry(final List<String> elements);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,20 +67,20 @@ public abstract class SingleRaceInput extends RaceInput {
         overall_results_path = race.getOptionalProperty(KEY_RESULTS_PATH);
     }
 
-    List<RaceEntry> loadEntries() throws IOException {
-
-        if (entries_path == null) return new ArrayList<>();
-
-        final List<RaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
-            filter(Predicate.not(String::isBlank)).
-            filter(s -> !s.startsWith(COMMENT_SYMBOL)).
-            map(line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
-            toList();
-
-        assertNoDuplicateEntries(entries);
-
-        return entries;
-    }
+//    public List<TimedIndividualRaceEntry> loadEntries() throws IOException {
+//
+//        if (entries_path == null) return new ArrayList<>();
+//
+//        final List<TimedIndividualRaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
+//            filter(Predicate.not(String::isBlank)).
+//            filter(s -> !s.startsWith(COMMENT_SYMBOL)).
+//            map(line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
+//            toList();
+//
+//        assertNoDuplicateEntries(entries);
+//
+//        return entries;
+//    }
 
     public void validateInputFiles() {
 
@@ -194,17 +191,17 @@ public abstract class SingleRaceInput extends RaceInput {
         }
     }
 
-    List<RaceResult> loadOverallResults() throws IOException {
-
-        // Only used when loading external results.
-        if (overall_results_path == null) return new ArrayList<>();
-
-        return Files.readAllLines(race.getPath(overall_results_path)).stream().
-            filter(Predicate.not(String::isBlank)).
-            map(race_result_mapper).
-            filter(Objects::nonNull).
-            toList();
-    }
+//    public List<RaceResult> loadOverallResults() throws IOException {
+//
+//        // Only used when loading external results.
+//        if (overall_results_path == null) return new ArrayList<>();
+//
+//        return Files.readAllLines(race.getPath(overall_results_path)).stream().
+//            filter(Predicate.not(String::isBlank)).
+//            map(race_result_mapper).
+//            filter(Objects::nonNull).
+//            toList();
+//    }
 
     protected List<RawResult> loadRawResults(final String raw_results_path) throws IOException {
 
@@ -242,20 +239,20 @@ public abstract class SingleRaceInput extends RaceInput {
         return new RawResult(line);
     }
 
-    private RaceResult makeRaceResult(final List<String> elements) {
-        // Only used when loading external results.
-
-        elements.addFirst(String.valueOf(next_fake_bib_number++));
-
-        // TODO why does this know about IndividualRace?
-        final IndividualRaceEntry entry = new IndividualRaceEntry(elements, race);
-        final Duration finish_time = Normalisation.parseTime(elements.getLast());
-        final IndividualRaceResult result = new IndividualRaceResult((IndividualRace) race, entry, finish_time);
-
-//        result.completion_status = CompletionStatus.COMPLETED;
-
-        return result;
-    }
+//    private RaceResult makeRaceResult(final List<String> elements) {
+//        // Only used when loading external results.
+//
+//        elements.addFirst(String.valueOf(next_fake_bib_number++));
+//
+//        // TODO why does this know about IndividualRace?
+//        final TimedIndividualRaceEntry entry = new TimedIndividualRaceEntry(elements, race);
+//        final Duration finish_time = Normalisation.parseTime(elements.getLast());
+//        final TimedRaceResult result = new TimedRaceResult((TimedRace) race, entry, finish_time);
+//
+////        result.completion_status = CompletionStatus.COMPLETED;
+//
+//        return result;
+//    }
 
     private static String stripComment(final String line) {
 
@@ -282,11 +279,11 @@ public abstract class SingleRaceInput extends RaceInput {
             result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
     }
 
-    private void assertNoDuplicateEntries(final Iterable<? extends RaceEntry> entries) {
-
-        for (final RaceEntry entry1 : entries)
-            for (final RaceEntry entry2 : entries)
-                if (entry1 != entry2 && entry1.equals(entry2))
-                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{Paths.get(entries_path).getFileName()}'");
-    }
+//    private void assertNoDuplicateEntries(final Iterable<? extends TimedIndividualRaceEntry> entries) {
+//
+//        for (final TimedIndividualRaceEntry entry1 : entries)
+//            for (final TimedIndividualRaceEntry entry2 : entries)
+//                if (entry1 != entry2 && entry1.equals(entry2))
+//                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{Paths.get(entries_path).getFileName()}'");
+//    }
 }
