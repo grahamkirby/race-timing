@@ -33,6 +33,7 @@ public abstract class RaceResult {
         this.race = race;
     }
 
+    // TODO push down to individual races.
     protected String getIndividualRunnerClub() {
         return null;
     }
@@ -41,7 +42,7 @@ public abstract class RaceResult {
 
     public abstract Participant getParticipant();
     public abstract int comparePerformanceTo(RaceResult other);
-    public abstract CompletionStatus getCompletionStatus();
+    public abstract boolean canComplete();
     public abstract boolean shouldDisplayPosition();
     public abstract EntryCategory getCategory();
 }

@@ -49,13 +49,13 @@ public class TimedIndividualRace extends TimedRace {
         raw_results.forEach(raw_result -> {
 
             final int bib_number = raw_result.getBibNumber();
-            final TimedIndividualRaceEntry entry = getEntryWithBibNumber(bib_number);
+            final TimedRaceEntry entry = getEntryWithBibNumber(bib_number);
 
             // TODO apply in separate operation
             final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
             final Duration finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
 
-            final TimedIndividualRaceResult result = new TimedIndividualRaceResult(this, entry, finish_time);
+            final TimedIndividualRaceResult result = new TimedIndividualRaceResult(this, (TimedIndividualRaceEntry) entry, finish_time);
 
             overall_results.add(result);
         });

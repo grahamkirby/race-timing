@@ -26,7 +26,7 @@ public class LegResult extends RaceResult {
 
     public final RelayRaceEntry entry;
     int leg_number;
-    CompletionStatus completion_status;
+    boolean dnf;
     boolean in_mass_start;
 
     Duration start_time;  // Relative to start of leg 1.
@@ -39,19 +39,14 @@ public class LegResult extends RaceResult {
         super(race);
 
         this.entry = entry;
-        completion_status = CompletionStatus.DNF;
+        dnf = true;
         in_mass_start = false;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {
-        return completion_status == CompletionStatus.COMPLETED ? finish_time.minus(start_time) : null;
-    }
-
-    @Override
-    public CompletionStatus getCompletionStatus() {
-        return completion_status;
+        return !dnf ? finish_time.minus(start_time) : null;
     }
 
     @Override
@@ -76,6 +71,11 @@ public class LegResult extends RaceResult {
         final Duration other_duration = ((LegResult) other).duration();
 
         return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
+    }
+
+    @Override
+    public boolean canComplete() {
+        return !dnf;
     }
 
     @Override

@@ -163,7 +163,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void processResults() throws IOException {
+    private void processResults() throws IOException {
 
         calculateResults();
         outputResults();
@@ -309,8 +309,8 @@ public abstract class Race {
 
         return (r1, r2) -> {
 
-            if (r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() != CompletionStatus.DNF) return 1;
-            if (r1.getCompletionStatus() != CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF) return -1;
+            if (!r1.canComplete() && r2.canComplete()) return 1;
+            if (r1.canComplete() && !r2.canComplete()) return -1;
 
             return base_comparator.compare(r1, r2);
         };
@@ -320,9 +320,8 @@ public abstract class Race {
 
         return (r1, r2) -> {
 
-            if (r1.getCompletionStatus() == CompletionStatus.DNF || r2.getCompletionStatus() == CompletionStatus.DNF) return 0;
-
-            return base_comparator.compare(r1, r2);
+            if (!r1.canComplete() || !r2.canComplete()) return 0;
+            else return base_comparator.compare(r1, r2);
         };
     }
 
@@ -330,9 +329,8 @@ public abstract class Race {
 
         return (r1, r2) -> {
 
-            if (r1.getCompletionStatus() == CompletionStatus.DNF && r2.getCompletionStatus() == CompletionStatus.DNF) return 0;
-
-            return base_comparator.compare(r1, r2);
+            if (!r1.canComplete() && !r2.canComplete()) return 0;
+            else return base_comparator.compare(r1, r2);
         };
     }
 
@@ -497,8 +495,7 @@ public abstract class Race {
     protected static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
 
         return comparators.stream().
-            reduce(Comparator::thenComparing).
-            orElse((_, _) -> 0);
+            reduce((_, _) -> 0, Comparator::thenComparing);
     }
 
     /** Loads prize category groups from the given file. */

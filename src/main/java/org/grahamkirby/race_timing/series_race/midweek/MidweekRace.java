@@ -122,7 +122,8 @@ public final class MidweekRace extends SeriesRace {
 
         final List<SingleRaceResult> gender_results = individual_race.getOverallResults().stream().
             map(result -> (SingleRaceResult) result).
-            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
+            filter(result -> result.canComplete()).
+//            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
             filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
             toList();
 

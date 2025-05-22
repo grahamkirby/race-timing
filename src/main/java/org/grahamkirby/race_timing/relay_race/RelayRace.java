@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.individual_race.TimedRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -228,7 +229,10 @@ public class RelayRace extends TimedRace {
         // DNF results are sorted in increasing order of bib number.
         // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
 
-        return List.of(ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)), ignoreIfEitherResultIsDNF(this::compareLastLegPosition), RelayRace::compareBibNumber);
+        return List.of(
+            ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)),
+            ignoreIfEitherResultIsDNF(this::compareLastLegPosition),
+            RelayRace::compareBibNumber);
     }
 
     @Override
@@ -241,9 +245,7 @@ public class RelayRace extends TimedRace {
             final int bib_number = Integer.parseInt(elements[0]);
             final int leg_number = Integer.parseInt(elements[1]);
 
-            final LegResult result = getLegResult(bib_number, leg_number);
-
-            result.completion_status = CompletionStatus.DNF;
+            getLegResult(bib_number, leg_number).dnf = true;
 
         } catch (final NumberFormatException e) {
             throw new RuntimeException(dnf_specification, e);
@@ -257,8 +259,10 @@ public class RelayRace extends TimedRace {
         raw_results.forEach(raw_result -> {
 
             final int bib_number = raw_result.getBibNumber();
+
             if (bib_number != 0 && isFirstResultForBibNumber(bib_number)) {
-                final RelayRaceEntry entry = getEntryWithBibNumber(bib_number);
+
+                final RelayRaceEntry entry = (RelayRaceEntry)getEntryWithBibNumber(bib_number);
                 overall_results.add(new RelayRaceResult(entry, this));
             }
         });
@@ -271,25 +275,20 @@ public class RelayRace extends TimedRace {
             noneMatch(result -> result.entry.bib_number == bib_number);
     }
 
-    private RelayRaceEntry getEntryWithBibNumber(final int bib_number) {
-
-        return entries.stream().
-            map(entry -> ((RelayRaceEntry) entry)).
-            filter(entry -> entry.bib_number == bib_number).
-            findFirst().
-            orElseThrow();
-    }
-
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
 
         return leg_number == 1 ?
-            List.of(ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)), this::compareRecordedLegPosition) :
-            List.of(ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)), Race::compareRunnerLastName, Race::compareRunnerFirstName);
+            List.of(
+                ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)),
+                this::compareRecordedLegPosition) :
+            List.of(
+                ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)),
+                Race::compareRunnerLastName, Race::compareRunnerFirstName);
     }
 
     private static int compareBibNumber(final RaceResult r1, final RaceResult r2) {
 
-        return Integer.compare(((RelayRaceResult) r1).entry.bib_number, ((RelayRaceResult) r2).entry.bib_number);
+        return Integer.compare(((SingleRaceResult) r1).entry.bib_number, ((SingleRaceResult) r2).entry.bib_number);
     }
 
     private int compareLastLegPosition(final RaceResult r1, final RaceResult r2) {
@@ -341,8 +340,7 @@ public class RelayRace extends TimedRace {
 
         return leg_results.subList(0, leg_number).stream().
             map(LegResult::duration).
-            reduce(Duration::plus).
-            orElse(Duration.ZERO);
+            reduce(Duration.ZERO, Duration::plus);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -489,7 +487,7 @@ public class RelayRace extends TimedRace {
 
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
-        leg_result.completion_status = CompletionStatus.COMPLETED;
+        leg_result.dnf = false;
     }
 
     private void sortLegResults() {
@@ -559,7 +557,7 @@ public class RelayRace extends TimedRace {
         for (int leg = 1; leg <= number_of_legs; leg++) {
 
             final LegResult leg_result = result.leg_results.get(leg - 1);
-            final boolean completed = leg_result.getCompletionStatus() == CompletionStatus.COMPLETED;
+            final boolean completed = leg_result.canComplete();
 
             final String leg_runner_names = ((Team)leg_result.entry.participant).runner_names.get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);

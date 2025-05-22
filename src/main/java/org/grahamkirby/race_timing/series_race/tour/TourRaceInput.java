@@ -33,7 +33,7 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
-public class TourRaceInput extends SeriesRaceInput {
+class TourRaceInput extends SeriesRaceInput {
 
     private record SelfTimedRun(int bib_number, int race_number) {
     }
@@ -194,7 +194,8 @@ public class TourRaceInput extends SeriesRaceInput {
 
     private boolean isRunnerSelfTimed(final int race_number, final int bib_number) {
 
-        return self_timed_runs.stream().anyMatch(self_timed_run -> self_timed_run.race_number == race_number && self_timed_run.bib_number == bib_number);
+        return self_timed_runs.stream().
+            anyMatch(self_timed_run -> self_timed_run.race_number == race_number && self_timed_run.bib_number == bib_number);
     }
 
     private boolean isRunnerInSecondWave(final TimedRace individual_race, final int bib_number) {
@@ -202,8 +203,6 @@ public class TourRaceInput extends SeriesRaceInput {
         final EntryCategory runner_entry_category = individual_race.findCategory(bib_number);
 
         return second_wave_categories.stream().
-            map(second_wave_category -> second_wave_category.equals(runner_entry_category)).
-            reduce(Boolean::logicalOr).
-            orElse(false);
+            anyMatch(second_wave_category -> second_wave_category.equals(runner_entry_category));
     }
 }
