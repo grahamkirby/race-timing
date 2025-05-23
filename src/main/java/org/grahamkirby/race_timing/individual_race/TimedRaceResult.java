@@ -25,29 +25,12 @@ import java.util.Comparator;
 
 public abstract class TimedRaceResult extends SingleRaceResult {
 
-//    public final TimedRaceEntry entry;
-//    Duration finish_time;
-//    CompletionStatus completion_status;  // TODO why only stored for individual race?
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public TimedRaceResult(final TimedRace race, final TimedRaceEntry entry, final Duration finish_time) {
+    protected TimedRaceResult(final TimedRace race, final TimedRaceEntry entry, final Duration finish_time) {
 
         super(race, entry, finish_time);
-//        this.entry = entry;
-
-        // Provisionally this result is COMPLETED since a finish time was recorded.
-        // However, it might still be set to DNF in recordDNF() if the runner didn't complete the course.
-//        completion_status = CompletionStatus.COMPLETED;
-        dnf = false;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-//    @Override
-//    public CompletionStatus getCompletionStatus() {
-//        return completion_status;
-//    }
 
     @Override
     public EntryCategory getCategory() {
@@ -59,23 +42,17 @@ public abstract class TimedRaceResult extends SingleRaceResult {
         return entry == null ? null : entry.participant.name;
     }
 
-//    @Override
-//    protected String getIndividualRunnerClub() {
-//        return entry == null ? null : ((Runner)entry.participant).club;
-//    }
-
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
         final Duration duration = duration();
-        final Duration other_duration = ((TimedRaceResult) other).duration();
+        final Duration other_duration = ((SingleRaceResult) other).duration();
 
         return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
 
     @Override
     public boolean shouldDisplayPosition() {
-//        return completion_status == CompletionStatus.COMPLETED;
         return canComplete();
     }
 

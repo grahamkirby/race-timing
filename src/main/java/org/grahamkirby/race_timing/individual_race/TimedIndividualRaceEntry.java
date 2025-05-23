@@ -34,7 +34,7 @@ public class TimedIndividualRaceEntry extends TimedRaceEntry {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
-    public TimedIndividualRaceEntry(final List<String> elements, final Race race) {
+    TimedIndividualRaceEntry(final List<String> elements, final Race race) {
 
         final List<String> mapped_elements = race.normalisation.mapRaceEntryElements(elements);
 

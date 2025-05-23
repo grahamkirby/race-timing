@@ -5,8 +5,9 @@ import org.grahamkirby.race_timing.common.Runner;
 
 import java.time.Duration;
 
-public class TimedIndividualRaceResult extends TimedRaceResult {
-    public TimedIndividualRaceResult(TimedRace race, TimedIndividualRaceEntry entry, Duration finish_time) {
+class TimedIndividualRaceResult extends TimedRaceResult {
+
+    TimedIndividualRaceResult(final TimedRace race, final TimedIndividualRaceEntry entry, final Duration finish_time) {
         super(race, entry, finish_time);
     }
 
@@ -16,6 +17,6 @@ public class TimedIndividualRaceResult extends TimedRaceResult {
     }
 
     protected String getIndividualRunnerClub() {
-        return ((Runner)entry.participant).club;
+        return ((Runner) entry.participant).club;
     }
 }

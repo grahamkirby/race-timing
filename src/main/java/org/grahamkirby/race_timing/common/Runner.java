@@ -22,9 +22,7 @@ import java.util.Objects;
 
 public class Runner extends Participant {
 
-//    public final String name;
     public String club;
-//    public EntryCategory category;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,7 +30,6 @@ public class Runner extends Participant {
 
         super(name, category);
         this.club = club;
-//        this.category = category;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

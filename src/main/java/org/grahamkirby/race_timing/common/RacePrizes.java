@@ -41,10 +41,8 @@ public class RacePrizes {
 
     protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
 
-        return isStillEligibleForPrize(result, prize_category) &&
-            (result.canComplete()) &&
-
-//            (result.getCompletionStatus() == CompletionStatus.COMPLETED || result.getCompletionStatus() == CompletionStatus.CAN_COMPLETE) &&
+        return result.canComplete() &&
+            isStillEligibleForPrize(result, prize_category) &&
             race.isResultEligibleForPrizeCategory(result, prize_category);
     }
 

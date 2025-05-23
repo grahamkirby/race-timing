@@ -7,7 +7,7 @@ import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.util.List;
 
-public class UntimedIndividualRaceEntry extends SingleRaceEntry {
+class UntimedIndividualRaceEntry extends SingleRaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
     private static final int BIB_NUMBER_INDEX = 0;
@@ -15,7 +15,7 @@ public class UntimedIndividualRaceEntry extends SingleRaceEntry {
     private static final int CLUB_INDEX = 2;
     private static final int CATEGORY_INDEX = 3;
 
-    public UntimedIndividualRaceEntry(final List<String> elements, final Race race) {
+    UntimedIndividualRaceEntry(final List<String> elements, final Race race) {
 
         final List<String> mapped_elements = race.normalisation.mapRaceEntryElements(elements);
 
