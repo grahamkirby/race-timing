@@ -36,18 +36,12 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         super(race);
     }
 
-//    @Override
-//    protected TimedRaceEntry makeRaceEntry(final List<String> elements) {
-//
-//        return new TimedRaceEntry(elements, race);
-//    }
-
     @Override
     public void validateInputFiles() {
 
         super.validateInputFiles();
-        checkConfig();
 
+        checkConfig();
         checkResultsContainValidBibNumbers();
     }
 
@@ -58,7 +52,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         return 4;
     }
 
-    public List<TimedRaceEntry> loadEntries() throws IOException {
+    List<TimedRaceEntry> loadEntries() throws IOException {
 
         if (entries_path == null) return new ArrayList<>();
 
@@ -80,22 +74,4 @@ public abstract class TimedRaceInput extends SingleRaceInput {
                 if (entry1 != entry2 && entry1.equals(entry2))
                     throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{Paths.get(entries_path).getFileName()}'");
     }
-
-//    protected void checkConfig() {
-//
-//        final String dnf_string = race.getOptionalProperty(KEY_DNF_FINISHERS);
-//        if (dnf_string != null && !dnf_string.isBlank())
-//            for (final String individual_dnf_string : dnf_string.split(",")) {
-//                try {
-//                    String[] components = individual_dnf_string.split("/");
-//                    String bib_number = components[0];
-//                    String leg_number = components[1];
-//                    Integer.parseInt(bib_number);
-//                    Integer.parseInt(leg_number);
-//
-//                } catch (final NumberFormatException e) {
-//                    throw new RuntimeException(STR."invalid entry '\{individual_dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{race.config_file_path.getFileName()}'", e);
-//                }
-//            }
-//    }
 }

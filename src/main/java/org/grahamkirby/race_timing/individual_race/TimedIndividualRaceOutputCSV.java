@@ -66,8 +66,7 @@ public class TimedIndividualRaceOutputCSV extends RaceOutputCSV {
             final TimedIndividualRaceResult result = (TimedIndividualRaceResult) r;
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
-//                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? format(result.duration()) : "DNF"}\n");
-            append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{result.canComplete() ? format(result.duration()) : "DNF"}\n");
+                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{result.canComplete() ? format(result.duration()) : "DNF"}\n");
         }
     }
 }

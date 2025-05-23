@@ -51,7 +51,7 @@ class TimedIndividualRaceOutputText extends RaceOutputText {
 
             final TimedIndividualRaceResult result = ((TimedIndividualRaceResult) r);
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner)result.entry.participant).club}) \{format(result.duration())}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{format(result.duration())}\n");
         }
     }
 }

@@ -1,7 +1,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.Normalisation;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
@@ -21,12 +20,12 @@ public class UntimedIndividualRaceInput extends SingleRaceInput {
 
     private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
 
-    public UntimedIndividualRaceInput(UntimedIndividualRace untimedIndividualRace) {
-        super(untimedIndividualRace);
+    UntimedIndividualRaceInput(final UntimedIndividualRace race) {
+        super(race);
     }
 
     @Override
-    protected TimedIndividualRaceEntry makeRaceEntry(List<String> elements) {
+    protected TimedIndividualRaceEntry makeRaceEntry(final List<String> elements) {
         return null;
     }
 
@@ -35,10 +34,7 @@ public class UntimedIndividualRaceInput extends SingleRaceInput {
         return 0;
     }
 
-    public List<RaceResult> loadOverallResults() throws IOException {
-
-        // Only used when loading external results.
-        if (overall_results_path == null) return new ArrayList<>();
+    List<RaceResult> loadOverallResults() throws IOException {
 
         return Files.readAllLines(race.getPath(overall_results_path)).stream().
             filter(Predicate.not(String::isBlank)).
@@ -48,16 +44,12 @@ public class UntimedIndividualRaceInput extends SingleRaceInput {
     }
 
     private RaceResult makeRaceResult(final List<String> elements) {
-        // Only used when loading external results.
 
         elements.addFirst(String.valueOf(next_fake_bib_number++));
 
         final UntimedIndividualRaceEntry entry = new UntimedIndividualRaceEntry(elements, race);
         final Duration finish_time = Normalisation.parseTime(elements.getLast());
-        final UntimedIndividualRaceResult result = new UntimedIndividualRaceResult((UntimedIndividualRace) race, entry, finish_time);
 
-//        result.completion_status = CompletionStatus.COMPLETED;
-
-        return result;
+        return new UntimedIndividualRaceResult((UntimedIndividualRace) race, entry, finish_time);
     }
 }

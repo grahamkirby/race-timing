@@ -340,7 +340,7 @@ public class Normalisation {
             // Construct ISO-8601 duration format.
             return Duration.parse(STR."PT\{hours(parts)}\{minutes(parts)}\{seconds(parts)}");
 
-        } catch (final RuntimeException e) {
+        } catch (final RuntimeException _) {
             throw new DateTimeParseException(time, time, 0);
         }
     }

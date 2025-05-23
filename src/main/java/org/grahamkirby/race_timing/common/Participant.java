@@ -7,7 +7,7 @@ public abstract class Participant {
     public String name;
     public EntryCategory category;
 
-    public Participant(String name, EntryCategory category) {
+    protected Participant(final String name, final EntryCategory category) {
         this.name = name;
         this.category = category;
     }

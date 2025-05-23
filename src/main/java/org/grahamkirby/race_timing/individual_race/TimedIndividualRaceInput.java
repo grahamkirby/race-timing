@@ -1,32 +1,19 @@
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
+
 import java.util.List;
 
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
-public class TimedIndividualRaceInput extends TimedRaceInput {
+class TimedIndividualRaceInput extends TimedRaceInput {
 
-    public TimedIndividualRaceInput(TimedIndividualRace timedIndividualRace) {
-        super(timedIndividualRace);
+    TimedIndividualRaceInput(final TimedIndividualRace race) {
+        super(race);
     }
 
-//    public List<TimedIndividualRaceEntry> loadEntries() throws IOException {
-//
-//        if (entries_path == null) return new ArrayList<>();
-//
-//        final List<TimedIndividualRaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
-//            filter(Predicate.not(String::isBlank)).
-//            filter(s -> !s.startsWith(COMMENT_SYMBOL)).
-//            map(line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
-//            toList();
-//
-//        assertNoDuplicateEntries(entries);
-//
-//        return entries;
-//    }
-
     @Override
-    protected TimedRaceEntry makeRaceEntry(final List<String> elements) {
+    protected SingleRaceEntry makeRaceEntry(final List<String> elements) {
 
         return new TimedIndividualRaceEntry(elements, race);
     }
@@ -45,12 +32,4 @@ public class TimedIndividualRaceInput extends TimedRaceInput {
                 }
             }
     }
-
-//    private void assertNoDuplicateEntries(final Iterable<? extends TimedIndividualRaceEntry> entries) {
-//
-//        for (final TimedIndividualRaceEntry entry1 : entries)
-//            for (final TimedIndividualRaceEntry entry2 : entries)
-//                if (entry1 != entry2 && entry1.equals(entry2))
-//                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{Paths.get(entries_path).getFileName()}'");
-//    }
 }

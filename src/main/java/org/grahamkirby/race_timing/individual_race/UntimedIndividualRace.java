@@ -15,18 +15,17 @@ import java.util.List;
 
 public class UntimedIndividualRace extends SingleRace {
 
-    public UntimedIndividualRace(Path config_file_path) throws IOException {
+    public UntimedIndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
 
     @Override
     public void calculateResults() {
-
     }
 
     @Override
-    protected void recordDNF(String dnf_specification) {
-
+    protected void recordDNF(final String dnf_specification) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -59,21 +58,12 @@ public class UntimedIndividualRace extends SingleRace {
 
         input.validateInputFiles();
 
-        final UntimedIndividualRaceInput single_race_input = (UntimedIndividualRaceInput) input;
-
-//        entries = single_race_input.loadEntries();
-
-        // Only one of raw_results and overall_results will be fully initialised at this point,
-        // depending on whether raw results are available, or just overall results (perhaps for
-        // an externally organised race included in a race series).
-        // The other list will be initialised as an empty list.
-//        raw_results = single_race_input.loadRawResults();
-        overall_results = single_race_input.loadOverallResults();
+        overall_results = ((UntimedIndividualRaceInput) input).loadOverallResults();
     }
 
     @Override
-    protected void outputResults() throws IOException {
-
+    protected void outputResults() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
