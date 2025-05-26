@@ -30,8 +30,8 @@ public class UntimedIndividualRaceInput extends SingleRaceInput {
     }
 
     @Override
-    protected int getNumberOfEntryColumns() {
-        return 0;
+    protected void checkEntries() {
+
     }
 
     List<RaceResult> loadOverallResults() throws IOException {
