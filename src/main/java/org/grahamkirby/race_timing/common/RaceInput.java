@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.common;
 public abstract class RaceInput {
 
     protected final Race race;
-    protected String entries_path, raw_results_path, overall_results_path;
+    protected String raw_results_path, overall_results_path;
 
     protected RaceInput(final Race race) {
         this.race = race;
