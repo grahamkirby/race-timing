@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
 
+import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
 import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_MASS_START_ELAPSED_TIMES;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 

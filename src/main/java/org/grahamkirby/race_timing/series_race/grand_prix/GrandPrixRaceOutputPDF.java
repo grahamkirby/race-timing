@@ -31,6 +31,6 @@ class GrandPrixRaceOutputPDF extends RaceOutputPDF {
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
         final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
-        return new PrizeWinnerDetails(result.position_string, result.runner.name, result.runner.club, String.valueOf(Math.round(result.totalScore())));
+        return new PrizeWinnerDetails(result.position_string, result.runner.name, result.runner.club, String.valueOf(result.totalScore()));
     }
 }

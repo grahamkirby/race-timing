@@ -31,12 +31,15 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
 import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
-import static org.grahamkirby.race_timing.single_race.SingleRace.*;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
 @SuppressWarnings({"NonBooleanMethodNameMayNotStartWithQuestion"})
 public abstract class TimedRaceInput extends SingleRaceInput {
 
-    protected String entries_path;
+    // Configuration file keys.
+    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+
+    protected String entries_path, raw_results_path;
 
     protected TimedRaceInput(final Race race) {
         super(race);
@@ -45,8 +48,8 @@ public abstract class TimedRaceInput extends SingleRaceInput {
     @Override
     protected void readProperties() {
 
-        super.readProperties();
         entries_path = race.getOptionalProperty(KEY_ENTRIES_PATH);
+        raw_results_path = race.getOptionalProperty(KEY_RAW_RESULTS_PATH);
     }
 
     @Override

@@ -62,7 +62,8 @@ public class MidweekRaceResult extends SeriesRaceResult {
             sorted().
             toList().
             reversed().
-            subList(0, number_of_races_to_count).stream().
+            stream().
+            limit(number_of_races_to_count).
             reduce(0, Integer::sum);
     }
 }

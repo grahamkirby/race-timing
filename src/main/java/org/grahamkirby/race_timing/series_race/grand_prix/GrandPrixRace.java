@@ -116,7 +116,7 @@ public final class GrandPrixRace extends SeriesRace {
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = races.stream().
-            map(race -> calculateRaceScore(race, runner)).
+            map(individual_race -> calculateRaceScore(individual_race, runner)).
             toList();
 
         return new GrandPrixRaceResult(runner, scores, this);

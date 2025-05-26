@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.junit.jupiter.api.Test;
 
+import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 
 public class IndividualRaceTest extends RaceTest {

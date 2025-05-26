@@ -14,7 +14,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RESULTS_PATH;
+
 public class UntimedIndividualRaceInput extends SingleRaceInput {
+
+    protected String overall_results_path;
 
     private int next_fake_bib_number = 1;
 
@@ -25,13 +29,19 @@ public class UntimedIndividualRaceInput extends SingleRaceInput {
     }
 
     @Override
+    protected void readProperties() {
+
+        overall_results_path = race.getOptionalProperty(KEY_RESULTS_PATH);
+    }
+
+
+    @Override
     protected TimedIndividualRaceEntry makeRaceEntry(final List<String> elements) {
         return null;
     }
 
     @Override
     protected void checkEntries() {
-
     }
 
     List<RaceResult> loadOverallResults() throws IOException {

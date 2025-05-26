@@ -25,6 +25,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public abstract class TimedRace extends SingleRace {
     @Override
     protected void configureInputData() throws IOException {
 
-        input.validateInputFiles();
+        ((SingleRaceInput)input).validateInputFiles();
 
         final TimedRaceInput race_input = (TimedRaceInput) input;
 

@@ -45,9 +45,6 @@ public class SeriesRaceInput extends RaceInput {
         readProperties();
     }
 
-    public void validateInputFiles() {
-    }
-
     List<SingleRace> loadRaces() throws IOException {
 
         final List<SingleRace> races = new ArrayList<>();

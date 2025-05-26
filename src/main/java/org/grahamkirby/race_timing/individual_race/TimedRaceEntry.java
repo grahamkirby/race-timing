@@ -4,4 +4,5 @@ import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 public abstract class TimedRaceEntry extends SingleRaceEntry {
 
+    // TODO remove.
 }
