@@ -7,6 +7,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -56,7 +57,7 @@ public class UntimedIndividualRace extends SingleRace {
     @Override
     protected void configureInputData() throws IOException {
 
-        input.validateInputFiles();
+        ((SingleRaceInput)input).validateInputFiles();
 
         overall_results = ((UntimedIndividualRaceInput) input).loadOverallResults();
     }

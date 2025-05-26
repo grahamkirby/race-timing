@@ -64,6 +64,7 @@ class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
             final MidweekRace midweek_race = (MidweekRace) race;
             final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
 
+            // TODO factor out optional position string logic.
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
             writer.append(
@@ -72,7 +73,6 @@ class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
                     collect(Collectors.joining(","))
             );
 
-//            writer.append(STR.",\{result.totalScore()},\{result.getCompletionStatus() == CompletionStatus.COMPLETED ? "Y" : "N"}\n");
             writer.append(STR.",\{result.totalScore()},\{result.hasCompletedSeries() ? "Y" : "N"}\n");
         }
     }

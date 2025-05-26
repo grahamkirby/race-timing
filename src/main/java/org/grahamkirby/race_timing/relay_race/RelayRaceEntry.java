@@ -33,7 +33,6 @@ public class RelayRaceEntry extends TimedRaceEntry {
 
     @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
     RelayRaceEntry(final List<String> elements, final Race race) {
-        super();
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 

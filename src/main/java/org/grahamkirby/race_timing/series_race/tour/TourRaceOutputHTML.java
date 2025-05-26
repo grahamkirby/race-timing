@@ -181,6 +181,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         private final String sub_heading;
 
         private IndividualRaceResultPrinter(final Race race, final String sub_heading, final OutputStreamWriter writer) {
+
             super(race, writer);
             this.sub_heading = sub_heading;
         }

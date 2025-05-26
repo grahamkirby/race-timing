@@ -47,7 +47,7 @@ public class GrandPrixRaceOutputText extends RaceOutputText {
 
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.runner.name} (\{result.runner.club}) \{Math.round(result.totalScore())}\n");
+            writer.append(STR."\{result.position_string}: \{result.runner.name} (\{result.runner.club}) \{result.totalScore()}\n");
         }
     }
 }

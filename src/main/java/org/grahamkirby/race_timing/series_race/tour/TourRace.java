@@ -107,8 +107,4 @@ public final class TourRace extends SeriesRace {
     @Override
     protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
     }
-
-    @Override
-    protected void normaliseClubsForRunner(final String runner_name) {
-    }
 }

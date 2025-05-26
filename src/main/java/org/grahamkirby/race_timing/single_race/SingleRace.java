@@ -30,17 +30,12 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 public abstract class SingleRace extends Race {
 
     // Configuration file keys.
-    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
     public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
-    static final String KEY_RESULTS_PATH = "RESULTS_PATH";
+    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
     public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
-    // Configuration file keys.
     private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-//    public List<RaceEntry> entries;
-//    protected List<RawResult> raw_results;
 
     public String dnf_string;
     private String median_time_string;
@@ -50,6 +45,10 @@ public abstract class SingleRace extends Race {
     protected SingleRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected abstract void recordDNF(String dnf_specification);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,28 +68,7 @@ public abstract class SingleRace extends Race {
         median_time_string = getOptionalProperty(KEY_MEDIAN_TIME);
     }
 
-//    @Override
-//    protected void configureInputData() throws IOException {
-//
-//        input.validateInputFiles();
-//
-//        final SingleRaceInput single_race_input = (SingleRaceInput) input;
-//
-//        entries = single_race_input.loadEntries();
-//
-//        // Only one of raw_results and overall_results will be fully initialised at this point,
-//        // depending on whether raw results are available, or just overall results (perhaps for
-//        // an externally organised race included in a race series).
-//        // The other list will be initialised as an empty list.
-//        raw_results = single_race_input.loadRawResults();
-//        overall_results = single_race_input.loadOverallResults();
-//    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-//    public List<RawResult> getRawResults() {
-//        return raw_results;
-//    }
 
     /** Gets the median finish time for the race. */
     public Duration getMedianTime() {
@@ -139,8 +117,4 @@ public abstract class SingleRace extends Race {
             for (final String individual_dnf_string : dnf_string.split(","))
                 recordDNF(individual_dnf_string);
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected abstract void recordDNF(String dnf_specification);
 }

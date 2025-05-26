@@ -102,7 +102,7 @@ public final class MidweekRace extends SeriesRace {
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = races.stream().
-            map(race -> calculateRaceScore(race, runner)).
+            map(individual_race -> calculateRaceScore(individual_race, runner)).
             toList();
 
         return new MidweekRaceResult(runner, scores, this);
@@ -122,16 +122,12 @@ public final class MidweekRace extends SeriesRace {
 
         final List<SingleRaceResult> gender_results = individual_race.getOverallResults().stream().
             map(result -> (SingleRaceResult) result).
-            filter(result -> result.canComplete()).
-//            filter(result -> result.getCompletionStatus() == CompletionStatus.COMPLETED).
+            filter(SingleRaceResult::canComplete).
             filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
             toList();
 
         final int gender_position = (int) gender_results.stream().
-            takeWhile(result -> {
-                Runner result_runner = (Runner) result.getParticipant();
-                return !result_runner.equals(runner);
-            }).
+            takeWhile(result -> !result.getParticipant().equals(runner)).
             count() + 1;
 
         return gender_position <= gender_results.size() ? Math.max(score_for_first_place - gender_position + 1, 0) : 0;

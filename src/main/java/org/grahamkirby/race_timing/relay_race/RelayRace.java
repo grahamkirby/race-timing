@@ -338,7 +338,8 @@ public class RelayRace extends TimedRace {
 
     private static Duration sumDurationsUpToLeg(final List<? extends LegResult> leg_results, final int leg_number) {
 
-        return leg_results.subList(0, leg_number).stream().
+        return leg_results.stream().
+            limit(leg_number).
             map(LegResult::duration).
             reduce(Duration.ZERO, Duration::plus);
     }

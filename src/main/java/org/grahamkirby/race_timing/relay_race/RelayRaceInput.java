@@ -93,6 +93,7 @@ public class RelayRaceInput extends TimedRaceInput {
     public void validateInputFiles() {
 
         super.validateInputFiles();
+
         checkConfig();
         checkDNFs();
         checkResultsContainValidBibNumbers();
@@ -134,21 +135,6 @@ public class RelayRaceInput extends TimedRaceInput {
 
         checkConfigMassStartTimes();
         checkDNFs();
-
-//        final String dnf_string = race.getOptionalProperty(KEY_DNF_FINISHERS);
-//        if (dnf_string != null && !dnf_string.isBlank())
-//            for (final String individual_dnf_string : dnf_string.split(",")) {
-//                try {
-//                    String[] components = individual_dnf_string.split("/");
-//                    String bib_number = components[0];
-//                    String leg_number = components[1];
-//                    Integer.parseInt(bib_number);
-//                    Integer.parseInt(leg_number);
-//
-//                } catch (final NumberFormatException e) {
-//                    throw new RuntimeException(STR."invalid entry '\{individual_dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{race.config_file_path.getFileName()}'", e);
-//                }
-//            }
     }
 
     private void checkNumberOfResults() {
