@@ -25,6 +25,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
@@ -36,7 +37,7 @@ import java.util.List;
 
 public abstract class TimedRace extends SingleRace {
 
-    public List<TimedRaceEntry> entries;
+    public List<SingleRaceEntry> entries;
     protected List<RawResult> raw_results;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,10 +160,9 @@ public abstract class TimedRace extends SingleRace {
             orElseThrow();
     }
 
-    protected TimedRaceEntry getEntryWithBibNumber(final int bib_number) {
+    protected SingleRaceEntry getEntryWithBibNumber(final int bib_number) {
 
         return entries.stream().
-            map(entry -> ((TimedRaceEntry) entry)).
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();

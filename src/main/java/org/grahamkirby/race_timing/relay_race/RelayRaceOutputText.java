@@ -24,7 +24,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterText;
 import org.grahamkirby.race_timing.individual_race.TimedRace;
-import org.grahamkirby.race_timing.individual_race.TimedRaceEntry;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -156,7 +156,7 @@ class RelayRaceOutputText extends RaceOutputText {
             toList();
     }
 
-    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final TimedRaceEntry entry) {
+    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final SingleRaceEntry entry) {
 
         final int bib_number = entry.bib_number;
         final int number_of_legs_unfinished = ((RelayRace) race).getNumberOfLegs() - leg_finished_count.getOrDefault(bib_number, 0);

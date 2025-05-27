@@ -19,11 +19,12 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.util.List;
 import java.util.Objects;
 
-public class TimedIndividualRaceEntry extends TimedRaceEntry {
+public class TimedIndividualRaceEntry extends SingleRaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
     private static final int BIB_NUMBER_INDEX = 0;

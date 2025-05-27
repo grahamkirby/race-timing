@@ -19,12 +19,12 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.individual_race.TimedRaceEntry;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.util.List;
 import java.util.Objects;
 
-public class RelayRaceEntry extends TimedRaceEntry {
+public class RelayRaceEntry extends SingleRaceEntry {
 
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int TEAM_NAME_INDEX = 1;

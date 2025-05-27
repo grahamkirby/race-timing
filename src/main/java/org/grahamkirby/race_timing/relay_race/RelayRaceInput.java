@@ -125,7 +125,7 @@ public class RelayRaceInput extends TimedRaceInput {
                     Integer.parseInt(elements[0]);
                     Integer.parseInt(elements[1]);
 
-                } catch (final NumberFormatException e) {
+                } catch (final NumberFormatException _) {
                     throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{race.config_file_path.getFileName()}'");
                 }
     }
@@ -156,16 +156,15 @@ public class RelayRaceInput extends TimedRaceInput {
 
     private void countLegResults(final Map<String, Integer> bib_counts, final String results_path) throws IOException {
 
-        if (results_path != null) {
-            for (final String line : Files.readAllLines(race.getPath(results_path))) {
-                if (!line.startsWith(COMMENT_SYMBOL) && !toString().isBlank()) {
+        if (results_path != null)
+            for (final String line : Files.readAllLines(race.getPath(results_path)))
+                // TODO rationalise with other comment handling.
+                if (!line.startsWith(COMMENT_SYMBOL) && !line.isBlank()) {
 
                     final String bib_number = line.split("\t")[0];
                     if (!bib_number.equals("?"))
                         bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1);
                 }
-            }
-        }
     }
 
     private void checkConfigMassStartTimes() {

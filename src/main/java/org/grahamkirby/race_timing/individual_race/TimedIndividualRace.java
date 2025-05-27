@@ -1,6 +1,7 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.RaceInput;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -49,7 +50,7 @@ public class TimedIndividualRace extends TimedRace {
         raw_results.forEach(raw_result -> {
 
             final int bib_number = raw_result.getBibNumber();
-            final TimedRaceEntry entry = getEntryWithBibNumber(bib_number);
+            final SingleRaceEntry entry = getEntryWithBibNumber(bib_number);
 
             // TODO apply in separate operation
             final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
