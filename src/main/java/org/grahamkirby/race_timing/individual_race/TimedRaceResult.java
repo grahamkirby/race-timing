@@ -18,6 +18,7 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.time.Duration;
@@ -25,7 +26,7 @@ import java.util.Comparator;
 
 public abstract class TimedRaceResult extends SingleRaceResult {
 
-    protected TimedRaceResult(final TimedRace race, final TimedRaceEntry entry, final Duration finish_time) {
+    protected TimedRaceResult(final TimedRace race, final SingleRaceEntry entry, final Duration finish_time) {
 
         super(race, entry, finish_time);
     }

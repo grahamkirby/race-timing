@@ -46,7 +46,7 @@ public class LegResult extends RaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {
-        return !dnf ? finish_time.minus(start_time) : null;
+        return dnf ? null : finish_time.minus(start_time);
     }
 
     @Override

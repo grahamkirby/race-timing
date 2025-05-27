@@ -69,8 +69,6 @@ public abstract class TimedRaceInput extends SingleRaceInput {
 
     protected List<RawResult> loadRawResults(final String raw_results_path) throws IOException {
 
-        if (raw_results_path == null) return new ArrayList<>();
-
         final List<String> lines = Files.readAllLines(race.getPath(raw_results_path));
         final List<RawResult> raw_results = new ArrayList<>();
 
@@ -78,6 +76,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
 
             String s = null;
             try {
+                // TODO rationalise with UntimedRaceInput file reading, and loadEntries below.
                 s = stripComment(lines.get(i));
                 if (!s.isBlank()) {
                     raw_results.add(makeRawResult(s));
@@ -203,14 +202,12 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         }
     }
 
-    List<TimedRaceEntry> loadEntries() throws IOException {
+    List<SingleRaceEntry> loadEntries() throws IOException {
 
-        if (entries_path == null) return new ArrayList<>();
-
-        final List<TimedRaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
+        final List<SingleRaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
             filter(Predicate.not(String::isBlank)).
             filter(s -> !s.startsWith(COMMENT_SYMBOL)).
-            map(line -> (TimedRaceEntry)makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
+            map(line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
             toList();
 
         assertNoDuplicateEntries(entries);
