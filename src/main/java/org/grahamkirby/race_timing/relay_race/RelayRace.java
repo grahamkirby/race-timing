@@ -28,10 +28,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -256,23 +253,20 @@ public class RelayRace extends TimedRace {
 
     private void initialiseResults() {
 
-        raw_results.forEach(raw_result -> {
+        final Set<Integer> bib_numbers_seen = new HashSet<>();
 
-            final int bib_number = raw_result.getBibNumber();
-
-            if (bib_number != 0 && isFirstResultForBibNumber(bib_number)) {
-
-                final RelayRaceEntry entry = (RelayRaceEntry)getEntryWithBibNumber(bib_number);
-                overall_results.add(new RelayRaceResult(entry, this));
-            }
-        });
+        overall_results = new ArrayList<>(raw_results.stream().
+            filter(raw_result -> raw_result.getBibNumber() != 0).
+            filter(raw_result -> !bib_numbers_seen.contains(raw_result.getBibNumber())).
+            peek(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
+            map(this::makeResult).
+            toList());
     }
 
-    private boolean isFirstResultForBibNumber(final int bib_number) {
+    private RaceResult makeResult(final RawResult raw_result) {
 
-        return overall_results.stream().
-            map(result -> ((RelayRaceResult) result)).
-            noneMatch(result -> result.entry.bib_number == bib_number);
+        final RelayRaceEntry entry = (RelayRaceEntry) getEntryWithBibNumber(raw_result.getBibNumber());
+        return new RelayRaceResult(entry, this);
     }
 
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {

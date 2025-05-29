@@ -8,7 +8,7 @@ import java.time.Duration;
 public abstract class SingleRaceResult extends RaceResult {
 
     public SingleRaceEntry entry;
-    protected Duration finish_time;
+    public Duration finish_time;
     public boolean dnf;
 
     protected SingleRaceResult(final Race race, final SingleRaceEntry entry, final Duration finish_time) {
