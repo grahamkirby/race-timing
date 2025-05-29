@@ -149,7 +149,7 @@ public abstract class SeriesRace extends Race {
 
         getResultsByRunner().forEach(this::checkCategoryConsistencyOverSeries);
 
-        overall_results.addAll(
+        overall_results = new ArrayList<>(
             getRacesInTemporalOrder().stream().
                 filter(Objects::nonNull).
                 flatMap(race -> race.getOverallResults().stream()).

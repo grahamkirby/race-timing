@@ -1,11 +1,14 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,31 +38,30 @@ public class TimedIndividualRace extends TimedRace {
     protected void configure() throws IOException {
 
         super.configure();
-        configureIndividualEarlyStarts();
+//        configureIndividualEarlyStarts();
     }
 
     @Override
     public void calculateResults() {
 
         initialiseResults();
+        configureIndividualEarlyStarts();
         super.calculateResults();
     }
 
     private void initialiseResults() {
 
-        raw_results.forEach(raw_result -> {
+        overall_results = new ArrayList<>(raw_results.stream().
+            map(this::makeResult).
+            toList());
+    }
 
-            final int bib_number = raw_result.getBibNumber();
-            final SingleRaceEntry entry = getEntryWithBibNumber(bib_number);
+    private RaceResult makeResult(final RawResult raw_result) {
 
-            // TODO apply in separate operation
-            final Duration early_start_offset = early_starts.getOrDefault(bib_number, Duration.ZERO);
-            final Duration finish_time = raw_result.getRecordedFinishTime().plus(early_start_offset);
+        final int bib_number = raw_result.getBibNumber();
+        final Duration finish_time = raw_result.getRecordedFinishTime();
 
-            final TimedIndividualRaceResult result = new TimedIndividualRaceResult(this, (TimedIndividualRaceEntry) entry, finish_time);
-
-            overall_results.add(result);
-        });
+        return new TimedIndividualRaceResult(this, (TimedIndividualRaceEntry) getEntryWithBibNumber(bib_number), finish_time);
     }
 
     private void configureIndividualEarlyStarts() {
@@ -81,8 +83,18 @@ public class TimedIndividualRace extends TimedRace {
         final String[] split = early_starts_string.split("/");
 
         final int bib_number = Integer.parseInt(split[0]);
-        final Duration start_time = parseTime(split[1]);
+        final Duration offset = parseTime(split[1]);
 
-        early_starts.put(bib_number, start_time);
+        final SingleRaceResult result = getResultByBibNumber(bib_number);
+
+        result.finish_time = result.finish_time.plus(offset);
+    }
+
+    private SingleRaceResult getResultByBibNumber(final int bib_number) {
+
+        return (SingleRaceResult) overall_results.stream().
+            filter(result -> ((SingleRaceResult) result).entry.bib_number == bib_number).
+            findFirst().
+            orElseThrow();
     }
 }

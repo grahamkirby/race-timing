@@ -442,7 +442,6 @@ public abstract class Race {
 
     private void initialise() {
 
-        overall_results = new ArrayList<>();
         notes = new StringBuilder();
     }
 
