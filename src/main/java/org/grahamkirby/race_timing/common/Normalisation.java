@@ -43,11 +43,13 @@ public class Normalisation {
     public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
     private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
     private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
+    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
 
     private static final String DEFAULT_CONFIG_ROOT_PATH = "/src/main/resources/configuration";
     private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}";
     private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}";
     private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}";
+    private static final String DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/gender_eligibility_default\{SUFFIX_CSV}";
 
     /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
     private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
@@ -75,6 +77,12 @@ public class Normalisation {
 
     /** Map from accented strings to corresponding entities. */
     private Map<String, String> normalised_html_entities;
+
+    /**
+     * Map from entry gender to eligible prize genders.
+     * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
+     */
+    Map<String, List<String>> gender_eligibility_map;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -167,10 +175,28 @@ public class Normalisation {
 
         entry_column_mappings = loadEntryColumnMapping();
         category_map = loadCategoryMap();
+        gender_eligibility_map = loadGenderEligibilityMap();
         normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
         normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
         capitalisation_stop_words = new HashSet<>(Files.readAllLines(race.getPath(race.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
         non_title_case_words = new HashSet<>();
+    }
+
+    private Map<String, List<String>> loadGenderEligibilityMap() throws IOException {
+
+        final Map<String, List<String>> map = new HashMap<>();
+
+        final String gender_eligibility_map_path = race.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
+
+        Files.readAllLines(race.getPath(gender_eligibility_map_path)).stream().
+            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+            forEachOrdered(line -> {
+                final String[] elements = line.split(",");
+                map.putIfAbsent(elements[0], new ArrayList<>());
+                map.get(elements[0]).add(elements[1]);
+            });
+
+        return map;
     }
 
     private List<String> loadEntryColumnMapping() {

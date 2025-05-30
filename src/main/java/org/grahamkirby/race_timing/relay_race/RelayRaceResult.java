@@ -75,4 +75,9 @@ public class RelayRaceResult extends TimedRaceResult {
                 map(LegResult::duration).
                 reduce(Duration.ZERO, Duration::plus);
     }
+
+    @Override
+    protected String getClub() {
+        return null;
+    }
 }

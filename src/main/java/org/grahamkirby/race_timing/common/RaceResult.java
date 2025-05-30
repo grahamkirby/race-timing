@@ -19,8 +19,7 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("IncorrectFormatting")
 public abstract class RaceResult {
@@ -33,11 +32,6 @@ public abstract class RaceResult {
         this.race = race;
     }
 
-    // TODO push down to individual races.
-    protected String getIndividualRunnerClub() {
-        return null;
-    }
-
     protected abstract String getIndividualRunnerName();
 
     public abstract Participant getParticipant();
@@ -45,4 +39,44 @@ public abstract class RaceResult {
     public abstract boolean canComplete();
     public abstract boolean shouldDisplayPosition();
     public abstract EntryCategory getCategory();
+
+    /** Tests whether the given entry category is eligible for the given prize category. */
+    public boolean isResultEligibleForPrizeCategory(final PrizeCategory prize_category) {
+
+        return isResultEligibleForPrizeCategoryByGender( prize_category) &&
+            isResultEligibleForPrizeCategoryByAge( prize_category);
+    }
+
+    /** Tests whether the given entry category is eligible in any of the given prize categories. */
+    boolean isResultEligibleInSomePrizeCategory(final Collection<PrizeCategory> prize_categories) {
+
+        return prize_categories.stream().
+            anyMatch(this::isResultEligibleForPrizeCategory);
+    }
+
+    private boolean isResultEligibleForPrizeCategoryByGender(final PrizeCategory prize_category) {
+
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
+        final EntryCategory entry_category = getCategory();
+
+        if (entry_category == null) return false;
+
+        final Map<String, List<String>> gender_eligibility_map = race.normalisation.gender_eligibility_map;
+
+        return gender_eligibility_map.keySet().stream().
+            filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
+            anyMatch(entry_gender -> gender_eligibility_map.get(entry_gender).contains(prize_category.getGender()));
+    }
+
+    private boolean isResultEligibleForPrizeCategoryByAge(final PrizeCategory prize_category) {
+
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
+        final EntryCategory entry_category = getCategory();
+
+        return entry_category != null &&
+            entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
+            entry_category.getMaximumAge() <= prize_category.getMaximumAge();
+    }
 }

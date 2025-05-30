@@ -253,14 +253,15 @@ public class RelayRace extends TimedRace {
 
     private void initialiseResults() {
 
-        final Set<Integer> bib_numbers_seen = new HashSet<>();
+        final Collection<Integer> bib_numbers_seen = new HashSet<>();
 
-        overall_results = new ArrayList<>(raw_results.stream().
+        overall_results = raw_results.stream().
             filter(raw_result -> raw_result.getBibNumber() != 0).
-            filter(raw_result -> !bib_numbers_seen.contains(raw_result.getBibNumber())).
-            peek(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
+            filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
             map(this::makeResult).
-            toList());
+            toList();
+
+        overall_results = makeMutable(overall_results);
     }
 
     private RaceResult makeResult(final RawResult raw_result) {
