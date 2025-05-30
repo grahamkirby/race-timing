@@ -16,7 +16,7 @@ class TimedIndividualRaceResult extends TimedRaceResult {
         return entry.participant;
     }
 
-    protected String getIndividualRunnerClub() {
+    protected String getClub() {
         return ((Runner) entry.participant).club;
     }
 }

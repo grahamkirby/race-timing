@@ -17,7 +17,6 @@
 package org.grahamkirby.race_timing.series_race.grand_prix;
 
 import org.grahamkirby.race_timing.common.Participant;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -30,7 +29,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     private final List<Integer> scores;
 
-    GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
+    GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final SeriesRace race) {
 
         super(runner, race);
         this.scores = scores;

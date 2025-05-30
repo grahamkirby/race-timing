@@ -43,7 +43,7 @@ public class RacePrizes {
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            race.isResultEligibleForPrizeCategory(result, prize_category);
+            result.isResultEligibleForPrizeCategory(prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {

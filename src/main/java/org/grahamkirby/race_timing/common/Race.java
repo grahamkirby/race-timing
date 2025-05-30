@@ -36,6 +36,7 @@ import java.util.function.Predicate;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class Race {
 
+    // TODO rationalise Female/Women gender categories.
     // TODO consolidate input validation.
     // TODO add junior hill races.
     // TODO tests - check existence of required config fields.
@@ -60,7 +61,6 @@ public abstract class Race {
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
     private static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
     private static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
-    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,12 +102,6 @@ public abstract class Race {
      * Value is read from configuration file using key KEY_CATEGORIES_PRIZE_PATH.
      */
     public List<PrizeCategoryGroup> prize_category_groups;
-
-    /**
-     * Map from entry gender to eligible prize gender.
-     * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
-     */
-    private Map<String, String> gender_eligibility_map;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -235,21 +229,6 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Tests whether the given entry category is eligible for the given prize category. */
-    final boolean isResultEligibleForPrizeCategory(final RaceResult result, final PrizeCategory prize_category) {
-
-        return isResultEligibleForPrizeCategoryByGender(result, prize_category) &&
-            isResultEligibleForPrizeCategoryByAge(result, prize_category) &&
-            isResultEligibleForPrizeCategoryByClub(result, prize_category);
-    }
-
-    /** Tests whether the given entry category is eligible in any of the given prize categories. */
-    private boolean isResultEligibleInSomePrizeCategory(final RaceResult result, final Collection<PrizeCategory> prize_categories) {
-
-        return prize_categories.stream().
-            anyMatch(category -> isResultEligibleForPrizeCategory(result, category));
-    }
-
     public List<PrizeCategory> getPrizeCategories() {
 
         return prize_category_groups.stream().
@@ -265,7 +244,7 @@ public abstract class Race {
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final Collection<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = result -> isResultEligibleInSomePrizeCategory(result, prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result -> result.isResultEligibleInSomePrizeCategory(prize_categories);
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
         setPositionStrings(results);
         return results;
@@ -437,7 +416,6 @@ public abstract class Race {
         configureCategories();
         configureHelpers();
         configureInputData();
-        configureGenderEligibilityMap();
     }
 
     private void initialise() {
@@ -450,21 +428,6 @@ public abstract class Race {
         entry_categories = Files.readAllLines(getPath(getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
         prize_category_groups = new ArrayList<>();
         loadPrizeCategoryGroups(getPath(getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH)));
-    }
-
-    private void configureGenderEligibilityMap() throws IOException {
-
-        gender_eligibility_map = new HashMap<>();
-
-        final String gender_eligibility_map_path = getOptionalProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH);
-
-        if (gender_eligibility_map_path != null)
-            Files.readAllLines(getPath(gender_eligibility_map_path)).stream().
-                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-                forEachOrdered(line -> {
-                    final String[] elements = line.split(",");
-                    gender_eligibility_map.put(elements[0], elements[1]);
-                });
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
@@ -528,37 +491,7 @@ public abstract class Race {
         return group;
     }
 
-    @SuppressWarnings("DataFlowIssue")
-    private boolean isResultEligibleForPrizeCategoryByGender(final RaceResult result, final PrizeCategory prize_category) {
-
-        // It's possible for the entry category to be null in a series race, where some of the individual
-        // race results may not include entry categories.
-        final EntryCategory entry_category = result.getCategory();
-        if (entry_category != null && entry_category.getGender().equals(prize_category.getGender())) return true;
-
-        return gender_eligibility_map.keySet().stream().
-            filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
-            anyMatch(entry_gender -> prize_category.getGender().equals(gender_eligibility_map.get(entry_gender)));
-    }
-
-    private static boolean isResultEligibleForPrizeCategoryByAge(final RaceResult result, final PrizeCategory prize_category) {
-
-        // It's possible for the entry category to be null in a series race, where some of the individual
-        // race results may not include entry categories.
-        final EntryCategory entry_category = result.getCategory();
-
-        return entry_category != null &&
-            entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
-            entry_category.getMaximumAge() <= prize_category.getMaximumAge();
-    }
-
-    private static boolean isResultEligibleForPrizeCategoryByClub(final RaceResult result, final PrizeCategory prize_category) {
-
-        final String club = result.getIndividualRunnerClub();
-        final Set<String> eligible_clubs = prize_category.getEligibleClubs();
-
-        if (club == null || eligible_clubs.isEmpty()) return true;
-
-        return eligible_clubs.contains(club);
+    protected static List<RaceResult> makeMutable(final List<? extends RaceResult> results) {
+        return new ArrayList<>(results);
     }
 }

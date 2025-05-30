@@ -15,7 +15,7 @@ public class UntimedIndividualRaceResult extends SingleRaceResult {
         super(race, entry, finish_time);
     }
 
-    protected String getIndividualRunnerClub() {
+    protected String getClub() {
         return ((Runner)entry.participant).club;
     }
 

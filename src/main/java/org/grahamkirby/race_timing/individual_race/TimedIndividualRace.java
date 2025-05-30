@@ -8,10 +8,7 @@ import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
@@ -51,9 +48,11 @@ public class TimedIndividualRace extends TimedRace {
 
     private void initialiseResults() {
 
-        overall_results = new ArrayList<>(raw_results.stream().
+        overall_results = raw_results.stream().
             map(this::makeResult).
-            toList());
+            toList();
+
+        overall_results = makeMutable(overall_results);
     }
 
     private RaceResult makeResult(final RawResult raw_result) {
