@@ -3,6 +3,7 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,9 +17,9 @@ import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RESULTS_PATH;
 
-public class UntimedIndividualRaceInput extends SingleRaceInput {
+class UntimedIndividualRaceInput extends SingleRaceInput {
 
-    protected String overall_results_path;
+    private String overall_results_path;
 
     private int next_fake_bib_number = 1;
 
@@ -33,7 +34,6 @@ public class UntimedIndividualRaceInput extends SingleRaceInput {
 
         overall_results_path = race.getOptionalProperty(KEY_RESULTS_PATH);
     }
-
 
     @Override
     protected TimedIndividualRaceEntry makeRaceEntry(final List<String> elements) {
@@ -60,6 +60,6 @@ public class UntimedIndividualRaceInput extends SingleRaceInput {
         final UntimedIndividualRaceEntry entry = new UntimedIndividualRaceEntry(elements, race);
         final Duration finish_time = Normalisation.parseTime(elements.getLast());
 
-        return new UntimedIndividualRaceResult((UntimedIndividualRace) race, entry, finish_time);
+        return new SingleRaceResult(race, entry, finish_time);
     }
 }

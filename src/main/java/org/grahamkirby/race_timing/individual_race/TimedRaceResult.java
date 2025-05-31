@@ -16,15 +16,12 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.time.Duration;
-import java.util.Comparator;
 
-public abstract class TimedRaceResult extends SingleRaceResult {
+public class TimedRaceResult extends SingleRaceResult {
 
     protected TimedRaceResult(final TimedRace race, final SingleRaceEntry entry, final Duration finish_time) {
 
@@ -34,32 +31,7 @@ public abstract class TimedRaceResult extends SingleRaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public EntryCategory getCategory() {
-        return entry.participant.category;
-    }
-
-    @Override
-    protected String getIndividualRunnerName() {
-        return entry == null ? null : entry.participant.name;
-    }
-
-    @Override
-    public int comparePerformanceTo(final RaceResult other) {
-
-        final Duration duration = duration();
-        final Duration other_duration = ((SingleRaceResult) other).duration();
-
-        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
-    }
-
-    @Override
     public boolean shouldDisplayPosition() {
         return canComplete();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public Duration duration() {
-        return finish_time;
     }
 }

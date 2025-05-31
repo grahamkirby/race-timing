@@ -16,29 +16,25 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.Team;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.time.Duration;
-import java.util.Comparator;
 
-public class LegResult extends RaceResult {
+public class LegResult extends SingleRaceResult {
 
-    public final RelayRaceEntry entry;
     int leg_number;
-    boolean dnf;
     boolean in_mass_start;
 
     Duration start_time;  // Relative to start of leg 1.
-    Duration finish_time; // Relative to start of leg 1.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     LegResult(final RelayRaceEntry entry, final Race race) {
 
-        super(race);
+        super(race, entry, null);
 
-        this.entry = entry;
         dnf = true;
         in_mass_start = false;
     }
@@ -50,36 +46,7 @@ public class LegResult extends RaceResult {
     }
 
     @Override
-    public EntryCategory getCategory() {
-        return entry.participant.category;
-    }
-
-    @Override
-    protected String getIndividualRunnerName() {
-        return ((Team)entry.participant).runner_names.get(leg_number - 1);
-    }
-
-    @Override
-    public Participant getParticipant() {
-        return entry.participant;
-    }
-
-    @Override
-    public int comparePerformanceTo(final RaceResult other) {
-
-        final Duration duration = duration();
-        final Duration other_duration = ((LegResult) other).duration();
-
-        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
-    }
-
-    @Override
-    public boolean canComplete() {
-        return !dnf;
-    }
-
-    @Override
-    public boolean shouldDisplayPosition() {
-        return true;
+    protected String getParticipantName() {
+        return ((Team) entry.participant).runner_names.get(leg_number - 1);
     }
 }

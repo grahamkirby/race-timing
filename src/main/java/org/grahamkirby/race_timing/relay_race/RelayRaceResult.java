@@ -16,14 +16,10 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.Participant;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.TimedRaceResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class RelayRaceResult extends TimedRaceResult {
@@ -40,25 +36,6 @@ public class RelayRaceResult extends TimedRaceResult {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    protected String getIndividualRunnerName() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Participant getParticipant() {
-        return entry.participant;
-    }
-
-    @Override
-    public int comparePerformanceTo(final RaceResult other) {
-
-        final Duration duration = duration();
-        final Duration other_duration = ((SingleRaceResult) other).duration();
-
-        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
-    }
 
     @Override
     public boolean canComplete() {

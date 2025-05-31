@@ -49,7 +49,7 @@ class TimedIndividualRaceOutputText extends RaceOutputText {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedIndividualRaceResult result = ((TimedIndividualRaceResult) r);
+            final TimedRaceResult result = ((TimedRaceResult) r);
 
             writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{format(result.duration())}\n");
         }

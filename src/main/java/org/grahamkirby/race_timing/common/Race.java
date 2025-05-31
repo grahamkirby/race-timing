@@ -325,13 +325,13 @@ public abstract class Race {
     /** Compares two results based on alphabetical ordering of the runners' first names. */
     protected static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
-        return Normalisation.getFirstName(r1.getIndividualRunnerName()).compareTo(Normalisation.getFirstName(r2.getIndividualRunnerName()));
+        return Normalisation.getFirstName(r1.getParticipantName()).compareTo(Normalisation.getFirstName(r2.getParticipantName()));
     }
 
     /** Compares two results based on alphabetical ordering of the runners' last names. */
     protected static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
-        return Normalisation.getLastName(r1.getIndividualRunnerName()).compareTo(Normalisation.getLastName(r2.getIndividualRunnerName()));
+        return Normalisation.getLastName(r1.getParticipantName()).compareTo(Normalisation.getLastName(r2.getParticipantName()));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

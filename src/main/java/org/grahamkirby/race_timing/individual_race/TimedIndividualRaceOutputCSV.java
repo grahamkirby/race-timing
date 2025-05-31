@@ -63,7 +63,7 @@ public class TimedIndividualRaceOutputCSV extends RaceOutputCSV {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedIndividualRaceResult result = (TimedIndividualRaceResult) r;
+            final TimedRaceResult result = (TimedRaceResult) r;
 
             writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
                 append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{result.canComplete() ? format(result.duration()) : "DNF"}\n");

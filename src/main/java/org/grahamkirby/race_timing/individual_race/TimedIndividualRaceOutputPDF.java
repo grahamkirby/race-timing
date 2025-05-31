@@ -31,7 +31,7 @@ public class TimedIndividualRaceOutputPDF extends RaceOutputPDF {
     @Override
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
-        final TimedIndividualRaceResult result = ((TimedIndividualRaceResult) r);
+        final TimedRaceResult result = ((TimedRaceResult) r);
         return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, ((Runner) result.entry.participant).club, format(result.duration()));
     }
 }
