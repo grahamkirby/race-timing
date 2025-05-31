@@ -68,8 +68,8 @@ public final class GrandPrixRace extends SeriesRace {
 
         super.configure();
 
-        configureRaceCategories();
-        configureRaceTemporalPositions();
+        race_categories = loadRaceCategories();
+        race_temporal_positions = loadRaceTemporalPositions();
         configureClubs();
     }
 
@@ -134,11 +134,7 @@ public final class GrandPrixRace extends SeriesRace {
 
         final Duration runner_time = individual_race.getRunnerTime(runner);
 
-        if (runner_time != null) {
-            return (int) Math.round(divide(runner_time, individual_race.getMedianTime()) * score_for_median_position);
-        } else {
-            return 0;
-        }
+        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, individual_race.getMedianTime()) * score_for_median_position);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,16 +144,15 @@ public final class GrandPrixRace extends SeriesRace {
         return d1.toMillis() / (double) d2.toMillis();
     }
 
-    private void configureRaceCategories() throws IOException {
+    private List<RaceCategory> loadRaceCategories() throws IOException {
 
-        race_categories = new ArrayList<>();
-
-        Files.readAllLines(getPath(getRequiredProperty(KEY_RACE_CATEGORIES_PATH))).stream().
+        return Files.readAllLines(getPath(getRequiredProperty(KEY_RACE_CATEGORIES_PATH))).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(this::configureRaceCategory);
+            map(GrandPrixRace::makeRaceCategory).
+            toList();
     }
 
-    private void configureRaceCategory(final String line) {
+    private static RaceCategory makeRaceCategory(final String line) {
 
         final String[] elements = line.split(",");
 
@@ -166,7 +161,7 @@ public final class GrandPrixRace extends SeriesRace {
 
         final List<Integer> race_numbers = Arrays.stream(elements).skip(2).map(Integer::parseInt).toList();
 
-        race_categories.add(new RaceCategory(category_name, minimum_number, race_numbers));
+        return new RaceCategory(category_name, minimum_number, race_numbers);
     }
 
     @Override
@@ -174,9 +169,9 @@ public final class GrandPrixRace extends SeriesRace {
         return race_temporal_positions.get(position) - 1;
     }
 
-    private void configureRaceTemporalPositions() {
+    private List<Integer> loadRaceTemporalPositions() {
 
-        race_temporal_positions = Arrays.stream(getRequiredProperty(KEY_RACE_TEMPORAL_ORDER).split(",")).
+        return Arrays.stream(getRequiredProperty(KEY_RACE_TEMPORAL_ORDER).split(",")).
             map(Integer::parseInt).toList();
     }
 

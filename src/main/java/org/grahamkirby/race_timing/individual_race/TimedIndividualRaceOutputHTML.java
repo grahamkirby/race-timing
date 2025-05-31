@@ -75,7 +75,7 @@ class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedIndividualRaceResult result = ((TimedIndividualRaceResult) r);
+            final TimedRaceResult result = ((TimedRaceResult) r);
 
             writer.append(STR."""
                     <tr>

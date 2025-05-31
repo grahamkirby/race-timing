@@ -264,7 +264,7 @@ public abstract class SeriesRace extends Race {
         getRunnerNames().forEach(this::normaliseClubsForRunner);
     }
 
-    protected void normaliseClubsForRunner(final String runner_name) {
+    private void normaliseClubsForRunner(final String runner_name) {
 
         // Where a runner name is associated with a single entry with a defined club
         // plus some other entries with no club defined, add the club to those entries.

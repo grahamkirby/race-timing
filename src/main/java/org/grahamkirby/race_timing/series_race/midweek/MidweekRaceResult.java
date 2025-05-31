@@ -16,7 +16,6 @@
  */
 package org.grahamkirby.race_timing.series_race.midweek;
 
-import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
@@ -24,7 +23,7 @@ import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.util.List;
 
-public class MidweekRaceResult extends SeriesRaceResult {
+class MidweekRaceResult extends SeriesRaceResult {
 
     private final List<Integer> scores;
 
@@ -32,16 +31,6 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
         super(runner, race);
         this.scores = scores;
-    }
-
-    @Override
-    protected String getIndividualRunnerName() {
-        return runner.name;
-    }
-
-    @Override
-    public Participant getParticipant() {
-        return runner;
     }
 
     @Override
@@ -53,16 +42,14 @@ public class MidweekRaceResult extends SeriesRaceResult {
 
     int totalScore() {
 
-        final int number_of_races_to_count = Math.min(
-            ((SeriesRace) race).getNumberOfRacesTakenPlace(),
-            ((SeriesRace) race).getMinimumNumberOfRaces());
+        final int minimum_number_of_races = ((SeriesRace) race).getMinimumNumberOfRaces();
+        final int number_of_races_completed = numberOfRacesCompleted();
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, number_of_races_completed);
 
-        return scores.stream().
+        return -scores.stream().
+            map(score -> -score).
             sorted().
-            toList().
-            reversed().
-            stream().
-            limit(number_of_races_to_count).
+            limit(number_of_counting_scores).
             reduce(0, Integer::sum);
     }
 }

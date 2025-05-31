@@ -16,15 +16,14 @@
  */
 package org.grahamkirby.race_timing.series_race.tour;
 
-import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResult;
 
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class TourRaceResult extends SeriesRaceResult {
 
@@ -37,16 +36,6 @@ public class TourRaceResult extends SeriesRaceResult {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    protected String getIndividualRunnerName() {
-        return runner.name;
-    }
-
-    @Override
-    public Participant getParticipant() {
-        return runner;
-    }
 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
@@ -63,7 +52,7 @@ public class TourRaceResult extends SeriesRaceResult {
 
         return !canComplete() ? null :
             times.stream().
-                limit(((SeriesRace) race).getNumberOfRacesTakenPlace()).
+                filter(Objects::nonNull).
                 reduce(Duration.ZERO, Duration::plus);
     }
 }
