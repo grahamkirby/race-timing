@@ -15,13 +15,17 @@ class TimedIndividualRaceInput extends TimedRaceInput {
     @Override
     protected SingleRaceEntry makeRaceEntry(final List<String> elements) {
 
-        return new TimedIndividualRaceEntry(elements, race);
+        return new IndividualRaceEntry(elements, race);
     }
 
     @Override
-    protected void checkConfig() {
+    protected void validateConfig() {
 
-        final String dnf_string = race.getOptionalProperty(KEY_DNF_FINISHERS);
+        validateDNFEntries(race.getOptionalProperty(KEY_DNF_FINISHERS));
+    }
+
+    private void validateDNFEntries(final String dnf_string) {
+
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String bib_number : dnf_string.split(",")) {
                 try {

@@ -22,9 +22,8 @@ import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.util.List;
-import java.util.Objects;
 
-public class TimedIndividualRaceEntry extends SingleRaceEntry {
+public class IndividualRaceEntry extends SingleRaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
     private static final int BIB_NUMBER_INDEX = 0;
@@ -35,7 +34,7 @@ public class TimedIndividualRaceEntry extends SingleRaceEntry {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
-    TimedIndividualRaceEntry(final List<String> elements, final Race race) {
+    IndividualRaceEntry(final List<String> elements, final Race race) {
 
         final List<String> mapped_elements = race.normalisation.mapRaceEntryElements(elements);
 
@@ -60,16 +59,5 @@ public class TimedIndividualRaceEntry extends SingleRaceEntry {
     @Override
     public String toString() {
         return STR."\{participant.name}, \{((Runner)participant).club}";
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof final TimedIndividualRaceEntry other_entry &&
-            ((Runner)participant).equals(((Runner)other_entry.participant));
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(participant.name, ((Runner)participant).club);
     }
 }

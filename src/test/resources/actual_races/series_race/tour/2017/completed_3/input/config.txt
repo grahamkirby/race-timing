@@ -2,7 +2,7 @@ YEAR = 2017
 RACE_NAME_FOR_RESULTS = Tour of Fife
 RACE_NAME_FOR_FILENAMES = tour
 
-RACES = race1/input/config.txt,race2/input/config.txt,race3/input/config.txt
+RACES = race1/input/config.txt,race2/input/config.txt,race3/input/config.txt,,
 NUMBER_OF_RACES_IN_SERIES = 5
 MINIMUM_NUMBER_OF_RACES = 5
 

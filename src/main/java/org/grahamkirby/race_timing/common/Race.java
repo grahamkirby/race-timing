@@ -130,6 +130,7 @@ public abstract class Race {
                 factory.apply(args[0]).processResults();
             } catch (@SuppressWarnings("OverlyBroadCatchBlock") final Throwable e) {
                 System.err.println(e.getMessage());
+//                e.printStackTrace();
             }
         }
     }

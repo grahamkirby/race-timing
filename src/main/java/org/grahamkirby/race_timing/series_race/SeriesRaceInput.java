@@ -51,8 +51,7 @@ public class SeriesRaceInput extends RaceInput {
 
         for (int i = 0; i < ((SeriesRace)race).getNumberOfRacesInSeries(); i++) {
 
-            final String race_config_path = i < race_config_paths.size() ? race_config_paths.get(i) : "";
-
+            final String race_config_path = race_config_paths.get(i);
             races.add(race_config_path.isBlank() ? null : getIndividualRace(race_config_path, i + 1));
         }
 

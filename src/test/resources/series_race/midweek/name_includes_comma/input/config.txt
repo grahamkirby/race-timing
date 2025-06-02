@@ -2,7 +2,7 @@ YEAR = 2023
 RACE_NAME_FOR_RESULTS = Midweek Series
 RACE_NAME_FOR_FILENAMES = midweek
 
-RACES = st_andrews/input/config.txt,strath_blebo/input/config.txt,tarvit/input/config.txt
+RACES = st_andrews/input/config.txt,strath_blebo/input/config.txt,tarvit/input/config.txt,,
 NUMBER_OF_RACES_IN_SERIES = 5
 MINIMUM_NUMBER_OF_RACES = 4
 SCORE_FOR_FIRST_PLACE = 200
