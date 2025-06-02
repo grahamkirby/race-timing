@@ -48,8 +48,7 @@ class UntimedIndividualRaceInput extends SingleRaceInput {
     List<RaceResult> loadOverallResults() throws IOException {
 
         return Files.readAllLines(race.getPath(overall_results_path)).stream().
-            // TODO rationalise.
-            // map(this::stripComment).
+            map(SingleRaceInput::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
             map(race_result_mapper).
             filter(Objects::nonNull).

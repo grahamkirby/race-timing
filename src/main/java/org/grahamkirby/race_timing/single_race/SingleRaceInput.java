@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 
-@SuppressWarnings({"IncorrectFormatting", "NonBooleanMethodNameMayNotStartWithQuestion", "AbstractMethodCallInConstructor"})
+@SuppressWarnings({"IncorrectFormatting", "AbstractMethodCallInConstructor"})
 public abstract class SingleRaceInput extends RaceInput {
 
     protected SingleRaceInput(final Race race) {
@@ -45,9 +45,13 @@ public abstract class SingleRaceInput extends RaceInput {
         validateEntries();
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
-    protected String stripComment(final String line) {
+    protected static String stripComment(final String line) {
 
         return line.split(COMMENT_SYMBOL)[0];
+    }
+
+    protected static String stripEntryComment(final String line) {
+
+        return line.startsWith(COMMENT_SYMBOL) ? "" : line;
     }
 }
