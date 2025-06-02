@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.util.List;
-import java.util.Objects;
 
 public class RelayRaceEntry extends SingleRaceEntry {
 
@@ -56,16 +55,5 @@ public class RelayRaceEntry extends SingleRaceEntry {
     @Override
     public String toString() {
         return participant.name;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof final RelayRaceEntry other_entry &&
-            participant.name.equals(other_entry.participant.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(participant.name);
     }
 }

@@ -2,6 +2,7 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
@@ -36,17 +37,19 @@ class UntimedIndividualRaceInput extends SingleRaceInput {
     }
 
     @Override
-    protected TimedIndividualRaceEntry makeRaceEntry(final List<String> elements) {
+    protected IndividualRaceEntry makeRaceEntry(final List<String> elements) {
         return null;
     }
 
     @Override
-    protected void checkEntries() {
+    protected void validateEntries() {
     }
 
     List<RaceResult> loadOverallResults() throws IOException {
 
         return Files.readAllLines(race.getPath(overall_results_path)).stream().
+            // TODO rationalise.
+            // map(this::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(race_result_mapper).
             filter(Objects::nonNull).
@@ -57,7 +60,7 @@ class UntimedIndividualRaceInput extends SingleRaceInput {
 
         elements.addFirst(String.valueOf(next_fake_bib_number++));
 
-        final UntimedIndividualRaceEntry entry = new UntimedIndividualRaceEntry(elements, race);
+        final SingleRaceEntry entry = new IndividualRaceEntry(elements, race);
         final Duration finish_time = Normalisation.parseTime(elements.getLast());
 
         return new SingleRaceResult(race, entry, finish_time);

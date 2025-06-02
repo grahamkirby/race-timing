@@ -60,7 +60,7 @@ public class TimedIndividualRace extends TimedRace {
         final int bib_number = raw_result.getBibNumber();
         final Duration finish_time = raw_result.getRecordedFinishTime();
 
-        return new TimedRaceResult(this, (TimedIndividualRaceEntry) getEntryWithBibNumber(bib_number), finish_time);
+        return new TimedRaceResult(this, (IndividualRaceEntry) getEntryWithBibNumber(bib_number), finish_time);
     }
 
     private void configureIndividualEarlyStarts() {

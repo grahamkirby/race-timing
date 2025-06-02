@@ -62,6 +62,12 @@ public class RelayRaceInput extends TimedRaceInput {
     }
 
     @Override
+    protected String stripEntryComment(final String line) {
+
+        return line.startsWith(COMMENT_SYMBOL) ? "" : line;
+    }
+
+    @Override
     protected SingleRaceEntry makeRaceEntry(final List<String> elements) {
         return new RelayRaceEntry(elements, race);
     }
@@ -94,9 +100,9 @@ public class RelayRaceInput extends TimedRaceInput {
 
         super.validateInputFiles();
 
-        checkConfig();
+        validateConfig();
         checkDNFs();
-        checkResultsContainValidBibNumbers();
+        validateBibNumbersHaveCorrespondingEntry();
         checkNumberOfResults();
     }
 
@@ -131,7 +137,7 @@ public class RelayRaceInput extends TimedRaceInput {
     }
 
     @Override
-    protected void checkConfig() {
+    protected void validateConfig() {
 
         checkConfigMassStartTimes();
         checkDNFs();

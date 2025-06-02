@@ -21,7 +21,9 @@ import org.grahamkirby.race_timing.common.RaceInput;
 
 import java.util.List;
 
-@SuppressWarnings({"IncorrectFormatting", "NonBooleanMethodNameMayNotStartWithQuestion"})
+import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
+
+@SuppressWarnings({"IncorrectFormatting", "NonBooleanMethodNameMayNotStartWithQuestion", "AbstractMethodCallInConstructor"})
 public abstract class SingleRaceInput extends RaceInput {
 
     protected SingleRaceInput(final Race race) {
@@ -33,13 +35,19 @@ public abstract class SingleRaceInput extends RaceInput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected abstract void readProperties();
-    protected abstract void checkEntries();
+    protected abstract void validateEntries();
     protected abstract SingleRaceEntry makeRaceEntry(final List<String> elements);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void validateInputFiles() {
 
-        checkEntries();
+        validateEntries();
+    }
+
+    @SuppressWarnings("MethodMayBeStatic")
+    protected String stripComment(final String line) {
+
+        return line.split(COMMENT_SYMBOL)[0];
     }
 }
