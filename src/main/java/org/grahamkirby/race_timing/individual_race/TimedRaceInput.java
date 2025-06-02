@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
-@SuppressWarnings({"NonBooleanMethodNameMayNotStartWithQuestion"})
 public abstract class TimedRaceInput extends SingleRaceInput {
 
     // Configuration file keys.
@@ -71,11 +70,10 @@ public abstract class TimedRaceInput extends SingleRaceInput {
 
     protected List<RawResult> loadRawResults(final String raw_results_path) throws IOException {
 
-        final List<String> lines = Files.readAllLines(race.getPath(raw_results_path));
-
         final AtomicInteger line_number = new AtomicInteger();
-        final List<RawResult> raw_results = lines.stream().
-            map(this::stripComment).
+
+        final List<RawResult> raw_results = Files.readAllLines(race.getPath(raw_results_path)).stream().
+            map(SingleRaceInput::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> makeRawResult(line, line_number.getAndIncrement())).
             toList();
@@ -104,11 +102,6 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         } catch (final RuntimeException _) {
             throw new RuntimeException(STR."invalid record '\{line}' at line \{line_number + 1} in file '\{raw_results_path}'");
         }
-    }
-
-    protected String stripEntryComment(final String line) {
-
-        return stripComment(line);
     }
 
     private void validateOrdering(final List<? extends RawResult> raw_results) {
@@ -157,7 +150,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
             final AtomicInteger counter = new AtomicInteger(0);
 
             Files.readAllLines(race.getPath(entries_path)).stream().
-                map(this::stripEntryComment).
+                map(SingleRaceInput::stripEntryComment).
                 filter(Predicate.not(String::isBlank)).
                 forEach(line -> {
                     counter.incrementAndGet();
@@ -175,7 +168,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
             final AtomicInteger counter = new AtomicInteger(0);
 
             Files.readAllLines(race.getPath(entries_path)).stream().
-                map(this::stripEntryComment).
+                map(SingleRaceInput::stripEntryComment).
                 filter(Predicate.not(String::isBlank)).
                 forEach(line -> {
                     try {
@@ -193,7 +186,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
     List<SingleRaceEntry> loadEntries() throws IOException {
 
         final List<SingleRaceEntry> entries = Files.readAllLines(race.getPath(entries_path)).stream().
-            map(this::stripEntryComment).
+            map(SingleRaceInput::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> makeRaceEntry(Arrays.stream(line.split("\t")).toList())).
             toList();
@@ -220,7 +213,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
                 collect(Collectors.toSet());
 
             Files.readAllLines(race.getPath(raw_results_path)).stream().
-                map(this::stripComment).
+                map(SingleRaceInput::stripComment).
                 filter(Predicate.not(String::isBlank)).
                 forEach(line -> {
                     final String bib_number = line.split("\t")[0];

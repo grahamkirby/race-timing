@@ -62,12 +62,6 @@ public class RelayRaceInput extends TimedRaceInput {
     }
 
     @Override
-    protected String stripEntryComment(final String line) {
-
-        return line.startsWith(COMMENT_SYMBOL) ? "" : line;
-    }
-
-    @Override
     protected SingleRaceEntry makeRaceEntry(final List<String> elements) {
         return new RelayRaceEntry(elements, race);
     }
