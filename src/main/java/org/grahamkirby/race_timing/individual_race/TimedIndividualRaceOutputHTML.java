@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -75,7 +76,7 @@ class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedRaceResult result = ((TimedRaceResult) r);
+            final SingleRaceResult result = ((SingleRaceResult) r);
 
             writer.append(STR."""
                     <tr>
@@ -111,7 +112,7 @@ class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedRaceResult result = ((TimedRaceResult) r);
+            final SingleRaceResult result = ((SingleRaceResult) r);
 
             writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{format(result.duration())}</li>\n");
         }

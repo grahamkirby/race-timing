@@ -48,7 +48,7 @@ public class TourRaceResult extends SeriesRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected Duration duration() {
+    public Duration duration() {
 
         return !canComplete() ? null :
             times.stream().

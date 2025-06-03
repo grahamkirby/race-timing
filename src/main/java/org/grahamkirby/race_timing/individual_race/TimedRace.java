@@ -144,17 +144,17 @@ public abstract class TimedRace extends SingleRace {
     protected void recordDNF(final String dnf_specification) {
 
         final int bib_number = Integer.parseInt(dnf_specification);
-        final TimedRaceResult result = getResultWithBibNumber(bib_number);
+        final SingleRaceResult result = getResultWithBibNumber(bib_number);
 
         result.dnf = true;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private TimedRaceResult getResultWithBibNumber(final int bib_number) {
+    private SingleRaceResult getResultWithBibNumber(final int bib_number) {
 
         return overall_results.stream().
-            map(result -> ((TimedRaceResult) result)).
+            map(result -> ((SingleRaceResult) result)).
             filter(result -> result.entry.bib_number == bib_number).
             findFirst().
             orElseThrow();

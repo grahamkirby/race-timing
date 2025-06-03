@@ -29,7 +29,7 @@ import java.time.Duration;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class TourRaceOutputCSV extends SeriesRaceOutputCSV {
+class TourRaceOutputCSV extends SeriesRaceOutputCSV {
 
     TourRaceOutputCSV(final Race race) {
         super(race);
@@ -64,15 +64,14 @@ public class TourRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final TourRaceResult result = (TourRaceResult) r;
 
-            final String position = result.shouldDisplayPosition() ? result.position_string : "-";
             final Runner runner = result.runner;
 
-            writer.append(STR."\{position},\{encode(runner.name)},\{encode(runner.club)},\{runner.category.getShortName()},");
+            writer.append(STR."\{result.position_string},\{encode(runner.name)},\{encode(runner.club)},\{runner.category.getShortName()},");
 
             for (final Duration time : result.times)
                 writer.append(time != null ? format(time) : "-").append(",");
 
-            writer.append(result.shouldDisplayPosition() ? format(result.duration()) : "-").append(LINE_SEPARATOR);
+            writer.append(renderDuration(result, "-")).append(LINE_SEPARATOR);
         }
     }
 }

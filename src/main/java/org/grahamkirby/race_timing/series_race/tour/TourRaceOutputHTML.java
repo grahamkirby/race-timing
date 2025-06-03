@@ -22,10 +22,10 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
-import org.grahamkirby.race_timing.individual_race.TimedRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 import org.grahamkirby.race_timing.single_race.SingleRace;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -209,7 +209,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedRaceResult result = (TimedRaceResult) r;
+            final SingleRaceResult result = (SingleRaceResult) r;
 
             writer.append(STR."""
                     <tr>
