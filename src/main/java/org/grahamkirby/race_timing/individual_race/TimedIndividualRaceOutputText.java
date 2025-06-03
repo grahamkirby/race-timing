@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterText;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -49,7 +50,7 @@ class TimedIndividualRaceOutputText extends RaceOutputText {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedRaceResult result = ((TimedRaceResult) r);
+            final SingleRaceResult result = ((SingleRaceResult) r);
 
             writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{format(result.duration())}\n");
         }

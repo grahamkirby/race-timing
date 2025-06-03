@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
+class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
     GrandPrixRaceOutputCSV(final Race race) {
         super(race);
@@ -77,7 +77,7 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
             final GrandPrixRace grand_prix_race = (GrandPrixRace) race;
 
-            writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{encode(result.runner.name)},\{result.runner.category.getShortName()},");
+            writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{result.runner.category.getShortName()},");
 
             writer.append(
                 grand_prix_race.getRaces().stream().
@@ -91,9 +91,8 @@ public class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 
             writer.append(STR.",\{result.totalScore()},\{result.hasCompletedSeries() ? "Y" : "N"}");
 
-            for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
+            for (final RaceCategory category : ((GrandPrixRace) race).race_categories)
                 writer.append(",").append(result.hasCompletedRaceCategory(category) ? "Y" : "N");
-            }
 
             writer.append(LINE_SEPARATOR);
         }

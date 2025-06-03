@@ -17,9 +17,15 @@
 package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.series_race.tour.TourRaceResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
+
+import java.time.Duration;
 
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_CSV;
+import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 /** Base class for CSV output. */
 public abstract class RaceOutputCSV extends RaceOutput {
@@ -70,5 +76,15 @@ public abstract class RaceOutputCSV extends RaceOutput {
     @Override
     public String getPrizeCategoryFooter() {
         return "";
+    }
+
+    public static String renderDuration(final RaceResult result, final String alternative) {
+
+        if (!result.canComplete()) return alternative;
+
+        // Messy because duration() is defined for single races and also tour races; other series races use scores rather than aggregate times.
+        final Duration duration = result instanceof SingleRaceResult ? ((SingleRaceResult) result).duration() : ((TourRaceResult) result).duration();
+
+        return format(duration);
     }
 }

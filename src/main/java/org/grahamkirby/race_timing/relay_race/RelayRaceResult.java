@@ -16,13 +16,13 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.individual_race.TimedRaceResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelayRaceResult extends TimedRaceResult {
+public class RelayRaceResult extends SingleRaceResult {
 
     final List<LegResult> leg_results;
 

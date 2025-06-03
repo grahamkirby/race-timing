@@ -356,27 +356,33 @@ public abstract class Race {
         // In a series race the individual races don't allow equal positions, but the race overall does.
         // Conversely in a relay race the legs after the first leg do allow equal positions.
 
-        if (allow_equal_positions) {
+        for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            for (int result_index = 0; result_index < results.size(); result_index++) {
+            final RaceResult result = results.get(result_index);
 
-                // Skip over any following results with the same performance.
-                // Defined in terms of performance rather than duration, since in some races ranking is determined
-                // by scores rather than times.
-                final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
+            if (result.shouldDisplayPosition()) {
+                if (allow_equal_positions) {
 
-                if (highest_index_with_same_performance > result_index) {
+                    // Skip over any following results with the same performance.
+                    // Defined in terms of performance rather than duration, since in some races ranking is determined
+                    // by scores rather than times.
+                    final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
 
-                    // There are results following this one with the same performance.
-                    recordEqualPositions(results, result_index, highest_index_with_same_performance);
-                    result_index = highest_index_with_same_performance;
-                } else
-                    // The following result has a different performance.
-                    setPositionStringByPosition(results, result_index);
+                    if (highest_index_with_same_performance > result_index) {
+
+                        // There are results following this one with the same performance.
+                        recordEqualPositions(results, result_index, highest_index_with_same_performance);
+                        result_index = highest_index_with_same_performance;
+                    } else
+                        // The following result has a different performance, so just record current position for this one.
+                        result.position_string = String.valueOf(result_index + 1);
+                } else {
+                    result.position_string = String.valueOf(result_index + 1);
+                }
+            } else {
+                result.position_string = "-";
             }
-        } else
-            for (int result_index = 0; result_index < results.size(); result_index++)
-                setPositionStringByPosition(results, result_index);
+        }
     }
 
     /** Records the same position for the given range of results. */
@@ -399,11 +405,6 @@ public abstract class Race {
             highest_index_with_same_result++;
 
         return highest_index_with_same_result;
-    }
-
-    /** Sets the position string according to the position itself. */
-    private static void setPositionStringByPosition(final List<? extends RaceResult> results, final int result_index) {
-        results.get(result_index).position_string = String.valueOf(result_index + 1);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

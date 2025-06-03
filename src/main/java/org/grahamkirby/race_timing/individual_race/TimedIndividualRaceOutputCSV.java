@@ -21,14 +21,14 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class TimedIndividualRaceOutputCSV extends RaceOutputCSV {
+class TimedIndividualRaceOutputCSV extends RaceOutputCSV {
 
     private static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
 
@@ -63,10 +63,10 @@ public class TimedIndividualRaceOutputCSV extends RaceOutputCSV {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TimedRaceResult result = (TimedRaceResult) r;
+            final SingleRaceResult result = (SingleRaceResult) r;
 
-            writer.append(STR."\{result.shouldDisplayPosition() ? result.position_string : ""},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
-                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{result.canComplete() ? format(result.duration()) : "DNF"}\n");
+            writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
+                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");
         }
     }
 }

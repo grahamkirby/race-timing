@@ -32,7 +32,7 @@ public class SingleRaceResult extends RaceResult {
 
     @Override
     public boolean shouldDisplayPosition() {
-        return true;
+        return canComplete();
     }
 
     protected String getClub() {

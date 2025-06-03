@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -31,7 +32,7 @@ public class TimedIndividualRaceOutputPDF extends RaceOutputPDF {
     @Override
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
-        final TimedRaceResult result = ((TimedRaceResult) r);
+        final SingleRaceResult result = ((SingleRaceResult) r);
         return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, ((Runner) result.entry.participant).club, format(result.duration()));
     }
 }

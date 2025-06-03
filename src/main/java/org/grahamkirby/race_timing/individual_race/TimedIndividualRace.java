@@ -16,12 +16,6 @@ public class TimedIndividualRace extends TimedRace {
 
     private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
 
-    /**
-     * List of individual early starts (usually empty).
-     * Values are read from configuration file using key KEY_INDIVIDUAL_EARLY_STARTS.
-     */
-    private Map<Integer, Duration> early_starts;
-
     public TimedIndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
     }
@@ -29,13 +23,6 @@ public class TimedIndividualRace extends TimedRace {
     @Override
     protected RaceInput getInput() {
         return new TimedIndividualRaceInput(this);
-    }
-
-    @Override
-    protected void configure() throws IOException {
-
-        super.configure();
-//        configureIndividualEarlyStarts();
     }
 
     @Override
@@ -60,7 +47,7 @@ public class TimedIndividualRace extends TimedRace {
         final int bib_number = raw_result.getBibNumber();
         final Duration finish_time = raw_result.getRecordedFinishTime();
 
-        return new TimedRaceResult(this, (IndividualRaceEntry) getEntryWithBibNumber(bib_number), finish_time);
+        return new SingleRaceResult(this, getEntryWithBibNumber(bib_number), finish_time);
     }
 
     private void configureIndividualEarlyStarts() {
@@ -69,8 +56,6 @@ public class TimedIndividualRace extends TimedRace {
 
         // bib number / start time difference
         // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
-
-        early_starts = new HashMap<>();
 
         if (individual_early_starts_string != null)
             Arrays.stream(individual_early_starts_string.split(",")).
