@@ -91,7 +91,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(STR."""
                     <tr>
-                        <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
+                        <td>\{result.position_string}</td>
                         <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
                         <td>\{result.runner.category.getShortName()}</td>
                         <td>\{result.runner.club}</td>

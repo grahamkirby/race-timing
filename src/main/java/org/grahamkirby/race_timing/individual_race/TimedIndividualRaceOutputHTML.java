@@ -27,8 +27,8 @@ import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
 
@@ -80,12 +80,12 @@ class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
 
             writer.append(STR."""
                     <tr>
-                        <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
+                        <td>\{result.position_string}</td>
                         <td>\{result.entry.bib_number}</td>
                         <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
                         <td>\{((Runner)result.entry.participant).club}</td>
                         <td>\{result.entry.participant.category.getShortName()}</td>
-                        <td>\{!result.canComplete() ? DNF_STRING : format(result.duration())}</td>
+                        <td>\{renderDuration(result, DNF_STRING)}</td>
                     </tr>
                 """);
         }
@@ -114,7 +114,7 @@ class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
 
             final SingleRaceResult result = ((SingleRaceResult) r);
 
-            writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{format(result.duration())}</li>\n");
+            writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result)}</li>\n");
         }
     }
 }

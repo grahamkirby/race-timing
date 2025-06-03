@@ -107,7 +107,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(STR."""
                     <tr>
-                        <td>\{result.shouldDisplayPosition() ? result.position_string : ""}</td>
+                        <td>\{result.position_string}</td>
                         <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
                         <td>\{result.runner.category.getShortName()}</td>
             """);
@@ -118,23 +118,25 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
                     map(individual_race -> {
                         final int score = grand_prix_race.calculateRaceScore(individual_race, result.runner);
                         return STR."""
-                                        <td>\{score == 0 ? "-" : String.valueOf(score)}</td>
+                                    <td>\{score == 0 ? "-" : String.valueOf(score)}</td>
                         """;
                     }).
                     collect(Collectors.joining())
             );
 
             writer.append(STR."""
-                        <td>\{result.totalScore()}</td>
-                        <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
+                            <td>\{result.totalScore()}</td>
+                            <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
                 """);
 
             for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
-                writer.append("<td>").append(result.hasCompletedRaceCategory(category) ? "Y" : "N").append("</td>");
+                writer.append(STR."""
+                            <td>\{result.hasCompletedRaceCategory(category) ? "Y" : "N"}</td>
+                """);
             }
 
             writer.append("""
-                    </tr>
+                        </tr>
                 """);
         }
     }

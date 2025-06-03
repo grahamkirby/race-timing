@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class RelayRaceOutputText extends RaceOutputText {
 
@@ -219,7 +220,7 @@ class RelayRaceOutputText extends RaceOutputText {
 
             final RelayRaceResult result = ((RelayRaceResult) r);
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{result.entry.participant.category.getLongName()}) \{format(result.duration())}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result)}\n");
         }
     }
 }

@@ -27,7 +27,7 @@ import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class TimedIndividualRaceOutputText extends RaceOutputText {
 
@@ -52,7 +52,7 @@ class TimedIndividualRaceOutputText extends RaceOutputText {
 
             final SingleRaceResult result = ((SingleRaceResult) r);
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{format(result.duration())}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{renderDuration(result)}\n");
         }
     }
 }
