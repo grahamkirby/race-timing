@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
+import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 public class RelayRace extends TimedRace {
 
@@ -557,7 +558,7 @@ public class RelayRace extends TimedRace {
 
             final String leg_runner_names = ((Team)leg_result.entry.participant).runner_names.get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
-            final String leg_time = completed ? format(leg_result.duration()) : DNF_STRING;
+            final String leg_time = renderDuration(leg_result, DNF_STRING);
             final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
 
             leg_details.add(leg_output_formatter.apply(new LegOutputDetails(leg_runner_names, leg_mass_start_annotation, leg_time, split_time)));

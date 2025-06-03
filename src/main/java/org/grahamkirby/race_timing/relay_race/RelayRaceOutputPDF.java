@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class RelayRaceOutputPDF extends RaceOutputPDF {
 
@@ -31,6 +31,6 @@ class RelayRaceOutputPDF extends RaceOutputPDF {
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
         final RelayRaceResult result = ((RelayRaceResult) r);
-        return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, result.entry.participant.category.getLongName(), format(result.duration()));
+        return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, result.entry.participant.category.getLongName(), renderDuration(result));
     }
 }

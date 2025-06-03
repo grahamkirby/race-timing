@@ -35,6 +35,7 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
@@ -129,7 +130,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(STR."""
                     <tr>
-                        <td>\{result.shouldDisplayPosition() ? result.position_string : "-"}</td>
+                        <td>\{result.position_string}</td>
                         <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
                         <td>\{result.runner.category.getShortName()}</td>
                         <td>\{result.runner.club}</td>
@@ -143,7 +144,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
                     writer.append("            <td>-</td>").append(LINE_SEPARATOR);
 
             writer.append(STR."""
-                        <td>\{result.shouldDisplayPosition() ? format(result.duration()) : "-"}</td>
+                        <td>\{result.canComplete() ? format(result.duration()) : "-"}</td>
                     </tr>
             """);
         }
@@ -213,11 +214,11 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             writer.append(STR."""
                     <tr>
-                        <td>\{result.canComplete() ? result.position_string : ""}</td>
+                        <td>\{result.position_string}</td>
                         <td>\{result.entry.bib_number}</td>
                         <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
                         <td>\{result.entry.participant.category.getShortName()}</td>
-                        <td>\{result.canComplete() ? format(result.duration()) : DNF_STRING}</td>
+                        <td>\{renderDuration(result, DNF_STRING)}</td>
                     </tr>
             """);
         }

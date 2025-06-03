@@ -87,4 +87,8 @@ public abstract class RaceOutputCSV extends RaceOutput {
 
         return format(duration);
     }
+
+    public static String renderDuration(final RaceResult result) {
+        return renderDuration(result, "");
+    }
 }

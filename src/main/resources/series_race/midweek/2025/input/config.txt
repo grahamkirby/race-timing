@@ -2,7 +2,7 @@ YEAR = 2025
 RACE_NAME_FOR_RESULTS = Midweek Series
 RACE_NAME_FOR_FILENAMES = midweek
 
-RACES = /src/main/resources/individual_race/st_andrews/2025/input/config.txt,/src/main/resources/individual_race/strath_blebo/2025/input/config.txt
+RACES = /src/main/resources/individual_race/st_andrews/2025/input/config.txt,/src/main/resources/individual_race/strath_blebo/2025/input/config.txt,/src/main/resources/individual_race/hill_of_tarvit/2025/input/config.txt,,
 MINIMUM_NUMBER_OF_RACES = 4
 NUMBER_OF_RACES_IN_SERIES = 5
 SCORE_FOR_FIRST_PLACE = 200

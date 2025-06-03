@@ -47,6 +47,7 @@ public abstract class Race {
     // TODO test missing output directory.
     // TODO test input directory with different name.
     // TODO test missing config file for individual race in series.
+    // TODO test incorrect number of races listed in series config.
     // TODO prompt for config file if not supplied as arg.
     // TODO update README (https://www.makeareadme.com)
 
