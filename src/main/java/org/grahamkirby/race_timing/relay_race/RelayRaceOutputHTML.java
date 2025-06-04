@@ -240,23 +240,23 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             final RelayRaceResult result = (RelayRaceResult) r;
 
             writer.append(STR."""
-                <tr>
-                    <td>\{result.position_string}</td>
-                    <td>\{result.entry.bib_number}</td>
-                    <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
-                    <td>\{result.entry.participant.category.getLongName()}</td>
+                    <tr>
+                        <td>\{result.position_string}</td>
+                        <td>\{result.entry.bib_number}</td>
+                        <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
+                        <td>\{result.entry.participant.category.getLongName()}</td>
             """);
 
             final List<String> leg_strings = relay_race.getLegDetails(result, info ->
                 STR."""
-                        <td>\{race.normalisation.htmlEncode(info.leg_runner_names())}\{info.leg_mass_start_annotation()}</td>
-                        <td>\{info.leg_time()}</td>
-                        <td>\{info.split_time()}</td>
+                            <td>\{race.normalisation.htmlEncode(info.leg_runner_names())}\{info.leg_mass_start_annotation()}</td>
+                            <td>\{info.leg_time()}</td>
+                            <td>\{info.split_time()}</td>
                 """);
 
             writer.append(String.join("", leg_strings));
             writer.append("""
-                    </tr>
+                        </tr>
                 """);
         }
     }
