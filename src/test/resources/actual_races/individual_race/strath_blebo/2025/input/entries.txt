@@ -61,7 +61,7 @@
 161	Suzanne Robertson		F40
 162	Kevin Rogers	Perth Road Runners	M50
 163	Martin Rollo	Dundee Road Runners	M60
-164	Mercè Torres	Fife AC	F40
+164	Merce Torres	Fife AC	F40
 165	Rhona van Rensburg	Fife AC	F50
 166	Ruan van Rensburg 	Fife AC	MS
 167	James Waldie	Perth Road Runners	MS

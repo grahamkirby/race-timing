@@ -65,6 +65,11 @@ public class ActualRacesIndividualTest extends RaceTest {
     }
 
     @Test
+    void hillOfTarvit2025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/hill_of_tarvit/2025");
+    }
+
+    @Test
     void stAndrews2023() throws Exception {
         testExpectedCompletion("actual_races/individual_race/st_andrews/2023");
     }
@@ -87,6 +92,11 @@ public class ActualRacesIndividualTest extends RaceTest {
     @Test
     void strathBlebo2024() throws Exception {
         testExpectedCompletion("actual_races/individual_race/strath_blebo/2024");
+    }
+
+    @Test
+    void strathBlebo2025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/strath_blebo/2025");
     }
 
     @Test
