@@ -1,164 +1,166 @@
 Pos,Runner,Club,Category,St Andrews 5M,Strathkinness - Blebocraigs,Hill of Tarvit,Total,Completed
-1,Mairi Littleson,Dundee Road Runners,FS,200,200,192,592,N
-2,David Webster,Dundee Road Runners,MS,195,198,197,590,N
-3,Susanne Lumsden,Falkland Trail Runners,F50,190,191,193,574,N
-4,Lynne Herd,Anster Haddies,F40,191,193,189,573,N
-5=,Abigail Brierley,East Fife Triathlon Club,FS,192,197,180,569,N
-5=,Fiona Callaghan,Dundee Road Runners,FS,193,194,182,569,N
-7,Rhonda Manning,Dundee Hawkhill Harriers,F50,186,184,195,565,N
-8,Adam Hart,Dundee Road Runners,MS,196,196,168,560,N
-9,Steph Devlin,Dundee Road Runners,F40,188,186,185,559,N
-10,Yvonne Dehn,Anster Haddies,FS,187,187,184,558,N
-11,Allison MacPherson,Falkland Trail Runners,F40,183,180,194,557,N
-12,Tom Rainey,Anster Haddies,M40,182,191,181,554,N
-13,Billy Gibson,Dundee Hawkhill Harriers,M40,191,193,161,545,N
-14,Mark Bell,Dundee Road Runners,M40,193,197,143,533,N
-15,Dominic Hughes,Dundee Road Runners,M40,173,181,169,523,N
-16,Paul Harkins,Fife AC,M40,174,180,167,521,N
-17,John MacPherson,Fife AC,M40,169,179,172,520,N
-18,Martin Rollo,Dundee Road Runners,M60,165,162,188,515,N
-19,Matthew Beaney,Dundee Road Runners,M40,181,189,142,512,N
-20,John Mill,Dundee Road Runners,M60,160,165,177,502,N
-21,Stephen Dickson,Fife AC,M50,184,159,156,499,N
-22,Jeff Gunnell,Unatt.,M70,158,155,165,478,N
-23,Keith Gelly,Dundee Road Runners,M50,161,154,160,475,N
-24,Jamie Lessels,Fife AC,MS,200,199,0,399,N
-25,Rhona van Rensburg,Fife AC,F50,0,199,199,398,N
-26,Ruan van Rensburg,Fife AC,MS,198,195,0,393,N
-27,Jennifer Massie,Dundee Road Runners,F40,195,0,197,392,N
-28,Eliza Konig,Fife AC,FU20,199,0,191,390,N
-29,Dominic Williams,Dundee Road Runners,MS,0,183,199,382,N
-30,Orla Gage,Anster Haddies,FU20,194,0,187,381,N
-31=,Margaret Martin,Fife AC,F60,189,190,0,379,N
-31=,Ross Young,Anster Haddies,MS,187,192,0,379,N
-33,Kevin Rogers,Perth Road Runners,M50,0,187,187,374,N
-34,Heather Anderson,Fife AC,F40,0,196,177,373,N
-35,Elise Coward,Dundee Road Runners,FS,0,188,183,371,N
-36,Debz Hay,Anster Haddies,F50,185,185,0,370,N
-37,Charles Woodhead,Perth Road Runners,M50,0,168,200,368,N
-38=,Nick Wade,Anster Haddies,M50,0,171,195,366,N
-38=,Peter Warland,Perth Road Runners,M60,0,170,196,366,N
-40,Charles Beer,University of St Andrews Triathlon Club,MS,178,185,0,363,N
-41,Innes Bracegirdle,Fife AC,F60,0,181,179,360,N
-42,Tim Kinnaird,Fife AC,M40,0,188,170,358,N
-43,Vince MacPherson,Fife AC,M40,0,184,173,357,N
-44,Mike Murdoch,Falkland Trail Runners,M40,0,177,179,356,N
-45,Sandra Gardener,Falkland Trail Runners,F50,0,166,188,354,N
-46,June Balgowan,Falkland Trail Runners,F50,0,172,178,350,N
-47,Fiona Walker,Fife AC,F50,178,170,0,348,N
-48=,Tony Martin,Fife AC,M70,168,178,0,346,N
-48=,Graham Rena,Dundee Road Runners,M50,170,176,0,346,N
-50=,Ross McArthur,Falkland Trail Runners,MS,0,166,174,340,N
-50=,David Place,Fife AC,M60,167,173,0,340,N
-52,Simon Anetts,Fife AC,MS,199,0,139,338,N
-53,Dave Clark,Fife AC,M40,0,186,150,336,N
-54,Will Gage,Anster Haddies,M50,0,175,158,333,N
-55,Evan Bowers,Dundee Road Runners,MS,185,0,146,331,N
-56,Neil Gray,Fife AC,MS,0,161,162,323,N
-57,David Aitken,Dundee Road Runners,M50,183,0,136,319,N
-58=,Manuel Alderete,Dundee Road Runners,MS,180,0,137,317,N
-58=,Lee Cessford,Falkland Trail Runners,M50,159,158,0,317,N
-60,Daniel Fields,Dundee Road Runners,M40,155,156,0,311,N
-61,Keith Bonthrone,Fife AC,M60,163,0,145,308,N
-62=,Lyle Allan,Falkland Trail Runners,M60,0,163,138,301,N
-62=,Ernesto Bonafe,Dundee Road Runners,M40,157,0,144,301,N
+1,Mairi Littleson,Dundee Road Runners,FS,200,200,199,599,N
+2,Jamie Lessels,Fife AC,MS,200,199,196,595,N
+3,Ruan van Rensburg,Fife AC,MS,198,195,198,591,N
+4,David Webster,Dundee Road Runners,MS,195,198,197,590,N
+5,Adam Hart,Dundee Road Runners,MS,196,196,194,586,N
+6,Mark Bell,Dundee Road Runners,M40,193,197,191,581,N
+7,Billy Gibson,Dundee Hawkhill Harriers,M40,191,193,193,577,N
+8,Fiona Callaghan,Dundee Road Runners,FS,193,194,187,574,N
+9,Lynne Herd,Anster Haddies,F40,191,193,186,570,N
+10,Ross Young,Anster Haddies,MS,187,192,190,569,N
+11,Susanne Lumsden,Falkland Trail Runners,F50,190,191,185,566,N
+12,Yvonne Dehn,Anster Haddies,FS,187,187,189,563,N
+13,Steph Devlin,Dundee Road Runners,F40,188,186,182,556,N
+14,Tom Rainey,Anster Haddies,M40,182,191,182,555,N
+15=,Matthew Beaney,Dundee Road Runners,M40,181,189,184,554,N
+15=,Debz Hay,Anster Haddies,F50,185,185,184,554,N
+17,Rhonda Manning,Dundee Hawkhill Harriers,F50,186,184,183,553,N
+18,Allison MacPherson,Falkland Trail Runners,F40,183,180,178,541,N
+19,Stephen Dickson,Fife AC,M50,184,159,177,520,N
+20,Dominic Hughes,Dundee Road Runners,M40,173,181,161,515,N
+21,John MacPherson,Fife AC,M40,169,179,164,512,N
+22,Tony Martin,Fife AC,M70,168,178,165,511,N
+23,Graham Rena,Dundee Road Runners,M50,170,176,158,504,N
+24,Martin Rollo,Dundee Road Runners,M60,165,162,148,475,N
+25,John Mill,Dundee Road Runners,M60,160,165,143,468,N
+26,Lee Cessford,Falkland Trail Runners,M50,159,158,137,454,N
+27,Keith Gelly,Dundee Road Runners,M50,161,154,136,451,N
+28,Eliza Konig,Fife AC,FU20,199,0,200,399,N
+29,Rhona van Rensburg,Fife AC,F50,0,199,197,396,N
+30,Heather Anderson,Fife AC,F40,0,196,198,394,N
+31,Alison McNeilly,Dundee Road Runners,F40,197,0,195,392,N
+32,Simon Anetts,Fife AC,MS,199,0,192,391,N
+33,Abigail Brierley,East Fife Triathlon Club,FS,192,197,0,389,N
+34,Orla Gage,Anster Haddies,FU20,194,0,194,388,N
+35,Jennifer Massie,Dundee Road Runners,F40,195,0,190,385,N
+36,Mercè Torres,Fife AC,F40,0,189,193,382,N
+37,Margaret Martin,Fife AC,F60,189,190,0,379,N
+38,Elise Coward,Dundee Road Runners,FS,0,188,188,376,N
+39,Tim Kinnaird,Fife AC,M40,0,188,185,373,N
+40,David Aitken,Dundee Road Runners,M50,183,0,189,372,N
+41,Evan Bowers,Dundee Road Runners,MS,185,0,186,371,N
+42,Kevin Rogers,Perth Road Runners,M50,0,187,178,365,N
+43,Charles Beer,University of St Andrews Triathlon Club,MS,178,185,0,363,N
+44=,Manuel Alderete,Dundee Road Runners,MS,180,0,181,361,N
+44=,Innes Bracegirdle,Fife AC,F60,0,181,180,361,N
+44=,Dave Clark,Fife AC,M40,0,186,175,361,N
+47,Vince MacPherson,Fife AC,M40,0,184,176,360,N
+48=,Paul Harkins,Fife AC,M40,174,180,0,354,N
+48=,Dominic Williams,Dundee Road Runners,MS,0,183,171,354,N
+50,Fiona Walker,Fife AC,F50,178,170,0,348,N
+51,June Balgowan,Falkland Trail Runners,F50,0,172,174,346,N
+52,David Place,Fife AC,M60,167,173,0,340,N
+53,Sandra Gardener,Falkland Trail Runners,F50,0,166,173,339,N
+54,Philip Suttie,Falkland Trail Runners,M40,0,174,157,331,N
+55,Will Gage,Anster Haddies,M50,0,175,152,327,N
+56,Nick Wade,Anster Haddies,M50,0,171,149,320,N
+57,Charles Woodhead,Perth Road Runners,M50,0,168,151,319,N
+58=,Neil Gray,Fife AC,MS,0,161,155,316,N
+58=,Peter Warland,Perth Road Runners,M60,0,170,146,316,N
+60=,Jeff Gunnell,Unatt.,M70,158,155,0,313,N
+60=,Ross McArthur,Falkland Trail Runners,MS,0,166,147,313,N
+62,Daniel Fields,Dundee Road Runners,M40,155,156,0,311,N
+63,Lyle Allan,Falkland Trail Runners,M60,0,163,144,307,N
+64,Ernesto Bonafe,Dundee Road Runners,M40,157,0,133,290,N
+-,Logan Rees,Fife AC,MS,0,0,200,200,N
 -,James Waldie,Perth Road Runners,MS,0,200,0,200,N
--,Tania Wilson,Falkland Trail Runners,F60,0,0,200,200,N
+-,Lewis Rodgers,Fife AC,MS,0,0,199,199,N
 -,Ailsa Cruickshanks,Fife AC,FS,0,198,0,198,N
 -,Caroline Jones,Kinross Road Runners,F40,198,0,0,198,N
--,Fabienne Thompson,Lomond Hill Runners,F50,0,0,198,198,N
--,Peter Will,Perth Road Runners,M50,0,0,198,198,N
--,Alison McNeilly,Dundee Road Runners,F40,197,0,0,197,N
 -,Michael Richardson,Dundee Road Runners,MS,197,0,0,197,N
 -,Fiona Canavan,Dundee Road Runners,FS,196,0,0,196,N
--,Fiona Manson,Perth Road Runners,F50,0,0,196,196,N
+-,Jennifer Spence,Fife AC,FS,0,0,196,196,N
+-,Thomas Robertson,Fife AC,MU20,0,0,195,195,N
 -,Diane White,Perth Road Runners,F50,0,195,0,195,N
 -,Scott McClung,Fife AC,MS,0,194,0,194,N
 -,Barry Smith,Kinross Road Runners,MS,194,0,0,194,N
--,Yulian Vasilev,Fife AC,MS,0,0,194,194,N
--,Ruan Van Rensburg,Fife AC,MS,0,0,193,193,N
 -,Gordon Barrie,Dundee Hawkhill Harriers,M50,192,0,0,192,N
 -,Claire Douglas,Perth Road Runners,F50,0,192,0,192,N
--,John Tierney,Dundee Road Runners,M50,0,0,192,192,N
--,Jamie Stewart,Dundee Road Runners,M40,0,0,191,191,N
+-,Louise Lessels,Falkland Trail Runners,F40,0,0,192,192,N
+-,Fabienne Thompson,Lomond Hill Runners,F50,0,0,191,191,N
 -,Tristan Glasse-Davies,Unatt.,MS,0,190,0,190,N
 -,Angus Gray,Kinross Road Runners,MS,190,0,0,190,N
--,Louise Johnstone,Running Sisters Tayside,F40,0,0,190,190,N
--,John Smith,Lomond Hill Runners,M50,0,0,190,190,N
 -,Fergus Ingledew,Unatt.,MS,189,0,0,189,N
--,Arron Small,Dundee Road Runners,MS,0,0,189,189,N
--,Merce Torres,Fife AC,F40,0,189,0,189,N
+-,Elliot Collins,Perth Road Runners,MS,0,0,188,188,N
 -,Matt Newton,Kinross Road Runners,M50,188,0,0,188,N
--,Heidi Fettes,Dundee Road Runners,F50,0,0,186,186,N
+-,Robert Greig,Carnethy,MS,0,0,187,187,N
 -,Alex Reily,Kinross Road Runners,MS,186,0,0,186,N
--,Lewis Rodgers,Fife AC,MS,0,0,186,186,N
--,Clive Roberts,Fife AC,M60,0,0,185,185,N
 -,Wendy Grieve,Kinross Road Runners,F60,184,0,0,184,N
--,Logan Reilly,Anster Haddies,MU20,0,0,184,184,N
--,Roger Rees,Fife AC,M50,0,0,183,183,N
 -,Suzanne Robertson,Unatt.,F40,0,183,0,183,N
+-,Peter Will,Perth Road Runners,M50,0,0,183,183,N
 -,Valerie Findlay,Kinross Road Runners,F60,182,0,0,182,N
 -,Ann Reed,Perth Road Runners,F70,0,182,0,182,N
--,Logan Rees,Fife AC,MS,0,0,182,182,N
 -,Jonny Seeley,East Fife Triathlon Club,M40,0,182,0,182,N
 -,Christina Atkinson,Kinross Road Runners,F40,181,0,0,181,N
--,Paige Brown,Perth Road Runners,FS,0,0,181,181,N
--,Uche Okoro,Unatt.,MS,0,0,180,180,N
+-,Brezo Mateos,Unatt.,FS,0,0,181,181,N
 -,Melissa Reid,Wormit Runners,F50,180,0,0,180,N
+-,Logan Reilly,Anster Haddies,MU20,0,0,180,180,N
 -,Ann Malcolm,Kinross Road Runners,F60,179,0,0,179,N
+-,Fiona Manson,Perth Road Runners,F50,0,0,179,179,N
 -,Bethan McRobbie,Anster Haddies,FS,0,179,0,179,N
+-,Jamie Stewart,Dundee Road Runners,M40,0,0,179,179,N
 -,Andrew Weir,Dundee Road Runners,MS,179,0,0,179,N
 -,Maria Dale,Perth Road Runners,F60,0,178,0,178,N
--,Neill Mitchell,Fife AC,M50,0,0,178,178,N
 -,Mark Allan,Glenrothes Triathlon Club,MS,177,0,0,177,N
 -,Lynn Beveridge,Kinross Road Runners,F50,177,0,0,177,N
 -,Caroline Hogarth,Perth Road Runners,F50,0,177,0,177,N
+-,Mike Murdoch,Falkland Trail Runners,M40,0,177,0,177,N
+-,Amy Tavendale,Dundee Road Runners,F40,0,0,177,177,N
 -,Hannah Lopez,Kinross Road Runners,FS,176,0,0,176,N
--,Josh McKay,Dundee Road Runners,MS,0,0,176,176,N
 -,Willie Rennie,PH Racing,M50,176,0,0,176,N
+-,Susan Smith,Dundee Road Runners,F40,0,0,176,176,N
 -,Sharon Warland,Perth Road Runners,F50,0,176,0,176,N
 -,Isla Craig,Kinross Road Runners,F50,175,0,0,175,N
+-,Louise Johnstone,Running Sisters Tayside,F40,0,0,175,175,N
 -,Raphael Magron-Lorenzo,Unatt.,MS,175,0,0,175,N
--,John McIntosh,Dundee Road Runners,M60,0,0,175,175,N
 -,Laura Robertson,Falkland Trail Runners,F50,0,175,0,175,N
 -,Catriona Duncan,Anster Haddies,F70,0,174,0,174,N
--,Philip Suttie,Falkland Trail Runners,M40,0,174,0,174,N
+-,Calum Gibson,Unatt.,MU20,0,0,174,174,N
+-,Russell Craig,Dundee Road Runners,M50,0,0,173,173,N
 -,Ana De Miguel,Perth Road Runners,F50,0,173,0,173,N
 -,Matt Buck,Dundee Road Runners,MS,172,0,0,172,N
+-,Guillem Penacchio Torres,Unatt.,MU20,0,0,172,172,N
 -,Grant Wooler,Perth Road Runners,M60,0,172,0,172,N
 -,Eric Anderson,Anster Haddies,M50,171,0,0,171,N
--,Iain Luke,Dundee Road Runners,M70,0,0,171,171,N
 -,Gillian Murdoch,Falkland Trail Runners,F40,0,171,0,171,N
+-,Martin Butcher,PH Racing,M40,0,0,170,170,N
+-,Dean Abberley,Perth Road Runners,MS,0,0,169,169,N
 -,Jane Gatherer,Falkland Trail Runners,F50,0,169,0,169,N
 -,Gordon Lindsay,Perth Road Runners,M60,0,169,0,169,N
 -,Susan Bothwell,Perth Road Runners,F60,0,168,0,168,N
+-,Roger Rees,Fife AC,M50,0,0,168,168,N
 -,Sally Newton,Perth Road Runners,F60,0,167,0,167,N
+-,Arron Small,Dundee Road Runners,MS,0,0,167,167,N
 -,Huw Watkins,Unatt.,M40,0,167,0,167,N
--,James Hall,Fife AC,M40,0,0,166,166,N
+-,John Smith,Lomond Hill Runners,M50,0,0,166,166,N
 -,Tony Wallen,Kinross Road Runners,M50,166,0,0,166,N
 -,Rosemary Lee,Falkland Trail Runners,F60,0,165,0,165,N
 -,Simon Fox,Fife AC,M60,164,0,0,164,N
--,Will Grewar,Unatt.,MS,0,0,164,164,N
 -,Richard Ward,Perth Road Runners,M50,0,164,0,164,N
--,Robert Greig,Carnethy,MS,0,0,163,163,N
+-,Eck Anderson,Anster Haddies,M40,0,0,163,163,N
+-,Keith Bonthrone,Fife AC,M60,163,0,0,163,N
+-,Andrew Deans,Perth Road Runners,M50,0,0,162,162,N
 -,Sean Kenyon,Unatt.,M50,162,0,0,162,N
+-,Gary Cuthbert,Rtc Warriors,M50,0,0,160,160,N
 -,Robert Hunter,East Fife Triathlon Club,M50,0,160,0,160,N
--,Alan Gardener,Falkland Trail Runners,M50,0,0,159,159,N
+-,Clive Bowman,Perth Road Runners,M50,0,0,159,159,N
 -,Alan Bothwell,Perth Road Runners,M60,0,157,0,157,N
--,David Dunleavey,Stratheden,M60,0,0,157,157,N
+-,David Dunleavey,Stratheden,M60,0,0,156,156,N
 -,Craig McAdam,Kinross Road Runners,M70,156,0,0,156,N
--,Andrew Deans,Perth Road Runners,M50,0,0,155,155,N
--,Mike Dales,Perth Road Runners,M60,0,0,154,154,N
--,Gary Cuthbert,Rtc Warriors,M50,0,0,153,153,N
+-,David Cowan,Fife AC,M60,0,0,154,154,N
+-,Neill Mitchell,Fife AC,M50,0,0,153,153,N
 -,Stewart Reid,Perth Road Runners,M40,0,153,0,153,N
--,Russell Craig,Dundee Road Runners,M50,0,0,152,152,N
 -,Marten Kats,Perth Road Runners,M40,0,152,0,152,N
--,Elliot Collins,Perth Road Runners,MS,0,0,151,151,N
 -,Matthew Dale,Perth Road Runners,M70,0,151,0,151,N
 -,John Lee,Falkland Trail Runners,M60,0,150,0,150,N
--,Martin Butcher,PH Racing,M40,0,0,149,149,N
--,Donald Brown,Lomond Hill Runners,M50,0,0,148,148,N
--,Clive Bowman,Perth Road Runners,M50,0,0,147,147,N
--,Andy Ballantyne,Kirkcaldy Wizards,M50,0,0,141,141,N
--,David Baird,Dundee Road Runners,M40,0,0,140,140,N
--,Dean Abberley,Perth Road Runners,MS,0,0,135,135,N
+-,Clive Roberts,Fife AC,M60,0,0,150,150,N
+-,David Baird,Dundee Road Runners,M40,0,0,145,145,N
+-,David Blair,Unatt.,MS,0,0,142,142,N
+-,Will Grewar,Unatt.,MS,0,0,141,141,N
+-,Chris Sturrock,Unatt.,MS,0,0,140,140,N
+-,Donald Brown,Lomond Hill Runners,M50,0,0,139,139,N
+-,Mike Dales,Perth Road Runners,M60,0,0,138,138,N
+-,Uche Okoro,Unatt.,MS,0,0,135,135,N
+-,Josh McKay,Dundee Road Runners,MS,0,0,134,134,N
+-,Iain Luke,Dundee Road Runners,M70,0,0,132,132,N
