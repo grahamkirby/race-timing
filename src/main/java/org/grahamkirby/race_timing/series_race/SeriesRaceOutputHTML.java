@@ -32,7 +32,7 @@ public abstract class SeriesRaceOutputHTML extends RaceOutputHTML {
     @Override
     public String getPrizesHeader() {
 
-        final String header = ((SeriesRace)race).getNumberOfRacesTakenPlace() < ((SeriesRace)race).getNumberOfRacesInSeries() ? "Current Standings" : "Prizes";
+        final String header = ((SeriesRace) race).getNumberOfRacesTakenPlace() < ((SeriesRace) race).getNumberOfRacesInSeries() ? "Current Standings" : "Prizes";
         return STR."<h4>\{header}</h4>\{LINE_SEPARATOR}";
     }
 }

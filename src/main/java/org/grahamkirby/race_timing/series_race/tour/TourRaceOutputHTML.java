@@ -30,12 +30,14 @@ import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
@@ -94,6 +96,25 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
             super(race, writer);
         }
 
+        private List<String> getResultsColumnHeaders() {
+
+            final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
+
+            final List<String> headers = new ArrayList<>(common_headers);
+
+            headers.add("Club");
+
+            final List<SingleRace> races = ((SeriesRace) race).getRaces();
+
+            for (int i = 0; i < races.size(); i++)
+                if (races.get(i) != null)
+                    headers.add(STR."Race \{i + 1}");
+
+            headers.add("Total");
+
+            return headers;
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
 
@@ -101,20 +122,14 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
                 <table class="fac-table">
                     <thead>
                         <tr>
-                            <th>Pos</th>
-                            <th>Runner</th>
-                            <th>Cat</th>
-                            <th>Club</th>
                 """);
 
-            final List<SingleRace> races = ((SeriesRace) race).getRaces();
-
-            for (int i = 0; i < races.size(); i++)
-                if (races.get(i) != null)
-                    writer.append(STR."            <th>Race \{String.valueOf(i + 1)}</th>\n");
+            for (final String header : getResultsColumnHeaders())
+                writer.append(STR."""
+                                <th>\{header}</th>
+                    """);
 
             writer.append("""
-                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -125,8 +140,6 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             final TourRaceResult result = (TourRaceResult) r;
-            final TourRace race = (TourRace) result.race;
-            final List<SingleRace> races = race.getRaces();
 
             writer.append(STR."""
                     <tr>
@@ -136,15 +149,13 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
                         <td>\{result.runner.club}</td>
             """);
 
-            for (int i = 0; i < result.times.size(); i++)
-
-                if (result.times.get(i) != null)
-                    writer.append(STR."            <td>\{format(result.times.get(i))}</td>\n");
-                else if (races.get(i) != null)
-                    writer.append("            <td>-</td>").append(LINE_SEPARATOR);
+            for (final Duration duration : result.times)
+                writer.append(STR."""
+                                    <td>\{renderDuration(duration, "-")}</td>
+                        """);
 
             writer.append(STR."""
-                        <td>\{result.canComplete() ? format(result.duration()) : "-"}</td>
+                        <td>\{renderDuration(result, "-")}</td>
                     </tr>
             """);
         }

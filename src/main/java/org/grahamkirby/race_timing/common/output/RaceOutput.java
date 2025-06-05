@@ -20,6 +20,8 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing.series_race.tour.TourRaceResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,9 +30,11 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.*;
 
 /** Abstract parent class for various forms of race output. */
@@ -177,6 +181,25 @@ public abstract class RaceOutput {
     /** Formats a sub-header as appropriate for the output file type. */
     protected String getResultsSubHeader(final String s) {
         return LINE_SEPARATOR + s;
+    }
+
+    public static String renderDuration(final Duration duration, final String alternative) {
+
+        return duration != null ? format(duration) : alternative;
+    }
+
+    public static String renderDuration(final RaceResult result, final String alternative) {
+
+        if (!result.canComplete()) return alternative;
+
+        // Messy because duration() is defined for single races and also tour races; other series races use scores rather than aggregate times.
+        final Duration duration = result instanceof SingleRaceResult ? ((SingleRaceResult) result).duration() : ((TourRaceResult) result).duration();
+
+        return format(duration);
+    }
+
+    public static String renderDuration(final RaceResult result) {
+        return renderDuration(result, "");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

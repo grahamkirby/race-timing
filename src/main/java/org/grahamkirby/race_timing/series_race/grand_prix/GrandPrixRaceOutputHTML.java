@@ -26,6 +26,7 @@ import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
+
+    // TODO add colour coding for race categories.
 
     GrandPrixRaceOutputHTML(final Race race) {
         super(race);
@@ -61,6 +64,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResultsHeader() throws IOException {
 
+            // TODO rationalise with TourRaceOutputHTML.
             writer.append("""
                 <table class="fac-table">
                     <thead>
@@ -70,9 +74,10 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
                             <th>Category</th>
                 """);
 
-            for (int i = 0; i < ((SeriesRace) race).getRaces().size(); i++) {
+            final List<SingleRace> races = ((SeriesRace) race).getRaces();
 
-                final SingleRace individual_race = ((SeriesRace) race).getRaces().get(i);
+            for (final SingleRace individual_race : races) {
+
                 if (individual_race != null)
                     writer.append(STR."""
                                     <th>\{individual_race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
