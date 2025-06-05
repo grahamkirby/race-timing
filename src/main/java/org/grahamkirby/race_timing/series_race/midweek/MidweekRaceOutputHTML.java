@@ -22,9 +22,11 @@ import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterHTML;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
+import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
@@ -58,6 +60,7 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResultsHeader() throws IOException {
 
+            // TODO rationalise with TourRaceOutputHTML.
             writer.append("""
                 <table class="fac-table">
                     <thead>
@@ -68,10 +71,13 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
                             <th>Club</th>
                 """);
 
-            for (int i = 0; i < ((SeriesRace) race).getNumberOfRacesTakenPlace(); i++)
-                writer.append(STR."""
-                                <th>Race \{i + 1}</th>
-                    """);
+            final List<SingleRace> races = ((SeriesRace) race).getRaces();
+
+            for (int i = 0; i < races.size(); i++)
+                if (races.get(i) != null)
+                    writer.append(STR."""
+                                    <th>Race \{i + 1}</th>
+                        """);
 
             writer.append("""
                             <th>Total</th>
