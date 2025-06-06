@@ -26,9 +26,9 @@ import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
@@ -61,47 +61,46 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
             super(race, writer);
         }
 
+        private List<String> getResultsColumnHeaders() {
+
+            final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
+
+            final List<String> headers = new ArrayList<>(common_headers);
+
+            // This traverses races in order of listing in config, sorted first by race type and then date.
+            for (final SingleRace individual_race : ((SeriesRace) race).getRaces())
+                // Check whether race has taken place at this point.
+                if (individual_race != null)
+                    headers.add(individual_race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS));
+
+            headers.add("Total");
+            headers.add("Completed?");
+
+            for (final RaceCategory category : ((GrandPrixRace) race).race_categories)
+                headers.add(STR."\{category.category_title()}?");
+
+            return headers;
+        }
+
         @Override
         public void printResultsHeader() throws IOException {
 
-            // TODO rationalise with TourRaceOutputHTML.
             writer.append("""
                 <table class="fac-table">
                     <thead>
                         <tr>
-                            <th>Pos</th>
-                            <th>Runner</th>
-                            <th>Category</th>
                 """);
 
-            final List<SingleRace> races = ((SeriesRace) race).getRaces();
+            for (final String header : getResultsColumnHeaders())
+                writer.append(STR."""
+                                <th>\{header}</th>
+                    """);
 
-            for (final SingleRace individual_race : races) {
-
-                if (individual_race != null)
-                    writer.append(STR."""
-                                    <th>\{individual_race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS)}</th>
-                        """);
-            }
-
-            writer.append(STR."""
-                        <th>Total</th>
-                        <th>Completed?</th>
-                        \{getRaceCategoriesHeader()}
-                    </tr>
-                </thead>
-                <tbody>
-            """);
-        }
-
-        private String getRaceCategoriesHeader() {
-
-            final StringBuilder builder = new StringBuilder();
-
-            for (final RaceCategory category : ((GrandPrixRace) race).race_categories)
-                builder.append("<th>").append(category.category_title()).append("?").append("</th>");
-
-            return builder.toString();
+            writer.append("""
+                        </tr>
+                    </thead>
+                    <tbody>
+                """);
         }
 
         @Override
@@ -117,17 +116,13 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
                         <td>\{result.runner.category.getShortName()}</td>
             """);
 
-            writer.append(
-                grand_prix_race.getRaces().stream().
-                    filter(Objects::nonNull).
-                    map(individual_race -> {
-                        final int score = grand_prix_race.calculateRaceScore(individual_race, result.runner);
-                        return STR."""
-                                    <td>\{score == 0 ? "-" : String.valueOf(score)}</td>
-                        """;
-                    }).
-                    collect(Collectors.joining())
-            );
+            for (final SingleRace individual_race : grand_prix_race.getRaces())
+                if (individual_race != null) {
+                    final int score = grand_prix_race.calculateRaceScore(individual_race, result.runner);
+                    writer.append(STR."""
+                                    <td>\{renderScore(score, "-")}</td>
+                        """);
+                }
 
             writer.append(STR."""
                             <td>\{result.totalScore()}</td>

@@ -183,6 +183,11 @@ public abstract class RaceOutput {
         return LINE_SEPARATOR + s;
     }
 
+    public static String renderScore(final int score, final String alternative) {
+
+        return score != 0 ? String.valueOf(score) : alternative;
+    }
+
     public static String renderDuration(final Duration duration, final String alternative) {
 
         return duration != null ? format(duration) : alternative;
