@@ -104,15 +104,31 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             headers.add("Club");
 
-            final List<SingleRace> races = ((SeriesRace) race).getRaces();
-
-            for (int i = 0; i < races.size(); i++)
-                if (races.get(i) != null)
-                    headers.add(STR."Race \{i + 1}");
+            for (int i = 0; i < ((SeriesRace) race).getNumberOfRacesTakenPlace(); i++)
+                headers.add(STR."Race \{i + 1}");
 
             headers.add("Total");
 
             return headers;
+        }
+
+        private List<String> getResultsElements(final RaceResult r) throws IOException {
+
+            final List<String> elements = new ArrayList<>();
+
+            final TourRaceResult result = (TourRaceResult) r;
+
+            elements.add(result.position_string);
+            elements.add(race.normalisation.htmlEncode(result.runner.name));
+            elements.add(result.runner.category.getShortName());
+            elements.add(result.runner.club);
+
+            for (final Duration duration : result.times)
+                elements.add(renderDuration(duration, "-"));
+
+            elements.add(renderDuration(result, "-"));
+
+            return elements;
         }
 
         @Override
@@ -141,23 +157,18 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
             final TourRaceResult result = (TourRaceResult) r;
 
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.position_string}</td>
-                        <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
-                        <td>\{result.runner.category.getShortName()}</td>
-                        <td>\{result.runner.club}</td>
-            """);
+            writer.append("""
+                        <tr>
+                """);
 
-            for (final Duration duration : result.times)
+            for (final String element : getResultsElements(result))
                 writer.append(STR."""
-                                    <td>\{renderDuration(duration, "-")}</td>
-                        """);
+                            <td>\{element}</td>
+                """);
 
-            writer.append(STR."""
-                        <td>\{renderDuration(result, "-")}</td>
-                    </tr>
-            """);
+            writer.append("""
+                        </tr>
+                """);
         }
     }
 
