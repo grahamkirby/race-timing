@@ -17,9 +17,11 @@
 package org.grahamkirby.race_timing.common.output;
 
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
@@ -31,6 +33,44 @@ public abstract class ResultPrinterHTML extends ResultPrinter {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void printResultsHeader() throws IOException {
+
+        writer.append("""
+            <table class="fac-table">
+                <thead>
+                    <tr>
+            """);
+
+        for (final String header : getResultsColumnHeaders())
+            writer.append(STR."""
+                                <th>\{header}</th>
+                    """);
+
+        writer.append("""
+                    </tr>
+                </thead>
+                <tbody>
+            """);
+    }
+
+    @Override
+    public void printResult(final RaceResult result) throws IOException {
+
+        writer.append("""
+                    <tr>
+            """);
+
+        for (final String element : getResultsElements(result))
+            writer.append(STR."""
+                            <td>\{element}</td>
+                """);
+
+        writer.append("""
+                    </tr>
+            """);
+    }
 
     @Override
     public void printResultsFooter() throws IOException {
@@ -45,5 +85,13 @@ public abstract class ResultPrinterHTML extends ResultPrinter {
     public void printNoResults() throws IOException {
 
         writer.append("<p>No results</p>").append(LINE_SEPARATOR);
+    }
+
+    protected List<String> getResultsColumnHeaders() {
+        throw new UnsupportedOperationException();
+    }
+
+    protected List<String> getResultsElements(final RaceResult r) {
+        throw new UnsupportedOperationException();
     }
 }

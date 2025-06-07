@@ -26,12 +26,13 @@ import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
-public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
+class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 
     MidweekRaceOutputHTML(final Race race) {
         super(race);
@@ -57,65 +58,48 @@ public class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
             super(race, writer);
         }
 
-        @Override
-        public void printResultsHeader() throws IOException {
+        protected List<String> getResultsColumnHeaders() {
 
-            // TODO rationalise with TourRaceOutputHTML.
-            writer.append("""
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>Runner</th>
-                            <th>Category</th>
-                            <th>Club</th>
-                """);
+            final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
+
+            final List<String> headers = new ArrayList<>(common_headers);
+
+            headers.add("Club");
 
             final List<SingleRace> races = ((SeriesRace) race).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
-                    writer.append(STR."""
-                                    <th>Race \{i + 1}</th>
-                        """);
+                    headers.add(STR."Race \{i + 1}");
 
-            writer.append("""
-                            <th>Total</th>
-                            <th>Completed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
+            headers.add("Total");
+            headers.add("Completed?");
+
+            return headers;
         }
 
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
 
-            final MidweekRaceResult result = ((MidweekRaceResult) r);
+            final List<String> elements = new ArrayList<>();
+
             final MidweekRace midweek_race = (MidweekRace) race;
-            final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
+            final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.position_string}</td>
-                        <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
-                        <td>\{result.runner.category.getShortName()}</td>
-                        <td>\{result.runner.club}</td>
-            """);
+            elements.add(result.position_string);
+            elements.add(race.normalisation.htmlEncode(result.runner.name));
+            elements.add(result.runner.category.getShortName());
+            elements.add(result.runner.club);
 
-            writer.append(
-                midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
-                    map(individual_race -> STR."""
-                                    <td>\{midweek_race.calculateRaceScore(individual_race, result.runner)}</td>
-                        """).
-                    collect(Collectors.joining())
-            );
+            for (final SingleRace individual_race : midweek_race.getRaces())
+                if (individual_race != null) {
+                    final int score = midweek_race.calculateRaceScore(individual_race, result.runner);
+                    elements.add(renderScore(score));
+                }
 
-            writer.append(STR."""
-                            <td>\{result.totalScore()}</td>
-                            <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
-                        </tr>
-                """);
+            elements.add(String.valueOf(result.totalScore()));
+            elements.add(result.hasCompletedSeries() ? "Y" : "N");
+
+            return elements;
         }
     }
 

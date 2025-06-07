@@ -170,8 +170,8 @@ class RelayRaceOutputCSV extends RaceOutputCSV {
 
             writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getLongName()},");
 
-            final List<String> leg_strings = relay_race.getLegDetails(result, info ->
-                STR."\{encode(info.leg_runner_names())}\{info.leg_mass_start_annotation()},\{info.leg_time()},\{info.split_time()}");
+            final List<String> leg_strings = relay_race.getLegDetails(result).stream().
+                map(RaceOutputCSV::encode).toList();
 
             writer.append(String.join(",", leg_strings));
             writer.append(LINE_SEPARATOR);

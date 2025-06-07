@@ -61,7 +61,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
             super(race, writer);
         }
 
-        private List<String> getResultsColumnHeaders() {
+        protected List<String> getResultsColumnHeaders() {
 
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
 
@@ -82,62 +82,30 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
             return headers;
         }
 
-        @Override
-        public void printResultsHeader() throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
 
-            writer.append("""
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                """);
+            final List<String> elements = new ArrayList<>();
 
-            for (final String header : getResultsColumnHeaders())
-                writer.append(STR."""
-                                <th>\{header}</th>
-                    """);
-
-            writer.append("""
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
             final GrandPrixRace grand_prix_race = (GrandPrixRace) race;
+            final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
 
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.position_string}</td>
-                        <td>\{race.normalisation.htmlEncode(result.runner.name)}</td>
-                        <td>\{result.runner.category.getShortName()}</td>
-            """);
+            elements.add(result.position_string);
+            elements.add(race.normalisation.htmlEncode(result.runner.name));
+            elements.add(result.runner.category.getShortName());
 
             for (final SingleRace individual_race : grand_prix_race.getRaces())
                 if (individual_race != null) {
                     final int score = grand_prix_race.calculateRaceScore(individual_race, result.runner);
-                    writer.append(STR."""
-                                    <td>\{renderScore(score, "-")}</td>
-                        """);
+                    elements.add(renderScore(score, "-"));
                 }
 
-            writer.append(STR."""
-                            <td>\{result.totalScore()}</td>
-                            <td>\{result.hasCompletedSeries() ? "Y" : "N"}</td>
-                """);
+            elements.add(String.valueOf(result.totalScore()));
+            elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
-            for (final RaceCategory category : ((GrandPrixRace) race).race_categories) {
-                writer.append(STR."""
-                            <td>\{result.hasCompletedRaceCategory(category) ? "Y" : "N"}</td>
-                """);
-            }
+            for (final RaceCategory category : ((GrandPrixRace) race).race_categories)
+                elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
-            writer.append("""
-                        </tr>
-                """);
+            return elements;
         }
     }
 
@@ -159,6 +127,7 @@ public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
             writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
+        @SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
         @Override
         public void printResult(final RaceResult r) throws IOException {
 

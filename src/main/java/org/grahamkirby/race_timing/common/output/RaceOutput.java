@@ -188,6 +188,11 @@ public abstract class RaceOutput {
         return score != 0 ? String.valueOf(score) : alternative;
     }
 
+    public static String renderScore(final int score) {
+
+        return String.valueOf(score);
+    }
+
     public static String renderDuration(final Duration duration, final String alternative) {
 
         return duration != null ? format(duration) : alternative;

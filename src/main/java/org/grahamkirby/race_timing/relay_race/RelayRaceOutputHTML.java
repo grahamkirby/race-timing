@@ -27,10 +27,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class RelayRaceOutputHTML extends RaceOutputHTML {
 
@@ -123,37 +123,23 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsHeader() throws IOException {
+        protected List<String> getResultsColumnHeaders() {
 
-            writer.append("""
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>No</th>
-                            <th>Team</th>
-                            <th>Category</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
+            return List.of("Pos", "No", "Team", "Category", "Total");
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
 
             final RelayRaceResult result = ((RelayRaceResult) r);
 
-            writer.append(STR."""
-                        <tr>
-                            <td>\{result.position_string}</td>
-                            <td>\{result.entry.bib_number}</td>
-                            <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
-                            <td>\{result.entry.participant.category.getLongName()}</td>
-                            <td>\{renderDuration(result, DNF_STRING)}</td>
-                        </tr>
-                """);
+            return List.of(
+                result.position_string,
+                String.valueOf(result.entry.bib_number),
+                race.normalisation.htmlEncode(result.entry.participant.name),
+                result.entry.participant.category.getLongName(),
+                renderDuration(result, DNF_STRING)
+            );
         }
     }
 
@@ -168,33 +154,24 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsHeader() throws IOException {
+        protected List<String> getResultsColumnHeaders() {
 
-            writer.append(STR."""
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>Runner\{((RelayRace) race).getPairedLegs().get(leg - 1) ? "s" : ""}</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
+            return List.of(
+                "Pos",
+                STR."Runner\{((RelayRace) race).getPairedLegs().get(leg - 1) ? "s" : ""}",
+                "Time");
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
 
             final LegResult leg_result = (LegResult) r;
 
-            writer.append(STR."""
-                        <tr>
-                            <td>\{leg_result.position_string}</td>
-                            <td>\{race.normalisation.htmlEncode(((Team) leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1))}</td>
-                            <td>\{renderDuration(leg_result, DNF_STRING)}</td>
-                        </tr>
-                """);
+            return List.of(
+                leg_result.position_string,
+                race.normalisation.htmlEncode(((Team) leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1)),
+                renderDuration(leg_result, DNF_STRING)
+            );
         }
     }
 
@@ -205,59 +182,40 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsHeader() throws IOException {
+        protected List<String> getResultsColumnHeaders() {
 
-            writer.append("""
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>No</th>
-                            <th>Team</th>
-                            <th>Category</th>
-                """);
+            final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
 
             for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {
 
-                writer.append(STR."""
-                                <th>Runner\{((RelayRace) race).getPairedLegs().get(leg_number - 1) ? "s" : ""} \{leg_number}</th>
-                                <th>Leg \{leg_number}</th>
-                                <th>\{leg_number < ((RelayRace) race).getNumberOfLegs() ? STR."Split \{leg_number}" : "Total"}</th>
-                    """);
+                headers.add(STR."Runner\{((RelayRace) race).getPairedLegs().get(leg_number - 1) ? "s" : ""} \{leg_number}");
+                headers.add(STR."Leg \{leg_number}");
+                headers.add(leg_number < ((RelayRace) race).getNumberOfLegs() ? STR."Split \{leg_number}" : "Total");
             }
 
-            writer.append("""
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
+            return headers;
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final List<String> elements = new ArrayList<>();
 
             final RelayRace relay_race = (RelayRace) race;
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.position_string}</td>
-                        <td>\{result.entry.bib_number}</td>
-                        <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
-                        <td>\{result.entry.participant.category.getLongName()}</td>
-            """);
+            elements.add(result.position_string);
+            elements.add(String.valueOf(result.entry.bib_number));
+            elements.add(race.normalisation.htmlEncode(result.entry.participant.name));
+            elements.add(result.entry.participant.category.getLongName());
 
-            final List<String> leg_strings = relay_race.getLegDetails(result, info ->
-                STR."""
-                            <td>\{race.normalisation.htmlEncode(info.leg_runner_names())}\{info.leg_mass_start_annotation()}</td>
-                            <td>\{info.leg_time()}</td>
-                            <td>\{info.split_time()}</td>
-                """);
+            for (String element : relay_race.getLegDetails(result)) {
+                elements.add(race.normalisation.htmlEncode(element));
+            }
 
-            writer.append(String.join("", leg_strings));
-            writer.append("""
-                        </tr>
-                """);
+//            elements.addAll(relay_race.getLegDetails2(result));
+
+            return elements;
         }
     }
 
@@ -274,12 +232,6 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsFooter() throws IOException {
-
-            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-        }
-
-        @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final RelayRaceResult result = (RelayRaceResult) r;
@@ -287,6 +239,12 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append(STR."""
                     <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.participant.name)} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result)}</li>
                 """);
+        }
+
+        @Override
+        public void printResultsFooter() throws IOException {
+
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
     }
 }
