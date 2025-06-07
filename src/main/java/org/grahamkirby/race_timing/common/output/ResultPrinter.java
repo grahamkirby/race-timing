@@ -39,7 +39,7 @@ public abstract class ResultPrinter {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract void printResult(RaceResult r) throws IOException;
+    protected abstract void printResult(RaceResult result) throws IOException;
 
     protected void printResultsHeader() throws IOException {
     }

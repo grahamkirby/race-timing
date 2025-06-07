@@ -30,7 +30,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -546,7 +545,7 @@ public class RelayRace extends TimedRace {
             orElse(null);
     }
 
-    List<String> getLegDetails(final RelayRaceResult result, final Function<? super LegOutputDetails, String> leg_output_formatter) {
+    List<String> getLegDetails(final RelayRaceResult result) {
 
         final List<String> leg_details = new ArrayList<>();
         boolean all_previous_legs_completed = true;
@@ -561,7 +560,9 @@ public class RelayRace extends TimedRace {
             final String leg_time = renderDuration(leg_result, DNF_STRING);
             final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
 
-            leg_details.add(leg_output_formatter.apply(new LegOutputDetails(leg_runner_names, leg_mass_start_annotation, leg_time, split_time)));
+            leg_details.add(leg_runner_names + leg_mass_start_annotation);
+            leg_details.add(leg_time);
+            leg_details.add(split_time);
 
             if (!completed) all_previous_legs_completed = false;
         }

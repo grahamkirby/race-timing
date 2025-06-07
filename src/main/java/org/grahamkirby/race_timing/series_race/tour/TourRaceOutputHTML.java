@@ -96,7 +96,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
             super(race, writer);
         }
 
-        private List<String> getResultsColumnHeaders() {
+        protected List<String> getResultsColumnHeaders() {
 
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
 
@@ -112,7 +112,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
             return headers;
         }
 
-        private List<String> getResultsElements(final RaceResult r) throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
 
             final List<String> elements = new ArrayList<>();
 
@@ -129,46 +129,6 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
             elements.add(renderDuration(result, "-"));
 
             return elements;
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            writer.append("""
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                """);
-
-            for (final String header : getResultsColumnHeaders())
-                writer.append(STR."""
-                                <th>\{header}</th>
-                    """);
-
-            writer.append("""
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final TourRaceResult result = (TourRaceResult) r;
-
-            writer.append("""
-                        <tr>
-                """);
-
-            for (final String element : getResultsElements(result))
-                writer.append(STR."""
-                            <td>\{element}</td>
-                """);
-
-            writer.append("""
-                        </tr>
-                """);
         }
     }
 

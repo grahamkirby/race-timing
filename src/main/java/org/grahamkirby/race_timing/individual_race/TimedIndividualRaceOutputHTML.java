@@ -26,9 +26,9 @@ import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
 
 class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
 
@@ -55,39 +55,24 @@ class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsHeader() throws IOException {
+        protected List<String> getResultsColumnHeaders() {
 
-            writer.append("""
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>No</th>
-                            <th>Runner</th>
-                            <th>Club</th>
-                            <th>Cat</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
+            return List.of("Pos", "No", "Runner", "Club", "Category", "Time");
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
 
             final SingleRaceResult result = ((SingleRaceResult) r);
 
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.position_string}</td>
-                        <td>\{result.entry.bib_number}</td>
-                        <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
-                        <td>\{((Runner)result.entry.participant).club}</td>
-                        <td>\{result.entry.participant.category.getShortName()}</td>
-                        <td>\{renderDuration(result, DNF_STRING)}</td>
-                    </tr>
-                """);
+            return List.of(
+                result.position_string,
+                String.valueOf(result.entry.bib_number),
+                race.normalisation.htmlEncode(result.entry.participant.name),
+                ((Runner)result.entry.participant).club,
+                result.entry.participant.category.getShortName(),
+                renderDuration(result, DNF_STRING)
+            );
         }
     }
 
@@ -104,17 +89,17 @@ class TimedIndividualRaceOutputHTML extends RaceOutputHTML {
         }
 
         @Override
-        public void printResultsFooter() throws IOException {
-
-            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-        }
-
-        @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final SingleRaceResult result = ((SingleRaceResult) r);
 
             writer.append(STR."    <li>\{result.position_string} \{race.normalisation.htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result)}</li>\n");
+        }
+
+        @Override
+        public void printResultsFooter() throws IOException {
+
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
     }
 }
