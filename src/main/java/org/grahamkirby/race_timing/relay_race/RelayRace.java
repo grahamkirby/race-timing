@@ -110,6 +110,7 @@ public class RelayRace extends TimedRace {
         super(config_file_path);
     }
 
+    @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
     public static void main(final String[] args) throws Exception {
 
         commonMain(args, config_file_path -> new RelayRace(Paths.get(config_file_path)), "RelayRace");
@@ -295,8 +296,8 @@ public class RelayRace extends TimedRace {
 
         final int leg_number = ((LegResult) r1).leg_number;
 
-        final int recorded_position1 = getRecordedLegPosition(((LegResult) r1).entry.bib_number, leg_number);
-        final int recorded_position2 = getRecordedLegPosition(((LegResult) r2).entry.bib_number, leg_number);
+        final int recorded_position1 = getRecordedLegPosition(((SingleRaceResult) r1).entry.bib_number, leg_number);
+        final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult) r2).entry.bib_number, leg_number);
 
         return Integer.compare(recorded_position1, recorded_position2);
     }

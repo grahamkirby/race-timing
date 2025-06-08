@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 class TourRaceOutputCSV extends SeriesRaceOutputCSV {
@@ -69,7 +68,7 @@ class TourRaceOutputCSV extends SeriesRaceOutputCSV {
             writer.append(STR."\{result.position_string},\{encode(runner.name)},\{encode(runner.club)},\{runner.category.getShortName()},");
 
             for (final Duration time : result.times)
-                writer.append(time != null ? format(time) : "-").append(",");
+                writer.append(renderDuration(time, "-")).append(",");
 
             writer.append(renderDuration(result, "-")).append(LINE_SEPARATOR);
         }
