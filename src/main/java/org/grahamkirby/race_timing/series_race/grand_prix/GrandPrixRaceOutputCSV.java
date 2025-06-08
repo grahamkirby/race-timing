@@ -82,10 +82,7 @@ class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
             writer.append(
                 grand_prix_race.getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> {
-                        final int score = grand_prix_race.calculateRaceScore(individual_race, result.runner);
-                        return score == 0 ? "-" : String.valueOf(score);
-                    }).
+                    map(individual_race -> renderScore(grand_prix_race.calculateRaceScore(individual_race, result.runner), "-")).
                     collect(Collectors.joining(","))
             );
 

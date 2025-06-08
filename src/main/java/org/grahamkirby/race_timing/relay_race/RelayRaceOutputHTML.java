@@ -53,9 +53,6 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResults(writer);
 
-            // TODO suppress mass start legend if no mass starters
-            writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
-
             for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {
 
                 writer.append(STR."<p></p>\{LINE_SEPARATOR}<h4>Leg \{leg_number} Results</h4>\{LINE_SEPARATOR}");
@@ -88,6 +85,17 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
         printResults(writer, new DetailedResultPrinter(race, writer));
+
+        if (areAnyResultsInMassStart())
+            writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
+    }
+
+    private boolean areAnyResultsInMassStart() {
+
+        return race.getOverallResults().stream().
+            map(result -> (RelayRaceResult) result).
+            flatMap(result -> result.leg_results.stream()).
+            anyMatch(result -> result.in_mass_start);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,11 +217,8 @@ class RelayRaceOutputHTML extends RaceOutputHTML {
             elements.add(race.normalisation.htmlEncode(result.entry.participant.name));
             elements.add(result.entry.participant.category.getLongName());
 
-            for (String element : relay_race.getLegDetails(result)) {
+            for (final String element : relay_race.getLegDetails(result))
                 elements.add(race.normalisation.htmlEncode(element));
-            }
-
-//            elements.addAll(relay_race.getLegDetails2(result));
 
             return elements;
         }

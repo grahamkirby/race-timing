@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
@@ -62,13 +63,14 @@ class MidweekRaceOutputCSV extends SeriesRaceOutputCSV {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
             final MidweekRace midweek_race = (MidweekRace) race;
-            final int number_of_races_taken_place = midweek_race.getNumberOfRacesTakenPlace();
 
             writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
             writer.append(
-                midweek_race.getRaces().subList(0, number_of_races_taken_place).stream().
-                    map(individual_race -> String.valueOf(midweek_race.calculateRaceScore(individual_race, result.runner))).
+                midweek_race.getRaces().stream().
+                    filter(Objects::nonNull).
+                    map(individual_race -> midweek_race.calculateRaceScore(individual_race, result.runner)).
+                    map(String::valueOf).
                     collect(Collectors.joining(","))
             );
 
