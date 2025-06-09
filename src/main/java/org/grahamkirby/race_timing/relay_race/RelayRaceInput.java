@@ -37,7 +37,7 @@ import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
-public class RelayRaceInput extends TimedRaceInput {
+class RelayRaceInput extends TimedRaceInput {
 
     // Configuration file keys.
     private static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
@@ -107,6 +107,8 @@ public class RelayRaceInput extends TimedRaceInput {
 
     private void checkDNFs() {
 
+        // TODO update comment and rationalise with TimedIndividualRaceInput.
+
         // This fills in the DNF results that were specified explicitly in the config
         // file, corresponding to cases where the runners reported not completing the
         // course.
@@ -158,7 +160,7 @@ public class RelayRaceInput extends TimedRaceInput {
 
         if (results_path != null)
             for (final String line : Files.readAllLines(race.getPath(results_path)))
-                // TODO rationalise with other comment handling.
+                // TODO rationalise with other comment handling. Use stripComment.
                 if (!line.startsWith(COMMENT_SYMBOL) && !line.isBlank()) {
 
                     final String bib_number = line.split("\t")[0];
@@ -183,10 +185,7 @@ public class RelayRaceInput extends TimedRaceInput {
                     throw new RuntimeException(STR."invalid mass start time for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
                 }
 
-                if (previous_time != null &&
-                    !previous_time.equals(Duration.ZERO) &&
-                    previous_time.compareTo(mass_start_time) > 0)
-
+                if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
                     throw new RuntimeException(STR."invalid mass start time order for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
 
                 previous_time = mass_start_time;

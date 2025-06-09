@@ -336,7 +336,12 @@ public class RelayRaceTest extends RaceTest {
     }
 
     @Test
-    void resultsOutOfOrder() throws Exception {
-        testExpectedErrorMessage("relay_race/results_out_of_order", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    void resultsOutOfOrderA() throws Exception {
+        testExpectedErrorMessage("relay_race/results_out_of_order_a", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    }
+
+    @Test
+    void resultsOutOfOrderB() throws Exception {
+        testExpectedErrorMessage("relay_race/results_out_of_order_b", () -> STR."result out of order at line 16 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 }

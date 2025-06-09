@@ -23,7 +23,9 @@ import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
 public abstract class TimedRaceInput extends SingleRaceInput {
@@ -59,6 +62,15 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         super.validateInputFiles();
 
         validateConfig();
+        validateRawResults(raw_results_path);
+    }
+
+    protected void validateEntries() {
+
+        validateEntriesFilePresent();
+        validateEntriesNumberOfElements();
+        validateEntryCategories();
+        validateBibNumbersUnique();
         validateBibNumbersHaveCorrespondingEntry();
     }
 
@@ -68,20 +80,47 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         return 4;
     }
 
+    private void validateRawResults(final String raw_results_path) {
+
+        try {
+            Duration previous_time = null;
+            final Path raw_results_filename = Paths.get(raw_results_path).getFileName();
+
+            int i = 1;
+            for (final String line : Files.readAllLines(race.getPath(raw_results_path))) {
+
+                final String result_string = stripComment(line);
+
+                if (!result_string.isBlank()) {
+                    final Duration finish_time;
+                    try {
+                        final String time_as_string = result_string.split("\t")[1];
+                        finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
+
+                    } catch (final RuntimeException _) {
+                        throw new RuntimeException(STR."invalid record '\{result_string}' at line \{i} in file '\{raw_results_filename}'");
+                    }
+
+                    if (finish_time != null && previous_time != null && previous_time.compareTo(finish_time) > 0) {
+                        throw new RuntimeException(STR."result out of order at line \{i} in file '\{raw_results_filename}'");
+                    }
+
+                    previous_time = finish_time;
+                }
+                i++;
+            }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected List<RawResult> loadRawResults(final String raw_results_path) throws IOException {
 
-        final AtomicInteger line_number = new AtomicInteger();
-
-        final List<RawResult> raw_results = Files.readAllLines(race.getPath(raw_results_path)).stream().
+        return Files.readAllLines(race.getPath(raw_results_path)).stream().
             map(SingleRaceInput::stripComment).
             filter(Predicate.not(String::isBlank)).
-            map(line -> makeRawResult(line, line_number.getAndIncrement())).
+            map(this::makeRawResult).
             toList();
-
-        // TODO move validation to separate earlier check.
-        validateOrdering(raw_results);
-
-        return raw_results;
     }
 
     public List<RawResult> loadRawResults() throws IOException {
@@ -92,43 +131,6 @@ public abstract class TimedRaceInput extends SingleRaceInput {
     protected RawResult makeRawResult(final String line) {
 
         return new RawResult(line);
-    }
-
-    private RawResult makeRawResult(final String line, final int line_number) {
-
-        // TODO move validation to separate earlier check.
-        try {
-            return makeRawResult(line);
-        } catch (final RuntimeException _) {
-            throw new RuntimeException(STR."invalid record '\{line}' at line \{line_number + 1} in file '\{raw_results_path}'");
-        }
-    }
-
-    private void validateOrdering(final List<? extends RawResult> raw_results) {
-
-        for (int i = 0; i < raw_results.size() - 1; i++) {
-
-            final RawResult result1 = raw_results.get(i);
-            final RawResult result2 = raw_results.get(i + 1);
-
-            if (areResultsOutOfOrder(result1, result2))
-                throw new RuntimeException(STR."result out of order at line \{i + 2} in file '\{Paths.get(raw_results_path).getFileName()}'");
-        }
-    }
-
-    private static boolean areResultsOutOfOrder(final RawResult result1, final RawResult result2) {
-
-        return result1.getRecordedFinishTime() != null &&
-            result2.getRecordedFinishTime() != null &&
-            result1.getRecordedFinishTime().compareTo(result2.getRecordedFinishTime()) > 0;
-    }
-
-    protected void validateEntries() {
-
-        validateEntriesFilePresent();
-        validateEntriesNumberOfElements();
-        validateEntryCategories();
-        validateBibNumbersUnique();
     }
 
     private static String getBibNumber(final String line){
