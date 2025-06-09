@@ -64,7 +64,7 @@ public abstract class SingleRace extends Race {
 
         // Specifies all the bib numbers for runners who did have a finish
         // time recorded but were declared DNF.
-        dnf_string = getProperty(KEY_DNF_FINISHERS, "");
+        dnf_string = getOptionalProperty(KEY_DNF_FINISHERS);
         median_time_string = getOptionalProperty(KEY_MEDIAN_TIME);
     }
 

@@ -106,8 +106,13 @@ public class IndividualRaceTest extends RaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
-    void duplicateBibNumber() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_bib_number", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    void duplicateBibNumberEntered() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_bib_number_entered", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void duplicateBibNumberRecorded() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_bib_number_recorded", () -> STR."duplicate bib number '3' at line 6 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test
@@ -137,7 +142,7 @@ public class IndividualRaceTest extends RaceTest {
 
     @Test
     void resultsOutOfOrder() throws Exception {
-        testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+        testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 5 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test

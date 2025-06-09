@@ -1,5 +1,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.single_race.SingleRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.util.List;
@@ -21,10 +22,12 @@ class TimedIndividualRaceInput extends TimedRaceInput {
     @Override
     protected void validateConfig() {
 
-        validateDNFEntries(race.getOptionalProperty(KEY_DNF_FINISHERS));
+        validateDNFRecords();
     }
 
-    private void validateDNFEntries(final String dnf_string) {
+    private void validateDNFRecords() {
+
+        final String dnf_string = ((SingleRace) race).dnf_string;
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String bib_number : dnf_string.split(",")) {
