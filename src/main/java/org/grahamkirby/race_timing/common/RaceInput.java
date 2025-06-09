@@ -23,4 +23,6 @@ public abstract class RaceInput {
     protected RaceInput(final Race race) {
         this.race = race;
     }
+
+    protected abstract void validateConfig();
 }

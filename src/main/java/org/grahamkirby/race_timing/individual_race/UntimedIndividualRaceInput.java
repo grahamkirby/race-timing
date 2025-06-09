@@ -42,6 +42,10 @@ class UntimedIndividualRaceInput extends SingleRaceInput {
     }
 
     @Override
+    protected void validateConfig() {
+    }
+
+    @Override
     protected void validateEntries() {
     }
 

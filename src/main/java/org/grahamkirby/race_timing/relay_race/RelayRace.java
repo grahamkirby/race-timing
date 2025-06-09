@@ -127,6 +127,11 @@ public class RelayRace extends TimedRace {
     }
 
     @Override
+    public boolean areRecordedBibNumbersUnique() {
+        return false;
+    }
+
+    @Override
     public void calculateResults() {
 
         initialiseResults();

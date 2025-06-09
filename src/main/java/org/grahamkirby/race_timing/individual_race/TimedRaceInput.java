@@ -65,6 +65,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         validateRawResults(raw_results_path);
     }
 
+    @Override
     protected void validateEntries() {
 
         validateEntriesFilePresent();
@@ -73,8 +74,6 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         validateBibNumbersUnique();
         validateBibNumbersHaveCorrespondingEntry();
     }
-
-    protected abstract void validateConfig();
 
     protected int getNumberOfEntryColumns() {
         return 4;
@@ -86,12 +85,28 @@ public abstract class TimedRaceInput extends SingleRaceInput {
             Duration previous_time = null;
             final Path raw_results_filename = Paths.get(raw_results_path).getFileName();
 
+            final Set<Integer> bib_numbers_seen = new HashSet<>();
+
             int i = 1;
             for (final String line : Files.readAllLines(race.getPath(raw_results_path))) {
 
                 final String result_string = stripComment(line);
 
                 if (!result_string.isBlank()) {
+                    if (race.areRecordedBibNumbersUnique()) {
+                        final int bib_number;
+                        try {
+                            final String bib_number_as_string = result_string.split("\t")[0];
+                            bib_number = Integer.parseInt(bib_number_as_string);
+                            if (bib_numbers_seen.contains(bib_number))
+                                throw new RuntimeException(STR."duplicate bib number '\{bib_number}' at line \{i} in file '\{raw_results_filename}'");
+                            bib_numbers_seen.add(bib_number);
+
+                        } catch (final NumberFormatException _) {
+                            throw new RuntimeException(STR."invalid record '\{result_string}' at line \{i} in file '\{raw_results_filename}'");
+                        }
+                    }
+
                     final Duration finish_time;
                     try {
                         final String time_as_string = result_string.split("\t")[1];

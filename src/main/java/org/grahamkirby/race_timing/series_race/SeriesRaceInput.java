@@ -45,6 +45,11 @@ public class SeriesRaceInput extends RaceInput {
         readProperties();
     }
 
+    @Override
+    protected void validateConfig() {
+
+    }
+
     List<SingleRace> loadRaces() throws IOException {
 
         final List<SingleRace> races = new ArrayList<>();

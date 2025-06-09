@@ -49,7 +49,8 @@ public abstract class Race {
     // TODO test missing config file for individual race in series.
     // TODO test incorrect number of races listed in series config.
     // TODO prompt for config file if not supplied as arg.
-    // TODO update README (https://www.makeareadme.com)
+    // TODO update README (https://www.makeareadme.com).
+    // TODO generate racer list for PocketTimer.
 
     /** Comment symbol used within configuration files. */
     public static final String COMMENT_SYMBOL = "#";
@@ -112,6 +113,10 @@ public abstract class Race {
         properties = loadProperties(config_file_path);
 
         configure();
+    }
+
+    public boolean areRecordedBibNumbersUnique() {
+        return true;
     }
 
     @FunctionalInterface

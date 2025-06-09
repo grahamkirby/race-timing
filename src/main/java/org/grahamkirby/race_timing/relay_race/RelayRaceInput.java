@@ -90,12 +90,18 @@ class RelayRaceInput extends TimedRaceInput {
     }
 
     @Override
+    protected void validateConfig() {
+
+        validateMassStartTimes();
+        validateDNFRecords();
+    }
+
+    @Override
     public void validateInputFiles() {
 
         super.validateInputFiles();
 
         validateConfig();
-        checkDNFs();
         validateBibNumbersHaveCorrespondingEntry();
         checkNumberOfResults();
     }
@@ -105,7 +111,7 @@ class RelayRaceInput extends TimedRaceInput {
         return ((RelayRace)race).getNumberOfLegs() + 3;
     }
 
-    private void checkDNFs() {
+    private void validateDNFRecords() {
 
         // TODO update comment and rationalise with TimedIndividualRaceInput.
 
@@ -130,13 +136,6 @@ class RelayRaceInput extends TimedRaceInput {
                 } catch (final NumberFormatException _) {
                     throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{race.config_file_path.getFileName()}'");
                 }
-    }
-
-    @Override
-    protected void validateConfig() {
-
-        checkConfigMassStartTimes();
-        checkDNFs();
     }
 
     private void checkNumberOfResults() {
@@ -169,7 +168,7 @@ class RelayRaceInput extends TimedRaceInput {
                 }
     }
 
-    private void checkConfigMassStartTimes() {
+    private void validateMassStartTimes() {
 
         final String mass_start_elapsed_times = race.getOptionalProperty(RelayRace.KEY_MASS_START_ELAPSED_TIMES);
 
