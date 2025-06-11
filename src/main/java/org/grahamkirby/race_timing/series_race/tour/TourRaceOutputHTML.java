@@ -98,6 +98,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
             super(race, writer);
         }
 
+        @Override
         protected List<String> getResultsColumnHeaders() {
 
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
@@ -114,6 +115,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
             return headers;
         }
 
+        @Override
         protected List<String> getResultsElements(final RaceResult r) {
 
             final List<String> elements = new ArrayList<>();
@@ -161,7 +163,7 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
     }
 
-    private static final class IndividualRaceResultPrinter extends ResultPrinterHTML {
+    private final class IndividualRaceResultPrinter extends ResultPrinterHTML {
 
         private final String sub_heading;
 
@@ -172,43 +174,32 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         }
 
         @Override
-        public void printResultsHeader() throws IOException {
+        protected List<String> getResultsColumnHeaders() {
 
-            // TODO rationalise with OverallResultPrinter.
-            // TODO use getResultsSubHeader().
-
-            writer.append(STR."""
-
-                <p></p>
-                <h4>\{sub_heading}</h4>
-                <table class="fac-table">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>No</th>
-                            <th>Runner</th>
-                            <th>Category</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
+            return List.of("Pos", "No", "Runner", "Category", "Total");
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final List<String> elements = new ArrayList<>();
 
             final SingleRaceResult result = (SingleRaceResult) r;
 
-            writer.append(STR."""
-                    <tr>
-                        <td>\{result.position_string}</td>
-                        <td>\{result.entry.bib_number}</td>
-                        <td>\{race.normalisation.htmlEncode(result.entry.participant.name)}</td>
-                        <td>\{result.entry.participant.category.getShortName()}</td>
-                        <td>\{renderDuration(result, DNF_STRING)}</td>
-                    </tr>
-            """);
+            elements.add(result.position_string);
+            elements.add(String.valueOf(result.entry.bib_number));
+            elements.add(race.normalisation.htmlEncode(result.entry.participant.name));
+            elements.add(result.entry.participant.category.getShortName());
+            elements.add(renderDuration(result, DNF_STRING));
+
+            return elements;
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append(LINE_SEPARATOR).append(getResultsSubHeader(sub_heading));
+            super.printResultsHeader();
         }
     }
 }
