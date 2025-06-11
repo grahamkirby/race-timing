@@ -77,6 +77,8 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 
                 for (final PrizeCategoryGroup group : race.prize_category_groups)
                     printIndividualRaceResults(writer, individual_race, group.categories(), group.group_title());
+
+                writer.append(SOFTWARE_CREDIT_LINK_TEXT).append(LINE_SEPARATOR);
             }
         }
     }
@@ -172,8 +174,12 @@ class TourRaceOutputHTML extends SeriesRaceOutputHTML {
         @Override
         public void printResultsHeader() throws IOException {
 
+            // TODO rationalise with OverallResultPrinter.
+            // TODO use getResultsSubHeader().
+
             writer.append(STR."""
 
+                <p></p>
                 <h4>\{sub_heading}</h4>
                 <table class="fac-table">
                     <thead>

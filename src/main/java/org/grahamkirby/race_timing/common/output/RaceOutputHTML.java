@@ -30,7 +30,7 @@ import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 public abstract class RaceOutputHTML extends RaceOutput {
 
     /** Web link to application on GitHub. */
-    private static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
+    public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,6 +89,7 @@ public abstract class RaceOutputHTML extends RaceOutput {
     @Override
     public String getResultsSubHeader(final String s) {
         return STR."""
+            <p></p>
             <h4>\{s}</h4>
             """;
     }
