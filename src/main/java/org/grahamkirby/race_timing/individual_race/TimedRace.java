@@ -46,22 +46,20 @@ public abstract class TimedRace extends SingleRace {
         super(config_file_path);
     }
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-        if (args.length < 1)
-            System.err.println("usage: java TimedRace <config file path>");
-        else {
-            try {
-                final Properties properties = loadProperties(Paths.get(args[0]));
+        args = readConfigIfNotSupplied(args);
 
-                if (properties.containsKey(KEY_RAW_RESULTS_PATH))
-                    commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)), "TimedIndividualRace");
-                else
-                    commonMain(args, config_file_path -> new UntimedIndividualRace(Paths.get(config_file_path)), "UntimedIndividualRace");
+        try {
+            final Properties properties = loadProperties(Paths.get(args[0]));
 
-            } catch (final Exception e) {
-                System.err.println(e.getMessage());
-            }
+            if (properties.containsKey(KEY_RAW_RESULTS_PATH))
+                commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)));
+            else
+                commonMain(args, config_file_path -> new UntimedIndividualRace(Paths.get(config_file_path)));
+
+        } catch (final Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 

@@ -46,7 +46,6 @@ public abstract class Race {
     // TODO fuzz tests.
     // TODO test missing output directory.
     // TODO test input directory with different name.
-    // TODO prompt for config file if not supplied as arg.
     // TODO update README (https://www.makeareadme.com).
     // TODO generate racer list for PocketTimer.
 
@@ -123,18 +122,26 @@ public abstract class Race {
         Race apply(String config_file_path) throws Exception;
     }
 
-    protected static void commonMain(final String[] args, final RaceFactory factory, final String class_name) {
+    protected static void commonMain(final String[] args, final RaceFactory factory) {
 
         // Path to configuration file should be first argument.
 
-        if (args.length < 1)
-            System.out.println(STR."usage: java \{class_name} <config file path>");
-        else
-            try {
-                factory.apply(args[0]).processResults();
-            } catch (@SuppressWarnings("OverlyBroadCatchBlock") final Throwable e) {
-                System.err.println(e.getMessage());
+        try {
+            factory.apply(readConfigIfNotSupplied(args)[0]).processResults();
+        } catch (final Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    protected static String[] readConfigIfNotSupplied(final String[] args) {
+
+        if (args.length == 0)
+            try (final Scanner scanner = new Scanner(System.in)) {
+                System.out.println("Enter path to configuration file:");
+                return new String[]{scanner.nextLine()};
             }
+
+        return args;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

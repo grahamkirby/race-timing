@@ -149,11 +149,6 @@ public class IndividualRaceTest extends RaceTest {
     }
 
     @Test
-    void noConfigFile() throws Exception {
-        testExpectedErrorMessage(NO_CONFIG, () -> "usage: java TimedRace <config file path>");
-    }
-
-    @Test
     void resultsOutOfOrder() throws Exception {
         testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 5 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
