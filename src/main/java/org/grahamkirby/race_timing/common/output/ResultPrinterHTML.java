@@ -45,8 +45,8 @@ public abstract class ResultPrinterHTML extends ResultPrinter {
 
         for (final String header : getResultsColumnHeaders())
             writer.append(STR."""
-                                <th>\{header}</th>
-                    """);
+                            <th>\{header}</th>
+                """);
 
         writer.append("""
                     </tr>
