@@ -48,7 +48,7 @@ public final class MidweekRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        commonMain(args, config_file_path -> new MidweekRace(Paths.get(config_file_path)), "MidweekRace");
+        commonMain(args, config_file_path -> new MidweekRace(Paths.get(config_file_path)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
