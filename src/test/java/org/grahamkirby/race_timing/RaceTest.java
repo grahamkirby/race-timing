@@ -155,9 +155,13 @@ public abstract class RaceTest {
         failed_test = false;
     }
 
-    void testExpectedErrorMessage(final String configuration_name, final Supplier<String> get_expected_error_message) throws Exception {
+    void testExpectedErrorMessage(final String individual_test_resource_root, final Supplier<String> get_expected_error_message) throws Exception {
 
-        configureTest(configuration_name);
+        configureTest(individual_test_resource_root);
+        testExpectedErrorMessage(new String[]{config_file_path.toString()}, get_expected_error_message);
+    }
+
+    void testExpectedErrorMessage(final String[] args, final Supplier<String> get_expected_error_message) throws Exception {
 
         final String error_output;
 
@@ -165,7 +169,7 @@ public abstract class RaceTest {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(diverted_err));
 
-            invokeMain(new String[]{config_file_path.toString()});
+            invokeMain(args);
 
             error_output = diverted_err.toString();
 
@@ -323,21 +327,22 @@ public abstract class RaceTest {
 
     private static void deleteDirectory(final Path directory) throws IOException {
 
-        Files.walkFileTree(directory, new SimpleFileVisitor<>() {
+        if (directory != null)
+            Files.walkFileTree(directory, new SimpleFileVisitor<>() {
 
-            @Override
-            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                @Override
+                public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
 
-                Files.delete(dir);
-                return CONTINUE;
-            }
+                    Files.delete(dir);
+                    return CONTINUE;
+                }
 
-            @Override
-            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 
-                Files.delete(file);
-                return CONTINUE;
-            }
-        });
+                    Files.delete(file);
+                    return CONTINUE;
+                }
+            });
     }
 }

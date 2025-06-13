@@ -37,4 +37,19 @@ public class TourTest extends RaceTest {
     void nameIncludesComma() throws Exception {
         testExpectedCompletion("series_race/minitour/name_includes_comma");
     }
+
+    @Test
+    void duplicateIndividualRace() throws Exception {
+        testExpectedErrorMessage("series_race/minitour/duplicate_individual_race", () -> STR."duplicate races specified in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void invalidNumberOfIndividualRaces() throws Exception {
+        testExpectedErrorMessage("series_race/minitour/invalid_number_of_individual_races", () -> STR."invalid number of races specified in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void nonExistentIndividualRace() throws Exception {
+        testExpectedErrorMessage("series_race/minitour/non_existent_individual_race", () -> STR."invalid config for race 2 in file '\{config_file_path.getFileName()}'");
+    }
 }

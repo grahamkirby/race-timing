@@ -23,6 +23,8 @@ import org.grahamkirby.race_timing.individual_race.UntimedIndividualRace;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,12 +54,25 @@ public class SeriesRaceInput extends RaceInput {
 
     List<SingleRace> loadRaces() throws IOException {
 
-        final List<SingleRace> races = new ArrayList<>();
+        final int number_of_race_in_series = ((SeriesRace) race).getNumberOfRacesInSeries();
+        if (number_of_race_in_series != race_config_paths.size())
+            throw new RuntimeException(STR."invalid number of races specified in file '\{race.config_file_path.getFileName()}'");
 
-        for (int i = 0; i < ((SeriesRace)race).getNumberOfRacesInSeries(); i++) {
+        final List<SingleRace> races = new ArrayList<>();
+        final List<String> config_paths_seen = new ArrayList<>();
+
+        for (int i = 0; i < number_of_race_in_series; i++) {
 
             final String race_config_path = race_config_paths.get(i);
-            races.add(race_config_path.isBlank() ? null : getIndividualRace(race_config_path, i + 1));
+
+            if (race_config_path.isBlank())
+                races.add(null);
+            else {
+                if (config_paths_seen.contains(race_config_path))
+                    throw new RuntimeException(STR."duplicate races specified in file '\{race.config_file_path.getFileName()}'");
+                config_paths_seen.add(race_config_path);
+                races.add(getIndividualRace(race_config_path, i + 1));
+            }
         }
 
         return races;
@@ -73,10 +88,14 @@ public class SeriesRaceInput extends RaceInput {
     private SingleRace getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
         final SingleRace individual_race;
-        if (loadProperties(race.getPath(race_config_path)).containsKey(KEY_RAW_RESULTS_PATH))
-            individual_race = new TimedIndividualRace(race.getPath(race_config_path));
+        final Path config_path = race.getPath(race_config_path);
+        if (!Files.exists(config_path))
+            throw new RuntimeException(STR."invalid config for race \{race_number} in file '\{race.config_file_path.getFileName()}'");
+
+        if (loadProperties(config_path).containsKey(KEY_RAW_RESULTS_PATH))
+            individual_race = new TimedIndividualRace(config_path);
         else
-            individual_race = new UntimedIndividualRace(race.getPath(race_config_path));
+            individual_race = new UntimedIndividualRace(config_path);
 
         configureIndividualRace(individual_race, race_number);
         individual_race.calculateResults();

@@ -20,9 +20,12 @@ import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.junit.jupiter.api.Test;
 
 import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
-import static org.grahamkirby.race_timing.single_race.SingleRace.*;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
 public class IndividualRaceTest extends RaceTest {
+    public static final String[] NO_CONFIG = {};
+    public static final String[] NON_EXISTENT_CONFIG = {"non-existent-config-file"};
 
     // TODO Test for illegal bib number in raw times.
 
@@ -138,6 +141,16 @@ public class IndividualRaceTest extends RaceTest {
     @Test
     void invalidRawTime() throws Exception {
         testExpectedErrorMessage("individual_race/invalid_raw_time", () -> STR."invalid record '3\tXXX' at line 4 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    }
+
+    @Test
+    void missingConfigFile() throws Exception {
+        testExpectedErrorMessage(NON_EXISTENT_CONFIG, () -> "missing config file: 'non-existent-config-file'");
+    }
+
+    @Test
+    void noConfigFile() throws Exception {
+        testExpectedErrorMessage(NO_CONFIG, () -> "usage: java TimedRace <config file path>");
     }
 
     @Test

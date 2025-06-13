@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 
 public abstract class TimedRace extends SingleRace {
 
@@ -47,10 +48,20 @@ public abstract class TimedRace extends SingleRace {
 
     public static void main(final String[] args) throws Exception {
 
-        if (loadProperties(Paths.get(args[0])).containsKey(KEY_RAW_RESULTS_PATH)) {
-            commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)), "TimedIndividualRace");
-        } else {
-            commonMain(args, config_file_path -> new UntimedIndividualRace(Paths.get(config_file_path)), "UntimedIndividualRace");
+        if (args.length < 1)
+            System.err.println("usage: java TimedRace <config file path>");
+        else {
+            try {
+                final Properties properties = loadProperties(Paths.get(args[0]));
+
+                if (properties.containsKey(KEY_RAW_RESULTS_PATH))
+                    commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)), "TimedIndividualRace");
+                else
+                    commonMain(args, config_file_path -> new UntimedIndividualRace(Paths.get(config_file_path)), "UntimedIndividualRace");
+
+            } catch (final Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
 

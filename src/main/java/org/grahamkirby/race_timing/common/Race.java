@@ -46,8 +46,6 @@ public abstract class Race {
     // TODO fuzz tests.
     // TODO test missing output directory.
     // TODO test input directory with different name.
-    // TODO test missing config file for individual race in series.
-    // TODO test incorrect number of races listed in series config.
     // TODO prompt for config file if not supplied as arg.
     // TODO update README (https://www.makeareadme.com).
     // TODO generate racer list for PocketTimer.
@@ -131,13 +129,12 @@ public abstract class Race {
 
         if (args.length < 1)
             System.out.println(STR."usage: java \{class_name} <config file path>");
-        else {
+        else
             try {
                 factory.apply(args[0]).processResults();
             } catch (@SuppressWarnings("OverlyBroadCatchBlock") final Throwable e) {
                 System.err.println(e.getMessage());
             }
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,6 +436,9 @@ public abstract class Race {
 
     @SuppressWarnings("OverlyBroadThrowsClause")
     public static Properties loadProperties(final Path config_file_path) throws IOException {
+
+        if (!Files.exists(config_file_path))
+            throw new RuntimeException(STR."missing config file: '\{config_file_path.getFileName()}'");
 
         try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
 
