@@ -42,6 +42,7 @@ public abstract class Race {
     // TODO tests - check existence of required config fields.
     // TODO tests - validate required config fields.
     // TODO tests - validate optional config fields.
+    // TODO test for illegal bib number in raw times.
     // TODO mutation tests.
     // TODO fuzz tests.
     // TODO test missing output directory.

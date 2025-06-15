@@ -36,7 +36,7 @@ import java.util.function.Predicate;
 public final class MidweekRace extends SeriesRace {
 
     // Configuration file keys.
-    private static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
+    public static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
 
     private int score_for_first_place;
 
@@ -69,7 +69,7 @@ public final class MidweekRace extends SeriesRace {
 
     @Override
     protected RaceInput getInput() {
-        return new SeriesRaceInput(this);
+        return new MidweekRaceInput(this);
     }
 
     @Override

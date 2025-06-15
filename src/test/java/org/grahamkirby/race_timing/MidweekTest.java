@@ -19,6 +19,9 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
 import org.junit.jupiter.api.Test;
 
+import static org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace.KEY_QUALIFYING_CLUBS;
+import static org.grahamkirby.race_timing.series_race.midweek.MidweekRace.KEY_SCORE_FOR_FIRST_PLACE;
+
 public class MidweekTest extends AbstractRaceTest {
 
     @Override
@@ -51,5 +54,10 @@ public class MidweekTest extends AbstractRaceTest {
     @Test
     void nameIncludesComma() throws Exception {
         testExpectedCompletion("series_race/midweek/name_includes_comma");
+    }
+
+    @Test
+    void missingPropertyKeyScoreForFirstPlace() throws Exception {
+        testExpectedErrorMessage("series_race/midweek/missing_property_score_for_first_place", () -> STR."no entry for key '\{KEY_SCORE_FOR_FIRST_PLACE}' in file '\{config_file_path.getFileName()}'");
     }
 }

@@ -20,7 +20,8 @@ import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
 
 import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
-import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_MASS_START_ELAPSED_TIMES;
+import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.*;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 
 public class RelayRaceTest extends AbstractRaceTest {
@@ -343,5 +344,15 @@ public class RelayRaceTest extends AbstractRaceTest {
     @Test
     void resultsOutOfOrderB() throws Exception {
         testExpectedErrorMessage("relay_race/results_out_of_order_b", () -> STR."result out of order at line 16 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    }
+
+    @Test
+    void missingPropertyNumberOfLegs() throws Exception {
+        testExpectedErrorMessage("relay_race/missing_property_number_of_legs", () -> STR."no entry for key '\{KEY_NUMBER_OF_LEGS}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyPairedLegs() throws Exception {
+        testExpectedErrorMessage("relay_race/missing_property_paired_legs", () -> STR."no entry for key '\{KEY_PAIRED_LEGS}' in file '\{config_file_path.getFileName()}'");
     }
 }

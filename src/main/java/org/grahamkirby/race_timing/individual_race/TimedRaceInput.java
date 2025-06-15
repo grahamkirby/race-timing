@@ -36,12 +36,13 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing.common.Race.*;
 
 public abstract class TimedRaceInput extends SingleRaceInput {
 
     // Configuration file keys.
     public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
 
     protected String entries_path, raw_results_path;
 
@@ -52,8 +53,8 @@ public abstract class TimedRaceInput extends SingleRaceInput {
     @Override
     protected void readProperties() {
 
-        entries_path = race.getOptionalProperty(KEY_ENTRIES_PATH);
-        raw_results_path = race.getOptionalProperty(KEY_RAW_RESULTS_PATH);
+        entries_path = race.getRequiredProperty(KEY_ENTRIES_PATH);
+        raw_results_path = race.getRequiredProperty(KEY_RAW_RESULTS_PATH);
     }
 
     @Override
@@ -63,6 +64,15 @@ public abstract class TimedRaceInput extends SingleRaceInput {
 
         validateConfig();
         validateRawResults(raw_results_path);
+    }
+
+    @Override
+    protected void validateRequiredPropertiesPresent() {
+
+        super.validateRequiredPropertiesPresent();
+
+        race.getRequiredProperty(KEY_ENTRIES_PATH);
+        race.getRequiredProperty(KEY_RAW_RESULTS_PATH);
     }
 
     @Override

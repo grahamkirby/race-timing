@@ -30,7 +30,6 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 public abstract class SingleRace extends Race {
 
     // Configuration file keys.
-    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
     public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
     public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
     private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";

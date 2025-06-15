@@ -31,7 +31,7 @@ public abstract class RaceInput {
         validateRequiredPropertiesPresent();
     }
 
-    private void validateRequiredPropertiesPresent() {
+    protected void validateRequiredPropertiesPresent() {
 
         race.getRequiredProperty(KEY_YEAR);
         race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS);

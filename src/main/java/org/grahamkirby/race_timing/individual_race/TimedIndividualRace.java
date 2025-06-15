@@ -3,10 +3,12 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 
@@ -18,6 +20,12 @@ public class TimedIndividualRace extends TimedRace {
 
     public TimedIndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
+    }
+
+    @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
+    public static void main(final String[] args) throws Exception {
+
+        commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)));
     }
 
     @Override

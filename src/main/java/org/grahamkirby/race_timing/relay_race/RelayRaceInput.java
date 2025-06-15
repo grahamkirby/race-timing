@@ -33,8 +33,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_NUMBER_OF_LEGS;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAIRED_LEGS;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
 class RelayRaceInput extends TimedRaceInput {
@@ -93,6 +94,7 @@ class RelayRaceInput extends TimedRaceInput {
     protected void validateConfig() {
 
         super.validateConfig();
+
         validateMassStartTimes();
         validateDNFRecords();
     }
@@ -105,6 +107,15 @@ class RelayRaceInput extends TimedRaceInput {
         validateConfig();
         validateBibNumbersHaveCorrespondingEntry();
         checkNumberOfResults();
+    }
+
+    @Override
+    protected void validateRequiredPropertiesPresent() {
+
+        super.validateRequiredPropertiesPresent();
+
+        race.getRequiredProperty(KEY_NUMBER_OF_LEGS);
+        race.getRequiredProperty(KEY_PAIRED_LEGS);
     }
 
     @Override

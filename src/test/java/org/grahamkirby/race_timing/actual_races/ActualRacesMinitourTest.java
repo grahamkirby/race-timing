@@ -58,4 +58,9 @@ public class ActualRacesMinitourTest extends AbstractRaceTest {
     void minitour2024() throws Exception {
         testExpectedCompletion("actual_races/series_race/minitour/2024");
     }
+
+    @Test
+    void minitour2025() throws Exception {
+        testExpectedCompletion("actual_races/series_race/minitour/2025");
+    }
 }

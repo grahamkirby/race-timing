@@ -40,10 +40,10 @@ import java.util.function.Predicate;
 public final class GrandPrixRace extends SeriesRace {
 
     // Configuration file keys.
-    private static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
-    private static final String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
-    private static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
-    private static final String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
+    public static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
+    public static final String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
+    public static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
+    public static final String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
 
     List<RaceCategory> race_categories;
     private List<Integer> race_temporal_positions;
@@ -83,7 +83,7 @@ public final class GrandPrixRace extends SeriesRace {
 
     @Override
     protected RaceInput getInput() {
-        return new SeriesRaceInput(this);
+        return new GrandPrixRaceInput(this);
     }
 
     @Override

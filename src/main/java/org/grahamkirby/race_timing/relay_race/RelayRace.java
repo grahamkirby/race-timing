@@ -41,18 +41,13 @@ import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDura
 public class RelayRace extends TimedRace {
 
     // Configuration file keys.
-    private static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
-    private static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
+    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
+    public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     private static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
     public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
     private static final String KEY_START_OFFSET = "START_OFFSET";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /** Packages details of a particular leg for output. */
-    record LegOutputDetails(String leg_runner_names, String leg_mass_start_annotation,
-                            String leg_time, String split_time) {
-    }
 
     /** Packages details of an individually recorded leg start (unusual). */
     private record IndividualStart(int bib_number, int leg_number, Duration start_time) {

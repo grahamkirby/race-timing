@@ -35,6 +35,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
+import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
+
 public abstract class TimedRace extends SingleRace {
 
     public List<SingleRaceEntry> entries;
@@ -44,23 +46,6 @@ public abstract class TimedRace extends SingleRace {
 
     protected TimedRace(final Path config_file_path) throws IOException {
         super(config_file_path);
-    }
-
-    public static void main(String[] args) throws Exception {
-
-        args = readConfigIfNotSupplied(args);
-
-        try {
-            final Properties properties = loadProperties(Paths.get(args[0]));
-
-            if (properties.containsKey(KEY_RAW_RESULTS_PATH))
-                commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)));
-            else
-                commonMain(args, config_file_path -> new UntimedIndividualRace(Paths.get(config_file_path)));
-
-        } catch (final Exception e) {
-            System.err.println(e.getMessage());
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

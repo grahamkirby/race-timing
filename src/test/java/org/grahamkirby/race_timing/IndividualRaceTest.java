@@ -16,23 +16,24 @@
  */
 package org.grahamkirby.race_timing;
 
+import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
 import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.junit.jupiter.api.Test;
 
 import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
+import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAIRED_LEGS;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
 public class IndividualRaceTest extends AbstractRaceTest {
-    public static final String[] NO_CONFIG = {};
-    public static final String[] NON_EXISTENT_CONFIG = {"non-existent-config-file"};
 
-    // TODO Test for illegal bib number in raw times.
+    public static final String[] NON_EXISTENT_CONFIG = {"non-existent-config-file"};
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
-        TimedRace.main(args);
+//        TimedRace.main(args);
+        TimedIndividualRace.main(args);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,5 +183,15 @@ public class IndividualRaceTest extends AbstractRaceTest {
     @Test
     void unregisteredRunner() throws Exception {
         testExpectedErrorMessage("individual_race/unregistered_runner", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    }
+
+    @Test
+    void missingPropertyEntriesPath() throws Exception {
+        testExpectedErrorMessage("individual_race/missing_property_entries_path", () -> STR."no entry for key '\{KEY_ENTRIES_PATH}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyRawResultsPath() throws Exception {
+        testExpectedErrorMessage("individual_race/missing_property_raw_results_path", () -> STR."no entry for key '\{KEY_RAW_RESULTS_PATH}' in file '\{config_file_path.getFileName()}'");
     }
 }

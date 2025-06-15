@@ -30,7 +30,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing.series_race.SeriesRace.KEY_MINIMUM_NUMBER_OF_RACES;
+import static org.grahamkirby.race_timing.series_race.SeriesRace.KEY_NUMBER_OF_RACES_IN_SERIES;
 
 public class SeriesRaceInput extends RaceInput {
 
@@ -47,10 +49,15 @@ public class SeriesRaceInput extends RaceInput {
         readProperties();
     }
 
-//    @Override
-//    protected void validateConfig() {
-//
-//    }
+    @Override
+    protected void validateRequiredPropertiesPresent() {
+
+        super.validateRequiredPropertiesPresent();
+
+        race.getRequiredProperty(KEY_RACES);
+        race.getRequiredProperty(KEY_NUMBER_OF_RACES_IN_SERIES);
+        race.getRequiredProperty(KEY_MINIMUM_NUMBER_OF_RACES);
+    }
 
     List<SingleRace> loadRaces() throws IOException {
 

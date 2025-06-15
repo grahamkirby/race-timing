@@ -19,6 +19,10 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
 
+import static org.grahamkirby.race_timing.series_race.midweek.MidweekRace.KEY_SCORE_FOR_FIRST_PLACE;
+import static org.grahamkirby.race_timing.series_race.tour.TourRaceInput.KEY_TIME_TRIAL_RACE;
+import static org.grahamkirby.race_timing.series_race.tour.TourRaceInput.KEY_TIME_TRIAL_STARTS;
+
 public class TourTest extends AbstractRaceTest {
 
     @Override
@@ -51,5 +55,14 @@ public class TourTest extends AbstractRaceTest {
     @Test
     void nonExistentIndividualRace() throws Exception {
         testExpectedErrorMessage("series_race/minitour/non_existent_individual_race", () -> STR."invalid config for race 2 in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyKeyTimeTrialRace() throws Exception {
+        testExpectedErrorMessage("series_race/minitour/missing_property_time_trial_race", () -> STR."no entry for key '\{KEY_TIME_TRIAL_RACE}' in file '\{config_file_path.getFileName()}'");
+    }
+    @Test
+    void missingPropertyKeyTimeTrialStarts() throws Exception {
+        testExpectedErrorMessage("series_race/minitour/missing_property_time_trial_starts", () -> STR."no entry for key '\{KEY_TIME_TRIAL_STARTS}' in file '\{config_file_path.getFileName()}'");
     }
 }

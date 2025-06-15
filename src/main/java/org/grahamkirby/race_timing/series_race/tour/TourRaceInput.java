@@ -33,7 +33,7 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
-class TourRaceInput extends SeriesRaceInput {
+public class TourRaceInput extends SeriesRaceInput {
 
     private record SelfTimedRun(int bib_number, int race_number) {
     }
@@ -43,8 +43,8 @@ class TourRaceInput extends SeriesRaceInput {
     // Configuration file keys.
     private static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
     private static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
-    private static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
-    private static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
+    public static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
+    public static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
     private static final String KEY_SELF_TIMED = "SELF_TIMED";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,6 +80,15 @@ class TourRaceInput extends SeriesRaceInput {
     protected void configureIndividualRace(final SingleRace individual_race, final int race_number) {
 
         applyRunnerStartOffsets((TimedRace) individual_race, race_number);
+    }
+
+    @Override
+    protected void validateRequiredPropertiesPresent() {
+
+        super.validateRequiredPropertiesPresent();
+
+        race.getRequiredProperty(KEY_TIME_TRIAL_RACE);
+        race.getRequiredProperty(KEY_TIME_TRIAL_STARTS);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

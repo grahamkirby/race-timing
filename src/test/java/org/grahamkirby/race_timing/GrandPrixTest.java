@@ -19,6 +19,9 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
 import org.junit.jupiter.api.Test;
 
+import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace.*;
+
 class GrandPrixTest extends AbstractRaceTest {
 
     @Override
@@ -51,5 +54,25 @@ class GrandPrixTest extends AbstractRaceTest {
     @Test
     void illegalCategoryChangeGenderMismatch() throws Exception {
         testExpectedErrorMessage("series_race/grand_prix/illegal_category_change_gender_mismatch", () -> "invalid category change: runner 'Fictional Runner4' changed from MS to FS at Sandy Slither");
+    }
+
+    @Test
+    void missingPropertyRaceCategoriesPath() throws Exception {
+        testExpectedErrorMessage("series_race/grand_prix/missing_property_race_categories_path", () -> STR."no entry for key '\{KEY_RACE_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyRaceTemporalOrder() throws Exception {
+        testExpectedErrorMessage("series_race/grand_prix/missing_property_race_temporal_order", () -> STR."no entry for key '\{KEY_RACE_TEMPORAL_ORDER}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyQualifyingClubs() throws Exception {
+        testExpectedErrorMessage("series_race/grand_prix/missing_property_qualifying_clubs", () -> STR."no entry for key '\{KEY_QUALIFYING_CLUBS}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyScoreForMedianPosition() throws Exception {
+        testExpectedErrorMessage("series_race/grand_prix/missing_property_score_for_median_position", () -> STR."no entry for key '\{KEY_SCORE_FOR_MEDIAN_POSITION}' in file '\{config_file_path.getFileName()}'");
     }
 }
