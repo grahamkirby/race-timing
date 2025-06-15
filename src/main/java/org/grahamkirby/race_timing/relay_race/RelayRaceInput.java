@@ -92,6 +92,7 @@ class RelayRaceInput extends TimedRaceInput {
     @Override
     protected void validateConfig() {
 
+        super.validateConfig();
         validateMassStartTimes();
         validateDNFRecords();
     }

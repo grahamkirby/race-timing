@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
 
-public class TourTest extends RaceTest {
+public class TourTest extends AbstractRaceTest {
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {

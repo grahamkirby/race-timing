@@ -16,11 +16,11 @@
  */
 package org.grahamkirby.race_timing.actual_races;
 
-import org.grahamkirby.race_timing.RaceTest;
+import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
 
-public class ActualRacesTourTest extends RaceTest {
+public class ActualRacesTourTest extends AbstractRaceTest {
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {

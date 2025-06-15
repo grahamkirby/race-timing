@@ -38,7 +38,7 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class RaceTest {
+public abstract class AbstractRaceTest {
 
     // File names that may be present in list of expected output files for a given test, but should be ignored.
     private static final List<String> ignored_file_names = loadIgnoredFileNames();

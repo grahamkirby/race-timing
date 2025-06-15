@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
 import org.junit.jupiter.api.Test;
 
-public class MidweekTest extends RaceTest {
+public class MidweekTest extends AbstractRaceTest {
 
     @Override
     protected void invokeMain(String[] args) throws Exception {

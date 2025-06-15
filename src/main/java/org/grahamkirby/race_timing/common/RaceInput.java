@@ -16,6 +16,8 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import static org.grahamkirby.race_timing.common.Race.*;
+
 public abstract class RaceInput {
 
     protected final Race race;
@@ -24,5 +26,17 @@ public abstract class RaceInput {
         this.race = race;
     }
 
-    protected abstract void validateConfig();
+    protected void validateConfig() {
+
+        validateRequiredPropertiesPresent();
+    }
+
+    private void validateRequiredPropertiesPresent() {
+
+        race.getRequiredProperty(KEY_YEAR);
+        race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS);
+        race.getRequiredProperty(KEY_RACE_NAME_FOR_FILENAMES);
+        race.getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH);
+        race.getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH);
+    }
 }

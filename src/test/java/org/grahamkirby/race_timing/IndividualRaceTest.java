@@ -19,11 +19,12 @@ package org.grahamkirby.race_timing;
 import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.junit.jupiter.api.Test;
 
+import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RAW_RESULTS_PATH;
 
-public class IndividualRaceTest extends RaceTest {
+public class IndividualRaceTest extends AbstractRaceTest {
     public static final String[] NO_CONFIG = {};
     public static final String[] NON_EXISTENT_CONFIG = {"non-existent-config-file"};
 
@@ -146,6 +147,31 @@ public class IndividualRaceTest extends RaceTest {
     @Test
     void missingConfigFile() throws Exception {
         testExpectedErrorMessage(NON_EXISTENT_CONFIG, () -> "missing config file: 'non-existent-config-file'");
+    }
+
+    @Test
+    void missingPropertyYear() throws Exception {
+        testExpectedErrorMessage("race/missing_property_year", () -> STR."no entry for key '\{KEY_YEAR}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyRaceNameForResults() throws Exception {
+        testExpectedErrorMessage("race/missing_property_race_name_for_results", () -> STR."no entry for key '\{KEY_RACE_NAME_FOR_RESULTS}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyRaceNameForFilenames() throws Exception {
+        testExpectedErrorMessage("race/missing_property_race_name_for_filenames", () -> STR."no entry for key '\{KEY_RACE_NAME_FOR_FILENAMES}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyCategoriesEntryPath() throws Exception {
+        testExpectedErrorMessage("race/missing_property_categories_entry_path", () -> STR."no entry for key '\{KEY_CATEGORIES_ENTRY_PATH}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyCategoriesPrizePath() throws Exception {
+        testExpectedErrorMessage("race/missing_property_categories_prize_path", () -> STR."no entry for key '\{KEY_CATEGORIES_PRIZE_PATH}' in file '\{config_file_path.getFileName()}'");
     }
 
     @Test

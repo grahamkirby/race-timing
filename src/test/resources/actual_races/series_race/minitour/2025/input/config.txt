@@ -1,0 +1,24 @@
+YEAR = 2025
+RACE_NAME_FOR_RESULTS = Minitour of Fife
+RACE_NAME_FOR_FILENAMES = minitour
+
+RACES = race1/input/config.txt,race2/input/config.txt,race3/input/config.txt,race4/input/config.txt,race5/input/config.txt
+NUMBER_OF_RACES_IN_SERIES = 5
+MINIMUM_NUMBER_OF_RACES = 5
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
+CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
+
+WAVE_START_OFFSETS = 00:01:00,00:02:00,00:01:00,00:00:00,00:01:00
+
+# Categories starting in the second wave.
+SECOND_WAVE_CATEGORIES = FU9,MU9,FU11,MU11
+
+# Comma-separated sequence of bib-number/race-number for self-timed runs
+# (which should not have start offsets applied).
+SELF_TIMED = 126/3
+
+# Details of time-trial race starts: runners-per-wave,inter-wave-interval.
+TIME_TRIAL_RACE = 4
+TIME_TRIAL_STARTS = 4,00:00:30

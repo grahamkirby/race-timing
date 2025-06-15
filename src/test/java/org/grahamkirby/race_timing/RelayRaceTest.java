@@ -23,7 +23,7 @@ import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENT
 import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_MASS_START_ELAPSED_TIMES;
 import static org.grahamkirby.race_timing.single_race.SingleRace.*;
 
-public class RelayRaceTest extends RaceTest {
+public class RelayRaceTest extends AbstractRaceTest {
 
     // TODO test duplicate bib number in individual raw results.
     // TODO test missing property in config file.

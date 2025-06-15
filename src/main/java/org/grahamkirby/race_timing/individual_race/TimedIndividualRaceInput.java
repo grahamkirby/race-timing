@@ -22,6 +22,7 @@ class TimedIndividualRaceInput extends TimedRaceInput {
     @Override
     protected void validateConfig() {
 
+        super.validateConfig();
         validateDNFRecords();
     }
 
