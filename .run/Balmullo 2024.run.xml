@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Balmullo 2024" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.grahamkirby.race_timing.individual_race.TimedIndividualRace" />
+    <module name="race-timing" />
+    <option name="PROGRAM_PARAMETERS" value="src/main/resources/individual_race/balmullo/2024/input/config.txt" />
+    <selectedOptions>
+      <option name="environmentVariables" visible="false" />
+    </selectedOptions>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,5 @@
+#!/bin/sh
+if git diff --cached | grep -q 'private static final boolean DEBUG = true;'; then
+    echo "Commit blocked: DEBUG flag is set."
+    exit 1
+fi
