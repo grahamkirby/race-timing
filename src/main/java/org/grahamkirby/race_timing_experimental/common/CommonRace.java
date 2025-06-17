@@ -59,14 +59,17 @@ public class CommonRace implements Race {
         this.config_file_path = config_file_path;
     }
 
+    @Override
     public void setPrizes(final RacePrizes prizes) {
         this.prizes = prizes;
     }
 
+    @Override
     public void setInput(final RaceInput input) {
         this.input = input;
     }
 
+    @Override
     public void setRaceImpl(final RaceImpl race_impl) {
         this.race_impl = race_impl;
     }
@@ -76,24 +79,15 @@ public class CommonRace implements Race {
 
         properties = loadProperties(config_file_path);
 
-        configure();
-        race_impl.calculateResults();
-        race_impl.outputResults();
-
-    }
-
-    protected void configure() throws IOException {
-
-        initialise();
+        notes = new StringBuilder();
         race_impl.processProperties();
 
         configureCategories();
         race_impl.configureInputData();
-    }
 
-    private void initialise() {
+        overall_results = race_impl.calculateResults();
 
-        notes = new StringBuilder();
+        race_impl.outputResults(overall_results);
     }
 
     private void configureCategories() throws IOException {

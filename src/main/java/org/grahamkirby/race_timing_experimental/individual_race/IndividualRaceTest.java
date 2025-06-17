@@ -9,7 +9,7 @@ public class IndividualRaceTest {
 
     public static void main(String[] args) throws IOException {
 
-        Race individual_race = IndividualRaceFactory.makeIndividualRace(Paths.get("config.txt"));
+        Race individual_race = IndividualRaceFactory.makeIndividualRace(Paths.get("src/main/resources/individual_race/balmullo/2024/input/config.txt"));
         individual_race.processResults();
     }
 }

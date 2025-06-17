@@ -45,12 +45,12 @@ public abstract class SingleRaceInput extends RaceInput {
         validateEntries();
     }
 
-    protected static String stripComment(final String line) {
+    public static String stripComment(final String line) {
 
         return line.split(COMMENT_SYMBOL)[0];
     }
 
-    protected static String stripEntryComment(final String line) {
+    public static String stripEntryComment(final String line) {
 
         return line.startsWith(COMMENT_SYMBOL) ? "" : line;
     }
