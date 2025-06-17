@@ -77,18 +77,4 @@ public abstract class RaceOutputCSV extends RaceOutput {
     public String getPrizeCategoryFooter() {
         return "";
     }
-
-//    public static String renderDuration(final RaceResult result, final String alternative) {
-//
-//        if (!result.canComplete()) return alternative;
-//
-//        // Messy because duration() is defined for single races and also tour races; other series races use scores rather than aggregate times.
-//        final Duration duration = result instanceof SingleRaceResult ? ((SingleRaceResult) result).duration() : ((TourRaceResult) result).duration();
-//
-//        return format(duration);
-//    }
-//
-//    public static String renderDuration(final RaceResult result) {
-//        return renderDuration(result, "");
-//    }
 }

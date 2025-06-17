@@ -71,7 +71,7 @@ public abstract class Race {
     public static final int UNKNOWN_BIB_NUMBER = 0;
 
     /** Index of prize category group name within the relevant config file. */
-    private static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
+    public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

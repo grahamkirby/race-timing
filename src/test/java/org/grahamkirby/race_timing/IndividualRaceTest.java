@@ -32,7 +32,6 @@ public class IndividualRaceTest extends AbstractRaceTest {
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
-//        TimedRace.main(args);
         TimedIndividualRace.main(args);
     }
 
