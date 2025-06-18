@@ -13,12 +13,6 @@ public class IndividualRaceFactory {
 
         Race race = new CommonRace(config_file_path);
 
-        RaceImpl single_race = new SingleRace(race);
-        race.setRaceImpl(single_race);
-
-        SingleRaceType individual_race = new IndividualRace(single_race);
-        single_race.setRaceType(individual_race);
-
         return race;
     }
 }

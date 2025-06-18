@@ -5,6 +5,7 @@ import org.grahamkirby.race_timing.common.RacePrizes;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Properties;
 
 public interface Race {
 
@@ -12,12 +13,13 @@ public interface Race {
 
     void setInput(RaceInput input);
 
-    void setRaceImpl(RaceImpl race_impl);
+    void setResultsCalculator(ResultsCalculator results_calculator);
+
+    void setResultsOutput(ResultsOutput results_output);
 
     void processResults() throws IOException;
 
-    String getOptionalProperty(String key);
-    String getRequiredProperty(String key);
+    Properties getProperties();
 
     Path getPath(String results_path);
 }

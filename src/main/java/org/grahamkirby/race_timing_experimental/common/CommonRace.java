@@ -26,7 +26,6 @@ public class CommonRace implements Race {
 
     public Path config_file_path;
 
-    private RaceImpl race_impl;
     private Properties properties;
 
     public RacePrizes prizes;
@@ -69,9 +68,17 @@ public class CommonRace implements Race {
         this.input = input;
     }
 
+    ResultsCalculator results_calculator;
+    ResultsOutput results_output;
+
     @Override
-    public void setRaceImpl(final RaceImpl race_impl) {
-        this.race_impl = race_impl;
+    public void setResultsCalculator(final ResultsCalculator results_calculator) {
+        this.results_calculator = results_calculator;
+    }
+
+    @Override
+    public void setResultsOutput(final ResultsOutput results_output) {
+        this.results_output = results_output;
     }
 
     @Override
@@ -80,14 +87,14 @@ public class CommonRace implements Race {
         properties = loadProperties(config_file_path);
 
         notes = new StringBuilder();
-        race_impl.processProperties();
+//        race_impl.processProperties();
 
         configureCategories();
-        race_impl.configureInputData();
+//        race_impl.configureInputData();
 
-        overall_results = race_impl.calculateResults();
+        List<RaceResult> overall_results = results_calculator.calculateResults();
 
-        race_impl.outputResults(overall_results);
+        results_output.outputResults(overall_results);
     }
 
     private void configureCategories() throws IOException {
@@ -126,15 +133,13 @@ public class CommonRace implements Race {
         return property;
     }
 
-    public String getOptionalProperty(final String key) {
+    @Override
+    public Properties getProperties() {
 
-        return properties.getProperty(key);
+        return properties;
     }
 
-    public String getProperty(final String key, final String default_value) {
 
-        return properties.getProperty(key, default_value);
-    }
 
     /** Loads prize category groups from the given file. */
     private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
