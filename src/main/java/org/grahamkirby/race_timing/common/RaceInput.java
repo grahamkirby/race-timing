@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.common;
 
-
 import static org.grahamkirby.race_timing.common.Race.*;
 
 public abstract class RaceInput {

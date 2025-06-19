@@ -98,8 +98,6 @@ public class CommonRace implements Race {
     public void setCategoriesProcessor() {
     }
 
-
-
     @Override
     public void setInput(final RaceInput input) {
         this.input = input;
@@ -119,16 +117,12 @@ public class CommonRace implements Race {
     }
 
     @Override
-    public void processResults() throws IOException {
+    public void processResults() {
 
         config = config_processor.loadConfig(config_file_path);
-
         category_details = categories_processor.getCategoryDetails();
-
         race_data = race_data_processor.getRaceData();
-
         race_results = results_calculator.calculateResults();
-
         results_output.outputResults();
     }
 
@@ -146,6 +140,21 @@ public class CommonRace implements Race {
         return path.startsWith("/") ?
             getPathRelativeToProjectRoot(path) :
             getPathRelativeToRaceConfigFile(path);
+    }
+
+    @Override
+    public void setConfigProcessor(ConfigProcessor config_processor) {
+
+    }
+
+    @Override
+    public void setCategoriesProcessor(CategoriesProcessor categories_processor) {
+
+    }
+
+    @Override
+    public void setRaceDataProcessor(RaceDataProcessor race_data_processor) {
+
     }
 
     private static Path getPathRelativeToProjectRoot(final String path) {

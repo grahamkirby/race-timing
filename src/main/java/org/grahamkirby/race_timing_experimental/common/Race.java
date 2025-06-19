@@ -40,4 +40,10 @@ public interface Race {
     Properties getProperties();
 
     Path getPath(String results_path);
+
+    void setConfigProcessor(ConfigProcessor config_processor);
+
+    void setCategoriesProcessor(CategoriesProcessor categories_processor);
+
+    void setRaceDataProcessor(RaceDataProcessor race_data_processor);
 }

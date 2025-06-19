@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
@@ -32,12 +31,8 @@ import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Properties;
-
-import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
 
 public abstract class TimedRace extends SingleRace {
 
