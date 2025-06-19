@@ -13,6 +13,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,6 +53,13 @@ public class CommonRace implements Race {
      * Value is read from configuration file using key KEY_CATEGORIES_PRIZE_PATH.
      */
     public List<PrizeCategoryGroup> prize_category_groups;
+    private CategoriesProcessor categories_processor;
+    private CategoryDetails category_details;
+    private RaceData race_data;
+    private Config config;
+    private ConfigProcessor config_processor;
+    private RaceDataProcessor race_data_processor;
+    private RaceResults race_results;
 
     public CommonRace(final Path config_file_path) throws IOException {
 
@@ -62,6 +70,17 @@ public class CommonRace implements Race {
     public void setPrizes(final RacePrizes prizes) {
         this.prizes = prizes;
     }
+
+    public void setConfig() {
+    }
+
+    public void setRaceDataProcessor() {
+    }
+
+    public void setCategoriesProcessor() {
+    }
+
+
 
     @Override
     public void setInput(final RaceInput input) {
@@ -84,17 +103,15 @@ public class CommonRace implements Race {
     @Override
     public void processResults() throws IOException {
 
-        properties = loadProperties(config_file_path);
+        config = config_processor.loadConfig(config_file_path);
 
-        notes = new StringBuilder();
-//        race_impl.processProperties();
+        category_details = categories_processor.getCategoryDetails();
 
-        configureCategories();
-//        race_impl.configureInputData();
+        race_data = race_data_processor.getRaceData();
 
-        List<RaceResult> overall_results = results_calculator.calculateResults();
+        race_results = results_calculator.calculateResults();
 
-        results_output.outputResults(overall_results);
+        results_output.outputResults();
     }
 
     private void configureCategories() throws IOException {

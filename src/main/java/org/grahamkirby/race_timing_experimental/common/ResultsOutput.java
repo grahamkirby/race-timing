@@ -5,5 +5,5 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import java.util.List;
 
 public interface ResultsOutput {
-    void outputResults(List<RaceResult> overall_results);
+    void outputResults();
 }
