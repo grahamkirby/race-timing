@@ -84,8 +84,7 @@
                 <version>2.17.1</version>
             </plugin>
 
-            <!-- This checks that the required licence, specified in the licence template       -->
-            <!-- file src/main/resources/license-template.txt, is applied to all source files.  -->
+            <!-- This checks that the required licence is applied to all source files.  -->
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
