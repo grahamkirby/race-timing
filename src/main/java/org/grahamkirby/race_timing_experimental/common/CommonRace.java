@@ -183,8 +183,6 @@ public class CommonRace implements Race {
         return properties;
     }
 
-
-
     /** Loads prize category groups from the given file. */
     private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
 
