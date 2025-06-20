@@ -46,4 +46,6 @@ public interface Race {
     void setCategoriesProcessor(CategoriesProcessor categories_processor);
 
     void setRaceDataProcessor(RaceDataProcessor race_data_processor);
+
+    Config getConfig();
 }

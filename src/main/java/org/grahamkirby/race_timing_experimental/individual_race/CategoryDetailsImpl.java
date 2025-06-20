@@ -15,11 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.common;
+package org.grahamkirby.race_timing_experimental.individual_race;
 
-public interface CategoriesProcessor {
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing_experimental.common.CategoryDetails;
 
-    CategoryDetails getCategoryDetails();
+import java.util.List;
 
-    void setRace(Race race);
+public class CategoryDetailsImpl implements CategoryDetails {
+    public CategoryDetailsImpl(List<EntryCategory> entryCategories, List<PrizeCategoryGroup> prizeCategoryGroups) {
+    }
 }

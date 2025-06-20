@@ -17,13 +17,76 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing_experimental.common.CategoriesProcessor;
 import org.grahamkirby.race_timing_experimental.common.CategoryDetails;
+import org.grahamkirby.race_timing_experimental.common.Race;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing.common.Race.KEY_CATEGORIES_PRIZE_PATH;
 
 public class IndividualRaceCategoriesProcessor implements CategoriesProcessor {
 
+    private List<EntryCategory> entry_categories;
+    private List<PrizeCategoryGroup> prize_category_groups;
+    private Race race;
+
+    public void setRace(Race race) {
+        this.race = race;
+    }
+
+
     @Override
     public CategoryDetails getCategoryDetails() {
-        return null;
+
+        try {
+            entry_categories = Files.readAllLines((race.getPath((String)race.getConfig().get(KEY_CATEGORIES_ENTRY_PATH)))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+            prize_category_groups = new ArrayList<>();
+            loadPrizeCategoryGroups((race.getPath((String)race.getConfig().get(KEY_CATEGORIES_PRIZE_PATH))));
+
+            return new CategoryDetailsImpl(entry_categories, prize_category_groups);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    /** Loads prize category groups from the given file. */
+    private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
+
+        Files.readAllLines(prize_categories_path).stream().
+            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+            forEachOrdered(this::recordGroup);
+    }
+
+    private void recordGroup(final String line) {
+
+        final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
+        final PrizeCategoryGroup group = getGroupByName(group_name);
+
+        group.categories().add(new PrizeCategory(line));
+    }
+
+    private PrizeCategoryGroup getGroupByName(final String group_name) {
+
+        return prize_category_groups.stream().
+            filter(g -> g.group_title().equals(group_name)).
+            findFirst().
+            orElseGet(() -> newGroup(group_name));
+    }
+
+    private PrizeCategoryGroup newGroup(final String group_name) {
+
+        final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
+        prize_category_groups.add(group);
+        return group;
+    }
+
 }

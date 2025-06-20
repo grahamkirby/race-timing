@@ -17,18 +17,16 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 

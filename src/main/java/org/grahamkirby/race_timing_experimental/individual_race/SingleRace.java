@@ -29,12 +29,12 @@ import java.util.List;
 
 public class SingleRace {
 
-    // Configuration file keys.
-    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
-    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
-    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
-    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
-    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
+//    // Configuration file keys.
+//    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
+//    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
+//    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
+//    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+//    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -62,14 +62,14 @@ public class SingleRace {
         this.race_input = race_input;
     }
 
-    public void processProperties() {
-
-        // Specifies all the bib numbers for runners who did have a finish
-        // time recorded but were declared DNF.
-        dnf_string = race.getProperties().getProperty(KEY_DNF_FINISHERS);
-        entries_path = race.getProperties().getProperty(KEY_ENTRIES_PATH);
-        raw_results_path = race.getProperties().getProperty(KEY_RAW_RESULTS_PATH);
-    }
+//    public void processProperties() {
+//
+//        // Specifies all the bib numbers for runners who did have a finish
+//        // time recorded but were declared DNF.
+//        dnf_string = race.getProperties().getProperty(KEY_DNF_FINISHERS);
+//        entries_path = race.getProperties().getProperty(KEY_ENTRIES_PATH);
+//        raw_results_path = race.getProperties().getProperty(KEY_RAW_RESULTS_PATH);
+//    }
 
     public synchronized List<RaceResult> calculateResults() {
 

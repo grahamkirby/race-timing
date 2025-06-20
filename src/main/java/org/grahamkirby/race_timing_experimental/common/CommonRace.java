@@ -17,13 +17,11 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
-
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
@@ -31,15 +29,10 @@ import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
-import java.io.ObjectInputFilter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import static org.grahamkirby.race_timing.common.Race.*;
 
 public class CommonRace implements Race {
 
@@ -89,7 +82,8 @@ public class CommonRace implements Race {
         this.prizes = prizes;
     }
 
-    public void setConfig() {
+    public Config getConfig() {
+        return config;
     }
 
     public void setRaceDataProcessor() {
@@ -126,15 +120,16 @@ public class CommonRace implements Race {
         results_output.outputResults();
     }
 
-    private void configureCategories() throws IOException {
-
-        entry_categories = Files.readAllLines(getPath(getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
-        prize_category_groups = new ArrayList<>();
-        loadPrizeCategoryGroups(getPath(getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH)));
-    }
+//    private void configureCategories() throws IOException {
+//
+//        entry_categories = Files.readAllLines(getPath(getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+//        prize_category_groups = new ArrayList<>();
+//        loadPrizeCategoryGroups(getPath(getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH)));
+//    }
 
     /** Resolves the given path relative to either the project root, if it's specified as an absolute
      *  path, or to the race configuration file. */
+    @Override
     public Path getPath(final String path) {
 
         return path.startsWith("/") ?
@@ -145,11 +140,15 @@ public class CommonRace implements Race {
     @Override
     public void setConfigProcessor(ConfigProcessor config_processor) {
 
+        this.config_processor = config_processor;
+        config_processor.setRace(this);
     }
 
     @Override
     public void setCategoriesProcessor(CategoriesProcessor categories_processor) {
 
+        this.categories_processor = categories_processor;
+        categories_processor.setRace(this);
     }
 
     @Override
@@ -183,34 +182,34 @@ public class CommonRace implements Race {
         return properties;
     }
 
-    /** Loads prize category groups from the given file. */
-    private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
-
-        Files.readAllLines(prize_categories_path).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(this::recordGroup);
-    }
-
-    private void recordGroup(final String line) {
-
-        final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
-        final PrizeCategoryGroup group = getGroupByName(group_name);
-
-        group.categories().add(new PrizeCategory(line));
-    }
-
-    private PrizeCategoryGroup getGroupByName(final String group_name) {
-
-        return prize_category_groups.stream().
-            filter(g -> g.group_title().equals(group_name)).
-            findFirst().
-            orElseGet(() -> newGroup(group_name));
-    }
-
-    private PrizeCategoryGroup newGroup(final String group_name) {
-
-        final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
-        prize_category_groups.add(group);
-        return group;
-    }
+//    /** Loads prize category groups from the given file. */
+//    private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
+//
+//        Files.readAllLines(prize_categories_path).stream().
+//            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+//            forEachOrdered(this::recordGroup);
+//    }
+//
+//    private void recordGroup(final String line) {
+//
+//        final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
+//        final PrizeCategoryGroup group = getGroupByName(group_name);
+//
+//        group.categories().add(new PrizeCategory(line));
+//    }
+//
+//    private PrizeCategoryGroup getGroupByName(final String group_name) {
+//
+//        return prize_category_groups.stream().
+//            filter(g -> g.group_title().equals(group_name)).
+//            findFirst().
+//            orElseGet(() -> newGroup(group_name));
+//    }
+//
+//    private PrizeCategoryGroup newGroup(final String group_name) {
+//
+//        final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
+//        prize_category_groups.add(group);
+//        return group;
+//    }
 }

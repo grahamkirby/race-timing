@@ -17,6 +17,7 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
-
 public interface Config {
+
+    Object get(String key);
 }

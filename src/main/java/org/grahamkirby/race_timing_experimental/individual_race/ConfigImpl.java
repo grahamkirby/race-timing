@@ -15,11 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.common;
+package org.grahamkirby.race_timing_experimental.individual_race;
 
-public interface CategoriesProcessor {
+import org.grahamkirby.race_timing_experimental.common.Config;
 
-    CategoryDetails getCategoryDetails();
+import java.util.Map;
 
-    void setRace(Race race);
+public class ConfigImpl implements Config {
+
+    public ConfigImpl(Map<String, Object> configValues) {
+    }
+
+    @Override
+    public Object get(String key) {
+        return null;
+    }
 }
