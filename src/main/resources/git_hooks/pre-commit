@@ -1,5 +1,14 @@
 #!/bin/sh
+
+# Add to .git/hooks/pre-commit in project directory.
+
 if git diff --cached | grep -q 'private static final boolean DEBUG = true;'; then
     echo "Commit blocked: DEBUG flag is set."
+    exit 1
+fi
+
+mvn license:check
+if [ $? -ne 0 ]; then
+    echo "Commit blocked: licence headers invalid."
     exit 1
 fi
