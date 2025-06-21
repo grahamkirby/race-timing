@@ -15,11 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.common;
+package org.grahamkirby.race_timing_experimental.individual_race;
 
+import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
+import org.grahamkirby.race_timing_experimental.common.RaceData;
 
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import java.util.List;
 
-public interface CategoryDetails {
-    EntryCategory lookupEntryCategory(String categoryName);
+public class IndividualRaceData implements RaceData {
+    public IndividualRaceData(List<RawResult> rawResults, List<IndividualRaceEntry> singleRaceEntries) {
+    }
 }

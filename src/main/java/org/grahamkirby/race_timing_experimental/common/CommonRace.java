@@ -86,6 +86,16 @@ public class CommonRace implements Race {
         return config;
     }
 
+    @Override
+    public Normalisation getNormalisation() {
+        return normalisation;
+    }
+
+    @Override
+    public CategoryDetails getCategoryDetails() {
+        return category_details;
+    }
+
     public void setRaceDataProcessor() {
     }
 
@@ -154,6 +164,8 @@ public class CommonRace implements Race {
     @Override
     public void setRaceDataProcessor(RaceDataProcessor race_data_processor) {
 
+        this.race_data_processor = race_data_processor;
+        race_data_processor.setRace(this);
     }
 
     private static Path getPathRelativeToProjectRoot(final String path) {

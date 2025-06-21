@@ -43,7 +43,6 @@ public class IndividualRaceCategoriesProcessor implements CategoriesProcessor {
         this.race = race;
     }
 
-
     @Override
     public CategoryDetails getCategoryDetails() {
 
@@ -88,5 +87,4 @@ public class IndividualRaceCategoriesProcessor implements CategoriesProcessor {
         prize_category_groups.add(group);
         return group;
     }
-
 }

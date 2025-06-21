@@ -24,6 +24,18 @@ import org.grahamkirby.race_timing_experimental.common.CategoryDetails;
 import java.util.List;
 
 public class CategoryDetailsImpl implements CategoryDetails {
-    public CategoryDetailsImpl(List<EntryCategory> entryCategories, List<PrizeCategoryGroup> prizeCategoryGroups) {
+
+    private final List<EntryCategory> entry_categories;
+    private final List<PrizeCategoryGroup> prize_category_groups;
+
+    public CategoryDetailsImpl(List<EntryCategory> entry_categories, List<PrizeCategoryGroup> prize_category_groups) {
+
+        this.entry_categories = entry_categories;
+        this.prize_category_groups = prize_category_groups;
+    }
+
+    @Override
+    public EntryCategory lookupEntryCategory(String categoryName) {
+        return null;
     }
 }
