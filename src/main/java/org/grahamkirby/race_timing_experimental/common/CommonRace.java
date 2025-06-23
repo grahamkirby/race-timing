@@ -111,16 +111,6 @@ public class CommonRace implements Race {
     ResultsOutput results_output;
 
     @Override
-    public void setResultsCalculator(final ResultsCalculator results_calculator) {
-        this.results_calculator = results_calculator;
-    }
-
-    @Override
-    public void setResultsOutput(final ResultsOutput results_output) {
-        this.results_output = results_output;
-    }
-
-    @Override
     public void processResults() {
 
         config = config_processor.loadConfig(config_file_path);
@@ -129,13 +119,6 @@ public class CommonRace implements Race {
         race_results = results_calculator.calculateResults();
         results_output.outputResults();
     }
-
-//    private void configureCategories() throws IOException {
-//
-//        entry_categories = Files.readAllLines(getPath(getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
-//        prize_category_groups = new ArrayList<>();
-//        loadPrizeCategoryGroups(getPath(getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH)));
-//    }
 
     /** Resolves the given path relative to either the project root, if it's specified as an absolute
      *  path, or to the race configuration file. */
@@ -168,6 +151,17 @@ public class CommonRace implements Race {
         race_data_processor.setRace(this);
     }
 
+    @Override
+    public void setResultsCalculator(final ResultsCalculator results_calculator) {
+        this.results_calculator = results_calculator;
+        results_calculator.setRace(this);
+    }
+
+    @Override
+    public void setResultsOutput(final ResultsOutput results_output) {
+        this.results_output = results_output;
+    }
+
     private static Path getPathRelativeToProjectRoot(final String path) {
 
         return Paths.get(path.substring(1));
@@ -193,35 +187,4 @@ public class CommonRace implements Race {
 
         return properties;
     }
-
-//    /** Loads prize category groups from the given file. */
-//    private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
-//
-//        Files.readAllLines(prize_categories_path).stream().
-//            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-//            forEachOrdered(this::recordGroup);
-//    }
-//
-//    private void recordGroup(final String line) {
-//
-//        final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
-//        final PrizeCategoryGroup group = getGroupByName(group_name);
-//
-//        group.categories().add(new PrizeCategory(line));
-//    }
-//
-//    private PrizeCategoryGroup getGroupByName(final String group_name) {
-//
-//        return prize_category_groups.stream().
-//            filter(g -> g.group_title().equals(group_name)).
-//            findFirst().
-//            orElseGet(() -> newGroup(group_name));
-//    }
-//
-//    private PrizeCategoryGroup newGroup(final String group_name) {
-//
-//        final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
-//        prize_category_groups.add(group);
-//        return group;
-//    }
 }

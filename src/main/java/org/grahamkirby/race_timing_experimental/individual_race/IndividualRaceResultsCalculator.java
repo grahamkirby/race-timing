@@ -17,12 +17,64 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
+import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResults;
 import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
+import java.util.List;
+
 public class IndividualRaceResultsCalculator implements ResultsCalculator {
+
+    private Race race;
+
+    private List<RaceResult> overall_results;
+
+
+    @Override
+    public void setRace(Race race) {
+        this.race = race;
+    }
+
     @Override
     public RaceResults calculateResults() {
-        return null;
+
+        recordDNFs();
+//        sortResults();
+//        allocatePrizes();
+
+        return new IndividualRaceResults(overall_results);
+    }
+
+    protected void recordDNFs() {
+
+        // This fills in the DNF results that were specified explicitly in the config
+        // file, corresponding to cases where the runners reported not completing the
+        // course.
+
+        // Cases where there is no recorded result are captured by the
+        // default completion status being DNS.
+
+//        if (dnf_string != null && !dnf_string.isBlank())
+//            for (final String individual_dnf_string : dnf_string.split(","))
+//                recordDNF(individual_dnf_string);
+    }
+
+    protected void recordDNF(final String dnf_specification) {
+
+        final int bib_number = Integer.parseInt(dnf_specification);
+        final SingleRaceResult result = getResultWithBibNumber(bib_number);
+
+        result.dnf = true;
+    }
+
+    private SingleRaceResult getResultWithBibNumber(final int bib_number) {
+
+        return overall_results.stream().
+            map(result -> ((SingleRaceResult) result)).
+            filter(result -> result.entry.bib_number == bib_number).
+            findFirst().
+            orElseThrow();
     }
 }

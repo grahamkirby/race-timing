@@ -47,9 +47,10 @@
         </dependency>
 
         <dependency>
+            <!-- Not essential but including this suppresses annoying logger warnings.         -->
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>2.0.16</version>
+            <artifactId>slf4j-nop</artifactId>
+            <version>2.0.17</version>
         </dependency>
 
     </dependencies>

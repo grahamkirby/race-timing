@@ -38,6 +38,7 @@ public class IndividualRaceDataProcessor implements RaceDataProcessor {
 
     private Race race;
 
+    @Override
     public void setRace(Race race) {
         this.race = race;
     }
@@ -76,15 +77,10 @@ public class IndividualRaceDataProcessor implements RaceDataProcessor {
 
     List<IndividualRaceEntry> loadEntries(Path entries_path) throws IOException {
 
-        final List<IndividualRaceEntry> entries = Files.readAllLines(entries_path).stream().
+        return Files.readAllLines(entries_path).stream().
             map(SingleRaceInput::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> new IndividualRaceEntry(Arrays.stream(line.split("\t")).toList(), race)).
             toList();
-
-
-        return entries;
     }
-
-
 }
