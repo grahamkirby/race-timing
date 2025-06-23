@@ -94,7 +94,7 @@ public abstract class AbstractRaceTest {
     protected abstract void invokeMain(String[] args) throws Exception;
 
     String getFileNameForPathProperty(final String property_key) {
-        return Paths.get(properties.getProperty(property_key)).getFileName().toString();
+        return Path.of(properties.getProperty(property_key)).getFileName().toString();
     }
 
     @AfterEach
@@ -297,7 +297,7 @@ public abstract class AbstractRaceTest {
     private static List<String> loadIgnoredFileNames() {
 
         try {
-            return Files.readAllLines(Paths.get(IGNORED_FILE_NAMES_PATH)).stream().toList();
+            return Files.readAllLines(Path.of(IGNORED_FILE_NAMES_PATH)).stream().toList();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
