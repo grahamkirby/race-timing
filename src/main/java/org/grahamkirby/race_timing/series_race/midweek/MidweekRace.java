@@ -18,19 +18,20 @@
 package org.grahamkirby.race_timing.series_race.midweek;
 
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceInput;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
-import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -50,7 +51,7 @@ public final class MidweekRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        commonMain(args, config_file_path -> new MidweekRace(Paths.get(config_file_path)));
+        commonMain(args, config_file_path -> new MidweekRace(Path.of(config_file_path)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

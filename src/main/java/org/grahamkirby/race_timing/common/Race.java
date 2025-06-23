@@ -28,6 +28,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -227,7 +228,7 @@ public abstract class Race {
 
     private static Path getPathRelativeToProjectRoot(final String path) {
 
-        return Paths.get(path.substring(1));
+        return Path.of(path.substring(1));
     }
 
     private Path getPathRelativeToRaceConfigFile(final String path) {
@@ -450,7 +451,7 @@ public abstract class Race {
         if (!Files.exists(config_file_path))
             throw new RuntimeException(STR."missing config file: '\{config_file_path.getFileName()}'");
 
-        try (final FileInputStream stream = new FileInputStream(config_file_path.toString())) {
+        try (final InputStream stream = Files.newInputStream(config_file_path)) {
 
             final Properties properties = new Properties();
             properties.load(stream);

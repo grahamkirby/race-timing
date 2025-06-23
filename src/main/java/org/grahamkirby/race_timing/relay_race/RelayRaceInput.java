@@ -26,6 +26,7 @@ import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
@@ -162,7 +163,7 @@ class RelayRaceInput extends TimedRaceInput {
 
             for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
                 if (entry.getValue() > ((RelayRace) race).getNumberOfLegs())
-                    throw new RuntimeException(STR."surplus result for team '\{entry.getKey()}' in file '\{Paths.get(raw_results_path).getFileName()}'");
+                    throw new RuntimeException(STR."surplus result for team '\{entry.getKey()}' in file '\{Path.of(raw_results_path).getFileName()}'");
 
         } catch (final IOException e) {
             throw new RuntimeException("unexpected IO exception", e);

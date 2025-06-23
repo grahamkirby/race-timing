@@ -164,7 +164,7 @@ public class CommonRace implements Race {
 
     private static Path getPathRelativeToProjectRoot(final String path) {
 
-        return Paths.get(path.substring(1));
+        return Path.of(path.substring(1));
     }
 
     private Path getPathRelativeToRaceConfigFile(final String path) {

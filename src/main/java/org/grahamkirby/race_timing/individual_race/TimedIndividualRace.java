@@ -41,7 +41,7 @@ public class TimedIndividualRace extends TimedRace {
     @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
     public static void main(final String[] args) throws Exception {
 
-        commonMain(args, config_file_path -> new TimedIndividualRace(Paths.get(config_file_path)));
+        commonMain(args, config_file_path -> new TimedIndividualRace(Path.of(config_file_path)));
     }
 
     @Override

@@ -95,7 +95,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
 
         try {
             Duration previous_time = null;
-            final Path raw_results_filename = Paths.get(raw_results_path).getFileName();
+            final Path raw_results_filename = Path.of(raw_results_path).getFileName();
 
             final Set<Integer> bib_numbers_seen = new HashSet<>();
 
@@ -231,7 +231,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         for (final SingleRaceEntry entry1 : entries)
             for (final SingleRaceEntry entry2 : entries)
                 if (entry1 != entry2 && entry1.equals(entry2))
-                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{Paths.get(entries_path).getFileName()}'");
+                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{Path.of(entries_path).getFileName()}'");
     }
 
     protected void validateBibNumbersHaveCorrespondingEntry() {

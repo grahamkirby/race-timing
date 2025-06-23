@@ -30,7 +30,6 @@ import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
@@ -46,7 +45,7 @@ public final class TourRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        commonMain(args, config_file_path -> new TourRace(Paths.get(config_file_path)));
+        commonMain(args, config_file_path -> new TourRace(Path.of(config_file_path)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

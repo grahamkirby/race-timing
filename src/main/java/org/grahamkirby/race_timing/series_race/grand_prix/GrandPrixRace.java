@@ -27,16 +27,17 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
-import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.function.Predicate;
 
 public final class GrandPrixRace extends SeriesRace {
@@ -60,7 +61,7 @@ public final class GrandPrixRace extends SeriesRace {
 
     public static void main(final String[] args) throws IOException {
 
-        commonMain(args, config_file_path -> new GrandPrixRace(Paths.get(config_file_path)));
+        commonMain(args, config_file_path -> new GrandPrixRace(Path.of(config_file_path)));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
