@@ -9,6 +9,6 @@ on:
 
 jobs:
   build:
-    uses: ./maven-build-and-test.yml@main
+    uses: ./.github/workflows/maven-build-and-test.yml@main
     with:
       platform: windows-latest
