@@ -2,6 +2,7 @@
 
 [![Build and test](https://github.com/grahamkirby/race-timing/actions/workflows/maven-linux.yml/badge.svg)](https://github.com/grahamkirby/race-timing/actions/workflows/maven-linux.yml)
 [![Build and test](https://github.com/grahamkirby/race-timing/actions/workflows/maven-windows.yml/badge.svg)](https://github.com/grahamkirby/race-timing/actions/workflows/maven-windows.yml)
+[![Build and test](https://github.com/grahamkirby/race-timing/actions/workflows/maven-mac.yml/badge.svg)](https://github.com/grahamkirby/race-timing/actions/workflows/maven-mac.yml)
 
 This software was originally written to process results for amateur athletics races organised by [Fife Athletic Club](//fifeac.org),
 although it would probably work for other races. Reports of success or otherwise would be welcome, by email to the
