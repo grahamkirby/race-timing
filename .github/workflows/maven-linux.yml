@@ -17,4 +17,5 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - run: mvn -B -DskipTests
     - uses: advanced-security/maven-dependency-submission-action@v4
