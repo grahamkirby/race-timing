@@ -18,6 +18,6 @@ on:
   
 jobs:
   build:
-    uses: ./.github/workflows/maven-build-and-test.yml@main
+    uses: ./.github/workflows/maven-build-and-test.yml
     with:
       platform: ubuntu-latest
