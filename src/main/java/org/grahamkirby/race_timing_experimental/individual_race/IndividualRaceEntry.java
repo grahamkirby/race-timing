@@ -20,9 +20,8 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
+import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.util.List;
 
@@ -36,12 +35,14 @@ public class IndividualRaceEntry {
 
     public Participant participant;
     public int bib_number;
+    private Race race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public IndividualRaceEntry(final List<String> elements, final Race race) {
 
+        this.race = race;
         Normalisation normalisation = race.getNormalisation();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
@@ -52,13 +53,21 @@ public class IndividualRaceEntry {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoryDetails().lookupEntryCategory(category_name);
+            final EntryCategory category = category_name.isEmpty() ? null : lookupEntryCategory(category_name);
 
             participant = new Runner(name, club, category);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
         }
+    }
+
+    public EntryCategory lookupEntryCategory(final String short_name) {
+
+        return race.getCategoryDetails().getEntryCategories().stream().
+            filter(category -> category.getShortName().equals(short_name)).
+            findFirst().
+            orElseThrow();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResults;
@@ -49,9 +50,26 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
         initialiseResults();
         recordDNFs();
         sortResults();
-//        allocatePrizes();
+        allocatePrizes();
 
         return new IndividualRaceResults(overall_results);
+    }
+
+    private void allocatePrizes() {
+
+        for (final PrizeCategory category : getPrizeCategories())
+            setPrizeWinners(category);
+    }
+
+    private void setPrizeWinners(PrizeCategory category) {
+
+    }
+
+    public List<PrizeCategory> getPrizeCategories() {
+
+        return race.getCategoryDetails().getPrizeCategories().stream().
+            flatMap(group -> group.categories().stream()).
+            toList();
     }
 
     private void initialiseResults() {

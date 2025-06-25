@@ -35,7 +35,12 @@ public class CategoryDetailsImpl implements CategoryDetails {
     }
 
     @Override
-    public EntryCategory lookupEntryCategory(String categoryName) {
-        return null;
+    public List<EntryCategory> getEntryCategories() {
+        return entry_categories;
+    }
+
+    @Override
+    public List<PrizeCategoryGroup> getPrizeCategories() {
+        return prize_category_groups;
     }
 }
