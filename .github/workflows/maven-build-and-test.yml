@@ -21,7 +21,8 @@ on:
 
 jobs:
   build:
-    permissions: read-all
+    permissions:
+      contents: write
     runs-on: ${{ inputs.platform }}
 
     steps:
