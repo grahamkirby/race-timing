@@ -12,10 +12,4 @@ jobs:
     uses: ./.github/workflows/maven-build-and-test.yml
     with:
       platform: ubuntu-latest
-
-  upload-dependencies:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - run: mvn -B -DskipTests
-    - uses: advanced-security/maven-dependency-submission-action@v4
+      upload-dependencies: true
