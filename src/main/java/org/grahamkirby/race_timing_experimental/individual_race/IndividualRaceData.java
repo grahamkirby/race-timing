@@ -24,6 +24,17 @@ import org.grahamkirby.race_timing_experimental.common.RaceData;
 import java.util.List;
 
 public class IndividualRaceData implements RaceData {
+
     public IndividualRaceData(List<RawResult> rawResults, List<IndividualRaceEntry> singleRaceEntries) {
+    }
+
+    @Override
+    public List<RawResult> getRawResults() {
+        return List.of();
+    }
+
+    @Override
+    public List<IndividualRaceEntry> getEntries() {
+        return List.of();
     }
 }

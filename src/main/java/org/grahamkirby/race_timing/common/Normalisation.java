@@ -84,7 +84,7 @@ public class Normalisation {
      * Map from entry gender to eligible prize genders.
      * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
      */
-    Map<String, List<String>> gender_eligibility_map;
+    public Map<String, List<String>> gender_eligibility_map;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -261,12 +261,12 @@ public class Normalisation {
     }
 
     /** Gets the first element of the array resulting from splitting the given name on the space character. */
-    static String getFirstName(final String name) {
+    public static String getFirstName(final String name) {
         return name.split(" ")[0];
     }
 
     /** Gets the last element of the array resulting from splitting the given name on the space character. */
-    static String getLastName(final String name) {
+    public static String getLastName(final String name) {
         return Arrays.stream(name.split(" ")).toList().getLast();
     }
 

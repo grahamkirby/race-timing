@@ -26,12 +26,10 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -465,7 +463,7 @@ public abstract class Race {
         prizes.allocatePrizes();
     }
 
-    /** Sorts all results by relevant comparators, and then the DNF results separately. */
+    /** Sorts all results by relevant comparators. */
     protected void sortResults() {
 
         overall_results.sort(combineComparators(getComparators()));
@@ -509,7 +507,7 @@ public abstract class Race {
         return group;
     }
 
-    protected static List<RaceResult> makeMutable(final List<? extends RaceResult> results) {
+    public static List<RaceResult> makeMutable(final List<? extends RaceResult> results) {
         return new ArrayList<>(results);
     }
 }

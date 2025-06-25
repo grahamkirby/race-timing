@@ -47,6 +47,7 @@ public class IndividualRaceDataProcessor implements RaceDataProcessor {
 
     @Override
     public RaceData getRaceData() {
+
         Path raw_results_path = (Path)race.getConfig().get(KEY_RAW_RESULTS_PATH);
         Path entries_path = (Path)race.getConfig().get(KEY_ENTRIES_PATH);
         try {

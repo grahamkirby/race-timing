@@ -17,13 +17,12 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing_experimental.common.RaceResults;
 
 import java.util.List;
 
 public class IndividualRaceResults implements RaceResults {
 
-    public IndividualRaceResults(List<RaceResult> results) {
+    public IndividualRaceResults(List<IndividualRaceResult> results) {
     }
 }

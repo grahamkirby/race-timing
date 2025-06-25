@@ -17,20 +17,26 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceResult;
+import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResults;
 import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+
+import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceConfigProcessor.KEY_DNF_FINISHERS;
 
 public class IndividualRaceResultsCalculator implements ResultsCalculator {
 
     private Race race;
 
-    private List<RaceResult> overall_results;
-
+    private List<IndividualRaceResult> overall_results;
 
     @Override
     public void setRace(Race race) {
@@ -40,11 +46,31 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
     @Override
     public RaceResults calculateResults() {
 
+        initialiseResults();
         recordDNFs();
-//        sortResults();
+        sortResults();
 //        allocatePrizes();
 
         return new IndividualRaceResults(overall_results);
+    }
+
+    private void initialiseResults() {
+
+        List<RawResult> raw_results = race.getRaceData().getRawResults();
+
+        overall_results = raw_results.stream().
+            map(this::makeResult).
+            toList();
+
+        overall_results = new ArrayList<>(overall_results);
+    }
+
+    private IndividualRaceResult makeResult(final RawResult raw_result) {
+
+        final int bib_number = raw_result.getBibNumber();
+        final Duration finish_time = raw_result.getRecordedFinishTime();
+
+        return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
     }
 
     protected void recordDNFs() {
@@ -56,23 +82,122 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
-//        if (dnf_string != null && !dnf_string.isBlank())
-//            for (final String individual_dnf_string : dnf_string.split(","))
-//                recordDNF(individual_dnf_string);
+        String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
+
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(","))
+                recordDNF(individual_dnf_string);
     }
 
     protected void recordDNF(final String dnf_specification) {
 
         final int bib_number = Integer.parseInt(dnf_specification);
-        final SingleRaceResult result = getResultWithBibNumber(bib_number);
+        final IndividualRaceResult result = getResultWithBibNumber(bib_number);
 
         result.dnf = true;
     }
 
-    private SingleRaceResult getResultWithBibNumber(final int bib_number) {
+    /** Sorts all results by relevant comparators. */
+    protected void sortResults() {
+
+        overall_results.sort(combineComparators(getComparators()));
+    }
+
+    public List<Comparator<IndividualRaceResult>> getComparators() {
+
+        return List.of(
+            ignoreIfBothResultsAreDNF(penaliseDNF(IndividualRaceResultsCalculator::comparePerformance)),
+            ignoreIfEitherResultIsDNF(this::compareRecordedPosition),
+            IndividualRaceResultsCalculator::compareRunnerLastName,
+            IndividualRaceResultsCalculator::compareRunnerFirstName);
+    }
+
+    /** Compares the given results on the basis of their finish positions. */
+    private int compareRecordedPosition(final IndividualRaceResult r1, final IndividualRaceResult r2) {
+
+        final int recorded_position1 = getRecordedPosition((r1).entry.bib_number);
+        final int recorded_position2 = getRecordedPosition(( r2).entry.bib_number);
+
+        return Integer.compare(recorded_position1, recorded_position2);
+    }
+
+    private int getRecordedPosition(final int bib_number) {
+
+        List<RawResult> raw_results = race.getRaceData().getRawResults();
+
+        return (int) raw_results.stream().
+            takeWhile(result -> result.getBibNumber() != bib_number).
+            count();
+    }
+
+    /** Compares two results based on their performances, which may be based on a single or aggregate time,
+     *  or a score. Gives a negative result if the first result has a better performance than the second. */
+    protected static int comparePerformance(final IndividualRaceResult r1, final IndividualRaceResult r2) {
+
+        return r1.comparePerformanceTo(r2);
+    }
+
+    /** Compares two results based on alphabetical ordering of the runners' first names. */
+    protected static int compareRunnerFirstName(final IndividualRaceResult r1, final IndividualRaceResult r2) {
+
+        return Normalisation.getFirstName(r1.getParticipantName()).compareTo(Normalisation.getFirstName(r2.getParticipantName()));
+    }
+
+    /** Compares two results based on alphabetical ordering of the runners' last names. */
+    protected static int compareRunnerLastName(final IndividualRaceResult r1, final IndividualRaceResult r2) {
+
+        return Normalisation.getLastName(r1.getParticipantName()).compareTo(Normalisation.getLastName(r2.getParticipantName()));
+    }
+
+    protected static Comparator<IndividualRaceResult> penaliseDNF(final Comparator<? super IndividualRaceResult> base_comparator) {
+
+        return (r1, r2) -> {
+
+            if (!r1.canComplete() && r2.canComplete()) return 1;
+            if (r1.canComplete() && !r2.canComplete()) return -1;
+
+            return base_comparator.compare(r1, r2);
+        };
+    }
+
+    protected static Comparator<IndividualRaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super IndividualRaceResult> base_comparator) {
+
+        return (r1, r2) -> {
+
+            if (!r1.canComplete() || !r2.canComplete()) return 0;
+            else return base_comparator.compare(r1, r2);
+        };
+    }
+
+    protected static Comparator<IndividualRaceResult> ignoreIfBothResultsAreDNF(final Comparator<? super IndividualRaceResult> base_comparator) {
+
+        return (r1, r2) -> {
+
+            if (!r1.canComplete() && !r2.canComplete()) return 0;
+            else return base_comparator.compare(r1, r2);
+        };
+    }
+
+    /** Combines multiple comparators into a single comparator. */
+    protected static Comparator<IndividualRaceResult> combineComparators(final Collection<Comparator<IndividualRaceResult>> comparators) {
+
+        return comparators.stream().
+            reduce((_, _) -> 0, Comparator::thenComparing);
+    }
+
+    protected IndividualRaceEntry getEntryWithBibNumber(final int bib_number) {
+
+        List<IndividualRaceEntry> entries = race.getRaceData().getEntries();
+
+        return entries.stream().
+            filter(entry -> entry.bib_number == bib_number).
+            findFirst().
+            orElseThrow();
+    }
+
+    private IndividualRaceResult getResultWithBibNumber(final int bib_number) {
 
         return overall_results.stream().
-            map(result -> ((SingleRaceResult) result)).
             filter(result -> result.entry.bib_number == bib_number).
             findFirst().
             orElseThrow();

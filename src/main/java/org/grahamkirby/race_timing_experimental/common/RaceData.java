@@ -17,6 +17,14 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
+import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceEntry;
+
+import java.util.List;
 
 public interface RaceData {
+
+    List<RawResult> getRawResults();
+
+    List<IndividualRaceEntry> getEntries();
 }

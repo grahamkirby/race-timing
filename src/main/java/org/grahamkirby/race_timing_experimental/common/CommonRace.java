@@ -96,10 +96,9 @@ public class CommonRace implements Race {
         return category_details;
     }
 
-    public void setRaceDataProcessor() {
-    }
-
-    public void setCategoriesProcessor() {
+    @Override
+    public RaceData getRaceData() {
+        return race_data;
     }
 
     @Override

@@ -21,6 +21,7 @@ package org.grahamkirby.race_timing_experimental.common;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
+import org.grahamkirby.race_timing.individual_race.TimedRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -53,4 +54,6 @@ public interface Race {
     Normalisation getNormalisation();
 
     CategoryDetails getCategoryDetails();
+
+    RaceData getRaceData();
 }
