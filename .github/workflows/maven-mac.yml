@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    permissions: read-all
     uses: ./.github/workflows/maven-build-and-test.yml
     with:
       platform: macos-latest
