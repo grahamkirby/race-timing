@@ -19,6 +19,7 @@ runs:
       cache: 'maven'
 
   - name: Build and test with Maven
+    shell: bash
     run: mvn -B verify
 
   - name: Upload dependencies
