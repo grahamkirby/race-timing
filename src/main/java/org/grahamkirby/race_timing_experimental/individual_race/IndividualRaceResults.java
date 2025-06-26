@@ -17,12 +17,21 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing_experimental.common.RaceResults;
 
 import java.util.List;
 
 public class IndividualRaceResults implements RaceResults {
 
+    private final List<IndividualRaceResult> results;
+
     public IndividualRaceResults(List<IndividualRaceResult> results) {
+        this.results = results;
+    }
+
+    @Override
+    public List<IndividualRaceResult> getOverallResults(List<PrizeCategory> categories) {
+        return results;
     }
 }

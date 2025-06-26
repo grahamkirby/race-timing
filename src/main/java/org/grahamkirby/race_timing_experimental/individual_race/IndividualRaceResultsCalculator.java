@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceConfigProcessor.KEY_DNF_FINISHERS;
 
@@ -63,6 +65,37 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
 
     private void setPrizeWinners(PrizeCategory category) {
 
+        final AtomicInteger position = new AtomicInteger(1);
+
+        overall_results.stream().
+            filter(_ -> position.get() <= category.numberOfPrizes()).
+            filter(result -> isPrizeWinner(result, category)).
+            forEachOrdered(result -> {
+                position.getAndIncrement();
+                setPrizeWinner(result, category);
+            });
+    }
+
+    protected boolean isPrizeWinner(final IndividualRaceResult result, final PrizeCategory prize_category) {
+
+        return result.canComplete() &&
+            isStillEligibleForPrize(result, prize_category) &&
+            result.isResultEligibleForPrizeCategory(prize_category);
+    }
+
+    private static boolean isStillEligibleForPrize(final IndividualRaceResult result, final PrizeCategory new_prize_category) {
+
+        if (!new_prize_category.isExclusive()) return true;
+
+        for (final PrizeCategory category_already_won : result.categories_of_prizes_awarded)
+            if (category_already_won.isExclusive()) return false;
+
+        return true;
+    }
+
+    protected static void setPrizeWinner(final IndividualRaceResult result, final PrizeCategory category) {
+
+        result.categories_of_prizes_awarded.add(category);
     }
 
     public List<PrizeCategory> getPrizeCategories() {

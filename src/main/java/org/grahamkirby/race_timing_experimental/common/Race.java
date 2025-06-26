@@ -31,6 +31,8 @@ public interface Race {
 
     void setPrizes(RacePrizes prizes);
 
+    RaceResults getRaceResults();
+
     void setInput(RaceInput input);
 
     void setResultsCalculator(ResultsCalculator results_calculator);

@@ -18,11 +18,9 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.Participant;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.time.Duration;

@@ -30,7 +30,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
@@ -102,6 +101,11 @@ public class CommonRace implements Race {
     }
 
     @Override
+    public RaceResults getRaceResults() {
+        return race_results;
+    }
+
+    @Override
     public void setInput(final RaceInput input) {
         this.input = input;
     }
@@ -110,7 +114,7 @@ public class CommonRace implements Race {
     ResultsOutput results_output;
 
     @Override
-    public void processResults() {
+    public void processResults() throws IOException {
 
         config = config_processor.loadConfig(config_file_path);
         category_details = categories_processor.getCategoryDetails();
@@ -159,6 +163,7 @@ public class CommonRace implements Race {
     @Override
     public void setResultsOutput(final ResultsOutput results_output) {
         this.results_output = results_output;
+        results_output.setRace(this);
     }
 
     private static Path getPathRelativeToProjectRoot(final String path) {
