@@ -1,0 +1,26 @@
+name: 'Maven build and test'
+description: 'Maven build and test composite action'
+
+inputs:
+  upload-dependencies:
+    required: false
+    description: 'whether to upload dependencies for analysis'
+    default: 'false'
+
+runs:
+  using: "composite"
+
+  steps:
+  - name: Set up JDK 21
+    uses: actions/setup-java@v4
+    with:
+      java-version: '21'
+      distribution: 'corretto'
+      cache: 'maven'
+
+  - name: Build and test with Maven
+    run: mvn -B verify
+
+  - name: Upload dependencies
+    if: inputs.upload-dependencies == 'true'
+    uses: advanced-security/maven-dependency-submission-action@v4

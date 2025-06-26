@@ -9,9 +9,14 @@ on:
 
 jobs:
   build:
+    name: Build and test (macOS)
+    runs-on: macos-latest
     permissions:
       # Need write permission since that's required for upload dependencies step, even though that step won't run.
       contents: write
-    uses: ./.github/workflows/maven-build-and-test.yml
-    with:
-      platform: macos-latest
+    steps:
+      - name: Check out project
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683                                        # @v4.2.2
+
+      - name: Build and test
+        uses: ./.github/actions/build-and-test
