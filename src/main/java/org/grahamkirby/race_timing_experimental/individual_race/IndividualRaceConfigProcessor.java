@@ -63,20 +63,18 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             config_values.put(KEY_YEAR, properties.getProperty(KEY_YEAR));
             config_values.put(KEY_RACE_NAME_FOR_RESULTS, properties.getProperty(KEY_RACE_NAME_FOR_RESULTS));
             config_values.put(KEY_RACE_NAME_FOR_FILENAMES, properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES));
-            config_values.put(KEY_CATEGORIES_ENTRY_PATH, properties.getProperty(KEY_CATEGORIES_ENTRY_PATH));
-            config_values.put(KEY_CATEGORIES_PRIZE_PATH, properties.getProperty(KEY_CATEGORIES_PRIZE_PATH));
+            config_values.put(KEY_CATEGORIES_ENTRY_PATH, Path.of(properties.getProperty(KEY_CATEGORIES_ENTRY_PATH)));
+            config_values.put(KEY_CATEGORIES_PRIZE_PATH, Path.of(properties.getProperty(KEY_CATEGORIES_PRIZE_PATH)));
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
-            config_values.put(KEY_ENTRIES_PATH, properties.getProperty(KEY_ENTRIES_PATH));
-            config_values.put(KEY_RAW_RESULTS_PATH, properties.getProperty(KEY_RAW_RESULTS_PATH));
-            config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));
+            config_values.put(KEY_ENTRIES_PATH, Path.of(properties.getProperty(KEY_ENTRIES_PATH)));
+            config_values.put(KEY_RAW_RESULTS_PATH, Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH)));
+            config_values.put(KEY_RESULTS_PATH, Path.of(properties.getProperty(KEY_RESULTS_PATH)));
             config_values.put(KEY_INDIVIDUAL_EARLY_STARTS, properties.getProperty(KEY_INDIVIDUAL_EARLY_STARTS));
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_MEDIAN_TIME, properties.getProperty(KEY_MEDIAN_TIME));
-
-
-
+            
             return new ConfigImpl(config_values);
 
         } catch (IOException e) {

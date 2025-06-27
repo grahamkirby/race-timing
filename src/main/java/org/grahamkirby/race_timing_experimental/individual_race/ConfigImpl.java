@@ -23,11 +23,14 @@ import java.util.Map;
 
 public class ConfigImpl implements Config {
 
-    public ConfigImpl(Map<String, Object> configValues) {
+    private final Map<String, Object> config_map;
+
+    public ConfigImpl(Map<String, Object> config_map) {
+        this.config_map = config_map;
     }
 
     @Override
     public Object get(String key) {
-        return null;
+        return config_map.get(key);
     }
 }

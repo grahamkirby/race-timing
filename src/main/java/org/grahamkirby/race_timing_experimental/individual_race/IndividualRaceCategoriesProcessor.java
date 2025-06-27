@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing_experimental.common.CategoriesProcessor;
 import org.grahamkirby.race_timing_experimental.common.CategoryDetails;
+import org.grahamkirby.race_timing_experimental.common.Config;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.io.IOException;
@@ -47,13 +48,16 @@ public class IndividualRaceCategoriesProcessor implements CategoriesProcessor {
     public CategoryDetails getCategoryDetails() {
 
         try {
-            entry_categories = Files.readAllLines((race.getPath((String)race.getConfig().get(KEY_CATEGORIES_ENTRY_PATH)))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+            Config config = race.getConfig();
+            String resultsPath = (String) config.get(KEY_CATEGORIES_ENTRY_PATH);
+            entry_categories = Files.readAllLines((race.getPath(resultsPath))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
             prize_category_groups = new ArrayList<>();
-            loadPrizeCategoryGroups((race.getPath((String)race.getConfig().get(KEY_CATEGORIES_PRIZE_PATH))));
+            loadPrizeCategoryGroups((race.getPath((String) race.getConfig().get(KEY_CATEGORIES_PRIZE_PATH))));
 
             return new CategoryDetailsImpl(entry_categories, prize_category_groups);
         } catch (IOException e) {
             throw new RuntimeException(e);
+
         }
     }
 

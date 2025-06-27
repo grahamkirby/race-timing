@@ -32,6 +32,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -44,13 +51,6 @@
             <artifactId>itext-core</artifactId>
             <version>9.2.0</version>
             <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <!-- Not essential but including this suppresses annoying logger warnings.         -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>2.0.17</version>
         </dependency>
 
     </dependencies>
