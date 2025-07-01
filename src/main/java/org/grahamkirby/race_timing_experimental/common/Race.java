@@ -18,10 +18,8 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 
-import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
-import org.grahamkirby.race_timing.individual_race.TimedRace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -41,9 +39,8 @@ public interface Race {
 
     void processResults() throws IOException;
 
-    Properties getProperties();
-
-    Path getPath(String results_path);
+    Path getFullPath(String path);
+    Path getFullPath(Path path);
 
     void setConfigProcessor(ConfigProcessor config_processor);
 

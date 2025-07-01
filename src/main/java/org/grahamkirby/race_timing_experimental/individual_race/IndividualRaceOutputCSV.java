@@ -104,7 +104,7 @@ class IndividualRaceOutputCSV {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return race.getPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
@@ -161,6 +161,7 @@ class IndividualRaceOutputCSV {
 
     private static final class OverallResultPrinter extends ResultPrinter {
 
+        // TODO investigate Files.write.
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }

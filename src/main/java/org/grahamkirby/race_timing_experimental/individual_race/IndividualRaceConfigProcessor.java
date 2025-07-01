@@ -28,21 +28,21 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class IndividualRaceConfigProcessor implements ConfigProcessor {
 
-    // Configuration file keys.
-    public static final String KEY_YEAR = "YEAR";
-    public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
-    public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
-    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
-    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
-    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
-    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
-    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
-    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
-    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
-    private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
+    public static final String SUFFIX_CSV = ".csv";
+
+    private static final Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
+    private static final Path DEFAULT_CAPITALISATION_STOP_WORDS_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}");
+
+    private static final Path DEFAULT_NORMALISED_HTML_ENTITIES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}");
+    private static final Path DEFAULT_NORMALISED_CLUB_NAMES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}");
+    private static final Path DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/gender_eligibility_default\{SUFFIX_CSV}");
+
+    /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
+    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
 
     private Race race;
 
@@ -68,13 +68,48 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
-            config_values.put(KEY_ENTRIES_PATH, Path.of(properties.getProperty(KEY_ENTRIES_PATH)));
-            config_values.put(KEY_RAW_RESULTS_PATH, Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH)));
-            config_values.put(KEY_RESULTS_PATH, Path.of(properties.getProperty(KEY_RESULTS_PATH)));
+
+            config_values.put(KEY_ENTRIES_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_ENTRIES_PATH))));
+            config_values.put(KEY_RAW_RESULTS_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH))));
+
+            if (properties.getProperty(KEY_RESULTS_PATH) != null)
+                config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));
+
             config_values.put(KEY_INDIVIDUAL_EARLY_STARTS, properties.getProperty(KEY_INDIVIDUAL_EARLY_STARTS));
+
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_MEDIAN_TIME, properties.getProperty(KEY_MEDIAN_TIME));
-            
+
+            if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
+                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH));
+            else
+                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH);
+
+            if (properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH) != null)
+                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH)));
+            else
+                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(DEFAULT_NORMALISED_HTML_ENTITIES_PATH));
+
+            if (properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH) != null)
+                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH)));
+            else
+                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(DEFAULT_NORMALISED_CLUB_NAMES_PATH));
+
+            if (properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH) != null)
+                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH));
+            else
+                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
+
+            if (properties.getProperty(KEY_ENTRY_COLUMN_MAP) != null)
+                config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
+            else
+                config_values.put(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
+
+            String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
+            if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.getFullPath(Path.of(category_map_path)));
+
+
+
             return new ConfigImpl(config_values);
 
         } catch (IOException e) {

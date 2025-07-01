@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceData;
@@ -31,8 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceConfigProcessor.KEY_ENTRIES_PATH;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceConfigProcessor.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_ENTRIES_PATH;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RAW_RESULTS_PATH;
 
 public class IndividualRaceDataProcessor implements RaceDataProcessor {
 
@@ -48,8 +47,8 @@ public class IndividualRaceDataProcessor implements RaceDataProcessor {
     @Override
     public RaceData getRaceData() {
 
-        Path raw_results_path = (Path)race.getConfig().get(KEY_RAW_RESULTS_PATH);
-        Path entries_path = (Path)race.getConfig().get(KEY_ENTRIES_PATH);
+        Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
+        Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
         try {
             return new IndividualRaceData(loadRawResults(raw_results_path),
                 loadEntries(entries_path));

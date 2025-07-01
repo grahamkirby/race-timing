@@ -33,7 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceConfigProcessor.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
 
 public class IndividualRaceResultsCalculator implements ResultsCalculator {
 

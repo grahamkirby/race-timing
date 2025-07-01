@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
-import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.RaceResult;
@@ -76,6 +75,11 @@ public class CommonRace implements Race {
         this.config_file_path = config_file_path;
     }
 
+    public void completeConfiguration() {
+        normalisation = new Normalisation(this);
+
+    }
+
     @Override
     public void setPrizes(final RacePrizes prizes) {
         this.prizes = prizes;
@@ -126,11 +130,17 @@ public class CommonRace implements Race {
     /** Resolves the given path relative to either the project root, if it's specified as an absolute
      *  path, or to the race configuration file. */
     @Override
-    public Path getPath(final String path) {
+    public Path getFullPath(final String path) {
 
         return path.startsWith("/") ?
             getPathRelativeToProjectRoot(path) :
             getPathRelativeToRaceConfigFile(path);
+    }
+
+    @Override
+    public Path getFullPath(Path path) {
+
+        return getFullPath(path.toString());
     }
 
     @Override
@@ -184,11 +194,5 @@ public class CommonRace implements Race {
             throw new RuntimeException(STR."no entry for key '\{key}' in file '\{config_file_path.getFileName()}'");
 
         return property;
-    }
-
-    @Override
-    public Properties getProperties() {
-
-        return properties;
     }
 }

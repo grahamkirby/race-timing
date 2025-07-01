@@ -17,10 +17,10 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing_experimental.common.Normalisation;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.util.List;

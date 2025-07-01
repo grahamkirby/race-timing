@@ -183,7 +183,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return race.getPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
