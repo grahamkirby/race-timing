@@ -22,6 +22,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputText;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.AnnotatedElementContext;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -321,7 +322,7 @@ public abstract class AbstractRaceTest {
 
         } catch (final IOException e) {
             try {
-                fail(STR."Error reading expected output file \{path}: \{e.toString()}, actual directory contents: \{getDirectoryEntries(path.getParent()).toString()}");
+                fail(STR."Error reading expected output file \{path}: \{e.toString()}, actual directory contents: \{getDirectoryEntries(path.getParent()).toString()}, previously generated output path: \{IndividualRaceOutputText.debug_info}");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
