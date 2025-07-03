@@ -65,6 +65,7 @@ class IndividualRaceOutputCSV {
     }
 
     public void printResults() throws IOException {
+        IndividualRaceOutputText. debug_info = "printResults()";
 
         final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get(KEY_YEAR));
 
@@ -108,7 +109,6 @@ class IndividualRaceOutputCSV {
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
         Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
-       IndividualRaceOutputText. debug_info = resolve.toString();
         return resolve;
     }
 
