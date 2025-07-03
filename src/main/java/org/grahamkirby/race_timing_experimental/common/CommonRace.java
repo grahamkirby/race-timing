@@ -123,7 +123,7 @@ public class CommonRace implements Race {
 
         if (path.isEmpty()) return config_file_path;
 
-        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
+        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
     }
