@@ -320,7 +320,11 @@ public abstract class AbstractRaceTest {
             } else return Files.readAllLines(path);
 
         } catch (final IOException e) {
-            fail(STR."Error reading expected output file \{path}: \{e.toString()}");
+            try {
+                fail(STR."Error reading expected output file \{path}: \{e.toString()}, actual directory contents: \{getDirectoryEntries(path.getParent()).toString()}");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
         }
     }
