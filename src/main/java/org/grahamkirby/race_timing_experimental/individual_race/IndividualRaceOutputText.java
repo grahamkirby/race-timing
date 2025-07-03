@@ -106,7 +106,7 @@ public class IndividualRaceOutputText {
 
         Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
 //        Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
-debug_info = resolve.toString();
+if (debug_info.isBlank()) debug_info = resolve.toString();
         return resolve;
     }
 
