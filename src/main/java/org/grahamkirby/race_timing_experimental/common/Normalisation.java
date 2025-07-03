@@ -182,7 +182,7 @@ public class Normalisation {
 
         final Path gender_eligibility_map_path = (Path) race.getConfig().get(KEY_GENDER_ELIGIBILITY_MAP_PATH);
 
-        Files.readAllLines(race.getFullPath(gender_eligibility_map_path)).stream().
+        Files.readAllLines(gender_eligibility_map_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             forEachOrdered(line -> {
                 final String[] elements = line.split(",");

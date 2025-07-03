@@ -42,6 +42,7 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
         } catch (final Exception e) {
             IndividualRaceOutputText.debug_info += e.getMessage();
             System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

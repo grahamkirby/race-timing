@@ -48,14 +48,15 @@ public class IndividualRaceCategoriesProcessor implements CategoriesProcessor {
     public CategoryDetails getCategoryDetails() {
 
         try {
-            Config config = race.getConfig();
-            Path results_path = (Path) config.get(KEY_CATEGORIES_ENTRY_PATH);
-            entry_categories = Files.readAllLines((race.getFullPath(results_path.toString()))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+            final Config config = race.getConfig();
+            final Path results_path = (Path) config.get(KEY_CATEGORIES_ENTRY_PATH);
+            entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
             prize_category_groups = new ArrayList<>();
-            Path categories_prize_path = (Path) race.getConfig().get(KEY_CATEGORIES_PRIZE_PATH);
-            loadPrizeCategoryGroups((race.getFullPath(categories_prize_path.toString())));
+            final Path categories_prize_path = (Path) race.getConfig().get(KEY_CATEGORIES_PRIZE_PATH);
+            loadPrizeCategoryGroups(categories_prize_path);
 
             return new CategoryDetailsImpl(entry_categories, prize_category_groups);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

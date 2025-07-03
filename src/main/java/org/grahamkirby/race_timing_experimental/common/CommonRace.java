@@ -124,9 +124,9 @@ public class CommonRace implements Race {
 
         if (path.isEmpty()) return config_file_path;
 
-        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
+        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
 
-        if (path.startsWith("../")) return config_file_path.getParent().resolveSibling(path.substring(3));
+        if (path.startsWith("../") || path.startsWith("..\\")) return config_file_path.getParent().resolveSibling(path.substring(3));
 
         return getPathRelativeToRaceConfigFile(path);
     }

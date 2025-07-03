@@ -143,7 +143,8 @@ public abstract class RaceOutput {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return race.getPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}\{getFileSuffix()}");
+//        return race.getPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}\{getFileSuffix()}");
+        return race.getPath("").getParent().resolve("output").resolve(STR."\{race_name}_\{output_type}_\{year}\{getFileSuffix()}");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

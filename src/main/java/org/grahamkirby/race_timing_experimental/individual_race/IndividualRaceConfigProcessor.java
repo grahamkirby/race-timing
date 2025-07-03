@@ -61,8 +61,8 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             config_values.put(KEY_YEAR, properties.getProperty(KEY_YEAR));
             config_values.put(KEY_RACE_NAME_FOR_RESULTS, properties.getProperty(KEY_RACE_NAME_FOR_RESULTS));
             config_values.put(KEY_RACE_NAME_FOR_FILENAMES, properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES));
-            config_values.put(KEY_CATEGORIES_ENTRY_PATH, Path.of(properties.getProperty(KEY_CATEGORIES_ENTRY_PATH)));
-            config_values.put(KEY_CATEGORIES_PRIZE_PATH, Path.of(properties.getProperty(KEY_CATEGORIES_PRIZE_PATH)));
+            config_values.put(KEY_CATEGORIES_ENTRY_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_CATEGORIES_ENTRY_PATH))));
+            config_values.put(KEY_CATEGORIES_PRIZE_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_CATEGORIES_PRIZE_PATH))));
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
@@ -94,9 +94,9 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(DEFAULT_NORMALISED_CLUB_NAMES_PATH));
 
             if (properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH) != null)
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH));
+                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.getFullPath(properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH)));
             else
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
+                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.getFullPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
 
             if (properties.getProperty(KEY_ENTRY_COLUMN_MAP) != null)
                 config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
