@@ -25,16 +25,22 @@ import java.util.List;
 
 public class IndividualRaceData implements RaceData {
 
-    public IndividualRaceData(List<RawResult> rawResults, List<IndividualRaceEntry> singleRaceEntries) {
+    private final List<RawResult> raw_results;
+    private final List<IndividualRaceEntry> entries;
+
+    public IndividualRaceData(List<RawResult> raw_results, List<IndividualRaceEntry> entries) {
+
+        this.raw_results = raw_results;
+        this.entries = entries;
     }
 
     @Override
     public List<RawResult> getRawResults() {
-        return List.of();
+        return raw_results;
     }
 
     @Override
     public List<IndividualRaceEntry> getEntries() {
-        return List.of();
+        return entries;
     }
 }

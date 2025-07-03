@@ -166,7 +166,7 @@ public class Normalisation {
             normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
             normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
 
-            Path capitalisation_stop_words_path = (Path)race.getConfig().get(KEY_CAPITALISATION_STOP_WORDS_PATH);
+            Path capitalisation_stop_words_path = (Path) race.getConfig().get(KEY_CAPITALISATION_STOP_WORDS_PATH);
             capitalisation_stop_words = new HashSet<>(Files.readAllLines(capitalisation_stop_words_path));
 
             non_title_case_words = new HashSet<>();

@@ -23,8 +23,8 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import java.util.List;
 
 public interface ResultsCalculator {
+
     void setRace(Race race);
 
     RaceResults calculateResults();
-
 }

@@ -19,43 +19,19 @@ package org.grahamkirby.race_timing_experimental.common;
 
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
-import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
-import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
-import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Properties;
 
 public class CommonRace implements Race {
 
     public Path config_file_path;
-
-    private Properties properties;
-
     public RacePrizes prizes;
-    private StringBuilder notes;
 
     public Normalisation normalisation;
     protected RaceInput input;
-    protected RaceOutputCSV output_CSV;
-    protected RaceOutputHTML output_HTML;
-    protected RaceOutputText output_text;
-    private RaceOutputPDF output_PDF;
-
-    /** Overall race results. */
-    protected List<RaceResult> overall_results;
-
-    /**
-     * List of valid entry categories.
-     * Value is read from configuration file using key KEY_CATEGORIES_ENTRY_PATH.
-     */
-    private List<EntryCategory> entry_categories;
 
     /**
      * List of prize categories.
@@ -75,9 +51,11 @@ public class CommonRace implements Race {
         this.config_file_path = config_file_path;
     }
 
+    @Override
     public void completeConfiguration() {
-        normalisation = new Normalisation(this);
 
+        config = config_processor.loadConfig(config_file_path);
+        normalisation = new Normalisation(this);
     }
 
     @Override
@@ -120,7 +98,6 @@ public class CommonRace implements Race {
     @Override
     public void processResults() throws IOException {
 
-        config = config_processor.loadConfig(config_file_path);
         category_details = categories_processor.getCategoryDetails();
         race_data = race_data_processor.getRaceData();
         race_results = results_calculator.calculateResults();
@@ -184,15 +161,5 @@ public class CommonRace implements Race {
     private Path getPathRelativeToRaceConfigFile(final String path) {
 
         return config_file_path.getParent().resolve(path);
-    }
-
-    public String getRequiredProperty(final String key) {
-
-        final String property = properties.getProperty(key);
-
-        if (property == null)
-            throw new RuntimeException(STR."no entry for key '\{key}' in file '\{config_file_path.getFileName()}'");
-
-        return property;
     }
 }

@@ -23,9 +23,10 @@ import org.grahamkirby.race_timing.common.RacePrizes;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Properties;
 
 public interface Race {
+
+    void completeConfiguration();
 
     void setPrizes(RacePrizes prizes);
 

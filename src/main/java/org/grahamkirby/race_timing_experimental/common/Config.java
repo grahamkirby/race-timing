@@ -17,7 +17,12 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
+import java.nio.file.Path;
+
 public interface Config {
+
+    String SUFFIX_CSV = ".csv";
+    Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
 
     String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
     String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
@@ -36,7 +41,6 @@ public interface Config {
     String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
     String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
     String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
-
 
     Object get(String key);
 }

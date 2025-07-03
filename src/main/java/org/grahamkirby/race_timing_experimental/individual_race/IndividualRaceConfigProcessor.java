@@ -30,11 +30,9 @@ import java.util.Properties;
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
+@SuppressWarnings("preview")
 public class IndividualRaceConfigProcessor implements ConfigProcessor {
 
-    public static final String SUFFIX_CSV = ".csv";
-
-    private static final Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
     private static final Path DEFAULT_CAPITALISATION_STOP_WORDS_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}");
 
     private static final Path DEFAULT_NORMALISED_HTML_ENTITIES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}");
@@ -56,9 +54,9 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
     public Config loadConfig(Path config_file_path) {
 
         try {
-            Map<String, Object> config_values = new HashMap<>();
+            final Map<String, Object> config_values = new HashMap<>();
 
-            Properties properties = loadProperties(config_file_path);
+            final Properties properties = loadProperties(config_file_path);
 
             config_values.put(KEY_YEAR, properties.getProperty(KEY_YEAR));
             config_values.put(KEY_RACE_NAME_FOR_RESULTS, properties.getProperty(KEY_RACE_NAME_FOR_RESULTS));
@@ -81,9 +79,9 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_MEDIAN_TIME, properties.getProperty(KEY_MEDIAN_TIME));
 
             if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH));
+                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.getFullPath(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH)));
             else
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH);
+                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.getFullPath(DEFAULT_CAPITALISATION_STOP_WORDS_PATH));
 
             if (properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH) != null)
                 config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH)));
@@ -105,10 +103,8 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             else
                 config_values.put(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
 
-            String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
+            final String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
             if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.getFullPath(Path.of(category_map_path)));
-
-
 
             return new ConfigImpl(config_values);
 

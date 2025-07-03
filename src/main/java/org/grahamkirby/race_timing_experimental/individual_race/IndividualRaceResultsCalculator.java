@@ -52,6 +52,7 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
         initialiseResults();
         recordDNFs();
         sortResults();
+        setPositionStrings(overall_results);
         allocatePrizes();
 
         return new IndividualRaceResults(overall_results);
@@ -252,5 +253,82 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
             filter(result -> result.entry.bib_number == bib_number).
             findFirst().
             orElseThrow();
+    }
+
+    public boolean areEqualPositionsAllowed() {
+
+        // No dead heats for overall results, since an ordering is imposed at the finish.
+        return false;
+    }
+
+    /** Sets the position string for each result. These are recorded as strings rather than ints so
+     *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
+     *  is determined by the particular race type. */
+    void setPositionStrings(final List<IndividualRaceResult> results) {
+
+        setPositionStrings(results, areEqualPositionsAllowed());
+    }
+
+    /** Sets the position string for each result. These are recorded as strings rather than ints so
+     *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
+     *  is determined by the second parameter. */
+    protected static void setPositionStrings(final List<IndividualRaceResult> results, final boolean allow_equal_positions) {
+
+        // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
+        // E.g. if results 3 and 4 have the same time, both will be set to "3=".
+
+        // The flag is passed in rather than using race.allowEqualPositions() since that applies to the race overall.
+        // In a series race the individual races don't allow equal positions, but the race overall does.
+        // Conversely in a relay race the legs after the first leg do allow equal positions.
+
+        for (int result_index = 0; result_index < results.size(); result_index++) {
+
+            final IndividualRaceResult result = results.get(result_index);
+
+            if (result.shouldDisplayPosition()) {
+                if (allow_equal_positions) {
+
+                    // Skip over any following results with the same performance.
+                    // Defined in terms of performance rather than duration, since in some races ranking is determined
+                    // by scores rather than times.
+                    final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
+
+                    if (highest_index_with_same_performance > result_index) {
+
+                        // There are results following this one with the same performance.
+                        recordEqualPositions(results, result_index, highest_index_with_same_performance);
+                        result_index = highest_index_with_same_performance;
+                    } else
+                        // The following result has a different performance, so just record current position for this one.
+                        result.position_string = String.valueOf(result_index + 1);
+                } else {
+                    result.position_string = String.valueOf(result_index + 1);
+                }
+            } else {
+                result.position_string = "-";
+            }
+        }
+    }
+
+    /** Records the same position for the given range of results. */
+    private static void recordEqualPositions(final List<IndividualRaceResult> results, final int start_index, final int end_index) {
+
+        final String position_string = STR."\{start_index + 1}=";
+
+        for (int i = start_index; i <= end_index; i++)
+            results.get(i).position_string = position_string;
+    }
+
+    /** Finds the highest index for which the performance is the same as the given index. */
+    private static int getHighestIndexWithSamePerformance(final List<IndividualRaceResult> results, final int start_index) {
+
+        int highest_index_with_same_result = start_index;
+
+        while (highest_index_with_same_result < results.size() - 1 &&
+            results.get(highest_index_with_same_result).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
+
+            highest_index_with_same_result++;
+
+        return highest_index_with_same_result;
     }
 }

@@ -21,6 +21,7 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceResults;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,10 +31,12 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 
 class IndividualRaceOutputCSV {
 
@@ -57,13 +60,13 @@ class IndividualRaceOutputCSV {
     }
 
     // Prize results not printed to CSV file.
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter ignore) {
         throw new UnsupportedOperationException();
     }
 
     public void printResults() throws IOException {
 
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get("KEY_YEAR"));
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get(KEY_YEAR));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -104,7 +107,8 @@ class IndividualRaceOutputCSV {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return resolve;
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
@@ -123,7 +127,9 @@ class IndividualRaceOutputCSV {
                 writer.append(getResultsSubHeader(group.group_title()));
             }
 
-            printer.print(race.getRaceResults().getOverallResults(group.categories()));
+            RaceResults raceResults = race.getRaceResults();
+            List<IndividualRaceResult> overallResults = raceResults.getOverallResults(group.categories());
+            printer.print(overallResults);
 
             not_first_category_group = true;
         }
