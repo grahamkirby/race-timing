@@ -43,6 +43,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     @Override
     public void outputResults() throws IOException {
 
+        IndividualRaceOutputText. debug_info += "outputResults()";
         printOverallResults();
 
         printPrizes();
