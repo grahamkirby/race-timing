@@ -124,9 +124,7 @@ public class CommonRace implements Race {
 
         if (path.isEmpty()) return config_file_path;
 
-        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
-
-        if (path.startsWith("../") || path.startsWith("..\\")) return config_file_path.getParent().resolveSibling(path.substring(3));
+        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
     }
@@ -170,20 +168,14 @@ public class CommonRace implements Race {
         results_output.setRace(this);
     }
 
-    private static Path makeRelativeToProjectRoot(final Path path) {
-
-        // Path is specified as absolute path, should be reinterpreted relative to project root.
-        return Path.of(path.toString().substring(1));
-    }
-
     private static Path makeRelativeToProjectRoot(final String path) {
 
+        // Path is specified as absolute path, should be reinterpreted relative to project root.
         return Path.of(path.substring(1));
     }
 
     private Path getPathRelativeToRaceConfigFile(final String path) {
 
-//        return config_file_path.resolveSibling(path);
-        return config_file_path.getParent().resolve(path);
+        return config_file_path.resolveSibling(path);
     }
 }

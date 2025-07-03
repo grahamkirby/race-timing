@@ -46,6 +46,7 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("preview")
 public abstract class AbstractRaceTest {
 
     // File names that may be present in list of expected output files for a given test, but should be ignored.
@@ -321,11 +322,7 @@ public abstract class AbstractRaceTest {
             } else return Files.readAllLines(path);
 
         } catch (final IOException e) {
-            try {
-                fail(STR."Error reading expected output file \{path}: \{e.toString()}, actual directory contents: \{getDirectoryEntries(path.getParent()).toString()}, previously generated output path: \{IndividualRaceOutputText.debug_info}");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            fail(STR."Error reading expected output file \{path}: \{e.toString()}");
             throw new RuntimeException(e);
         }
     }

@@ -48,6 +48,7 @@ public abstract class Race {
     // TODO fuzz tests.
     // TODO test missing output directory.
     // TODO test input directory with different name.
+    // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
     // TODO generate racer list for PocketTimer.
 

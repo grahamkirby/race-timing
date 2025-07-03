@@ -108,9 +108,7 @@ class IndividualRaceOutputCSV {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-//        Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
-        Path resolve = race.getFullPath("").getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
-        return resolve;
+        return race.getFullPath("").getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
@@ -155,15 +153,12 @@ class IndividualRaceOutputCSV {
 
         if (!result.canComplete()) return alternative;
 
-        final Duration duration = result.duration();
-
-        return format(duration);
+        return format(result.duration());
     }
 
     public static String renderDuration(final IndividualRaceResult result) {
         return renderDuration(result, "");
     }
-
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

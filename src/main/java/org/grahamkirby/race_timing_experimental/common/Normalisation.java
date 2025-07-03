@@ -39,7 +39,6 @@ public class Normalisation {
     private static final int SECONDS_PER_MINUTE = 60;
     private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;
 
-
     /** Characters treated as word separators when converting string to title case. */
     private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '’');
 

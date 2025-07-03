@@ -36,8 +36,6 @@ import static org.grahamkirby.race_timing_experimental.individual_race.Individua
 /** Base class for plaintext output. */
 public class IndividualRaceOutputText {
 
-    public static String debug_info = "DEBUG2";
-
     private final Race race;
 
     protected IndividualRaceOutputText(final Race race) {
@@ -56,7 +54,6 @@ public class IndividualRaceOutputText {
     }
 
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
-
 
     /** Prints out the words converted to title case, and any other processing notes. */
     public void printNotes() throws IOException {
@@ -103,11 +100,7 @@ public class IndividualRaceOutputText {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-
-        Path resolve = race.getFullPath("").getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
-//        Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
-debug_info = resolve.toString();
-        return resolve;
+        return race.getFullPath("").getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +116,7 @@ debug_info = resolve.toString();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @SuppressWarnings("preview")
     private static final class PrizeResultPrinter extends ResultPrinterText {
 
         private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {

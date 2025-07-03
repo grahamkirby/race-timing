@@ -38,12 +38,12 @@ import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.OVERALL_RESULTS_HEADER;
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.encode;
 
+@SuppressWarnings("preview")
 public class IndividualRaceResultsOutput implements ResultsOutput {
 
     @Override
     public void outputResults() throws IOException {
 
-        IndividualRaceOutputText. debug_info += "outputResults()";
         printOverallResults();
 
         printPrizes();
@@ -53,6 +53,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     @Override
     public void setRace(Race race) {
+
         this.race = race;
         output_CSV = new IndividualRaceOutputCSV(race);
         output_text = new IndividualRaceOutputText(race);
@@ -123,6 +124,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         return OVERALL_RESULTS_HEADER;
     }
 
+    @SuppressWarnings("preview")
     private static final class OverallResultPrinter extends ResultPrinter {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
@@ -187,20 +189,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-
         return race.getFullPath("").getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
-//        return race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void readProperties() {
-
-        year = (String) race.getConfig().get(KEY_YEAR);
-
-
-        race_name_for_results = (String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS);
-        race_name_for_filenames = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
