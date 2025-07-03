@@ -27,4 +27,6 @@ public interface ResultsCalculator {
     void setRace(Race race);
 
     RaceResults calculateResults();
+
+    StringBuilder getNotes();
 }

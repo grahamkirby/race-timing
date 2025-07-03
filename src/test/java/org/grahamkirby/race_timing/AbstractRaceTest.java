@@ -320,7 +320,7 @@ public abstract class AbstractRaceTest {
             } else return Files.readAllLines(path);
 
         } catch (final IOException e) {
-            fail(STR."Expected output file not found: \{path}");
+            fail(STR."Error reading expected output file \{path}: \{e.getMessage()}");
             throw new RuntimeException(e);
         }
     }

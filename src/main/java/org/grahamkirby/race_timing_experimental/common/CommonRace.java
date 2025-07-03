@@ -83,6 +83,16 @@ public class CommonRace implements Race {
     }
 
     @Override
+    public void appendToNotes(String s) {
+        results_calculator.getNotes().append(s);
+    }
+
+    @Override
+    public StringBuilder getNotes() {
+        return results_calculator.getNotes();
+    }
+
+    @Override
     public RaceResults getRaceResults() {
         return race_results;
     }

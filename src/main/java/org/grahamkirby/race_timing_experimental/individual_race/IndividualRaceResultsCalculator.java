@@ -40,10 +40,12 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
     private Race race;
 
     private List<IndividualRaceResult> overall_results;
+    private StringBuilder notes;
 
     @Override
     public void setRace(Race race) {
         this.race = race;
+        notes = new StringBuilder();
     }
 
     @Override
@@ -56,6 +58,11 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
         allocatePrizes();
 
         return new IndividualRaceResults(overall_results);
+    }
+
+    @Override
+    public StringBuilder getNotes() {
+        return notes;
     }
 
     private void allocatePrizes() {

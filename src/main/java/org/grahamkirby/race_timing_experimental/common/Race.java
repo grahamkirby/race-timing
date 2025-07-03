@@ -56,4 +56,8 @@ public interface Race {
     CategoryDetails getCategoryDetails();
 
     RaceData getRaceData();
+
+    void appendToNotes(String s);
+
+    StringBuilder getNotes();
 }
