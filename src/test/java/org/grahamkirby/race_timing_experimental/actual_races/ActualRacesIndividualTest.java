@@ -33,16 +33,11 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
     protected void invokeMain(String[] args) throws Exception {
 
         try {
-            IndividualRaceOutputText.debug_info += "invokeMain1,";
             Race individual_race = IndividualRaceFactory.makeIndividualRace(Path.of(args[0]));
-            IndividualRaceOutputText.debug_info += "invokeMain2,";
             individual_race.processResults();
-            IndividualRaceOutputText.debug_info += "invokeMain3,";
 
         } catch (final Exception e) {
-            IndividualRaceOutputText.debug_info += e.getMessage();
             System.err.println(e.getMessage());
-            e.printStackTrace();
         }
     }
 

@@ -65,7 +65,6 @@ class IndividualRaceOutputCSV {
     }
 
     public void printResults() throws IOException {
-        IndividualRaceOutputText. debug_info += "printResults()";
 
         final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get(KEY_YEAR));
 

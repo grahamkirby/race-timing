@@ -112,7 +112,6 @@ public class CommonRace implements Race {
         category_details = categories_processor.getCategoryDetails();
         race_data = race_data_processor.getRaceData();
         race_results = results_calculator.calculateResults();
-        IndividualRaceOutputText. debug_info += "CommonRace.processResults()";
 
         results_output.outputResults();
     }
