@@ -45,7 +45,7 @@ public class IndividualRaceOutputText {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected String getFileSuffix() {
-        return "txt";
+        return ".txt";
     }
 
     /** No headings in plaintext file. */
