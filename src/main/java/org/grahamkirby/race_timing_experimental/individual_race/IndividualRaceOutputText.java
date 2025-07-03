@@ -36,7 +36,7 @@ import static org.grahamkirby.race_timing_experimental.individual_race.Individua
 /** Base class for plaintext output. */
 public class IndividualRaceOutputText {
 
-    public static String debug_info = "DEBUG";
+    public static String debug_info = "DEBUG2";
 
     private final Race race;
 
