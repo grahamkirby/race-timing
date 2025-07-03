@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputText;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -32,10 +33,14 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
     protected void invokeMain(String[] args) throws Exception {
 
         try {
+            IndividualRaceOutputText.debug_info += "invokeMain1,";
             Race individual_race = IndividualRaceFactory.makeIndividualRace(Path.of(args[0]));
+            IndividualRaceOutputText.debug_info += "invokeMain2,";
             individual_race.processResults();
+            IndividualRaceOutputText.debug_info += "invokeMain3,";
 
         } catch (final Exception e) {
+            IndividualRaceOutputText.debug_info += e.getMessage();
             System.err.println(e.getMessage());
         }
     }
