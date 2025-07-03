@@ -45,7 +45,7 @@ public class IndividualRaceOutputText {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected String getFileSuffix() {
-        return ".txt";
+        return "txt";
     }
 
     /** No headings in plaintext file. */
@@ -101,7 +101,9 @@ public class IndividualRaceOutputText {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
+
         Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
+//        Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
         return resolve;
     }
 

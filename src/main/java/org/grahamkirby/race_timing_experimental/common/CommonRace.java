@@ -119,9 +119,13 @@ public class CommonRace implements Race {
     @Override
     public Path getFullPath(final String path) {
 
-        return path.startsWith("/") ?
-            getPathRelativeToProjectRoot(path) :
-            getPathRelativeToRaceConfigFile(path);
+        if (path.isEmpty()) return config_file_path;
+
+        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
+
+        if (path.startsWith("../")) return config_file_path.getParent().resolveSibling(path.substring(3));
+
+        return getPathRelativeToRaceConfigFile(path);
     }
 
     @Override
@@ -163,13 +167,20 @@ public class CommonRace implements Race {
         results_output.setRace(this);
     }
 
-    private static Path getPathRelativeToProjectRoot(final String path) {
+    private static Path makeRelativeToProjectRoot(final Path path) {
+
+        // Path is specified as absolute path, should be reinterpreted relative to project root.
+        return Path.of(path.toString().substring(1));
+    }
+
+    private static Path makeRelativeToProjectRoot(final String path) {
 
         return Path.of(path.substring(1));
     }
 
     private Path getPathRelativeToRaceConfigFile(final String path) {
 
+//        return config_file_path.resolveSibling(path);
         return config_file_path.getParent().resolve(path);
     }
 }
