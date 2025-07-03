@@ -36,7 +36,7 @@ import static org.grahamkirby.race_timing_experimental.individual_race.Individua
 /** Base class for plaintext output. */
 public class IndividualRaceOutputText {
 
-    public static String debug_info = "";
+    public static String debug_info = "DEBUG";
 
     private final Race race;
 
@@ -106,7 +106,7 @@ public class IndividualRaceOutputText {
 
         Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
 //        Path resolve = race.getFullPath("../output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
-if (debug_info.isBlank()) debug_info = resolve.toString();
+debug_info = resolve.toString();
         return resolve;
     }
 
