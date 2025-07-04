@@ -184,10 +184,17 @@ public class CommonRace implements Race {
 
     private static Path makeRelativeToProjectRoot(final Path path) {
 
-//        return Path.of(System.getProperty("user.dir")).resolve(path);
+//        Path path1 = Path.of(System.getProperty("user.dir"));
+//        Path resolve = path1.resolve(path);
+//        return resolve;
+
+        return path.subpath(0, path.getNameCount());
+
+
+
 
         // Path is specified as absolute path, should be reinterpreted relative to project root.
-        return Path.of(path.toString().substring(1));
+//        return Path.of(path.toString().substring(1));
     }
 
     private Path getPathRelativeToRaceConfigFile(final Path path) {
