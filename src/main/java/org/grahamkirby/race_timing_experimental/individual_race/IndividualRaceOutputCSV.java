@@ -38,7 +38,7 @@ import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAME
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 
-class IndividualRaceOutputCSV {
+public class IndividualRaceOutputCSV {
 
     /** Displayed in results for runners that did not complete the course. */
     public static final String DNF_STRING = "DNF";
@@ -114,8 +114,12 @@ class IndividualRaceOutputCSV {
 
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>> creating output file: " + resolve);
         System.err.println(">>>>>>>>>>>>>>>>>>>>>>> creating output file: " + resolve);
+
+        debug_info = resolve.toString();
         return resolve;
     }
+
+    public static String debug_info = "no info";
 
     /** Prints results using a specified printer, ordered by prize category groups. */
     protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {

@@ -22,6 +22,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputText;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.AnnotatedElementContext;
@@ -322,7 +323,7 @@ public abstract class AbstractRaceTest {
             } else return Files.readAllLines(path);
 
         } catch (final IOException e) {
-            fail(STR."Error reading expected output file \{path}: \{e.toString()}");
+            fail(STR."Error reading expected output file \{path}: \{e.toString()}, debug info: \{IndividualRaceOutputCSV.debug_info}");
             throw new RuntimeException(e);
         }
     }
