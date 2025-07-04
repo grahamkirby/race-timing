@@ -111,6 +111,9 @@ class IndividualRaceOutputCSV {
         Path parent = configPath.getParent();
         Path output = parent.resolveSibling("output");
         Path resolve = output.resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>> creating output file: " + resolve);
+        System.err.println(">>>>>>>>>>>>>>>>>>>>>>> creating output file: " + resolve);
         return resolve;
     }
 
