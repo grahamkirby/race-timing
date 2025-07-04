@@ -57,6 +57,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         this.race = race;
         output_CSV = new IndividualRaceOutputCSV(race);
         output_text = new IndividualRaceOutputText(race);
+        output_PDF = new IndividualRaceOutputPDF(race);
     }
 
     /** Displayed in results for runners that did not complete the course. */
@@ -76,6 +77,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     IndividualRaceOutputCSV output_CSV;
     IndividualRaceOutputText output_text;
+    IndividualRaceOutputPDF output_PDF;
 
     protected void printOverallResults() throws IOException {
 
@@ -85,7 +87,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     protected void printPrizes() throws IOException {
 
-//        output_PDF.printPrizes();
+        output_PDF.printPrizes();
 //        output_HTML.printPrizes();
         output_text.printPrizes();
     }
