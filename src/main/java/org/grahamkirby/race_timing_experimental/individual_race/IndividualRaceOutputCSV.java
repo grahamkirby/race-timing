@@ -88,11 +88,13 @@ public class IndividualRaceOutputCSV {
      * @throws IOException if an I/O error occurs
      */
     protected OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
+
         return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
     }
 
     /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
     protected OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
+
         return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
     }
 
@@ -107,19 +109,10 @@ public class IndividualRaceOutputCSV {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        Path configPath = race.getConfigPath();
-        Path parent = configPath.getParent();
-        Path output = parent.resolveSibling("output");
-        Path resolve = output.resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
 
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>> creating output file: " + resolve);
-        System.err.println(">>>>>>>>>>>>>>>>>>>>>>> creating output file: " + resolve);
-
-        debug_info = resolve.toString();
-        return resolve;
+//        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
     }
-
-    public static String debug_info = "no info";
 
     /** Prints results using a specified printer, ordered by prize category groups. */
     protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {

@@ -39,8 +39,6 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());
-            IndividualRaceOutputCSV.debug_info += e.getMessage();
-
         }
     }
 

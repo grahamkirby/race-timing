@@ -107,7 +107,8 @@ public class IndividualRaceOutputText {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
+//        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
     }
 
     /**

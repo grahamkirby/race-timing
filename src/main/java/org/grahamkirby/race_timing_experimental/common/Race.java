@@ -45,6 +45,8 @@ public interface Race {
 
     Path getConfigPath();
 
+    Path getOutputDirectoryPath();
+
     void setConfigProcessor(ConfigProcessor config_processor);
 
     void setCategoriesProcessor(CategoriesProcessor categories_processor);

@@ -174,7 +174,8 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+//        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

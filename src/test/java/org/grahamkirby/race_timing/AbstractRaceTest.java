@@ -323,7 +323,7 @@ public abstract class AbstractRaceTest {
             } else return Files.readAllLines(path);
 
         } catch (final IOException e) {
-            fail(STR."Error reading expected output file \{path}: \{e.toString()}, debug info: \{IndividualRaceOutputCSV.debug_info}");
+            fail(STR."Error reading expected output file \{path}: \{e.toString()}");
             throw new RuntimeException(e);
         }
     }

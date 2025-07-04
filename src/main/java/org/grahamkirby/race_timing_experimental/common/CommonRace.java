@@ -115,31 +115,15 @@ public class CommonRace implements Race {
         results_output.outputResults();
     }
 
-//    /** Resolves the given path relative to either the project root, if it's specified as an absolute
-//     *  path, or to the race configuration file. */
-//    @Override
-//    public Path getFullPath(final String path) {
-//
-//        if (path.isEmpty()) return config_file_path;
-//
-////        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
-//        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
-//
-//        return getPathRelativeToRaceConfigFile(path);
-//    }
-
     /** Resolves the given path relative to either the project root, if it's specified as an absolute
      *  path, or to the race configuration file. */
     @Override
     public Path getFullPath(Path path) {
 
-//        final String path1 = path.toString();
-//
-//        if (path1.isEmpty()) return config_file_path;
-
+        // Absolute paths originate from config file where path starting with "/" denotes
+        // a path relative to the project root.
+        // Can't test with isAbsolute() since that will return false on Windows.
         if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
-//        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
-//        if (path.isAbsolute()) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
     }
@@ -148,6 +132,14 @@ public class CommonRace implements Race {
     public Path getConfigPath() {
 
         return config_file_path;
+    }
+
+    @Override
+    public Path getOutputDirectoryPath() {
+
+        // This assumes that the config file is in the "input" directory
+        // which is at the same level as the "output" directory.
+        return config_file_path.getParent().resolveSibling("output");
     }
 
     @Override
