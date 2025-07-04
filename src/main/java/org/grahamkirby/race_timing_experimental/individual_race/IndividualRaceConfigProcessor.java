@@ -79,22 +79,22 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_MEDIAN_TIME, properties.getProperty(KEY_MEDIAN_TIME));
 
             if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.getFullPath(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH)));
+                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));
             else
                 config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.getFullPath(DEFAULT_CAPITALISATION_STOP_WORDS_PATH));
 
             if (properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH) != null)
-                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH)));
+                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH))));
             else
                 config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(DEFAULT_NORMALISED_HTML_ENTITIES_PATH));
 
             if (properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH) != null)
-                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH)));
+                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH))));
             else
                 config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(DEFAULT_NORMALISED_CLUB_NAMES_PATH));
 
             if (properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH) != null)
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.getFullPath(properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH)));
+                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH))));
             else
                 config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.getFullPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
 

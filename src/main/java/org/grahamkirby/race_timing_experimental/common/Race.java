@@ -40,8 +40,10 @@ public interface Race {
 
     void processResults() throws IOException;
 
-    Path getFullPath(String path);
+//    Path getFullPath(String path);
     Path getFullPath(Path path);
+
+    Path getConfigPath();
 
     void setConfigProcessor(ConfigProcessor config_processor);
 

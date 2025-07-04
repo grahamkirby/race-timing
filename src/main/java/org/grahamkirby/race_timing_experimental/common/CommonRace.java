@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing_experimental.common;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputText;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -116,22 +115,38 @@ public class CommonRace implements Race {
         results_output.outputResults();
     }
 
+//    /** Resolves the given path relative to either the project root, if it's specified as an absolute
+//     *  path, or to the race configuration file. */
+//    @Override
+//    public Path getFullPath(final String path) {
+//
+//        if (path.isEmpty()) return config_file_path;
+//
+////        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
+//        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
+//
+//        return getPathRelativeToRaceConfigFile(path);
+//    }
+
     /** Resolves the given path relative to either the project root, if it's specified as an absolute
      *  path, or to the race configuration file. */
     @Override
-    public Path getFullPath(final String path) {
+    public Path getFullPath(Path path) {
 
-        if (path.isEmpty()) return config_file_path;
+//        final String path1 = path.toString();
+//
+//        if (path1.isEmpty()) return config_file_path;
 
-        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
+//        if (path.startsWith("/") || path.startsWith("\\")) return makeRelativeToProjectRoot(path);
+        if (path.isAbsolute()) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
     }
 
     @Override
-    public Path getFullPath(Path path) {
+    public Path getConfigPath() {
 
-        return getFullPath(path.toString());
+        return config_file_path;
     }
 
     @Override
@@ -165,6 +180,19 @@ public class CommonRace implements Race {
     public void setResultsOutput(final ResultsOutput results_output) {
         this.results_output = results_output;
         results_output.setRace(this);
+    }
+
+    private static Path makeRelativeToProjectRoot(final Path path) {
+
+//        return Path.of(System.getProperty("user.dir")).resolve(path);
+
+        // Path is specified as absolute path, should be reinterpreted relative to project root.
+        return Path.of(path.toString().substring(1));
+    }
+
+    private Path getPathRelativeToRaceConfigFile(final Path path) {
+
+        return config_file_path.resolveSibling(path);
     }
 
     private static Path makeRelativeToProjectRoot(final String path) {

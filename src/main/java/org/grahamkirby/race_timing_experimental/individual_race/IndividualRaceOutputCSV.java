@@ -107,7 +107,11 @@ class IndividualRaceOutputCSV {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-        return race.getFullPath("").getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        Path configPath = race.getConfigPath();
+        Path parent = configPath.getParent();
+        Path output = parent.resolveSibling("output");
+        Path resolve = output.resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return resolve;
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
