@@ -18,20 +18,35 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing_experimental.common.CommonRace;
+import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResults;
 
 import java.util.List;
 
 public class IndividualRaceResults implements RaceResults {
 
-    private final List<IndividualRaceResult> results;
+    private final Race race;
 
-    public IndividualRaceResults(List<IndividualRaceResult> results) {
-        this.results = results;
+    public IndividualRaceResults(Race race) {
+        this.race = race;
     }
 
     @Override
     public List<IndividualRaceResult> getOverallResults(List<PrizeCategory> categories) {
-        return results;
+
+        return ((IndividualRaceResultsCalculator)((CommonRace)race).getResultsCalculator()).getOverallResults(categories);
+    }
+
+    @Override
+    public boolean arePrizesInThisOrLaterCategory(PrizeCategory category) {
+
+        return ((IndividualRaceResultsCalculator)((CommonRace)race).getResultsCalculator()).arePrizesInThisOrLaterCategory(category);
+    }
+
+    @Override
+    public List<IndividualRaceResult> getPrizeWinners(PrizeCategory category) {
+
+        return ((IndividualRaceResultsCalculator) ((CommonRace) race).getResultsCalculator()).getPrizeWinners(category);
     }
 }

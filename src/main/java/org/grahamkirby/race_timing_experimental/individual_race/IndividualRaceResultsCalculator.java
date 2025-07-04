@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResults;
 import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
@@ -32,6 +31,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
 
@@ -57,7 +57,7 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
         setPositionStrings(overall_results);
         allocatePrizes();
 
-        return new IndividualRaceResults(overall_results);
+        return new IndividualRaceResults(race);
     }
 
     @Override
@@ -67,8 +67,20 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
 
     private void allocatePrizes() {
 
-        for (final PrizeCategory category : getPrizeCategories())
+        for (final PrizeCategory category : race.getCategoryDetails().getPrizeCategories())
             setPrizeWinners(category);
+    }
+
+    /** Returns prize winners in given category. */
+    public List<IndividualRaceResult> getPrizeWinners(final PrizeCategory prize_category) {
+
+        final List<IndividualRaceResult> prize_results = overall_results.stream().
+            filter(result -> result.categories_of_prizes_awarded.contains(prize_category)).
+            toList();
+
+        setPositionStrings(prize_results);
+
+        return prize_results;
     }
 
     private void setPrizeWinners(PrizeCategory category) {
@@ -104,13 +116,6 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
     protected static void setPrizeWinner(final IndividualRaceResult result, final PrizeCategory category) {
 
         result.categories_of_prizes_awarded.add(category);
-    }
-
-    public List<PrizeCategory> getPrizeCategories() {
-
-        return race.getCategoryDetails().getPrizeCategories().stream().
-            flatMap(group -> group.categories().stream()).
-            toList();
     }
 
     private void initialiseResults() {
@@ -338,4 +343,32 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
 
         return highest_index_with_same_result;
     }
+
+    /** Gets all the results eligible for the given prize categories. */
+    public List<IndividualRaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
+
+        final Predicate<IndividualRaceResult> prize_category_filter = result -> result.isResultEligibleInSomePrizeCategory(prize_categories);
+        final List<IndividualRaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
+        setPositionStrings(results);
+        return results;
+    }
+
+    public boolean arePrizesInThisOrLaterCategory(final PrizeCategory category) {
+
+        for (final PrizeCategory category2 : race.getCategoryDetails().getPrizeCategories().reversed()) {
+
+            if (!race.getRaceResults().getPrizeWinners(category2).isEmpty()) return true;
+            if (category.equals(category2) && !arePrizesInOtherCategorySameAge(category)) return false;
+        }
+        return false;
+    }
+
+    private boolean arePrizesInOtherCategorySameAge(final PrizeCategory category) {
+
+        return race.getCategoryDetails().getPrizeCategories().stream().
+            filter(cat -> !cat.equals(category)).
+            filter(cat -> cat.getMinimumAge() == category.getMinimumAge()).
+            anyMatch(cat -> !race.getRaceResults().getPrizeWinners(cat).isEmpty());
+    }
+
 }

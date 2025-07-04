@@ -18,7 +18,9 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.io.IOException;
@@ -28,18 +30,23 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.renderDuration;
 
 /** Base class for plaintext output. */
+@SuppressWarnings("preview")
 public class IndividualRaceOutputText {
 
     private final Race race;
 
     protected IndividualRaceOutputText(final Race race) {
-        this.race= race;
+        this.race = race;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,6 +108,85 @@ public class IndividualRaceOutputText {
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
         return race.getFullPath("").getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
+    }
+
+    /**
+     * Prints race prizes. Used for HTML and text output.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    public void printPrizes() throws IOException {
+
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "prizes", (String) race.getConfig().get(KEY_YEAR));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesHeader());
+            printPrizes(writer);
+        }
+    }
+
+    /** Prints prizes, ordered by prize category groups. */
+    void printPrizes(final OutputStreamWriter writer) {
+
+        printPrizes(category -> {
+            printPrizes(writer, category);
+            return null;
+        });
+    }
+
+    /**
+     * Prints prizes using a specified printer, ordered by prize category groups.
+     * The printer abstracts over whether output goes to an output stream writer
+     * (CSV, HTML and text files) or to a PDF writer.
+     */
+    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
+
+        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+            flatMap(group -> group.categories().stream()).       // Get all prize categories.
+            filter(race.getRaceResults()::arePrizesInThisOrLaterCategory). // Discard further categories once all prizes have been output.
+            forEachOrdered(prize_category_printer::apply);       // Print prizes in this category.
+    }
+
+    /** Prints prizes within a given category. */
+    private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
+
+        try {
+            writer.append(getPrizeCategoryHeader(category));
+
+            final List<IndividualRaceResult> category_prize_winners = race.getRaceResults().getPrizeWinners(category);
+            getPrizeResultPrinter(writer).print(category_prize_winners);
+
+            writer.append(getPrizeCategoryFooter());
+        }
+        // Called from lambda that can't throw checked exception.
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected String getPrizeCategoryHeader(final PrizeCategory category) {
+
+        final String header = STR."Category: \{category.getLongName()}";
+        return STR."""
+            \{header}
+            \{"-".repeat(header.length())}
+
+            """;
+    }
+
+    protected String getPrizeCategoryFooter() {
+        return LINE_SEPARATOR + LINE_SEPARATOR;
+    }
+
+    protected String getPrizesHeader() {
+
+        final String header = STR."\{(String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)} Results \{(String) race.getConfig().get(KEY_YEAR)}";
+        return STR."""
+            \{header}
+            \{"=".repeat(header.length())}
+
+            """;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

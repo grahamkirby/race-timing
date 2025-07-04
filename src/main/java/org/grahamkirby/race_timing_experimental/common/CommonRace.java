@@ -177,4 +177,8 @@ public class CommonRace implements Race {
 
         return config_file_path.resolveSibling(path);
     }
+
+    public ResultsCalculator getResultsCalculator() {
+        return results_calculator;
+    }
 }

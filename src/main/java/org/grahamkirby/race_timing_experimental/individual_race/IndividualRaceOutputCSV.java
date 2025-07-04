@@ -118,7 +118,7 @@ class IndividualRaceOutputCSV {
 
         boolean not_first_category_group = false;
 
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategories()) {
+        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
 
             if (should_display_category_group_headers) {
                 if (not_first_category_group)

@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing_experimental.common.CategoryDetails;
 
@@ -40,7 +41,15 @@ public class CategoryDetailsImpl implements CategoryDetails {
     }
 
     @Override
-    public List<PrizeCategoryGroup> getPrizeCategories() {
+    public List<PrizeCategory> getPrizeCategories() {
+
+        return prize_category_groups.stream().
+            flatMap(group -> group.categories().stream()).
+            toList();
+    }
+
+    @Override
+    public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
         return prize_category_groups;
     }
 }

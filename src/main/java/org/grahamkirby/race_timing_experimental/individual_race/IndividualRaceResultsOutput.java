@@ -83,12 +83,12 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 //        output_HTML.printResults();
     }
 
-//    protected void printPrizes() {
+    protected void printPrizes() throws IOException {
 
 //        output_PDF.printPrizes();
 //        output_HTML.printPrizes();
-//        output_text.printPrizes();
-//    }
+        output_text.printPrizes();
+    }
 
     protected void printNotes() throws IOException {
 
@@ -139,21 +139,6 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         }
     }
 
-    /**
-     * Prints race prizes. Used for HTML and text output.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    public void printPrizes() throws IOException {
-
-//        final OutputStream stream = getOutputStream(race_name_for_filenames, "prizes", year);
-//
-//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-//
-//            writer.append(getPrizesHeader());
-//            printPrizes(writer);
-//        }
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -197,13 +182,12 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     /** Prints results using a specified printer, ordered by prize category groups. */
     protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
 
-
         // Don't display category group headers if there is only one group.
         final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategories().size() > 1;
 
         boolean not_first_category_group = false;
 
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategories()) {
+        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
 
             if (should_display_category_group_headers) {
                 if (not_first_category_group)
@@ -253,31 +237,31 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Prints prizes using a specified printer, ordered by prize category groups.
-     * The printer abstracts over whether output goes to an output stream writer
-     * (CSV, HTML and text files) or to a PDF writer.
-     */
-    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
-
+//    /**
+//     * Prints prizes using a specified printer, ordered by prize category groups.
+//     * The printer abstracts over whether output goes to an output stream writer
+//     * (CSV, HTML and text files) or to a PDF writer.
+//     */
+//    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
+//
 //        race.prize_category_groups.stream().
 //            flatMap(group -> group.categories().stream()).       // Get all prize categories.
 //            filter(race.prizes::arePrizesInThisOrLaterCategory). // Discard further categories once all prizes have been output.
 //            forEachOrdered(prize_category_printer::apply);       // Print prizes in this category.
-    }
-
-    /** Prints prizes, ordered by prize category groups. */
-    void printPrizes(final OutputStreamWriter writer) {
-
+//    }
+//
+//    /** Prints prizes, ordered by prize category groups. */
+//    void printPrizes(final OutputStreamWriter writer) {
+//
 //        printPrizes(category -> {
 //            printPrizes(writer, category);
 //            return null;
 //        });
-    }
-
-    /** Prints prizes within a given category. */
-    private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
-
+//    }
+//
+//    /** Prints prizes within a given category. */
+//    private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
+//
 //        try {
 //            writer.append(getPrizeCategoryHeader(category));
 //
@@ -291,5 +275,5 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 //        catch (final IOException e) {
 //            throw new RuntimeException(e);
 //        }
-    }
+//    }
 }

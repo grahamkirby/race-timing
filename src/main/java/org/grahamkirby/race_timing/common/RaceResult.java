@@ -50,7 +50,7 @@ public abstract class RaceResult {
     }
 
     /** Tests whether the given entry category is eligible in any of the given prize categories. */
-    boolean isResultEligibleInSomePrizeCategory(final Collection<PrizeCategory> prize_categories) {
+    public boolean isResultEligibleInSomePrizeCategory(final Collection<PrizeCategory> prize_categories) {
 
         return prize_categories.stream().
             anyMatch(this::isResultEligibleForPrizeCategory);
