@@ -18,11 +18,9 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.Normalisation;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceResults;
 import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
 import java.time.Duration;
@@ -49,15 +47,12 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
     }
 
     @Override
-    public RaceResults calculateResults() {
+    public void calculateResults() {
 
         initialiseResults();
         recordDNFs();
         sortResults();
-        setPositionStrings(overall_results);
         allocatePrizes();
-
-        return new IndividualRaceResults(race);
     }
 
     @Override
@@ -357,7 +352,7 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
 
         for (final PrizeCategory category2 : race.getCategoryDetails().getPrizeCategories().reversed()) {
 
-            if (!race.getRaceResults().getPrizeWinners(category2).isEmpty()) return true;
+            if (!getPrizeWinners(category2).isEmpty()) return true;
             if (category.equals(category2) && !arePrizesInOtherCategorySameAge(category)) return false;
         }
         return false;
@@ -368,7 +363,6 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
         return race.getCategoryDetails().getPrizeCategories().stream().
             filter(cat -> !cat.equals(category)).
             filter(cat -> cat.getMinimumAge() == category.getMinimumAge()).
-            anyMatch(cat -> !race.getRaceResults().getPrizeWinners(cat).isEmpty());
+            anyMatch(cat -> !getPrizeWinners(cat).isEmpty());
     }
-
 }

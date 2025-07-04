@@ -44,7 +44,6 @@ public class CommonRace implements Race {
     private Config config;
     private ConfigProcessor config_processor;
     private RaceDataProcessor race_data_processor;
-    private RaceResults race_results;
 
     public CommonRace(final Path config_file_path) throws IOException {
 
@@ -56,11 +55,6 @@ public class CommonRace implements Race {
 
         config = config_processor.loadConfig(config_file_path);
         normalisation = new Normalisation(this);
-    }
-
-    @Override
-    public void setPrizes(final RacePrizes prizes) {
-        this.prizes = prizes;
     }
 
     public Config getConfig() {
@@ -88,18 +82,8 @@ public class CommonRace implements Race {
     }
 
     @Override
-    public StringBuilder getNotes() {
-        return results_calculator.getNotes();
-    }
-
-    @Override
-    public RaceResults getRaceResults() {
-        return race_results;
-    }
-
-    @Override
-    public void setInput(final RaceInput input) {
-        this.input = input;
+    public String getNotes() {
+        return results_calculator.getNotes().toString();
     }
 
     ResultsCalculator results_calculator;
@@ -110,13 +94,23 @@ public class CommonRace implements Race {
 
         category_details = categories_processor.getCategoryDetails();
         race_data = race_data_processor.getRaceData();
-        race_results = results_calculator.calculateResults();
+        results_calculator.calculateResults();
 
         results_output.outputResults();
     }
 
-    /** Resolves the given path relative to either the project root, if it's specified as an absolute
-     *  path, or to the race configuration file. */
+    /**
+     * Resolves the given path relative to either the race configuration file,
+     * if it's specified as a relative path, or to the project root. Examples:
+     *
+     * Relative to race configuration:
+     * entries.txt -> /Users/gnck/Desktop/myrace/input/entries.txt
+     *
+     * Relative to project root:
+     * /src/main/resources/configuration/categories_entry_individual_senior.csv ->
+     *    src/main/resources/configuration/categories_entry_individual_senior.csv
+     */
+    @SuppressWarnings("JavadocBlankLines")
     @Override
     public Path interpretPath(Path path) {
 
@@ -171,11 +165,8 @@ public class CommonRace implements Race {
 
     private static Path makeRelativeToProjectRoot(final Path path) {
 
-        return path.subpath(0, path.getNameCount());
-
-
         // Path is specified as absolute path, should be reinterpreted relative to project root.
-//        return Path.of(path.toString().substring(1));
+        return path.subpath(0, path.getNameCount());
     }
 
     private Path getPathRelativeToRaceConfigFile(final Path path) {

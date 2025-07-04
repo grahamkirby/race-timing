@@ -28,12 +28,6 @@ public interface Race {
 
     void completeConfiguration();
 
-    void setPrizes(RacePrizes prizes);
-
-    RaceResults getRaceResults();
-
-    void setInput(RaceInput input);
-
     void setResultsCalculator(ResultsCalculator results_calculator);
 
     void setResultsOutput(ResultsOutput results_output);
@@ -60,5 +54,7 @@ public interface Race {
 
     void appendToNotes(String s);
 
-    StringBuilder getNotes();
+    String getNotes();
+
+    ResultsCalculator getResultsCalculator();
 }

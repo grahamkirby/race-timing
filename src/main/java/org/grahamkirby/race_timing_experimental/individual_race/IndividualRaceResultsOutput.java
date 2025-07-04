@@ -139,7 +139,6 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         }
     }
 
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -174,7 +173,6 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-//        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
         return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
     }
 
@@ -196,7 +194,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
                 writer.append(getResultsSubHeader(group.group_title()));
             }
 
-            printer.print(race.getRaceResults().getOverallResults(group.categories()));
+            printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
 
             not_first_category_group = true;
         }
@@ -235,46 +233,4 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     public static String renderDuration(final IndividualRaceResult result) {
         return renderDuration(result, "");
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-//    /**
-//     * Prints prizes using a specified printer, ordered by prize category groups.
-//     * The printer abstracts over whether output goes to an output stream writer
-//     * (CSV, HTML and text files) or to a PDF writer.
-//     */
-//    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
-//
-//        race.prize_category_groups.stream().
-//            flatMap(group -> group.categories().stream()).       // Get all prize categories.
-//            filter(race.prizes::arePrizesInThisOrLaterCategory). // Discard further categories once all prizes have been output.
-//            forEachOrdered(prize_category_printer::apply);       // Print prizes in this category.
-//    }
-//
-//    /** Prints prizes, ordered by prize category groups. */
-//    void printPrizes(final OutputStreamWriter writer) {
-//
-//        printPrizes(category -> {
-//            printPrizes(writer, category);
-//            return null;
-//        });
-//    }
-//
-//    /** Prints prizes within a given category. */
-//    private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
-//
-//        try {
-//            writer.append(getPrizeCategoryHeader(category));
-//
-//            final List<RaceResult> category_prize_winners = race.prizes.getPrizeWinners(category);
-//            getPrizeResultPrinter(writer).print(category_prize_winners);
-//
-//            writer.append(getPrizeCategoryFooter());
-//
-//        }
-//        // Called from lambda that can't throw checked exception.
-//        catch (final IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 }

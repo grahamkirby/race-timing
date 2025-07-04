@@ -21,7 +21,7 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceResults;
+import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,11 +57,6 @@ public class IndividualRaceOutputCSV {
 
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
         return new OverallResultPrinter(race, writer);
-    }
-
-    // Prize results not printed to CSV file.
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter ignore) {
-        throw new UnsupportedOperationException();
     }
 
     public void printResults() throws IOException {
@@ -110,7 +105,6 @@ public class IndividualRaceOutputCSV {
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-//        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
         return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
     }
 
@@ -130,7 +124,7 @@ public class IndividualRaceOutputCSV {
                 writer.append(getResultsSubHeader(group.group_title()));
             }
 
-            RaceResults raceResults = race.getRaceResults();
+            ResultsCalculator raceResults = race.getResultsCalculator();
             List<IndividualRaceResult> overallResults = raceResults.getOverallResults(group.categories());
             printer.print(overallResults);
 

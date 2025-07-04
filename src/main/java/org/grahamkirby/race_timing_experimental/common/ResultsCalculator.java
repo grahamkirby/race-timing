@@ -18,7 +18,8 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResult;
 
 import java.util.List;
 
@@ -26,7 +27,13 @@ public interface ResultsCalculator {
 
     void setRace(Race race);
 
-    RaceResults calculateResults();
+    void calculateResults();
+
+    List<IndividualRaceResult> getOverallResults(List<PrizeCategory> categories);
+
+    boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
+
+    List<IndividualRaceResult> getPrizeWinners(PrizeCategory category);
 
     StringBuilder getNotes();
 }

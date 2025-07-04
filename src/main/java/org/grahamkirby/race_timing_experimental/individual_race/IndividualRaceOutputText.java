@@ -88,11 +88,13 @@ public class IndividualRaceOutputText {
      * @throws IOException if an I/O error occurs
      */
     protected OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
+
         return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
     }
 
     /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
     protected OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
+
         return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
     }
 
@@ -107,7 +109,7 @@ public class IndividualRaceOutputText {
      * @return the path for the file
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-//        return race.getConfigPath().getParent().resolveSibling("output").resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
+
         return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
     }
 
@@ -144,9 +146,9 @@ public class IndividualRaceOutputText {
     void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).       // Get all prize categories.
-            filter(race.getRaceResults()::arePrizesInThisOrLaterCategory). // Discard further categories once all prizes have been output.
-            forEachOrdered(prize_category_printer::apply);       // Print prizes in this category.
+            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
+            forEachOrdered(prize_category_printer::apply);                       // Print prizes in this category.
     }
 
     /** Prints prizes within a given category. */
@@ -155,7 +157,7 @@ public class IndividualRaceOutputText {
         try {
             writer.append(getPrizeCategoryHeader(category));
 
-            final List<IndividualRaceResult> category_prize_winners = race.getRaceResults().getPrizeWinners(category);
+            final List<IndividualRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             getPrizeResultPrinter(writer).print(category_prize_winners);
 
             writer.append(getPrizeCategoryFooter());
@@ -203,7 +205,6 @@ public class IndividualRaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @SuppressWarnings("preview")
     private static final class PrizeResultPrinter extends ResultPrinterText {
 
         private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
