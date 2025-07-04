@@ -118,7 +118,7 @@ public class CommonRace implements Race {
     /** Resolves the given path relative to either the project root, if it's specified as an absolute
      *  path, or to the race configuration file. */
     @Override
-    public Path getFullPath(Path path) {
+    public Path interpretPath(Path path) {
 
         // Absolute paths originate from config file where path starting with "/" denotes
         // a path relative to the project root.
@@ -126,12 +126,6 @@ public class CommonRace implements Race {
         if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
-    }
-
-    @Override
-    public Path getConfigPath() {
-
-        return config_file_path;
     }
 
     @Override
@@ -177,31 +171,14 @@ public class CommonRace implements Race {
 
     private static Path makeRelativeToProjectRoot(final Path path) {
 
-//        Path path1 = Path.of(System.getProperty("user.dir"));
-//        Path resolve = path1.resolve(path);
-//        return resolve;
-
-//        return path.subpath(0, path.getNameCount());
-
-
+        return path.subpath(0, path.getNameCount());
 
 
         // Path is specified as absolute path, should be reinterpreted relative to project root.
-        return Path.of(path.toString().substring(1));
+//        return Path.of(path.toString().substring(1));
     }
 
     private Path getPathRelativeToRaceConfigFile(final Path path) {
-
-        return config_file_path.resolveSibling(path);
-    }
-
-    private static Path makeRelativeToProjectRoot(final String path) {
-
-        // Path is specified as absolute path, should be reinterpreted relative to project root.
-        return Path.of(path.substring(1));
-    }
-
-    private Path getPathRelativeToRaceConfigFile(final String path) {
 
         return config_file_path.resolveSibling(path);
     }

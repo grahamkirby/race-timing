@@ -61,14 +61,14 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             config_values.put(KEY_YEAR, properties.getProperty(KEY_YEAR));
             config_values.put(KEY_RACE_NAME_FOR_RESULTS, properties.getProperty(KEY_RACE_NAME_FOR_RESULTS));
             config_values.put(KEY_RACE_NAME_FOR_FILENAMES, properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES));
-            config_values.put(KEY_CATEGORIES_ENTRY_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_CATEGORIES_ENTRY_PATH))));
-            config_values.put(KEY_CATEGORIES_PRIZE_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_CATEGORIES_PRIZE_PATH))));
+            config_values.put(KEY_CATEGORIES_ENTRY_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CATEGORIES_ENTRY_PATH))));
+            config_values.put(KEY_CATEGORIES_PRIZE_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CATEGORIES_PRIZE_PATH))));
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
 
-            config_values.put(KEY_ENTRIES_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_ENTRIES_PATH))));
-            config_values.put(KEY_RAW_RESULTS_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH))));
+            config_values.put(KEY_ENTRIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ENTRIES_PATH))));
+            config_values.put(KEY_RAW_RESULTS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH))));
 
             if (properties.getProperty(KEY_RESULTS_PATH) != null)
                 config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));
@@ -79,24 +79,24 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_MEDIAN_TIME, properties.getProperty(KEY_MEDIAN_TIME));
 
             if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));
+                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));
             else
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.getFullPath(DEFAULT_CAPITALISATION_STOP_WORDS_PATH));
+                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(DEFAULT_CAPITALISATION_STOP_WORDS_PATH));
 
             if (properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH) != null)
-                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH))));
+                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH))));
             else
-                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.getFullPath(DEFAULT_NORMALISED_HTML_ENTITIES_PATH));
+                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.interpretPath(DEFAULT_NORMALISED_HTML_ENTITIES_PATH));
 
             if (properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH) != null)
-                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH))));
+                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH))));
             else
-                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.getFullPath(DEFAULT_NORMALISED_CLUB_NAMES_PATH));
+                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.interpretPath(DEFAULT_NORMALISED_CLUB_NAMES_PATH));
 
             if (properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH) != null)
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.getFullPath(Path.of(properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH))));
+                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH))));
             else
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.getFullPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
+                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
 
             if (properties.getProperty(KEY_ENTRY_COLUMN_MAP) != null)
                 config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
@@ -104,7 +104,7 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
 
             final String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
-            if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.getFullPath(Path.of(category_map_path)));
+            if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.interpretPath(Path.of(category_map_path)));
 
             return new ConfigImpl(config_values);
 
