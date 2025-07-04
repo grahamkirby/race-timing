@@ -166,10 +166,14 @@ public abstract class AbstractRaceTest {
 
     protected void testExpectedCompletion(final String configuration_name) throws Exception {
 
+        IndividualRaceOutputCSV.debug_info = "step1";
         configureTest(configuration_name);
+        IndividualRaceOutputCSV.debug_info = "step2";
         invokeMain(new String[]{config_file_path.toString()});
+        IndividualRaceOutputCSV.debug_info = "step3";
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
+        IndividualRaceOutputCSV.debug_info = "step4";
 
         // Test has passed if this line is reached.
         failed_test = false;
