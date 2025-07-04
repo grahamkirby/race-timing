@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputText;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,8 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());
+            IndividualRaceOutputCSV.debug_info += e.getMessage();
+
         }
     }
 
