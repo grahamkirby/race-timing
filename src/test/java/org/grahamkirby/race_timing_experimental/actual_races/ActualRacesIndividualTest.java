@@ -45,7 +45,82 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
+    void balmullo2023() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/balmullo/2023");
+    }
+
+    @Test
     void balmullo2024() throws Exception {
-        testExpectedCompletion("race_timing_experimental/actual_races/individual_race/balmullo/2024");
+        testExpectedCompletion("actual_races/individual_race/balmullo/2024");
+    }
+
+    @Test
+    void cupar52025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/cupar_5/2025");
+    }
+
+    @Test
+    void dunnikier2024() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/dunnikier/2024");
+    }
+
+    @Test
+    void giffordtown2023() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/giffordtown/2023");
+    }
+
+    @Test
+    void giffordtown2024() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/giffordtown/2024");
+    }
+
+    @Test
+    void hillOfTarvit2024() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/hill_of_tarvit/2024");
+    }
+
+    @Test
+    void hillOfTarvit2025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/hill_of_tarvit/2025");
+    }
+
+    @Test
+    void stAndrews2023() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/st_andrews/2023");
+    }
+
+    @Test
+    void stAndrews2024() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/st_andrews/2024");
+    }
+
+    @Test
+    void stAndrews2025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/st_andrews/2025");
+    }
+
+    @Test
+    void strathBlebo2023() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/strath_blebo/2023");
+    }
+
+    @Test
+    void strathBlebo2024() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/strath_blebo/2024");
+    }
+
+    @Test
+    void strathBlebo2025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/strath_blebo/2025");
+    }
+
+    @Test
+    void juniorHillRaces2017() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/junior_hill_races/2017");
+    }
+
+    @Test
+    void normansLaw2025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/normans_law/2025");
     }
 }

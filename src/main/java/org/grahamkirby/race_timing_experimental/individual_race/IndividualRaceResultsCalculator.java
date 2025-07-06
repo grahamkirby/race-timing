@@ -20,18 +20,18 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_INDIVIDUAL_EARLY_STARTS;
 
 public class IndividualRaceResultsCalculator implements ResultsCalculator {
 
@@ -50,6 +50,7 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
     public void calculateResults() {
 
         initialiseResults();
+        configureIndividualEarlyStarts();
         recordDNFs();
         sortResults();
         allocatePrizes();
@@ -58,6 +59,30 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
     @Override
     public StringBuilder getNotes() {
         return notes;
+    }
+
+    private void configureIndividualEarlyStarts() {
+
+        final String individual_early_starts_string = (String) race.getConfig().get(KEY_INDIVIDUAL_EARLY_STARTS);
+
+        // bib number / start time difference
+        // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
+
+        if (individual_early_starts_string != null)
+            Arrays.stream(individual_early_starts_string.split(",")).
+                forEach(this::recordEarlyStart);
+    }
+
+    private void recordEarlyStart(final String early_starts_string) {
+
+        final String[] split = early_starts_string.split("/");
+
+        final int bib_number = Integer.parseInt(split[0]);
+        final Duration offset = parseTime(split[1]);
+
+        final IndividualRaceResult result = getResultWithBibNumber(bib_number);
+
+        result.finish_time = result.finish_time.plus(offset);
     }
 
     private void allocatePrizes() {
