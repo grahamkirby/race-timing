@@ -15,15 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.common;
 
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing_experimental.common.CategoriesProcessor;
-import org.grahamkirby.race_timing_experimental.common.CategoryDetails;
-import org.grahamkirby.race_timing_experimental.common.Config;
-import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,9 +30,8 @@ import java.util.List;
 import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing.common.Race.KEY_CATEGORIES_PRIZE_PATH;
 
-public class IndividualRaceCategoriesProcessor implements CategoriesProcessor {
+public class CategoriesProcessorImpl implements CategoriesProcessor {
 
-    private List<EntryCategory> entry_categories;
     private List<PrizeCategoryGroup> prize_category_groups;
     private Race race;
 
@@ -50,7 +45,7 @@ public class IndividualRaceCategoriesProcessor implements CategoriesProcessor {
         try {
             final Config config = race.getConfig();
             final Path results_path = (Path) config.get(KEY_CATEGORIES_ENTRY_PATH);
-            entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+            List<EntryCategory> entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
             prize_category_groups = new ArrayList<>();
             final Path categories_prize_path = (Path) race.getConfig().get(KEY_CATEGORIES_PRIZE_PATH);
             loadPrizeCategoryGroups(categories_prize_path);

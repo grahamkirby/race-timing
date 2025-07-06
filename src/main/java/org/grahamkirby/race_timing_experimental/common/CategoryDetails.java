@@ -30,4 +30,6 @@ public interface CategoryDetails {
     List<PrizeCategory> getPrizeCategories();
 
     List<PrizeCategoryGroup> getPrizeCategoryGroups();
+
+    EntryCategory lookupEntryCategory(String short_name);
 }

@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
+import org.grahamkirby.race_timing_experimental.common.CategoryDetailsImpl;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
@@ -120,7 +121,8 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            result.isResultEligibleForPrizeCategory(prize_category);
+//            result.isResultEligibleForPrizeCategory(prize_category);
+        CategoryDetailsImpl.isResultEligibleForPrizeCategory(result.getClub(), race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final IndividualRaceResult result, final PrizeCategory new_prize_category) {
@@ -367,7 +369,8 @@ public class IndividualRaceResultsCalculator implements ResultsCalculator {
     /** Gets all the results eligible for the given prize categories. */
     public List<IndividualRaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<IndividualRaceResult> prize_category_filter = result -> result.isResultEligibleInSomePrizeCategory(prize_categories);
+//        final Predicate<IndividualRaceResult> prize_category_filter = result -> result.isResultEligibleInSomePrizeCategory(prize_categories);
+        final Predicate<IndividualRaceResult> prize_category_filter = result -> CategoryDetailsImpl.isResultEligibleInSomePrizeCategory(result.getClub(), race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_categories);
         final List<IndividualRaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
         setPositionStrings(results);
         return results;

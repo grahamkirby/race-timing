@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing_experimental.common.CommonRace;
+import org.grahamkirby.race_timing_experimental.common.CategoriesProcessorImpl;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class IndividualRaceFactory {
         Race race = new CommonRace(config_file_path);
 
         race.setConfigProcessor(new IndividualRaceConfigProcessor());
-        race.setCategoriesProcessor(new IndividualRaceCategoriesProcessor());
+        race.setCategoriesProcessor(new CategoriesProcessorImpl());
         race.setRaceDataProcessor(new IndividualRaceDataProcessor());
         race.setResultsCalculator(new IndividualRaceResultsCalculator());
         race.setResultsOutput(new IndividualRaceResultsOutput());

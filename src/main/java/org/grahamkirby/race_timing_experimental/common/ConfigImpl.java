@@ -15,19 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.common;
 
+import java.util.Map;
 
-import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
+public class ConfigImpl implements Config {
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
+    private final Map<String, Object> config_map;
 
-public interface RaceInput {
+    public ConfigImpl(Map<String, Object> config_map) {
+        this.config_map = config_map;
+    }
 
-    List<RawResult> loadRawResults(Path raw_results_path) throws IOException;
-
-    List<SingleRaceEntry> loadEntries(Path entries_path) throws IOException;
+    @Override
+    public Object get(String key) {
+        return config_map.get(key);
+    }
 }

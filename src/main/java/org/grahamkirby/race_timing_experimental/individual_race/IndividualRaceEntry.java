@@ -53,21 +53,13 @@ public class IndividualRaceEntry {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = category_name.isEmpty() ? null : lookupEntryCategory(category_name);
+            final EntryCategory category = race.getCategoryDetails().lookupEntryCategory(category_name);
 
             participant = new Runner(name, club, category);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
         }
-    }
-
-    public EntryCategory lookupEntryCategory(final String short_name) {
-
-        return race.getCategoryDetails().getEntryCategories().stream().
-            filter(category -> category.getShortName().equals(short_name)).
-            findFirst().
-            orElseThrow();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
