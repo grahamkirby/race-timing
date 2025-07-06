@@ -45,7 +45,7 @@ public abstract class ResultPrinter {
     protected void printResultsHeader() throws IOException {
     }
 
-    protected void printResultsFooter() {
+    protected void printResultsFooter() throws IOException {
     }
 
     protected void printNoResults() throws IOException {

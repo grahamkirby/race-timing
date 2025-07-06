@@ -18,8 +18,11 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
@@ -32,28 +35,26 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 
-public class IndividualRaceOutputCSV {
+public class IndividualRaceOutputHTML {
 
     /** Displayed in results for runners that did not complete the course. */
     public static final String DNF_STRING = "DNF";
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
-    static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
     private final Race race;
 
-    IndividualRaceOutputCSV(final Race race) {
+    IndividualRaceOutputHTML(final Race race) {
         this.race = race;
     }
 
-    public String getResultsHeader() {
-        return OVERALL_RESULTS_HEADER;
-    }
 
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
         return new OverallResultPrinter(race, writer);
@@ -70,6 +71,118 @@ public class IndividualRaceOutputCSV {
         }
     }
 
+    /** Prints all details to a single web page. */
+    public void printCombined() throws IOException {
+
+        printCombinedDetails();
+        printCreditLink();
+    }
+
+    /** Prints prizes and overall results to a single web page. */
+    protected void printCombinedDetails() throws IOException {
+
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "combined", (String) race.getConfig().get(KEY_YEAR));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+
+            writer.append(getPrizesHeader());
+            printPrizes(writer);
+
+            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+            printResults(writer, getOverallResultPrinter(writer));
+        }
+    }
+
+    /** Prints web link to GitHub page for this application. */
+    private void printCreditLink() throws IOException {
+
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "combined", (String) race.getConfig().get(KEY_YEAR), StandardOpenOption.APPEND);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+        }
+    }
+
+    public void printPrizes() throws IOException {
+
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "prizes", (String) race.getConfig().get(KEY_YEAR));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesHeader());
+            printPrizes(writer);
+        }
+    }
+
+    /** Prints prizes, ordered by prize category groups. */
+    void printPrizes(final OutputStreamWriter writer) {
+
+        printPrizes(category -> {
+            printPrizes(writer, category);
+            return null;
+        });
+    }
+
+    /**
+     * Prints prizes using a specified printer, ordered by prize category groups.
+     * The printer abstracts over whether output goes to an output stream writer
+     * (CSV, HTML and text files) or to a PDF writer.
+     */
+    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
+
+        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
+            forEachOrdered(prize_category_printer::apply);                       // Print prizes in this category.
+    }
+
+    /** Prints prizes within a given category. */
+    private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
+
+        try {
+            writer.append(getPrizeCategoryHeader(category));
+
+            final List<IndividualRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            getPrizeResultPrinter(writer).print(category_prize_winners);
+
+            writer.append(getPrizeCategoryFooter());
+        }
+        // Called from lambda that can't throw checked exception.
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getFileSuffix() {
+        return ".html";
+    }
+
+    public String getResultsHeader() {
+        return "";
+    }
+
+    public String getResultsSubHeader(final String s) {
+        return STR."""
+            <p></p>
+            <h4>\{s}</h4>
+            """;
+    }
+
+    public String getPrizesHeader() {
+        return STR."<h4>Prizes</h4>\{LINE_SEPARATOR}";
+    }
+
+    public String getPrizeCategoryHeader(final PrizeCategory category) {
+        return STR."""
+        <p><strong>\{category.getLongName()}</strong></p>
+        """;
+    }
+
+    public String getPrizeCategoryFooter() {
+        return "";
+    }
     /**
      * Constructs an output stream for writing to a file in the project output directory with name constructed from the given components.
      * The file extension is determined by getFileSuffix().
@@ -105,7 +218,7 @@ public class IndividualRaceOutputCSV {
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.html");
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
@@ -132,10 +245,6 @@ public class IndividualRaceOutputCSV {
         }
     }
 
-    protected String getResultsSubHeader(final String s) {
-        return "";
-    }
-
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
     public static String encode(final String s) {
         return s.contains(",") ? STR."\"\{s}\"" : s;
@@ -148,9 +257,7 @@ public class IndividualRaceOutputCSV {
 
     public static String renderDuration(final IndividualRaceResult result, final String alternative) {
 
-        if (!result.canComplete()) return alternative;
-
-        return format(result.duration());
+        return IndividualRaceOutputCSV.renderDuration(result, alternative);
     }
 
     public static String renderDuration(final IndividualRaceResult result) {
@@ -159,17 +266,58 @@ public class IndividualRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class OverallResultPrinter extends ResultPrinter {
+    private static final class OverallResultPrinter extends ResultPrinterHTML {
 
-        // TODO investigate Files.write.
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
+        @Override
+        protected List<String> getResultsColumnHeaders() {
+
+            return List.of("Pos", "No", "Runner", "Club", "Category", "Time");
+        }
+
+        @Override
+        protected List<String> getResultsElements(final IndividualRaceResult result) {
+
+            return List.of(
+                result.position_string,
+                String.valueOf(result.entry.bib_number),
+                race.getNormalisation().htmlEncode(result.entry.participant.name),
+                ((Runner)result.entry.participant).club,
+                result.entry.participant.category.getShortName(),
+                renderDuration(result, DNF_STRING)
+            );
+        }
+    }
+
+    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+        return new PrizeResultPrinter(race, writer);
+    }
+    private static final class PrizeResultPrinter extends ResultPrinterHTML {
+
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append("<ul>").append(LINE_SEPARATOR);
+        }
+
+        @Override
         public void printResult(final IndividualRaceResult result) throws IOException {
 
-            writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
-                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");
+
+            writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result)}</li>\n");
+        }
+
+        @Override
+        public void printResultsFooter() throws IOException {
+
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
     }
 }

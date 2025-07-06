@@ -56,6 +56,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
         this.race = race;
         output_CSV = new IndividualRaceOutputCSV(race);
+        output_HTML = new IndividualRaceOutputHTML(race);
         output_text = new IndividualRaceOutputText(race);
         output_PDF = new IndividualRaceOutputPDF(race);
     }
@@ -76,19 +77,20 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     IndividualRaceOutputCSV output_CSV;
+    IndividualRaceOutputHTML output_HTML;
     IndividualRaceOutputText output_text;
     IndividualRaceOutputPDF output_PDF;
 
     protected void printOverallResults() throws IOException {
 
         output_CSV.printResults();
-//        output_HTML.printResults();
+        output_HTML.printResults();
     }
 
     protected void printPrizes() throws IOException {
 
         output_PDF.printPrizes();
-//        output_HTML.printPrizes();
+        output_HTML.printPrizes();
         output_text.printPrizes();
     }
 
@@ -99,7 +101,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     protected void printCombined() throws IOException {
 
-//        output_HTML.printCombined();
+        output_HTML.printCombined();
     }
 
     /**

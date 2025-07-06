@@ -32,7 +32,7 @@ import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 public abstract class RaceOutputHTML extends RaceOutput {
 
     /** Web link to application on GitHub. */
-    protected static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
+    public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
