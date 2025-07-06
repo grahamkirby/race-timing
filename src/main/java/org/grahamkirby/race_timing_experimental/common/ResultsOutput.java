@@ -18,12 +18,10 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 
-import org.grahamkirby.race_timing.common.RaceResult;
-
 import java.io.IOException;
-import java.util.List;
 
 public interface ResultsOutput {
+
     void outputResults() throws IOException;
 
     void setRace(Race race);

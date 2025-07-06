@@ -18,13 +18,10 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.ResultsCalculator;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -237,7 +234,7 @@ public class IndividualRaceOutputHTML {
                 writer.append(getResultsSubHeader(group.group_title()));
             }
 
-            ResultsCalculator raceResults = race.getResultsCalculator();
+            IndividualRaceResultsCalculator raceResults = race.getResultsCalculator();
             List<IndividualRaceResult> overallResults = raceResults.getOverallResults(group.categories());
             printer.print(overallResults);
 

@@ -18,8 +18,9 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 
-import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.common.RacePrizes;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceData;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceDataProcessor;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsCalculator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,7 +29,7 @@ public interface Race {
 
     void completeConfiguration();
 
-    void setResultsCalculator(ResultsCalculator results_calculator);
+    void setResultsCalculator(IndividualRaceResultsCalculator results_calculator);
 
     void setResultsOutput(ResultsOutput results_output);
 
@@ -42,7 +43,7 @@ public interface Race {
 
     void setCategoriesProcessor(CategoriesProcessor categories_processor);
 
-    void setRaceDataProcessor(RaceDataProcessor race_data_processor);
+    void setRaceDataProcessor(IndividualRaceDataProcessor race_data_processor);
 
     Config getConfig();
 
@@ -50,11 +51,11 @@ public interface Race {
 
     CategoryDetails getCategoryDetails();
 
-    RaceData getRaceData();
+    IndividualRaceData getRaceData();
 
     void appendToNotes(String s);
 
     String getNotes();
 
-    ResultsCalculator getResultsCalculator();
+    IndividualRaceResultsCalculator getResultsCalculator();
 }

@@ -17,70 +17,12 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceInput;
+
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceData;
-import org.grahamkirby.race_timing_experimental.common.RaceDataProcessor;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
+public interface IndividualRaceDataProcessor {
 
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_ENTRIES_PATH;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RAW_RESULTS_PATH;
+    IndividualRaceData getRaceData();
 
-public class IndividualRaceDataProcessor implements RaceDataProcessor {
-
-    private Race race;
-
-    @Override
-    public void setRace(Race race) {
-        this.race = race;
-    }
-
-    public String dnf_string;
-
-    @Override
-    public RaceData getRaceData() {
-
-        Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
-        Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
-        try {
-            return new IndividualRaceData(loadRawResults(raw_results_path),
-                loadEntries(entries_path));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
-
-        return Files.readAllLines(raw_results_path).stream().
-            map(SingleRaceInput::stripComment).
-            filter(Predicate.not(String::isBlank)).
-            map(this::makeRawResult).
-            toList();
-    }
-
-    protected RawResult makeRawResult(final String line) {
-
-        return new RawResult(line);
-    }
-
-    private static String getBibNumber(final String line){
-        return line.split("\t")[0];
-    }
-
-    List<IndividualRaceEntry> loadEntries(Path entries_path) throws IOException {
-
-        return Files.readAllLines(entries_path).stream().
-            map(SingleRaceInput::stripEntryComment).
-            filter(Predicate.not(String::isBlank)).
-            map(line -> new IndividualRaceEntry(Arrays.stream(line.split("\t")).toList(), race)).
-            toList();
-    }
+    void setRace(Race race);
 }

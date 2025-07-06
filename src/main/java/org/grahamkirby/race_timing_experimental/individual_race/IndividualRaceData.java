@@ -18,29 +18,12 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
-import org.grahamkirby.race_timing_experimental.common.RaceData;
 
 import java.util.List;
 
-public class IndividualRaceData implements RaceData {
+public interface IndividualRaceData {
 
-    private final List<RawResult> raw_results;
-    private final List<IndividualRaceEntry> entries;
+    List<RawResult> getRawResults();
 
-    public IndividualRaceData(List<RawResult> raw_results, List<IndividualRaceEntry> entries) {
-
-        this.raw_results = raw_results;
-        this.entries = entries;
-    }
-
-    @Override
-    public List<RawResult> getRawResults() {
-        return raw_results;
-    }
-
-    @Override
-    public List<IndividualRaceEntry> getEntries() {
-        return entries;
-    }
+    List<IndividualRaceEntry> getEntries();
 }

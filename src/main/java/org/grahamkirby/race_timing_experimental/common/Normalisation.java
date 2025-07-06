@@ -33,8 +33,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
  * formatting for times and HTML entities. */
 public class Normalisation {
 
-    public static final String SUFFIX_PDF = ".pdf";
-
     private static final int SECONDS_PER_HOUR = 3600;
     private static final int SECONDS_PER_MINUTE = 60;
     private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;

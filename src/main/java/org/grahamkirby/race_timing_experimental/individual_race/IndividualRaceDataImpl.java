@@ -15,16 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.common;
+package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceEntry;
 
 import java.util.List;
 
-public interface RaceData {
+public class IndividualRaceDataImpl implements IndividualRaceData {
 
-    List<RawResult> getRawResults();
+    private final List<RawResult> raw_results;
+    private final List<IndividualRaceEntry> entries;
 
-    List<IndividualRaceEntry> getEntries();
+    public IndividualRaceDataImpl(List<RawResult> raw_results, List<IndividualRaceEntry> entries) {
+
+        this.raw_results = raw_results;
+        this.entries = entries;
+    }
+
+    @Override
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
+
+    @Override
+    public List<IndividualRaceEntry> getEntries() {
+        return entries;
+    }
 }

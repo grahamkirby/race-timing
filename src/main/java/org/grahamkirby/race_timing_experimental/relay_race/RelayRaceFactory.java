@@ -15,16 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.relay_race;
 
-import org.grahamkirby.race_timing_experimental.common.CommonRace;
 import org.grahamkirby.race_timing_experimental.common.CategoriesProcessorImpl;
+import org.grahamkirby.race_timing_experimental.common.CommonRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceConfigProcessor;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceDataProcessorImpl;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsCalculatorImpl;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsOutput;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class IndividualRaceFactory {
+public class RelayRaceFactory {
 
     public static Race makeIndividualRace(final Path config_file_path) throws IOException {
 

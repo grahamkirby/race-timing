@@ -20,6 +20,9 @@ package org.grahamkirby.race_timing_experimental.common;
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceData;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceDataProcessor;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsCalculator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -40,10 +43,10 @@ public class CommonRace implements Race {
     public List<PrizeCategoryGroup> prize_category_groups;
     private CategoriesProcessor categories_processor;
     private CategoryDetails category_details;
-    private RaceData race_data;
+    private IndividualRaceData race_data;
     private Config config;
     private ConfigProcessor config_processor;
-    private RaceDataProcessor race_data_processor;
+    private IndividualRaceDataProcessor race_data_processor;
 
     public CommonRace(final Path config_file_path) throws IOException {
 
@@ -72,7 +75,7 @@ public class CommonRace implements Race {
     }
 
     @Override
-    public RaceData getRaceData() {
+    public IndividualRaceData getRaceData() {
         return race_data;
     }
 
@@ -86,7 +89,7 @@ public class CommonRace implements Race {
         return results_calculator.getNotes().toString();
     }
 
-    ResultsCalculator results_calculator;
+    IndividualRaceResultsCalculator results_calculator;
     ResultsOutput results_output;
 
     @Override
@@ -145,14 +148,14 @@ public class CommonRace implements Race {
     }
 
     @Override
-    public void setRaceDataProcessor(RaceDataProcessor race_data_processor) {
+    public void setRaceDataProcessor(IndividualRaceDataProcessor race_data_processor) {
 
         this.race_data_processor = race_data_processor;
         race_data_processor.setRace(this);
     }
 
     @Override
-    public void setResultsCalculator(final ResultsCalculator results_calculator) {
+    public void setResultsCalculator(final IndividualRaceResultsCalculator results_calculator) {
         this.results_calculator = results_calculator;
         results_calculator.setRace(this);
     }
@@ -174,7 +177,7 @@ public class CommonRace implements Race {
         return config_file_path.resolveSibling(path);
     }
 
-    public ResultsCalculator getResultsCalculator() {
+    public IndividualRaceResultsCalculator getResultsCalculator() {
         return results_calculator;
     }
 }
