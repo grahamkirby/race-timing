@@ -15,12 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.common;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-
-import org.grahamkirby.race_timing_experimental.common.Race;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 

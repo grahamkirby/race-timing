@@ -18,41 +18,9 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 
-import java.io.IOException;
-import java.nio.file.Path;
-
-public interface Race {
-
-    void completeConfiguration();
-
-    void setResultsOutput(ResultsOutput results_output);
-
-    void processResults() throws IOException;
-
-    Path interpretPath(Path path);
-
-    Path getOutputDirectoryPath();
-
-    void setConfigProcessor(ConfigProcessor config_processor);
-
-    void setCategoriesProcessor(CategoriesProcessor categories_processor);
-
-    Config getConfig();
-
-    Normalisation getNormalisation();
-
-    CategoryDetails getCategoryDetails();
-
-    void appendToNotes(String s);
-
-    String getNotes();
-
-    void setResultsCalculator(RaceResultsCalculator results_calculator);
-    RaceResultsCalculator getResultsCalculator();
+public interface RaceDataProcessor {
 
     RaceData getRaceData();
-    void setRaceDataProcessor(RaceDataProcessor race_data_processor);
 
-    Object getSpecific();
-    void setSpecific(Object specific);
+    void setRace(Race race);
 }

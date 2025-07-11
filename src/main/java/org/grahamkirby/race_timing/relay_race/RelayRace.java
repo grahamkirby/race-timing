@@ -334,7 +334,7 @@ public class RelayRace extends TimedRace {
                 count();
     }
 
-    private static Duration sumDurationsUpToLeg(final List<? extends LegResult> leg_results, final int leg_number) {
+    public static Duration sumDurationsUpToLeg(final List<? extends LegResult> leg_results, final int leg_number) {
 
         return leg_results.stream().
             limit(leg_number).

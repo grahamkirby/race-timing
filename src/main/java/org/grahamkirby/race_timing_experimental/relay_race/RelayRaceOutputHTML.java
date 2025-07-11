@@ -15,13 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.relay_race;
 
 
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing_experimental.common.*;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualResultPrinterHTML;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +33,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -40,7 +43,7 @@ import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 
-public class IndividualRaceOutputHTML {
+public class RelayRaceOutputHTML {
 
     /** Displayed in results for runners that did not complete the course. */
     public static final String DNF_STRING = "DNF";
@@ -48,7 +51,7 @@ public class IndividualRaceOutputHTML {
 
     private final Race race;
 
-    IndividualRaceOutputHTML(final Race race) {
+    RelayRaceOutputHTML(final Race race) {
         this.race = race;
     }
 
@@ -254,7 +257,7 @@ public class IndividualRaceOutputHTML {
 
     public static String renderDuration(final RaceResult result, final String alternative) {
 
-        return IndividualRaceOutputCSV.renderDuration(result, alternative);
+        return RelayRaceOutputCSV.renderDuration(result, alternative);
     }
 
     public static String renderDuration(final RaceResult result) {
@@ -278,7 +281,7 @@ public class IndividualRaceOutputHTML {
         @Override
         protected List<String> getResultsElements(final RaceResult r) {
 
-            SingleRaceResult result = (SingleRaceResult) r;
+            RelayRaceResult result = (RelayRaceResult) r;
             return List.of(
                 result.position_string,
                 String.valueOf(result.entry.bib_number),
@@ -293,6 +296,126 @@ public class IndividualRaceOutputHTML {
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
+
+    void printDetailedResults() throws IOException {
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "detailed", (String) race.getConfig().get(KEY_YEAR));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printDetailedResults(writer);
+        }
+    }
+
+    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
+
+        printResults(writer, new DetailedResultPrinter(race, writer));
+
+        if (areAnyResultsInMassStart())
+            writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
+    }
+
+    private boolean areAnyResultsInMassStart() {
+
+        return race.getResultsCalculator().getOverallResults().stream().
+            map(result -> (RelayRaceResult) result).
+            flatMap(result -> result.leg_results.stream()).
+            anyMatch(result -> result.in_mass_start);
+    }
+
+
+    void printLegResults() throws IOException {
+
+        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
+            printLegResults(leg);
+    }
+
+    private void printLegResults(final int leg) throws IOException {
+
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), STR."leg_\{leg}", (String) race.getConfig().get(KEY_YEAR));
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printLegResults(writer, leg);
+        }
+    }
+
+    private void printLegResults(final OutputStreamWriter writer, final int leg) throws IOException {
+
+        final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
+
+        new LegResultPrinter(race, writer, leg).print(leg_results);
+    }
+
+    private static final class LegResultPrinter extends ResultPrinterHTML {
+
+        final int leg;
+
+        private LegResultPrinter(final Race race, final OutputStreamWriter writer, final int leg) {
+
+            super(race, writer);
+            this.leg = leg;
+        }
+
+        @Override
+        protected List<String> getResultsColumnHeaders() {
+
+            return List.of(
+                "Pos",
+                STR."Runner\{((RelayRaceImpl) race.getSpecific()).paired_legs.get(leg - 1) ? "s" : ""}",
+                "Time");
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final LegResult leg_result = (LegResult) r;
+
+            return List.of(
+                leg_result.position_string,
+                race.getNormalisation().htmlEncode(((Team) leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1)),
+                renderDuration(leg_result, DNF_STRING)
+            );
+        }
+    }
+
+    private static final class DetailedResultPrinter extends ResultPrinterHTML {
+
+        private DetailedResultPrinter(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        protected List<String> getResultsColumnHeaders() {
+
+            final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
+
+            for (int leg_number = 1; leg_number <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg_number++) {
+
+                headers.add(STR."Runner\{((RelayRaceImpl) race.getSpecific()).paired_legs.get(leg_number - 1) ? "s" : ""} \{leg_number}");
+                headers.add(STR."Leg \{leg_number}");
+                headers.add(leg_number < ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs() ? STR."Split \{leg_number}" : "Total");
+            }
+
+            return headers;
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final List<String> elements = new ArrayList<>();
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+
+            elements.add(result.position_string);
+            elements.add(String.valueOf(result.entry.bib_number));
+            elements.add(race.getNormalisation().htmlEncode(result.entry.participant.name));
+            elements.add(result.entry.participant.category.getLongName());
+
+            for (final String element : ((RelayRaceImpl)race.getSpecific()).getLegDetails(result))
+                elements.add(race.getNormalisation().htmlEncode(element));
+
+            return elements;
+        }
+    }
+
     private static final class PrizeResultPrinter extends IndividualResultPrinterHTML {
 
         private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
@@ -308,7 +431,7 @@ public class IndividualRaceOutputHTML {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            SingleRaceResult result = (SingleRaceResult) r;
+            RelayRaceResult result = (RelayRaceResult) r;
 
             writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result)}</li>\n");
         }

@@ -15,68 +15,64 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.common;
+
 
 import org.grahamkirby.race_timing.common.Participant;
-import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Comparator;
 
-public class IndividualRaceResult {
+public class SingleRaceResult extends RaceResult {
 
-    public IndividualRaceEntry entry;
+    public RaceEntry entry;
     public Duration finish_time;
     public boolean dnf;
-    public Race race;
-    public String position_string;
-    List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
-    public IndividualRaceResult(final Race race, final IndividualRaceEntry entry, final Duration finish_time) {
+    public SingleRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 
-        this.race = race;
+        super(race);
         this.entry = entry;
         this.finish_time = finish_time;
     }
 
+    @Override
     protected String getParticipantName() {
 
         return entry.participant.name;
     }
 
+    @Override
     public boolean shouldDisplayPosition() {
         return canComplete();
-    }
-
-    protected String getClub() {
-
-        // The participant field could hold a team rather than a runner, but this method is overridden in RelayRaceResult.
-        return ((Runner) entry.participant).club;
     }
 
     public Duration duration() {
         return finish_time;
     }
 
-    public int comparePerformanceTo(final IndividualRaceResult other) {
+    @Override
+    public int comparePerformanceTo(final RaceResult other) {
 
         final Duration duration = duration();
-        final Duration other_duration = other.duration();
+        final Duration other_duration = ((SingleRaceResult) other).duration();
 
         return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
     }
 
+    @Override
     public EntryCategory getCategory() {
         return entry.participant.category;
     }
 
+    @Override
     public boolean canComplete() {
         return !dnf;
     }
 
+
+    @Override
     public Participant getParticipant() {
         return entry.participant;
     }

@@ -20,6 +20,9 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceResult;
+import org.grahamkirby.race_timing_experimental.common.ResultPrinterHTML;
+import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -30,73 +33,18 @@ import static org.grahamkirby.race_timing_experimental.individual_race.Individua
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsOutput.DNF_STRING;
 
 /** Base class for printing results to HTML files. */
-public abstract class ResultPrinterHTML extends ResultPrinter {
+public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
 
-    protected ResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+    protected IndividualResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void printResultsHeader() throws IOException {
 
-        writer.append("""
-            <table class="fac-table">
-                <thead>
-                    <tr>
-            """);
+    protected List<String> getResultsElements(final RaceResult r) {
 
-        for (final String header : getResultsColumnHeaders())
-            writer.append(STR."""
-                            <th>\{header}</th>
-                """);
-
-        writer.append("""
-                    </tr>
-                </thead>
-                <tbody>
-            """);
-    }
-
-    @Override
-    public void printResult(final IndividualRaceResult result) throws IOException {
-
-        writer.append("""
-                    <tr>
-            """);
-
-        for (final String element : getResultsElements(result))
-            writer.append(STR."""
-                            <td>\{element}</td>
-                """);
-
-        writer.append("""
-                    </tr>
-            """);
-    }
-
-    @Override
-    public void printResultsFooter() throws IOException {
-
-        writer.append("""
-                </tbody>
-            </table>
-            """);
-    }
-
-    @Override
-    public void printNoResults() throws IOException {
-
-        writer.append("<p>No results</p>").append(LINE_SEPARATOR);
-    }
-
-    protected List<String> getResultsColumnHeaders() {
-        throw new UnsupportedOperationException();
-    }
-
-    protected List<String> getResultsElements(final IndividualRaceResult result) {
-
+        SingleRaceResult result = (SingleRaceResult)r;
         return List.of(
             result.position_string,
             String.valueOf(result.entry.bib_number),

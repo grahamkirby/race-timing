@@ -20,10 +20,6 @@ package org.grahamkirby.race_timing_experimental.relay_race;
 import org.grahamkirby.race_timing_experimental.common.CategoriesProcessorImpl;
 import org.grahamkirby.race_timing_experimental.common.CommonRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceConfigProcessor;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceDataProcessorImpl;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsCalculatorImpl;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsOutput;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,11 +30,11 @@ public class RelayRaceFactory {
 
         Race race = new CommonRace(config_file_path);
 
-        race.setConfigProcessor(new IndividualRaceConfigProcessor());
+        race.setConfigProcessor(new RelayRaceConfigProcessor());
         race.setCategoriesProcessor(new CategoriesProcessorImpl());
-        race.setRaceDataProcessor(new IndividualRaceDataProcessorImpl());
-        race.setResultsCalculator(new IndividualRaceResultsCalculatorImpl());
-        race.setResultsOutput(new IndividualRaceResultsOutput());
+        race.setRaceDataProcessor(new RelayRaceDataProcessorImpl());
+        race.setResultsCalculator(new RelayRaceResultsCalculatorImpl());
+        race.setResultsOutput(new RelayRaceResultsOutput());
 
         race.completeConfiguration();
 

@@ -15,12 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.relay_race;
 
 
+import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing_experimental.common.*;
+import org.grahamkirby.race_timing.individual_race.TimedRace;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceResult;
+import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
+import org.grahamkirby.race_timing_experimental.common.ResultPrinterText;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,22 +35,25 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.renderDuration;
 
 /** Base class for plaintext output. */
 @SuppressWarnings("preview")
-public class IndividualRaceOutputText {
+public class RelayRaceOutputText {
 
     private final Race race;
 
-    protected IndividualRaceOutputText(final Race race) {
+    protected RelayRaceOutputText(final Race race) {
         this.race = race;
     }
 
@@ -70,7 +79,7 @@ public class IndividualRaceOutputText {
             race.appendToNotes("Converted to title case: " + converted_words);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "processing_notes", (String) race.getConfig().get(KEY_YEAR)))) {
-            writer.append(race.getNotes().toString());
+            writer.append(race.getNotes());
         }
     }
 
@@ -201,6 +210,121 @@ public class IndividualRaceOutputText {
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
+    void printCollatedResults() throws IOException {
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "times_collated", (String) race.getConfig().get(KEY_YEAR));
+
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            final Map<Integer, Integer> legs_finished_per_team = ((RelayRaceImpl)race.getSpecific()).countLegsFinishedPerTeam();
+
+            printResults(writer, legs_finished_per_team);
+
+            final List<Integer> bib_numbers_with_missing_times = ((RelayRaceImpl)race.getSpecific()).getBibNumbersWithMissingTimes(legs_finished_per_team);
+            final List<Duration> times_with_missing_bib_numbers = ((RelayRaceImpl)race.getSpecific()).getTimesWithMissingBibNumbers();
+
+            final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
+
+            if (discrepancies_exist)
+                race.appendToNotes("""
+                
+                Discrepancies:
+                -------------
+                """);
+
+            printBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
+            printTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
+
+            if (discrepancies_exist)
+                race.appendToNotes("""
+                
+                
+                """);
+        }
+    }
+
+    private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
+
+        for (final RawResult result : ((TimedRace) race).getRawResults()) {
+
+            final int legs_already_finished = legs_finished_per_team.get(result.getBibNumber()) - 1;
+            printResult(writer, (RelayRaceRawResult) result, legs_already_finished);
+        }
+    }
+
+    private static void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
+
+        printBibNumberAndTime(writer, raw_result);
+        printLegNumber(writer, raw_result, legs_already_finished);
+        printComment(writer, raw_result);
+    }
+
+    private static void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
+
+        final int bib_number = raw_result.getBibNumber();
+
+        writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : "?").
+            append("\t").
+            append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
+    }
+
+    private static void printLegNumber(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
+
+        if (raw_result.getLegNumber() > 0) {
+
+            writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
+
+            if (legs_already_finished >= raw_result.getLegNumber())
+                raw_result.appendComment(STR."Leg \{raw_result.getLegNumber()} finisher was runner \{legs_already_finished + 1} to finish for team.");
+        }
+    }
+
+    private static void printComment(final OutputStreamWriter writer, final RelayRaceRawResult raw_result) throws IOException {
+
+        if (!raw_result.getComment().isEmpty()) {
+
+            if (raw_result.getLegNumber() == 0) writer.append("\t");
+            writer.append("\t").append(org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
+        }
+
+        writer.append(LINE_SEPARATOR);
+    }
+
+    @SuppressWarnings("IncorrectFormatting")
+    private void printBibNumbersWithMissingTimes(final Collection<Integer> bib_numbers_with_missing_times) {
+
+        if (!bib_numbers_with_missing_times.isEmpty()) {
+
+            race.appendToNotes("""
+                
+                Bib numbers with missing times:\s""");
+
+            race.appendToNotes(
+                bib_numbers_with_missing_times.stream().
+                    map(String::valueOf).
+                    reduce((i1, i2) -> STR."\{i1}, \{i2}").
+                    orElse(""));
+        }
+    }
+
+    @SuppressWarnings("IncorrectFormatting")
+    private void printTimesWithMissingBibNumbers(final Collection<Duration> times_with_missing_bib_numbers) {
+
+        if (!times_with_missing_bib_numbers.isEmpty()) {
+
+            race.appendToNotes("""
+                
+                Times with missing bib numbers:
+                
+                """);
+
+            race.appendToNotes(
+                times_with_missing_bib_numbers.stream().
+                    map(Normalisation::format).
+                    reduce((i1, i2) -> STR."\{i1}\n\{i2}").
+                    orElse(""));
+        }
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -212,7 +336,7 @@ public class IndividualRaceOutputText {
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
-            SingleRaceResult result = (SingleRaceResult) r;
+            RelayRaceResult result = (RelayRaceResult) r;
 
             writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{renderDuration(result)}\n");
         }

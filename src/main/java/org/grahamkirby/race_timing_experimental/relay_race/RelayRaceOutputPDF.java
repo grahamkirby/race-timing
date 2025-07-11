@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.relay_race;
 
 
 import com.itextpdf.io.font.constants.StandardFonts;
@@ -31,7 +31,6 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResult;
 import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
-import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,7 +47,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 
-public class IndividualRaceOutputPDF {
+public class RelayRaceOutputPDF {
 
     public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {
     }
@@ -67,7 +66,7 @@ public class IndividualRaceOutputPDF {
     static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
     private final Race race;
 
-    IndividualRaceOutputPDF(final Race race) {
+    RelayRaceOutputPDF(final Race race) {
         this.race = race;
     }
 
@@ -237,7 +236,7 @@ public class IndividualRaceOutputPDF {
 
     public static String renderDuration(final RaceResult result, final String alternative) {
 
-        return IndividualRaceOutputCSV.renderDuration(result, alternative);
+        return RelayRaceOutputCSV.renderDuration(result, alternative);
     }
 
     public static String renderDuration(final RaceResult result) {
@@ -254,15 +253,16 @@ public class IndividualRaceOutputPDF {
         }
 
         public void printResult(final RaceResult r) throws IOException {
-            SingleRaceResult result = (SingleRaceResult) r;
 
+            RelayRaceResult result = (RelayRaceResult) r;
             writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
                 append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");
         }
     }
 
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
-        SingleRaceResult result = (SingleRaceResult) r;
+
+        RelayRaceResult result = (RelayRaceResult) r;
 
         return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, ((Runner) result.entry.participant).club, renderDuration(result));
     }

@@ -18,20 +18,30 @@
 package org.grahamkirby.race_timing_experimental.relay_race;
 
 
+import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceEntry;
+import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelayRaceResult {
+public class RelayRaceResult extends SingleRaceResult {
 
     final List<LegResult> leg_results;
+    public String position_string;
+    List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
-    RelayRaceResult(final RelayRaceEntry entry, final RelayRace race) {
+    public RelayRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
+
+        super(race, entry, finish_time);
 
         leg_results = new ArrayList<>();
 
-        for (int i = 0; i < race.getNumberOfLegs(); i++)
-            leg_results.add(new LegResult(entry, race));
+        RelayRaceImpl impl = (RelayRaceImpl) race.getSpecific();
+        for (int i = 0; i < impl.getNumberOfLegs(); i++)
+            leg_results.add(new LegResult(race, entry));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

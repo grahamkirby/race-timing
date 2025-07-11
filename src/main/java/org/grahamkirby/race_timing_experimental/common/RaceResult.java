@@ -15,25 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.common;
 
 
+import org.grahamkirby.race_timing.common.Participant;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing_experimental.common.Race;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-public interface IndividualRaceResultsCalculator {
+@SuppressWarnings("IncorrectFormatting")
+public abstract class RaceResult {
 
-    void setRace(Race race);
+    public final Race race;
+    public String position_string;
+    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
-    void calculateResults();
+    protected RaceResult(final Race race) {
+        this.race = race;
+    }
 
-    List<IndividualRaceResult> getOverallResults(List<PrizeCategory> categories);
+    protected abstract String getParticipantName();
 
-    boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
-
-    List<IndividualRaceResult> getPrizeWinners(PrizeCategory category);
-
-    StringBuilder getNotes();
+    public abstract Participant getParticipant();
+    public abstract int comparePerformanceTo(RaceResult other);
+    public abstract boolean canComplete();
+    public abstract boolean shouldDisplayPosition();
+    public abstract EntryCategory getCategory();
 }

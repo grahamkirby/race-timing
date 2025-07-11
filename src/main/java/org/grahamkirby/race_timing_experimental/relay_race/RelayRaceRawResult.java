@@ -15,15 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.relay_race;
+
 
 import org.grahamkirby.race_timing.common.RawResult;
 
-import java.util.List;
+class RelayRaceRawResult extends RawResult {
 
-public interface IndividualRaceData {
+    private static final int UNKNOWN_LEG_NUMBER = 0;
 
-    List<RawResult> getRawResults();
+    // Leg number is optional, depending on whether it was recorded on paper sheet.
+    private final int leg_number;
 
-    List<IndividualRaceEntry> getEntries();
+    RelayRaceRawResult(final String file_line) {
+
+        super(file_line);
+
+        final String[] elements = file_line.split("\t");
+        leg_number = elements.length == 2 ? UNKNOWN_LEG_NUMBER : Integer.parseInt(elements[2]);
+    }
+
+    int getLegNumber() {
+        return leg_number;
+    }
 }

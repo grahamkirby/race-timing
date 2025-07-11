@@ -15,11 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.relay_race;
 
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing_experimental.common.*;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceResult;
+import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
+import org.grahamkirby.race_timing_experimental.common.ResultsOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,17 +34,18 @@ import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.*;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.OVERALL_RESULTS_HEADER;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.encode;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 @SuppressWarnings("preview")
-public class IndividualRaceResultsOutput implements ResultsOutput {
+public class RelayRaceResultsOutput implements ResultsOutput {
 
     @Override
     public void outputResults() throws IOException {
 
         printOverallResults();
+        printDetailedResults();
+        printLegResults();
+        printCollatedTimes();
 
         printPrizes();
         printNotes();
@@ -52,10 +56,10 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     public void setRace(Race race) {
 
         this.race = race;
-        output_CSV = new IndividualRaceOutputCSV(race);
-        output_HTML = new IndividualRaceOutputHTML(race);
-        output_text = new IndividualRaceOutputText(race);
-        output_PDF = new IndividualRaceOutputPDF(race);
+        output_CSV = new RelayRaceOutputCSV(race);
+        output_HTML = new RelayRaceOutputHTML(race);
+        output_text = new RelayRaceOutputText(race);
+        output_PDF = new RelayRaceOutputPDF(race);
     }
 
     /** Displayed in results for runners that did not complete the course. */
@@ -73,15 +77,32 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    IndividualRaceOutputCSV output_CSV;
-    IndividualRaceOutputHTML output_HTML;
-    IndividualRaceOutputText output_text;
-    IndividualRaceOutputPDF output_PDF;
+    RelayRaceOutputCSV output_CSV;
+    RelayRaceOutputHTML output_HTML;
+    RelayRaceOutputText output_text;
+    RelayRaceOutputPDF output_PDF;
 
     protected void printOverallResults() throws IOException {
 
         output_CSV.printResults();
         output_HTML.printResults();
+    }
+
+    private void printDetailedResults() throws IOException {
+
+        output_CSV.printDetailedResults();
+        output_HTML.printDetailedResults();
+    }
+
+    private void printLegResults() throws IOException {
+
+        output_CSV.printLegResults();
+        output_HTML.printLegResults();
+    }
+
+    private void printCollatedTimes() throws IOException {
+
+        output_text.printCollatedResults();
     }
 
     protected void printPrizes() throws IOException {
@@ -106,40 +127,42 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
      *
      * @throws IOException if an I/O error occurs.
      */
-    public void printResults() throws IOException {
+//    public void printResults() throws IOException {
+//
+//        final OutputStream stream = getOutputStream(race_name_for_filenames, "overall", year);
+//
+//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+//
+//            writer.append(getResultsHeader());
+//            printResults(writer, getOverallResultPrinter(writer));
+//        }
+//    }
 
-        final OutputStream stream = getOutputStream(race_name_for_filenames, "overall", year);
+//    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
+//        return new OverallResultPrinter(race, writer);
+//    }
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getResultsHeader());
-            printResults(writer, getOverallResultPrinter(writer));
-        }
-    }
-
-    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new OverallResultPrinter(race, writer);
-    }
+    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
     public String getResultsHeader() {
         return OVERALL_RESULTS_HEADER;
     }
 
     @SuppressWarnings("preview")
-    private static final class OverallResultPrinter extends ResultPrinter {
-
-        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            SingleRaceResult result = (SingleRaceResult) r;
-            writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
-                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");
-        }
-    }
+//    private static final class OverallResultPrinter extends ResultPrinter {
+//
+//        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+//            super(race, writer);
+//        }
+//
+//        @Override
+//        public void printResult(final RaceResult r) throws IOException {
+//
+//            RelayRaceResult result = (RelayRaceResult) r;
+//            writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
+//                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");
+//        }
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -226,8 +249,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
         if (!result.canComplete()) return alternative;
 
-        // Messy because duration() is defined for single races and also tour races; other series races use scores rather than aggregate times.
-        final Duration duration =  ((SingleRaceResult) result).duration();
+        final Duration duration = ((RelayRaceResult) result).duration();
 
         return format(duration);
     }

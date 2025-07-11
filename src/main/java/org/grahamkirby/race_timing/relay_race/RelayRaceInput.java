@@ -41,7 +41,7 @@ import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_NUMBER_OF_LEG
 import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAIRED_LEGS;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
-class RelayRaceInput extends TimedRaceInput {
+public class RelayRaceInput extends TimedRaceInput {
 
     // Configuration file keys.
     private static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";

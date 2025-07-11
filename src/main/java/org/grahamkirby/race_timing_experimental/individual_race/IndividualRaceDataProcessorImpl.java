@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
-import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_ENTRIES_PATH;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RAW_RESULTS_PATH;
 
-public class IndividualRaceDataProcessorImpl implements IndividualRaceDataProcessor {
+public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
     private Race race;
 
@@ -43,12 +43,12 @@ public class IndividualRaceDataProcessorImpl implements IndividualRaceDataProces
     public String dnf_string;
 
     @Override
-    public IndividualRaceData getRaceData() {
+    public RaceData getRaceData() {
 
         Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
         Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
         try {
-            return new IndividualRaceDataImpl(loadRawResults(raw_results_path),
+            return new RaceDataImpl(loadRawResults(raw_results_path),
                 loadEntries(entries_path));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -73,12 +73,12 @@ public class IndividualRaceDataProcessorImpl implements IndividualRaceDataProces
         return line.split("\t")[0];
     }
 
-    List<IndividualRaceEntry> loadEntries(Path entries_path) throws IOException {
+    List<RaceEntry> loadEntries(Path entries_path) throws IOException {
 
         return Files.readAllLines(entries_path).stream().
             map(SingleRaceInput::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
-            map(line -> new IndividualRaceEntry(Arrays.stream(line.split("\t")).toList(), race)).
+            map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), race)).
             toList();
     }
 }

@@ -15,11 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.relay_race;
+package org.grahamkirby.race_timing_experimental.common;
 
-public class RelayRace {
+import org.grahamkirby.race_timing.common.RawResult;
 
-    public int getNumberOfLegs() {
-        return 0;
+import java.util.List;
+
+public class RaceDataImpl implements RaceData {
+
+    private final List<RawResult> raw_results;
+    private final List<RaceEntry> entries;
+
+    public RaceDataImpl(List<RawResult> raw_results, List<RaceEntry> entries) {
+
+        this.raw_results = raw_results;
+        this.entries = entries;
+    }
+
+    @Override
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        return entries;
     }
 }

@@ -20,7 +20,7 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -123,8 +123,8 @@ public class IndividualRaceOutputCSV {
                 writer.append(getResultsSubHeader(group.group_title()));
             }
 
-            IndividualRaceResultsCalculator raceResults = race.getResultsCalculator();
-            List<IndividualRaceResult> overallResults = raceResults.getOverallResults(group.categories());
+            RaceResultsCalculator raceResults = race.getResultsCalculator();
+            List<RaceResult> overallResults = raceResults.getOverallResults(group.categories());
             printer.print(overallResults);
 
             not_first_category_group = true;
@@ -145,14 +145,15 @@ public class IndividualRaceOutputCSV {
         return duration != null ? format(duration) : alternative;
     }
 
-    public static String renderDuration(final IndividualRaceResult result, final String alternative) {
+    public static String renderDuration(final RaceResult r, final String alternative) {
 
+        SingleRaceResult result = (SingleRaceResult) r;
         if (!result.canComplete()) return alternative;
 
         return format(result.duration());
     }
 
-    public static String renderDuration(final IndividualRaceResult result) {
+    public static String renderDuration(final RaceResult result) {
         return renderDuration(result, "");
     }
 
@@ -165,7 +166,8 @@ public class IndividualRaceOutputCSV {
             super(race, writer);
         }
 
-        public void printResult(final IndividualRaceResult result) throws IOException {
+        public void printResult(final RaceResult r) throws IOException {
+            SingleRaceResult result = (SingleRaceResult) r;
 
             writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
                 append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");

@@ -20,21 +20,22 @@ package org.grahamkirby.race_timing_experimental.relay_race;
 
 import java.time.Duration;
 import org.grahamkirby.race_timing.common.Team;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceEntry;
+import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
 
-public class LegResult {
+public class LegResult extends SingleRaceResult {
 
     int leg_number;
     boolean in_mass_start;
-    public boolean dnf;
-    public Duration finish_time;
-    public RelayRaceEntry entry;
 
     Duration start_time;  // Relative to start of leg 1.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LegResult(final RelayRaceEntry entry, final RelayRace race) {
+    LegResult(final Race race, final RaceEntry entry) {
 
+        super(race, entry, null);
         dnf = true;
         in_mass_start = false;
     }

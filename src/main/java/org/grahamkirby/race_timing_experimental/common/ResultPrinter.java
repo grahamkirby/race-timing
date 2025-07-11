@@ -15,10 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.common;
 
-
-import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -40,7 +38,7 @@ public abstract class ResultPrinter {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract void printResult(IndividualRaceResult result) throws IOException;
+    protected abstract void printResult(RaceResult result) throws IOException;
 
     protected void printResultsHeader() throws IOException {
     }
@@ -55,7 +53,7 @@ public abstract class ResultPrinter {
 
     /** Prints out the given list of results. */
     @SuppressWarnings("TypeMayBeWeakened")
-    public final void print(final List<? extends IndividualRaceResult> results) throws IOException {
+    public final void print(final List<? extends RaceResult> results) throws IOException {
 
         if (results.isEmpty())
             printNoResults();
@@ -63,7 +61,7 @@ public abstract class ResultPrinter {
         else {
             printResultsHeader();
 
-            for (final IndividualRaceResult result : results)
+            for (final RaceResult result : results)
                 printResult(result);
 
             printResultsFooter();

@@ -15,17 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.common;
 
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing_experimental.common.Normalisation;
-import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.util.List;
 
-public class IndividualRaceEntry {
+public class RaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
     private static final int BIB_NUMBER_INDEX = 0;
@@ -40,7 +38,7 @@ public class IndividualRaceEntry {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
-    public IndividualRaceEntry(final List<String> elements, final Race race) {
+    public RaceEntry(final List<String> elements, final Race race) {
 
         this.race = race;
         Normalisation normalisation = race.getNormalisation();
@@ -60,6 +58,12 @@ public class IndividualRaceEntry {
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
         }
+    }
+
+    public RaceEntry(final Participant participant, final int bib_number, final Race race) {
+        this.participant = participant;
+        this.bib_number = bib_number;
+        this.race = race;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
