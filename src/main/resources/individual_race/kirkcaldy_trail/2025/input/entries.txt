@@ -1,0 +1,59 @@
+101	Simon Anetts	Fife AC	MS
+102	Nick Bennett 	Dundee Road Runners	MS
+103	Keith Bonthrone 	Fife AC	M60
+104	Evan Bowers	Dundee Road Runners	MS
+105	Rory Butcher 		MS
+106	Fiona Callaghan 	Dundee Road Runners 	FS
+107	Gordon Christie 		M50
+108	David Dunleavey	Stratheden	M60
+109	Daniel Fields	Dundee Road Runners	M40
+110	Orla Gage	Anster Haddies	FU20
+111	Will Gage	Anster Haddies	M50
+112	Alan  Gardener 	Falkland trail runners 	M50
+113	Sandra  Gardener 	Falkland trail runners 	F50
+114	Keith Gelly 	Dundee Road Runners	M50
+115	Jeff Gunnell		M70
+116	James Hall	Fife AC	M40
+117	Adam Hart	Dundee Road Runners	MS
+118	Lynne Herd	Anster Haddies 	F40
+119	Dominic Hughes	Dundee Road Runners	M40
+120	Simon Jeynes 	Fife AC 	M40
+121	Ben Kinninmonth	Fife AC	MS
+122	Mairi Littleson	Dundee Road Runners	FS
+123	Allison MacPherson	Falkland Trail Runners	F40
+124	Rhonda Manning	Dundee Hawkhill Harriers	F50
+125	Ross McArthur	Falkland Trail Runners 	MS
+126	Abby McIntosh 		F40
+127	Alison McNeilly	Dundee Road Runners	F40
+128	Janet McWhinnie 		F50
+129	Maisey  Meade	Pitreavie AAC	FU20
+130	Mirabelle Meade	Pitreavie AAC	FU20
+131	John Mill	Dundee Road Runners	M60
+132	David Place	Fife AC	M60
+133	Tom Rainey	Anster Haddies	M40
+134	Martin Rollo	Dundee Road Runners	M60
+135	Gary Shaw	Anster Haddies	M50
+136	Suzanne Shaw	Anster Haddies	F40
+137	Philip  Suttie 	Falkland Trail Runners	M40
+138	Rhona  van Rensburg 	Fife AC	F50
+139	Ruan van Rensburg 	Fife AC	MS
+140	Fiona  Walker 	Fife AC	F50
+141	Paul Wallace	Falkland Trail Runners	M40
+142	David Webster	Dundee Road Runners	MS
+143	Aileen Wilson		F40
+144	Mark Bell	Dundee Road Runners	M40
+145	Michael  Mitchell	Dundee Road Runners	M50
+146	Steph Devlin	Dundee Road Runners	F40
+147	Duncan Edwards	Dundee Road Runners	M40
+148	Margaret Martin	Fife AC	F60
+149	Tony Martin	Fife AC	M70
+150	Chris Neilson	Dundee Road Runners	M50
+151	Stephen Dickson	Fife AC	M50
+152	David Aitken	Dundee Road Runners	M50
+153	Ewan McAdam	Fife AC	MU20
+154	Ian Simmons	Kirkcaldy Wizards	M50
+155	Arman Buta		MS
+156	Kirsty Letham	Kirkcaldy Wizards	FS
+157	Lee Cessford	Falkland Trail Runners	M50
+158	Glenn Barclay	Fife AC	MS
+159	Kevin Wallace	Fife AC	M40
