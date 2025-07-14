@@ -215,19 +215,19 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,
      *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    protected static int comparePerformance(final RaceResult r1, final RaceResult r2) {
+    public static int comparePerformance(final RaceResult r1, final RaceResult r2) {
 
         return r1.comparePerformanceTo(r2);
     }
 
     /** Compares two results based on alphabetical ordering of the runners' first names. */
-    protected static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+    public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
         return Normalisation.getFirstName(r1.getParticipant().name).compareTo(Normalisation.getFirstName(r2.getParticipant().name));
     }
 
     /** Compares two results based on alphabetical ordering of the runners' last names. */
-    protected static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+    public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
         return Normalisation.getLastName(r1.getParticipant().name).compareTo(Normalisation.getLastName(r2.getParticipant().name));
     }

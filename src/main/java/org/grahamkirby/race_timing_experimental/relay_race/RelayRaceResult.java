@@ -30,8 +30,6 @@ import java.util.List;
 public class RelayRaceResult extends SingleRaceResult {
 
     final List<LegResult> leg_results;
-    public String position_string;
-    List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
     public RelayRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 

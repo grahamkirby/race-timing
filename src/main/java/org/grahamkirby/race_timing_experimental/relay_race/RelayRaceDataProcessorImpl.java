@@ -27,9 +27,7 @@ import org.grahamkirby.race_timing_experimental.common.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
@@ -37,6 +35,11 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
     private Race race;
+
+    public RelayRaceDataProcessorImpl() {
+
+        explicitly_recorded_leg_numbers = new HashMap<>();
+    }
 
     @Override
     public void setRace(Race race) {
@@ -46,8 +49,13 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         annotations_path = (Path) race.getConfig().get(KEY_ANNOTATIONS_PATH);
     }
 
+    public void completeConfiguration() {
+
+    }
+
     private Path paper_results_path, annotations_path;
     private int number_of_raw_results;
+    Map<RawResult, Integer> explicitly_recorded_leg_numbers;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,7 +66,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
 
         try {
-            return new RaceDataImpl(loadRawResults(raw_results_path), loadEntries(entries_path));
+            return new RelayRaceDataImpl(loadRawResults(raw_results_path), loadEntries(entries_path), explicitly_recorded_leg_numbers);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,7 +95,15 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
     protected RawResult makeRawResult(final String line) {
 
-        return new RawResult(line);
+        RawResult result = new RawResult(line);
+
+        final String[] elements = line.split("\t");
+        if (elements.length > 2) {
+            int leg_number = Integer.parseInt(elements[2]);
+            explicitly_recorded_leg_numbers.put(result, leg_number);
+        }
+
+        return result;
     }
 
     private static String getBibNumber(final String line){
@@ -114,7 +130,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
         if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs())
-            throw new RuntimeException(String.join(" ", elements));
+            throw new RuntimeException("Invalid number of elements: " + String.join(" ", elements));
 
         int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {

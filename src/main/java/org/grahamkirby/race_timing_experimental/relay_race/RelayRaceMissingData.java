@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing_experimental.relay_race;
 
 
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.time.Duration;

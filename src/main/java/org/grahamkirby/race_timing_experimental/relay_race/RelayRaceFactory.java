@@ -31,6 +31,7 @@ public class RelayRaceFactory {
         Race race = new CommonRace(config_file_path);
 
         race.setConfigProcessor(new RelayRaceConfigProcessor());
+        race.setSpecific(new RelayRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessorImpl());
         race.setRaceDataProcessor(new RelayRaceDataProcessorImpl());
         race.setResultsCalculator(new RelayRaceResultsCalculatorImpl());

@@ -21,14 +21,12 @@ import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
+import org.grahamkirby.race_timing.relay_race.RelayRaceEntry;
 import org.grahamkirby.race_timing_experimental.common.*;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
@@ -39,6 +37,8 @@ import static org.grahamkirby.race_timing_experimental.common.Normalisation.form
 
 public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
+    private static final int UNKNOWN_LEG_NUMBER = 0;
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private Race race;
@@ -48,13 +48,17 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private StringBuilder notes;
     /** Provides functionality for inferring missing bib number or timing data in the results. */
     private RelayRaceMissingData missing_data;
+    Map<RawResult, Integer> explicitly_recorded_leg_numbers;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public RelayRaceResultsCalculatorImpl() {
+        notes = new StringBuilder();
+    }
     public void setRace(Race race) {
         this.race = race;
         race_impl = ((RelayRaceImpl) race.getSpecific());
-        notes = new StringBuilder();
+        missing_data = new RelayRaceMissingData(race);
     }
 
     @Override
@@ -63,6 +67,10 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         initialiseResults();
         interpolateMissingTimes();
         guessMissingBibNumbers();
+
+        RaceData raceData = race.getRaceData();
+
+        explicitly_recorded_leg_numbers = ((RelayRaceDataImpl) raceData).explicitly_recorded_leg_numbers;
 
         recordFinishTimes();
         recordStartTimes();
@@ -102,19 +110,19 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
             forEachOrdered(result -> recordLegResult(result));
     }
 
-    private void recordLegResult(final RawResult r) {
+    private void recordLegResult(final RawResult raw_result) {
 
-        final RelayRaceRawResult raw_result = (RelayRaceRawResult) r;
         final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(team_index);
 
         final int leg_index = findIndexOfNextUnfilledLegResult(result.leg_results);
         final LegResult leg_result = result.leg_results.get(leg_index);
 
-        leg_result.finish_time = raw_result.getRecordedFinishTime().plus(race_impl.start_offset);
+        Duration recordedFinishTime = raw_result.getRecordedFinishTime();
+        leg_result.finish_time = recordedFinishTime.plus(race_impl.getStartOffset());
 
         // Leg number will be zero in most cases, unless explicitly recorded in raw results.
-        leg_result.leg_number = raw_result.getLegNumber();
+        leg_result.leg_number = explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER);
 
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
@@ -152,7 +160,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private void fillLegResultDetails(final RaceResult result) {
 
-        for (int leg_index = 0; leg_index < race_impl.number_of_legs; leg_index++)
+        for (int leg_index = 0; leg_index < race_impl.getNumberOfLegs(); leg_index++)
             fillLegResultDetails(((RelayRaceResult) result).leg_results, leg_index);
     }
 
@@ -161,7 +169,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         final LegResult leg_result = leg_results.get(leg_index);
 
         final Duration individual_start_time = getIndividualStartTime(leg_result, leg_index);
-        final Duration leg_mass_start_time = race_impl.start_times_for_mass_starts.get(leg_index);
+        final Duration leg_mass_start_time = race_impl.getStartTimesForMassStarts().get(leg_index);
         final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results.get(leg_index - 1).finish_time : null;
 
         leg_result.start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
@@ -172,7 +180,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
-        return race_impl.individual_starts.stream().
+        return race_impl.getIndividualStarts().stream().
             filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.entry.bib_number).
             filter(individual_leg_start -> individual_leg_start.leg_number() == leg_index + 1).
             map(individual_leg_start -> individual_leg_start.start_time()).
@@ -185,7 +193,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         final List<String> leg_details = new ArrayList<>();
         boolean all_previous_legs_completed = true;
 
-        for (int leg = 1; leg <= race_impl.number_of_legs; leg++) {
+        for (int leg = 1; leg <= race_impl.getNumberOfLegs(); leg++) {
 
             final LegResult leg_result = result.leg_results.get(leg - 1);
             final boolean completed = leg_result.canComplete();
@@ -236,7 +244,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         if (individual_start_time != null || leg_index == 0) return false;
 
         // No previously recorded leg time, so record this runner as starting in mass start if it's a mass start leg.
-        if (previous_runner_finish_time == null) return race_impl.mass_start_legs.get(leg_index);
+        if (previous_runner_finish_time == null) return race_impl.getMassStartLegs().get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
         return !mass_start_time.equals(Duration.ZERO) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
@@ -334,22 +342,46 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private void initialiseResults() {
 
-        List<RawResult> raw_results = race.getRaceData().getRawResults();
+        final Collection<Integer> bib_numbers_seen = new HashSet<>();
 
-        overall_results = raw_results.stream().
+        overall_results = race.getRaceData().getRawResults().stream().
+            filter(raw_result -> raw_result.getBibNumber() != 0).
+            filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
             map(this::makeResult).
             toList();
 
-        overall_results = new ArrayList<>(overall_results);
+        overall_results = makeMutable(overall_results);
+    }
+    public static List<RaceResult> makeMutable(final List<? extends RaceResult> results) {
+        return new ArrayList<>(results);
     }
 
     private RaceResult makeResult(final RawResult raw_result) {
 
-        final int bib_number = raw_result.getBibNumber();
-        final Duration finish_time = raw_result.getRecordedFinishTime();
-
-        return new RelayRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
+        final RaceEntry entry = getEntryWithBibNumber(raw_result.getBibNumber());
+        return new RelayRaceResult(race, entry, null);
     }
+
+
+
+//    private void initialiseResults() {
+//xxx
+//        List<RawResult> raw_results = race.getRaceData().getRawResults();
+//
+//        overall_results = raw_results.stream().
+//            map(this::makeResult).
+//            toList();
+//
+//        overall_results = new ArrayList<>(overall_results);
+//    }
+//
+//    private RaceResult makeResult(final RawResult raw_result) {
+//
+//        final int bib_number = raw_result.getBibNumber();
+//        final Duration finish_time = raw_result.getRecordedFinishTime();
+//
+//        return new RelayRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
+//    }
 
     protected void recordDNFs() {
 
@@ -369,12 +401,19 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     protected void recordDNF(final String dnf_specification) {
 
-        final int bib_number = Integer.parseInt(dnf_specification);
-        final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
+        try {
+            // String of form "bib-number/leg-number"
 
-        result.dnf = true;
+            final String[] elements = dnf_specification.split("/");
+            final int bib_number = Integer.parseInt(elements[0]);
+            final int leg_number = Integer.parseInt(elements[1]);
+
+            getLegResult(bib_number, leg_number).dnf = true;
+
+        } catch (final NumberFormatException e) {
+            throw new RuntimeException(dnf_specification, e);
+        }
     }
-
 
     String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
 
@@ -385,7 +424,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private int getNextMassStartLeg(final int leg_number) {
 
         return leg_number +
-            (int) race_impl.mass_start_legs.subList(leg_number - 1, race_impl.number_of_legs).stream().
+            (int) race_impl.getMassStartLegs().subList(leg_number - 1, race_impl.getNumberOfLegs()).stream().
                 filter(is_mass_start -> !is_mass_start).
                 count();
     }
@@ -513,7 +552,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the second parameter. */
-    protected static void setPositionStrings(final List<RaceResult> results, final boolean allow_equal_positions) {
+    protected static void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -524,7 +563,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            final RelayRaceResult result = (RelayRaceResult) results.get(result_index);
+            final RaceResult result = results.get(result_index);
 
             if (result.shouldDisplayPosition()) {
                 if (allow_equal_positions) {
@@ -544,6 +583,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
                         result.position_string = String.valueOf(result_index + 1);
                 } else {
                     result.position_string = String.valueOf(result_index + 1);
+                    int x =3;
                 }
             } else {
                 result.position_string = "-";
@@ -552,7 +592,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Records the same position for the given range of results. */
-    private static void recordEqualPositions(final List<RaceResult> results, final int start_index, final int end_index) {
+    private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int end_index) {
 
         final String position_string = STR."\{start_index + 1}=";
 
@@ -561,7 +601,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */
-    private static int getHighestIndexWithSamePerformance(final List<RaceResult> results, final int start_index) {
+    private static int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
 
         int highest_index_with_same_result = start_index;
 

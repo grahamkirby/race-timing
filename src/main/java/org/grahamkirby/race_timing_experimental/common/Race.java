@@ -53,6 +53,6 @@ public interface Race {
     RaceData getRaceData();
     void setRaceDataProcessor(RaceDataProcessor race_data_processor);
 
-    Object getSpecific();
-    void setSpecific(Object specific);
+    SpecificRace getSpecific();
+    void setSpecific(SpecificRace specific);
 }

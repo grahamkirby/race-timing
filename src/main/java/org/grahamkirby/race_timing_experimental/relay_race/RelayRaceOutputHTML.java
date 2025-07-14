@@ -286,8 +286,7 @@ public class RelayRaceOutputHTML {
                 result.position_string,
                 String.valueOf(result.entry.bib_number),
                 race.getNormalisation().htmlEncode(result.entry.participant.name),
-                ((Runner)result.entry.participant).club,
-                result.entry.participant.category.getShortName(),
+                result.entry.participant.category.getLongName(),
                 renderDuration(result, DNF_STRING)
             );
         }
@@ -359,7 +358,7 @@ public class RelayRaceOutputHTML {
 
             return List.of(
                 "Pos",
-                STR."Runner\{((RelayRaceImpl) race.getSpecific()).paired_legs.get(leg - 1) ? "s" : ""}",
+                STR."Runner\{((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : ""}",
                 "Time");
         }
 
@@ -389,7 +388,7 @@ public class RelayRaceOutputHTML {
 
             for (int leg_number = 1; leg_number <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg_number++) {
 
-                headers.add(STR."Runner\{((RelayRaceImpl) race.getSpecific()).paired_legs.get(leg_number - 1) ? "s" : ""} \{leg_number}");
+                headers.add(STR."Runner\{((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg_number - 1) ? "s" : ""} \{leg_number}");
                 headers.add(STR."Leg \{leg_number}");
                 headers.add(leg_number < ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs() ? STR."Split \{leg_number}" : "Total");
             }

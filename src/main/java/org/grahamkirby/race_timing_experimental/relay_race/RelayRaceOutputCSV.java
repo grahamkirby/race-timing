@@ -18,15 +18,9 @@
 package org.grahamkirby.race_timing_experimental.relay_race;
 
 
-import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
-import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceResult;
-import org.grahamkirby.race_timing_experimental.common.RaceResultsCalculator;
-import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
+import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -209,7 +203,7 @@ public class RelayRaceOutputCSV {
 
         if (!result.canComplete()) return alternative;
 
-        return format(((RelayRaceResult)result).duration());
+        return format(((SingleRaceResult)result).duration());
     }
 
     public static String renderDuration(final RaceResult result) {
@@ -228,8 +222,7 @@ public class RelayRaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").
-                append(STR."\{encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");
+            writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, DNF_STRING)}\n");
         }
     }
 
@@ -242,7 +235,6 @@ public class RelayRaceOutputCSV {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final RelayRace relay_race = (RelayRace) race;
             final RelayRaceResult result = (RelayRaceResult) r;
 
             writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getLongName()},");
@@ -268,7 +260,7 @@ public class RelayRaceOutputCSV {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String plural = ((RelayRaceImpl) race.getSpecific()).paired_legs.get(leg - 1) ? "s" : "";
+            final String plural = ((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : "";
             writer.append(STR."Pos,Runner\{plural},Time\n");
         }
 

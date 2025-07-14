@@ -39,7 +39,7 @@ public class CommonRace implements Race {
     private Config config;
     private ConfigProcessor config_processor;
     private RaceDataProcessor race_data_processor;
-    private Object specific;
+    private SpecificRace specific;
 
     public CommonRace(final Path config_file_path) throws IOException {
 
@@ -49,7 +49,7 @@ public class CommonRace implements Race {
     @Override
     public void completeConfiguration() {
 
-        config = config_processor.loadConfig(config_file_path);
+//        config = config_processor.loadConfig(config_file_path);
         normalisation = new Normalisation(this);
     }
 
@@ -119,8 +119,9 @@ public class CommonRace implements Race {
     }
 
     @Override
-    public void setSpecific(Object specific) {
+    public void setSpecific(SpecificRace specific) {
         this.specific = specific;
+        specific.setRace(this);
     }
 
     @Override
@@ -136,6 +137,7 @@ public class CommonRace implements Race {
 
         this.config_processor = config_processor;
         config_processor.setRace(this);
+        config = config_processor.loadConfig(config_file_path);
     }
 
     @Override
@@ -153,7 +155,7 @@ public class CommonRace implements Race {
     }
 
     @Override
-    public Object getSpecific() {
+    public SpecificRace getSpecific() {
         return specific;
     }
 

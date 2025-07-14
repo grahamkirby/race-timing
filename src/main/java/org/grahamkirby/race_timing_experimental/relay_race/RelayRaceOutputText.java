@@ -18,15 +18,14 @@
 package org.grahamkirby.race_timing_experimental.relay_race;
 
 
-import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.individual_race.TimedRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResult;
 import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
 import org.grahamkirby.race_timing_experimental.common.ResultPrinterText;
+import org.grahamkirby.race_timing_experimental.common.Normalisation;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,10 +40,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.*;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACE_NAME_FOR_RESULTS;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
+
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.renderDuration;
 
 /** Base class for plaintext output. */
@@ -210,6 +210,7 @@ public class RelayRaceOutputText {
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
     }
+
     void printCollatedResults() throws IOException {
         final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "times_collated", (String) race.getConfig().get(KEY_YEAR));
 
@@ -245,14 +246,14 @@ public class RelayRaceOutputText {
 
     private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
 
-        for (final RawResult result : ((TimedRace) race).getRawResults()) {
+        for (final RawResult result : race.getRaceData().getRawResults()) {
 
             final int legs_already_finished = legs_finished_per_team.get(result.getBibNumber()) - 1;
-            printResult(writer, (RelayRaceRawResult) result, legs_already_finished);
+            printResult(writer, result, legs_already_finished);
         }
     }
 
-    private static void printResult(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
+    private void printResult(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
 
         printBibNumberAndTime(writer, raw_result);
         printLegNumber(writer, raw_result, legs_already_finished);
@@ -268,22 +269,27 @@ public class RelayRaceOutputText {
             append(raw_result.getRecordedFinishTime() != null ? format(raw_result.getRecordedFinishTime()) : "?");
     }
 
-    private static void printLegNumber(final OutputStreamWriter writer, final RelayRaceRawResult raw_result, final int legs_already_finished) throws IOException {
+    private void printLegNumber(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
+        Map<RawResult, Integer> explicitly_recorded_leg_numbers = ((RelayRaceDataProcessorImpl)race.getRaceData()).explicitly_recorded_leg_numbers;
 
-        if (raw_result.getLegNumber() > 0) {
+        if (explicitly_recorded_leg_numbers.containsKey(raw_result)) {
+//            if (raw_result.getLegNumber() > 0) {
+            int leg_number = explicitly_recorded_leg_numbers.get(raw_result);
 
-            writer.append("\t").append(String.valueOf(raw_result.getLegNumber()));
+            writer.append("\t").append(String.valueOf(leg_number));
 
-            if (legs_already_finished >= raw_result.getLegNumber())
-                raw_result.appendComment(STR."Leg \{raw_result.getLegNumber()} finisher was runner \{legs_already_finished + 1} to finish for team.");
+            if (legs_already_finished >= leg_number)
+                raw_result.appendComment(STR."Leg \{leg_number} finisher was runner \{legs_already_finished + 1} to finish for team.");
         }
     }
 
-    private static void printComment(final OutputStreamWriter writer, final RelayRaceRawResult raw_result) throws IOException {
+    private  void printComment(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
+        Map<RawResult, Integer> explicitly_recorded_leg_numbers = ((RelayRaceDataProcessorImpl)race.getRaceData()).explicitly_recorded_leg_numbers;
 
         if (!raw_result.getComment().isEmpty()) {
 
-            if (raw_result.getLegNumber() == 0) writer.append("\t");
+//            if (raw_result.getLegNumber() == 0) writer.append("\t");
+            if (!explicitly_recorded_leg_numbers.containsKey(raw_result)) writer.append("\t");
             writer.append("\t").append(org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
         }
 

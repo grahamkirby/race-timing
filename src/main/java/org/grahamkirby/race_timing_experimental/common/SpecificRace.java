@@ -17,29 +17,6 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
-import org.grahamkirby.race_timing.common.RawResult;
-
-import java.util.List;
-import java.util.Map;
-
-public class RaceDataImpl implements RaceData {
-
-    private final List<RawResult> raw_results;
-    private final List<RaceEntry> entries;
-
-    public RaceDataImpl(List<RawResult> raw_results, List<RaceEntry> entries) {
-
-        this.raw_results = raw_results;
-        this.entries = entries;
-    }
-
-    @Override
-    public List<RawResult> getRawResults() {
-        return raw_results;
-    }
-
-    @Override
-    public List<RaceEntry> getEntries() {
-        return entries;
-    }
+public interface SpecificRace {
+    void setRace(Race race);
 }

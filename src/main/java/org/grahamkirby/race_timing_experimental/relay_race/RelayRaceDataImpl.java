@@ -17,25 +17,33 @@
  */
 package org.grahamkirby.race_timing_experimental.relay_race;
 
-
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing_experimental.common.RaceData;
+import org.grahamkirby.race_timing_experimental.common.RaceEntry;
 
-class RelayRaceRawResult extends RawResult {
+import java.util.List;
+import java.util.Map;
 
-    private static final int UNKNOWN_LEG_NUMBER = 0;
+public class RelayRaceDataImpl implements RaceData {
 
-    // Leg number is optional, depending on whether it was recorded on paper sheet.
-    private final int leg_number;
+    private final List<RawResult> raw_results;
+    private final List<RaceEntry> entries;
+    public final Map<RawResult, Integer> explicitly_recorded_leg_numbers;
 
-    RelayRaceRawResult(final String file_line) {
+    public RelayRaceDataImpl(List<RawResult> raw_results, List<RaceEntry> entries, Map<RawResult, Integer> explicitly_recorded_leg_numbers) {
 
-        super(file_line);
-
-        final String[] elements = file_line.split("\t");
-        leg_number = elements.length == 2 ? UNKNOWN_LEG_NUMBER : Integer.parseInt(elements[2]);
+        this.raw_results = raw_results;
+        this.entries = entries;
+        this.explicitly_recorded_leg_numbers = explicitly_recorded_leg_numbers;
     }
 
-    int getLegNumber() {
-        return leg_number;
+    @Override
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        return entries;
     }
 }

@@ -17,13 +17,11 @@
  */
 package org.grahamkirby.race_timing_experimental.relay_race;
 
-import org.grahamkirby.race_timing_experimental.common.Config;
-import org.grahamkirby.race_timing_experimental.common.ConfigImpl;
-import org.grahamkirby.race_timing_experimental.common.ConfigProcessor;
-import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -106,6 +104,14 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
 
             final String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
             if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.interpretPath(Path.of(category_map_path)));
+
+            config_values.put(KEY_NUMBER_OF_LEGS, Integer.parseInt(properties.getProperty(KEY_NUMBER_OF_LEGS)));
+            config_values.put(KEY_PAIRED_LEGS, properties.getProperty(KEY_PAIRED_LEGS));
+
+            if (properties.getProperty(KEY_START_OFFSET) != null)
+                config_values.put(KEY_START_OFFSET, Normalisation.parseTime(properties.getProperty(KEY_START_OFFSET)));
+            else
+                config_values.put(KEY_START_OFFSET, Duration.ZERO);
 
             return new ConfigImpl(config_values);
 
