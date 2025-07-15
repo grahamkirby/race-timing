@@ -119,8 +119,8 @@ Pos,No,Team,Category,Total
 118,79,Glenrothes Tri: TRI'ing till we drop,MS,05:37:05
 119,97,KRR Kinross Where the Devil are We,OS,05:41:20
 120,126,Souper Troupers,OS,05:41:48
-121,68,Fife AC/Wizards Roy Woods Wizzards!,O40,05:42:15
-122,40,Edinburgh Running Network A,OS,05:42:15
+121=,40,Edinburgh Running Network A,OS,05:42:15
+121=,68,Fife AC/Wizards Roy Woods Wizzards!,O40,05:42:15
 123,7,Beacon: Beaky Blinders,OS,05:45:38
 124,2,Anster Haddies Ladies B,WS,05:46:07
 125,148,Westies Scrumpy Jack,O60,05:46:13

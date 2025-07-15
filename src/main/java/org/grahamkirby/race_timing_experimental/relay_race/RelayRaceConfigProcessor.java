@@ -107,6 +107,7 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
 
             config_values.put(KEY_NUMBER_OF_LEGS, Integer.parseInt(properties.getProperty(KEY_NUMBER_OF_LEGS)));
             config_values.put(KEY_PAIRED_LEGS, properties.getProperty(KEY_PAIRED_LEGS));
+            config_values.put(KEY_MASS_START_ELAPSED_TIMES, properties.getProperty(KEY_MASS_START_ELAPSED_TIMES));
 
             if (properties.getProperty(KEY_START_OFFSET) != null)
                 config_values.put(KEY_START_OFFSET, Normalisation.parseTime(properties.getProperty(KEY_START_OFFSET)));

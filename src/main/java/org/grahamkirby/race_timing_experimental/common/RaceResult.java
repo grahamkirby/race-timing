@@ -38,7 +38,7 @@ public abstract class RaceResult {
         this.race = race;
     }
 
-    protected abstract String getParticipantName();
+    public abstract String getParticipantName();
 
     public abstract Participant getParticipant();
     public abstract int comparePerformanceTo(RaceResult other);

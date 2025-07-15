@@ -115,6 +115,14 @@ public class RelayRace extends TimedRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @Override
+    public boolean areEqualPositionsAllowed() {
+
+        // Dead heats allowed in overall results. Although an ordering is imposed at the finish,
+        // this can't be relied on due to mass starts.
+        return true;
+    }
+
     int getNumberOfLegs() {
         return number_of_legs;
     }
@@ -227,12 +235,17 @@ public class RelayRace extends TimedRace {
 
         // Sort in order of increasing overall team time, as defined in OverallResult.compareTo().
         // DNF results are sorted in increasing order of bib number.
-        // Where two teams have the same overall time, the order in which their last leg runner_names were recorded is preserved.
+        // Where two teams have the same overall time, sort by team name.
 
         return List.of(
             ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)),
-            ignoreIfEitherResultIsDNF(this::compareLastLegPosition),
-            RelayRace::compareBibNumber);
+//            ignoreIfEitherResultIsDNF(this::compareLastLegPosition),
+            RelayRace::compareTeamName);
+    }
+    /** Compares two results based on alphabetical ordering of the team name. */
+    protected static int compareTeamName(final RaceResult r1, final RaceResult r2) {
+
+        return r1.getParticipant().name.compareToIgnoreCase((r2).getParticipant().name);
     }
 
     @Override
@@ -281,7 +294,7 @@ public class RelayRace extends TimedRace {
                 this::compareRecordedLegPosition) :
             List.of(
                 ignoreIfBothResultsAreDNF(penaliseDNF(Race::comparePerformance)),
-                Race::compareRunnerLastName, Race::compareRunnerFirstName);
+                RelayRace::compareLastNameOfFirstRunner, RelayRace::compareFirstNameOfFirstRunner);
     }
 
     private static int compareBibNumber(final RaceResult r1, final RaceResult r2) {
@@ -302,6 +315,18 @@ public class RelayRace extends TimedRace {
         final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult) r2).entry.bib_number, leg_number);
 
         return Integer.compare(recorded_position1, recorded_position2);
+    }
+
+    /** Compares two results based on alphabetical ordering of the runners' first names. */
+    protected static int compareFirstNameOfFirstRunner(final RaceResult r1, final RaceResult r2) {
+
+        return org.grahamkirby.race_timing_experimental.common.Normalisation.getFirstNameOfFirstRunner(((LegResult)r1).getParticipantName()).compareTo(org.grahamkirby.race_timing_experimental.common.Normalisation.getFirstNameOfFirstRunner(((LegResult)r2).getParticipantName()));
+    }
+
+    /** Compares two results based on alphabetical ordering of the runners' last names. */
+    protected static int compareLastNameOfFirstRunner(final RaceResult r1, final RaceResult r2) {
+
+        return org.grahamkirby.race_timing_experimental.common.Normalisation.getLastNameOfFirstRunner(((LegResult)r1).getParticipantName()).compareTo(org.grahamkirby.race_timing_experimental.common.Normalisation.getLastNameOfFirstRunner(((LegResult)r2).getParticipantName()));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,6 +545,7 @@ public class RelayRace extends TimedRace {
 
     private void fillLegResultDetails(final RaceResult result) {
 
+        int n = ((RelayRaceResult)result).entry.bib_number;
         for (int leg_index = 0; leg_index < number_of_legs; leg_index++)
             fillLegResultDetails(((RelayRaceResult) result).leg_results, leg_index);
     }

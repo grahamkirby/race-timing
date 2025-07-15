@@ -28,6 +28,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResult;
 import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
@@ -264,6 +265,6 @@ public class RelayRaceOutputPDF {
 
         RelayRaceResult result = (RelayRaceResult) r;
 
-        return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, ((Runner) result.entry.participant).club, renderDuration(result));
+        return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, result.entry.participant.category.getLongName(), renderDuration(result));
     }
 }

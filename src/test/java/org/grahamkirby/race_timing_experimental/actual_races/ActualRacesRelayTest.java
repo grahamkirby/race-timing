@@ -19,9 +19,7 @@ package org.grahamkirby.race_timing_experimental.actual_races;
 
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
 import org.grahamkirby.race_timing_experimental.relay_race.RelayRaceFactory;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -34,8 +32,8 @@ public class ActualRacesRelayTest extends AbstractRaceTest {
     protected void invokeMain(final String[] args) throws Exception {
 
         try {
-            Race individual_race = RelayRaceFactory.makeIndividualRace(Path.of(args[0]));
-            individual_race.processResults();
+            Race relay_race = RelayRaceFactory.makeRelayRace(Path.of(args[0]));
+            relay_race.processResults();
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());
@@ -46,7 +44,6 @@ public class ActualRacesRelayTest extends AbstractRaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
-    @Disabled
     void devilsBurdens2020() throws Exception {
         testExpectedCompletion("actual_races/relay_race/devils_burdens/2020");
     }

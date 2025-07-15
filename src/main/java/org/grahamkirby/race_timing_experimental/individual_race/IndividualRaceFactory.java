@@ -36,7 +36,7 @@ public class IndividualRaceFactory {
         race.setResultsCalculator(new IndividualRaceResultsCalculatorImpl());
         race.setResultsOutput(new IndividualRaceResultsOutput());
 
-        race.completeConfiguration();
+//        race.completeConfiguration();
 
         return race;
     }

@@ -50,7 +50,7 @@ public class LegResult extends SingleRaceResult {
         return !dnf;
     }
 
-    protected String getParticipantName() {
+    public String getParticipantName() {
         return ((Team) entry.participant).runner_names.get(leg_number - 1);
     }
 }

@@ -46,11 +46,13 @@ public class CommonRace implements Race {
         this.config_file_path = config_file_path;
     }
 
-    @Override
-    public void completeConfiguration() {
+    private void completeConfiguration() {
 
 //        config = config_processor.loadConfig(config_file_path);
-        normalisation = new Normalisation(this);
+
+        if (specific != null) {
+            specific.completeConfiguration();
+        }
     }
 
     public Config getConfig() {
@@ -58,7 +60,10 @@ public class CommonRace implements Race {
     }
 
     @Override
-    public Normalisation getNormalisation() {
+    public synchronized Normalisation getNormalisation() {
+        if (normalisation == null) {
+            normalisation = new Normalisation(this);
+        }
         return normalisation;
     }
 
@@ -90,6 +95,7 @@ public class CommonRace implements Race {
 
         category_details = categories_processor.getCategoryDetails();
         race_data = race_data_processor.getRaceData();
+        completeConfiguration();
         results_calculator.calculateResults();
 
         results_output.outputResults();

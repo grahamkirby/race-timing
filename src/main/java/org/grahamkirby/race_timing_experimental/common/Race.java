@@ -23,7 +23,7 @@ import java.nio.file.Path;
 
 public interface Race {
 
-    void completeConfiguration();
+//    void completeConfiguration();
 
     void setResultsOutput(ResultsOutput results_output);
 

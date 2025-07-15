@@ -20,8 +20,6 @@ package org.grahamkirby.race_timing_experimental.relay_race;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-
-import org.grahamkirby.race_timing.relay_race.RelayRaceEntry;
 import org.grahamkirby.race_timing_experimental.common.*;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV;
 
@@ -160,6 +158,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private void fillLegResultDetails(final RaceResult result) {
 
+        int b = ((RelayRaceResult)result).entry.bib_number;
         for (int leg_index = 0; leg_index < race_impl.getNumberOfLegs(); leg_index++)
             fillLegResultDetails(((RelayRaceResult) result).leg_results, leg_index);
     }
@@ -272,9 +271,9 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         List<RawResult> raw_results = race.getRaceData().getRawResults();
         for (int i = 0; i < raw_results.size(); i++) {
 
-            final boolean last_electronically_recorded_result = i == race_impl.getNumberOfRawResults() - 1;
+            final boolean last_electronically_recorded_result = i == ((RelayRaceDataImpl)race.getRaceData()).number_of_raw_results - 1;
 
-            if (last_electronically_recorded_result && race_impl.getNumberOfRawResults() < raw_results.size())
+            if (last_electronically_recorded_result && ((RelayRaceDataImpl)race.getRaceData()).number_of_raw_results < raw_results.size())
                 raw_results.get(i).appendComment("Remaining times from paper recording sheet only.");
         }
     }
@@ -438,9 +437,8 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         return List.of(
             ignoreIfBothResultsAreDNF(penaliseDNF(RelayRaceResultsCalculatorImpl::comparePerformance)),
-            ignoreIfEitherResultIsDNF(this::compareRecordedPosition),
-            RelayRaceResultsCalculatorImpl::compareRunnerLastName,
-            RelayRaceResultsCalculatorImpl::compareRunnerFirstName);
+//            ignoreIfEitherResultIsDNF(this::compareRecordedPosition),
+            RelayRaceResultsCalculatorImpl::compareTeamName);
     }
 
     /** Compares the given results on the basis of their finish positions. */
@@ -468,16 +466,10 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return r1.comparePerformanceTo(r2);
     }
 
-    /** Compares two results based on alphabetical ordering of the runners' first names. */
-    protected static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+    /** Compares two results based on alphabetical ordering of the team name. */
+    protected static int compareTeamName(final RaceResult r1, final RaceResult r2) {
 
-        return Normalisation.getFirstName(r1.getParticipant().name).compareTo(Normalisation.getFirstName(r2.getParticipant().name));
-    }
-
-    /** Compares two results based on alphabetical ordering of the runners' last names. */
-    protected static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
-
-        return Normalisation.getLastName(r1.getParticipant().name).compareTo(Normalisation.getLastName(r2.getParticipant().name));
+        return r1.getParticipantName().compareToIgnoreCase(r2.getParticipantName());
     }
 
     protected static Comparator<RaceResult> penaliseDNF(final Comparator<? super RaceResult> base_comparator) {
@@ -537,8 +529,9 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     public boolean areEqualPositionsAllowed() {
 
-        // No dead heats for overall results, since an ordering is imposed at the finish.
-        return false;
+        // Dead heats allowed in overall results. Although an ordering is imposed at the finish,
+        // this can't be relied on due to mass starts.
+        return true;
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so

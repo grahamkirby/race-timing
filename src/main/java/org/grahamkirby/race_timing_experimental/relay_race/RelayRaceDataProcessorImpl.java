@@ -30,6 +30,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
@@ -49,13 +51,8 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         annotations_path = (Path) race.getConfig().get(KEY_ANNOTATIONS_PATH);
     }
 
-    public void completeConfiguration() {
-
-    }
-
     private Path paper_results_path, annotations_path;
-    private int number_of_raw_results;
-    Map<RawResult, Integer> explicitly_recorded_leg_numbers;
+    private Map<RawResult, Integer> explicitly_recorded_leg_numbers;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,12 +63,16 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
 
         try {
-            return new RelayRaceDataImpl(loadRawResults(raw_results_path), loadEntries(entries_path), explicitly_recorded_leg_numbers);
+            return new RelayRaceDataImpl(loadRawResults(raw_results_path), loadEntries(entries_path), explicitly_recorded_leg_numbers, number_of_raw_results);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private int number_of_raw_results;
+    int getNumberOfRawResults() {
+        return number_of_raw_results;
+    }
     public List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
 
         // Need to copy into a mutable list.
@@ -81,7 +82,40 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         if (paper_results_path != null)
             raw_results.addAll(loadRawResults(paper_results_path));
 
+        loadTimeAnnotations(raw_results);
         return raw_results;
+    }
+
+    void loadTimeAnnotations(final List<? extends RawResult> raw_results) throws IOException {
+
+        if (annotations_path != null) {
+
+            final List<String> lines = Files.readAllLines(annotations_path);
+
+            // Skip header line.
+            for (int line_index = 1; line_index < lines.size(); line_index++) {
+
+                final String[] elements = lines.get(line_index).split("\t");
+
+                // May add insertion option later.
+                if (elements[0].equals("Update"))
+                    updateResult(raw_results, elements);
+            }
+        }
+    }
+
+    private static void updateResult(final List<? extends RawResult> raw_results, final String[] elements) {
+
+        final int position = Integer.parseInt(elements[1]);
+        final RawResult raw_result = raw_results.get(position - 1);
+
+        if (elements[2].equals("?")) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
+        else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
+
+        if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);
+        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(parseTime(elements[3]));
+
+        if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
     }
 
     protected List<RawResult> loadRawResults2(final Path raw_results_path) throws IOException {
@@ -143,7 +177,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
             return new RaceEntry(participant, bib_number, race);
 
-        } catch (final RuntimeException _) {
+        } catch (final RuntimeException e) {
             throw new RuntimeException(String.join(" ", elements));
         }
     }

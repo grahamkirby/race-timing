@@ -26,7 +26,7 @@ import java.nio.file.Path;
 
 public class RelayRaceFactory {
 
-    public static Race makeIndividualRace(final Path config_file_path) throws IOException {
+    public static Race makeRelayRace(final Path config_file_path) throws IOException {
 
         Race race = new CommonRace(config_file_path);
 
@@ -37,7 +37,7 @@ public class RelayRaceFactory {
         race.setResultsCalculator(new RelayRaceResultsCalculatorImpl());
         race.setResultsOutput(new RelayRaceResultsOutput());
 
-        race.completeConfiguration();
+//        race.completeConfiguration();
 
         return race;
     }

@@ -247,14 +247,18 @@ public class Normalisation {
             collect(Collectors.joining(" "));
     }
 
-    /** Gets the first element of the array resulting from splitting the given name on the space character. */
-    public static String getFirstName(final String name) {
-        return name.split(" ")[0];
+    /** Gets the first name of the given runner, or of the first runner if it's a pair. */
+    public static String getFirstNameOfFirstRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return runner.split(" ")[0];
     }
 
-    /** Gets the last element of the array resulting from splitting the given name on the space character. */
-    public static String getLastName(final String name) {
-        return Arrays.stream(name.split(" ")).toList().getLast();
+    /** Gets the last name of the given runner, or of the first runner if it's a pair. */
+    public static String getLastNameOfFirstRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return Arrays.stream(runner.split(" ")).toList().getLast();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

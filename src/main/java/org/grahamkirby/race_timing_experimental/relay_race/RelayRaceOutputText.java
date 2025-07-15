@@ -270,7 +270,7 @@ public class RelayRaceOutputText {
     }
 
     private void printLegNumber(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
-        Map<RawResult, Integer> explicitly_recorded_leg_numbers = ((RelayRaceDataProcessorImpl)race.getRaceData()).explicitly_recorded_leg_numbers;
+        Map<RawResult, Integer> explicitly_recorded_leg_numbers = ((RelayRaceDataImpl)race.getRaceData()).explicitly_recorded_leg_numbers;
 
         if (explicitly_recorded_leg_numbers.containsKey(raw_result)) {
 //            if (raw_result.getLegNumber() > 0) {
@@ -284,7 +284,7 @@ public class RelayRaceOutputText {
     }
 
     private  void printComment(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
-        Map<RawResult, Integer> explicitly_recorded_leg_numbers = ((RelayRaceDataProcessorImpl)race.getRaceData()).explicitly_recorded_leg_numbers;
+        Map<RawResult, Integer> explicitly_recorded_leg_numbers = ((RelayRaceDataImpl)race.getRaceData()).explicitly_recorded_leg_numbers;
 
         if (!raw_result.getComment().isEmpty()) {
 
@@ -344,7 +344,7 @@ public class RelayRaceOutputText {
         public void printResult(final RaceResult r) throws IOException {
             RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{renderDuration(result)}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result)}\n");
         }
     }
 }

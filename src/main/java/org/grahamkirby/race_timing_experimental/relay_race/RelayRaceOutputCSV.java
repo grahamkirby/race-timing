@@ -43,7 +43,7 @@ public class RelayRaceOutputCSV {
     public static final String DNF_STRING = "DNF";
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
-    static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
+    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
     private final Race race;
 
     RelayRaceOutputCSV(final Race race) {
@@ -51,7 +51,7 @@ public class RelayRaceOutputCSV {
     }
 
     public String getResultsHeader() {
-        return OVERALL_RESULTS_HEADER;
+        return STR."\{OVERALL_RESULTS_HEADER}Total\{LINE_SEPARATOR}";
     }
 
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {

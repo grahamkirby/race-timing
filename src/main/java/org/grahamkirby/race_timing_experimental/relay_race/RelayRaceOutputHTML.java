@@ -18,10 +18,10 @@
 package org.grahamkirby.race_timing_experimental.relay_race;
 
 
-import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing_experimental.common.*;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualResultPrinterHTML;
 
@@ -54,7 +54,6 @@ public class RelayRaceOutputHTML {
     RelayRaceOutputHTML(final Race race) {
         this.race = race;
     }
-
 
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
         return new OverallResultPrinter(race, writer);
@@ -92,6 +91,15 @@ public class RelayRaceOutputHTML {
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             printResults(writer, getOverallResultPrinter(writer));
+
+            writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
+            printDetailedResults(writer);
+
+            for (int leg_number = 1; leg_number <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg_number++) {
+
+                writer.append(STR."<p></p>\{LINE_SEPARATOR}<h4>Leg \{leg_number} Results</h4>\{LINE_SEPARATOR}");
+                printLegResults(writer, leg_number);
+            }
         }
     }
 
@@ -275,7 +283,7 @@ public class RelayRaceOutputHTML {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            return List.of("Pos", "No", "Runner", "Club", "Category", "Time");
+            return List.of("Pos", "No", "Team", "Category", "Total");
         }
 
         @Override
@@ -432,7 +440,9 @@ public class RelayRaceOutputHTML {
 
             RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result)}</li>\n");
+            writer.append(STR."""
+                    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result)}</li>
+                """);
         }
 
         @Override

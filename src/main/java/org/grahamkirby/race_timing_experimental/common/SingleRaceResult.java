@@ -38,7 +38,7 @@ public class SingleRaceResult extends RaceResult {
     }
 
     @Override
-    protected String getParticipantName() {
+    public String getParticipantName() {
 
         return entry.participant.name;
     }

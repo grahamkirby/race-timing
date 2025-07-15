@@ -17,11 +17,9 @@
  */
 package org.grahamkirby.race_timing_experimental.relay_race;
 
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Team;
-import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceResult;
-import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
-import org.grahamkirby.race_timing_experimental.common.SpecificRace;
+import org.grahamkirby.race_timing_experimental.common.*;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsCalculatorImpl;
 
 import java.time.Duration;
@@ -32,6 +30,7 @@ import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 import static org.grahamkirby.race_timing_experimental.relay_race.RelayRaceResultsCalculatorImpl.*;
@@ -39,13 +38,19 @@ import static org.grahamkirby.race_timing_experimental.relay_race.RelayRaceResul
 public class RelayRaceImpl implements SpecificRace {
 
     private Race race;
+    private Map<Integer, Integer> legs_finished_per_team;
 
     public void setRace(Race race) {
         this.race = race;
 
+    }
+
+    @Override
+    public void completeConfiguration() {
         configureIndividualLegStarts();
         configureMassStarts();
         configurePairedLegs();
+        configureLegsFinishedPerTeam();
     }
 
     List<LegResult> getLegResults(final int leg_number) {
@@ -71,7 +76,19 @@ public class RelayRaceImpl implements SpecificRace {
                 this::compareRecordedLegPosition) :
             List.of(
                 ignoreIfBothResultsAreDNF(penaliseDNF(IndividualRaceResultsCalculatorImpl::comparePerformance)),
-                IndividualRaceResultsCalculatorImpl::compareRunnerLastName, IndividualRaceResultsCalculatorImpl::compareRunnerFirstName);
+                RelayRaceImpl::compareLastNameOfFirstRunner, RelayRaceImpl::compareFirstNameOfFirstRunner);
+    }
+
+    /** Compares two results based on alphabetical ordering of the runners' first names. */
+    protected static int compareFirstNameOfFirstRunner(final RaceResult r1, final RaceResult r2) {
+
+        return Normalisation.getFirstNameOfFirstRunner(r1.getParticipantName()).compareTo(Normalisation.getFirstNameOfFirstRunner(r2.getParticipantName()));
+    }
+
+    /** Compares two results based on alphabetical ordering of the runners' last names. */
+    protected static int compareLastNameOfFirstRunner(final RaceResult r1, final RaceResult r2) {
+
+        return Normalisation.getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(Normalisation.getLastNameOfFirstRunner(r2.getParticipantName()));
     }
 
     private int compareRecordedLegPosition(final RaceResult r1, final RaceResult r2) {
@@ -153,15 +170,46 @@ public class RelayRaceImpl implements SpecificRace {
 
 
     public Map<Integer, Integer> countLegsFinishedPerTeam() {
-        return null;
+        return legs_finished_per_team;
     }
 
-    public List<Integer> getBibNumbersWithMissingTimes(Map<Integer, Integer> legsFinishedPerTeam) {
-        return null;
+    private void configureLegsFinishedPerTeam() {
+
+        final Map<Integer, Integer> legs_finished_map = new HashMap<>();
+
+        for (final RawResult result : race.getRaceData().getRawResults())
+            legs_finished_map.merge(result.getBibNumber(), 1, Integer::sum);
+
+        legs_finished_per_team = legs_finished_map;
     }
 
-    public List<Duration> getTimesWithMissingBibNumbers() {
-        return null;
+    List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
+
+        return race.getRaceData().getEntries().stream().
+            flatMap(entry -> getBibNumbersWithMissingTimes(leg_finished_count, entry)).
+            sorted().
+            toList();
+    }
+    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final RaceEntry entry) {
+
+        final int bib_number = entry.bib_number;
+        final int number_of_legs_unfinished = ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs() - leg_finished_count.getOrDefault(bib_number, 0);
+
+        return Stream.generate(() -> bib_number).limit(number_of_legs_unfinished);
+    }
+
+
+    List<Duration> getTimesWithMissingBibNumbers() {
+
+        final List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
+
+        for (final RawResult raw_result : race.getRaceData().getRawResults()) {
+
+            if (raw_result.getBibNumber() == UNKNOWN_BIB_NUMBER)
+                times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());
+        }
+
+        return times_with_missing_bib_numbers;
     }
 
     /** Packages details of an individually recorded leg start (unusual). */
@@ -305,10 +353,6 @@ public class RelayRaceImpl implements SpecificRace {
         final Duration start_time = parseTime(split[2]);
 
         return new IndividualStart(bib_number, leg_number, start_time);
-    }
-
-    int getNumberOfRawResults() {
-        return 0;
     }
 
     /**
