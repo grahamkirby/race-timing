@@ -266,13 +266,13 @@ public class RelayRace extends TimedRace {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+    public final Collection<Integer> bib_numbers_seen = new HashSet<>();
 
     private void initialiseResults() {
 
-        final Collection<Integer> bib_numbers_seen = new HashSet<>();
 
         overall_results = raw_results.stream().
-            filter(raw_result -> raw_result.getBibNumber() != 0).
+            filter(raw_result -> raw_result.getBibNumber() != UNKNOWN_BIB_NUMBER).
             filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
             map(this::makeResult).
             toList();
@@ -282,7 +282,8 @@ public class RelayRace extends TimedRace {
 
     private RaceResult makeResult(final RawResult raw_result) {
 
-        final RelayRaceEntry entry = (RelayRaceEntry) getEntryWithBibNumber(raw_result.getBibNumber());
+        int bib_number = raw_result.getBibNumber();
+        final RelayRaceEntry entry = (RelayRaceEntry) getEntryWithBibNumber(bib_number);
         return new RelayRaceResult(entry, this);
     }
 
@@ -490,15 +491,17 @@ public class RelayRace extends TimedRace {
     }
 
     private void recordLegResults() {
-
+result_count = 0;
         raw_results.stream().
             filter(result -> result.getBibNumber() != UNKNOWN_BIB_NUMBER).
             forEachOrdered(result -> recordLegResult((RelayRaceRawResult) result));
     }
-
+int result_count;
     private void recordLegResult(final RelayRaceRawResult raw_result) {
+        result_count++;
 
-        final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
+        int bib_number = raw_result.getBibNumber();
+        final int team_index = findIndexOfTeamWithBibNumber(bib_number);
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(team_index);
 
         final int leg_index = findIndexOfNextUnfilledLegResult(result.leg_results);
@@ -512,6 +515,7 @@ public class RelayRace extends TimedRace {
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
         leg_result.dnf = false;
+
     }
 
     private void sortLegResults() {

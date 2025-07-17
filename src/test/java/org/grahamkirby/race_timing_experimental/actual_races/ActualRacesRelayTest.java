@@ -49,7 +49,6 @@ public class ActualRacesRelayTest extends AbstractRaceTest {
     }
 
     @Test
-    @Disabled
     void devilsBurdens2024() throws Exception {
         testExpectedCompletion("actual_races/relay_race/devils_burdens/2024");
     }

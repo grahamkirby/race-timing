@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 @SuppressWarnings("preview")
@@ -59,11 +60,41 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
 
             final Properties properties = loadProperties(config_file_path);
 
-            config_values.put(KEY_YEAR, properties.getProperty(KEY_YEAR));
-            config_values.put(KEY_RACE_NAME_FOR_RESULTS, properties.getProperty(KEY_RACE_NAME_FOR_RESULTS));
-            config_values.put(KEY_RACE_NAME_FOR_FILENAMES, properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES));
-            config_values.put(KEY_CATEGORIES_ENTRY_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CATEGORIES_ENTRY_PATH))));
-            config_values.put(KEY_CATEGORIES_PRIZE_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CATEGORIES_PRIZE_PATH))));
+            String year = properties.getProperty(KEY_YEAR);
+            if (year == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_YEAR}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_YEAR, year);
+
+            String race_name_for_results = properties.getProperty(KEY_RACE_NAME_FOR_RESULTS);
+            if (race_name_for_results == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_RACE_NAME_FOR_RESULTS}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_RACE_NAME_FOR_RESULTS, race_name_for_results);
+
+            String race_name_for_filenames = properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES);
+            if (race_name_for_filenames == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_RACE_NAME_FOR_FILENAMES}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_RACE_NAME_FOR_FILENAMES, race_name_for_filenames);
+
+            String entry_categories_path = properties.getProperty(KEY_ENTRY_CATEGORIES_PATH);
+            if (entry_categories_path == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_ENTRY_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_ENTRY_CATEGORIES_PATH, race.interpretPath(Path.of(entry_categories_path)));
+
+
+
+
+
+
+
+
+
+            String prize_categories_path = properties.getProperty(KEY_PRIZE_CATEGORIES_PATH);
+            if (prize_categories_path == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_PRIZE_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_PRIZE_CATEGORIES_PATH, race.interpretPath(Path.of(prize_categories_path)));
+
+
+
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
@@ -107,10 +138,31 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             final String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
             if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.interpretPath(Path.of(category_map_path)));
 
+            validateDNFRecords(config_values, config_file_path);
+
             return new ConfigImpl(config_values);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+
+
+    private void validateDNFRecords(Map<String, Object> config_values, Path config_file_path) {
+
+        final String dnf_string = (String) config_values.get(KEY_DNF_FINISHERS);
+
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String bib_number : dnf_string.split(",")) {
+                try {
+                    Integer.parseInt(bib_number);
+
+                } catch (final NumberFormatException e) {
+                    throw new RuntimeException(STR."invalid entry '\{bib_number}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'", e);
+                }
+            }
+    }
+
+
 }

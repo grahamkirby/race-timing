@@ -22,9 +22,7 @@ import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 
@@ -39,7 +37,7 @@ class RelayRaceMissingData {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final int HALF_A_SECOND_IN_NANOSECONDS = 500000000;
+    private static final int HALF_A_SECOND_IN_NANOSECONDS = 500_000_000;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,8 +76,21 @@ class RelayRaceMissingData {
 
     private boolean areTimesRecordedForAllRunners() {
 
-        return race.getRaceData().getRawResults().size() == race.getRaceData().getEntries().size() * race_impl.getNumberOfLegs();
+        int size = race.getRaceData().getRawResults().size();
+        int size1 = numberOfUniqueBibNumbersRecorded();
+        int numberOfLegs = race_impl.getNumberOfLegs();
+        return size == size1 * numberOfLegs;
     }
+
+    private int numberOfUniqueBibNumbersRecorded() {
+
+        return getUniqueBibNumbersRecorded().size();
+    }
+
+    private Set<Integer> getUniqueBibNumbersRecorded() {
+        return((RelayRaceImpl)race.getSpecific()).getUniqueBibNumbersRecorded();
+    }
+
 
     private int getIndexOfFirstResultWithRecordedTime() {
 
@@ -236,7 +247,9 @@ class RelayRaceMissingData {
 
     private List<TeamSummaryAtPosition> summarise(final int position) {
 
-        return new ArrayList<>(race.getRaceData().getEntries().stream().map(entry -> summarise(position, entry.bib_number)).toList());
+        return new ArrayList<>(getUniqueBibNumbersRecorded().stream().map(bib_number -> summarise(position, bib_number)).toList());
+
+//        return new ArrayList<>(race.getRaceData().getEntries().stream().map(entry -> summarise(position, entry.bib_number)).toList());
     }
 
     private TeamSummaryAtPosition summarise(final int position, final int bib_number) {

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 @SuppressWarnings("preview")
@@ -60,14 +61,18 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             config_values.put(KEY_YEAR, properties.getProperty(KEY_YEAR));
             config_values.put(KEY_RACE_NAME_FOR_RESULTS, properties.getProperty(KEY_RACE_NAME_FOR_RESULTS));
             config_values.put(KEY_RACE_NAME_FOR_FILENAMES, properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES));
-            config_values.put(KEY_CATEGORIES_ENTRY_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CATEGORIES_ENTRY_PATH))));
-            config_values.put(KEY_CATEGORIES_PRIZE_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CATEGORIES_PRIZE_PATH))));
+            config_values.put(KEY_ENTRY_CATEGORIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ENTRY_CATEGORIES_PATH))));
+            config_values.put(KEY_PRIZE_CATEGORIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_PRIZE_CATEGORIES_PATH))));
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
 
             config_values.put(KEY_ENTRIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ENTRIES_PATH))));
             config_values.put(KEY_RAW_RESULTS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH))));
+            if (properties.getProperty(KEY_PAPER_RESULTS_PATH) != null)
+                config_values.put(KEY_PAPER_RESULTS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_PAPER_RESULTS_PATH))));
+            if (properties.getProperty(KEY_ANNOTATIONS_PATH) != null)
+                config_values.put(KEY_ANNOTATIONS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ANNOTATIONS_PATH))));
 
             if (properties.getProperty(KEY_RESULTS_PATH) != null)
                 config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));
@@ -108,16 +113,37 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             config_values.put(KEY_NUMBER_OF_LEGS, Integer.parseInt(properties.getProperty(KEY_NUMBER_OF_LEGS)));
             config_values.put(KEY_PAIRED_LEGS, properties.getProperty(KEY_PAIRED_LEGS));
             config_values.put(KEY_MASS_START_ELAPSED_TIMES, properties.getProperty(KEY_MASS_START_ELAPSED_TIMES));
+            config_values.put(KEY_INDIVIDUAL_LEG_STARTS, properties.getProperty(KEY_INDIVIDUAL_LEG_STARTS));
 
             if (properties.getProperty(KEY_START_OFFSET) != null)
                 config_values.put(KEY_START_OFFSET, Normalisation.parseTime(properties.getProperty(KEY_START_OFFSET)));
             else
                 config_values.put(KEY_START_OFFSET, Duration.ZERO);
 
+            validateDNFRecords(config_values, config_file_path);
+
             return new ConfigImpl(config_values);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void validateDNFRecords(Map<String, Object> config_values, Path config_file_path) {
+
+        final String dnf_string = (String) config_values.get(KEY_DNF_FINISHERS);
+
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(","))
+                try {
+                    // String of form "bib-number/leg-number"
+
+                    final String[] elements = individual_dnf_string.split("/");
+                    Integer.parseInt(elements[0]);
+                    Integer.parseInt(elements[1]);
+
+                } catch (final NumberFormatException _) {
+                    throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
+                }
     }
 }

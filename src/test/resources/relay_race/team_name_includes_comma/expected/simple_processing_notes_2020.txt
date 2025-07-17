@@ -1,6 +1,0 @@
-
-Discrepancies:
--------------
-
-Bib numbers with missing times: 114, 114, 114, 114
-

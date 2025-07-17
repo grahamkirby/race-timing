@@ -1,5 +1,0 @@
-
-Discrepancies:
--------------
-
-Bib numbers with missing times: 1, 1, 1, 1

@@ -89,7 +89,7 @@ public abstract class AbstractRaceTest {
         setLoggingLevel(DEBUG ? Level.INFO : Level.WARNING);
     }
 
-    Path config_file_path;
+    protected Path config_file_path;
     private Path resources_input_directory;
 
     // Clean-up handled explicitly in tearDown().
@@ -107,7 +107,7 @@ public abstract class AbstractRaceTest {
 
     protected abstract void invokeMain(String[] args) throws Exception;
 
-    String getFileNameForPathProperty(final String property_key) {
+    protected String getFileNameForPathProperty(final String property_key) {
         return Path.of(properties.getProperty(property_key)).getFileName().toString();
     }
 
@@ -175,13 +175,13 @@ public abstract class AbstractRaceTest {
         failed_test = false;
     }
 
-    void testExpectedErrorMessage(final String individual_test_resource_root, final Supplier<String> get_expected_error_message) throws Exception {
+    protected void testExpectedErrorMessage(final String individual_test_resource_root, final Supplier<String> get_expected_error_message) throws Exception {
 
         configureTest(individual_test_resource_root);
         testExpectedErrorMessage(new String[]{config_file_path.toString()}, get_expected_error_message);
     }
 
-    void testExpectedErrorMessage(final String[] args, final Supplier<String> get_expected_error_message) throws Exception {
+    protected void testExpectedErrorMessage(final String[] args, final Supplier<String> get_expected_error_message) throws Exception {
 
         final String error_output;
 

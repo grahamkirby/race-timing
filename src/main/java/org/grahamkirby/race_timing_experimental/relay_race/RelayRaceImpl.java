@@ -170,29 +170,44 @@ public class RelayRaceImpl implements SpecificRace {
 
 
     public Map<Integer, Integer> countLegsFinishedPerTeam() {
-        return legs_finished_per_team;
-    }
-
-    private void configureLegsFinishedPerTeam() {
+//        return legs_finished_per_team;
 
         final Map<Integer, Integer> legs_finished_map = new HashMap<>();
 
         for (final RawResult result : race.getRaceData().getRawResults())
             legs_finished_map.merge(result.getBibNumber(), 1, Integer::sum);
 
-        legs_finished_per_team = legs_finished_map;
+        return legs_finished_map;
+
+    }
+
+    private void configureLegsFinishedPerTeam() {
+
+//        final Map<Integer, Integer> legs_finished_map = new HashMap<>();
+//
+//        for (final RawResult result : race.getRaceData().getRawResults())
+//            legs_finished_map.merge(result.getBibNumber(), 1, Integer::sum);
+//
+//        legs_finished_per_team = legs_finished_map;
     }
 
     List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
 
-        return race.getRaceData().getEntries().stream().
-            flatMap(entry -> getBibNumbersWithMissingTimes(leg_finished_count, entry)).
+        return getUniqueBibNumbersRecorded().stream().
+            flatMap(bib_number -> getBibNumbersWithMissingTimes(leg_finished_count, bib_number)).
             sorted().
             toList();
     }
-    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final RaceEntry entry) {
+    public Set<Integer> getUniqueBibNumbersRecorded() {
+        final Set<Integer> bib_numbers_recorded = new HashSet<>();
+        for (RawResult result : race.getRaceData().getRawResults())
+            bib_numbers_recorded.add(result.getBibNumber());
+        bib_numbers_recorded.remove(UNKNOWN_BIB_NUMBER);
+        return bib_numbers_recorded;
+    }
+    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final int bib_number) {
 
-        final int bib_number = entry.bib_number;
+//        final int bib_number = entry.bib_number;
         final int number_of_legs_unfinished = ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs() - leg_finished_count.getOrDefault(bib_number, 0);
 
         return Stream.generate(() -> bib_number).limit(number_of_legs_unfinished);

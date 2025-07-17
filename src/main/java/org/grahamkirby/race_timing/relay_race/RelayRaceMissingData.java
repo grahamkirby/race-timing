@@ -21,9 +21,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.RawResult;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 
@@ -75,7 +73,19 @@ class RelayRaceMissingData {
 
     private boolean areTimesRecordedForAllRunners() {
 
-        return race.getRawResults().size() == race.entries.size() * race.getNumberOfLegs();
+        int size = race.getRawResults().size();
+        int size2 = race.entries.size();
+        int size1 = numberOfUniqueBibNumbersRecorded();
+        return size == size1 * race.getNumberOfLegs();
+    }
+
+    private int numberOfUniqueBibNumbersRecorded() {
+
+        final Set<Integer> bib_numbers_recorded = new HashSet<>();
+        for (RawResult result : race.getRawResults())
+            bib_numbers_recorded.add(result.getBibNumber());
+        bib_numbers_recorded.remove(UNKNOWN_BIB_NUMBER);
+        return bib_numbers_recorded.size();
     }
 
     private int getIndexOfFirstResultWithRecordedTime() {
@@ -233,7 +243,8 @@ class RelayRaceMissingData {
 
     private List<TeamSummaryAtPosition> summarise(final int position) {
 
-        return new ArrayList<>(race.entries.stream().map(entry -> summarise(position, entry.bib_number)).toList());
+        return new ArrayList<>(race.bib_numbers_seen.stream().map(bib_number -> summarise(position, bib_number)).toList());
+//        return new ArrayList<>(race.entries.stream().map(entry -> summarise(position, entry.bib_number)).toList());
     }
 
     private TeamSummaryAtPosition summarise(final int position, final int bib_number) {

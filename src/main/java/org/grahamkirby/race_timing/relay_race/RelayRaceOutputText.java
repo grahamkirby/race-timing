@@ -153,15 +153,14 @@ class RelayRaceOutputText extends RaceOutputText {
 
     private List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
 
-        return ((TimedRace) race).entries.stream().
+        return ((RelayRace)race).bib_numbers_seen.stream().
             flatMap(entry -> getBibNumbersWithMissingTimes(leg_finished_count, entry)).
             sorted().
             toList();
     }
 
-    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final SingleRaceEntry entry) {
+    private Stream<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count, final int bib_number) {
 
-        final int bib_number = entry.bib_number;
         final int number_of_legs_unfinished = ((RelayRace) race).getNumberOfLegs() - leg_finished_count.getOrDefault(bib_number, 0);
 
         return Stream.generate(() -> bib_number).limit(number_of_legs_unfinished);

@@ -26,7 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_ENTRIES_PATH;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RAW_RESULTS_PATH;
@@ -47,9 +50,15 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
         Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
         Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
+
+        validateEntryCategories(entries_path);
         try {
-            return new RaceDataImpl(loadRawResults(raw_results_path),
-                loadEntries(entries_path));
+            List<RawResult> raw_results = loadRawResults(raw_results_path);
+            List<RaceEntry> entries = loadEntries(entries_path);
+
+            validateBibNumbersHaveCorrespondingEntry(raw_results, entries, raw_results_path);
+
+            return new RaceDataImpl(raw_results, entries);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,6 +76,40 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
     protected RawResult makeRawResult(final String line) {
 
         return new RawResult(line);
+    }
+
+    protected void validateBibNumbersHaveCorrespondingEntry(List<RawResult> raw_results, List<RaceEntry> entries, Path raw_results_path) {
+
+        final Set<Integer> entered_bib_numbers = entries.stream().
+            map(entry -> entry.bib_number).
+            collect(Collectors.toSet());
+
+        raw_results.forEach(result -> {
+                final int bib_number = result.getBibNumber();
+                if (!entered_bib_numbers.contains(bib_number))
+                    throw new RuntimeException(STR."invalid bib number '\{bib_number}' in file '\{raw_results_path.getFileName()}'");
+            });
+    }
+
+    private void validateEntryCategories(Path entries_path) {
+
+        try {
+            final AtomicInteger counter = new AtomicInteger(0);
+
+            Files.readAllLines(entries_path).stream().
+                map(SingleRaceInput::stripEntryComment).
+                filter(Predicate.not(String::isBlank)).
+                forEach(line -> {
+                    try {
+                        counter.incrementAndGet();
+                        new RaceEntry(Arrays.stream(line.split("\t")).toList(), race);
+                    } catch (final RuntimeException e) {
+                        throw new RuntimeException(STR."invalid entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path.getFileName()}'", e);
+                    }
+                });
+        } catch (final IOException _) {
+            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
+        }
     }
 
     private static String getBibNumber(final String line){

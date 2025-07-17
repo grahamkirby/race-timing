@@ -80,7 +80,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         number_of_raw_results = raw_results.size();
 
         if (paper_results_path != null)
-            raw_results.addAll(loadRawResults(paper_results_path));
+            raw_results.addAll(loadRawResults2(paper_results_path));
 
         loadTimeAnnotations(raw_results);
         return raw_results;
