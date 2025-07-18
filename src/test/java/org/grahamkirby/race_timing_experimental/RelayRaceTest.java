@@ -342,21 +342,50 @@ public class RelayRaceTest extends AbstractRaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
-    @Disabled
-    void unregisteredTeam() throws Exception {
-        testExpectedErrorMessage("relay_race/unregistered_team", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    void illegalDNFTime() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_dnf_time", () -> STR."invalid entry 'XXX' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
     }
 
     @Test
-    @Disabled
+    void illegalMassStartTime() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_mass_start_time", () -> STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void illegalMassStartTimeOrder() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_mass_start_time_order", () -> STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+    }
+
+
+
+    @Test
+    void missingPropertyNumberOfLegs() throws Exception {
+        testExpectedErrorMessage("relay_race/missing_property_number_of_legs", () -> STR."no entry for key '\{KEY_NUMBER_OF_LEGS}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
+    void missingPropertyPairedLegs() throws Exception {
+        testExpectedErrorMessage("relay_race/missing_property_paired_legs", () -> STR."no entry for key '\{KEY_PAIRED_LEGS}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    @Test
     void duplicateTeamNumber() throws Exception {
         testExpectedErrorMessage("relay_race/duplicate_team_number", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
-    @Disabled
     void duplicateTeamName() throws Exception {
         testExpectedErrorMessage("relay_race/duplicate_team_name", () -> STR."duplicate entry 'Team 2' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void illegalCategory() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_category", () -> STR."invalid entry '3 Team 3 Men Senior Jackbruce Martin King & Leland Donaldson Neil MacDonald & Myles  Christie Hubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void illegalTeamComposition() throws Exception {
+        testExpectedErrorMessage("relay_race/illegal_team_composition", () -> STR."invalid entry '3\tTeam 3\tOS\tJackbruce\tNeil MacDonald & Myles  Christie\tHubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
@@ -366,38 +395,16 @@ public class RelayRaceTest extends AbstractRaceTest {
     }
 
     @Test
-    void illegalDNFTime() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_dnf_time", () -> STR."invalid entry 'XXX' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
+    @Disabled
+    void unregisteredTeam() throws Exception {
+        testExpectedErrorMessage("relay_race/unregistered_team", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
-    @Test
-    @Disabled
-    void illegalMassStartTime() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_mass_start_time", () -> STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
-    }
 
     @Test
     @Disabled
     void illegalRawTime() throws Exception {
         testExpectedErrorMessage("relay_race/illegal_raw_time", () -> STR."invalid record '3\tXXX' at line 13 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-    }
-
-    @Test
-    @Disabled
-    void illegalMassStartTimeOrder() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_mass_start_time_order", () -> STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    @Disabled
-    void illegalCategory() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_category", () -> STR."invalid entry '3 Team 3 Men Senior Jackbruce Martin King & Leland Donaldson Neil MacDonald & Myles  Christie Hubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    @Disabled
-    void illegalTeamComposition() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_team_composition", () -> STR."invalid entry '3\tTeam 3\tOS\tJackbruce\tNeil MacDonald & Myles  Christie\tHubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test
@@ -416,17 +423,5 @@ public class RelayRaceTest extends AbstractRaceTest {
     @Disabled
     void resultsOutOfOrderB() throws Exception {
         testExpectedErrorMessage("relay_race/results_out_of_order_b", () -> STR."result out of order at line 16 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-    }
-
-    @Test
-    @Disabled
-    void missingPropertyNumberOfLegs() throws Exception {
-        testExpectedErrorMessage("relay_race/missing_property_number_of_legs", () -> STR."no entry for key '\{KEY_NUMBER_OF_LEGS}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    @Disabled
-    void missingPropertyPairedLegs() throws Exception {
-        testExpectedErrorMessage("relay_race/missing_property_paired_legs", () -> STR."no entry for key '\{KEY_PAIRED_LEGS}' in file '\{config_file_path.getFileName()}'");
     }
 }

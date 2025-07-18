@@ -196,8 +196,10 @@ public class Normalisation {
         // space character, by grouping column numbers with a dash.
         // E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
 
-        // TODO update default column map to deal with relay races.
         final String entry_column_map_string = (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP);
+
+        // Column mapping not used for relay races, so may not be set.
+        if (entry_column_map_string == null) return Collections.emptyList();
 
         return Arrays.asList(entry_column_map_string.split(","));
     }

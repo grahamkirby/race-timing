@@ -17,15 +17,18 @@
  */
 package org.grahamkirby.race_timing_experimental.relay_race;
 
+import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
@@ -102,16 +105,20 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             else
                 config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
 
-            if (properties.getProperty(KEY_ENTRY_COLUMN_MAP) != null)
-                config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
-            else
-                config_values.put(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
+            config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
 
             final String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
             if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.interpretPath(Path.of(category_map_path)));
 
-            config_values.put(KEY_NUMBER_OF_LEGS, Integer.parseInt(properties.getProperty(KEY_NUMBER_OF_LEGS)));
-            config_values.put(KEY_PAIRED_LEGS, properties.getProperty(KEY_PAIRED_LEGS));
+            String number_of_legs = properties.getProperty(KEY_NUMBER_OF_LEGS);
+            if (number_of_legs == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_NUMBER_OF_LEGS}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_NUMBER_OF_LEGS, Integer.parseInt(number_of_legs));
+            String paired_legs = properties.getProperty(KEY_PAIRED_LEGS);
+            if (paired_legs == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_PAIRED_LEGS}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_PAIRED_LEGS, paired_legs);
+
             config_values.put(KEY_MASS_START_ELAPSED_TIMES, properties.getProperty(KEY_MASS_START_ELAPSED_TIMES));
             config_values.put(KEY_INDIVIDUAL_LEG_STARTS, properties.getProperty(KEY_INDIVIDUAL_LEG_STARTS));
 
@@ -121,6 +128,7 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_START_OFFSET, Duration.ZERO);
 
             validateDNFRecords(config_values, config_file_path);
+            validateMassStartTimes((String) config_values.get(KEY_MASS_START_ELAPSED_TIMES), config_file_path);
 
             return new ConfigImpl(config_values);
 
@@ -145,5 +153,27 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
                 } catch (final NumberFormatException _) {
                     throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
                 }
+    }
+
+    private void validateMassStartTimes(final String mass_start_elapsed_times, Path config_file_path) {
+
+        if (mass_start_elapsed_times != null) {
+
+            Duration previous_time = null;
+            for (final String time_string : mass_start_elapsed_times.split(",")) {
+
+                final Duration mass_start_time;
+                try {
+                    mass_start_time = parseTime(time_string);
+                } catch (final DateTimeParseException _) {
+                    throw new RuntimeException(STR."invalid mass start time for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                }
+
+                if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
+                    throw new RuntimeException(STR."invalid mass start time order for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+
+                previous_time = mass_start_time;
+            }
+        }
     }
 }

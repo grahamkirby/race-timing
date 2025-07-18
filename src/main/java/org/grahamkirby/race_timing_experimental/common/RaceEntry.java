@@ -68,8 +68,14 @@ public class RaceEntry {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RaceEntry entry && entry.bib_number == bib_number && entry.participant.equals(participant);
+    }
+
     @Override
     public String toString() {
-        return STR."\{participant.name}, \{((Runner)participant).club}";
+        return participant.toString();
     }
 }

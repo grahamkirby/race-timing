@@ -28,8 +28,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
@@ -59,14 +61,94 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
     @Override
     public RaceData getRaceData() {
 
-        Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
         Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
+        Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
 
         try {
-            return new RelayRaceDataImpl(loadRawResults(raw_results_path), loadEntries(entries_path), explicitly_recorded_leg_numbers, number_of_raw_results);
+
+            validateEntriesNumberOfElements(entries_path);
+            validateEntryCategories(entries_path);
+            validateBibNumbersUnique(entries_path);
+
+            List<RaceEntry> entries = loadEntries(entries_path);
+            List<RawResult> raw_results = loadRawResults(raw_results_path);
+
+            validateEntriesUnique(entries, entries_path);
+
+            return new RelayRaceDataImpl(entries, raw_results, explicitly_recorded_leg_numbers, number_of_raw_results);
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    private void validateBibNumbersUnique(final Path entries_path) {
+
+        try {
+            final Set<String> seen = new HashSet<>();
+
+            Files.readAllLines(entries_path).stream().
+                map(RelayRaceDataProcessorImpl::getBibNumber).
+                filter(bib_number -> !seen.add(bib_number)).
+                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number '\{bib_number}' in file '\{entries_path.getFileName()}'");});
+
+        } catch (final IOException _) {
+            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
+        }
+    }
+
+    protected int getNumberOfEntryColumns() {
+        return (int)race.getConfig().get(KEY_NUMBER_OF_LEGS) + 3;
+    }
+    private void validateEntriesNumberOfElements(final Path entries_path) {
+
+        final String entry_column_map_string = (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP);
+        final int number_of_columns = entry_column_map_string == null ? getNumberOfEntryColumns() : entry_column_map_string.split("[,\\-]").length;
+
+        try {
+            final AtomicInteger counter = new AtomicInteger(0);
+
+            Files.readAllLines(entries_path).stream().
+                map(SingleRaceInput::stripEntryComment).
+                filter(Predicate.not(String::isBlank)).
+                forEach(line -> {
+                    counter.incrementAndGet();
+                    if (line.split("\t").length != number_of_columns)
+                        throw new RuntimeException(STR."invalid entry '\{line}' at line \{counter.get()} in file '\{entries_path.getFileName()}'");
+                });
+        } catch (final IOException _) {
+            throw new RuntimeException(STR."unexpected invalid file: '\{entries_path}'");
+        }
+    }
+    private void validateEntryCategories(Path entries_path) {
+
+        try {
+            final AtomicInteger counter = new AtomicInteger(0);
+
+            Files.readAllLines(entries_path).stream().
+                map(SingleRaceInput::stripEntryComment).
+                filter(Predicate.not(String::isBlank)).
+                forEach(line -> {
+                    try {
+                        counter.incrementAndGet();
+                        makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList(), race);
+
+                    } catch (final RuntimeException e) {
+                        throw new RuntimeException(STR."invalid entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path.getFileName()}'", e);
+                    }
+                });
+        } catch (final IOException _) {
+            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
+        }
+    }
+
+
+    private void validateEntriesUnique(final List<RaceEntry> entries, Path entries_path) {
+
+        for (final RaceEntry entry1 : entries)
+            for (final RaceEntry entry2 : entries)
+                if (entry1.participant != entry2.participant && entry1.participant.equals(entry2.participant))
+                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{entries_path.getFileName()}'");
     }
 
     private int number_of_raw_results;

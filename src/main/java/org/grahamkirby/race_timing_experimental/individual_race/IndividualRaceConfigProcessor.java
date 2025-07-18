@@ -99,8 +99,14 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
 
-            config_values.put(KEY_ENTRIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ENTRIES_PATH))));
-            config_values.put(KEY_RAW_RESULTS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH))));
+            String entries_path = properties.getProperty(KEY_ENTRIES_PATH);
+            if (entries_path == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_ENTRIES_PATH}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_ENTRIES_PATH, race.interpretPath(Path.of(entries_path)));
+            String raw_results_path = properties.getProperty(KEY_RAW_RESULTS_PATH);
+            if (raw_results_path == null)
+                throw new RuntimeException(STR."no entry for key '\{KEY_RAW_RESULTS_PATH}' in file '\{config_file_path.getFileName()}'");
+            config_values.put(KEY_RAW_RESULTS_PATH, race.interpretPath(Path.of(raw_results_path)));
 
             if (properties.getProperty(KEY_RESULTS_PATH) != null)
                 config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));

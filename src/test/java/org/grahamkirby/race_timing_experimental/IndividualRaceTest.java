@@ -122,48 +122,23 @@ public class IndividualRaceTest extends AbstractRaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
-    @Disabled
-    void duplicateBibNumberEntered() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_bib_number_entered", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    void missingConfigFile() throws Exception {
+        testExpectedErrorMessage(NON_EXISTENT_CONFIG, () -> "missing config file: 'non-existent-config-file'");
     }
 
     @Test
-    @Disabled
-    void duplicateBibNumberRecorded() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_bib_number_recorded", () -> STR."duplicate bib number '3' at line 6 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    void missingPropertyEntriesPath() throws Exception {
+        testExpectedErrorMessage("individual_race/missing_property_entries_path", () -> STR."no entry for key '\{KEY_ENTRIES_PATH}' in file '\{config_file_path.getFileName()}'");
     }
 
     @Test
-    @Disabled
-    void duplicateRunner() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_runner", () -> STR."duplicate entry 'John Smith, Fife AC' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void invalidCategory() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_category", () -> STR."invalid entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    void missingPropertyRawResultsPath() throws Exception {
+        testExpectedErrorMessage("individual_race/missing_property_raw_results_path", () -> STR."no entry for key '\{KEY_RAW_RESULTS_PATH}' in file '\{config_file_path.getFileName()}'");
     }
 
     @Test
     void invalidDNF() throws Exception {
         testExpectedErrorMessage("individual_race/invalid_dnf", () -> STR."invalid entry 'XXX' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    @Disabled
-    void invalidEntry() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_entry", () -> STR."invalid entry '138\tRobbie Dunlop\tDundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    @Disabled
-    void invalidRawTime() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_raw_time", () -> STR."invalid record '3\tXXX' at line 4 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-    }
-
-    @Test
-    void missingConfigFile() throws Exception {
-        testExpectedErrorMessage(NON_EXISTENT_CONFIG, () -> "missing config file: 'non-existent-config-file'");
     }
 
     @Test
@@ -192,7 +167,31 @@ public class IndividualRaceTest extends AbstractRaceTest {
     }
 
     @Test
-    @Disabled
+    void duplicateBibNumberEntered() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_bib_number_entered", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void duplicateRunner() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_runner", () -> STR."duplicate entry 'John Smith, Fife AC' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void invalidCategory() throws Exception {
+        testExpectedErrorMessage("individual_race/invalid_category", () -> STR."invalid entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void invalidEntry() throws Exception {
+        testExpectedErrorMessage("individual_race/invalid_entry", () -> STR."invalid entry '138\tRobbie Dunlop\tDundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+    }
+
+    @Test
+    void invalidRawTime() throws Exception {
+        testExpectedErrorMessage("individual_race/invalid_raw_time", () -> STR."invalid record '3\tXXX' at line 4 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+    }
+
+    @Test
     void resultsOutOfOrder() throws Exception {
         testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 5 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
@@ -203,14 +202,7 @@ public class IndividualRaceTest extends AbstractRaceTest {
     }
 
     @Test
-    @Disabled
-    void missingPropertyEntriesPath() throws Exception {
-        testExpectedErrorMessage("individual_race/missing_property_entries_path", () -> STR."no entry for key '\{KEY_ENTRIES_PATH}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    @Disabled
-    void missingPropertyRawResultsPath() throws Exception {
-        testExpectedErrorMessage("individual_race/missing_property_raw_results_path", () -> STR."no entry for key '\{KEY_RAW_RESULTS_PATH}' in file '\{config_file_path.getFileName()}'");
+    void duplicateBibNumberRecorded() throws Exception {
+        testExpectedErrorMessage("individual_race/duplicate_bib_number_recorded", () -> STR."duplicate bib number '3' at line 6 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 }
