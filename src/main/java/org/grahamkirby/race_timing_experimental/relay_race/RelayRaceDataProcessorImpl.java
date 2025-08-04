@@ -21,12 +21,14 @@ import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
+import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -34,7 +36,9 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing.single_race.SingleRaceInput.stripComment;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
@@ -71,6 +75,8 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
             validateEntryCategories(entries_path);
             validateBibNumbersUnique(entries_path);
             validateRawResults(raw_results_path);
+            validateNumberOfLegResults(raw_results_path, paper_results_path);
+            validateRawResultsOrdering(raw_results_path);
 
             List<RaceEntry> entries = loadEntries(entries_path);
             List<RawResult> raw_results = loadRawResults(raw_results_path);
@@ -180,7 +186,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
         for (int count = 1; count <= lines.size(); count++) {
 
-            final String line = SingleRaceInput.stripComment(lines.get(count - 1));
+            final String line = stripComment(lines.get(count - 1));
 
             try {
                 if (!line.isBlank()) makeRawResult(line);
@@ -189,6 +195,66 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
                 throw new RuntimeException(STR."invalid record '\{line}' at line \{count} in file '\{raw_results_path.getFileName()}'");
             }
         }
+    }
+
+    private void validateRawResultsOrdering(final Path raw_results_path) {
+
+        try {
+            Duration previous_time = null;
+
+            int i = 1;
+            for (final String line : Files.readAllLines(raw_results_path)) {
+
+                final String result_string = stripComment(line);
+
+                if (!result_string.isBlank()) {
+
+                    final String time_as_string = result_string.split("\t")[1];
+                    final Duration finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
+
+                    if (finish_time != null && previous_time != null && previous_time.compareTo(finish_time) > 0)
+                        throw new RuntimeException(STR."result out of order at line \{i} in file '\{raw_results_path.getFileName()}'");
+
+                    previous_time = finish_time;
+                }
+                i++;
+            }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) {
+
+        try {
+            final Map<String, Integer> bib_counts = new HashMap<>();
+
+            countLegResults(bib_counts, raw_results_path);
+            countLegResults(bib_counts, paper_results_path);
+
+            for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
+                if (entry.getValue() > (int) race.getConfig().get(KEY_NUMBER_OF_LEGS)) {
+                    String message = STR."surplus result for team '\{entry.getKey()}' in file '\{raw_results_path.getFileName()}'";
+                    if (paper_results_path != null)
+                        message += STR." or '\{paper_results_path.getFileName()}'";
+                    throw new RuntimeException(message);
+                }
+        } catch (final IOException e) {
+            throw new RuntimeException("unexpected IO exception", e);
+        }
+    }
+
+    private void countLegResults(final Map<String, Integer> bib_counts, final Path results_path) throws IOException {
+
+        if (results_path != null)
+            for (final String line : Files.readAllLines(results_path))
+                // TODO rationalise with other comment handling. Use stripComment.
+                if (!line.startsWith(COMMENT_SYMBOL) && !line.isBlank()) {
+
+                    final String bib_number = line.split("\t")[0];
+                    if (!bib_number.equals("?"))
+                        bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1);
+                }
     }
 
     public List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {

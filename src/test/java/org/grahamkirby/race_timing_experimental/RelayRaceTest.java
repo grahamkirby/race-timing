@@ -387,7 +387,6 @@ public class RelayRaceTest extends AbstractRaceTest {
     }
 
     @Test
-    @Disabled
     void extraResult() throws Exception {
         testExpectedErrorMessage("relay_race/extra_result", () -> STR."surplus result for team '2' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
@@ -397,26 +396,22 @@ public class RelayRaceTest extends AbstractRaceTest {
         testExpectedErrorMessage("relay_race/unregistered_team", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
-
     @Test
     void illegalRawTime() throws Exception {
         testExpectedErrorMessage("relay_race/illegal_raw_time", () -> STR."invalid record '3\tXXX' at line 13 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test
-    @Disabled
     void switchedResult() throws Exception {
         testExpectedErrorMessage("relay_race/switched_result", () -> STR."surplus result for team '2' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test
-    @Disabled
     void resultsOutOfOrderA() throws Exception {
         testExpectedErrorMessage("relay_race/results_out_of_order_a", () -> STR."result out of order at line 15 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
     @Test
-    @Disabled
     void resultsOutOfOrderB() throws Exception {
         testExpectedErrorMessage("relay_race/results_out_of_order_b", () -> STR."result out of order at line 16 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
