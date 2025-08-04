@@ -356,8 +356,6 @@ public class RelayRaceTest extends AbstractRaceTest {
         testExpectedErrorMessage("relay_race/illegal_mass_start_time_order", () -> STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
     }
 
-
-
     @Test
     void missingPropertyNumberOfLegs() throws Exception {
         testExpectedErrorMessage("relay_race/missing_property_number_of_legs", () -> STR."no entry for key '\{KEY_NUMBER_OF_LEGS}' in file '\{config_file_path.getFileName()}'");
@@ -395,14 +393,12 @@ public class RelayRaceTest extends AbstractRaceTest {
     }
 
     @Test
-    @Disabled
     void unregisteredTeam() throws Exception {
         testExpectedErrorMessage("relay_race/unregistered_team", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }
 
 
     @Test
-    @Disabled
     void illegalRawTime() throws Exception {
         testExpectedErrorMessage("relay_race/illegal_raw_time", () -> STR."invalid record '3\tXXX' at line 13 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
     }

@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
@@ -69,11 +70,13 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
             validateEntriesNumberOfElements(entries_path);
             validateEntryCategories(entries_path);
             validateBibNumbersUnique(entries_path);
+            validateRawResults(raw_results_path);
 
             List<RaceEntry> entries = loadEntries(entries_path);
             List<RawResult> raw_results = loadRawResults(raw_results_path);
 
             validateEntriesUnique(entries, entries_path);
+            validateRecordedBibNumbersAreRegistered(entries, raw_results, raw_results_path);
 
             return new RelayRaceDataImpl(entries, raw_results, explicitly_recorded_leg_numbers, number_of_raw_results);
 
@@ -82,6 +85,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
             throw new RuntimeException(e);
         }
     }
+
     private void validateBibNumbersUnique(final Path entries_path) {
 
         try {
@@ -94,6 +98,19 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
         } catch (final IOException _) {
             throw new RuntimeException(STR."invalid file: '\{entries_path}'");
+        }
+    }
+
+    private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path raw_results_path) {
+
+        final Set<Integer> entry_bib_numbers = entries.stream().
+            map(entry -> entry.bib_number).
+            collect(Collectors.toSet());
+
+        for (final RawResult raw_result : raw_results) {
+            final int result_bib_number = raw_result.getBibNumber();
+            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
+                throw new RuntimeException(STR."invalid bib number '\{result_bib_number}' in file '\{raw_results_path.getFileName()}'");
         }
     }
 
@@ -152,9 +169,28 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
     }
 
     private int number_of_raw_results;
+
     int getNumberOfRawResults() {
         return number_of_raw_results;
     }
+
+    public void validateRawResults(final Path raw_results_path) throws IOException {
+
+        final List<String> lines = Files.readAllLines(raw_results_path);
+
+        for (int count = 1; count <= lines.size(); count++) {
+
+            final String line = SingleRaceInput.stripComment(lines.get(count - 1));
+
+            try {
+                if (!line.isBlank()) makeRawResult(line);
+            }
+            catch (final Exception _) {
+                throw new RuntimeException(STR."invalid record '\{line}' at line \{count} in file '\{raw_results_path.getFileName()}'");
+            }
+        }
+    }
+
     public List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
 
         // Need to copy into a mutable list.
