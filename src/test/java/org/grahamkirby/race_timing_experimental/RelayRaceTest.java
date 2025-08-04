@@ -54,61 +54,51 @@ public class RelayRaceTest extends AbstractRaceTest {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
-    @Disabled
     void simple() throws Exception {
         testExpectedCompletion("relay_race/simple");
     }
 
     @Test
-    @Disabled
     void legs3() throws Exception {
         testExpectedCompletion("relay_race/legs_3");
     }
 
     @Test
-    @Disabled
     void legs5() throws Exception {
         testExpectedCompletion("relay_race/legs_5");
     }
 
     @Test
-    @Disabled
     void topTwoResultsWomen() throws Exception {
         testExpectedCompletion("relay_race/top_two_results_women");
     }
 
     @Test
-    @Disabled
     void deadHeats() throws Exception {
         testExpectedCompletion("relay_race/dead_heats");
     }
 
     @Test
-    @Disabled
     void htmlOutput() throws Exception {
         testExpectedCompletion("relay_race/html_output");
     }
 
     @Test
-    @Disabled
     void startOffset() throws Exception {
         testExpectedCompletion("relay_race/start_offset");
     }
 
     @Test
-    @Disabled
     void interpolatedRawTimes() throws Exception {
         testExpectedCompletion("relay_race/interpolated_raw_times");
     }
 
     @Test
-    @Disabled
     void guessedMissingBibNumbersA() throws Exception {
         testExpectedCompletion("relay_race/guessed_missing_bib_numbers_a");
     }
 
     @Test
-    @Disabled
     void guessedMissingBibNumbersB() throws Exception {
         testExpectedCompletion("relay_race/guessed_missing_bib_numbers_b");
     }
@@ -119,211 +109,176 @@ public class RelayRaceTest extends AbstractRaceTest {
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFLeg1() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFLeg1And2And3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1_2_3");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFNotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFLeg2() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_2");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFLeg3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_3");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFLeg4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_4");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFLeg3And4NotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_3_4a");
     }
 
     @Test
-    @Disabled
     void massStartNoneDNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_none/dnf_leg_3_4b");
     }
 
     @Test
-    @Disabled
     void massStart34AllCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/all_completed");
     }
 
     @Test
-    @Disabled
     void massStart34DNFLeg1() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1");
     }
 
     @Test
-    @Disabled
     void massStart34DNFLeg1And2And3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1_2_3");
     }
 
     @Test
-    @Disabled
     void massStart34DNFButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    @Disabled
     void massStart34DNFNotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    @Disabled
     void massStart34DNFLeg2() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_2");
     }
 
     @Test
-    @Disabled
     void massStart34DNFLeg3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_3");
     }
 
     @Test
-    @Disabled
     void massStart34DNFLeg3And4NoFinishes() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_3_4a");
     }
 
     @Test
-    @Disabled
     void massStart34DNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_3_4b");
     }
 
     @Test
-    @Disabled
     void massStart34DNFLeg4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/dnf_leg_4");
     }
 
     @Test
-    @Disabled
     void massStart34FirstLegFinishAfterMassStart3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/first_leg_finish_after_mass_start_3");
     }
 
     @Test
-    @Disabled
     void massStart34FirstLegFinishAfterMassStart4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_3_4/first_leg_finish_after_mass_start_4");
     }
 
     @Test
-    @Disabled
     void massStart4AllCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/all_completed");
     }
 
     @Test
-    @Disabled
     void massStart4LegsSwapped() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/legs_swapped");
     }
 
     @Test
-    @Disabled
     void massStart4DNFLeg1() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1");
     }
 
     @Test
-    @Disabled
     void massStart4DNFLeg1And2And3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1_2_3");
     }
 
     @Test
-    @Disabled
     void massStart4DNFButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1_2_3_4a");
     }
 
     @Test
-    @Disabled
     void massStart4DNFNotCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_1_2_3_4b");
     }
 
     @Test
-    @Disabled
     void massStart4DNFLeg2() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_2");
     }
 
     @Test
-    @Disabled
     void massStart4DNFLeg3() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_3");
     }
 
     @Test
-    @Disabled
     void massStart4DNFLeg3And4NoFinishes() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_3_4a");
     }
 
     @Test
-    @Disabled
     void massStart4DNFLeg3And4ButCompleted() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_3_4b");
     }
 
     @Test
-    @Disabled
     void massStart4DNFLeg4() throws Exception {
         testExpectedCompletion("relay_race/mass_start_4/dnf_leg_4");
     }
 
     @Test
-    @Disabled
     void individualRunnerStartTimeLeg1() throws Exception {
         testExpectedCompletion("relay_race/individual_runner_start_time/leg_1");
     }
 
     @Test
-    @Disabled
     void individualRunnerStartTimeLeg3() throws Exception {
         testExpectedCompletion("relay_race/individual_runner_start_time/leg_3");
     }
 
     @Test
-    @Disabled
     void alternativePrizeReportingOrder() throws Exception {
         testExpectedCompletion("relay_race/alternative_prize_reporting_order");
     }
@@ -334,7 +289,6 @@ public class RelayRaceTest extends AbstractRaceTest {
     }
 
     @Test
-    @Disabled
     void teamNameIncludesComma() throws Exception {
         testExpectedCompletion("relay_race/team_name_includes_comma");
     }
