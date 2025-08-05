@@ -38,11 +38,6 @@ public class CategoryDetailsImpl implements CategoryDetails {
     }
 
     @Override
-    public List<EntryCategory> getEntryCategories() {
-        return entry_categories;
-    }
-
-    @Override
     public List<PrizeCategory> getPrizeCategories() {
 
         return prize_category_groups.stream().
@@ -65,14 +60,15 @@ public class CategoryDetailsImpl implements CategoryDetails {
     }
 
     /** Tests whether the given entry category is eligible for the given prize category. */
-    public static boolean isResultEligibleForPrizeCategory(final String club, final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final PrizeCategory prize_category) {
+    @Override
+    public boolean isResultEligibleForPrizeCategory(final String club, final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final PrizeCategory prize_category) {
 
         return isResultEligibleForPrizeCategoryByGender(gender_eligibility_map, entry_category, prize_category) &&
             isResultEligibleForPrizeCategoryByAge(entry_category, prize_category) &&
             isResultEligibleForPrizeCategoryByClub(club, prize_category);
     }
 
-    private static boolean isResultEligibleForPrizeCategoryByClub(final String club, final PrizeCategory prize_category) {
+    private boolean isResultEligibleForPrizeCategoryByClub(final String club, final PrizeCategory prize_category) {
 
         final Set<String> eligible_clubs = prize_category.getEligibleClubs();
 
@@ -82,13 +78,13 @@ public class CategoryDetailsImpl implements CategoryDetails {
     }
 
     /** Tests whether the given entry category is eligible in any of the given prize categories. */
-    public static boolean isResultEligibleInSomePrizeCategory(final String club, final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final Collection<PrizeCategory> prize_categories) {
+    public boolean isResultEligibleInSomePrizeCategory(final String club, final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
 
         return prize_categories.stream().
-            anyMatch(category -> CategoryDetailsImpl.isResultEligibleForPrizeCategory(club, gender_eligibility_map, entry_category, category));
+            anyMatch(category -> isResultEligibleForPrizeCategory(club, gender_eligibility_map, entry_category, category));
     }
 
-    private static boolean isResultEligibleForPrizeCategoryByGender(final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final PrizeCategory prize_category) {
+    private boolean isResultEligibleForPrizeCategoryByGender(final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final PrizeCategory prize_category) {
 
         // It's possible for the entry category to be null in a series race, where some of the individual
         // race results may not include entry categories.

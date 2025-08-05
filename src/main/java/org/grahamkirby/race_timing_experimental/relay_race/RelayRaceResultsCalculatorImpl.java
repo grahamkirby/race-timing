@@ -40,16 +40,18 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private List<RaceResult> overall_results;
     private final StringBuilder notes;
+
     /** Provides functionality for inferring missing bib number or timing data in the results. */
     private RelayRaceMissingData missing_data;
-    Map<RawResult, Integer> explicitly_recorded_leg_numbers;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RelayRaceResultsCalculatorImpl() {
         notes = new StringBuilder();
     }
+
     public void setRace(Race race) {
+
         this.race = race;
         race_impl = ((RelayRaceImpl) race.getSpecific());
         missing_data = new RelayRaceMissingData(race);
@@ -61,10 +63,6 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         initialiseResults();
         interpolateMissingTimes();
         guessMissingBibNumbers();
-
-        RaceData raceData = race.getRaceData();
-
-        explicitly_recorded_leg_numbers = ((RelayRaceDataImpl) raceData).explicitly_recorded_leg_numbers;
 
         recordFinishTimes();
         recordStartTimes();
@@ -80,6 +78,26 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     public List<RaceResult> getOverallResults() {
         return overall_results;
     }
+
+    @Override
+    public StringBuilder getNotes() {
+        return notes;
+    }
+
+    /** Returns prize winners in given category. */
+    @Override
+    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
+
+        final List<RaceResult> prize_results = overall_results.stream().
+            filter(result -> result.categories_of_prizes_awarded.contains(prize_category)).
+            toList();
+
+        setPositionStrings(prize_results);
+
+        return prize_results;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void interpolateMissingTimes() {
 
@@ -112,11 +130,10 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         final int leg_index = findIndexOfNextUnfilledLegResult(result.leg_results);
         final LegResult leg_result = result.leg_results.get(leg_index);
 
-        Duration recordedFinishTime = raw_result.getRecordedFinishTime();
-        leg_result.finish_time = recordedFinishTime.plus(race_impl.getStartOffset());
+        leg_result.finish_time = raw_result.getRecordedFinishTime().plus(race_impl.getStartOffset());
 
         // Leg number will be zero in most cases, unless explicitly recorded in raw results.
-        leg_result.leg_number = explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER);
+        leg_result.leg_number = ((RelayRaceDataImpl) race.getRaceData()).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER);
 
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
@@ -230,22 +247,14 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private void addPaperRecordingComments() {
 
-        List<RawResult> raw_results = race.getRaceData().getRawResults();
-        for (int i = 0; i < raw_results.size(); i++) {
+        final List<RawResult> raw_results = race.getRaceData().getRawResults();
+        final int number_of_electronically_recorded_results = ((RelayRaceDataImpl) race.getRaceData()).number_of_electronically_recorded_raw_results;
 
-            final boolean last_electronically_recorded_result = i == ((RelayRaceDataImpl)race.getRaceData()).number_of_raw_results - 1;
-
-            if (last_electronically_recorded_result && ((RelayRaceDataImpl)race.getRaceData()).number_of_raw_results < raw_results.size())
-                raw_results.get(i).appendComment("Remaining times from paper recording sheet only.");
-        }
+        if (number_of_electronically_recorded_results < raw_results.size())
+            raw_results.get(number_of_electronically_recorded_results - 1).appendComment("Remaining times from paper recording sheet only.");
     }
 
-    @Override
-    public StringBuilder getNotes() {
-        return notes;
-    }
-
-    public void allocatePrizes() {
+    private void allocatePrizes() {
 
         // Allocate first prize in each category first, in decreasing order of category breadth.
         // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
@@ -297,25 +306,11 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         }
     }
 
-    /** Returns prize winners in given category. */
-    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
+    private boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
 
-        final List<RaceResult> prize_results = overall_results.stream().
-            filter(result -> result.categories_of_prizes_awarded.contains(prize_category)).
-            map(result -> (RaceResult) result).
-            toList();
-
-        setPositionStrings(prize_results);
-
-        return prize_results;
-    }
-
-    protected boolean isPrizeWinner(final RaceResult r, final PrizeCategory prize_category) {
-
-        RelayRaceResult result = (RelayRaceResult) r;
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            CategoryDetailsImpl.isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_category);
+            race.getCategoryDetails().isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((RelayRaceResult) result).entry.participant.category, prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
@@ -532,7 +527,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = result -> CategoryDetailsImpl.isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).entry.participant.category, prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).entry.participant.category, prize_categories);
         final List<RaceResult> results = overall_results.stream().
             filter(prize_category_filter).
             map(result -> (RaceResult) result).

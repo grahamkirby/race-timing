@@ -22,14 +22,17 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CategoryDetails {
-
-    List<EntryCategory> getEntryCategories();
 
     List<PrizeCategory> getPrizeCategories();
 
     List<PrizeCategoryGroup> getPrizeCategoryGroups();
 
     EntryCategory lookupEntryCategory(String short_name);
+
+    boolean isResultEligibleForPrizeCategory(String club, Map<String, List<String>> gender_eligibility_map, EntryCategory entry_category, PrizeCategory prize_category);
+
+    boolean isResultEligibleInSomePrizeCategory(String club, Map<String, List<String>> gender_eligibility_map, EntryCategory entry_category, List<PrizeCategory> prize_categories);
 }

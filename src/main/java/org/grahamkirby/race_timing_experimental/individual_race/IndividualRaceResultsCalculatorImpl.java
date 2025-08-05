@@ -119,7 +119,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-        CategoryDetailsImpl.isResultEligibleForPrizeCategory(((Runner)((SingleRaceResult)result).entry.participant).club, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).entry.participant.category, prize_category);
+            race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner)((SingleRaceResult)result).entry.participant).club, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).entry.participant.category, prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
@@ -373,8 +373,9 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         final Predicate<RaceResult> prize_category_filter = r -> {
             SingleRaceResult result = (SingleRaceResult) r;
-            return CategoryDetailsImpl.isResultEligibleInSomePrizeCategory(((Runner)result.entry.participant).club, race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_categories);
+            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner)result.entry.participant).club, race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_categories);
         };
+
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
         setPositionStrings(results);
         return results;
