@@ -36,12 +36,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 @SuppressWarnings("preview")
 public class RelayRaceConfigProcessor implements ConfigProcessor {
 
-    private static final Path DEFAULT_CAPITALISATION_STOP_WORDS_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}");
-
-    private static final Path DEFAULT_NORMALISED_HTML_ENTITIES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}");
-    private static final Path DEFAULT_NORMALISED_CLUB_NAMES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}");
-    private static final Path DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/gender_eligibility_default\{SUFFIX_CSV}");
-
     /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
     private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
 
@@ -54,18 +48,12 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
     public String dnf_string;
 
     @Override
-    public Config loadConfig(Path config_file_path) {
+    public Config loadConfig(final Path config_file_path) {
 
         try {
-            final Map<String, Object> config_values = new HashMap<>();
-
             final Properties properties = loadProperties(config_file_path);
 
-            config_values.put(KEY_YEAR, properties.getProperty(KEY_YEAR));
-            config_values.put(KEY_RACE_NAME_FOR_RESULTS, properties.getProperty(KEY_RACE_NAME_FOR_RESULTS));
-            config_values.put(KEY_RACE_NAME_FOR_FILENAMES, properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES));
-            config_values.put(KEY_ENTRY_CATEGORIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ENTRY_CATEGORIES_PATH))));
-            config_values.put(KEY_PRIZE_CATEGORIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_PRIZE_CATEGORIES_PATH))));
+            final Map<String, Object> config_values = new CommonConfigProcessor(race, config_file_path, properties).getCommonConfig();
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));

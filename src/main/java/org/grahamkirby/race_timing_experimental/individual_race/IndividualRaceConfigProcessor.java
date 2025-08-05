@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing_experimental.common.Config;
-import org.grahamkirby.race_timing_experimental.common.ConfigImpl;
-import org.grahamkirby.race_timing_experimental.common.ConfigProcessor;
-import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,11 +32,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 @SuppressWarnings("preview")
 public class IndividualRaceConfigProcessor implements ConfigProcessor {
 
-    private static final Path DEFAULT_CAPITALISATION_STOP_WORDS_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}");
-
-    private static final Path DEFAULT_NORMALISED_HTML_ENTITIES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}");
-    private static final Path DEFAULT_NORMALISED_CLUB_NAMES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}");
-    private static final Path DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/gender_eligibility_default\{SUFFIX_CSV}");
 
     /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
     private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
@@ -53,48 +45,12 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
     public String dnf_string;
 
     @Override
-    public Config loadConfig(Path config_file_path) {
+    public Config loadConfig(final Path config_file_path) {
 
         try {
-            final Map<String, Object> config_values = new HashMap<>();
-
             final Properties properties = loadProperties(config_file_path);
 
-            String year = properties.getProperty(KEY_YEAR);
-            if (year == null)
-                throw new RuntimeException(STR."no entry for key '\{KEY_YEAR}' in file '\{config_file_path.getFileName()}'");
-            config_values.put(KEY_YEAR, year);
-
-            String race_name_for_results = properties.getProperty(KEY_RACE_NAME_FOR_RESULTS);
-            if (race_name_for_results == null)
-                throw new RuntimeException(STR."no entry for key '\{KEY_RACE_NAME_FOR_RESULTS}' in file '\{config_file_path.getFileName()}'");
-            config_values.put(KEY_RACE_NAME_FOR_RESULTS, race_name_for_results);
-
-            String race_name_for_filenames = properties.getProperty(KEY_RACE_NAME_FOR_FILENAMES);
-            if (race_name_for_filenames == null)
-                throw new RuntimeException(STR."no entry for key '\{KEY_RACE_NAME_FOR_FILENAMES}' in file '\{config_file_path.getFileName()}'");
-            config_values.put(KEY_RACE_NAME_FOR_FILENAMES, race_name_for_filenames);
-
-            String entry_categories_path = properties.getProperty(KEY_ENTRY_CATEGORIES_PATH);
-            if (entry_categories_path == null)
-                throw new RuntimeException(STR."no entry for key '\{KEY_ENTRY_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
-            config_values.put(KEY_ENTRY_CATEGORIES_PATH, race.interpretPath(Path.of(entry_categories_path)));
-
-
-
-
-
-
-
-
-
-            String prize_categories_path = properties.getProperty(KEY_PRIZE_CATEGORIES_PATH);
-            if (prize_categories_path == null)
-                throw new RuntimeException(STR."no entry for key '\{KEY_PRIZE_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
-            config_values.put(KEY_PRIZE_CATEGORIES_PATH, race.interpretPath(Path.of(prize_categories_path)));
-
-
-
+            final Map<String, Object> config_values = new CommonConfigProcessor(race, config_file_path, properties).getCommonConfig();
 
             if (properties.getProperty(KEY_DNF_FINISHERS) != null)
                 config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
@@ -153,8 +109,6 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
         }
     }
 
-
-
     private void validateDNFRecords(Map<String, Object> config_values, Path config_file_path) {
 
         final String dnf_string = (String) config_values.get(KEY_DNF_FINISHERS);
@@ -169,6 +123,4 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
                 }
             }
     }
-
-
 }
