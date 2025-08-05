@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -47,19 +48,26 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
 
     public String dnf_string;
 
+    private static final List<String> REQUIRED_STRING_PROPERTY_KEYS =
+        List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES);
+
+    private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
+        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
+
     @Override
     public Config loadConfig(final Path config_file_path) {
 
         try {
             final Properties properties = loadProperties(config_file_path);
 
-            final Map<String, Object> config_values = new CommonConfigProcessor(race, config_file_path, properties).getCommonConfig();
+            CommonConfigProcessor commonConfigProcessor = new CommonConfigProcessor(race, config_file_path, properties);
+            final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
-            if (properties.getProperty(KEY_DNF_FINISHERS) != null)
-                config_values.put(KEY_DNF_FINISHERS, properties.getProperty(KEY_DNF_FINISHERS));
+            commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
+            commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
 
-            config_values.put(KEY_ENTRIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ENTRIES_PATH))));
-            config_values.put(KEY_RAW_RESULTS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_RAW_RESULTS_PATH))));
+            commonConfigProcessor.addOptionalStringProperty(KEY_DNF_FINISHERS);
+
             if (properties.getProperty(KEY_PAPER_RESULTS_PATH) != null)
                 config_values.put(KEY_PAPER_RESULTS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_PAPER_RESULTS_PATH))));
             if (properties.getProperty(KEY_ANNOTATIONS_PATH) != null)
@@ -69,9 +77,6 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));
 
             config_values.put(KEY_INDIVIDUAL_EARLY_STARTS, properties.getProperty(KEY_INDIVIDUAL_EARLY_STARTS));
-
-            if (properties.getProperty(KEY_DNF_FINISHERS) != null)
-                config_values.put(KEY_MEDIAN_TIME, properties.getProperty(KEY_MEDIAN_TIME));
 
             if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
                 config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));

@@ -19,51 +19,61 @@ package org.grahamkirby.race_timing_experimental.common;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static org.grahamkirby.race_timing_experimental.common.Config.*;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
 
 public class CommonConfigProcessor {
 
     final Race race;
     final Path config_file_path;
     final Properties properties;
+    final Map<String, Object> config_values;
 
     public CommonConfigProcessor(Race race, Path config_file_path, Properties properties) {
 
         this.race = race;
         this.config_file_path = config_file_path;
         this.properties = properties;
+
+        config_values = new HashMap<>();
     }
 
-    public Map<String, Object> getCommonConfig() {
-
-        final Map<String, Object> config_values = new HashMap<>();
-
-        addRequiredStringProperty(KEY_YEAR, config_values);
-        addRequiredStringProperty(KEY_RACE_NAME_FOR_RESULTS, config_values);
-        addRequiredStringProperty(KEY_RACE_NAME_FOR_FILENAMES, config_values);
-        addRequiredPathProperty(KEY_ENTRY_CATEGORIES_PATH, config_values);
-        addRequiredPathProperty(KEY_PRIZE_CATEGORIES_PATH, config_values);
-
+    public Map<String, Object> getConfigValues() {
         return config_values;
     }
 
-    private void addRequiredStringProperty(final String key, final Map<String, Object> config_values) {
+    public void addOptionalStringProperty(final String key) {
 
-        addRequiredProperty(key, config_values, s -> s);
+        final String value = properties.getProperty(key);
+        if (value != null)
+            config_values.put(key, ((Function<String, Object>) s -> s).apply(value));
     }
 
-    private void addRequiredPathProperty(final String key, final Map<String, Object> config_values) {
+    public void addRequiredStringProperties(final List<String> keys) {
 
-        addRequiredProperty(key, config_values, s -> race.interpretPath(Path.of(s)));
+        for (final String key : keys)
+            addRequiredProperty(key, s -> s);
     }
 
-    private void addRequiredProperty(final String key, final Map<String, Object> config_values, final Function<String, Object> makeProperty) {
+    public void addRequiredPathProperties(final List<String> keys) {
+
+        for (final String key : keys)
+            addRequiredProperty(key, s -> race.interpretPath(Path.of(s)));
+    }
+
+    public void addRequiredStringProperty(final String key) {
+
+        addRequiredProperty(key, s -> s);
+    }
+
+    public void addRequiredPathProperty(final String key) {
+
+        addRequiredProperty(key, s -> race.interpretPath(Path.of(s)));
+    }
+
+    private void addRequiredProperty(final String key, final Function<String, Object> makeProperty) {
 
         final String value = properties.getProperty(key);
         if (value == null) throw new RuntimeException(STR."no entry for key '\{key}' in file '\{config_file_path.getFileName()}'");
