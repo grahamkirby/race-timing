@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -32,7 +31,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 @SuppressWarnings("preview")
 public class IndividualRaceConfigProcessor implements ConfigProcessor {
-
 
     /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
     private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
@@ -48,8 +46,15 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
     private static final List<String> REQUIRED_STRING_PROPERTY_KEYS =
         List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES);
 
+    private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
+        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME);
+
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
+
+    private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
+        List.of(KEY_CATEGORY_MAP_PATH);
+
 
     @Override
     public Config loadConfig(final Path config_file_path) {
@@ -62,16 +67,8 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
 
             commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
             commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
-
-            commonConfigProcessor.addOptionalStringProperty(KEY_DNF_FINISHERS);
-
-            if (properties.getProperty(KEY_RESULTS_PATH) != null)
-                config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));
-
-            config_values.put(KEY_INDIVIDUAL_EARLY_STARTS, properties.getProperty(KEY_INDIVIDUAL_EARLY_STARTS));
-
-            if (properties.getProperty(KEY_MEDIAN_TIME) != null)
-                config_values.put(KEY_MEDIAN_TIME, properties.getProperty(KEY_MEDIAN_TIME));
+            commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
+            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
 
             if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
                 config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));
@@ -97,9 +94,6 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
                 config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
             else
                 config_values.put(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
-
-            final String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
-            if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.interpretPath(Path.of(category_map_path)));
 
             validateDNFRecords(config_values, config_file_path);
 

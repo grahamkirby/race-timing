@@ -49,10 +49,16 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
     public String dnf_string;
 
     private static final List<String> REQUIRED_STRING_PROPERTY_KEYS =
-        List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES);
+        List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES, KEY_PAIRED_LEGS);
+
+    private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
+        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_ENTRY_COLUMN_MAP, KEY_INDIVIDUAL_LEG_STARTS, KEY_MASS_START_ELAPSED_TIMES);
 
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
+
+    private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
+        List.of(KEY_CATEGORY_MAP_PATH, KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
 
     @Override
     public Config loadConfig(final Path config_file_path) {
@@ -65,18 +71,8 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
 
             commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
             commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
-
-            commonConfigProcessor.addOptionalStringProperty(KEY_DNF_FINISHERS);
-
-            if (properties.getProperty(KEY_PAPER_RESULTS_PATH) != null)
-                config_values.put(KEY_PAPER_RESULTS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_PAPER_RESULTS_PATH))));
-            if (properties.getProperty(KEY_ANNOTATIONS_PATH) != null)
-                config_values.put(KEY_ANNOTATIONS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_ANNOTATIONS_PATH))));
-
-            if (properties.getProperty(KEY_RESULTS_PATH) != null)
-                config_values.put(KEY_RESULTS_PATH, properties.getProperty(KEY_RESULTS_PATH));
-
-            config_values.put(KEY_INDIVIDUAL_EARLY_STARTS, properties.getProperty(KEY_INDIVIDUAL_EARLY_STARTS));
+            commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
+            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
 
             if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
                 config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));
@@ -98,22 +94,10 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             else
                 config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
 
-            config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
-
-            final String category_map_path = properties.getProperty(KEY_CATEGORY_MAP_PATH);
-            if (category_map_path != null) config_values.put(KEY_CATEGORY_MAP_PATH, race.interpretPath(Path.of(category_map_path)));
-
             String number_of_legs = properties.getProperty(KEY_NUMBER_OF_LEGS);
             if (number_of_legs == null)
                 throw new RuntimeException(STR."no entry for key '\{KEY_NUMBER_OF_LEGS}' in file '\{config_file_path.getFileName()}'");
             config_values.put(KEY_NUMBER_OF_LEGS, Integer.parseInt(number_of_legs));
-            String paired_legs = properties.getProperty(KEY_PAIRED_LEGS);
-            if (paired_legs == null)
-                throw new RuntimeException(STR."no entry for key '\{KEY_PAIRED_LEGS}' in file '\{config_file_path.getFileName()}'");
-            config_values.put(KEY_PAIRED_LEGS, paired_legs);
-
-            config_values.put(KEY_MASS_START_ELAPSED_TIMES, properties.getProperty(KEY_MASS_START_ELAPSED_TIMES));
-            config_values.put(KEY_INDIVIDUAL_LEG_STARTS, properties.getProperty(KEY_INDIVIDUAL_LEG_STARTS));
 
             if (properties.getProperty(KEY_START_OFFSET) != null)
                 config_values.put(KEY_START_OFFSET, Normalisation.parseTime(properties.getProperty(KEY_START_OFFSET)));

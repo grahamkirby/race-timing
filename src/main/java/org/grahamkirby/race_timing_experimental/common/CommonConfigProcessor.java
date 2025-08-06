@@ -46,21 +46,31 @@ public class CommonConfigProcessor {
 
     public void addOptionalStringProperty(final String key) {
 
-        final String value = properties.getProperty(key);
-        if (value != null)
-            config_values.put(key, ((Function<String, Object>) s -> s).apply(value));
+        addOptionalProperty(key, s -> s);
+    }
+
+    public void addOptionalStringProperties(final List<String> keys) {
+
+        for (final String key : keys)
+            addOptionalStringProperty(key);
+    }
+
+    public void addOptionalPathProperties(final List<String> keys) {
+
+        for (final String key : keys)
+            addOptionalPathProperty(key);
     }
 
     public void addRequiredStringProperties(final List<String> keys) {
 
         for (final String key : keys)
-            addRequiredProperty(key, s -> s);
+            addRequiredStringProperty(key);
     }
 
     public void addRequiredPathProperties(final List<String> keys) {
 
         for (final String key : keys)
-            addRequiredProperty(key, s -> race.interpretPath(Path.of(s)));
+            addRequiredPathProperty(key);
     }
 
     public void addRequiredStringProperty(final String key) {
@@ -73,10 +83,21 @@ public class CommonConfigProcessor {
         addRequiredProperty(key, s -> race.interpretPath(Path.of(s)));
     }
 
+    public void addOptionalPathProperty(final String key) {
+
+        addOptionalProperty(key, s -> race.interpretPath(Path.of(s)));
+    }
+
     private void addRequiredProperty(final String key, final Function<String, Object> makeProperty) {
 
         final String value = properties.getProperty(key);
         if (value == null) throw new RuntimeException(STR."no entry for key '\{key}' in file '\{config_file_path.getFileName()}'");
         config_values.put(key, makeProperty.apply(value));
+    }
+
+    private void addOptionalProperty(final String key, final Function<String, Object> makeProperty) {
+
+        final String value = properties.getProperty(key);
+        if (value != null) config_values.put(key, makeProperty.apply(value));
     }
 }
