@@ -44,60 +44,84 @@ public class CommonConfigProcessor {
         return config_values;
     }
 
-    public void addOptionalStringProperty(final String key) {
+    public void addRequiredStringProperties(final List<String> keys) {
 
-        addOptionalProperty(key, s -> s);
+        for (final String key : keys)
+            addRequiredProperty(key, s -> s);
     }
 
     public void addOptionalStringProperties(final List<String> keys) {
 
         for (final String key : keys)
-            addOptionalStringProperty(key);
+            addOptionalProperty(key, s -> s);
     }
 
     public void addOptionalPathProperties(final List<String> keys) {
 
         for (final String key : keys)
-            addOptionalPathProperty(key);
-    }
-
-    public void addRequiredStringProperties(final List<String> keys) {
-
-        for (final String key : keys)
-            addRequiredStringProperty(key);
+            addOptionalProperty(key, s -> race.interpretPath(Path.of(s)));
     }
 
     public void addRequiredPathProperties(final List<String> keys) {
 
         for (final String key : keys)
-            addRequiredPathProperty(key);
+            addRequiredProperty(key, s -> race.interpretPath(Path.of(s)));
     }
 
-    public void addRequiredStringProperty(final String key) {
-
-        addRequiredProperty(key, s -> s);
-    }
-
-    public void addRequiredPathProperty(final String key) {
-
-        addRequiredProperty(key, s -> race.interpretPath(Path.of(s)));
-    }
-
-    public void addOptionalPathProperty(final String key) {
-
-        addOptionalProperty(key, s -> race.interpretPath(Path.of(s)));
-    }
-
-    private void addRequiredProperty(final String key, final Function<String, Object> makeProperty) {
+    public void addRequiredProperty(final String key, final Function<String, Object> make_value) {
 
         final String value = properties.getProperty(key);
         if (value == null) throw new RuntimeException(STR."no entry for key '\{key}' in file '\{config_file_path.getFileName()}'");
-        config_values.put(key, makeProperty.apply(value));
+        config_values.put(key, make_value.apply(value));
     }
 
-    private void addOptionalProperty(final String key, final Function<String, Object> makeProperty) {
+    private void addOptionalProperty(final String key, final Function<String, Object> make_value) {
 
         final String value = properties.getProperty(key);
-        if (value != null) config_values.put(key, makeProperty.apply(value));
+        if (value != null) config_values.put(key, make_value.apply(value));
+    }
+
+    public void addOptionalStringProperties(final List<String> keys, final List<String> defaults) {
+
+        if (keys.size() != defaults.size())
+            throw new RuntimeException("Mismatch between number of keys and defaults");
+
+        for (int i = 0; i < keys.size(); i++)
+            addOptionalStringProperty(keys.get(i), defaults.get(i));
+    }
+
+    public void addOptionalPathProperties(final List<String> keys, final List<Path> defaults) {
+
+        if (keys.size() != defaults.size())
+            throw new RuntimeException("Mismatch between number of keys and defaults");
+
+        for (int i = 0; i < keys.size(); i++)
+            addOptionalPathProperty(keys.get(i), defaults.get(i));
+    }
+
+    private void addOptionalStringProperty(final String key, final String default_value) {
+
+        final Function<String, Object> make_value = value -> value;
+        final Function<String, Object> make_default_value = _ -> default_value;
+
+        addOptionalProperty(key, make_value, make_default_value);
+    }
+
+    private void addOptionalPathProperty(final String key, final Path default_value) {
+
+        final Function<String, Object> make_value = value -> race.interpretPath(Path.of(value));
+        final Function<String, Object> make_default_value = _ -> race.interpretPath(default_value);
+
+        addOptionalProperty(key, make_value, make_default_value);
+    }
+
+    public void addOptionalProperty(final String key, final Function<String, Object> make_value, final Function<String, Object> make_default_value) {
+
+        final String value = properties.getProperty(key);
+
+        if (value != null)
+            config_values.put(key, make_value.apply(value));
+        else
+            config_values.put(key, make_default_value.apply(key));
     }
 }

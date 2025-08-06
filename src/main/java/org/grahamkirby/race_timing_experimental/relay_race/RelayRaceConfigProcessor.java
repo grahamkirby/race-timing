@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -60,6 +59,12 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
     private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
         List.of(KEY_CATEGORY_MAP_PATH, KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
 
+    private static final List<String> OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS =
+        List.of(KEY_CAPITALISATION_STOP_WORDS_PATH, KEY_NORMALISED_HTML_ENTITIES_PATH, KEY_NORMALISED_CLUB_NAMES_PATH, KEY_GENDER_ELIGIBILITY_MAP_PATH);
+
+    private static final List<Path> OPTIONAL_PATH_DEFAULT_PROPERTIES =
+        List.of(DEFAULT_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
+
     @Override
     public Config loadConfig(final Path config_file_path) {
 
@@ -67,42 +72,18 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             final Properties properties = loadProperties(config_file_path);
 
             CommonConfigProcessor commonConfigProcessor = new CommonConfigProcessor(race, config_file_path, properties);
-            final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
             commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
-            commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
+
+            commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
+            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
 
-            if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));
-            else
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(DEFAULT_CAPITALISATION_STOP_WORDS_PATH));
+            commonConfigProcessor.addRequiredProperty(KEY_NUMBER_OF_LEGS, Integer::parseInt);
+            commonConfigProcessor.addOptionalProperty(KEY_START_OFFSET, Normalisation::parseTime, _ -> Duration.ZERO);
 
-            if (properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH) != null)
-                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH))));
-            else
-                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.interpretPath(DEFAULT_NORMALISED_HTML_ENTITIES_PATH));
-
-            if (properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH) != null)
-                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH))));
-            else
-                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.interpretPath(DEFAULT_NORMALISED_CLUB_NAMES_PATH));
-
-            if (properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH) != null)
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH))));
-            else
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
-
-            String number_of_legs = properties.getProperty(KEY_NUMBER_OF_LEGS);
-            if (number_of_legs == null)
-                throw new RuntimeException(STR."no entry for key '\{KEY_NUMBER_OF_LEGS}' in file '\{config_file_path.getFileName()}'");
-            config_values.put(KEY_NUMBER_OF_LEGS, Integer.parseInt(number_of_legs));
-
-            if (properties.getProperty(KEY_START_OFFSET) != null)
-                config_values.put(KEY_START_OFFSET, Normalisation.parseTime(properties.getProperty(KEY_START_OFFSET)));
-            else
-                config_values.put(KEY_START_OFFSET, Duration.ZERO);
+            final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
             validateDNFRecords(config_values, config_file_path);
             validateMassStartTimes((String) config_values.get(KEY_MASS_START_ELAPSED_TIMES), config_file_path);

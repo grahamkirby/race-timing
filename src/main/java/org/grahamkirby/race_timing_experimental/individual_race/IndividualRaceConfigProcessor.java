@@ -49,11 +49,23 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
     private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
         List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME);
 
+    private static final List<String> OPTIONAL_STRING_WITH_DEFAULT_PROPERTY_KEYS =
+        List.of(KEY_ENTRY_COLUMN_MAP);
+
+    private static final List<String> OPTIONAL_STRING_DEFAULT_PROPERTIES =
+        List.of(DEFAULT_ENTRY_COLUMN_MAP);
+
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
 
     private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
         List.of(KEY_CATEGORY_MAP_PATH);
+
+    private static final List<String> OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS =
+        List.of(KEY_CAPITALISATION_STOP_WORDS_PATH, KEY_NORMALISED_HTML_ENTITIES_PATH, KEY_NORMALISED_CLUB_NAMES_PATH, KEY_GENDER_ELIGIBILITY_MAP_PATH);
+
+    private static final List<Path> OPTIONAL_PATH_DEFAULT_PROPERTIES =
+        List.of(DEFAULT_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
 
 
     @Override
@@ -63,37 +75,16 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             final Properties properties = loadProperties(config_file_path);
 
             CommonConfigProcessor commonConfigProcessor = new CommonConfigProcessor(race, config_file_path, properties);
-            final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
             commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
-            commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
+            commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_STRING_DEFAULT_PROPERTIES);
+
+            commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
+            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
 
-            if (properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH) != null)
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH))));
-            else
-                config_values.put(KEY_CAPITALISATION_STOP_WORDS_PATH, race.interpretPath(DEFAULT_CAPITALISATION_STOP_WORDS_PATH));
-
-            if (properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH) != null)
-                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_NORMALISED_HTML_ENTITIES_PATH))));
-            else
-                config_values.put(KEY_NORMALISED_HTML_ENTITIES_PATH, race.interpretPath(DEFAULT_NORMALISED_HTML_ENTITIES_PATH));
-
-            if (properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH) != null)
-                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_NORMALISED_CLUB_NAMES_PATH))));
-            else
-                config_values.put(KEY_NORMALISED_CLUB_NAMES_PATH, race.interpretPath(DEFAULT_NORMALISED_CLUB_NAMES_PATH));
-
-            if (properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH) != null)
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(Path.of(properties.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH))));
-            else
-                config_values.put(KEY_GENDER_ELIGIBILITY_MAP_PATH, race.interpretPath(DEFAULT_GENDER_ELIGIBILITY_MAP_PATH));
-
-            if (properties.getProperty(KEY_ENTRY_COLUMN_MAP) != null)
-                config_values.put(KEY_ENTRY_COLUMN_MAP, properties.getProperty(KEY_ENTRY_COLUMN_MAP));
-            else
-                config_values.put(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
+            final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
             validateDNFRecords(config_values, config_file_path);
 
