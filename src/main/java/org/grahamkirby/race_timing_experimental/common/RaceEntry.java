@@ -33,14 +33,12 @@ public class RaceEntry {
 
     public Participant participant;
     public int bib_number;
-    private Race race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public RaceEntry(final List<String> elements, final Race race) {
 
-        this.race = race;
         Normalisation normalisation = race.getNormalisation();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
@@ -61,9 +59,9 @@ public class RaceEntry {
     }
 
     public RaceEntry(final Participant participant, final int bib_number, final Race race) {
+
         this.participant = participant;
         this.bib_number = bib_number;
-        this.race = race;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -168,7 +168,7 @@ public class IndividualRaceTest extends AbstractRaceTest {
 
     @Test
     void duplicateBibNumberEntered() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_bib_number_entered", () -> STR."duplicate bib number '3' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+        testExpectedErrorMessage("individual_race/duplicate_bib_number_entered", () -> STR."duplicate bib number '3' at line 55 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test

@@ -21,14 +21,15 @@ import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
-import org.grahamkirby.race_timing_experimental.common.*;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceData;
+import org.grahamkirby.race_timing_experimental.common.RaceDataProcessor;
+import org.grahamkirby.race_timing_experimental.common.RaceEntry;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -38,76 +39,101 @@ import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
-import static org.grahamkirby.race_timing.single_race.SingleRaceInput.stripComment;
+import static org.grahamkirby.race_timing_experimental.common.CommonDataProcessor.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
     private Race race;
-
-    public RelayRaceDataProcessorImpl() {
-
-        explicitly_recorded_leg_numbers = new HashMap<>();
-    }
+    private final Map<RawResult, Integer> explicitly_recorded_leg_numbers = new HashMap<>();
 
     @Override
     public void setRace(Race race) {
+
         this.race = race;
-
-        paper_results_path = (Path) race.getConfig().get(KEY_PAPER_RESULTS_PATH);
-        annotations_path = (Path) race.getConfig().get(KEY_ANNOTATIONS_PATH);
     }
-
-    private Path paper_results_path, annotations_path;
-    private Map<RawResult, Integer> explicitly_recorded_leg_numbers;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public RaceData getRaceData() {
 
-        Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
-        Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
+        final Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
+        final Path electronic_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
+        final Path paper_results_path = (Path) race.getConfig().get(KEY_PAPER_RESULTS_PATH);
 
         try {
+            validateDataFiles(entries_path, electronic_results_path, paper_results_path);
 
-            validateEntriesNumberOfElements(entries_path);
-            validateEntryCategories(entries_path);
-            validateBibNumbersUnique(entries_path);
-            validateRawResults(raw_results_path);
-            validateNumberOfLegResults(raw_results_path, paper_results_path);
-            validateRawResultsOrdering(raw_results_path);
+            final List<RaceEntry> entries = loadEntries(entries_path);
 
-            List<RaceEntry> entries = loadEntries(entries_path);
-            List<RawResult> raw_results = loadRawResults(raw_results_path);
+            final List<RawResult> electronically_recorded_raw_results = loadRawResults(electronic_results_path);
+            final List<RawResult> paper_recorded_raw_results = loadRawResults(paper_results_path);
+            final List<RawResult> combined_raw_results = append(electronically_recorded_raw_results, paper_recorded_raw_results);
 
-            validateEntriesUnique(entries, entries_path);
-            validateRecordedBibNumbersAreRegistered(entries, raw_results, raw_results_path);
+            loadTimeAnnotations(combined_raw_results);
+            validateData(entries, entries_path, combined_raw_results, electronic_results_path, paper_results_path);
 
-            return new RelayRaceDataImpl(entries, raw_results, explicitly_recorded_leg_numbers, number_of_raw_results);
-
+            return new RelayRaceDataImpl(entries, combined_raw_results, explicitly_recorded_leg_numbers, electronically_recorded_raw_results.size());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void validateBibNumbersUnique(final Path entries_path) {
+    private void validateDataFiles(final Path entries_path, final Path electronic_results_path, final Path paper_results_path) throws IOException {
 
-        try {
-            final Set<String> seen = new HashSet<>();
+        validateEntriesNumberOfElements(entries_path, (int) race.getConfig().get(KEY_NUMBER_OF_LEGS) + 3, (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP));
+        validateEntryCategories(entries_path);
+        validateBibNumbersUnique(entries_path);
 
-            Files.readAllLines(entries_path).stream().
-                map(RelayRaceDataProcessorImpl::getBibNumber).
-                filter(bib_number -> !seen.add(bib_number)).
-                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number '\{bib_number}' in file '\{entries_path.getFileName()}'");});
+        validateRawResults(electronic_results_path);
+        validateRawResults(paper_results_path);
 
-        } catch (final IOException _) {
-            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
-        }
+        validateNumberOfLegResults(electronic_results_path, paper_results_path);
+        validateRawResultsOrdering(electronic_results_path);
+        validateRawResultsOrdering(paper_results_path);
     }
 
-    private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path raw_results_path) {
+    private void validateData(final List<RaceEntry> entries, final Path entries_path, final List<RawResult> combined_raw_results, final Path electronic_results_path, Path paper_results_path) {
+
+        validateEntriesUnique(entries, entries_path);
+        validateRecordedBibNumbersAreRegistered(entries, combined_raw_results, electronic_results_path, paper_results_path);
+    }
+
+    private List<RawResult> append(final List<RawResult> list1, final List<RawResult> list2) {
+
+        final List<RawResult> result = new ArrayList<>(list1);
+        result.addAll(list2);
+        return result;
+    }
+
+    protected List<RawResult> loadRawResults(final Path results_path) throws IOException {
+
+        return readAllLines(results_path).stream().
+            map(SingleRaceInput::stripComment).
+            filter(Predicate.not(String::isBlank)).
+            map(this::makeRawResult).
+            toList();
+    }
+
+    private RawResult makeRawResult(final String line) {
+
+        final RawResult result = new RawResult(line);
+
+        final int leg_number = getExplicitLegNumber(line);
+        if (leg_number > 0) explicitly_recorded_leg_numbers.put(result, leg_number);
+
+        return result;
+    }
+
+    private int getExplicitLegNumber(final String line) {
+
+        final String[] elements = line.split("\t");
+        return elements.length > 2 ? Integer.parseInt(elements[2]) : 0;
+    }
+
+    private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path electronic_results_path, final Path paper_results_path) {
 
         final Set<Integer> entry_bib_numbers = entries.stream().
             map(entry -> entry.bib_number).
@@ -115,34 +141,14 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
         for (final RawResult raw_result : raw_results) {
             final int result_bib_number = raw_result.getBibNumber();
-            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
-                throw new RuntimeException(STR."invalid bib number '\{result_bib_number}' in file '\{raw_results_path.getFileName()}'");
+            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number)) {
+                String message = STR."invalid bib number '\{result_bib_number}' in file '\{electronic_results_path.getFileName()}'";
+                if (paper_results_path != null) message += STR." or '\{paper_results_path.getFileName()}'";
+                throw new RuntimeException(message);
+            }
         }
     }
 
-    protected int getNumberOfEntryColumns() {
-        return (int)race.getConfig().get(KEY_NUMBER_OF_LEGS) + 3;
-    }
-    private void validateEntriesNumberOfElements(final Path entries_path) {
-
-        final String entry_column_map_string = (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP);
-        final int number_of_columns = entry_column_map_string == null ? getNumberOfEntryColumns() : entry_column_map_string.split("[,\\-]").length;
-
-        try {
-            final AtomicInteger counter = new AtomicInteger(0);
-
-            Files.readAllLines(entries_path).stream().
-                map(SingleRaceInput::stripEntryComment).
-                filter(Predicate.not(String::isBlank)).
-                forEach(line -> {
-                    counter.incrementAndGet();
-                    if (line.split("\t").length != number_of_columns)
-                        throw new RuntimeException(STR."invalid entry '\{line}' at line \{counter.get()} in file '\{entries_path.getFileName()}'");
-                });
-        } catch (final IOException _) {
-            throw new RuntimeException(STR."unexpected invalid file: '\{entries_path}'");
-        }
-    }
     private void validateEntryCategories(Path entries_path) {
 
         try {
@@ -165,63 +171,12 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         }
     }
 
-
     private void validateEntriesUnique(final List<RaceEntry> entries, Path entries_path) {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.participant != entry2.participant && entry1.participant.equals(entry2.participant))
                     throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{entries_path.getFileName()}'");
-    }
-
-    private int number_of_raw_results;
-
-    int getNumberOfRawResults() {
-        return number_of_raw_results;
-    }
-
-    public void validateRawResults(final Path raw_results_path) throws IOException {
-
-        final List<String> lines = Files.readAllLines(raw_results_path);
-
-        for (int count = 1; count <= lines.size(); count++) {
-
-            final String line = stripComment(lines.get(count - 1));
-
-            try {
-                if (!line.isBlank()) makeRawResult(line);
-            }
-            catch (final Exception _) {
-                throw new RuntimeException(STR."invalid record '\{line}' at line \{count} in file '\{raw_results_path.getFileName()}'");
-            }
-        }
-    }
-
-    private void validateRawResultsOrdering(final Path raw_results_path) {
-
-        try {
-            Duration previous_time = null;
-
-            int i = 1;
-            for (final String line : Files.readAllLines(raw_results_path)) {
-
-                final String result_string = stripComment(line);
-
-                if (!result_string.isBlank()) {
-
-                    final String time_as_string = result_string.split("\t")[1];
-                    final Duration finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
-
-                    if (finish_time != null && previous_time != null && previous_time.compareTo(finish_time) > 0)
-                        throw new RuntimeException(STR."result out of order at line \{i} in file '\{raw_results_path.getFileName()}'");
-
-                    previous_time = finish_time;
-                }
-                i++;
-            }
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) {
@@ -257,20 +212,9 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
                 }
     }
 
-    public List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
-
-        // Need to copy into a mutable list.
-        final List<RawResult> raw_results = new ArrayList<>(loadRawResults2(raw_results_path));
-        number_of_raw_results = raw_results.size();
-
-        if (paper_results_path != null)
-            raw_results.addAll(loadRawResults2(paper_results_path));
-
-        loadTimeAnnotations(raw_results);
-        return raw_results;
-    }
-
     void loadTimeAnnotations(final List<? extends RawResult> raw_results) throws IOException {
+
+        final Path annotations_path = (Path) race.getConfig().get(KEY_ANNOTATIONS_PATH);
 
         if (annotations_path != null) {
 
@@ -300,32 +244,6 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(parseTime(elements[3]));
 
         if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
-    }
-
-    protected List<RawResult> loadRawResults2(final Path raw_results_path) throws IOException {
-
-        return Files.readAllLines(raw_results_path).stream().
-            map(SingleRaceInput::stripComment).
-            filter(Predicate.not(String::isBlank)).
-            map(this::makeRawResult).
-            toList();
-    }
-
-    protected RawResult makeRawResult(final String line) {
-
-        RawResult result = new RawResult(line);
-
-        final String[] elements = line.split("\t");
-        if (elements.length > 2) {
-            int leg_number = Integer.parseInt(elements[2]);
-            explicitly_recorded_leg_numbers.put(result, leg_number);
-        }
-
-        return result;
-    }
-
-    private static String getBibNumber(final String line){
-        return line.split("\t")[0];
     }
 
     List<RaceEntry> loadEntries(Path entries_path) throws IOException {
