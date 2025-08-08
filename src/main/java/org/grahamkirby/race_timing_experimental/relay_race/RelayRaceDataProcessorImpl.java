@@ -163,7 +163,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
                         makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList(), race);
 
                     } catch (final RuntimeException e) {
-                        throw new RuntimeException(STR."invalid entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path.getFileName()}'", e);
+                        throw new RuntimeException(STR."invalid category in entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path.getFileName()}'", e);
                     }
                 });
         } catch (final IOException _) {

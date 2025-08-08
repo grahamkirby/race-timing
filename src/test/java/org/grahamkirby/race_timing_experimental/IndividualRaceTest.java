@@ -178,7 +178,7 @@ public class IndividualRaceTest extends AbstractRaceTest {
 
     @Test
     void invalidCategory() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_category", () -> STR."invalid entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+        testExpectedErrorMessage("individual_race/invalid_category", () -> STR."invalid category in entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test

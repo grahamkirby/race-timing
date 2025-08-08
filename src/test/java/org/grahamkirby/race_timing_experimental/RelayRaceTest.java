@@ -332,7 +332,7 @@ public class RelayRaceTest extends AbstractRaceTest {
 
     @Test
     void illegalCategory() throws Exception {
-        testExpectedErrorMessage("relay_race/illegal_category", () -> STR."invalid entry '3 Team 3 Men Senior Jackbruce Martin King & Leland Donaldson Neil MacDonald & Myles  Christie Hubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
+        testExpectedErrorMessage("relay_race/illegal_category", () -> STR."invalid category in entry '3 Team 3 Men Senior Jackbruce Martin King & Leland Donaldson Neil MacDonald & Myles  Christie Hubert Gray' at line 3 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
     }
 
     @Test

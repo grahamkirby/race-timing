@@ -60,4 +60,9 @@ public class ActualRacesMidweekTest extends AbstractRaceTest {
     void midweek2024() throws Exception {
         testExpectedCompletion("actual_races/series_race/midweek/2024");
     }
+
+    @Test
+    void midweek2025() throws Exception {
+        testExpectedCompletion("actual_races/series_race/midweek/2025");
+    }
 }
