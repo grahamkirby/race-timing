@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
@@ -65,6 +67,28 @@ public class CommonDataProcessor {
             forEach(line -> {
                 throw new RuntimeException(STR."invalid entry '\{line}' at line \{line_number.get()} in file '\{entries_path.getFileName()}'");
             });
+    }
+
+    public static void validateEntryCategories(final Path entries_path, final Consumer<String> check_category_in_line) {
+
+        try {
+            final AtomicInteger line_number = new AtomicInteger(0);
+
+            readAllLines(entries_path).stream().
+                map(SingleRaceInput::stripEntryComment).
+                filter(Predicate.not(String::isBlank)).
+                forEach(line -> {
+                    try {
+                        line_number.incrementAndGet();
+                        check_category_in_line.accept(line);
+
+                    } catch (final RuntimeException e) {
+                        throw new RuntimeException(STR."invalid category in entry '\{e.getMessage()}' at line \{line_number.get()} in file '\{entries_path.getFileName()}'", e);
+                    }
+                });
+        } catch (final IOException _) {
+            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
+        }
     }
 
     public static void validateRawResultsOrdering(final Path raw_results_path) throws IOException {

@@ -27,13 +27,12 @@ import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.makeDefaultEntryColumnMap;
+import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.validateDNFRecords;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 @SuppressWarnings("preview")
 public class IndividualRaceConfigProcessor implements ConfigProcessor {
-
-    /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
-    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
 
     private Race race;
 
@@ -49,12 +48,6 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
     private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
         List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME);
 
-    private static final List<String> OPTIONAL_STRING_WITH_DEFAULT_PROPERTY_KEYS =
-        List.of(KEY_ENTRY_COLUMN_MAP);
-
-    private static final List<String> OPTIONAL_STRING_DEFAULT_PROPERTIES =
-        List.of(DEFAULT_ENTRY_COLUMN_MAP);
-
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
 
@@ -67,7 +60,6 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
     private static final List<Path> OPTIONAL_PATH_DEFAULT_PROPERTIES =
         List.of(DEFAULT_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
 
-
     @Override
     public Config loadConfig(final Path config_file_path) {
 
@@ -78,35 +70,24 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
 
             commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
-            commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_STRING_DEFAULT_PROPERTIES);
 
             commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
 
+            // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
+            commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s,_ -> makeDefaultEntryColumnMap(4));
+
             final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
-            validateDNFRecords(config_values, config_file_path);
+            // Each DNF string contains single bib number.
+            //noinspection ResultOfMethodCallIgnored
+            validateDNFRecords((String) config_values.get(KEY_DNF_FINISHERS), Integer::parseInt, config_file_path);
 
             return new ConfigImpl(config_values);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void validateDNFRecords(Map<String, Object> config_values, Path config_file_path) {
-
-        final String dnf_string = (String) config_values.get(KEY_DNF_FINISHERS);
-
-        if (dnf_string != null && !dnf_string.isBlank())
-            for (final String bib_number : dnf_string.split(",")) {
-                try {
-                    Integer.parseInt(bib_number);
-
-                } catch (final NumberFormatException e) {
-                    throw new RuntimeException(STR."invalid entry '\{bib_number}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'", e);
-                }
-            }
     }
 }

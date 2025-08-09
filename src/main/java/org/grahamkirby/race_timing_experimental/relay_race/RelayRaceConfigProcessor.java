@@ -27,17 +27,22 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
 import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.makeDefaultEntryColumnMap;
+import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.validateDNFRecords;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 @SuppressWarnings("preview")
 public class RelayRaceConfigProcessor implements ConfigProcessor {
 
-    /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
-    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
+//    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
 
     private Race race;
 
@@ -51,7 +56,13 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
         List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES, KEY_PAIRED_LEGS);
 
     private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
-        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_ENTRY_COLUMN_MAP, KEY_INDIVIDUAL_LEG_STARTS, KEY_MASS_START_ELAPSED_TIMES);
+        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_ENTRY_COLUMN_MAP, KEY_INDIVIDUAL_LEG_STARTS);
+
+//    private static final List<String> OPTIONAL_STRING_WITH_DEFAULT_PROPERTY_KEYS =
+//        List.of(KEY_ENTRY_COLUMN_MAP);
+//
+//    private static final List<String> OPTIONAL_STRING_DEFAULT_PROPERTIES =
+//        List.of(DEFAULT_ENTRY_COLUMN_MAP);
 
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
@@ -65,6 +76,7 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
     private static final List<Path> OPTIONAL_PATH_DEFAULT_PROPERTIES =
         List.of(DEFAULT_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public Config loadConfig(final Path config_file_path) {
 
@@ -72,6 +84,7 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             final Properties properties = loadProperties(config_file_path);
 
             CommonConfigProcessor commonConfigProcessor = new CommonConfigProcessor(race, config_file_path, properties);
+            final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
             commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
@@ -81,11 +94,24 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
 
             commonConfigProcessor.addRequiredProperty(KEY_NUMBER_OF_LEGS, Integer::parseInt);
+            final int number_of_legs = (int) config_values.get(KEY_NUMBER_OF_LEGS);
+
             commonConfigProcessor.addOptionalProperty(KEY_START_OFFSET, Normalisation::parseTime, _ -> Duration.ZERO);
 
-            final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
+            commonConfigProcessor.addOptionalProperty(KEY_MASS_START_ELAPSED_TIMES, s -> s, _ -> defaultMassStartElapsedTimes(number_of_legs));
 
-            validateDNFRecords(config_values, config_file_path);
+            // Default entry map with elements (bib number, team name, category, plus one per leg), and no column combining or re-ordering.
+            commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s, _ -> makeDefaultEntryColumnMap(number_of_legs + 3));
+
+            // Each DNF string contains single bib number.
+            Consumer<String> dnf_string_checker = individual_dnf_string -> {
+
+                final String[] elements = individual_dnf_string.split("/");
+                Integer.parseInt(elements[0]);
+                Integer.parseInt(elements[1]);
+            };
+            validateDNFRecords((String) config_values.get(KEY_DNF_FINISHERS), dnf_string_checker, config_file_path);
+
             validateMassStartTimes((String) config_values.get(KEY_MASS_START_ELAPSED_TIMES), config_file_path);
 
             return new ConfigImpl(config_values);
@@ -95,43 +121,31 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
         }
     }
 
-    private void validateDNFRecords(Map<String, Object> config_values, Path config_file_path) {
+    private String defaultMassStartElapsedTimes(final int number_of_legs) {
 
-        final String dnf_string = (String) config_values.get(KEY_DNF_FINISHERS);
-
-        if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(","))
-                try {
-                    // String of form "bib-number/leg-number"
-
-                    final String[] elements = individual_dnf_string.split("/");
-                    Integer.parseInt(elements[0]);
-                    Integer.parseInt(elements[1]);
-
-                } catch (final NumberFormatException _) {
-                    throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
-                }
+        return Stream.generate(() -> format(Duration.ZERO)).
+            limit(number_of_legs).
+            collect(Collectors.joining(","));
     }
 
-    private void validateMassStartTimes(final String mass_start_elapsed_times, Path config_file_path) {
+    private void validateMassStartTimes(final String mass_start_elapsed_times, final Path config_file_path) {
 
-        if (mass_start_elapsed_times != null) {
+        Duration previous_time = null;
 
-            Duration previous_time = null;
-            for (final String time_string : mass_start_elapsed_times.split(",")) {
+        for (final String time_string : mass_start_elapsed_times.split(",")) {
 
-                final Duration mass_start_time;
-                try {
-                    mass_start_time = parseTime(time_string);
-                } catch (final DateTimeParseException _) {
-                    throw new RuntimeException(STR."invalid mass start time for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
-                }
+            final Duration mass_start_time;
+            try {
+                mass_start_time = parseTime(time_string);
 
-                if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
-                    throw new RuntimeException(STR."invalid mass start time order for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
-
-                previous_time = mass_start_time;
+            } catch (final DateTimeParseException _) {
+                throw new RuntimeException(STR."invalid mass start time for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
             }
+
+            if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
+                throw new RuntimeException(STR."invalid mass start time order for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+
+            previous_time = mass_start_time;
         }
     }
 }

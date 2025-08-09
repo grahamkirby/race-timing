@@ -40,6 +40,7 @@ public abstract class Race {
     // TODO rationalise Female/Women gender categories.
     // TODO consolidate input validation.
     // TODO output runner list and duplicate runners in series to processing notes.
+    // TODO allow negative early starts.
     // TODO add junior hill races.
     // TODO allow explicitly recorded dead heat in single race.
     // TODO allow overall dead heat in relay race only where at least one team in a mass start.

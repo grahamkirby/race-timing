@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing_experimental.common.*;
 
@@ -28,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,7 @@ import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.CommonDataProcessor.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_ENTRIES_PATH;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing_experimental.common.RaceEntry.CATEGORY_INDEX;
 
 public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
@@ -68,10 +71,25 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
         }
     }
 
+    private void validateEntryCategory(final String line) {
+
+        final List<String> elements = Arrays.stream(line.split("\t")).toList();
+        final Normalisation normalisation = race.getNormalisation();
+        final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
+
+        try {
+            final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
+            race.getCategoryDetails().lookupEntryCategory(category_name);
+
+        } catch (final RuntimeException _) {
+            throw new RuntimeException(String.join(" ", elements));
+        }
+    }
+
     private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
 
         validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP));
-        validateEntryCategories(entries_path);
+        validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
         validateRawResults(raw_results_path);
         validateBibNumbersUnique(raw_results_path);
@@ -114,30 +132,9 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
                     throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{entries_path.getFileName()}'");
     }
 
-    private void validateEntryCategories(Path entries_path) {
-
-        try {
-            final AtomicInteger counter = new AtomicInteger(0);
-
-            Files.readAllLines(entries_path).stream().
-                map(SingleRaceInput::stripEntryComment).
-                filter(Predicate.not(String::isBlank)).
-                forEach(line -> {
-                    try {
-                        counter.incrementAndGet();
-                        new RaceEntry(Arrays.stream(line.split("\t")).toList(), race);
-                    } catch (final RuntimeException e) {
-                        throw new RuntimeException(STR."invalid category in entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path.getFileName()}'", e);
-                    }
-                });
-        } catch (final IOException _) {
-            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
-        }
-    }
-
     List<RaceEntry> loadEntries(Path entries_path) throws IOException {
 
-        return Files.readAllLines(entries_path).stream().
+        return readAllLines(entries_path).stream().
             map(SingleRaceInput::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), race)).

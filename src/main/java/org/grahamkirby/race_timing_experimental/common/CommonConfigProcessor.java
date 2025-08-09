@@ -22,7 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
 public class CommonConfigProcessor {
 
@@ -42,6 +47,27 @@ public class CommonConfigProcessor {
 
     public Map<String, Object> getConfigValues() {
         return config_values;
+    }
+
+    public static String makeDefaultEntryColumnMap(final int number_of_columns) {
+
+        return Stream.iterate(1, i -> i + 1).
+            map(Object::toString).
+            limit(number_of_columns).
+            collect(Collectors.joining(","));
+    }
+
+    public static void validateDNFRecords(final String dnf_string, final Consumer<String> dnf_string_checker, final Path config_file_path) {
+
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(",")) {
+                try {
+                    dnf_string_checker.accept(individual_dnf_string);
+
+                } catch (final NumberFormatException e) {
+                    throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'", e);
+                }
+            }
     }
 
     public void addRequiredStringProperties(final List<String> keys) {
@@ -75,7 +101,7 @@ public class CommonConfigProcessor {
         config_values.put(key, make_value.apply(value));
     }
 
-    private void addOptionalProperty(final String key, final Function<String, Object> make_value) {
+    public void addOptionalProperty(final String key, final Function<String, Object> make_value) {
 
         final String value = properties.getProperty(key);
         if (value != null) config_values.put(key, make_value.apply(value));

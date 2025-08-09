@@ -29,7 +29,7 @@ public class RaceEntry {
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int NAME_INDEX = 1;
     private static final int CLUB_INDEX = 2;
-    private static final int CATEGORY_INDEX = 3;
+    public static final int CATEGORY_INDEX = 3;
 
     public Participant participant;
     public int bib_number;

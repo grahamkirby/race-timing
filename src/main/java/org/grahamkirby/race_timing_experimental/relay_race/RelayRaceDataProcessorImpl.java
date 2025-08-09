@@ -22,16 +22,12 @@ import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
-import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceData;
-import org.grahamkirby.race_timing_experimental.common.RaceDataProcessor;
-import org.grahamkirby.race_timing_experimental.common.RaceEntry;
+import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -41,6 +37,7 @@ import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.CommonDataProcessor.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.RaceEntry.CATEGORY_INDEX;
 
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
@@ -81,10 +78,24 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         }
     }
 
+    private void validateEntryCategory(final String line) {
+
+        final List<String> elements = Arrays.stream(line.split("\t")).toList();
+        final Normalisation normalisation = race.getNormalisation();
+        final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
+
+        try {
+            final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
+            race.getCategoryDetails().lookupEntryCategory(category_name);
+
+        } catch (final RuntimeException _) {
+            throw new RuntimeException(String.join(" ", elements));
+        }
+    }
     private void validateDataFiles(final Path entries_path, final Path electronic_results_path, final Path paper_results_path) throws IOException {
 
         validateEntriesNumberOfElements(entries_path, (int) race.getConfig().get(KEY_NUMBER_OF_LEGS) + 3, (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP));
-        validateEntryCategories(entries_path);
+        validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
 
         validateRawResults(electronic_results_path);
@@ -146,28 +157,6 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
                 if (paper_results_path != null) message += STR." or '\{paper_results_path.getFileName()}'";
                 throw new RuntimeException(message);
             }
-        }
-    }
-
-    private void validateEntryCategories(Path entries_path) {
-
-        try {
-            final AtomicInteger counter = new AtomicInteger(0);
-
-            Files.readAllLines(entries_path).stream().
-                map(SingleRaceInput::stripEntryComment).
-                filter(Predicate.not(String::isBlank)).
-                forEach(line -> {
-                    try {
-                        counter.incrementAndGet();
-                        makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList(), race);
-
-                    } catch (final RuntimeException e) {
-                        throw new RuntimeException(STR."invalid category in entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path.getFileName()}'", e);
-                    }
-                });
-        } catch (final IOException _) {
-            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
         }
     }
 
