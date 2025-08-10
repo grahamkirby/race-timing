@@ -45,6 +45,7 @@ class RelayRaceMissingData {
     private final RelayRaceImpl race_impl;
 
     RelayRaceMissingData(final Race race) {
+
         this.race = race;
         race_impl = ((RelayRaceImpl)race.getSpecific());
     }
@@ -76,27 +77,24 @@ class RelayRaceMissingData {
 
     private boolean areTimesRecordedForAllRunners() {
 
-        int size = race.getRaceData().getRawResults().size();
-        int size1 = numberOfUniqueBibNumbersRecorded();
-        int numberOfLegs = race_impl.getNumberOfLegs();
-        return size == size1 * numberOfLegs;
-    }
+        final int number_of_times_recorded = race.getRaceData().getRawResults().size();
 
-    private int numberOfUniqueBibNumbersRecorded() {
-
-        return getUniqueBibNumbersRecorded().size();
+        return number_of_times_recorded == getUniqueBibNumbersRecorded().size() * race_impl.getNumberOfLegs();
     }
 
     private Set<Integer> getUniqueBibNumbersRecorded() {
-        return((RelayRaceImpl)race.getSpecific()).getUniqueBibNumbersRecorded();
-    }
 
+        return ((RelayRaceImpl) race.getSpecific()).getUniqueBibNumbersRecorded();
+    }
 
     private int getIndexOfFirstResultWithRecordedTime() {
 
+        final List<RawResult> results = race.getRaceData().getRawResults();
+
         int raw_result_index = 0;
-        while (raw_result_index < race.getRaceData().getRawResults().size() && race.getRaceData().getRawResults().get(raw_result_index).getRecordedFinishTime() == null)
+        while (raw_result_index < results.size() && results.get(raw_result_index).getRecordedFinishTime() == null)
             raw_result_index++;
+
         return raw_result_index;
     }
 
@@ -106,8 +104,10 @@ class RelayRaceMissingData {
 
         for (int i = 0; i < index_of_first_result_with_recorded_time; i++) {
 
-            race.getRaceData().getRawResults().get(i).setRecordedFinishTime(first_recorded_time);
-            race.getRaceData().getRawResults().get(i).appendComment("Time not recorded. No basis for interpolation so set to first recorded time.");
+            final RawResult result = race.getRaceData().getRawResults().get(i);
+
+            result.setRecordedFinishTime(first_recorded_time);
+            result.appendComment("Time not recorded. No basis for interpolation so set to first recorded time.");
         }
     }
 
@@ -156,19 +156,21 @@ class RelayRaceMissingData {
     }
 
     private boolean isLastResult(final int end_index) {
+
         return end_index == race.getRaceData().getRawResults().size() - 1;
     }
 
     private void interpolateTimes(final ContiguousSequence sequence, final Duration time_step) {
 
-        final Duration finish_time_before_missing_sequence = race.getRaceData().getRawResults().get(sequence.start_index - 1).getRecordedFinishTime();
+        final List<RawResult> results = race.getRaceData().getRawResults();
+        final Duration finish_time_before_missing_sequence = results.get(sequence.start_index - 1).getRecordedFinishTime();
 
         for (int i = 0; i <= sequence.end_index - sequence.start_index; i++) {
 
             final Duration interpolated_finish_time = finish_time_before_missing_sequence.plus(time_step.multipliedBy(i + 1));
             final Duration rounded_interpolated_finish_time = roundToIntegerSeconds(interpolated_finish_time);
 
-            final RawResult interpolated_result = race.getRaceData().getRawResults().get(sequence.start_index + i);
+            final RawResult interpolated_result = results.get(sequence.start_index + i);
 
             interpolated_result.setRecordedFinishTime(rounded_interpolated_finish_time);
             interpolated_result.appendComment("Time not recorded. Time interpolated.");
@@ -219,8 +221,10 @@ class RelayRaceMissingData {
 
     private int getPositionOfNextMissingBibNumber() {
 
-        for (int i = 0; i < race.getRaceData().getRawResults().size(); i++)
-            if (race.getRaceData().getRawResults().get(i).getBibNumber() == UNKNOWN_BIB_NUMBER) return i + 1;
+        final List<RawResult> results = race.getRaceData().getRawResults();
+
+        for (int i = 0; i < results.size(); i++)
+            if (results.get(i).getBibNumber() == UNKNOWN_BIB_NUMBER) return i + 1;
 
         return 0;
     }
@@ -247,9 +251,10 @@ class RelayRaceMissingData {
 
     private List<TeamSummaryAtPosition> summarise(final int position) {
 
-        return new ArrayList<>(getUniqueBibNumbersRecorded().stream().map(bib_number -> summarise(position, bib_number)).toList());
-
-//        return new ArrayList<>(race.getRaceData().getEntries().stream().map(entry -> summarise(position, entry.bib_number)).toList());
+        return new ArrayList<>(
+            getUniqueBibNumbersRecorded().stream().
+                map(bib_number -> summarise(position, bib_number)).
+                toList());
     }
 
     private TeamSummaryAtPosition summarise(final int position, final int bib_number) {
@@ -285,7 +290,8 @@ class RelayRaceMissingData {
 
     private Duration getNextTeamFinishTime(final int position, final int bib_number) {
 
-        for (int i = position + 1; i <= race.getRaceData().getRawResults().size(); i++) {
+        final List<RawResult> results = race.getRaceData().getRawResults();
+        for (int i = position + 1; i <= results.size(); i++) {
 
             final Duration finish_time = getFinishTimeIfBibNumberMatches(bib_number, i);
             if (finish_time != null) return finish_time;
@@ -297,9 +303,8 @@ class RelayRaceMissingData {
     private Duration getFinishTimeIfBibNumberMatches(final int bib_number, final int position) {
 
         final RawResult result = race.getRaceData().getRawResults().get(position - 1);
-        final int result_bib_number = result.getBibNumber();
 
-        return (result_bib_number == bib_number) ? result.getRecordedFinishTime() : null;
+        return result.getBibNumber() == bib_number ? result.getRecordedFinishTime() : null;
     }
 
     private static void sort(final List<TeamSummaryAtPosition> summaries) {

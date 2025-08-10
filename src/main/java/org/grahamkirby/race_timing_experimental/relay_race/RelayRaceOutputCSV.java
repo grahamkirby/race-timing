@@ -201,9 +201,7 @@ public class RelayRaceOutputCSV {
 
     public static String renderDuration(final RaceResult result, final String alternative) {
 
-        if (!result.canComplete()) return alternative;
-
-        return format(((SingleRaceResult)result).duration());
+        return result.canComplete() ? format(((SingleRaceResult)result).duration()) : alternative;
     }
 
     public static String renderDuration(final RaceResult result) {

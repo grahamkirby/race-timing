@@ -221,8 +221,8 @@ public class RelayRaceOutputText {
 
             printResults(writer, legs_finished_per_team);
 
-            final List<Integer> bib_numbers_with_missing_times = ((RelayRaceImpl)race.getSpecific()).getBibNumbersWithMissingTimes(legs_finished_per_team);
-            final List<Duration> times_with_missing_bib_numbers = ((RelayRaceImpl)race.getSpecific()).getTimesWithMissingBibNumbers();
+            final List<Integer> bib_numbers_with_missing_times = ((RelayRaceImpl) race.getSpecific()).getBibNumbersWithMissingTimes(legs_finished_per_team);
+            final List<Duration> times_with_missing_bib_numbers = ((RelayRaceImpl) race.getSpecific()).getTimesWithMissingBibNumbers();
 
             final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
 

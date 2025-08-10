@@ -37,8 +37,6 @@ public class RelayRaceFactory {
         race.setResultsCalculator(new RelayRaceResultsCalculatorImpl());
         race.setResultsOutput(new RelayRaceResultsOutput());
 
-//        race.completeConfiguration();
-
         return race;
     }
 }
