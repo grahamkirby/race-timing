@@ -18,6 +18,9 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 import java.nio.file.Path;
+import java.time.Duration;
+
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 
 public interface Config {
 
@@ -54,5 +57,29 @@ public interface Config {
     String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
     String KEY_START_OFFSET = "START_OFFSET";
 
+    /** Displayed in results for runners that did not complete the course. */
+    String DNF_STRING = "DNF";
+
+    /** Used when a result is recorded without a bib number. */
+    int UNKNOWN_BIB_NUMBER = 0;
+
     Object get(String key);
+
+    /** Encodes a single value by surrounding with quotes if it contains a comma. */
+    static String encode(final String s) {
+        return s.contains(",") ? STR."\"\{s}\"" : s;
+    }
+
+    static String renderDuration(final Duration duration, final String alternative) {
+
+        return duration != null ? format(duration) : alternative;
+    }
+
+    static String renderDuration(final RaceResult r, final String alternative) {
+
+        SingleRaceResult result = (SingleRaceResult) r;
+        if (!result.canComplete()) return alternative;
+
+        return format(result.duration());
+    }
 }

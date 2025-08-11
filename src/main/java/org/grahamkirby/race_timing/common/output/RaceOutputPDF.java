@@ -35,6 +35,7 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 /** Base class for PDF output. */
 public abstract class RaceOutputPDF extends RaceOutput {
@@ -102,6 +103,19 @@ public abstract class RaceOutputPDF extends RaceOutput {
             printPrizes(document, category);
             return null;
         });
+
+        List<String> team_prizes = race.getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            document.add(new Paragraph("Team Prizes").
+                setFont(getFont(PRIZE_FONT_BOLD_NAME)).
+                setUnderline().
+                setPaddingTop(PRIZE_FONT_SIZE));
+
+            for (String team_prize : team_prizes) {
+                document.add(new Paragraph(team_prize));
+            }
+        }
     }
 
     /** Prints prizes within a given category. */
@@ -198,6 +212,11 @@ public abstract class RaceOutputPDF extends RaceOutput {
     // Not implemented since PDF created using PDF document writer rather than output stream.
     @Override
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
         throw new UnsupportedOperationException();
     }
 

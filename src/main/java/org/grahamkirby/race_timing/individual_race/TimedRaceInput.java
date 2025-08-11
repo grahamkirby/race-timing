@@ -183,7 +183,8 @@ public abstract class TimedRaceInput extends SingleRaceInput {
                 filter(Predicate.not(String::isBlank)).
                 forEach(line -> {
                     counter.incrementAndGet();
-                    if (line.split("\t").length != number_of_columns)
+//                    if (line.split("\t").length != number_of_columns)
+                    if (line.split("\t").length < number_of_columns)
                         throw new RuntimeException(STR."invalid entry '\{line}' at line \{counter.get()} in file '\{entries_path}'");
                 });
         } catch (final IOException _) {

@@ -21,7 +21,6 @@ package org.grahamkirby.race_timing_experimental.relay_race;
 import org.grahamkirby.race_timing.common.Team;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing_experimental.common.*;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualResultPrinterHTML;
 
@@ -37,16 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 
 public class RelayRaceOutputHTML {
 
-    /** Displayed in results for runners that did not complete the course. */
-    public static final String DNF_STRING = "DNF";
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     private final Race race;
@@ -253,24 +250,29 @@ public class RelayRaceOutputHTML {
         }
     }
 
-    /** Encodes a single value by surrounding with quotes if it contains a comma. */
-    public static String encode(final String s) {
-        return s.contains(",") ? STR."\"\{s}\"" : s;
-    }
-
-    public static String renderDuration(final Duration duration, final String alternative) {
-
-        return duration != null ? format(duration) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult result, final String alternative) {
-
-        return RelayRaceOutputCSV.renderDuration(result, alternative);
-    }
-
-    public static String renderDuration(final RaceResult result) {
-        return renderDuration(result, "");
-    }
+//    /** Encodes a single value by surrounding with quotes if it contains a comma. */
+//    public static String encode(final String s) {
+//        return s.contains(",") ? STR."\"\{s}\"" : s;
+//    }
+//
+//    public static String renderDuration(final Duration duration, final String alternative) {
+//
+//        return duration != null ? format(duration) : alternative;
+//    }
+//
+//    public static String renderDuration(final RaceResult result, final String alternative) {
+//
+//        return RelayRaceOutputCSV.renderDuration(result, alternative);
+//    }
+//
+//    public static String renderDuration(final RaceResult result) {
+//        return renderDuration(result, "");
+//    }
+//
+//    public static String renderDuration(final RaceResult result, final String alternative) {
+//
+//        return result.canComplete() ? format(((SingleRaceResult) result).duration()) : alternative;
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -416,7 +418,7 @@ public class RelayRaceOutputHTML {
             elements.add(race.getNormalisation().htmlEncode(result.entry.participant.name));
             elements.add(result.entry.participant.category.getLongName());
 
-            for (final String element : ((RelayRaceImpl)race.getSpecific()).getLegDetails(result))
+            for (final String element : ((RelayRaceImpl) race.getSpecific()).getLegDetails(result))
                 elements.add(race.getNormalisation().htmlEncode(element));
 
             return elements;
@@ -441,7 +443,7 @@ public class RelayRaceOutputHTML {
             RelayRaceResult result = (RelayRaceResult) r;
 
             writer.append(STR."""
-                    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result)}</li>
+                    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result, DNF_STRING)}</li>
                 """);
         }
 

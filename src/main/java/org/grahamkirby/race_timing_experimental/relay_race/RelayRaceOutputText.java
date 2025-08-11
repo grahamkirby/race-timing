@@ -19,13 +19,8 @@ package org.grahamkirby.race_timing_experimental.relay_race;
 
 
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceResult;
-import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
-import org.grahamkirby.race_timing_experimental.common.ResultPrinterText;
-import org.grahamkirby.race_timing_experimental.common.Normalisation;
+import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,10 +37,8 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
-
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.renderDuration;
 
 /** Base class for plaintext output. */
 @SuppressWarnings("preview")
@@ -344,7 +337,7 @@ public class RelayRaceOutputText {
         public void printResult(final RaceResult r) throws IOException {
             RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result)}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{result.entry.participant.category.getLongName()}) \{renderDuration(result, DNF_STRING)}\n");
         }
     }
 }

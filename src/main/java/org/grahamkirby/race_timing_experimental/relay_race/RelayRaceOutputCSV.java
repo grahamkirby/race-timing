@@ -29,18 +29,13 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceOutputCSV {
 
-    /** Displayed in results for runners that did not complete the course. */
-    public static final String DNF_STRING = "DNF";
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
@@ -189,24 +184,24 @@ public class RelayRaceOutputCSV {
         return "";
     }
 
-    /** Encodes a single value by surrounding with quotes if it contains a comma. */
-    public static String encode(final String s) {
-        return s.contains(",") ? STR."\"\{s}\"" : s;
-    }
-
-    public static String renderDuration(final Duration duration, final String alternative) {
-
-        return duration != null ? format(duration) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult result, final String alternative) {
-
-        return result.canComplete() ? format(((SingleRaceResult)result).duration()) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult result) {
-        return renderDuration(result, "");
-    }
+//    /** Encodes a single value by surrounding with quotes if it contains a comma. */
+//    public static String encode(final String s) {
+//        return s.contains(",") ? STR."\"\{s}\"" : s;
+//    }
+//
+//    public static String renderDuration(final Duration duration, final String alternative) {
+//
+//        return duration != null ? format(duration) : alternative;
+//    }
+//
+//    public static String renderDuration(final RaceResult result, final String alternative) {
+//
+//        return result.canComplete() ? format(((SingleRaceResult)result).duration()) : alternative;
+//    }
+//
+//    public static String renderDuration(final RaceResult result) {
+//        return renderDuration(result, "");
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -237,8 +232,8 @@ public class RelayRaceOutputCSV {
 
             writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},\{result.entry.participant.category.getLongName()},");
 
-            final List<String> leg_strings = ((RelayRaceImpl)race.getSpecific()).getLegDetails(result).stream().
-                map(RelayRaceOutputCSV::encode).toList();
+            final List<String> leg_strings = ((RelayRaceImpl) race.getSpecific()).getLegDetails(result).stream().
+                map(Config::encode).toList();
 
             writer.append(String.join(",", leg_strings));
             writer.append(LINE_SEPARATOR);

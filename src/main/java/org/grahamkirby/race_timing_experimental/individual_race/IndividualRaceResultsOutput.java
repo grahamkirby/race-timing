@@ -32,8 +32,8 @@ import java.time.Duration;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.OVERALL_RESULTS_HEADER;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.encode;
 
 @SuppressWarnings("preview")
 public class IndividualRaceResultsOutput implements ResultsOutput {
@@ -57,9 +57,6 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         output_text = new IndividualRaceOutputText(race);
         output_PDF = new IndividualRaceOutputPDF(race);
     }
-
-    /** Displayed in results for runners that did not complete the course. */
-    public static final String DNF_STRING = "DNF";
 
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
@@ -141,6 +138,11 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         }
     }
 
+//    /** Encodes a single value by surrounding with quotes if it contains a comma. */
+//    public static String encode(final String s) {
+//        return s.contains(",") ? STR."\"\{s}\"" : s;
+//    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -217,22 +219,22 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         return String.valueOf(score);
     }
 
-    public static String renderDuration(final Duration duration, final String alternative) {
+//    public static String renderDuration(final Duration duration, final String alternative) {
+//
+//        return duration != null ? format(duration) : alternative;
+//    }
+//
+//    public static String renderDuration(final RaceResult result, final String alternative) {
+//
+//        if (!result.canComplete()) return alternative;
+//
+//        // Messy because duration() is defined for single races and also tour races; other series races use scores rather than aggregate times.
+//        final Duration duration =  ((SingleRaceResult) result).duration();
+//
+//        return format(duration);
+//    }
 
-        return duration != null ? format(duration) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult result, final String alternative) {
-
-        if (!result.canComplete()) return alternative;
-
-        // Messy because duration() is defined for single races and also tour races; other series races use scores rather than aggregate times.
-        final Duration duration =  ((SingleRaceResult) result).duration();
-
-        return format(duration);
-    }
-
-    public static String renderDuration(final RaceResult result) {
-        return renderDuration(result, "");
-    }
+//    public static String renderDuration(final RaceResult result) {
+//        return renderDuration(result, "");
+//    }
 }

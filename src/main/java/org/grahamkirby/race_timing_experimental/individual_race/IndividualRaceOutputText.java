@@ -34,9 +34,7 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACE_NAME_FOR_RESULTS;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.renderDuration;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 /** Base class for plaintext output. */
 @SuppressWarnings("preview")
@@ -70,7 +68,7 @@ public class IndividualRaceOutputText {
             race.appendToNotes("Converted to title case: " + converted_words);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "processing_notes", (String) race.getConfig().get(KEY_YEAR)))) {
-            writer.append(race.getNotes().toString());
+            writer.append(race.getNotes());
         }
     }
 
@@ -214,7 +212,7 @@ public class IndividualRaceOutputText {
         public void printResult(final RaceResult r) throws IOException {
             SingleRaceResult result = (SingleRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{renderDuration(result)}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{Config.renderDuration(result, DNF_STRING)}\n");
         }
     }
 }

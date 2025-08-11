@@ -24,13 +24,11 @@ import org.grahamkirby.race_timing_experimental.common.RaceResult;
 import org.grahamkirby.race_timing_experimental.common.ResultPrinterHTML;
 import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
 
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.renderDuration;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceResultsOutput.DNF_STRING;
+import static org.grahamkirby.race_timing_experimental.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing_experimental.common.Config.renderDuration;
 
 /** Base class for printing results to HTML files. */
 public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {

@@ -28,7 +28,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResult;
 import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
@@ -40,13 +39,11 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.*;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
+import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceOutputPDF {
 
@@ -60,8 +57,6 @@ public class RelayRaceOutputPDF {
     private static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
     private static final int PRIZE_FONT_SIZE = 24;
 
-    /** Displayed in results for runners that did not complete the course. */
-    public static final String DNF_STRING = "DNF";
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
@@ -225,24 +220,24 @@ public class RelayRaceOutputPDF {
         return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.pdf");
     }
 
-    /** Encodes a single value by surrounding with quotes if it contains a comma. */
-    public static String encode(final String s) {
-        return s.contains(",") ? STR."\"\{s}\"" : s;
-    }
-
-    public static String renderDuration(final Duration duration, final String alternative) {
-
-        return duration != null ? format(duration) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult result, final String alternative) {
-
-        return RelayRaceOutputCSV.renderDuration(result, alternative);
-    }
-
-    public static String renderDuration(final RaceResult result) {
-        return renderDuration(result, "");
-    }
+//    /** Encodes a single value by surrounding with quotes if it contains a comma. */
+//    public static String encode(final String s) {
+//        return s.contains(",") ? STR."\"\{s}\"" : s;
+//    }
+//
+//    public static String renderDuration(final Duration duration, final String alternative) {
+//
+//        return duration != null ? format(duration) : alternative;
+//    }
+//
+//    public static String renderDuration(final RaceResult result, final String alternative) {
+//
+//        return RelayRaceOutputCSV.renderDuration(result, alternative);
+//    }
+//
+//    public static String renderDuration(final RaceResult result) {
+//        return renderDuration(result, "");
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -265,6 +260,6 @@ public class RelayRaceOutputPDF {
 
         RelayRaceResult result = (RelayRaceResult) r;
 
-        return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, result.entry.participant.category.getLongName(), renderDuration(result));
+        return new PrizeWinnerDetails(result.position_string, result.entry.participant.name, result.entry.participant.category.getLongName(), renderDuration(result, DNF_STRING));
     }
 }

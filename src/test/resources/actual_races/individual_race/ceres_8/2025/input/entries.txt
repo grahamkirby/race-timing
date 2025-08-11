@@ -1,0 +1,155 @@
+1	Aitken	David	Male	Dundee Road Runners	MV50	51
+2	Amos	Kevin	Male	Central Athletics Club	M	33
+3	Anderson	Douglas	Male	Annan & District AC	MV60	69
+4	Baillie	Keiron	Male	East Fife Triathlon Club	MV50	54
+5	Baird	David	Male	Dundee Road Runners	MV40	41
+6	Bennet	Aaron	Male	PH Racing Club	M	21
+7	Bennett	Nick	Male	Dundee Road Runners	M	31
+8	Binnie	Jane	Female	Wee County Harriers	FV70	72
+9	Blair	Campbell	Male	Pitreavie AAC	MV50	50
+10	BORGEAL	ROMAIN	Male	Dundee Hawkhill Harriers	M	32
+11	Bowers	Evan	Male	Dundee Road Runners	M	25
+12	Briggs	Charlotte	Female	Carnegie Harriers	F	38
+13	Buck	Matt	Male	Dundee Road Runners	M	39
+14	Buckett	Stuart	Male	Fife AC	MV50	54
+15	Burnett	Isobel	Female	Carnegie Harriers	FV60	68
+16	Campbell	Colin	Male	RunSum running Kirkcaldy	MV40	44
+17	Chapman	Phil	Male	Carnegie Harriers	MV60	61
+18	Christie	Gordon	Male	Leven Las Vegas	MV50	59
+19	Clark	Roger	Male	PH Racing Club	MV50	54
+20	Cleary	Richard	Male	Dundee Road Runners	MV60	61
+21	collins	elliot	Male	Perth Road Runners	M	32
+22	Compston	Timothy	Male	Pitreavie AAC	MV50	56
+23	Cook	Ken	Male	Pitreavie AAC	MV50	53
+24	Cook	Jacqueline	Female	Falkland Trail Runners	FV40	48
+25	COOPER	Debbie	Female	Pitreavie AAC	FV60	65
+26	Cuthbertson	Garry	Male	Pitreavie AAC	MV50	51
+27	Davie	Barry	Male	Carnegie Harriers	MV40	49
+28	Dickson	Janet	Female	Fife AC	FV50	51
+29	Dunning	Ryan	Male	Fife AC	MV40	40
+30	Duthie	Ewan	Male	Dundee Road Runners	M	33
+31	Edward	Duncan	Male	Dundee Road Runners	MV40	45
+32	Evans	Yvonne	Female	Dundee Road Runners	FV40	42
+33	Forbes	Malcolm	Male	Dundee Road Runners	MV60	67
+34	Forsyth	Karen	Female	Carnegie Harriers	FV40	41
+35	Fyffe	Lucy	Female	Dundee Road Runners	FV50	57
+36	Gage	Orla	Female	Anster Haddies Running Club	FU20	16
+37	Gage	Will	Male	Anster Haddies Running Club	MV50	54
+38	Gardener	Sandra	Female	Falkland Trail Runners	FV50	53
+39	Gardener	Alan	Male	Falkland Trail Runners	MV50	54
+40	Gelly	Keith	Male	Dundee Road Runners	MV50	57
+41	gibson	Peter	Male	PH Racing Club	M	31
+42	Gillespie	Douglas	Male	Dundee Road Runners	MV60	60
+43	Graham	Clare	Female	PH Racing Club	FV50	56
+44	Graham	Darren	Male		MV40	44
+45	Green	Stuart	Male	PH Racing Club	MV40	40
+46	Greenlees	Julia	Female	Strathearn Harriers	FV60	67
+47	Gudgin	Alistair	Male	Fife AC	M	29
+48	Gudgin	Joy	Female	Carnegie Harriers	FV60	62
+49	Halley Ben-Shabat	Anne	Female	Pitreavie AAC	FV60	64
+50	Hammond	Malcolm	Male	PH Racing Club	MV70	75
+51	Harley	Andy	Male	Fife AC	MV40	42
+52	Hart	Adam	Male	Dundee Road Runners	M	26
+53	Hay	Debz Way	Female	Anster Haddies Running Club	FV50	58
+54	Heeles	Ewan	Male	Pitreavie AAC	MV40	42
+55	Herd	Lynne	Female	Anster Haddies Running Club	FV40	49
+56	Herron	Mike	Male	Dundee Hawkhill Harriers	MV40	41
+57	Holland	Lee	Male	Carnegie Harriers	MV50	58
+58	Hughes	Dominic	Male	Dundee Road Runners	MV40	41
+59	Hukins	Ben	Male	PH Racing Club	MV40	47
+60	Hunter	Derek	Male	Carnegie Harriers	MV50	54
+61	Hunter	Ross	Male	Carnegie Harriers	M	24
+62	Hutchison	Scott	Male	STAART	M	39
+63	Hynd	John	Male	Carnegie Harriers	MV60	65
+64	ingledew	stephen	Male	Edinburgh Athletics Club	MV60	62
+65	Jeynes	Simon	Male	Fife AC	MV40	45
+66	Johnston	David	Male	Recreational Running	MV50	53
+67	Kay	Martin	Male	Pitreavie AAC	MV40	49
+68	Kelly	Fiona	Female	Wee County Harriers	F	23
+69	Kelly	Jim	Male	Lonely Goat RC	MV60	63
+70	King	Gail	Female	Carnegie Harriers	FV50	59
+71	Kinnaird	Timothy	Male	Fife AC	MV40	45
+72	Krichel	Nils	Male	Carnegie Harriers	MV40	40
+73	Leishman	Paul	Male		MV50	51
+74	Leonard	Catherine	Female	HKLRRC	FV50	59
+75	Lessels	Jamie	Male	Fife AC	M	21
+76	Lindsay	Michael	Male	PH Racing Club	MV40	43
+77	Littleson	Mairi	Female	Dundee Road Runners	F	34
+78	Livingstone	Connor	Male	Dundee Road Runners	M	28
+79	Lockhart	Eilidh	Female	Wee County Harriers	F	26
+80	Lownie	Kristin	Female	PH Racing Club	FV40	43
+84	Lowry	Sarah	Female		FV40	42
+87	Luke	Iain	Male	Dundee Road Runners	MV70	73
+88	Lynch	Shelby	Female	Carnegie Harriers	F	31
+90	Mackenzie	Mark	Male	PH Racing Club	MV50	52
+91	Mallia	Mary	Female		FV60	62
+92	malvern	stephen	Male		MV50	57
+96	Mann	Phil	Male		MV40	41
+101	Marshall	Sarah	Female	Carnegie Harriers	FV40	42
+106	Martin	Tony	Male	Fife AC	MV70	73
+110	Martin	Margaret	Female	Fife AC	FV60	69
+123	Martin	Clare	Female	Strathearn Harriers	FV60	62
+127	McAllister	Kenneth	Male	Pitreavie AAC	MV60	67
+134	McCrickard	Beth Mariecia	Female		FU20	17
+135	McCrorie	Kath	Female	Carnegie Harriers	FV50	55
+136	McDermott	Ronan	Male	Strathearn Harriers	MV40	41
+137	McDonald	Kenny	Male	Pitreavie AAC	MV40	49
+138	McGill	Alasdair	Male	Perth Road Runners	MV50	56
+139	McIntosh	Abby	Female		FV40	46
+140	Mclean	Mark	Male	PH Racing Club	MV50	56
+141	Mcneil	Luke	Male	PH Racing Club	M	26
+142	McNeilly	Alison	Female	Dundee Road Runners	FV40	48
+143	Menzies	Julie	Female	PH Racing Club	FV50	52
+144	Millar	Neil	Male	Fife AC	MV50	53
+145	Milton	Robert	Male	PH Racing Club	MV60	61
+146	Mitchell	Michael	Male	Dundee Road Runners	MV50	56
+147	Morris	Jennifer	Female	Fife AC	FV60	66
+148	Mudie	David	Male	Kinross Road Runners	MV40	41
+149	Murray	Janet	Female	Falkirk Victoria Harriers	FV40	45
+150	Murray	Alison	Female	Carnegie Harriers	FV50	50
+151	Murray	Alan	Male	Carnegie Harriers	MV50	52
+152	Murray	Josie	Female	Kirkcaldy Wizards	FV40	42
+153	Myles	John	Male	Strathearn Harriers	MV40	49
+154	Neilson	Thomas	Male	Pitreavie AAC	MV40	42
+155	Newton	Matt	Male	Kinross Road Runners	MV50	51
+156	Nicolson	Kevin	Male		MV40	49
+157	Parkin	Angie	Female	Carnegie Harriers	FV50	55
+158	Paterson	Sarah	Female	PH Racing Club	FV40	40
+159	Pattison	Pamela	Female	Pitreavie AAC	FV70	73
+160	Powell	Laura	Female	Wee County Harriers	FV40	46
+161	Provan	Louise	Female	Falkland Trail Runners	FV40	48
+162	Proven	Ally	Male	Pitreavie AAC	MV40	42
+163	Proven	Debbie	Female	Pitreavie AAC	FV40	49
+164	Pugh	David	Male		MV40	42
+165	Rainey	Tom	Male	Anster Haddies Running Club	MV40	45
+166	Reilly	Logan	Male	Anster Haddies Running Club	MU20	16
+167	Rena	Graham	Male	Dundee Road Runners	MV50	52
+168	Richardson	Michael	Male	Dundee Road Runners	M	27
+169	Ritchie	Peter	Male	Perth Road Runners	MV60	64
+170	Rodger	Iain	Male		MV40	43
+171	Rodgers	Lewis	Male	Fife AC	M	35
+172	Rogerson	Robert	Male	Kirkintilloch Olympians	MV60	64
+173	Rollo	Martin	Male	Dundee Road Runners	MV60	60
+174	Royden	Michael	Male	Dundee Road Runners	MV50	57
+175	Sanderson	Michael	Male	Fife AC	M	22
+176	Seefeldt	Scott	Male	Lomond Hill Runners	MV40	44
+177	Shenton	Rebecca	Female	Dundee Road Runners	F	28
+178	Slade	Steven	Male		MV50	58
+179	Small	Arron	Male	Dundee Road Runners	M	33
+180	Spowart	Kevin	Male	Carnegie Harriers	MV40	45
+181	Squires	James	Male	Pitreavie AAC	MV40	41
+182	Stewart	Jamie	Male	Dundee Road Runners	MV40	45
+183	Stewart	Rachel	Female	Wee County Harriers	F	28
+184	Stirling	Graeme	Male	Carnegie Harriers	MV60	65
+185	Tavendale	Amy	Female	Dundee Road Runners	FV40	45
+186	Thornton-Granville	Claire	Female	Dundee Road Runners	FV40	46
+187	Tierney	John	Male	Dundee Road Runners	MV50	50
+188	Van Rensburg	Ruan	Male	Fife AC	M	22
+189	Van Zyl	Gerhard	Male	Fife AC	MV50	51
+190	Vandermotten	Keith	Male	Pitreavie AAC	MV60	65
+191	Wade	Nick	Male	Anster Haddies Running Club	MV50	53
+192	Waring	Philip	Male	PH Racing Club	M	30
+193	Watson	Nicola	Female	Strathearn Harriers	FV50	58
+194	Webster	David	Male	Dundee Road Runners	M	36
+195	Wellcoat	Sarah	Female	Carnegie Harriers	F	35
+196	Young	Carol	Female	EK Fitness	FV60	61

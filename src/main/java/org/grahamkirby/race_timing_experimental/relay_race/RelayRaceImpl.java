@@ -28,11 +28,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
-import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing_experimental.relay_race.RelayRaceResultsCalculatorImpl.*;
 
 public class RelayRaceImpl implements SpecificRace {
@@ -138,7 +136,7 @@ public class RelayRaceImpl implements SpecificRace {
 
             final String leg_runner_names = ((Team)leg_result.entry.participant).runner_names.get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
-            final String leg_time = renderDuration(leg_result);
+            final String leg_time = renderDuration(leg_result, DNF_STRING);
             final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
 
             leg_details.add(leg_runner_names + leg_mass_start_annotation);
@@ -216,10 +214,10 @@ public class RelayRaceImpl implements SpecificRace {
         return Normalisation.getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(Normalisation.getLastNameOfFirstRunner(r2.getParticipantName()));
     }
 
-    private static String renderDuration(final RaceResult result) {
-
-        return RelayRaceOutputCSV.renderDuration(result, DNF_STRING);
-    }
+//    private static String renderDuration(final RaceResult result) {
+//
+//        return RelayRaceOutputCSV.renderDuration(result, DNF_STRING);
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -38,12 +38,10 @@ import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_YEAR;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class IndividualRaceOutputHTML {
 
-    /** Displayed in results for runners that did not complete the course. */
-    public static final String DNF_STRING = "DNF";
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     private final Race race;
@@ -243,23 +241,23 @@ public class IndividualRaceOutputHTML {
     }
 
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
-    public static String encode(final String s) {
-        return s.contains(",") ? STR."\"\{s}\"" : s;
-    }
-
-    public static String renderDuration(final Duration duration, final String alternative) {
-
-        return duration != null ? format(duration) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult result, final String alternative) {
-
-        return IndividualRaceOutputCSV.renderDuration(result, alternative);
-    }
-
-    public static String renderDuration(final RaceResult result) {
-        return renderDuration(result, "");
-    }
+//    public static String encode(final String s) {
+//        return s.contains(",") ? STR."\"\{s}\"" : s;
+//    }
+//
+//    public static String renderDuration(final Duration duration, final String alternative) {
+//
+//        return duration != null ? format(duration) : alternative;
+//    }
+//
+//    public static String renderDuration(final RaceResult result, final String alternative) {
+//
+//        return IndividualRaceOutputCSV.renderDuration(result, alternative);
+//    }
+//
+//    public static String renderDuration(final RaceResult result) {
+//        return renderDuration(result, "");
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -310,7 +308,7 @@ public class IndividualRaceOutputHTML {
 
             SingleRaceResult result = (SingleRaceResult) r;
 
-            writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result)}</li>\n");
+            writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result, DNF_STRING)}</li>\n");
         }
 
         @Override

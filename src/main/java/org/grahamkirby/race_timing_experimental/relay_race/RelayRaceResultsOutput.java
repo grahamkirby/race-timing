@@ -62,9 +62,6 @@ public class RelayRaceResultsOutput implements ResultsOutput {
         output_PDF = new RelayRaceOutputPDF(race);
     }
 
-    /** Displayed in results for runners that did not complete the course. */
-    public static final String DNF_STRING = "DNF";
-
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,21 +237,21 @@ public class RelayRaceResultsOutput implements ResultsOutput {
         return String.valueOf(score);
     }
 
-    public static String renderDuration(final Duration duration, final String alternative) {
-
-        return duration != null ? format(duration) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult result, final String alternative) {
-
-        if (!result.canComplete()) return alternative;
-
-        final Duration duration = ((RelayRaceResult) result).duration();
-
-        return format(duration);
-    }
-
-    public static String renderDuration(final RaceResult result) {
-        return renderDuration(result, "");
-    }
+//    public static String renderDuration(final Duration duration, final String alternative) {
+//
+//        return duration != null ? format(duration) : alternative;
+//    }
+//
+//    public static String renderDuration(final RaceResult result, final String alternative) {
+//
+//        if (!result.canComplete()) return alternative;
+//
+//        final Duration duration = ((RelayRaceResult) result).duration();
+//
+//        return format(duration);
+//    }
+//
+//    public static String renderDuration(final RaceResult result) {
+//        return renderDuration(result, "");
+//    }
 }

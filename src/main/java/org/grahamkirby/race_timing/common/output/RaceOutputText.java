@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
@@ -83,6 +84,22 @@ public abstract class RaceOutputText extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race_name_for_filenames, "processing_notes", year))) {
             writer.append(race.getNotes().toString());
+        }
+    }
+
+    @Override
+    void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
+
+        List<String> team_prizes = race.getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            writer.append("Team Prizes\n");
+            writer.append("-----------\n\n");
+
+            for (String team_prize : team_prizes) {
+                writer.append(team_prize);
+                writer.append(LINE_SEPARATOR);
+            }
         }
     }
 

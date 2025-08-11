@@ -19,15 +19,12 @@ package org.grahamkirby.race_timing.common.output;
 
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
-import org.grahamkirby.race_timing.series_race.tour.TourRaceResult;
-import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
-import java.time.Duration;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_CSV;
-import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 /** Base class for CSV output. */
 public abstract class RaceOutputCSV extends RaceOutput {
@@ -78,5 +75,10 @@ public abstract class RaceOutputCSV extends RaceOutput {
     @Override
     public String getPrizeCategoryFooter() {
         return "";
+    }
+
+    @Override
+    void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
+        throw new UnsupportedOperationException();
     }
 }

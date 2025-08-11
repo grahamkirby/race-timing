@@ -173,6 +173,10 @@ public abstract class Race {
     protected abstract void outputResults() throws IOException;
     protected abstract List<Comparator<RaceResult>> getComparators();
 
+    public List<String> getTeamPrizes() {
+        return List.of();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void processResults() throws IOException {

@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.common.output;
 
 
+import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
@@ -231,13 +232,17 @@ public abstract class RaceOutput {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    void printPrizes(final OutputStreamWriter writer) {
+    void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         printPrizes(category -> {
             printPrizes(writer, category);
             return null;
         });
+
+        printTeamPrizes(writer);
     }
+
+    abstract void printTeamPrizes(final OutputStreamWriter writer) throws IOException;
 
     /** Prints prizes within a given category. */
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {

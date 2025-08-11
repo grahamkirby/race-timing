@@ -48,6 +48,11 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
     }
 
     @Test
+    void ceres82025() throws Exception {
+        testExpectedCompletion("actual_races/individual_race/ceres_8/2025");
+    }
+
+    @Test
     void cupar52025() throws Exception {
         testExpectedCompletion("actual_races/individual_race/cupar_5/2025");
     }

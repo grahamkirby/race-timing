@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
@@ -73,6 +74,22 @@ public abstract class RaceOutputHTML extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+        }
+    }
+
+    @Override
+    void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
+
+        List<String> team_prizes = race.getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            writer.append("<h4>Team Prizes</h4>").append(LINE_SEPARATOR);
+            writer.append("<ul>").append(LINE_SEPARATOR);
+
+            for (String team_prize : team_prizes)
+                writer.append("<li>" + team_prize + "</li>").append(LINE_SEPARATOR);
+
+            writer.append("</ul>").append(LINE_SEPARATOR);
         }
     }
 

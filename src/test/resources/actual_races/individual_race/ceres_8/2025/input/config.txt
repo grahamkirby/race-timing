@@ -1,0 +1,18 @@
+YEAR = 2025
+RACE_NAME_FOR_RESULTS = Ceres 8
+RACE_NAME_FOR_FILENAMES = ceres_8
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+CATEGORY_MAP_PATH = category_map.csv
+CATEGORIES_PRIZE_PATH = categories_prize_individual_senior.csv
+
+# Relative to project root directory.
+CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+
+# Entry column map for data received from EntryCentral.
+# Column 2 is last name, column 3 is first name.
+ENTRY_COLUMN_MAP = 1,3-2,5,6
+
+NUMBER_TO_COUNT_FOR_TEAM_PRIZE = 3
