@@ -37,7 +37,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -72,6 +72,7 @@ public abstract class AbstractRaceTest {
 
     private static final String USER_TEST_DIRECTORY_PATH = "/Users/gnck/Desktop/tests";
     private static final String IGNORED_FILE_NAMES_PATH = "src/main/resources/configuration/test_ignored_file_names.csv";
+    public static final String TEST_CONFIG_FILE_NAME = "config.txt";
 
     // Whether the current test is the first test in the run.
     private static boolean first_test = true;
@@ -81,7 +82,7 @@ public abstract class AbstractRaceTest {
     private static boolean previous_failed_test = false;
 
     // Whether the current test failed.
-    private boolean failed_test = true;
+    protected boolean failed_test = true;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,8 +90,8 @@ public abstract class AbstractRaceTest {
         setLoggingLevel(DEBUG ? Level.INFO : Level.WARNING);
     }
 
-    protected Path config_file_path;
-    private Path resources_input_directory;
+    public Path config_file_path;
+    protected Path resources_input_directory;
 
     // Clean-up handled explicitly in tearDown().
     @TempDir(factory = TempFactory.class, cleanup = CleanupMode.NEVER)
@@ -107,7 +108,7 @@ public abstract class AbstractRaceTest {
 
     protected abstract void invokeMain(String[] args) throws Exception;
 
-    protected String getFileNameForPathProperty(final String property_key) {
+    public String getFileNameForPathProperty(final String property_key) {
         return Path.of(properties.getProperty(property_key)).getFileName().toString();
     }
 
@@ -120,7 +121,7 @@ public abstract class AbstractRaceTest {
             final boolean first_failed_test = failed_test && !previous_failed_test;
 
             // Whether the retained output directory is present from a previous run (in which case it should be deleted).
-            final boolean output_directory_retained_from_previous_run = first_test && Files.exists(retained_output_directory);
+            final boolean output_directory_retained_from_previous_run = first_test && retained_output_directory != null && Files.exists(retained_output_directory);
 
             // Whether the output directory from this run should be retained, either because this is the first test
             // in the run to fail, or this is the first test in the run and RETAIN_FIRST_OUTPUT is set.
@@ -175,13 +176,13 @@ public abstract class AbstractRaceTest {
         failed_test = false;
     }
 
-    protected void testExpectedErrorMessage(final String individual_test_resource_root, final Supplier<String> get_expected_error_message) throws Exception {
+    protected void testExpectedErrorMessage(final String individual_test_resource_root, final Function<AbstractRaceTest, String> get_expected_error_message) throws Exception {
 
         configureTest(individual_test_resource_root);
         testExpectedErrorMessage(new String[]{config_file_path.toString()}, get_expected_error_message);
     }
 
-    protected void testExpectedErrorMessage(final String[] args, final Supplier<String> get_expected_error_message) throws Exception {
+    protected void testExpectedErrorMessage(final String[] args, final Function<AbstractRaceTest, String> get_expected_error_message) throws Exception {
 
         final String error_output;
 
@@ -197,7 +198,7 @@ public abstract class AbstractRaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals(get_expected_error_message.get() + System.lineSeparator(),
+        assertEquals(get_expected_error_message.apply(this) + System.lineSeparator(),
             error_output,
             "Expected error message was not generated");
 
@@ -223,7 +224,7 @@ public abstract class AbstractRaceTest {
         }
     }
 
-    private void configureDirectories(final String individual_test_resource_root) {
+    protected void configureDirectories(final String individual_test_resource_root) {
 
         final Path resources_root_directory = Race.getTestResourcesRootPath(individual_test_resource_root);
 
@@ -234,13 +235,16 @@ public abstract class AbstractRaceTest {
         test_output_directory = test_directory.resolve("output");
         retained_output_directory = test_directory.resolve("output_retained");
 
-        config_file_path = test_input_directory.resolve("config.txt");
+        config_file_path = test_input_directory.resolve(TEST_CONFIG_FILE_NAME);
     }
 
-    private void configureDirectoryContents(final Path resources_inputs) throws IOException {
+    protected void configureDirectoryContents(final Path resources_inputs) throws IOException {
 
         Files.createDirectories(test_output_directory);
         if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
+
+        if (!Files.exists(resources_inputs))
+            throw new RuntimeException(STR."missing config file: '\{resources_inputs}/\{TEST_CONFIG_FILE_NAME}'");
 
         copyDirectory(resources_inputs, test_input_directory);
 
@@ -363,7 +367,7 @@ public abstract class AbstractRaceTest {
 
     private static void deleteDirectory(final Path directory) throws IOException {
 
-        if (directory != null)
+        if (directory != null && Files.isDirectory(directory))
             Files.walkFileTree(directory, new SimpleFileVisitor<>() {
 
                 @Override

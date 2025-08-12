@@ -22,7 +22,15 @@ import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 public class ActualRacesTourTest extends AbstractRaceTest {
+
+    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
+        "actual_races/series_race/grand_prix/2016/completed_6",
+        "actual_races/series_race/grand_prix/2016/completed_10",
+        "actual_races/series_race/grand_prix/2016/completed_12"
+    );
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {

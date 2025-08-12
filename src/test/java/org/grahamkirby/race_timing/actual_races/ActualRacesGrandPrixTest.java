@@ -20,9 +20,18 @@ package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.FieldSource;
+
+import java.util.List;
 
 public class ActualRacesGrandPrixTest extends AbstractRaceTest {
+
+    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
+        "actual_races/series_race/grand_prix/2016/completed_6",
+        "actual_races/series_race/grand_prix/2016/completed_10",
+        "actual_races/series_race/grand_prix/2016/completed_12"
+    );
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
@@ -31,18 +40,9 @@ public class ActualRacesGrandPrixTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Test
-    void grandPrix2016Completed6() throws Exception {
-        testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_6");
-    }
-
-    @Test
-    void grandPrix2016Completed10() throws Exception {
-        testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_10");
-    }
-
-    @Test
-    void grandPrix2016Completed12() throws Exception {
-        testExpectedCompletion("actual_races/series_race/grand_prix/2016/completed_12");
+    @ParameterizedTest
+    @FieldSource("TESTS_EXPECTED_TO_COMPLETE")
+    void expectedCompletion(final String test_directory_path) throws Exception {
+        testExpectedCompletion(test_directory_path);
     }
 }

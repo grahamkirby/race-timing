@@ -457,7 +457,8 @@ public abstract class Race {
     public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         if (!Files.exists(config_file_path))
-            throw new RuntimeException(STR."missing config file: '\{config_file_path.getFileName()}'");
+//            throw new RuntimeException(STR."missing config file: '\{config_file_path.getFileName()}'");
+            throw new RuntimeException(STR."missing config file: '\{config_file_path}'");
 
         try (final InputStream stream = Files.newInputStream(config_file_path)) {
 

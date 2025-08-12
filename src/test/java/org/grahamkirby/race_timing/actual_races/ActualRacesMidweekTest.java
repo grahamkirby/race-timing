@@ -21,8 +21,22 @@ package org.grahamkirby.race_timing.actual_races;
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.FieldSource;
+
+import java.util.List;
 
 public class ActualRacesMidweekTest extends AbstractRaceTest {
+
+    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
+        "actual_races/series_race/midweek/2023/completed_1",
+        "actual_races/series_race/midweek/2023/completed_2",
+        "actual_races/series_race/midweek/2023/completed_3",
+        "actual_races/series_race/midweek/2023/completed_4",
+        "actual_races/series_race/midweek/2023/completed_5",
+        "actual_races/series_race/midweek/2024",
+        "actual_races/series_race/midweek/2025"
+    );
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
@@ -31,38 +45,9 @@ public class ActualRacesMidweekTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Test
-    void midweek2023Completed1() throws Exception {
-        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_1");
-    }
-
-    @Test
-    void midweek2023Completed2() throws Exception {
-        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_2");
-    }
-
-    @Test
-    void midweek2023Completed3() throws Exception {
-        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_3");
-    }
-
-    @Test
-    void midweek2023Completed4() throws Exception {
-        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_4");
-    }
-
-    @Test
-    void midweek2023Completed5() throws Exception {
-        testExpectedCompletion("actual_races/series_race/midweek/2023/completed_5");
-    }
-
-    @Test
-    void midweek2024() throws Exception {
-        testExpectedCompletion("actual_races/series_race/midweek/2024");
-    }
-
-    @Test
-    void midweek2025() throws Exception {
-        testExpectedCompletion("actual_races/series_race/midweek/2025");
+    @ParameterizedTest
+    @FieldSource("TESTS_EXPECTED_TO_COMPLETE") // six numbers
+    void expectedCompletion(final String test_directory_path) throws Exception {
+        testExpectedCompletion(test_directory_path);
     }
 }

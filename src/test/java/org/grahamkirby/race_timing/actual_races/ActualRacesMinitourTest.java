@@ -20,9 +20,22 @@ package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.FieldSource;
+
+import java.util.List;
 
 public class ActualRacesMinitourTest extends AbstractRaceTest {
+
+    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
+        "actual_races/series_race/minitour/2023/completed_1",
+        "actual_races/series_race/minitour/2023/completed_2",
+        "actual_races/series_race/minitour/2023/completed_3",
+        "actual_races/series_race/minitour/2023/completed_4",
+        "actual_races/series_race/minitour/2023/completed_5",
+        "actual_races/series_race/minitour/2024",
+        "actual_races/series_race/minitour/2025"
+    );
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
@@ -31,38 +44,9 @@ public class ActualRacesMinitourTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Test
-    void minitour2023Completed1() throws Exception {
-        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_1");
-    }
-
-    @Test
-    void minitour2023Completed2() throws Exception {
-        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_2");
-    }
-
-    @Test
-    void minitour2023Completed3() throws Exception {
-        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_3");
-    }
-
-    @Test
-    void minitour2023Completed4() throws Exception {
-        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_4");
-    }
-
-    @Test
-    void minitour2023Completed5() throws Exception {
-        testExpectedCompletion("actual_races/series_race/minitour/2023/completed_5");
-    }
-
-    @Test
-    void minitour2024() throws Exception {
-        testExpectedCompletion("actual_races/series_race/minitour/2024");
-    }
-
-    @Test
-    void minitour2025() throws Exception {
-        testExpectedCompletion("actual_races/series_race/minitour/2025");
+    @ParameterizedTest
+    @FieldSource("TESTS_EXPECTED_TO_COMPLETE") // six numbers
+    void expectedCompletion(final String test_directory_path) throws Exception {
+        testExpectedCompletion(test_directory_path);
     }
 }

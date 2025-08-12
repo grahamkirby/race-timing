@@ -21,10 +21,13 @@ package org.grahamkirby.race_timing_experimental;
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.FieldSource;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
@@ -33,7 +36,41 @@ import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHE
 
 public class IndividualRaceTest extends AbstractRaceTest {
 
-    public static final String[] NON_EXISTENT_CONFIG = {"non-existent-config-file"};
+    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
+        "individual_race/alternative_capitalisation_stop_words",
+        "individual_race/alternative_club_name_normalisation",
+        "individual_race/alternative_html_entity_normalisation",
+        "individual_race/alternative_prize_reporting_order",
+        "individual_race/dead_heats",
+        "individual_race/dnfs",
+        "individual_race/duplicate_runner_name",
+        "individual_race/multiple_gender",
+        "individual_race/multiple_time_formats",
+        "individual_race/name_includes_comma",
+        "individual_race/non_exclusive_prize_categories",
+        "individual_race/open_winner_from_older_category",
+        "individual_race/prize_category_groups",
+        "individual_race/senior_not_open_category"
+    );
+
+    private static final Object[][] TESTS_EXPECTED_TO_GIVE_ERROR = new Object[][] {
+        new Object[] {"race/missing_property_year", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_YEAR}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"race/missing_property_race_name_for_results", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_RACE_NAME_FOR_RESULTS}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"race/missing_property_race_name_for_filenames", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_RACE_NAME_FOR_FILENAMES}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"race/missing_property_categories_entry_path", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_CATEGORIES_ENTRY_PATH}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"race/missing_property_categories_prize_path", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_CATEGORIES_PRIZE_PATH}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"individual_race/duplicate_bib_number_entered", (Function<AbstractRaceTest, String>) race_test -> STR."duplicate bib number '3' at line 55 in file '\{race_test.getFileNameForPathProperty(KEY_ENTRIES_PATH)}'"},
+        new Object[] {"individual_race/duplicate_bib_number_recorded", (Function<AbstractRaceTest, String>) race_test -> STR."duplicate bib number '3' at line 6 in file '\{race_test.getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'"},
+        new Object[] {"individual_race/duplicate_runner", (Function<AbstractRaceTest, String>) race_test -> STR."duplicate entry 'John Smith, Fife AC' in file '\{race_test.getFileNameForPathProperty(KEY_ENTRIES_PATH)}'"},
+        new Object[] {"individual_race/invalid_category", (Function<AbstractRaceTest, String>) race_test -> STR."invalid category in entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{race_test.getFileNameForPathProperty(KEY_ENTRIES_PATH)}'"},
+        new Object[] {"individual_race/invalid_dnf", (Function<AbstractRaceTest, String>) race_test -> STR."invalid entry 'XXX' for key '\{KEY_DNF_FINISHERS}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"individual_race/invalid_entry", (Function<AbstractRaceTest, String>) race_test -> STR."invalid entry '138\tRobbie Dunlop\tDundee Road Runners MS' at line 28 in file '\{race_test.getFileNameForPathProperty(KEY_ENTRIES_PATH)}'"},
+        new Object[] {"individual_race/invalid_raw_time", (Function<AbstractRaceTest, String>) race_test -> STR."invalid record '3\tXXX' at line 4 in file '\{race_test.getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'"},
+        new Object[] {"individual_race/missing_property_entries_path", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_ENTRIES_PATH}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"individual_race/missing_property_raw_results_path", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_RAW_RESULTS_PATH}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"individual_race/results_out_of_order", (Function<AbstractRaceTest, String>) race_test -> STR."result out of order at line 5 in file '\{race_test.getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'"},
+        new Object[] {"individual_race/unregistered_runner", (Function<AbstractRaceTest, String>) race_test -> STR."invalid bib number '4' in file '\{race_test.getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'"}
+    };
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
@@ -49,160 +86,22 @@ public class IndividualRaceTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Test
-    void deadHeats() throws Exception {
-        testExpectedCompletion("individual_race/dead_heats");
+    @ParameterizedTest
+    @FieldSource("TESTS_EXPECTED_TO_COMPLETE")
+    void expectedCompletion(final String test_directory_path) throws Exception {
+        testExpectedCompletion(test_directory_path);
     }
 
-    @Test
-    void DNFs() throws Exception {
-        testExpectedCompletion("individual_race/dnfs");
+    @ParameterizedTest
+    @FieldSource("TESTS_EXPECTED_TO_GIVE_ERROR")
+    void expectedError(final String test_directory_path, final Function<AbstractRaceTest, String> get_expected_error_message) throws Exception {
+        testExpectedErrorMessage(test_directory_path, get_expected_error_message);
     }
-
-    @Test
-    void duplicateRunnerName() throws Exception {
-        testExpectedCompletion("individual_race/duplicate_runner_name");
-    }
-
-    @Test
-    void multipleGender() throws Exception {
-        testExpectedCompletion("individual_race/multiple_gender");
-    }
-
-    @Test
-    void multipleTimeFormats() throws Exception {
-        testExpectedCompletion("individual_race/multiple_time_formats");
-    }
-
-    @Test
-    void nonExclusivePrizeCategories() throws Exception {
-        testExpectedCompletion("individual_race/non_exclusive_prize_categories");
-    }
-
-    @Test
-    void seniorNotOpenCategory() throws Exception {
-        testExpectedCompletion("individual_race/senior_not_open_category");
-    }
-
-    @Test
-    void alternativeClubNameNormalisation() throws Exception {
-        testExpectedCompletion("individual_race/alternative_club_name_normalisation");
-    }
-
-    @Test
-    void alternativeHtmlEntityNormalisation() throws Exception {
-        testExpectedCompletion("individual_race/alternative_html_entity_normalisation");
-    }
-
-    @Test
-    void alternativeCapitalisationStopWords() throws Exception {
-        testExpectedCompletion("individual_race/alternative_capitalisation_stop_words");
-    }
-
-    @Test
-    void alternativePrizeReportingOrder() throws Exception {
-        testExpectedCompletion("individual_race/alternative_prize_reporting_order");
-    }
-
-    @Test
-    void openWinnerFromOlderCategory() throws Exception {
-        testExpectedCompletion("individual_race/open_winner_from_older_category");
-    }
-
-    @Test
-    void prizeCategoryGroups() throws Exception {
-        testExpectedCompletion("individual_race/prize_category_groups");
-    }
-
-    @Test
-    void nameIncludesComma() throws Exception {
-        testExpectedCompletion("individual_race/name_includes_comma");
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
     void missingConfigFile() throws Exception {
-        testExpectedErrorMessage(NON_EXISTENT_CONFIG, () -> "missing config file: 'non-existent-config-file'");
-    }
 
-    @Test
-    void missingPropertyEntriesPath() throws Exception {
-        testExpectedErrorMessage("individual_race/missing_property_entries_path", () -> STR."no entry for key '\{KEY_ENTRIES_PATH}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyRawResultsPath() throws Exception {
-        testExpectedErrorMessage("individual_race/missing_property_raw_results_path", () -> STR."no entry for key '\{KEY_RAW_RESULTS_PATH}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void invalidDNF() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_dnf", () -> STR."invalid entry 'XXX' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyYear() throws Exception {
-        testExpectedErrorMessage("race/missing_property_year", () -> STR."no entry for key '\{KEY_YEAR}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyRaceNameForResults() throws Exception {
-        testExpectedErrorMessage("race/missing_property_race_name_for_results", () -> STR."no entry for key '\{KEY_RACE_NAME_FOR_RESULTS}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyRaceNameForFilenames() throws Exception {
-        testExpectedErrorMessage("race/missing_property_race_name_for_filenames", () -> STR."no entry for key '\{KEY_RACE_NAME_FOR_FILENAMES}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyCategoriesEntryPath() throws Exception {
-        testExpectedErrorMessage("race/missing_property_categories_entry_path", () -> STR."no entry for key '\{KEY_CATEGORIES_ENTRY_PATH}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyCategoriesPrizePath() throws Exception {
-        testExpectedErrorMessage("race/missing_property_categories_prize_path", () -> STR."no entry for key '\{KEY_CATEGORIES_PRIZE_PATH}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void duplicateBibNumberEntered() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_bib_number_entered", () -> STR."duplicate bib number '3' at line 55 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void duplicateRunner() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_runner", () -> STR."duplicate entry 'John Smith, Fife AC' in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void invalidCategory() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_category", () -> STR."invalid category in entry '92 Hannah Tippetts Dundee Road Runners XXX' at line 92 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void invalidEntry() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_entry", () -> STR."invalid entry '138\tRobbie Dunlop\tDundee Road Runners MS' at line 28 in file '\{getFileNameForPathProperty(KEY_ENTRIES_PATH)}'");
-    }
-
-    @Test
-    void invalidRawTime() throws Exception {
-        testExpectedErrorMessage("individual_race/invalid_raw_time", () -> STR."invalid record '3\tXXX' at line 4 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-    }
-
-    @Test
-    void resultsOutOfOrder() throws Exception {
-        testExpectedErrorMessage("individual_race/results_out_of_order", () -> STR."result out of order at line 5 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-    }
-
-    @Test
-    void unregisteredRunner() throws Exception {
-        testExpectedErrorMessage("individual_race/unregistered_runner", () -> STR."invalid bib number '4' in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
-    }
-
-    @Test
-    void duplicateBibNumberRecorded() throws Exception {
-        testExpectedErrorMessage("individual_race/duplicate_bib_number_recorded", () -> STR."duplicate bib number '3' at line 6 in file '\{getFileNameForPathProperty(KEY_RAW_RESULTS_PATH)}'");
+        // This call bypasses the normal setup phase of copying the source and expected files.
+        testExpectedErrorMessage(new String[]{"individual_race/missing_config_file"}, _ -> "missing config file: 'individual_race/missing_config_file'");
     }
 }

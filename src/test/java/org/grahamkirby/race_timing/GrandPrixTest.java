@@ -19,12 +19,30 @@ package org.grahamkirby.race_timing;
 
 
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.FieldSource;
 
-import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
+import java.util.List;
+import java.util.function.Function;
+
 import static org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace.*;
 
 class GrandPrixTest extends AbstractRaceTest {
+
+    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
+        "series_race/grand_prix/legal_category_change",
+        "series_race/grand_prix/unknown_category"
+    );
+
+    private static final Object[][] TESTS_EXPECTED_TO_GIVE_ERROR = new Object[][] {
+        new Object[] {"series_race/grand_prix/illegal_category_change_age_reduction", (Function<AbstractRaceTest, String>) _ -> "invalid category change: runner 'Fictional Runner2' changed from F40 to FS at Largo"},
+        new Object[] {"series_race/grand_prix/illegal_category_change_age_increase_too_high", (Function<AbstractRaceTest, String>) _ -> "invalid category change: runner 'Fictional Runner3' changed from MS to M50 during series"},
+        new Object[] {"series_race/grand_prix/illegal_category_change_gender_mismatch", (Function<AbstractRaceTest, String>) _ -> "invalid category change: runner 'Fictional Runner4' changed from MS to FS at Sandy Slither"},
+        new Object[] {"series_race/grand_prix/missing_property_race_categories_path", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_RACE_CATEGORIES_PATH}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"series_race/grand_prix/missing_property_race_temporal_order", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_RACE_TEMPORAL_ORDER}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"series_race/grand_prix/missing_property_qualifying_clubs", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_QUALIFYING_CLUBS}' in file '\{race_test.config_file_path.getFileName()}'"},
+        new Object[] {"series_race/grand_prix/missing_property_score_for_median_position", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_SCORE_FOR_MEDIAN_POSITION}' in file '\{race_test.config_file_path.getFileName()}'"}
+    };
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
@@ -33,48 +51,15 @@ class GrandPrixTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Test
-    void legalCategoryChange() throws Exception {
-        testExpectedCompletion("series_race/grand_prix/legal_category_change");
+    @ParameterizedTest
+    @FieldSource("TESTS_EXPECTED_TO_COMPLETE")
+    void expectedCompletion(final String test_directory_path) throws Exception {
+        testExpectedCompletion(test_directory_path);
     }
 
-    @Test
-    void unknownCategory() throws Exception {
-        testExpectedCompletion("series_race/grand_prix/unknown_category");
-    }
-
-    @Test
-    void illegalCategoryChangeAgeReduction() throws Exception {
-        testExpectedErrorMessage("series_race/grand_prix/illegal_category_change_age_reduction", () -> "invalid category change: runner 'Fictional Runner2' changed from F40 to FS at Largo");
-    }
-
-    @Test
-    void illegalCategoryChangeAgeIncreaseTooHigh() throws Exception {
-        testExpectedErrorMessage("series_race/grand_prix/illegal_category_change_age_increase_too_high", () -> "invalid category change: runner 'Fictional Runner3' changed from MS to M50 during series");
-    }
-
-    @Test
-    void illegalCategoryChangeGenderMismatch() throws Exception {
-        testExpectedErrorMessage("series_race/grand_prix/illegal_category_change_gender_mismatch", () -> "invalid category change: runner 'Fictional Runner4' changed from MS to FS at Sandy Slither");
-    }
-
-    @Test
-    void missingPropertyRaceCategoriesPath() throws Exception {
-        testExpectedErrorMessage("series_race/grand_prix/missing_property_race_categories_path", () -> STR."no entry for key '\{KEY_RACE_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyRaceTemporalOrder() throws Exception {
-        testExpectedErrorMessage("series_race/grand_prix/missing_property_race_temporal_order", () -> STR."no entry for key '\{KEY_RACE_TEMPORAL_ORDER}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyQualifyingClubs() throws Exception {
-        testExpectedErrorMessage("series_race/grand_prix/missing_property_qualifying_clubs", () -> STR."no entry for key '\{KEY_QUALIFYING_CLUBS}' in file '\{config_file_path.getFileName()}'");
-    }
-
-    @Test
-    void missingPropertyScoreForMedianPosition() throws Exception {
-        testExpectedErrorMessage("series_race/grand_prix/missing_property_score_for_median_position", () -> STR."no entry for key '\{KEY_SCORE_FOR_MEDIAN_POSITION}' in file '\{config_file_path.getFileName()}'");
+    @ParameterizedTest
+    @FieldSource("TESTS_EXPECTED_TO_GIVE_ERROR")
+    void expectedError(final String test_directory_path, final Function<AbstractRaceTest, String> get_expected_error_message) throws Exception {
+        testExpectedErrorMessage(test_directory_path, get_expected_error_message);
     }
 }
