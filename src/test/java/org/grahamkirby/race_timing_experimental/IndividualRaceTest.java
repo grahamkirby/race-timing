@@ -102,6 +102,6 @@ public class IndividualRaceTest extends AbstractRaceTest {
     void missingConfigFile() throws Exception {
 
         // This call bypasses the normal setup phase of copying the source and expected files.
-        testExpectedErrorMessage(new String[]{"individual_race/missing_config_file"}, _ -> "missing config file: 'individual_race/missing_config_file'");
+        testExpectedErrorMessage(new String[]{"individual_race/missing_config_file"}, _ -> STR."missing config file: 'individual_race\{PATH_SEPARATOR}missing_config_file'");
     }
 }
