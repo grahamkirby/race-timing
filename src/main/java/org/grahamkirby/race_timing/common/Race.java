@@ -26,6 +26,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -73,6 +74,7 @@ public abstract class Race {
 
     /** Platform-specific line separator used in creating output files. */
     public static final String LINE_SEPARATOR = System.lineSeparator();
+    public static final String PATH_SEPARATOR = File.separator;
 
     /** Used when a result is recorded without a bib number. */
     public static final int UNKNOWN_BIB_NUMBER = 0;
