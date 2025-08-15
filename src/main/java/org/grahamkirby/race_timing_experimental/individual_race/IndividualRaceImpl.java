@@ -37,8 +37,6 @@ public class IndividualRaceImpl implements SpecificRace {
 
     @Override
     public void completeConfiguration() {
-
-        configureXXX();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,9 +80,6 @@ public class IndividualRaceImpl implements SpecificRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void configureXXX() {
-    }
-
     private int getTeamTotal(final String club, final String gender) {
 
         int number_to_count_for_team_prize = (Integer) race.getConfig().get(Config.KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
@@ -118,5 +113,4 @@ public class IndividualRaceImpl implements SpecificRace {
         }
         return clubs;
     }
-
 }

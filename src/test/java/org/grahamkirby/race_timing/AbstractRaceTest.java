@@ -206,24 +206,27 @@ public abstract class AbstractRaceTest {
         configureTest(individual_test_resource_root);
         final String error_output;
 
-        try {
-            final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
-            System.setErr(new PrintStream(diverted_err));
+        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
 
+        if (!Files.exists(expected_error_message_file)) {
             invokeMain(new String[]{config_file_path.toString()});
 
-            error_output = diverted_err.toString();
-
-        } finally {
-            System.setErr(System.err);
-        }
-
-        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
-        if (!Files.exists(expected_error_message_file)) {
             assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
-
         }
         else {
+
+            try {
+                final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
+                System.setErr(new PrintStream(diverted_err));
+
+                invokeMain(new String[]{config_file_path.toString()});
+
+                error_output = diverted_err.toString();
+
+            } finally {
+                System.setErr(System.err);
+            }
+
             final String expected_error_message = String.join(LINE_SEPARATOR, Files.readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
             assertEquals(expected_error_message, error_output, "Expected error message was not generated");
         }

@@ -29,6 +29,8 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
+import java.util.List;
+import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.*;
@@ -98,28 +100,36 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         output_HTML.printCombined();
     }
 
-    /**
-     * Prints overall race results. Used for CSV and HTML output.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    public void printResults() throws IOException {
-
-        final OutputStream stream = getOutputStream(race_name_for_filenames, "overall", year);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getResultsHeader());
-            printResults(writer, getOverallResultPrinter(writer));
-        }
-    }
-
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
         return new OverallResultPrinter(race, writer);
     }
 
     public String getResultsHeader() {
         return OVERALL_RESULTS_HEADER;
+    }
+
+    /** Prints results using a specified printer, ordered by prize category groups. */
+    static void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Function<String, String> get_results_sub_header, final Race race) throws IOException {
+
+        // Don't display category group headers if there is only one group.
+        final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
+
+        boolean not_first_category_group = false;
+
+        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
+
+            if (should_display_category_group_headers) {
+                if (not_first_category_group)
+                    writer.append(LINE_SEPARATOR);
+                writer.append(get_results_sub_header.apply(group.group_title()));
+            }
+
+            RaceResultsCalculator raceResults = race.getResultsCalculator();
+            List<RaceResult> overallResults = raceResults.getOverallResults(group.categories());
+            printer.print(overallResults);
+
+            not_first_category_group = true;
+        }
     }
 
     @SuppressWarnings("preview")

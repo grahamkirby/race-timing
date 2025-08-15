@@ -39,12 +39,10 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
-import static org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceOutputCSV.OVERALL_RESULTS_HEADER;
 
 public class IndividualRaceOutputPDF {
 
@@ -58,16 +56,10 @@ public class IndividualRaceOutputPDF {
     private static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
     private static final int PRIZE_FONT_SIZE = 24;
 
-    private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
-
     private final Race race;
 
     IndividualRaceOutputPDF(final Race race) {
         this.race = race;
-    }
-
-    public String getResultsHeader() {
-        return OVERALL_RESULTS_HEADER;
     }
 
     protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
@@ -230,27 +222,8 @@ public class IndividualRaceOutputPDF {
      */
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.pdf");
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{PDF_FILE_SUFFIX}");
     }
-
-//    /** Encodes a single value by surrounding with quotes if it contains a comma. */
-//    public static String encode(final String s) {
-//        return s.contains(",") ? STR."\"\{s}\"" : s;
-//    }
-//
-//    public static String renderDuration(final Duration duration, final String alternative) {
-//
-//        return duration != null ? format(duration) : alternative;
-//    }
-//
-//    public static String renderDuration(final RaceResult result, final String alternative) {
-//
-//        return IndividualRaceOutputCSV.renderDuration(result, alternative);
-//    }
-//
-//    public static String renderDuration(final RaceResult result) {
-//        return renderDuration(result, "");
-//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

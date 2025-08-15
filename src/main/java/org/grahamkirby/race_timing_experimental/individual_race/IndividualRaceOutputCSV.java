@@ -19,8 +19,10 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 
 
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing_experimental.common.*;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceResult;
+import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
+import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,38 +30,27 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.List;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class IndividualRaceOutputCSV {
 
-    private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
-
     static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
+
     private final Race race;
 
     IndividualRaceOutputCSV(final Race race) {
         this.race = race;
     }
 
-    public String getResultsHeader() {
-        return OVERALL_RESULTS_HEADER;
-    }
-
-    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new OverallResultPrinter(race, writer);
-    }
-
-    public void printResults() throws IOException {
+    void printResults() throws IOException {
 
         final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get(KEY_YEAR));
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(OVERALL_RESULTS_HEADER);
-            printResults(writer, getOverallResultPrinter(writer));
+            IndividualRaceResultsOutput.printResults(writer, new OverallResultPrinter(race, writer), _ -> "", race);
         }
     }
 
@@ -75,13 +66,13 @@ public class IndividualRaceOutputCSV {
      * @return an output stream for the file
      * @throws IOException if an I/O error occurs
      */
-    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
+    private OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
 
         return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
     }
 
     /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
-    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
+    private OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
 
         return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
     }
@@ -96,55 +87,10 @@ public class IndividualRaceOutputCSV {
      * @param year the year of the race
      * @return the path for the file
      */
-    Path getOutputFilePath(final String race_name, final String output_type, final String year) {
+    private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.csv");
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{CSV_FILE_SUFFIX}");
     }
-
-    /** Prints results using a specified printer, ordered by prize category groups. */
-    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
-
-        // Don't display category group headers if there is only one group.
-        final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
-
-        boolean not_first_category_group = false;
-
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
-
-            if (should_display_category_group_headers) {
-                if (not_first_category_group)
-                    writer.append(System.lineSeparator());
-                writer.append(getResultsSubHeader(group.group_title()));
-            }
-
-            RaceResultsCalculator raceResults = race.getResultsCalculator();
-            List<RaceResult> overallResults = raceResults.getOverallResults(group.categories());
-            printer.print(overallResults);
-
-            not_first_category_group = true;
-        }
-    }
-
-    protected String getResultsSubHeader(final String s) {
-        return "";
-    }
-
-//    public static String renderDuration(final Duration duration, final String alternative) {
-//
-//        return duration != null ? format(duration) : alternative;
-//    }
-//
-//    public static String renderDuration(final RaceResult r, final String alternative) {
-//
-//        SingleRaceResult result = (SingleRaceResult) r;
-//        if (!result.canComplete()) return alternative;
-//
-//        return format(result.duration());
-//    }
-//
-//    public static String renderDuration(final RaceResult result) {
-//        return renderDuration(result, "");
-//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,6 +102,7 @@ public class IndividualRaceOutputCSV {
         }
 
         public void printResult(final RaceResult r) throws IOException {
+
             SingleRaceResult result = (SingleRaceResult) r;
 
             writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{encode(result.entry.participant.name)},").

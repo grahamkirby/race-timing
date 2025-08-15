@@ -18,20 +18,26 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 import java.io.File;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 
 import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 
 public interface Config {
 
-    String SUFFIX_CSV = ".csv";
+    String CSV_FILE_SUFFIX = "csv";
+    String HTML_FILE_SUFFIX = "html";
+    String PDF_FILE_SUFFIX = "pdf";
+    String TEXT_FILE_SUFFIX = "txt";
+
     Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
 
-    Path DEFAULT_CAPITALISATION_STOP_WORDS_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}");
-    Path DEFAULT_NORMALISED_HTML_ENTITIES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}");
-    Path DEFAULT_NORMALISED_CLUB_NAMES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}");
-    Path DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/gender_eligibility_default\{SUFFIX_CSV}");
+    Path DEFAULT_CAPITALISATION_STOP_WORDS_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words.\{CSV_FILE_SUFFIX}");
+    Path DEFAULT_NORMALISED_HTML_ENTITIES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities.\{CSV_FILE_SUFFIX}");
+    Path DEFAULT_NORMALISED_CLUB_NAMES_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names.\{CSV_FILE_SUFFIX}");
+    Path DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = Path.of(STR."\{DEFAULT_CONFIG_ROOT_PATH}/gender_eligibility_default.\{CSV_FILE_SUFFIX}");
 
     String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
@@ -86,6 +92,8 @@ public interface Config {
 
     /** Used when a result is recorded without a bib number. */
     int UNKNOWN_BIB_NUMBER = 0;
+
+    OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     Object get(String key);
 

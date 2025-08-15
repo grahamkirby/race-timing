@@ -28,7 +28,6 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.function.Function;
 
@@ -46,19 +45,24 @@ public class IndividualRaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected String getFileSuffix() {
-        return "txt";
-    }
+    /**
+     * Prints race prizes. Used for HTML and text output.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    void printPrizes() throws IOException {
 
-    /** No headings in plaintext file. */
-    protected String getResultsHeader() {
-        return "";
-    }
+        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "prizes", (String) race.getConfig().get(KEY_YEAR));
 
-    private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesHeader());
+            printPrizes(writer);
+        }
+    }
 
     /** Prints out the words converted to title case, and any other processing notes. */
-    public void printNotes() throws IOException {
+    void printNotes() throws IOException {
 
         final String converted_words = race.getNormalisation().getNonTitleCaseWords();
 
@@ -82,13 +86,13 @@ public class IndividualRaceOutputText {
      * @return an output stream for the file
      * @throws IOException if an I/O error occurs
      */
-    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
+    private OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
 
         return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
     }
 
     /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
-    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
+    private OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
 
         return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
     }
@@ -103,29 +107,13 @@ public class IndividualRaceOutputText {
      * @param year the year of the race
      * @return the path for the file
      */
-    Path getOutputFilePath(final String race_name, final String output_type, final String year) {
+    private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{getFileSuffix()}");
-    }
-
-    /**
-     * Prints race prizes. Used for HTML and text output.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    public void printPrizes() throws IOException {
-
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "prizes", (String) race.getConfig().get(KEY_YEAR));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeader());
-            printPrizes(writer);
-        }
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{TEXT_FILE_SUFFIX}");
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    void printPrizes(final OutputStreamWriter writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         printPrizes(category -> {
             printPrizes(writer, category);
@@ -140,7 +128,7 @@ public class IndividualRaceOutputText {
      * The printer abstracts over whether output goes to an output stream writer
      * (CSV, HTML and text files) or to a PDF writer.
      */
-    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
+    private void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
@@ -157,7 +145,7 @@ public class IndividualRaceOutputText {
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             getPrizeResultPrinter(writer).print(category_prize_winners);
 
-            writer.append(getPrizeCategoryFooter());
+            writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
         // Called from lambda that can't throw checked exception.
         catch (final IOException e) {
@@ -165,7 +153,7 @@ public class IndividualRaceOutputText {
         }
     }
 
-    protected String getPrizeCategoryHeader(final PrizeCategory category) {
+    private String getPrizeCategoryHeader(final PrizeCategory category) {
 
         final String header = STR."Category: \{category.getLongName()}";
         return STR."""
@@ -175,26 +163,23 @@ public class IndividualRaceOutputText {
             """;
     }
 
-    void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
+    private void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
 
-        List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
+
             writer.append("Team Prizes\n");
             writer.append("-----------\n\n");
 
-            for (String team_prize : team_prizes) {
+            for (final String team_prize : team_prizes) {
                 writer.append(team_prize);
                 writer.append(LINE_SEPARATOR);
             }
         }
     }
 
-    protected String getPrizeCategoryFooter() {
-        return LINE_SEPARATOR + LINE_SEPARATOR;
-    }
-
-    protected String getPrizesHeader() {
+    private String getPrizesHeader() {
 
         final String header = STR."\{(String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)} Results \{(String) race.getConfig().get(KEY_YEAR)}";
         return STR."""
@@ -205,11 +190,6 @@ public class IndividualRaceOutputText {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Full results not printed to text file.
-    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        throw new UnsupportedOperationException();
-    }
 
     protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
         return new PrizeResultPrinter(race, writer);
@@ -225,9 +205,10 @@ public class IndividualRaceOutputText {
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
+
             SingleRaceResult result = (SingleRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{Config.renderDuration(result, DNF_STRING)}\n");
+            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{renderDuration(result, DNF_STRING)}\n");
         }
     }
 }
