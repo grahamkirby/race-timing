@@ -23,7 +23,7 @@ import org.grahamkirby.race_timing.common.RawResult;
 import java.time.Duration;
 import java.util.*;
 
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing_experimental.common.Config.UNKNOWN_BIB_NUMBER;
 
 class RelayRaceMissingData {
 

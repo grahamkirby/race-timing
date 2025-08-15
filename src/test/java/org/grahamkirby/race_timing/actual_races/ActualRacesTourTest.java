@@ -21,16 +21,13 @@ package org.grahamkirby.race_timing.actual_races;
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ActualRacesTourTest extends AbstractRaceTest {
-
-    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
-        "actual_races/series_race/grand_prix/2016/completed_6",
-        "actual_races/series_race/grand_prix/2016/completed_10",
-        "actual_races/series_race/grand_prix/2016/completed_12"
-    );
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
@@ -39,13 +36,15 @@ public class ActualRacesTourTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Test
-    void tour2017Completed3() throws Exception {
-        testExpectedCompletion("actual_races/series_race/tour/2017/completed_3");
+    private static List<String> getTestCases() throws IOException {
+
+        return getTestCases("actual_races/series_race/tour");
     }
 
-    @Test
-    void tour2017Completed5() throws Exception {
-        testExpectedCompletion("actual_races/series_race/tour/2017/completed_5");
+    @ParameterizedTest
+    @MethodSource("getTestCases")
+    void testFromDirectories(final String test_directory_path_string) throws Exception {
+
+        testExpectedCompletionNew(test_directory_path_string);
     }
 }

@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 
@@ -266,8 +264,7 @@ public class RelayRaceOutputText {
         Map<RawResult, Integer> explicitly_recorded_leg_numbers = ((RelayRaceDataImpl)race.getRaceData()).explicitly_recorded_leg_numbers;
 
         if (explicitly_recorded_leg_numbers.containsKey(raw_result)) {
-//            if (raw_result.getLegNumber() > 0) {
-            int leg_number = explicitly_recorded_leg_numbers.get(raw_result);
+            final int leg_number = explicitly_recorded_leg_numbers.get(raw_result);
 
             writer.append("\t").append(String.valueOf(leg_number));
 
@@ -281,9 +278,8 @@ public class RelayRaceOutputText {
 
         if (!raw_result.getComment().isEmpty()) {
 
-//            if (raw_result.getLegNumber() == 0) writer.append("\t");
             if (!explicitly_recorded_leg_numbers.containsKey(raw_result)) writer.append("\t");
-            writer.append("\t").append(org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
+            writer.append("\t").append(COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
         }
 
         writer.append(LINE_SEPARATOR);

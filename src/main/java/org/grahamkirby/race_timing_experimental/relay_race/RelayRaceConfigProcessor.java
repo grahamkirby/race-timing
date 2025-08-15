@@ -31,13 +31,12 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.makeDefaultEntryColumnMap;
 import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.validateDNFRecords;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.parseTime;
 
 @SuppressWarnings("preview")
 public class RelayRaceConfigProcessor implements ConfigProcessor {
@@ -139,11 +138,11 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
                 mass_start_time = parseTime(time_string);
 
             } catch (final DateTimeParseException _) {
-                throw new RuntimeException(STR."invalid mass start time for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                throw new RuntimeException(STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
             }
 
             if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
-                throw new RuntimeException(STR."invalid mass start time order for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                throw new RuntimeException(STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
 
             previous_time = mass_start_time;
         }

@@ -26,8 +26,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
-import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
@@ -40,12 +39,12 @@ public class Normalisation {
     private static final int SECONDS_PER_MINUTE = 60;
     private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;
 
-    private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
-    private static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
-    public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
-    private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
-    private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
-    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
+//    private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
+//    private static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
+//    public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
+//    private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
+//    private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
+//    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
 
     private static final String DEFAULT_CONFIG_ROOT_PATH = "/src/main/resources/configuration";
     private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}";

@@ -107,6 +107,19 @@ public class IndividualRaceOutputPDF {
             printPrizes(document, category);
             return null;
         });
+
+        List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            document.add(new Paragraph("Team Prizes").
+                setFont(getFont(PRIZE_FONT_BOLD_NAME)).
+                setUnderline().
+                setPaddingTop(PRIZE_FONT_SIZE));
+
+            for (String team_prize : team_prizes) {
+                document.add(new Paragraph(team_prize));
+            }
+        }
     }
 
     /** Prints prizes within a given category. */

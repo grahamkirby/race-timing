@@ -31,16 +31,12 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
-import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 
 public class RelayRaceOutputHTML {
 

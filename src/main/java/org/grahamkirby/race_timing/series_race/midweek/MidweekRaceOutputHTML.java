@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 
 class MidweekRaceOutputHTML extends SeriesRaceOutputHTML {
 

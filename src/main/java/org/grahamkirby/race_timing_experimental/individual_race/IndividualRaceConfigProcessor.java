@@ -26,9 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
-import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.makeDefaultEntryColumnMap;
-import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.validateDNFRecords;
+import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 @SuppressWarnings("preview")
@@ -78,11 +76,16 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
             commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s,_ -> makeDefaultEntryColumnMap(4));
 
+            commonConfigProcessor.addOptionalProperty(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE, Integer::parseInt, _ -> Integer.MAX_VALUE);
+
             final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
             // Each DNF string contains single bib number.
             //noinspection ResultOfMethodCallIgnored
             validateDNFRecords((String) config_values.get(KEY_DNF_FINISHERS), Integer::parseInt, config_file_path);
+
+            validateEntryCategoriesPath(config_values, config_file_path);
+            validatePrizeCategoriesPath(config_values, config_file_path);
 
             return new ConfigImpl(config_values);
 

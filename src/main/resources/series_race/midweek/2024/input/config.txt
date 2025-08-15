@@ -6,7 +6,7 @@ RACES = /src/main/resources/individual_race/st_andrews/2024/input/config.txt,/sr
 MINIMUM_NUMBER_OF_RACES = 4
 
 # Relative to config file.
-CATEGORIES_PRIZE_PATH = categories_prize_individual_senior.csv
+PRIZE_CATEGORIES_PATH = categories_prize_individual_senior.csv
 
 # Relative to project root directory.
-CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv

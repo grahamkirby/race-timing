@@ -21,8 +21,7 @@ package org.grahamkirby.race_timing.series_race.midweek;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 
-import static org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace.*;
-import static org.grahamkirby.race_timing.series_race.midweek.MidweekRace.KEY_SCORE_FOR_FIRST_PLACE;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 
 class MidweekRaceInput extends SeriesRaceInput {
 

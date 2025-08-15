@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing_experimental.common;
 
 public interface SpecificRace {
+
     void setRace(Race race);
 
     void completeConfiguration();

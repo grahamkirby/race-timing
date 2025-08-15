@@ -42,7 +42,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceOutputPDF {

@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 
 class TourRaceOutputCSV extends SeriesRaceOutputCSV {
 

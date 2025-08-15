@@ -1,0 +1,1 @@
+invalid category change: runner 'Fictional Runner3' changed from MS to M50 during series

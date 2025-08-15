@@ -25,8 +25,6 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
-import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 /** Support for normalisation of runner and club names, and entry categories, also standardised
@@ -163,7 +161,7 @@ public class Normalisation {
             normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
             normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
 
-            Path capitalisation_stop_words_path = (Path) race.getConfig().get(KEY_CAPITALISATION_STOP_WORDS_PATH);
+            final Path capitalisation_stop_words_path = (Path) race.getConfig().get(KEY_CAPITALISATION_STOP_WORDS_PATH);
             capitalisation_stop_words = new HashSet<>(Files.readAllLines(capitalisation_stop_words_path));
 
             non_title_case_words = new HashSet<>();

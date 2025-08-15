@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_RESULTS_PATH;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RESULTS_PATH;
 
 class UntimedIndividualRaceInput extends SingleRaceInput {
 

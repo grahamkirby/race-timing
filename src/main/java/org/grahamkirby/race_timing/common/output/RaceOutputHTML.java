@@ -27,7 +27,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 
 /** Base class for HTML output. */
 public abstract class RaceOutputHTML extends RaceOutput {
@@ -87,7 +87,7 @@ public abstract class RaceOutputHTML extends RaceOutput {
             writer.append("<ul>").append(LINE_SEPARATOR);
 
             for (String team_prize : team_prizes)
-                writer.append("<li>" + team_prize + "</li>").append(LINE_SEPARATOR);
+                writer.append("<li>").append(team_prize).append("</li>").append(LINE_SEPARATOR);
 
             writer.append("</ul>").append(LINE_SEPARATOR);
         }

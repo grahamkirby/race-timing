@@ -29,7 +29,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 
 class RelayRaceOutputCSV extends RaceOutputCSV {
 

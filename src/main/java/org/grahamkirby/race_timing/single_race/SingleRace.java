@@ -28,13 +28,15 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_MEDIAN_TIME;
 
 public abstract class SingleRace extends Race {
 
     // Configuration file keys.
-    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
-    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
-    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
+//    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
+//    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
+//    private static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

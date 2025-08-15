@@ -21,7 +21,7 @@ package org.grahamkirby.race_timing.series_race.grand_prix;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.series_race.SeriesRaceInput;
 
-import static org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace.*;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 class GrandPrixRaceInput extends SeriesRaceInput {
 

@@ -7,8 +7,8 @@ NUMBER_OF_RACES_IN_SERIES = 5
 MINIMUM_NUMBER_OF_RACES = 5
 
 # Relative to project root directory.
-CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
-CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
+PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
 
 WAVE_START_OFFSETS = 00:00:00,00:01:45,00:01:00,00:00:00,00:02:00
 

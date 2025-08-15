@@ -35,17 +35,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Race.*;
-import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_NUMBER_OF_LEGS;
-import static org.grahamkirby.race_timing.relay_race.RelayRace.KEY_PAIRED_LEGS;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.parseTime;
 
 public class RelayRaceInput extends TimedRaceInput {
-
-    // Configuration file keys.
-    private static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
-    private static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
 
     private String paper_results_path, annotations_path;
     private int number_of_raw_results;
@@ -185,7 +178,7 @@ public class RelayRaceInput extends TimedRaceInput {
 
     private void validateMassStartTimes() {
 
-        final String mass_start_elapsed_times = race.getOptionalProperty(RelayRace.KEY_MASS_START_ELAPSED_TIMES);
+        final String mass_start_elapsed_times = race.getOptionalProperty(KEY_MASS_START_ELAPSED_TIMES);
 
         if (mass_start_elapsed_times != null) {
 
@@ -196,11 +189,11 @@ public class RelayRaceInput extends TimedRaceInput {
                 try {
                     mass_start_time = parseTime(time_string);
                 } catch (final DateTimeParseException _) {
-                    throw new RuntimeException(STR."invalid mass start time for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
+                    throw new RuntimeException(STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
                 }
 
                 if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
-                    throw new RuntimeException(STR."invalid mass start time order for key '\{RelayRace.KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
+                    throw new RuntimeException(STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
 
                 previous_time = mass_start_time;
             }

@@ -30,12 +30,14 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
+
 @SuppressWarnings("IncorrectFormatting")
 public abstract class SeriesRace extends Race {
 
     // Configuration file keys.
-    protected static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
-    protected static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
+//    protected static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
+//    protected static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
 
     protected List<SingleRace> races;
 

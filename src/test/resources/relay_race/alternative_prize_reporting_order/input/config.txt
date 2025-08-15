@@ -7,8 +7,8 @@ RACE_NAME_FOR_FILENAMES = simple
 # Relative to directory containing configuration file.
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
-CATEGORIES_PRIZE_PATH = categories_prize_relay.csv
+PRIZE_CATEGORIES_PATH = categories_prize_relay.csv
 
 # Relative to project root directory.
-CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_relay.csv
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
 GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibility_relay.csv

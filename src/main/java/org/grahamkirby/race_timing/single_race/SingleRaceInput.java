@@ -23,7 +23,7 @@ import org.grahamkirby.race_timing.common.RaceInput;
 
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
+import static org.grahamkirby.race_timing_experimental.common.Config.COMMENT_SYMBOL;
 
 @SuppressWarnings({"IncorrectFormatting", "AbstractMethodCallInConstructor"})
 public abstract class SingleRaceInput extends RaceInput {

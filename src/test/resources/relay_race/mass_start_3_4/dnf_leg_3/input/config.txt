@@ -9,8 +9,8 @@ ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
 # Relative to project root directory.
-CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_relay.csv
-CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_relay.csv
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
+PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_relay.csv
 GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibility_relay.csv
 
 # Elapsed duration from start of leg 1 to mass start time for each leg.

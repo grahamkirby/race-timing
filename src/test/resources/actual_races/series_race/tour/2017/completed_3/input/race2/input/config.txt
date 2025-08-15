@@ -6,8 +6,8 @@ RACE_NAME_FOR_FILENAMES = race2
 ENTRIES_PATH = ../../entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-CATEGORIES_ENTRY_PATH = ../../categories_entry.csv
-CATEGORIES_PRIZE_PATH = ../../categories_prize.csv
+ENTRY_CATEGORIES_PATH = ../../categories_entry.csv
+PRIZE_CATEGORIES_PATH = ../../categories_prize.csv
 
 CATEGORY_MAP_PATH = ../../category_map.csv
 ENTRY_COLUMN_MAP = 1,2-3,4,5

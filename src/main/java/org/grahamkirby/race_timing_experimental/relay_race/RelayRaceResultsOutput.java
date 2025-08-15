@@ -17,10 +17,8 @@
  */
 package org.grahamkirby.race_timing_experimental.relay_race;
 
-import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.common.RaceResult;
 import org.grahamkirby.race_timing_experimental.common.ResultPrinter;
 import org.grahamkirby.race_timing_experimental.common.ResultsOutput;
 
@@ -31,10 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 
 @SuppressWarnings("preview")
 public class RelayRaceResultsOutput implements ResultsOutput {
@@ -226,32 +222,4 @@ public class RelayRaceResultsOutput implements ResultsOutput {
     protected String getResultsSubHeader(final String s) {
         return LINE_SEPARATOR + s;
     }
-
-    public static String renderScore(final int score, final String alternative) {
-
-        return score != 0 ? String.valueOf(score) : alternative;
-    }
-
-    public static String renderScore(final int score) {
-
-        return String.valueOf(score);
-    }
-
-//    public static String renderDuration(final Duration duration, final String alternative) {
-//
-//        return duration != null ? format(duration) : alternative;
-//    }
-//
-//    public static String renderDuration(final RaceResult result, final String alternative) {
-//
-//        if (!result.canComplete()) return alternative;
-//
-//        final Duration duration = ((RelayRaceResult) result).duration();
-//
-//        return format(duration);
-//    }
-//
-//    public static String renderDuration(final RaceResult result) {
-//        return renderDuration(result, "");
-//    }
 }

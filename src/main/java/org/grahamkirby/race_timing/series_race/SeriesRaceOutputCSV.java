@@ -24,7 +24,7 @@ import org.grahamkirby.race_timing.common.output.RaceOutputCSV;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACE_NAME_FOR_RESULTS;
 
 public abstract class SeriesRaceOutputCSV extends RaceOutputCSV {
 

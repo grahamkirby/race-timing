@@ -8,5 +8,5 @@ RAW_RESULTS_PATH = rawtimes.txt
 CATEGORY_MAP_PATH = category_map.csv
 
 # Relative to project root directory.
-CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
-CATEGORIES_PRIZE_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv

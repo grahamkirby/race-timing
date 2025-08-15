@@ -1,0 +1,1 @@
+no entry for key 'QUALIFYING_CLUBS' in file 'config.txt'

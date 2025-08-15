@@ -1,0 +1,1 @@
+invalid entry '3	Team 3	OS	Jackbruce	Neil MacDonald & Myles  Christie	Hubert Gray' at line 3 in file 'entries.txt'

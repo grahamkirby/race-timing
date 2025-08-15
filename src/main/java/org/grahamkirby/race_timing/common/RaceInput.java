@@ -17,7 +17,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public abstract class RaceInput {
 
@@ -37,7 +37,7 @@ public abstract class RaceInput {
         race.getRequiredProperty(KEY_YEAR);
         race.getRequiredProperty(KEY_RACE_NAME_FOR_RESULTS);
         race.getRequiredProperty(KEY_RACE_NAME_FOR_FILENAMES);
-        race.getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH);
-        race.getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH);
+        race.getRequiredProperty(KEY_ENTRY_CATEGORIES_PATH);
+        race.getRequiredProperty(KEY_PRIZE_CATEGORIES_PATH);
     }
 }

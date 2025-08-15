@@ -26,13 +26,14 @@ import org.grahamkirby.race_timing.common.output.RaceOutputHTML;
 import org.grahamkirby.race_timing.common.output.RaceOutputPDF;
 import org.grahamkirby.race_timing.common.output.RaceOutputText;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
+
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 /** Base class for all types of race. */
 @SuppressWarnings("IncorrectFormatting")
@@ -43,6 +44,7 @@ public abstract class Race {
     // TODO output runner list and duplicate runners in series to processing notes.
     // TODO allow negative early starts.
     // TODO add junior hill races.
+    // TODO add individual names to team prize results.
     // TODO allow explicitly recorded dead heat in single race.
     // TODO allow overall dead heat in relay race only where at least one team in a mass start.
     // TODO use tree structured set of result comparators.
@@ -57,27 +59,6 @@ public abstract class Race {
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
     // TODO generate racer list for PocketTimer.
-
-    /** Comment symbol used within configuration files. */
-    public static final String COMMENT_SYMBOL = "#";
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Configuration file keys.
-    public static final String KEY_YEAR = "YEAR";
-    public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
-    public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
-    public static final String KEY_CATEGORIES_ENTRY_PATH = "CATEGORIES_ENTRY_PATH";
-    public static final String KEY_CATEGORIES_PRIZE_PATH = "CATEGORIES_PRIZE_PATH";
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /** Platform-specific line separator used in creating output files. */
-    public static final String LINE_SEPARATOR = System.lineSeparator();
-    public static final String PATH_SEPARATOR = File.separator;
-
-    /** Used when a result is recorded without a bib number. */
-    public static final int UNKNOWN_BIB_NUMBER = 0;
 
     /** Index of prize category group name within the relevant config file. */
     public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
@@ -450,16 +431,23 @@ public abstract class Race {
 
     private void configureCategories() throws IOException {
 
-        entry_categories = Files.readAllLines(getPath(getRequiredProperty(KEY_CATEGORIES_ENTRY_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+        final Path path = getPath(getRequiredProperty(KEY_ENTRY_CATEGORIES_PATH)).toAbsolutePath();
+        if (!Files.exists(path))
+            throw new RuntimeException(STR."invalid entry '\{path.getFileName()}' for key '\{KEY_ENTRY_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
+
+        final Path path2 = getPath(getRequiredProperty(KEY_PRIZE_CATEGORIES_PATH)).toAbsolutePath();
+            if (!Files.exists(path2))
+                throw new RuntimeException(STR."invalid entry '\{path2.getFileName()}' for key '\{KEY_PRIZE_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
+
+        entry_categories = Files.readAllLines(getPath(getRequiredProperty(KEY_ENTRY_CATEGORIES_PATH))).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
         prize_category_groups = new ArrayList<>();
-        loadPrizeCategoryGroups(getPath(getRequiredProperty(KEY_CATEGORIES_PRIZE_PATH)));
+        loadPrizeCategoryGroups(getPath(getRequiredProperty(KEY_PRIZE_CATEGORIES_PATH)));
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
     public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         if (!Files.exists(config_file_path))
-//            throw new RuntimeException(STR."missing config file: '\{config_file_path.getFileName()}'");
             throw new RuntimeException(STR."missing config file: '\{config_file_path}'");
 
         try (final InputStream stream = Files.newInputStream(config_file_path)) {

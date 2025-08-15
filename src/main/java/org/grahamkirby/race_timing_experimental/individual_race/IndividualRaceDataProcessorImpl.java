@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 import org.grahamkirby.race_timing.common.RawResult;
-import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing_experimental.common.*;
 
@@ -29,15 +28,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.CommonDataProcessor.*;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_ENTRIES_PATH;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RAW_RESULTS_PATH;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 import static org.grahamkirby.race_timing_experimental.common.RaceEntry.CATEGORY_INDEX;
 
 public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
@@ -117,10 +112,13 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
             map(entry -> entry.bib_number).
             collect(Collectors.toSet());
 
+        AtomicInteger line = new AtomicInteger(0);
+
         raw_results.forEach(raw_result -> {
+            line.incrementAndGet();
             final int result_bib_number = raw_result.getBibNumber();
             if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
-                throw new RuntimeException(STR."invalid bib number '\{result_bib_number}' in file '\{raw_results_path.getFileName()}'");
+                throw new RuntimeException(STR."unregistered bib number '\{result_bib_number}' at line \{line.get()} in file '\{raw_results_path.getFileName()}'");
         });
     }
 

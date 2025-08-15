@@ -1,0 +1,1 @@
+no entry for key 'SCORE_FOR_MEDIAN_POSITION' in file 'config.txt'

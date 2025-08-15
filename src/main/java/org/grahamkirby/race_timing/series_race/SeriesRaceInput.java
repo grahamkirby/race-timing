@@ -32,14 +32,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
-import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
-import static org.grahamkirby.race_timing.series_race.SeriesRace.KEY_MINIMUM_NUMBER_OF_RACES;
-import static org.grahamkirby.race_timing.series_race.SeriesRace.KEY_NUMBER_OF_RACES_IN_SERIES;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class SeriesRaceInput extends RaceInput {
 
     // Configuration file keys.
-    private static final String KEY_RACES = "RACES";
+//    private static final String KEY_RACES = "RACES";
 
     private List<String> race_config_paths;
 

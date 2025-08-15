@@ -1,0 +1,1 @@
+invalid number of races specified in file 'config.txt'

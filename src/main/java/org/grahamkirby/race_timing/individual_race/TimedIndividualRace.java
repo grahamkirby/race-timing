@@ -25,16 +25,16 @@ import org.grahamkirby.race_timing.single_race.SingleRaceResult;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_INDIVIDUAL_EARLY_STARTS;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE;
 
 public class TimedIndividualRace extends TimedRace {
 
-    private static final String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
-    private static final String KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE = "NUMBER_TO_COUNT_FOR_TEAM_PRIZE";
+    int number_to_count_for_team_prize = Integer.MAX_VALUE;
 
     public TimedIndividualRace(final Path config_file_path) throws IOException {
         super(config_file_path);
@@ -63,29 +63,31 @@ public class TimedIndividualRace extends TimedRace {
     @Override
     public List<String> getTeamPrizes() {
 
-        List<RaceResult> overall_results = getOverallResults();
+        final List<RaceResult> overall_results = getOverallResults();
+        final Set<String> clubs = getClubs(overall_results);
 
-        Set<String> clubs = getClubs(overall_results);
         int best_male_team_total = Integer.MAX_VALUE;
         String best_male_team = "";
         int best_female_team_total = Integer.MAX_VALUE;
         String best_female_team = "";
 
-        for (String club : clubs) {
-            int male_team_total = getTeamTotal(club, "Men");
-            int female_team_total = getTeamTotal(club, "Women");
+        for (final String club : clubs) {
+
+            final int male_team_total = getTeamTotal(club, "Men");
+            final int female_team_total = getTeamTotal(club, "Women");
 
             if (male_team_total < best_male_team_total) {
                 best_male_team = club;
                 best_male_team_total = male_team_total;
             }
+
             if (female_team_total < best_female_team_total) {
                 best_female_team = club;
                 best_female_team_total = female_team_total;
             }
         }
 
-        List<String> prizes = new ArrayList<>();
+        final List<String> prizes = new ArrayList<>();
 
         if (best_male_team_total < Integer.MAX_VALUE)
             prizes.add("First male team: " + best_male_team + " (" + best_male_team_total + ")");
@@ -96,18 +98,19 @@ public class TimedIndividualRace extends TimedRace {
         return prizes;
     }
 
-    private int getTeamTotal(String club, String gender) {
+    private int getTeamTotal(final String club, final String gender) {
 
         int result_position = 0;
         int team_count = 0;
         int total = 0;
 
-        for (RaceResult result : getOverallResults()) {
+        for (final RaceResult result : getOverallResults()) {
 
             result_position++;
-            String club1 = ((Runner) ((SingleRaceResult) result).entry.participant).club;
-            if (team_count < number_to_count_for_team_prize && club1.equals(club) && ((SingleRaceResult)result).entry.participant.category.getGender().equals(gender)) {
-//                if (team_count < number_to_count_for_team_prize && normalisation.cleanClubOrTeamName(club1).equals(club) && ((SingleRaceResult)result).entry.participant.category.getGender().equals(gender)) {
+
+            final Runner runner = (Runner) ((SingleRaceResult) result).entry.participant;
+
+            if (team_count < number_to_count_for_team_prize && runner.club.equals(club) && runner.category.getGender().equals(gender)) {
                 team_count++;
                 total += result_position;
             }
@@ -116,17 +119,11 @@ public class TimedIndividualRace extends TimedRace {
         return team_count >= number_to_count_for_team_prize ? total : Integer.MAX_VALUE;
     }
 
-    private int toNumeric(String position_string) {
-        if (position_string.endsWith("=")) position_string = position_string.substring(0, position_string.length() - 1);
-        return Integer.parseInt(position_string);
-    }
+    private Set<String> getClubs(final List<RaceResult> results) {
 
-    private Set<String> getClubs(List<RaceResult> results) {
-
-        Set<String> clubs = new HashSet<>();
-        for (RaceResult result : results) {
-            String club = ((Runner) ((SingleRaceResult) result).entry.participant).club;
-//            clubs.add(normalisation.cleanClubOrTeamName(club));
+        final Set<String> clubs = new HashSet<>();
+        for (final RaceResult result : results) {
+            final String club = ((Runner) ((SingleRaceResult) result).entry.participant).club;
             clubs.add(club);
         }
         return clubs;
@@ -154,8 +151,6 @@ public class TimedIndividualRace extends TimedRace {
 
         return new SingleRaceResult(this, getEntryWithBibNumber(bib_number), finish_time);
     }
-
-    int number_to_count_for_team_prize = Integer.MAX_VALUE;
 
     private void configureTeamPrizes() {
 

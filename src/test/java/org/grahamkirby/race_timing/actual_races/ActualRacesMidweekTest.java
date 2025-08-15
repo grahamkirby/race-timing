@@ -23,20 +23,12 @@ import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.FieldSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ActualRacesMidweekTest extends AbstractRaceTest {
-
-    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
-        "actual_races/series_race/midweek/2023/completed_1",
-        "actual_races/series_race/midweek/2023/completed_2",
-        "actual_races/series_race/midweek/2023/completed_3",
-        "actual_races/series_race/midweek/2023/completed_4",
-        "actual_races/series_race/midweek/2023/completed_5",
-        "actual_races/series_race/midweek/2024",
-        "actual_races/series_race/midweek/2025"
-    );
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
@@ -45,9 +37,15 @@ public class ActualRacesMidweekTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static List<String> getTestCases() throws IOException {
+
+        return getTestCases("actual_races/series_race/midweek");
+    }
+
     @ParameterizedTest
-    @FieldSource("TESTS_EXPECTED_TO_COMPLETE") // six numbers
-    void expectedCompletion(final String test_directory_path) throws Exception {
-        testExpectedCompletion(test_directory_path);
+    @MethodSource("getTestCases")
+    void testFromDirectories(final String test_directory_path_string) throws Exception {
+
+        testExpectedCompletionNew(test_directory_path_string);
     }
 }

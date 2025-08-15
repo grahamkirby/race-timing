@@ -21,32 +21,12 @@ package org.grahamkirby.race_timing.actual_races;
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.FieldSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ActualRacesIndividualTest extends AbstractRaceTest {
-
-    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
-        "actual_races/individual_race/balmullo/2023",
-        "actual_races/individual_race/balmullo/2024",
-        "actual_races/individual_race/balmullo/2025",
-        "actual_races/individual_race/ceres_8/2025",
-        "actual_races/individual_race/cupar_5/2025",
-        "actual_races/individual_race/dunnikier/2024",
-        "actual_races/individual_race/giffordtown/2023",
-        "actual_races/individual_race/giffordtown/2024",
-        "actual_races/individual_race/hill_of_tarvit/2024",
-        "actual_races/individual_race/hill_of_tarvit/2025",
-        "actual_races/individual_race/junior_hill_races/2017",
-        "actual_races/individual_race/normans_law/2025",
-        "actual_races/individual_race/st_andrews/2023",
-        "actual_races/individual_race/st_andrews/2024",
-        "actual_races/individual_race/st_andrews/2025",
-        "actual_races/individual_race/strath_blebo/2023",
-        "actual_races/individual_race/strath_blebo/2024",
-        "actual_races/individual_race/strath_blebo/2025"
-    );
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
@@ -55,9 +35,15 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static List<String> getTestCases() throws IOException {
+
+        return getTestCases("actual_races/individual_race");
+    }
+
     @ParameterizedTest
-    @FieldSource("TESTS_EXPECTED_TO_COMPLETE") // six numbers
-    void expectedCompletion(final String test_directory_path) throws Exception {
-        testExpectedCompletion(test_directory_path);
+    @MethodSource("getTestCases")
+    void testFromDirectories(final String test_directory_path_string) throws Exception {
+
+        testExpectedCompletionNew(test_directory_path_string);
     }
 }

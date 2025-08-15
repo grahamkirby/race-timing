@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACE_NAME_FOR_RESULTS;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 
 public class GrandPrixRaceOutputHTML extends SeriesRaceOutputHTML {
 

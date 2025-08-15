@@ -25,8 +25,8 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.Config.UNKNOWN_BIB_NUMBER;
 
 public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 

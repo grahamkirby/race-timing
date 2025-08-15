@@ -23,7 +23,7 @@ import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.util.List;
 
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
 
 class TimedIndividualRaceInput extends TimedRaceInput {
 

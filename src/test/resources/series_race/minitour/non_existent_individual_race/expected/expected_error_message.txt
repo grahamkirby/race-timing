@@ -1,0 +1,1 @@
+invalid config for race 2 in file 'config.txt'

@@ -38,8 +38,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 
 class TourRaceOutputHTML extends SeriesRaceOutputHTML {
 

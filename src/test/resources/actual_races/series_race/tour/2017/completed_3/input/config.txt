@@ -6,8 +6,8 @@ RACES = race1/input/config.txt,race2/input/config.txt,race3/input/config.txt,,
 NUMBER_OF_RACES_IN_SERIES = 5
 MINIMUM_NUMBER_OF_RACES = 5
 
-CATEGORIES_ENTRY_PATH = categories_entry.csv
-CATEGORIES_PRIZE_PATH = categories_prize.csv
+ENTRY_CATEGORIES_PATH = categories_entry.csv
+PRIZE_CATEGORIES_PATH = categories_prize.csv
 
 TIME_TRIAL_RACE = 3
 

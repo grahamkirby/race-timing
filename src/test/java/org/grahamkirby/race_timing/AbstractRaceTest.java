@@ -45,6 +45,7 @@ import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("preview")
@@ -153,6 +154,30 @@ public abstract class AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    protected static List<String> getTestCases(final String parent_test_directory) throws IOException {
+
+        final Path parent_test_directory_path = Race.getTestResourcesRootPath(parent_test_directory);
+
+        try (final Stream<Path> paths = Files.list(parent_test_directory_path).sorted()) {
+
+            final List<String> test_cases = new ArrayList<>();
+            for (final Path test_directory_path : paths.toList()) {
+
+                final String test_directory_path_string = Path.of(parent_test_directory).resolve(test_directory_path.getFileName()).toString();
+
+                Path testResourcesRootPath = Race.getTestResourcesRootPath(test_directory_path_string);
+                if (Files.isDirectory(testResourcesRootPath)) {
+
+                    if (Files.isDirectory(testResourcesRootPath.resolve("expected")))
+                        test_cases.add(test_directory_path_string);
+                    else
+                        test_cases.addAll(getTestCases(test_directory_path_string));
+                }
+            }
+            return test_cases;
+        }
+    }
+
     private static void setLoggingLevel(final Level level) {
 
         final Logger root_logger = LogManager.getLogManager().getLogger("");
@@ -165,12 +190,43 @@ public abstract class AbstractRaceTest {
         configureDirectoryContents(resources_input_directory);
     }
 
-    protected void testExpectedCompletion(final String configuration_name) throws Exception {
+    protected void testExpectedCompletion(final String individual_test_resource_root) throws Exception {
 
-        configureTest(configuration_name);
+        configureTest(individual_test_resource_root);
         invokeMain(new String[]{config_file_path.toString()});
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
+
+        // Test has passed if this line is reached.
+        failed_test = false;
+    }
+
+    protected void testExpectedCompletionNew(final String individual_test_resource_root) throws Exception {
+
+        configureTest(individual_test_resource_root);
+        final String error_output;
+
+        try {
+            final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
+            System.setErr(new PrintStream(diverted_err));
+
+            invokeMain(new String[]{config_file_path.toString()});
+
+            error_output = diverted_err.toString();
+
+        } finally {
+            System.setErr(System.err);
+        }
+
+        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
+        if (!Files.exists(expected_error_message_file)) {
+            assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
+
+        }
+        else {
+            final String expected_error_message = String.join(LINE_SEPARATOR, Files.readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
+            assertEquals(expected_error_message, error_output, "Expected error message was not generated");
+        }
 
         // Test has passed if this line is reached.
         failed_test = false;

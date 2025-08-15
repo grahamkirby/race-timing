@@ -1,0 +1,1 @@
+invalid category change: runner 'Fictional Runner2' changed from F40 to FS at Largo

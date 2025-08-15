@@ -1,0 +1,1 @@
+no entry for key 'SCORE_FOR_FIRST_PLACE' in file 'config.txt'

@@ -17,6 +17,8 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class CommonConfigProcessor {
 
@@ -68,6 +70,20 @@ public class CommonConfigProcessor {
                     throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'", e);
                 }
             }
+    }
+
+    public static void validateEntryCategoriesPath(final Map<String, Object> config_values, Path config_file_path) {
+
+        final Path path = (Path) config_values.get(KEY_ENTRY_CATEGORIES_PATH);
+        if (!Files.exists(path))
+            throw new RuntimeException(STR."invalid entry '\{path.getFileName()}' for key '\{KEY_ENTRY_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
+    }
+
+    public static void validatePrizeCategoriesPath(final Map<String, Object>config_values, Path config_file_path) {
+
+        final Path path = (Path) config_values.get(KEY_PRIZE_CATEGORIES_PATH);
+        if (!Files.exists(path))
+            throw new RuntimeException(STR."invalid entry '\{path.getFileName()}' for key '\{KEY_PRIZE_CATEGORIES_PATH}' in file '\{config_file_path.getFileName()}'");
     }
 
     public void addRequiredStringProperties(final List<String> keys) {

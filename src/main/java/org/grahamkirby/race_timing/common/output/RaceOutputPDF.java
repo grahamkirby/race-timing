@@ -35,7 +35,6 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 
 /** Base class for PDF output. */
 public abstract class RaceOutputPDF extends RaceOutput {

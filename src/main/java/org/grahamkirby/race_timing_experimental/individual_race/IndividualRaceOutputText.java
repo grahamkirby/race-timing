@@ -32,8 +32,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 /** Base class for plaintext output. */
@@ -127,12 +125,14 @@ public class IndividualRaceOutputText {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    void printPrizes(final OutputStreamWriter writer) {
+    void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         printPrizes(category -> {
             printPrizes(writer, category);
             return null;
         });
+
+        printTeamPrizes(writer);
     }
 
     /**
@@ -173,6 +173,21 @@ public class IndividualRaceOutputText {
             \{"-".repeat(header.length())}
 
             """;
+    }
+
+    void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
+
+        List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            writer.append("Team Prizes\n");
+            writer.append("-----------\n\n");
+
+            for (String team_prize : team_prizes) {
+                writer.append(team_prize);
+                writer.append(LINE_SEPARATOR);
+            }
+        }
     }
 
     protected String getPrizeCategoryFooter() {

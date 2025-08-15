@@ -6,7 +6,7 @@ RACE_NAME_FOR_FILENAMES = balmullo
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 NORMALISED_HTML_ENTITIES_PATH = html_entities.csv
-CATEGORIES_PRIZE_PATH = categories_prize_individual_senior.csv
+PRIZE_CATEGORIES_PATH = categories_prize_individual_senior.csv
 
 # Relative to project root directory.
-CATEGORIES_ENTRY_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv

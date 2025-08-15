@@ -31,7 +31,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceOutputCSV {

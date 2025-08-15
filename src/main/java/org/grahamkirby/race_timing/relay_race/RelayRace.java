@@ -35,19 +35,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.output.RaceOutput.DNF_STRING;
 import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.*;
 
 public class RelayRace extends TimedRace {
 
     // Configuration file keys.
-    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
-    public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
-    private static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
-    public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
-    private static final String KEY_START_OFFSET = "START_OFFSET";
+//    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
+//    public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
+//    private static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
+//    public static final String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
+//    private static final String KEY_START_OFFSET = "START_OFFSET";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

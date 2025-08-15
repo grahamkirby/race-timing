@@ -36,15 +36,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public abstract class TimedRaceInput extends SingleRaceInput {
-
-    // Configuration file keys.
-    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
-    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
 
     protected String entries_path, raw_results_path;
 
@@ -183,7 +179,6 @@ public abstract class TimedRaceInput extends SingleRaceInput {
                 filter(Predicate.not(String::isBlank)).
                 forEach(line -> {
                     counter.incrementAndGet();
-//                    if (line.split("\t").length != number_of_columns)
                     if (line.split("\t").length < number_of_columns)
                         throw new RuntimeException(STR."invalid entry '\{line}' at line \{counter.get()} in file '\{entries_path}'");
                 });
@@ -205,7 +200,7 @@ public abstract class TimedRaceInput extends SingleRaceInput {
                         counter.incrementAndGet();
                         makeRaceEntry(Arrays.stream(line.split("\t")).toList());
                     } catch (final RuntimeException e) {
-                        throw new RuntimeException(STR."invalid entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path}'", e);
+                        throw new RuntimeException(STR."invalid category in entry '\{e.getMessage()}' at line \{counter.get()} in file '\{entries_path}'", e);
                     }
                 });
         } catch (final IOException _) {
@@ -242,13 +237,15 @@ public abstract class TimedRaceInput extends SingleRaceInput {
                 map(line -> line.split("\t")[0]).
                 collect(Collectors.toSet());
 
+            AtomicInteger counter = new AtomicInteger(0);
             Files.readAllLines(race.getPath(raw_results_path)).stream().
+                peek(_ -> counter.incrementAndGet()).
                 map(SingleRaceInput::stripComment).
                 filter(Predicate.not(String::isBlank)).
                 forEach(line -> {
                     final String bib_number = line.split("\t")[0];
                     if (!bib_number.equals("?") && !entered_bib_numbers.contains(bib_number))
-                        throw new RuntimeException(STR."invalid bib number '\{bib_number}' in file '\{raw_results_path}'");
+                        throw new RuntimeException(STR."unregistered bib number '\{bib_number}' at line \{counter.get()} in file '\{raw_results_path}'");
                 });
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -261,10 +258,13 @@ public abstract class TimedRaceInput extends SingleRaceInput {
         try {
             final Set<String> seen = new HashSet<>();
 
+            AtomicInteger counter = new AtomicInteger(0);
+
             Files.readAllLines(race.getPath(entries_path)).stream().
+                peek(_ -> counter.incrementAndGet()).
                 map(TimedRaceInput::getBibNumber).
                 filter(bib_number -> !seen.add(bib_number)).
-                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number '\{bib_number}' in file '\{entries_path}'");});
+                forEach(bib_number -> {throw new RuntimeException(STR."duplicate bib number '\{bib_number}' at line \{counter.get()} in file '\{entries_path}'");});
 
         } catch (final IOException _) {
             throw new RuntimeException(STR."invalid file: '\{entries_path}'");

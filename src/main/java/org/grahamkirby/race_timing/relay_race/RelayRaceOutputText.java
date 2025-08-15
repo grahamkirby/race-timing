@@ -26,7 +26,6 @@ import org.grahamkirby.race_timing.common.output.RaceOutputText;
 import org.grahamkirby.race_timing.common.output.ResultPrinter;
 import org.grahamkirby.race_timing.common.output.ResultPrinterText;
 import org.grahamkirby.race_timing.individual_race.TimedRace;
-import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,10 +34,8 @@ import java.time.Duration;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
-import static org.grahamkirby.race_timing.common.output.RaceOutputCSV.renderDuration;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 
 class RelayRaceOutputText extends RaceOutputText {
 
@@ -198,7 +195,7 @@ class RelayRaceOutputText extends RaceOutputText {
         if (!raw_result.getComment().isEmpty()) {
 
             if (raw_result.getLegNumber() == 0) writer.append("\t");
-            writer.append("\t").append(Race.COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
+            writer.append("\t").append(COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
         }
 
         writer.append(LINE_SEPARATOR);

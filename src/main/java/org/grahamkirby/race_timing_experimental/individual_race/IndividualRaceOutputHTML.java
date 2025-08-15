@@ -30,13 +30,9 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_FILENAMES;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
@@ -112,12 +108,29 @@ public class IndividualRaceOutputHTML {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    void printPrizes(final OutputStreamWriter writer) {
+    void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         printPrizes(category -> {
             printPrizes(writer, category);
             return null;
         });
+
+        printTeamPrizes(writer);
+    }
+
+    void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
+
+        List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            writer.append("<h4>Team Prizes</h4>").append(LINE_SEPARATOR);
+            writer.append("<ul>").append(LINE_SEPARATOR);
+
+            for (String team_prize : team_prizes)
+                writer.append("<li>" + team_prize + "</li>").append(LINE_SEPARATOR);
+
+            writer.append("</ul>").append(LINE_SEPARATOR);
+        }
     }
 
     /**

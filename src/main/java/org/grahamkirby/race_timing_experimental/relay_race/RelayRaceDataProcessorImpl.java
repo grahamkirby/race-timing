@@ -31,13 +31,9 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Normalisation.KEY_ENTRY_COLUMN_MAP;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Race.COMMENT_SYMBOL;
-import static org.grahamkirby.race_timing.common.Race.UNKNOWN_BIB_NUMBER;
 import static org.grahamkirby.race_timing_experimental.common.CommonDataProcessor.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
-import static org.grahamkirby.race_timing_experimental.common.RaceEntry.CATEGORY_INDEX;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.parseTime;
 
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
@@ -150,10 +146,13 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
             map(entry -> entry.bib_number).
             collect(Collectors.toSet());
 
+        int line = 0;
         for (final RawResult raw_result : raw_results) {
+
+            line++;
             final int result_bib_number = raw_result.getBibNumber();
             if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number)) {
-                String message = STR."invalid bib number '\{result_bib_number}' in file '\{electronic_results_path.getFileName()}'";
+                String message = STR."unregistered bib number '\{result_bib_number}' at line \{line} in file '\{electronic_results_path.getFileName()}'";
                 if (paper_results_path != null) message += STR." or '\{paper_results_path.getFileName()}'";
                 throw new RuntimeException(message);
             }

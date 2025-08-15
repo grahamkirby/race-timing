@@ -1,0 +1,1 @@
+duplicate bib number '3' at line 4 in file 'entries.txt'

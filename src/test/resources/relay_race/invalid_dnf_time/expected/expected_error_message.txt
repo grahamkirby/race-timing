@@ -1,0 +1,1 @@
+invalid entry 'XXX' for key 'DNF_FINISHERS' in file 'config.txt'

@@ -29,8 +29,8 @@ import java.io.OutputStreamWriter;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Race.KEY_RACE_NAME_FOR_RESULTS;
-import static org.grahamkirby.race_timing.common.Race.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACE_NAME_FOR_RESULTS;
+import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
 
 class GrandPrixRaceOutputCSV extends SeriesRaceOutputCSV {
 

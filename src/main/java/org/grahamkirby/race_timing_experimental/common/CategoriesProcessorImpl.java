@@ -27,8 +27,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.*;
-import static org.grahamkirby.race_timing.common.Race.KEY_CATEGORIES_PRIZE_PATH;
+import static org.grahamkirby.race_timing.common.Race.PRIZE_CATEGORY_GROUP_NAME_INDEX;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class CategoriesProcessorImpl implements CategoriesProcessor {
 
@@ -44,10 +44,10 @@ public class CategoriesProcessorImpl implements CategoriesProcessor {
 
         try {
             final Config config = race.getConfig();
-            final Path results_path = (Path) config.get(KEY_CATEGORIES_ENTRY_PATH);
+            final Path results_path = (Path) config.get(KEY_ENTRY_CATEGORIES_PATH);
             List<EntryCategory> entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
             prize_category_groups = new ArrayList<>();
-            final Path categories_prize_path = (Path) race.getConfig().get(KEY_CATEGORIES_PRIZE_PATH);
+            final Path categories_prize_path = (Path) race.getConfig().get(KEY_PRIZE_CATEGORIES_PATH);
             loadPrizeCategoryGroups(categories_prize_path);
 
             return new CategoryDetailsImpl(entry_categories, prize_category_groups);

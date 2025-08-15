@@ -23,15 +23,12 @@ import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.FieldSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ActualRacesRelayTest extends AbstractRaceTest {
-
-    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
-        "actual_races/relay_race/devils_burdens/2020",
-        "actual_races/relay_race/devils_burdens/2024"
-    );
 
     @Override
     protected void invokeMain(final String[] args) throws Exception {
@@ -40,9 +37,15 @@ public class ActualRacesRelayTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static List<String> getTestCases() throws IOException {
+
+        return getTestCases("actual_races/relay_race");
+    }
+
     @ParameterizedTest
-    @FieldSource("TESTS_EXPECTED_TO_COMPLETE")
-    void expectedCompletion(final String test_directory_path) throws Exception {
-        testExpectedCompletion(test_directory_path);
+    @MethodSource("getTestCases")
+    void testFromDirectories(final String test_directory_path_string) throws Exception {
+
+        testExpectedCompletionNew(test_directory_path_string);
     }
 }

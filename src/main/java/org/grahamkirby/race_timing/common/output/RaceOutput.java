@@ -39,13 +39,11 @@ import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Race.*;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 /** Abstract parent class for various forms of race output. */
 @SuppressWarnings("IncorrectFormatting")
 public abstract class RaceOutput {
-
-    /** Displayed in results for runners that did not complete the course. */
-    public static final String DNF_STRING = "DNF";
 
     private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 

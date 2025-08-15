@@ -19,34 +19,13 @@ package org.grahamkirby.race_timing;
 
 
 import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.FieldSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.function.Function;
-
-import static org.grahamkirby.race_timing.common.Race.*;
-import static org.grahamkirby.race_timing.common.Race.KEY_YEAR;
-import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_ENTRIES_PATH;
-import static org.grahamkirby.race_timing.individual_race.TimedRaceInput.KEY_RAW_RESULTS_PATH;
-import static org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace.KEY_QUALIFYING_CLUBS;
-import static org.grahamkirby.race_timing.series_race.midweek.MidweekRace.KEY_SCORE_FOR_FIRST_PLACE;
-import static org.grahamkirby.race_timing.single_race.SingleRace.KEY_DNF_FINISHERS;
 
 public class MidweekTest extends AbstractRaceTest {
-
-    private static final List<String> TESTS_EXPECTED_TO_COMPLETE = List.of(
-        "series_race/midweek/dead_heats",
-        "series_race/midweek/duplicate_runner_name",
-        "series_race/midweek/prize_category_groups",
-        "series_race/midweek/large_race",
-        "series_race/midweek/name_includes_comma"
-    );
-
-    private static final Object[][] TESTS_EXPECTED_TO_GIVE_ERROR = new Object[][] {
-        new Object[] {"series_race/midweek/missing_property_score_for_first_place", (Function<AbstractRaceTest, String>) race_test -> STR."no entry for key '\{KEY_SCORE_FOR_FIRST_PLACE}' in file '\{race_test.config_file_path.getFileName()}'"}
-    };
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
@@ -55,15 +34,15 @@ public class MidweekTest extends AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @ParameterizedTest
-    @FieldSource("TESTS_EXPECTED_TO_COMPLETE")
-    void expectedCompletion(final String test_directory_path) throws Exception {
-        testExpectedCompletion(test_directory_path);
+    private static List<String> getTestCases() throws IOException {
+
+        return getTestCases("series_race/midweek");
     }
 
     @ParameterizedTest
-    @FieldSource("TESTS_EXPECTED_TO_GIVE_ERROR")
-    void expectedError(final String test_directory_path, final Function<AbstractRaceTest, String> get_expected_error_message) throws Exception {
-        testExpectedErrorMessage(test_directory_path, get_expected_error_message);
+    @MethodSource("getTestCases")
+    void testFromDirectories(final String test_directory_path_string) throws Exception {
+
+        testExpectedCompletionNew(test_directory_path_string);
     }
 }

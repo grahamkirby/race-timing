@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class TourRaceInput extends SeriesRaceInput {
 
@@ -43,11 +44,11 @@ public class TourRaceInput extends SeriesRaceInput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Configuration file keys.
-    private static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
-    private static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
-    public static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
-    public static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
-    private static final String KEY_SELF_TIMED = "SELF_TIMED";
+//    private static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
+//    private static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
+//    public static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
+//    public static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
+//    private static final String KEY_SELF_TIMED = "SELF_TIMED";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
