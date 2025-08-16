@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing_experimental.common.Config.STANDARD_FILE_OPEN_OPTIONS;
 
 @SuppressWarnings("preview")
 public class RelayRaceResultsOutput implements ResultsOutput {
@@ -57,8 +58,6 @@ public class RelayRaceResultsOutput implements ResultsOutput {
         output_text = new RelayRaceOutputText(race);
         output_PDF = new RelayRaceOutputPDF(race);
     }
-
-    private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -26,10 +26,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
@@ -52,7 +51,10 @@ public class IndividualRaceOutputText {
      */
     void printPrizes() throws IOException {
 
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "prizes", (String) race.getConfig().get(KEY_YEAR));
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -69,43 +71,16 @@ public class IndividualRaceOutputText {
         if (!converted_words.isEmpty())
             race.appendToNotes("Converted to title case: " + converted_words);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "processing_notes", (String) race.getConfig().get(KEY_YEAR)))) {
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "processing_notes", year), STANDARD_FILE_OPEN_OPTIONS))) {
             writer.append(race.getNotes());
         }
     }
 
     /**
-     * Constructs an output stream for writing to a file in the project output directory with name constructed from the given components.
-     * The file extension is determined by getFileSuffix().
-     * The file is created if it does not already exist, and overwritten if it does.
-     * Example file name: "balmullo_prizes_2023.html".
-     *
-     * @param race_name the name of the race in format suitable for inclusion with file name
-     * @param output_type the type of output file e.g. "overall", "prizes" etc.
-     * @param year the year of the race
-     * @return an output stream for the file
-     * @throws IOException if an I/O error occurs
-     */
-    private OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
-
-        return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
-    }
-
-    /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
-    private OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
-
-        return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
-    }
-
-    /**
      * Constructs a path for a file in the project output directory with name constructed from the given components.
-     * The file extension is determined by getFileSuffix().
-     * Example file name: "balmullo_prizes_2023.html".
-     *
-     * @param race_name the name of the race in format suitable for inclusion with file name
-     * @param output_type the type of output file e.g. "overall", "prizes" etc.
-     * @param year the year of the race
-     * @return the path for the file
      */
     private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
@@ -115,11 +90,7 @@ public class IndividualRaceOutputText {
     /** Prints prizes, ordered by prize category groups. */
     private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
-        printPrizes(category -> {
-            printPrizes(writer, category);
-            return null;
-        });
-
+        printPrizes(category -> printPrizes(writer, category));
         printTeamPrizes(writer);
     }
 
@@ -128,12 +99,12 @@ public class IndividualRaceOutputText {
      * The printer abstracts over whether output goes to an output stream writer
      * (CSV, HTML and text files) or to a PDF writer.
      */
-    private void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
+    private void printPrizes(final Consumer<PrizeCategory> prize_category_printer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(prize_category_printer::apply);                       // Print prizes in this category.
+            forEachOrdered(prize_category_printer);                       // Print prizes in this category.
     }
 
     /** Prints prizes within a given category. */
@@ -143,7 +114,7 @@ public class IndividualRaceOutputText {
             writer.append(getPrizeCategoryHeader(category));
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
-            getPrizeResultPrinter(writer).print(category_prize_winners);
+            new PrizeResultPrinter(race, writer).print(category_prize_winners);
 
             writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
@@ -187,12 +158,6 @@ public class IndividualRaceOutputText {
             \{"=".repeat(header.length())}
 
             """;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
-        return new PrizeResultPrinter(race, writer);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

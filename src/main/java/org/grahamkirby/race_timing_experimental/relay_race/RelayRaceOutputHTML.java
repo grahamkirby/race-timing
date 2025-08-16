@@ -28,19 +28,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.output.RaceOutputHTML.SOFTWARE_CREDIT_LINK_TEXT;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceOutputHTML {
-
-    private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     private final Race race;
 
@@ -48,32 +43,25 @@ public class RelayRaceOutputHTML {
         this.race = race;
     }
 
-    protected ResultPrinter getOverallResultPrinter(final OutputStreamWriter writer) {
-        return new OverallResultPrinter(race, writer);
-    }
+    void printResults() throws IOException {
 
-    public void printResults() throws IOException {
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get(KEY_YEAR));
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "overall", year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getResultsHeader());
-            printResults(writer, getOverallResultPrinter(writer));
+            printResults(writer, new OverallResultPrinter(race, writer));
         }
     }
 
     /** Prints all details to a single web page. */
-    public void printCombined() throws IOException {
+    void printCombined() throws IOException {
 
-        printCombinedDetails();
-        printCreditLink();
-    }
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-    /** Prints prizes and overall results to a single web page. */
-    protected void printCombinedDetails() throws IOException {
-
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "combined", (String) race.getConfig().get(KEY_YEAR));
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "combined", year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -83,7 +71,7 @@ public class RelayRaceOutputHTML {
             printPrizes(writer);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            printResults(writer, getOverallResultPrinter(writer));
+            printResults(writer, new OverallResultPrinter(race, writer));
 
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResults(writer);
@@ -93,22 +81,17 @@ public class RelayRaceOutputHTML {
                 writer.append(STR."<p></p>\{LINE_SEPARATOR}<h4>Leg \{leg_number} Results</h4>\{LINE_SEPARATOR}");
                 printLegResults(writer, leg_number);
             }
-        }
-    }
 
-    /** Prints web link to GitHub page for this application. */
-    private void printCreditLink() throws IOException {
-
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "combined", (String) race.getConfig().get(KEY_YEAR), StandardOpenOption.APPEND);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.append(SOFTWARE_CREDIT_LINK_TEXT);
         }
     }
 
-    public void printPrizes() throws IOException {
+    void printPrizes() throws IOException {
 
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "prizes", (String) race.getConfig().get(KEY_YEAR));
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -117,26 +100,25 @@ public class RelayRaceOutputHTML {
         }
     }
 
-    /** Prints prizes, ordered by prize category groups. */
-    void printPrizes(final OutputStreamWriter writer) {
+    void printDetailedResults() throws IOException {
 
-        printPrizes(category -> {
-            printPrizes(writer, category);
-            return null;
-        });
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "detailed", year), STANDARD_FILE_OPEN_OPTIONS);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printDetailedResults(writer);
+        }
     }
 
-    /**
-     * Prints prizes using a specified printer, ordered by prize category groups.
-     * The printer abstracts over whether output goes to an output stream writer
-     * (CSV, HTML and text files) or to a PDF writer.
-     */
-    void printPrizes(final Function<? super PrizeCategory, Void> prize_category_printer) {
+    /** Prints prizes, ordered by prize category groups. */
+    private void printPrizes(final OutputStreamWriter writer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(prize_category_printer::apply);                       // Print prizes in this category.
+            forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
     }
 
     /** Prints prizes within a given category. */
@@ -146,9 +128,7 @@ public class RelayRaceOutputHTML {
             writer.append(getPrizeCategoryHeader(category));
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
-            getPrizeResultPrinter(writer).print(category_prize_winners);
-
-            writer.append(getPrizeCategoryFooter());
+            new PrizeResultPrinter(race, writer).print(category_prize_winners);
         }
         // Called from lambda that can't throw checked exception.
         catch (final IOException e) {
@@ -156,74 +136,33 @@ public class RelayRaceOutputHTML {
         }
     }
 
-    public String getFileSuffix() {
-        return ".html";
-    }
-
-    public String getResultsHeader() {
-        return "";
-    }
-
-    public String getResultsSubHeader(final String s) {
+    private String getResultsSubHeader(final String s) {
         return STR."""
             <p></p>
             <h4>\{s}</h4>
             """;
     }
 
-    public String getPrizesHeader() {
+    private String getPrizesHeader() {
         return STR."<h4>Prizes</h4>\{LINE_SEPARATOR}";
     }
 
-    public String getPrizeCategoryHeader(final PrizeCategory category) {
+    private String getPrizeCategoryHeader(final PrizeCategory category) {
         return STR."""
         <p><strong>\{category.getLongName()}</strong></p>
         """;
     }
 
-    public String getPrizeCategoryFooter() {
-        return "";
-    }
-    /**
-     * Constructs an output stream for writing to a file in the project output directory with name constructed from the given components.
-     * The file extension is determined by getFileSuffix().
-     * The file is created if it does not already exist, and overwritten if it does.
-     * Example file name: "balmullo_prizes_2023.html".
-     *
-     * @param race_name the name of the race in format suitable for inclusion with file name
-     * @param output_type the type of output file e.g. "overall", "prizes" etc.
-     * @param year the year of the race
-     * @return an output stream for the file
-     * @throws IOException if an I/O error occurs
-     */
-    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
-
-        return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
-    }
-
-    /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
-    protected OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
-
-        return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
-    }
-
     /**
      * Constructs a path for a file in the project output directory with name constructed from the given components.
-     * The file extension is determined by getFileSuffix().
-     * Example file name: "balmullo_prizes_2023.html".
-     *
-     * @param race_name the name of the race in format suitable for inclusion with file name
-     * @param output_type the type of output file e.g. "overall", "prizes" etc.
-     * @param year the year of the race
-     * @return the path for the file
      */
-    Path getOutputFilePath(final String race_name, final String output_type, final String year) {
+    private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.html");
+        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{HTML_FILE_SUFFIX}");
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
-    protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
+    private void printResults(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
 
         // Don't display category group headers if there is only one group.
         final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
@@ -238,37 +177,11 @@ public class RelayRaceOutputHTML {
                 writer.append(getResultsSubHeader(group.group_title()));
             }
 
-            RaceResultsCalculator raceResults = race.getResultsCalculator();
-            List<RaceResult> overallResults = raceResults.getOverallResults(group.categories());
-            printer.print(overallResults);
+            printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
 
             not_first_category_group = true;
         }
     }
-
-//    /** Encodes a single value by surrounding with quotes if it contains a comma. */
-//    public static String encode(final String s) {
-//        return s.contains(",") ? STR."\"\{s}\"" : s;
-//    }
-//
-//    public static String renderDuration(final Duration duration, final String alternative) {
-//
-//        return duration != null ? format(duration) : alternative;
-//    }
-//
-//    public static String renderDuration(final RaceResult result, final String alternative) {
-//
-//        return RelayRaceOutputCSV.renderDuration(result, alternative);
-//    }
-//
-//    public static String renderDuration(final RaceResult result) {
-//        return renderDuration(result, "");
-//    }
-//
-//    public static String renderDuration(final RaceResult result, final String alternative) {
-//
-//        return result.canComplete() ? format(((SingleRaceResult) result).duration()) : alternative;
-//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -298,18 +211,6 @@ public class RelayRaceOutputHTML {
         }
     }
 
-    protected ResultPrinter getPrizeResultPrinter(final OutputStreamWriter writer) {
-        return new PrizeResultPrinter(race, writer);
-    }
-
-    void printDetailedResults() throws IOException {
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "detailed", (String) race.getConfig().get(KEY_YEAR));
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printDetailedResults(writer);
-        }
-    }
-
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
         printResults(writer, new DetailedResultPrinter(race, writer));
@@ -326,7 +227,6 @@ public class RelayRaceOutputHTML {
             anyMatch(result -> result.in_mass_start);
     }
 
-
     void printLegResults() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
@@ -335,7 +235,11 @@ public class RelayRaceOutputHTML {
 
     private void printLegResults(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), STR."leg_\{leg}", (String) race.getConfig().get(KEY_YEAR));
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String output_type = STR."leg_\{leg}";
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, output_type, year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResults(writer, leg);

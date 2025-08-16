@@ -45,10 +45,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class RaceOutput {
 
-    private static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     protected final Race race;
 
     protected String year;

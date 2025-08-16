@@ -28,14 +28,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class IndividualRaceOutputCSV {
 
-    static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
+    private static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
 
     private final Race race;
 
@@ -45,51 +43,16 @@ public class IndividualRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get(KEY_YEAR));
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_overall_\{year}.\{CSV_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(OVERALL_RESULTS_HEADER);
             IndividualRaceResultsOutput.printResults(writer, new OverallResultPrinter(race, writer), _ -> "", race);
         }
-    }
-
-    /**
-     * Constructs an output stream for writing to a file in the project output directory with name constructed from the given components.
-     * The file extension is determined by getFileSuffix().
-     * The file is created if it does not already exist, and overwritten if it does.
-     * Example file name: "balmullo_prizes_2023.html".
-     *
-     * @param race_name the name of the race in format suitable for inclusion with file name
-     * @param output_type the type of output file e.g. "overall", "prizes" etc.
-     * @param year the year of the race
-     * @return an output stream for the file
-     * @throws IOException if an I/O error occurs
-     */
-    private OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
-
-        return getOutputStream(race_name, output_type, year, STANDARD_FILE_OPEN_OPTIONS);
-    }
-
-    /** As {@link #getOutputStream(String, String, String)} with specified file creation options. */
-    private OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
-
-        return Files.newOutputStream(getOutputFilePath(race_name, output_type, year), options);
-    }
-
-    /**
-     * Constructs a path for a file in the project output directory with name constructed from the given components.
-     * The file extension is determined by getFileSuffix().
-     * Example file name: "balmullo_prizes_2023.html".
-     *
-     * @param race_name the name of the race in format suitable for inclusion with file name
-     * @param output_type the type of output file e.g. "overall", "prizes" etc.
-     * @param year the year of the race
-     * @return the path for the file
-     */
-    private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{CSV_FILE_SUFFIX}");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

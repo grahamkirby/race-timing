@@ -39,7 +39,6 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     protected List<String> getResultsElements(final RaceResult r) {
 
         SingleRaceResult result = (SingleRaceResult)r;
