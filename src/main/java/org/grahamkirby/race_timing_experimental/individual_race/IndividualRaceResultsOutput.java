@@ -53,10 +53,10 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected Race race;
-    IndividualRaceOutputCSV output_CSV;
-    IndividualRaceOutputHTML output_HTML;
-    IndividualRaceOutputText output_text;
-    IndividualRaceOutputPDF output_PDF;
+    private IndividualRaceOutputCSV output_CSV;
+    private IndividualRaceOutputHTML output_HTML;
+    private IndividualRaceOutputText output_text;
+    private IndividualRaceOutputPDF output_PDF;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

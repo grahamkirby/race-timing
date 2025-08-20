@@ -91,9 +91,7 @@ public class RelayRaceOutputHTML {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS))) {
 
             writer.append(getPrizesHeader());
             printPrizes(writer);
@@ -105,12 +103,18 @@ public class RelayRaceOutputHTML {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "detailed", year), STANDARD_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "detailed", year), STANDARD_FILE_OPEN_OPTIONS))) {
             printDetailedResults(writer);
         }
     }
+
+    void printLegResults() throws IOException {
+
+        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
+            printLegResults(leg);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Prints prizes, ordered by prize category groups. */
     private void printPrizes(final OutputStreamWriter writer) {
@@ -183,34 +187,6 @@ public class RelayRaceOutputHTML {
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final class OverallResultPrinter extends IndividualResultPrinterHTML {
-
-        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        protected List<String> getResultsColumnHeaders() {
-
-            return List.of("Pos", "No", "Team", "Category", "Total");
-        }
-
-        @Override
-        protected List<String> getResultsElements(final RaceResult r) {
-
-            RelayRaceResult result = (RelayRaceResult) r;
-            return List.of(
-                result.position_string,
-                String.valueOf(result.entry.bib_number),
-                race.getNormalisation().htmlEncode(result.entry.participant.name),
-                result.entry.participant.category.getLongName(),
-                renderDuration(result, DNF_STRING)
-            );
-        }
-    }
-
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
         printResults(writer, new DetailedResultPrinter(race, writer));
@@ -225,12 +201,6 @@ public class RelayRaceOutputHTML {
             map(result -> (RelayRaceResult) result).
             flatMap(result -> result.leg_results.stream()).
             anyMatch(result -> result.in_mass_start);
-    }
-
-    void printLegResults() throws IOException {
-
-        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
-            printLegResults(leg);
     }
 
     private void printLegResults(final int leg) throws IOException {
@@ -251,6 +221,35 @@ public class RelayRaceOutputHTML {
         final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
 
         new LegResultPrinter(race, writer, leg).print(leg_results);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final class OverallResultPrinter extends IndividualResultPrinterHTML {
+
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        protected List<String> getResultsColumnHeaders() {
+
+            return List.of("Pos", "No", "Team", "Category", "Total");
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            RelayRaceResult result = (RelayRaceResult) r;
+
+            return List.of(
+                result.position_string,
+                String.valueOf(result.entry.bib_number),
+                race.getNormalisation().htmlEncode(result.entry.participant.name),
+                result.entry.participant.category.getLongName(),
+                renderDuration(result, DNF_STRING)
+            );
+        }
     }
 
     private static final class LegResultPrinter extends ResultPrinterHTML {

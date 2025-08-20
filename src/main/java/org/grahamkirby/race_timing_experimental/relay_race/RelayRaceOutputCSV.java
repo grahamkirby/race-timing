@@ -45,7 +45,10 @@ public class RelayRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        final OutputStream stream = getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "overall", (String) race.getConfig().get(KEY_YEAR));
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_overall_\{year}.\{CSV_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -56,12 +59,23 @@ public class RelayRaceOutputCSV {
 
     void printDetailedResults() throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), "detailed", (String) race.getConfig().get(KEY_YEAR)))) {
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_detailed_\{year}.\{CSV_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS))) {
 
             printDetailedResultsHeader(writer);
             printDetailedResults(writer);
         }
     }
+
+    void printLegResults() throws IOException {
+
+        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
+            printLegResults(leg);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
 
@@ -86,27 +100,17 @@ public class RelayRaceOutputCSV {
             printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
     }
 
-    void printLegResults() throws IOException {
-
-        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
-            printLegResults(leg);
-    }
-
     private void printLegResults(final int leg) throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream((String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES), STR."leg_\{leg}", (String) race.getConfig().get(KEY_YEAR)))) {
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String output_type = STR."leg_\{leg}";
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{CSV_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS))) {
 
             final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
             new LegResultPrinter(race, writer, leg).print(leg_results);
         }
-    }
-
-    /**
-     * Constructs an output stream for writing to a file in the project output directory with name constructed from the given components.
-     */
-    private OutputStream getOutputStream(final String race_name, final String output_type, final String year) throws IOException {
-
-        return Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{CSV_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS);
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
