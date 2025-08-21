@@ -28,7 +28,6 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
@@ -90,21 +89,12 @@ public class IndividualRaceOutputText {
     /** Prints prizes, ordered by prize category groups. */
     private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
-        printPrizes(category -> printPrizes(writer, category));
-        printTeamPrizes(writer);
-    }
-
-    /**
-     * Prints prizes using a specified printer, ordered by prize category groups.
-     * The printer abstracts over whether output goes to an output stream writer
-     * (CSV, HTML and text files) or to a PDF writer.
-     */
-    private void printPrizes(final Consumer<PrizeCategory> prize_category_printer) {
-
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(prize_category_printer);                       // Print prizes in this category.
+            forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
+
+        printTeamPrizes(writer);
     }
 
     /** Prints prizes within a given category. */

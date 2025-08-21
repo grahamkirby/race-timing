@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing_experimental.individual_race;
 
 
-import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -40,11 +39,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class IndividualRaceOutputPDF {
 
-    private static final String PRIZE_FONT_NAME = StandardFonts.HELVETICA;
-    private static final String PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
-    private static final String PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
-    private static final int PRIZE_FONT_SIZE = 24;
-
     private final Race race;
 
     IndividualRaceOutputPDF(final Race race) {
@@ -60,12 +54,12 @@ public class IndividualRaceOutputPDF {
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            final Paragraph prizes_section_header = new Paragraph().
-                setFont(getFont(PRIZE_FONT_NAME)).
-                setFontSize(PRIZE_FONT_SIZE).
+            final Paragraph section_header = new Paragraph().
+                setFont(getFont(PDF_PRIZE_FONT_NAME)).
+                setFontSize(PDF_PRIZE_FONT_SIZE).
                 add(STR."\{race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)} \{race.getConfig().get(KEY_YEAR)} Category Prizes");
 
-            document.add(prizes_section_header);
+            document.add(section_header);
 
             race.getCategoryDetails().getPrizeCategoryGroups().stream().
                 flatMap(group -> group.categories().stream()).                       // Get all prize categories.
@@ -76,9 +70,9 @@ public class IndividualRaceOutputPDF {
 
             if (!team_prizes.isEmpty()) {
                 document.add(new Paragraph("Team Prizes").
-                    setFont(getFont(PRIZE_FONT_BOLD_NAME)).
+                    setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
                     setUnderline().
-                    setPaddingTop(PRIZE_FONT_SIZE));
+                    setPaddingTop(PDF_PRIZE_FONT_SIZE));
 
                 for (String team_prize : team_prizes) {
                     document.add(new Paragraph(team_prize));
@@ -94,9 +88,9 @@ public class IndividualRaceOutputPDF {
 
         try {
             final Paragraph category_header = new Paragraph(STR."Category: \{category.getLongName()}").
-                setFont(getFont(PRIZE_FONT_BOLD_NAME)).
+                setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
-                setPaddingTop(PRIZE_FONT_SIZE);
+                setPaddingTop(PDF_PRIZE_FONT_SIZE);
 
             document.add(category_header);
 
@@ -108,7 +102,6 @@ public class IndividualRaceOutputPDF {
     }
 
     private static PdfFont getFont(final String font_name) throws IOException {
-
         return PdfFontFactory.createFont(font_name);
     }
 
@@ -128,8 +121,8 @@ public class IndividualRaceOutputPDF {
 
             SingleRaceResult result = (SingleRaceResult) r;
 
-            final PdfFont font = getFont(PRIZE_FONT_NAME);
-            final PdfFont bold_font = getFont(PRIZE_FONT_BOLD_NAME);
+            final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
+            final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
 
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
@@ -143,7 +136,7 @@ public class IndividualRaceOutputPDF {
         @Override
         public void printNoResults() throws IOException {
 
-            document.add(new Paragraph("No results").setFont(getFont(PRIZE_FONT_ITALIC_NAME)));
+            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 }

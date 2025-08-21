@@ -41,8 +41,6 @@ import static org.grahamkirby.race_timing_experimental.common.Normalisation.pars
 @SuppressWarnings("preview")
 public class RelayRaceConfigProcessor implements ConfigProcessor {
 
-//    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
-
     private Race race;
 
     public void setRace(Race race) {
@@ -55,13 +53,7 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
         List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES, KEY_PAIRED_LEGS);
 
     private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
-        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_ENTRY_COLUMN_MAP, KEY_INDIVIDUAL_LEG_STARTS);
-
-//    private static final List<String> OPTIONAL_STRING_WITH_DEFAULT_PROPERTY_KEYS =
-//        List.of(KEY_ENTRY_COLUMN_MAP);
-//
-//    private static final List<String> OPTIONAL_STRING_DEFAULT_PROPERTIES =
-//        List.of(DEFAULT_ENTRY_COLUMN_MAP);
+        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_ENTRY_COLUMN_MAP, KEY_INDIVIDUAL_LEG_STARTS, KEY_MASS_START_ELAPSED_TIMES);
 
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
@@ -97,13 +89,11 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
 
             commonConfigProcessor.addOptionalProperty(KEY_START_OFFSET, Normalisation::parseTime, _ -> Duration.ZERO);
 
-            commonConfigProcessor.addOptionalProperty(KEY_MASS_START_ELAPSED_TIMES, s -> s, _ -> defaultMassStartElapsedTimes(number_of_legs));
-
             // Default entry map with elements (bib number, team name, category, plus one per leg), and no column combining or re-ordering.
             commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s, _ -> makeDefaultEntryColumnMap(number_of_legs + 3));
 
             // Each DNF string contains single bib number.
-            Consumer<String> dnf_string_checker = individual_dnf_string -> {
+            final Consumer<String> dnf_string_checker = individual_dnf_string -> {
 
                 final String[] elements = individual_dnf_string.split("/");
                 Integer.parseInt(elements[0]);
@@ -111,7 +101,7 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
             };
             validateDNFRecords((String) config_values.get(KEY_DNF_FINISHERS), dnf_string_checker, config_file_path);
 
-            validateMassStartTimes((String) config_values.get(KEY_MASS_START_ELAPSED_TIMES), config_file_path);
+            validateMassStartTimes((String) config_values.get(KEY_MASS_START_ELAPSED_TIMES), number_of_legs, config_file_path);
 
             return new ConfigImpl(config_values);
 
@@ -120,31 +110,42 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
         }
     }
 
-    private String defaultMassStartElapsedTimes(final int number_of_legs) {
-
-        return Stream.generate(() -> format(Duration.ZERO)).
-            limit(number_of_legs).
-            collect(Collectors.joining(","));
-    }
-
-    private void validateMassStartTimes(final String mass_start_elapsed_times, final Path config_file_path) {
+    private void validateMassStartTimes(final String mass_start_elapsed_times, final int number_of_legs, final Path config_file_path) {
 
         Duration previous_time = null;
 
-        for (final String time_string : mass_start_elapsed_times.split(",")) {
+        if (mass_start_elapsed_times != null)
+            for (final String leg_time_string : mass_start_elapsed_times.split(",")) {
 
-            final Duration mass_start_time;
-            try {
-                mass_start_time = parseTime(time_string);
+                String[] split = leg_time_string.split("/");
 
-            } catch (final DateTimeParseException _) {
-                throw new RuntimeException(STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                final Duration mass_start_time;
+                try {
+                    if (split.length < 2)
+                        throw new RuntimeException(STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+
+                    String time_string = split[1];
+                    mass_start_time = parseTime(time_string);
+
+                } catch (final DateTimeParseException _) {
+                    throw new RuntimeException(STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                }
+
+                try {
+                    int leg_number = Integer.parseInt(split[0]);
+
+                    if (leg_number < 1 || leg_number > number_of_legs)
+                        throw new RuntimeException(STR."invalid leg number for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+
+                }
+                catch (NumberFormatException _) {
+                    throw new RuntimeException(STR."invalid leg number for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                }
+
+                if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
+                    throw new RuntimeException(STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+
+                previous_time = mass_start_time;
             }
-
-            if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
-                throw new RuntimeException(STR."invalid mass start time order for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
-
-            previous_time = mass_start_time;
-        }
     }
 }

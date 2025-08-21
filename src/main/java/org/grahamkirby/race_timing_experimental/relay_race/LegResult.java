@@ -29,6 +29,7 @@ public class LegResult extends SingleRaceResult {
     int leg_number;
     boolean in_mass_start;
 
+    // TODO move to SingleRaceResult.
     Duration start_time;  // Relative to start of leg 1.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,11 +44,7 @@ public class LegResult extends SingleRaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {
-        return dnf ? null : finish_time.minus(start_time);
-    }
-
-    public boolean canComplete() {
-        return !dnf;
+        return !canComplete() ? null : finish_time.minus(start_time);
     }
 
     public String getParticipantName() {

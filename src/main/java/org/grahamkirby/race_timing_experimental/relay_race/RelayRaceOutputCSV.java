@@ -39,10 +39,6 @@ public class RelayRaceOutputCSV {
         this.race = race;
     }
 
-    private String getResultsHeader() {
-        return STR."\{OVERALL_RESULTS_HEADER}Total\{LINE_SEPARATOR}";
-    }
-
     void printResults() throws IOException {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
@@ -52,7 +48,7 @@ public class RelayRaceOutputCSV {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(getResultsHeader());
+            writer.append(STR."\{OVERALL_RESULTS_HEADER}Total\{LINE_SEPARATOR}");
             printResults(writer, new OverallResultPrinter(race, writer));
         }
     }

@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing_experimental.relay_race;
 
 
-import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceEntry;
 import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
@@ -31,7 +30,7 @@ public class RelayRaceResult extends SingleRaceResult {
 
     final List<LegResult> leg_results;
 
-    public RelayRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
+    RelayRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 
         super(race, entry, finish_time);
 

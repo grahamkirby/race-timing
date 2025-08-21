@@ -17,6 +17,8 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
+import com.itextpdf.io.font.constants.StandardFonts;
+
 import java.io.File;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -84,6 +86,11 @@ public interface Config {
     /** Comment symbol used within configuration files. */
     String COMMENT_SYMBOL = "#";
 
+    String PDF_PRIZE_FONT_NAME = StandardFonts.HELVETICA;
+    String PDF_PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
+    String PDF_PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
+    int PDF_PRIZE_FONT_SIZE = 24;
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Platform-specific line separator used in creating output files. */
@@ -92,6 +99,8 @@ public interface Config {
 
     /** Used when a result is recorded without a bib number. */
     int UNKNOWN_BIB_NUMBER = 0;
+
+    Duration NO_MASS_START_DURATION = Duration.ofSeconds(Long.MAX_VALUE);
 
     OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 

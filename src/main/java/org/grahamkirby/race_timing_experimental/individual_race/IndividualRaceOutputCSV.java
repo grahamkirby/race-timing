@@ -34,7 +34,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 public class IndividualRaceOutputCSV {
 
     private static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{LINE_SEPARATOR}";
-
     private final Race race;
 
     IndividualRaceOutputCSV(final Race race) {

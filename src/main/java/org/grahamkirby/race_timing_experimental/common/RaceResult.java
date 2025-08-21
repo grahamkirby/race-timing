@@ -39,7 +39,6 @@ public abstract class RaceResult {
     }
 
     public abstract String getParticipantName();
-
     public abstract Participant getParticipant();
     public abstract int comparePerformanceTo(RaceResult other);
     public abstract boolean canComplete();

@@ -30,6 +30,13 @@ import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARA
 @SuppressWarnings("preview")
 public class IndividualRaceResultsOutput implements ResultsOutput {
 
+    private IndividualRaceOutputCSV output_CSV;
+    private IndividualRaceOutputHTML output_HTML;
+    private IndividualRaceOutputText output_text;
+    private IndividualRaceOutputPDF output_PDF;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public void outputResults() throws IOException {
 
@@ -43,7 +50,6 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     @Override
     public void setRace(Race race) {
 
-        this.race = race;
         output_CSV = new IndividualRaceOutputCSV(race);
         output_HTML = new IndividualRaceOutputHTML(race);
         output_text = new IndividualRaceOutputText(race);
@@ -52,33 +58,25 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected Race race;
-    private IndividualRaceOutputCSV output_CSV;
-    private IndividualRaceOutputHTML output_HTML;
-    private IndividualRaceOutputText output_text;
-    private IndividualRaceOutputPDF output_PDF;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected void printOverallResults() throws IOException {
+    private void printOverallResults() throws IOException {
 
         output_CSV.printResults();
         output_HTML.printResults();
     }
 
-    protected void printPrizes() throws IOException {
+    private void printPrizes() throws IOException {
 
         output_PDF.printPrizes();
         output_HTML.printPrizes();
         output_text.printPrizes();
     }
 
-    protected void printNotes() throws IOException {
+    private void printNotes() throws IOException {
 
         output_text.printNotes();
     }
 
-    protected void printCombined() throws IOException {
+    private void printCombined() throws IOException {
 
         output_HTML.printCombined();
     }

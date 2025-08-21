@@ -71,7 +71,6 @@ public class SingleRaceResult extends RaceResult {
         return !dnf;
     }
 
-
     @Override
     public Participant getParticipant() {
         return entry.participant;

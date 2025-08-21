@@ -92,19 +92,19 @@ public class RelayRaceImpl implements SpecificRace {
         return (int) race.getConfig().get(KEY_NUMBER_OF_LEGS);
     }
 
-    public List<Duration> getStartTimesForMassStarts() {
+    List<Duration> getStartTimesForMassStarts() {
         return start_times_for_mass_starts;
     }
 
-    public List<IndividualStart> getIndividualStarts() {
+    List<IndividualStart> getIndividualStarts() {
         return individual_starts;
     }
 
-    public List<Boolean> getPairedLegs() {
+    List<Boolean> getPairedLegs() {
         return paired_legs;
     }
 
-    public List<Boolean> getMassStartLegs() {
+    List<Boolean> getMassStartLegs() {
         return mass_start_legs;
     }
 
@@ -214,11 +214,6 @@ public class RelayRaceImpl implements SpecificRace {
         return Normalisation.getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(Normalisation.getLastNameOfFirstRunner(r2.getParticipantName()));
     }
 
-//    private static String renderDuration(final RaceResult result) {
-//
-//        return RelayRaceOutputCSV.renderDuration(result, DNF_STRING);
-//    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
@@ -301,6 +296,11 @@ public class RelayRaceImpl implements SpecificRace {
         start_times_for_mass_starts = new ArrayList<>();
         mass_start_legs = new ArrayList<>();
 
+        for (int i = 0; i < (int)race.getConfig().get(KEY_NUMBER_OF_LEGS); i++) {
+            start_times_for_mass_starts.add(null);
+            mass_start_legs.add(false);
+        }
+
         setMassStartTimes();
 
         // If there is no mass start configured for legs 2 and above, use the first actual mass start time.
@@ -312,18 +312,24 @@ public class RelayRaceImpl implements SpecificRace {
 
         // Example: MASS_START_ELAPSED_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
 
-        final String[] mass_start_elapsed_times_strings = ((String) race.getConfig().get(KEY_MASS_START_ELAPSED_TIMES)).split(",");
+        String s = (String) race.getConfig().get(KEY_MASS_START_ELAPSED_TIMES);
+        if (s != null) {
+            final String[] mass_start_elapsed_times_strings = s.split(",");
 
-        for (int leg_index = 0; leg_index < getNumberOfLegs(); leg_index++)
-            setMassStartTime(mass_start_elapsed_times_strings[leg_index]);
+            for (final String bib_time_as_string : mass_start_elapsed_times_strings)
+                setMassStartTime(bib_time_as_string);
+        }
     }
 
-    private void setMassStartTime(final String time_as_string) {
+    private void setMassStartTime(final String bib_time_as_string) {
 
-        final Duration mass_start_time = parseTime(time_as_string);
+        String[] split = bib_time_as_string.split("/");
 
-        start_times_for_mass_starts.add(mass_start_time);
-        mass_start_legs.add(!mass_start_time.equals(Duration.ZERO));
+        int leg_number = Integer.parseInt(split[0]);
+        final Duration mass_start_time = parseTime(split[1]);
+
+        start_times_for_mass_starts.set(leg_number - 1, mass_start_time);
+        mass_start_legs.set(leg_number - 1, !mass_start_time.equals(NO_MASS_START_DURATION));
     }
 
     private void setEmptyMassStartTimes() {
@@ -331,9 +337,12 @@ public class RelayRaceImpl implements SpecificRace {
         // For legs 2 and above, if there is no mass start time configured, use the next actual mass start time.
         // This covers the case where an early leg runner finishes after a mass start.
 
+        if (start_times_for_mass_starts.get(getNumberOfLegs() - 1) == null)
+            start_times_for_mass_starts.set(getNumberOfLegs() - 1, NO_MASS_START_DURATION);
+
         for (int leg_index = getNumberOfLegs() - 2; leg_index > 0; leg_index--)
 
-            if (start_times_for_mass_starts.get(leg_index).equals(Duration.ZERO))
+            if (start_times_for_mass_starts.get(leg_index) == null)
                 start_times_for_mass_starts.set(leg_index, start_times_for_mass_starts.get(leg_index + 1));
     }
 

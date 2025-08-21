@@ -27,7 +27,6 @@ import org.grahamkirby.race_timing.single_race.SingleRaceEntry;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -121,8 +120,6 @@ public class RelayRaceInput extends TimedRaceInput {
 
     private void validateDNFRecords() {
 
-        // TODO update comment and rationalise with TimedIndividualRaceInput.
-
         // This fills in the DNF results that were specified explicitly in the config
         // file, corresponding to cases where the runners reported not completing the
         // course.
@@ -167,7 +164,6 @@ public class RelayRaceInput extends TimedRaceInput {
 
         if (results_path != null)
             for (final String line : Files.readAllLines(race.getPath(results_path)))
-                // TODO rationalise with other comment handling. Use stripComment.
                 if (!line.startsWith(COMMENT_SYMBOL) && !line.isBlank()) {
 
                     final String bib_number = line.split("\t")[0];
@@ -183,10 +179,16 @@ public class RelayRaceInput extends TimedRaceInput {
         if (mass_start_elapsed_times != null) {
 
             Duration previous_time = null;
-            for (final String time_string : mass_start_elapsed_times.split(",")) {
+            for (final String leg_time_string : mass_start_elapsed_times.split(",")) {
+
+                String[] split = leg_time_string.split("/");
 
                 final Duration mass_start_time;
                 try {
+                    if (split.length < 2)
+                        throw new RuntimeException(STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");
+
+                    String time_string = split[1];
                     mass_start_time = parseTime(time_string);
                 } catch (final DateTimeParseException _) {
                     throw new RuntimeException(STR."invalid mass start time for key '\{KEY_MASS_START_ELAPSED_TIMES}' in file '\{race.config_file_path.getFileName()}'");

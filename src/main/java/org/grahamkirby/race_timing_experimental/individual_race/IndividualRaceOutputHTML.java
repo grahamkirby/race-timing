@@ -65,9 +65,7 @@ public class IndividualRaceOutputHTML {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = getOutputStream(race_name, "combined", year, STANDARD_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race_name, "combined", year, STANDARD_FILE_OPEN_OPTIONS))) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
@@ -88,9 +86,7 @@ public class IndividualRaceOutputHTML {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = getOutputStream(race_name, "prizes", year, STANDARD_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race_name, "prizes", year, STANDARD_FILE_OPEN_OPTIONS))) {
 
             writer.append(getPrizesHeader());
             printPrizes(writer);
@@ -100,7 +96,11 @@ public class IndividualRaceOutputHTML {
     /** Prints prizes, ordered by prize category groups. */
     private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
-        printPrizes(category -> printPrizes(writer, category));
+        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizes(writer, category));
+
         printTeamPrizes(writer);
     }
 
@@ -117,19 +117,6 @@ public class IndividualRaceOutputHTML {
 
             writer.append("</ul>").append(LINE_SEPARATOR);
         }
-    }
-
-    /**
-     * Prints prizes using a specified printer, ordered by prize category groups.
-     * The printer abstracts over whether output goes to an output stream writer
-     * (CSV, HTML and text files) or to a PDF writer.
-     */
-    private void printPrizes(final Consumer<PrizeCategory> prize_category_printer) {
-
-        race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(prize_category_printer);                       // Print prizes in this category.
     }
 
     /** Prints prizes within a given category. */

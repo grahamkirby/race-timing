@@ -47,6 +47,29 @@ public class RelayRaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Prints race prizes. Used for HTML and text output.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    void printPrizes() throws IOException {
+
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesHeader());
+
+            race.getCategoryDetails().getPrizeCategoryGroups().stream().
+                flatMap(group -> group.categories().stream()).                       // Get all prize categories.
+                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
+                forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
+        }
+    }
+
     /** Prints out the words converted to title case, and any other processing notes. */
     void printNotes() throws IOException {
 
@@ -69,29 +92,6 @@ public class RelayRaceOutputText {
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
         return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{TEXT_FILE_SUFFIX}");
-    }
-
-    /**
-     * Prints race prizes. Used for HTML and text output.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    void printPrizes() throws IOException {
-
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
-
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeader());
-
-            race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
-        }
     }
 
     /** Prints prizes within a given category. */

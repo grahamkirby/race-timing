@@ -41,6 +41,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     @Override
     public void setRace(Race race) {
+
         this.race = race;
         notes = new StringBuilder();
     }
@@ -59,6 +60,8 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     public StringBuilder getNotes() {
         return notes;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void configureIndividualEarlyStarts() {
 

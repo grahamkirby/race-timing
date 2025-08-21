@@ -61,9 +61,7 @@ public class RelayRaceOutputHTML {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "combined", year), STANDARD_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "combined", year), STANDARD_FILE_OPEN_OPTIONS))) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
@@ -129,7 +127,9 @@ public class RelayRaceOutputHTML {
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
 
         try {
-            writer.append(getPrizeCategoryHeader(category));
+            writer.append(STR."""
+                <p><strong>\{category.getLongName()}</strong></p>
+                """);
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
@@ -149,12 +149,6 @@ public class RelayRaceOutputHTML {
 
     private String getPrizesHeader() {
         return STR."<h4>Prizes</h4>\{LINE_SEPARATOR}";
-    }
-
-    private String getPrizeCategoryHeader(final PrizeCategory category) {
-        return STR."""
-        <p><strong>\{category.getLongName()}</strong></p>
-        """;
     }
 
     /**

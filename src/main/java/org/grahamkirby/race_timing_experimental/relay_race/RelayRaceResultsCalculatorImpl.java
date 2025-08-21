@@ -25,13 +25,16 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
-import static org.grahamkirby.race_timing_experimental.common.Config.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private static final int UNKNOWN_LEG_NUMBER = 0;
     private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
+
+    // Dead heats allowed in overall results. Although an ordering is imposed at the finish,
+    // this can't be relied on due to mass starts.
+    private static final boolean ARE_EQUAL_POSITIONS_ALLOWED_IN_OVERALL_RESULTS = true;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,20 +42,17 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private RelayRaceImpl race_impl;
 
     private List<RaceResult> overall_results;
-    private final StringBuilder notes;
+    private StringBuilder notes;
 
     /** Provides functionality for inferring missing bib number or timing data in the results. */
     private RelayRaceMissingData missing_data;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public RelayRaceResultsCalculatorImpl() {
-        notes = new StringBuilder();
-    }
-
     public void setRace(Race race) {
 
         this.race = race;
+        notes = new StringBuilder();
         race_impl = ((RelayRaceImpl) race.getSpecific());
         missing_data = new RelayRaceMissingData(race);
     }
@@ -61,8 +61,9 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     public void calculateResults() {
 
         initialiseResults();
-        interpolateMissingTimes();
-        guessMissingBibNumbers();
+
+        missing_data.interpolateMissingTimes();
+        missing_data.guessMissingBibNumbers();
 
         recordFinishTimes();
         recordStartTimes();
@@ -99,16 +100,6 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void interpolateMissingTimes() {
-
-        missing_data.interpolateMissingTimes();
-    }
-
-    private void guessMissingBibNumbers() {
-
-        missing_data.guessMissingBibNumbers();
-    }
-
     private void recordFinishTimes() {
 
         recordLegResults();
@@ -136,11 +127,11 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         leg_result.leg_number = ((RelayRaceDataImpl) race.getRaceData()).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER);
 
         // Provisionally this leg is not DNF since a finish time was recorded.
-        // However, it might still be set to DNF in fillDNFs() if the runner missed a checkpoint.
+        // However, it might still be set to DNF in recordDNFs() if the runner missed a checkpoint.
         leg_result.dnf = false;
     }
 
-    void sortLegResults() {
+    private void sortLegResults() {
 
         overall_results.forEach(RelayRaceResultsCalculatorImpl::sortLegResults);
     }
@@ -149,7 +140,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         final List<LegResult> leg_results = ((RelayRaceResult) result).leg_results;
 
-        // Sort by explicitly recorded leg number.
+        // Sort by explicitly recorded leg number (most results will not have explicit leg number).
         leg_results.sort(Comparator.comparingInt(o -> o.leg_number));
 
         // Reset the leg numbers according to new positions in leg sequence.
@@ -183,7 +174,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         final Duration leg_mass_start_time = race_impl.getStartTimesForMassStarts().get(leg_index);
         final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results.get(leg_index - 1).finish_time : null;
 
-        leg_result.start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
+        leg_result.start_time = getLegStartTime(leg_index, individual_start_time, leg_mass_start_time, previous_team_member_finish_time);
 
         // Record whether the runner started in a mass start.
         leg_result.in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
@@ -199,20 +190,20 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
             orElse(null);
     }
 
-    private static Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time, final int leg_index) {
+    private static Duration getLegStartTime(final int leg_index, final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time) {
 
-        // Individual leg time recorded for this runner.
+        // Check whether individual leg start time is recorded for this runner.
         if (individual_start_time != null) return individual_start_time;
 
-        // Leg 1 runner_names start at time zero if there's no individual time recorded.
+        // If there's no individual leg start time recorded (previous check), and this is a Leg 1 runner, start at time zero.
         if (leg_index == 0) return Duration.ZERO;
 
-        // No finish time recorded for previous runner, so we can't record a start time for this one.
+        // This is later leg runner. If there's no finish time recorded for previous runner, we can't deduce a start time for this one.
         // This leg result will be set to DNF by default.
         if (previous_team_member_finish_time == null) return null;
 
-        // Use the earlier of the mass start time and the previous runner's finish time.
-        return !mass_start_time.equals(Duration.ZERO) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+        // Use the earlier of the mass start time, if present, and the previous runner's finish time.
+        return !mass_start_time.equals(NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     @SuppressWarnings("TypeMayBeWeakened")
@@ -225,7 +216,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         if (previous_runner_finish_time == null) return race_impl.getMassStartLegs().get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-        return !mass_start_time.equals(Duration.ZERO) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
+        return !mass_start_time.equals(NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
     @SuppressWarnings({"TypeMayBeWeakened", "IfCanBeAssertion"})
@@ -360,7 +351,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
-        String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
+        final String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))
@@ -384,12 +375,12 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Sorts all results by relevant comparators. */
-    protected void sortResults() {
+    private void sortResults() {
 
         overall_results.sort(combineComparators(getComparators()));
     }
 
-    public List<Comparator<RaceResult>> getComparators() {
+    private List<Comparator<RaceResult>> getComparators() {
 
         return List.of(
             ignoreIfBothResultsAreDNF(penaliseDNF(RelayRaceResultsCalculatorImpl::comparePerformance)),
@@ -398,18 +389,18 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,
      *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    protected static int comparePerformance(final RaceResult r1, final RaceResult r2) {
+    private static int comparePerformance(final RaceResult r1, final RaceResult r2) {
 
         return r1.comparePerformanceTo(r2);
     }
 
     /** Compares two results based on alphabetical ordering of the team name. */
-    protected static int compareTeamName(final RaceResult r1, final RaceResult r2) {
+    private static int compareTeamName(final RaceResult r1, final RaceResult r2) {
 
         return r1.getParticipantName().compareToIgnoreCase(r2.getParticipantName());
     }
 
-    protected static Comparator<RaceResult> penaliseDNF(final Comparator<? super RaceResult> base_comparator) {
+    static Comparator<RaceResult> penaliseDNF(final Comparator<? super RaceResult> base_comparator) {
 
         return (r1, r2) -> {
 
@@ -420,7 +411,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         };
     }
 
-    protected static Comparator<RaceResult> ignoreIfBothResultsAreDNF(final Comparator<? super RaceResult> base_comparator) {
+    static Comparator<RaceResult> ignoreIfBothResultsAreDNF(final Comparator<? super RaceResult> base_comparator) {
 
         return (r1, r2) -> {
 
@@ -430,27 +421,18 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Combines multiple comparators into a single comparator. */
-    protected static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
+    static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
 
         return comparators.stream().
             reduce((_, _) -> 0, Comparator::thenComparing);
     }
 
-    protected RaceEntry getEntryWithBibNumber(final int bib_number) {
+    RaceEntry getEntryWithBibNumber(final int bib_number) {
 
-        List<RaceEntry> entries = race.getRaceData().getEntries();
-
-        return entries.stream().
+        return race.getRaceData().getEntries().stream().
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();
-    }
-
-    public boolean areEqualPositionsAllowed() {
-
-        // Dead heats allowed in overall results. Although an ordering is imposed at the finish,
-        // this can't be relied on due to mass starts.
-        return true;
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
@@ -458,13 +440,13 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
      *  is determined by the particular race type. */
     void setPositionStrings(final List<RaceResult> results) {
 
-        setPositionStrings(results, areEqualPositionsAllowed());
+        setPositionStrings(results, ARE_EQUAL_POSITIONS_ALLOWED_IN_OVERALL_RESULTS);
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the second parameter. */
-    protected static void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
+    static void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
