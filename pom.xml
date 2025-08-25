@@ -2,7 +2,7 @@
 <!--
 
     race-timing - <https://github.com/grahamkirby/race-timing>
-    Copyright © 2025 Graham Kirby (graham.kirby@st-andrews.ac.uk)
+    Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@
                         <project.description>&lt;https://github.com/grahamkirby/race-timing&gt;</project.description>
                         <year>2025</year>
                         <owner>Graham Kirby</owner>
-                        <email>graham.kirby@st-andrews.ac.uk</email>
+                        <email>race-timing@kirby-family.net</email>
                     </properties>
                     <licenseSets>
                         <licenseSet>
