@@ -106,6 +106,8 @@ public interface Config {
 
     Object get(String key);
 
+    Path getConfigPath();
+
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
     static String encode(final String s) {
         return s.contains(",") ? STR."\"\{s}\"" : s;
@@ -119,7 +121,8 @@ public interface Config {
     static String renderDuration(final RaceResult r, final String alternative) {
 
         SingleRaceResult result = (SingleRaceResult) r;
-        if (!result.canComplete()) return alternative;
+
+        if (!r.canComplete()) return alternative;
 
         return format(result.duration());
     }

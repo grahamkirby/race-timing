@@ -23,11 +23,10 @@ import java.nio.file.Path;
 
 public interface Race {
 
-//    void completeConfiguration();
-
     void setResultsOutput(ResultsOutput results_output);
 
     void processResults() throws IOException;
+    void outputResults() throws IOException;
 
     Path interpretPath(Path path);
 

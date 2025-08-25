@@ -36,9 +36,6 @@ import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class SeriesRaceInput extends RaceInput {
 
-    // Configuration file keys.
-//    private static final String KEY_RACES = "RACES";
-
     private List<String> race_config_paths;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -39,6 +39,7 @@ public class ActualRacesRelayTest extends AbstractRaceTest {
         try {
             final Race relay_race = RelayRaceFactory.makeRelayRace(Path.of(args[0]));
             relay_race.processResults();
+            relay_race.outputResults();
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());

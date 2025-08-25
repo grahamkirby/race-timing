@@ -41,7 +41,8 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
 
     protected List<String> getResultsElements(final RaceResult r) {
 
-        SingleRaceResult result = (SingleRaceResult)r;
+        final SingleRaceResult result = (SingleRaceResult) r;
+
         return List.of(
             result.position_string,
             String.valueOf(result.entry.bib_number),

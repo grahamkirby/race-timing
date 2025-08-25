@@ -15,28 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.common;
+package org.grahamkirby.race_timing_experimental.series_race;
 
-import java.nio.file.Path;
-import java.util.Map;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceData;
+import org.grahamkirby.race_timing_experimental.common.RaceDataProcessor;
 
-public class ConfigImpl implements Config {
+public class MidweekRaceDataProcessorImpl implements RaceDataProcessor {
 
-    private final Map<String, Object> config_map;
-    private final Path config_path;
-
-    public ConfigImpl(Map<String, Object> config_map, final Path config_path) {
-        this.config_map = config_map;
-        this.config_path = config_path;
-    }
+    private Race race;
 
     @Override
-    public Object get(String key) {
-        return config_map.get(key);
+    public void setRace(Race race) {
+
+        this.race = race;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
-    public Path getConfigPath() {
-        return config_path;
+    public RaceData getRaceData() {
+
+        return new MidweekRaceDataImpl();
     }
 }

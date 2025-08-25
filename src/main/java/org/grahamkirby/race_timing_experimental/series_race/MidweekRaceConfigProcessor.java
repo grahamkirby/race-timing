@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.individual_race;
+package org.grahamkirby.race_timing_experimental.series_race;
 
 import org.grahamkirby.race_timing_experimental.common.*;
 
@@ -26,11 +26,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
-import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 @SuppressWarnings("preview")
-public class IndividualRaceConfigProcessor implements ConfigProcessor {
+public class MidweekRaceConfigProcessor implements ConfigProcessor {
 
     private Race race;
 
@@ -38,26 +37,29 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
         this.race = race;
     }
 
-    public String dnf_string;
-
     private static final List<String> REQUIRED_STRING_PROPERTY_KEYS =
-        List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES);
+        List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES, KEY_RACES, KEY_NUMBER_OF_RACES_IN_SERIES, KEY_MINIMUM_NUMBER_OF_RACES, KEY_SCORE_FOR_FIRST_PLACE);
 
-    private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
-        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME);
 
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
-        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
+        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH);
 
-    private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
-        List.of(KEY_CATEGORY_MAP_PATH);
-
+//    private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
+//        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_ENTRY_COLUMN_MAP, KEY_INDIVIDUAL_LEG_STARTS, KEY_MASS_START_ELAPSED_TIMES);
+//
+//    private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
+//        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
+//
+//    private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
+//        List.of(KEY_CATEGORY_MAP_PATH, KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
+//
     private static final List<String> OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS =
         List.of(KEY_CAPITALISATION_STOP_WORDS_PATH, KEY_NORMALISED_HTML_ENTITIES_PATH, KEY_NORMALISED_CLUB_NAMES_PATH, KEY_GENDER_ELIGIBILITY_MAP_PATH);
 
     private static final List<Path> OPTIONAL_PATH_DEFAULT_PROPERTIES =
         List.of(DEFAULT_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public Config loadConfig(final Path config_file_path) {
 
@@ -65,27 +67,14 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             final Properties properties = loadProperties(config_file_path);
 
             CommonConfigProcessor commonConfigProcessor = new CommonConfigProcessor(race, config_file_path, properties);
-
-            commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
-            commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
-
-            commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
-            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
-            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
-
-            // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
-            commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s,_ -> makeDefaultEntryColumnMap(4));
-
-            commonConfigProcessor.addOptionalProperty(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE, Integer::parseInt, _ -> Integer.MAX_VALUE);
-
             final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
-            // Each DNF string contains single bib number.
-            //noinspection ResultOfMethodCallIgnored
-            validateDNFRecords((String) config_values.get(KEY_DNF_FINISHERS), Integer::parseInt, config_file_path);
-
-            validateEntryCategoriesPath(config_values, config_file_path);
-            validatePrizeCategoriesPath(config_values, config_file_path);
+            commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
+//            commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
+//
+            commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
+//            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
+            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
 
             return new ConfigImpl(config_values, config_file_path);
 

@@ -40,15 +40,16 @@ public class CommonRace implements Race {
     private ConfigProcessor config_processor;
     private RaceDataProcessor race_data_processor;
     private SpecificRace specific;
+    RaceResultsCalculator results_calculator;
+    ResultsOutput results_output;
+
 
     public CommonRace(final Path config_file_path) throws IOException {
 
         this.config_file_path = config_file_path;
     }
 
-    private void completeConfiguration() {
-
-//        config = config_processor.loadConfig(config_file_path);
+    public void completeConfiguration() {
 
         if (specific != null) {
             specific.completeConfiguration();
@@ -87,9 +88,6 @@ public class CommonRace implements Race {
         return results_calculator.getNotes().toString();
     }
 
-    RaceResultsCalculator results_calculator;
-    ResultsOutput results_output;
-
     @Override
     public void processResults() throws IOException {
 
@@ -98,6 +96,11 @@ public class CommonRace implements Race {
         completeConfiguration();
         results_calculator.calculateResults();
 
+//        results_output.outputResults();
+    }
+
+    @Override
+    public void outputResults() throws IOException {
         results_output.outputResults();
     }
 

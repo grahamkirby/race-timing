@@ -38,6 +38,7 @@ public class ActualRacesIndividualTest extends AbstractRaceTest {
         try {
             final Race individual_race = IndividualRaceFactory.makeIndividualRace(Path.of(args[0]));
             individual_race.processResults();
+            individual_race.outputResults();
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());

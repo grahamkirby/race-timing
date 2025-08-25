@@ -103,7 +103,7 @@ public class RelayRaceConfigProcessor implements ConfigProcessor {
 
             validateMassStartTimes((String) config_values.get(KEY_MASS_START_ELAPSED_TIMES), number_of_legs, config_file_path);
 
-            return new ConfigImpl(config_values);
+            return new ConfigImpl(config_values, config_file_path);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -15,28 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.common;
+package org.grahamkirby.race_timing_experimental.series_race;
 
-import java.nio.file.Path;
-import java.util.Map;
+import org.grahamkirby.race_timing.common.RawResult;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.RaceData;
+import org.grahamkirby.race_timing_experimental.common.RaceEntry;
 
-public class ConfigImpl implements Config {
+import java.util.List;
 
-    private final Map<String, Object> config_map;
-    private final Path config_path;
+public class MidweekRaceDataImpl implements RaceData {
 
-    public ConfigImpl(Map<String, Object> config_map, final Path config_path) {
-        this.config_map = config_map;
-        this.config_path = config_path;
+    public MidweekRaceDataImpl() {
     }
 
     @Override
-    public Object get(String key) {
-        return config_map.get(key);
+    public List<RawResult> getRawResults() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Path getConfigPath() {
-        return config_path;
+    public List<RaceEntry> getEntries() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

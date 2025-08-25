@@ -15,28 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing_experimental.common;
+package org.grahamkirby.race_timing_experimental.series_race;
 
-import java.nio.file.Path;
-import java.util.Map;
+import org.grahamkirby.race_timing_experimental.common.RaceResult;
 
-public class ConfigImpl implements Config {
+import java.util.Comparator;
+import java.util.List;
 
-    private final Map<String, Object> config_map;
-    private final Path config_path;
+public interface Scorer {
 
-    public ConfigImpl(Map<String, Object> config_map, final Path config_path) {
-        this.config_map = config_map;
-        this.config_path = config_path;
-    }
-
-    @Override
-    public Object get(String key) {
-        return config_map.get(key);
-    }
-
-    @Override
-    public Path getConfigPath() {
-        return config_path;
-    }
+    Object getScore(RaceResult result, List<RaceResult> results);
+    Comparator<RaceResult> getComparator();
 }
