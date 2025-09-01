@@ -1,6 +1,6 @@
 YEAR = 2025
-RACE_NAME_FOR_RESULTS = Race 5
-RACE_NAME_FOR_FILENAMES = race5
+RACE_NAME_FOR_RESULTS = Race 2
+RACE_NAME_FOR_FILENAMES = race2
 
 # Relative to directory containing configuration file.
 ENTRIES_PATH = ../../entries.txt
@@ -9,3 +9,5 @@ RAW_RESULTS_PATH = rawtimes.txt
 # Relative to project root directory.
 ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
 PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
+
+CATEGORY_START_OFFSETS = FU9/00:02:00,MU9/00:02:00,FU11/00:02:00,MU11/00:02:00

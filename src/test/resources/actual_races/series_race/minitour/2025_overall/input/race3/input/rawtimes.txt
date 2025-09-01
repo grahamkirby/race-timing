@@ -18,7 +18,7 @@
 6	8:02
 12	8:05
 46	8:07
-126	8:09 # Self timed
+#126	8:09 # Self timed
 10	8:10 # 10 on phone
 19	8:11 # Missed on phone
 24	8:15

@@ -1,6 +1,6 @@
 YEAR = 2025
 RACE_NAME_FOR_RESULTS = Race 3
-RACE_NAME_FOR_FILENAMES = race3
+RACE_NAME_FOR_FILENAMES = minitour_race3
 
 # Relative to directory containing configuration file.
 ENTRIES_PATH = ../../entries.txt
@@ -9,3 +9,6 @@ RAW_RESULTS_PATH = rawtimes.txt
 # Relative to project root directory.
 ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
 PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
+
+CATEGORY_START_OFFSETS = FU9/00:01:00,MU9/00:01:00,FU11/00:01:00,MU11/00:01:00
+SEPARATELY_RECORDED_RESULTS = 126/8:09
