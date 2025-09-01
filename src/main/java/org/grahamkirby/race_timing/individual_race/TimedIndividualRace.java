@@ -22,6 +22,8 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.single_race.SingleRaceResult;
+import org.grahamkirby.race_timing_experimental.common.Normalisation;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -142,8 +144,44 @@ public class TimedIndividualRace extends TimedRace {
             toList();
 
         overall_results = makeMutable(overall_results);
+
+        addSeparatelyRecordedTimes();
     }
 
+    private void addSeparatelyRecordedTimes() {
+
+        Map<Integer, Duration> separately_recorded_finish_times = getSeparatelyRecordedTimes();
+
+        for (Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet()) {
+
+            RawResult raw_result = new RawResult(entry.getKey(), entry.getValue());
+            RaceResult r = makeResult(raw_result);
+            overall_results.add(r);
+        }
+    }
+
+    private Map<Integer, Duration> getSeparatelyRecordedTimes() {
+
+        final Map<Integer, Duration> results = new HashMap<>();
+
+        if (getOptionalProperty("SEPARATELY_RECORDED_RESULTS") != null) {
+
+            final String[] self_timed_strings = getOptionalProperty("SEPARATELY_RECORDED_RESULTS").split(",", -1);
+
+            // SEPARATELY_RECORDED_RESULTS = 126/8:09
+
+            for (final String s : self_timed_strings) {
+
+                final String[] split = s.split("/", -1);
+                final int bib_number = Integer.parseInt(split[0]);
+                final Duration finish_time = Normalisation.parseTime(split[1]);
+
+                results.put(bib_number, finish_time);
+            }
+        }
+
+        return results;
+    }
     private RaceResult makeResult(final RawResult raw_result) {
 
         final int bib_number = raw_result.getBibNumber();

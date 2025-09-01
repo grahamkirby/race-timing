@@ -42,6 +42,12 @@ public class RawResult {
         recorded_finish_time = time_as_string.equals("?") ? null : parseTime(time_as_string);
     }
 
+    public RawResult(final int bib_number, final Duration recorded_finish_time) {
+
+        this.bib_number = bib_number;
+        this.recorded_finish_time = recorded_finish_time;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public int getBibNumber() {

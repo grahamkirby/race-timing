@@ -17,10 +17,9 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing_experimental.common.CommonRace;
 import org.grahamkirby.race_timing_experimental.common.CategoriesProcessorImpl;
+import org.grahamkirby.race_timing_experimental.common.CommonRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.relay_race.RelayRaceImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -9,3 +9,9 @@ RAW_RESULTS_PATH = rawtimes.txt
 # Relative to project root directory.
 ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
 PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
+
+SEPARATELY_RECORDED_RESULTS = 23/00:11:11
+
+# Details of time-trial race starts.
+TIME_TRIAL_RUNNERS_PER_WAVE = 4
+TIME_TRIAL_INTER_WAVE_INTERVAL = 00:00:30

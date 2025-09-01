@@ -28,6 +28,7 @@ import java.util.Properties;
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
 import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing_experimental.common.Normalisation.parseTime;
 
 @SuppressWarnings("preview")
 public class IndividualRaceConfigProcessor implements ConfigProcessor {
@@ -44,7 +45,7 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
         List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES);
 
     private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
-        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME);
+        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME, KEY_CATEGORY_START_OFFSETS, KEY_SEPARATELY_RECORDED_RESULTS, KEY_TIME_TRIAL_STARTS);
 
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
@@ -74,9 +75,11 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
 
             // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
-            commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s,_ -> makeDefaultEntryColumnMap(4));
+            commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s, _ -> makeDefaultEntryColumnMap(4));
 
             commonConfigProcessor.addOptionalProperty(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE, Integer::parseInt, _ -> Integer.MAX_VALUE);
+            commonConfigProcessor.addOptionalProperty("TIME_TRIAL_RUNNERS_PER_WAVE", Integer::parseInt);
+            commonConfigProcessor.addOptionalProperty("TIME_TRIAL_INTER_WAVE_INTERVAL", Normalisation::parseTime);
 
             final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 

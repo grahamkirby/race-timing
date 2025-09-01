@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MidweekRaceTest extends AbstractRaceTest {
@@ -54,7 +55,12 @@ public class MidweekRaceTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("series_race/midweek");
+        List<String> test_cases = new ArrayList<>();
+
+        test_cases.addAll(getTestCases("series_race/midweek"));
+        test_cases.addAll(getTestCases("actual_races/series_race/midweek"));
+
+        return test_cases;
     }
 
     @ParameterizedTest

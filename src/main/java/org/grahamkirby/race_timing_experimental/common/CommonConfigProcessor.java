@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing_experimental.common;
 
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -38,7 +37,7 @@ public class CommonConfigProcessor {
     final Properties properties;
     final Map<String, Object> config_values;
 
-    public CommonConfigProcessor(Race race, Path config_file_path, Properties properties) {
+    public CommonConfigProcessor(final Race race, final Path config_file_path, final Properties properties) {
 
         this.race = race;
         this.config_file_path = config_file_path;

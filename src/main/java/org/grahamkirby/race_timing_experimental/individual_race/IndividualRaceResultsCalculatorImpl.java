@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing_experimental.individual_race;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Runner;
+import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
 import org.grahamkirby.race_timing_experimental.common.*;
 
@@ -50,7 +51,8 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     public void calculateResults() {
 
         initialiseResults();
-        configureIndividualEarlyStarts();
+        adjustTimes();
+        addSeparatelyRecordedTimes();
         recordDNFs();
         sortResults();
         allocatePrizes();
@@ -62,6 +64,54 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void adjustTimes() {
+
+        adjustTimesByCategory(((IndividualRaceImpl) race.getSpecific()).category_start_offsets);
+        adjustTimes(((IndividualRaceImpl) race.getSpecific()).individual_start_offsets);
+        adjustTimes(((IndividualRaceImpl) race.getSpecific()).time_trial_start_offsets);
+
+        // Per category adjusted start time
+        // Separately recorded finish time (no further adjustment)
+        // Time trial adjusted start time (no further adjustment)
+        // Per individual adjusted start time (no further adjustment)
+    }
+
+    private void addSeparatelyRecordedTimes() {
+
+        Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRaceImpl) race.getSpecific()).separately_recorded_finish_times;
+
+        for (Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet()) {
+            RaceResult raceResult = makeResult(new RawResult(entry.getKey(), entry.getValue()));
+            overall_results.add(raceResult);
+        }
+    }
+
+    private void adjustTimesByCategory(Map<EntryCategory, Duration> offsets) {
+
+        for (RaceResult r : overall_results) {
+
+            SingleRaceResult result = (SingleRaceResult)r;
+
+            if (offsets.containsKey(result.entry.participant.category)) {
+                EntryCategory category = result.entry.participant.category;
+                Duration duration = offsets.get(category);
+                result.finish_time = result.finish_time.minus(duration);
+                int x = 3;
+            }
+        }
+    }
+
+    private void adjustTimes(Map<Integer, Duration> offsets) {
+
+        for (RaceResult r : overall_results) {
+
+            SingleRaceResult result = (SingleRaceResult)r;
+            if (offsets.containsKey(result.entry.bib_number)) {
+                result.finish_time = result.finish_time.minus(offsets.get(result.entry.bib_number));
+            }
+        }
+    }
 
     private void configureIndividualEarlyStarts() {
 

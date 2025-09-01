@@ -43,15 +43,6 @@ public class TourRaceInput extends SeriesRaceInput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Configuration file keys.
-//    private static final String KEY_WAVE_START_OFFSETS = "WAVE_START_OFFSETS";
-//    private static final String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
-//    public static final String KEY_TIME_TRIAL_RACE = "TIME_TRIAL_RACE";
-//    public static final String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
-//    private static final String KEY_SELF_TIMED = "SELF_TIMED";
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private List<Duration> wave_start_offsets;
     private List<SelfTimedRun> self_timed_runs;
     private List<EntryCategory> second_wave_categories;

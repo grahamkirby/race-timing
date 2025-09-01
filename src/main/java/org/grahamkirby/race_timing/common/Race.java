@@ -108,12 +108,12 @@ public abstract class Race {
     }
 
     @FunctionalInterface
-    protected interface RaceFactory {
+    public interface RaceFactory {
 
         Race apply(String config_file_path) throws Exception;
     }
 
-    protected static void commonMain(final String[] args, final RaceFactory factory) {
+    public static void commonMain(final String[] args, final RaceFactory factory) {
 
         // Path to configuration file should be first argument.
 
@@ -124,7 +124,7 @@ public abstract class Race {
         }
     }
 
-    protected static String[] readConfigIfNotSupplied(final String[] args) {
+    public static String[] readConfigIfNotSupplied(final String[] args) {
 
         if (args.length == 0)
             try (final Scanner scanner = new Scanner(System.in)) {
@@ -162,7 +162,7 @@ public abstract class Race {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void processResults() throws IOException {
+    public void processResults() throws IOException {
 
         calculateResults();
         outputResults();

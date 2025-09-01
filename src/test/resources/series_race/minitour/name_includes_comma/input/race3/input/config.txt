@@ -9,3 +9,5 @@ RAW_RESULTS_PATH = rawtimes.txt
 # Relative to project root directory.
 ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
 PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
+
+CATEGORY_START_OFFSETS = FU9/00:00:44,MU9/00:00:44,FU11/00:00:44,MU11/00:00:44

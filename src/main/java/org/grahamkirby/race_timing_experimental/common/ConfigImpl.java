@@ -26,13 +26,19 @@ public class ConfigImpl implements Config {
     private final Path config_path;
 
     public ConfigImpl(Map<String, Object> config_map, final Path config_path) {
+
         this.config_map = config_map;
         this.config_path = config_path;
     }
 
     @Override
-    public Object get(String key) {
+    public Object get(final String key) {
         return config_map.get(key);
+    }
+
+    @Override
+    public boolean containsKey(final String key) {
+        return config_map.containsKey(key);
     }
 
     @Override

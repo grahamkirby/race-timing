@@ -19,18 +19,34 @@ package org.grahamkirby.race_timing.actual_races;
 
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Properties;
+
+import static org.grahamkirby.race_timing.common.Race.loadProperties;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACES;
 
 public class ActualRacesMinitourTest extends AbstractRaceTest {
 
     @Override
     protected void invokeMain(String[] args) throws Exception {
-        TourRace.main(args);
+
+        // Path to configuration file should be first argument.
+
+        Properties properties = loadProperties(Path.of(args[0]));
+
+
+        if (properties.containsKey(KEY_RACES))
+            TourRace.main(args);
+        else
+            TimedIndividualRace.main(args);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

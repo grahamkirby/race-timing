@@ -19,11 +19,9 @@ package org.grahamkirby.race_timing_experimental.common;
 
 import org.grahamkirby.race_timing.common.RaceInput;
 import org.grahamkirby.race_timing.common.RacePrizes;
-import org.grahamkirby.race_timing.common.categories.PrizeCategoryGroup;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 public class CommonRace implements Race {
 
@@ -95,8 +93,6 @@ public class CommonRace implements Race {
         race_data = race_data_processor.getRaceData();
         completeConfiguration();
         results_calculator.calculateResults();
-
-//        results_output.outputResults();
     }
 
     @Override

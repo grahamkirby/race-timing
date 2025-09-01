@@ -18,8 +18,10 @@
 package org.grahamkirby.race_timing_experimental.series_race;
 
 import org.grahamkirby.race_timing.common.Runner;
-import org.grahamkirby.race_timing.series_race.SeriesRace;
-import org.grahamkirby.race_timing_experimental.common.*;
+import org.grahamkirby.race_timing_experimental.common.CommonRace;
+import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.common.SingleRaceResult;
+import org.grahamkirby.race_timing_experimental.common.SpecificRace;
 import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
 
 import java.io.IOException;

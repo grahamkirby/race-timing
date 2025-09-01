@@ -26,7 +26,6 @@ import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -37,7 +36,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Race.*;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public abstract class TimedRaceInput extends SingleRaceInput {
@@ -162,7 +160,8 @@ public abstract class TimedRaceInput extends SingleRaceInput {
 
     private void validateEntriesFilePresent() {
 
-        if (!Files.exists(race.getPath(entries_path)))
+        Path path = race.getPath(entries_path);
+        if (!Files.exists(path))
             throw new RuntimeException(STR."invalid file: '\{entries_path}'");
     }
 
