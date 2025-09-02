@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.actual_races;
 
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,7 +52,7 @@ public class ActualRacesMinitourTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("actual_races/series_race/minitour");
+        return getTestCasesWithin("actual_races/series_race/minitour");
     }
 
     @ParameterizedTest

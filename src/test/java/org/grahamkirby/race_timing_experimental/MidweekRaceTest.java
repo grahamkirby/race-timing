@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing_experimental;
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing_experimental.common.Race;
-import org.grahamkirby.race_timing_experimental.relay_race.RelayRaceFactory;
 import org.grahamkirby.race_timing_experimental.series_race.MidweekRaceFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -57,8 +56,8 @@ public class MidweekRaceTest extends AbstractRaceTest {
 
         List<String> test_cases = new ArrayList<>();
 
-        test_cases.addAll(getTestCases("series_race/midweek"));
-        test_cases.addAll(getTestCases("actual_races/series_race/midweek"));
+        test_cases.addAll(getTestCasesWithin("series_race/midweek"));
+        test_cases.addAll(getTestCasesWithin("actual_races/series_race/midweek"));
 
         return test_cases;
     }

@@ -39,7 +39,7 @@ public class IndividualRaceTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("individual_race");
+        return getTestCasesWithin("individual_race");
     }
 
     @ParameterizedTest

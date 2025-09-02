@@ -20,14 +20,10 @@ package org.grahamkirby.race_timing;
 
 import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.FieldSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Function;
-
-import static org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace.*;
 
 class GrandPrixTest extends AbstractRaceTest {
 
@@ -40,7 +36,7 @@ class GrandPrixTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("series_race/grand_prix");
+        return getTestCasesWithin("series_race/grand_prix");
     }
 
     @ParameterizedTest

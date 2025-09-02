@@ -21,10 +21,7 @@ package org.grahamkirby.race_timing_experimental.actual_races;
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.relay_race.RelayRaceFactory;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.FieldSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
@@ -50,7 +47,7 @@ public class ActualRacesRelayTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("actual_races/relay_race");
+        return getTestCasesWithin("actual_races/relay_race");
     }
 
     @ParameterizedTest

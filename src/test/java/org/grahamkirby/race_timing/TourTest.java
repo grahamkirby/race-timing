@@ -36,7 +36,7 @@ public class TourTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("series_race/minitour");
+        return getTestCasesWithin("series_race/minitour");
     }
 
     @ParameterizedTest

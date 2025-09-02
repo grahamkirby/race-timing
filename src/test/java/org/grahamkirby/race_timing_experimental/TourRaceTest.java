@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing_experimental;
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
 import org.grahamkirby.race_timing_experimental.series_race.TourRaceFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,6 +29,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import static org.grahamkirby.race_timing.common.Race.loadProperties;
+import static org.grahamkirby.race_timing_experimental.common.Config.KEY_RACES;
 
 public class TourRaceTest extends AbstractRaceTest {
 
@@ -41,7 +46,22 @@ public class TourRaceTest extends AbstractRaceTest {
     protected void invokeMain(final String[] args) throws Exception {
 
         try {
-            final Race tour_race = TourRaceFactory.makeTourRace(Path.of(args[0]));
+            final Race tour_race;
+
+            Properties properties = loadProperties(Path.of(args[0]));
+
+
+            if (properties.containsKey(KEY_RACES))
+                tour_race = TourRaceFactory.makeTourRace(Path.of(args[0]));
+
+            else
+                tour_race = IndividualRaceFactory.makeIndividualRace(Path.of(args[0]));
+
+
+
+
+
+
             tour_race.processResults();
             tour_race.outputResults();
 
@@ -56,9 +76,12 @@ public class TourRaceTest extends AbstractRaceTest {
 
         List<String> test_cases = new ArrayList<>();
 
-        test_cases.addAll(getTestCases("series_race/minitour"));
-        test_cases.addAll(getTestCases("actual_races/series_race/minitour"));
-        test_cases.addAll(getTestCases("actual_races/series_race/tour"));
+        test_cases.addAll(getTestCasesWithin("series_race/minitour"));
+        test_cases.addAll(getTestCasesWithin("actual_races/series_race/minitour"));
+        test_cases.addAll(getTestCasesWithin("actual_races/series_race/minitour/2023/completed_5/input"));
+        test_cases.addAll(getTestCasesWithin("actual_races/series_race/minitour/2024/input"));
+        test_cases.addAll(getTestCasesWithin("actual_races/series_race/minitour/2025/input"));
+        test_cases.addAll(getTestCasesWithin("actual_races/series_race/tour"));
 
         return test_cases;
     }

@@ -53,7 +53,7 @@ public class RelayRaceTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("relay_race");
+        return getTestCasesWithin("relay_race");
     }
 
     @ParameterizedTest

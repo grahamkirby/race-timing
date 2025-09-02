@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.tour.TourRace;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -38,7 +37,7 @@ public class ActualRacesTourTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("actual_races/series_race/tour");
+        return getTestCasesWithin("actual_races/series_race/tour");
     }
 
     @ParameterizedTest

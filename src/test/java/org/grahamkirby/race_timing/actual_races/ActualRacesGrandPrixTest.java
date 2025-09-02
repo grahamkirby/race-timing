@@ -37,7 +37,7 @@ public class ActualRacesGrandPrixTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("actual_races/series_race/grand_prix");
+        return getTestCasesWithin("actual_races/series_race/grand_prix");
     }
 
     @ParameterizedTest

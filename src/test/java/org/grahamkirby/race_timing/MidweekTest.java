@@ -36,7 +36,7 @@ public class MidweekTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("series_race/midweek");
+        return getTestCasesWithin("series_race/midweek");
     }
 
     @ParameterizedTest

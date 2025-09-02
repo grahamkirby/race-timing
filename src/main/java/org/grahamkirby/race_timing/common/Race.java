@@ -59,6 +59,7 @@ public abstract class Race {
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
     // TODO generate racer list for PocketTimer.
+    // TODO suppress prize output in individual tour races.
 
     /** Index of prize category group name within the relevant config file. */
     public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;

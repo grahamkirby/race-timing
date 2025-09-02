@@ -20,9 +20,7 @@ package org.grahamkirby.race_timing.actual_races;
 
 import org.grahamkirby.race_timing.AbstractRaceTest;
 import org.grahamkirby.race_timing.series_race.midweek.MidweekRace;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.FieldSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
@@ -39,7 +37,7 @@ public class ActualRacesMidweekTest extends AbstractRaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        return getTestCases("actual_races/series_race/midweek");
+        return getTestCasesWithin("actual_races/series_race/midweek");
     }
 
     @ParameterizedTest

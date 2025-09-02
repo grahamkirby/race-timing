@@ -1,9 +1,9 @@
 YEAR = 2023
 RACE_NAME_FOR_RESULTS = Race 5
-RACE_NAME_FOR_FILENAMES = race5
+RACE_NAME_FOR_FILENAMES = minitour_race5
 
 # Relative to directory containing configuration file.
-ENTRIES_PATH = ../../entries.txt
+ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
 # Relative to project root directory.

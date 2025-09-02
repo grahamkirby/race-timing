@@ -154,7 +154,7 @@ public abstract class AbstractRaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected static List<String> getTestCases(final String parent_test_directory) throws IOException {
+    protected static List<String> getTestCasesWithin(final String parent_test_directory) throws IOException {
 
         final Path parent_test_directory_path = Race.getTestResourcesRootPath(parent_test_directory);
 
@@ -168,10 +168,13 @@ public abstract class AbstractRaceTest {
                 Path testResourcesRootPath = Race.getTestResourcesRootPath(test_directory_path_string);
                 if (Files.isDirectory(testResourcesRootPath)) {
 
-                    if (Files.isDirectory(testResourcesRootPath.resolve("expected")))
+                    final boolean this_is_test_case_directory = Files.isDirectory(testResourcesRootPath.resolve("expected"));
+
+                    if (this_is_test_case_directory)
                         test_cases.add(test_directory_path_string);
                     else
-                        test_cases.addAll(getTestCases(test_directory_path_string));
+                        // TODO once old implementation removed, recurse for test case dir too.
+                        test_cases.addAll(getTestCasesWithin(test_directory_path_string));
                 }
             }
             return test_cases;
