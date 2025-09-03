@@ -22,12 +22,20 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
+import org.grahamkirby.race_timing_experimental.relay_race.RelayRaceFactory;
+import org.grahamkirby.race_timing_experimental.series_race.GrandPrixRaceFactory;
+import org.grahamkirby.race_timing_experimental.series_race.MidweekRaceFactory;
+import org.grahamkirby.race_timing_experimental.series_race.TourRaceFactory;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.AnnotatedElementContext;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.io.TempDirFactory;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,7 +45,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -45,11 +52,12 @@ import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
-import static org.grahamkirby.race_timing_experimental.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Race.loadProperties;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("preview")
-public abstract class AbstractRaceTest {
+public class RaceTest {
 
     // File names that may be present in list of expected output files for a given test, but should be ignored.
     private static final List<String> ignored_file_names = loadIgnoredFileNames();
@@ -83,7 +91,7 @@ public abstract class AbstractRaceTest {
     private static boolean previous_failed_test = false;
 
     // Whether the current test failed.
-    protected boolean failed_test = true;
+    private boolean failed_test = true;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -91,8 +99,8 @@ public abstract class AbstractRaceTest {
         setLoggingLevel(DEBUG ? Level.INFO : Level.WARNING);
     }
 
-    public Path config_file_path;
-    protected Path resources_input_directory;
+    private Path config_file_path;
+    private Path resources_input_directory;
 
     // Clean-up handled explicitly in tearDown().
     @TempDir(factory = TempFactory.class, cleanup = CleanupMode.NEVER)
@@ -103,15 +111,7 @@ public abstract class AbstractRaceTest {
     private Path retained_output_directory;
     private Path expected_output_directory;
 
-    private Properties properties;
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected abstract void invokeMain(String[] args) throws Exception;
-
-    public String getFileNameForPathProperty(final String property_key) {
-        return Path.of(properties.getProperty(property_key)).getFileName().toString();
-    }
 
     @AfterEach
     public void tearDown() throws IOException {
@@ -152,9 +152,80 @@ public abstract class AbstractRaceTest {
         deleteDirectory(test_output_directory);
     }
 
+    private void invokeMain(String[] args) throws Exception {
+
+        Properties properties = loadProperties(Path.of(args[0]));
+
+        if (properties.containsKey(KEY_RACE_TEMPORAL_ORDER))
+            GrandPrixRaceFactory.main(args);
+
+        else
+        if (properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE))
+            MidweekRaceFactory.main(args);
+
+        else
+        if (properties.containsKey(KEY_RACES))
+            TourRaceFactory.main(args);
+
+        else
+        if (properties.containsKey(KEY_NUMBER_OF_LEGS))
+            RelayRaceFactory.main(args);
+
+        else
+            IndividualRaceFactory.main(args);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected static List<String> getTestCasesWithin(final String parent_test_directory) throws IOException {
+    private static List<String> getTestCases() throws IOException {
+
+        List<String> test_cases = new ArrayList<>();
+
+        test_cases.addAll(getTestCasesWithin("real"));
+        test_cases.addAll(getTestCasesWithin("synthetic"));
+
+        return test_cases;
+    }
+
+    @ParameterizedTest
+    @MethodSource("getTestCases")
+    public void testFromDirectories(final String test_directory_path_string) throws Exception {
+
+        testExpectedCompletion(test_directory_path_string);
+    }
+
+    @Test
+    public void missingConfigFile() {
+
+        // This call bypasses the normal setup phase of copying the source and expected files.
+
+        final String error_output;
+
+        try {
+            final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
+            System.setErr(new PrintStream(diverted_err));
+
+            String[] args = new String[]{"synthetic/special_cases/missing_config_file"};
+
+            IndividualRaceFactory.main(args);
+
+            error_output = diverted_err.toString();
+
+        } finally {
+            System.setErr(System.err);
+        }
+
+        assertEquals(STR."missing config file: 'synthetic\{PATH_SEPARATOR}special_cases\{PATH_SEPARATOR}missing_config_file'" + System.lineSeparator(),
+            error_output,
+            "Expected error message was not generated");
+
+        // Test has passed if this line is reached.
+        failed_test = false;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static List<String> getTestCasesWithin(final String parent_test_directory) throws IOException {
 
         final Path parent_test_directory_path = Race.getTestResourcesRootPath(parent_test_directory);
 
@@ -192,18 +263,7 @@ public abstract class AbstractRaceTest {
         configureDirectoryContents(resources_input_directory);
     }
 
-    protected void testExpectedCompletion(final String individual_test_resource_root) throws Exception {
-
-        configureTest(individual_test_resource_root);
-        invokeMain(new String[]{config_file_path.toString()});
-
-        assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
-
-        // Test has passed if this line is reached.
-        failed_test = false;
-    }
-
-    protected void testExpectedCompletionNew(final String individual_test_resource_root) throws Exception {
+    private void testExpectedCompletion(final String individual_test_resource_root) throws Exception {
 
         configureTest(individual_test_resource_root);
         final String error_output;
@@ -237,36 +297,6 @@ public abstract class AbstractRaceTest {
         failed_test = false;
     }
 
-    protected void testExpectedErrorMessage(final String individual_test_resource_root, final Function<AbstractRaceTest, String> get_expected_error_message) throws Exception {
-
-        configureTest(individual_test_resource_root);
-        testExpectedErrorMessage(new String[]{config_file_path.toString()}, get_expected_error_message);
-    }
-
-    protected void testExpectedErrorMessage(final String[] args, final Function<AbstractRaceTest, String> get_expected_error_message) throws Exception {
-
-        final String error_output;
-
-        try {
-            final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
-            System.setErr(new PrintStream(diverted_err));
-
-            invokeMain(args);
-
-            error_output = diverted_err.toString();
-
-        } finally {
-            System.setErr(System.err);
-        }
-
-        assertEquals(get_expected_error_message.apply(this) + System.lineSeparator(),
-            error_output,
-            "Expected error message was not generated");
-
-        // Test has passed if this line is reached.
-        failed_test = false;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     static class TempFactory implements TempDirFactory {
@@ -285,7 +315,7 @@ public abstract class AbstractRaceTest {
         }
     }
 
-    protected void configureDirectories(final String individual_test_resource_root) {
+    private void configureDirectories(final String individual_test_resource_root) {
 
         final Path resources_root_directory = Race.getTestResourcesRootPath(individual_test_resource_root);
 
@@ -299,7 +329,7 @@ public abstract class AbstractRaceTest {
         config_file_path = test_input_directory.resolve(TEST_CONFIG_FILE_NAME);
     }
 
-    protected void configureDirectoryContents(final Path resources_inputs) throws IOException {
+    private void configureDirectoryContents(final Path resources_inputs) throws IOException {
 
         Files.createDirectories(test_output_directory);
         if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
@@ -308,8 +338,6 @@ public abstract class AbstractRaceTest {
             throw new RuntimeException(STR."missing config file: '\{resources_inputs}/\{TEST_CONFIG_FILE_NAME}'");
 
         copyDirectory(resources_inputs, test_input_directory);
-
-        properties = Race.loadProperties(config_file_path);
     }
 
     private static void assertThatDirectoryContainsAllExpectedContent(final Path expected, final Path actual) throws IOException {

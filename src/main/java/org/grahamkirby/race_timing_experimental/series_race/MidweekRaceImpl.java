@@ -191,7 +191,7 @@ public class MidweekRaceImpl implements SpecificRace {
         if (!Files.exists(config_path))
             throw new RuntimeException(STR."invalid config for race \{race_number} in file '\{race.getConfig().getConfigPath().getFileName()}'");
 
-        final Race individual_race = IndividualRaceFactory.makeIndividualRace(config_path);
+        final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
 
         configureIndividualRace(individual_race, race_number);
         individual_race.processResults();

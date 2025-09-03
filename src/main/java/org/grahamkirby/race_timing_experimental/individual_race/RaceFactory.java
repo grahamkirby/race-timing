@@ -17,32 +17,24 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing_experimental.common.CategoriesProcessorImpl;
-import org.grahamkirby.race_timing_experimental.common.CommonRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class IndividualRaceFactory extends RaceFactory {
+public abstract class RaceFactory {
 
-    public static void main(String[] args) {
+    public void createAndProcessRace(String[] args) {
 
-        new IndividualRaceFactory().createAndProcessRace(args);
+        try {
+            final Race race = makeRace(Path.of(args[0]));
+            race.processResults();
+            race.outputResults();
+
+        } catch (final Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
-    @Override
-    public Race makeRace(final Path config_file_path) throws IOException {
-
-        Race race = new CommonRace(config_file_path);
-
-        race.setConfigProcessor(new IndividualRaceConfigProcessor());
-        race.setSpecific(new IndividualRaceImpl());
-        race.setCategoriesProcessor(new CategoriesProcessorImpl());
-        race.setRaceDataProcessor(new IndividualRaceDataProcessorImpl());
-        race.setResultsCalculator(new IndividualRaceResultsCalculatorImpl());
-        race.setResultsOutput(new IndividualRaceResultsOutput());
-
-        return race;
-    }
+    protected abstract Race makeRace(final Path config_file_path) throws IOException;
 }

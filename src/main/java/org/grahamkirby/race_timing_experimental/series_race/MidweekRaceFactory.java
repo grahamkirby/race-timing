@@ -20,13 +20,20 @@ package org.grahamkirby.race_timing_experimental.series_race;
 import org.grahamkirby.race_timing_experimental.common.CategoriesProcessorImpl;
 import org.grahamkirby.race_timing_experimental.common.CommonRace;
 import org.grahamkirby.race_timing_experimental.common.Race;
+import org.grahamkirby.race_timing_experimental.individual_race.RaceFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class MidweekRaceFactory {
+public class MidweekRaceFactory extends RaceFactory {
 
-    public static Race makeMidweekRace(final Path config_file_path) throws IOException {
+    public static void main(String[] args) {
+
+        new MidweekRaceFactory().createAndProcessRace(args);
+    }
+
+    @Override
+    public Race makeRace(final Path config_file_path) throws IOException {
 
         Race race = new CommonRace(config_file_path);
 

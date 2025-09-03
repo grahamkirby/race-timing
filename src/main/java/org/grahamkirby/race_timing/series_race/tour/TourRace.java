@@ -41,6 +41,7 @@ public final class TourRace extends SeriesRace {
     public TourRace(final Path config_file_path) throws IOException {
 
         super(config_file_path);
+        throw new RuntimeException();
     }
 
     public static void main(final String[] args) throws IOException {

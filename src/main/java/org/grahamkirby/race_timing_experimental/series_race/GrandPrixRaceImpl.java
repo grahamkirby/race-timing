@@ -26,7 +26,6 @@ import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFa
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.*;
 
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
@@ -220,7 +219,7 @@ public class GrandPrixRaceImpl implements SpecificRace {
         if (!Files.exists(config_path))
             throw new RuntimeException(STR."invalid config for race \{race_number} in file '\{race.getConfig().getConfigPath().getFileName()}'");
 
-        final Race individual_race = IndividualRaceFactory.makeIndividualRace(config_path);
+        final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();
 
         return individual_race;
