@@ -40,19 +40,9 @@ public class MidweekRaceConfigProcessor implements ConfigProcessor {
     private static final List<String> REQUIRED_STRING_PROPERTY_KEYS =
         List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES, KEY_RACES, KEY_NUMBER_OF_RACES_IN_SERIES, KEY_MINIMUM_NUMBER_OF_RACES, KEY_SCORE_FOR_FIRST_PLACE);
 
-
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
         List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH);
 
-//    private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
-//        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_ENTRY_COLUMN_MAP, KEY_INDIVIDUAL_LEG_STARTS, KEY_MASS_START_ELAPSED_TIMES);
-//
-//    private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
-//        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
-//
-//    private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
-//        List.of(KEY_CATEGORY_MAP_PATH, KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
-//
     private static final List<String> OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS =
         List.of(KEY_CAPITALISATION_STOP_WORDS_PATH, KEY_NORMALISED_HTML_ENTITIES_PATH, KEY_NORMALISED_CLUB_NAMES_PATH, KEY_GENDER_ELIGIBILITY_MAP_PATH);
 
@@ -70,10 +60,7 @@ public class MidweekRaceConfigProcessor implements ConfigProcessor {
             final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
 
             commonConfigProcessor.addRequiredStringProperties(REQUIRED_STRING_PROPERTY_KEYS);
-//            commonConfigProcessor.addOptionalStringProperties(OPTIONAL_STRING_PROPERTY_KEYS);
-//
             commonConfigProcessor.addRequiredPathProperties(REQUIRED_PATH_PROPERTY_KEYS);
-//            commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_PROPERTY_KEYS);
             commonConfigProcessor.addOptionalPathProperties(OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS, OPTIONAL_PATH_DEFAULT_PROPERTIES);
 
             return new ConfigImpl(config_values, config_file_path);

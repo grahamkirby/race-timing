@@ -45,13 +45,13 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
         List.of(KEY_YEAR, KEY_RACE_NAME_FOR_RESULTS, KEY_RACE_NAME_FOR_FILENAMES);
 
     private static final List<String> OPTIONAL_STRING_PROPERTY_KEYS =
-        List.of(KEY_DNF_FINISHERS, KEY_RESULTS_PATH, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME, KEY_CATEGORY_START_OFFSETS, KEY_SEPARATELY_RECORDED_RESULTS, KEY_TIME_TRIAL_STARTS);
+        List.of(KEY_DNF_FINISHERS, KEY_INDIVIDUAL_EARLY_STARTS, KEY_MEDIAN_TIME, KEY_CATEGORY_START_OFFSETS, KEY_SEPARATELY_RECORDED_RESULTS, KEY_TIME_TRIAL_STARTS);
 
     private static final List<String> REQUIRED_PATH_PROPERTY_KEYS =
-        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH);
+        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH);
 
     private static final List<String> OPTIONAL_PATH_PROPERTY_KEYS =
-        List.of(KEY_CATEGORY_MAP_PATH);
+        List.of(KEY_CATEGORY_MAP_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH, KEY_RESULTS_PATH);
 
     private static final List<String> OPTIONAL_PATH_WITH_DEFAULT_PROPERTY_KEYS =
         List.of(KEY_CAPITALISATION_STOP_WORDS_PATH, KEY_NORMALISED_HTML_ENTITIES_PATH, KEY_NORMALISED_CLUB_NAMES_PATH, KEY_GENDER_ELIGIBILITY_MAP_PATH);
@@ -78,10 +78,14 @@ public class IndividualRaceConfigProcessor implements ConfigProcessor {
             commonConfigProcessor.addOptionalProperty(KEY_ENTRY_COLUMN_MAP, s -> s, _ -> makeDefaultEntryColumnMap(4));
 
             commonConfigProcessor.addOptionalProperty(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE, Integer::parseInt, _ -> Integer.MAX_VALUE);
-            commonConfigProcessor.addOptionalProperty("TIME_TRIAL_RUNNERS_PER_WAVE", Integer::parseInt);
-            commonConfigProcessor.addOptionalProperty("TIME_TRIAL_INTER_WAVE_INTERVAL", Normalisation::parseTime);
+            commonConfigProcessor.addOptionalProperty(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, Integer::parseInt);
+            commonConfigProcessor.addOptionalProperty(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL, Normalisation::parseTime);
 
             final Map<String, Object> config_values = commonConfigProcessor.getConfigValues();
+
+            if (!config_values.containsKey(KEY_RAW_RESULTS_PATH) && !config_values.containsKey(KEY_RESULTS_PATH)) {
+                throw new RuntimeException(STR."no entry for either of keys '\{KEY_RAW_RESULTS_PATH}' or '\{KEY_RESULTS_PATH}' in file '\{config_file_path.getFileName()}'");
+            }
 
             // Each DNF string contains single bib number.
             //noinspection ResultOfMethodCallIgnored

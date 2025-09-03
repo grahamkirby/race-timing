@@ -1,1 +1,1 @@
-no entry for key 'RAW_RESULTS_PATH' in file 'config.txt'
+no entry for either of keys 'RAW_RESULTS_PATH' or 'RESULTS_PATH' in file 'config.txt'

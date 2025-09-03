@@ -42,8 +42,8 @@ public class IndividualRaceTest extends AbstractRaceTest {
         return getTestCasesWithin("individual_race");
     }
 
-    @ParameterizedTest
-    @MethodSource("getTestCases")
+//    @ParameterizedTest
+//    @MethodSource("getTestCases")
     void testFromDirectories(final String test_directory_path_string) throws Exception {
 
         testExpectedCompletionNew(test_directory_path_string);

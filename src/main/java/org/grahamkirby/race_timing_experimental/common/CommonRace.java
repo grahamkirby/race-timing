@@ -90,7 +90,7 @@ public class CommonRace implements Race {
     public void processResults() throws IOException {
 
         category_details = categories_processor.getCategoryDetails();
-        race_data = race_data_processor.getRaceData();
+        if (race_data_processor != null) race_data = race_data_processor.getRaceData();
         completeConfiguration();
         results_calculator.calculateResults();
     }

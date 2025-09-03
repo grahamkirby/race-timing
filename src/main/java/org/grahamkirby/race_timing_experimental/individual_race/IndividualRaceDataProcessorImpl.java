@@ -99,7 +99,7 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
     private List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
 
-        return Files.readAllLines(raw_results_path).stream().
+        return readAllLines(raw_results_path).stream().
             map(SingleRaceInput::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(RawResult::new).

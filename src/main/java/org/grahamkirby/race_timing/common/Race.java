@@ -58,7 +58,10 @@ public abstract class Race {
     // TODO test input directory with different name.
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
-    // TODO generate racer list for PocketTimer.
+    // TODO individual race with no results - generate output with dummy times to check runner/bib duplicates.
+    // TODO individual race with no results -  generate racer list for PocketTimer.
+    // TODO series race with separate entries - output sorted runner names to notes.
+    // TODO individual race with team prizes - output sorted club names to notes
     // TODO suppress prize output in individual tour races.
 
     /** Index of prize category group name within the relevant config file. */

@@ -17,25 +17,8 @@
  */
 package org.grahamkirby.race_timing_experimental.series_race;
 
-import org.grahamkirby.race_timing_experimental.common.CategoriesProcessorImpl;
-import org.grahamkirby.race_timing_experimental.common.CommonRace;
-import org.grahamkirby.race_timing_experimental.common.Race;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import java.util.List;
 
-public class GrandPrixRaceFactory {
-
-    public static Race makeGrandPrixRace(final Path config_file_path) throws IOException {
-
-        Race race = new CommonRace(config_file_path);
-
-        race.setConfigProcessor(new GrandPrixRaceConfigProcessor());
-        race.setSpecific(new GrandPrixRaceImpl());
-        race.setCategoriesProcessor(new CategoriesProcessorImpl());
-        race.setResultsCalculator(new GrandPrixRaceResultsCalculatorImpl());
-        race.setResultsOutput(new GrandPrixRaceResultsOutput());
-
-        return race;
-    }
+public record GrandPrixRaceCategory(String category_title, int minimum_number_to_be_completed, List<Integer> race_numbers) {
 }

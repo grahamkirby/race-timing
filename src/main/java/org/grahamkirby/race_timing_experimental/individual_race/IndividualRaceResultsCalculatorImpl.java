@@ -17,21 +17,25 @@
  */
 package org.grahamkirby.race_timing_experimental.individual_race;
 
-import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.common.Runner;
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.categories.PrizeCategory;
+import org.grahamkirby.race_timing.single_race.SingleRaceInput;
 import org.grahamkirby.race_timing_experimental.common.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_DNF_FINISHERS;
-import static org.grahamkirby.race_timing_experimental.common.Config.KEY_INDIVIDUAL_EARLY_STARTS;
+import static org.grahamkirby.race_timing_experimental.common.CommonDataProcessor.readAllLines;
+import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
@@ -194,11 +198,98 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         List<RawResult> raw_results = race.getRaceData().getRawResults();
 
-        overall_results = raw_results.stream().
-            map(this::makeResult).
-            toList();
+        if (raw_results.isEmpty()) {
+            try {
+                overall_results = loadOverallResults();
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+
+            overall_results = raw_results.stream().
+                map(this::makeResult).
+                toList();
+        }
 
         overall_results = new ArrayList<>(overall_results);
+    }
+
+    List<RaceResult> loadOverallResults() throws IOException {
+
+        return readAllLines((Path) race.getConfig().get(KEY_RESULTS_PATH)).stream().
+            map(SingleRaceInput::stripEntryComment).
+            filter(Predicate.not(String::isBlank)).
+            map(race_result_mapper).
+            filter(Objects::nonNull).
+            toList();
+    }
+    private int next_fake_bib_number = 1;
+    private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
+
+    private RaceResult makeRaceResult(final List<String> elements) {
+
+        elements.addFirst(String.valueOf(next_fake_bib_number++));
+
+        final RaceEntry entry = makeRaceEntry(elements, race);
+        final Duration finish_time = Normalisation.parseTime(elements.getLast());
+
+        return new SingleRaceResult(race, entry, finish_time);
+    }
+
+    private static final int BIB_NUMBER_INDEX = 0;
+    private static final int NAME_INDEX = 1;
+    private static final int CLUB_INDEX = 2;
+    private static final int CATEGORY_INDEX = 3;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
+    public RaceEntry makeRaceEntry(final List<String> elements, final Race race) {
+
+        Normalisation normalisation = race.getNormalisation();
+
+        final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
+
+        try {
+            int bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
+
+            final String name = normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
+            final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
+
+            final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
+            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoryDetails().lookupEntryCategory(category_name);
+
+            Participant participant = new Runner(name, club, category);
+
+            return new RaceEntry(participant, bib_number, race);
+
+        } catch (final RuntimeException _) {
+            throw new RuntimeException(String.join(" ", elements));
+        }
+    }
+
+    /** Gets the median finish time for the race. */
+    public Duration getMedianTime() {
+
+        String median_time_string = (String) race.getConfig().get(KEY_MEDIAN_TIME);
+        // The median time may be recorded explicitly if not all results are recorded.
+        if (median_time_string != null) return parseTime(median_time_string);
+
+        final List<RaceResult> results = getOverallResults();
+
+        if (results.size() % 2 == 0) {
+
+            final SingleRaceResult median_result1 = (SingleRaceResult) results.get(results.size() / 2 - 1);
+            final SingleRaceResult median_result2 = (SingleRaceResult) results.get(results.size() / 2);
+
+            return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
+
+        } else {
+            final SingleRaceResult median_result = (SingleRaceResult) results.get(results.size() / 2);
+            return median_result.finish_time;
+        }
     }
 
     private RaceResult makeResult(final RawResult raw_result) {
@@ -276,13 +367,13 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     /** Compares two results based on alphabetical ordering of the runners' first names. */
     public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
-        return Normalisation.getFirstName(r1.getParticipant().name).compareTo(Normalisation.getFirstName(r2.getParticipant().name));
+        return Normalisation.getFirstNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getFirstNameOfFirstRunner(r2.getParticipant().name));
     }
 
     /** Compares two results based on alphabetical ordering of the runners' last names. */
     public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
-        return Normalisation.getLastName(r1.getParticipant().name).compareTo(Normalisation.getLastName(r2.getParticipant().name));
+        return Normalisation.getLastNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getLastNameOfFirstRunner(r2.getParticipant().name));
     }
 
     protected static Comparator<RaceResult> penaliseDNF(final Comparator<? super RaceResult> base_comparator) {

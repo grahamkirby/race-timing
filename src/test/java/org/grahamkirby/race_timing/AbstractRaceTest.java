@@ -172,9 +172,8 @@ public abstract class AbstractRaceTest {
 
                     if (this_is_test_case_directory)
                         test_cases.add(test_directory_path_string);
-                    else
-                        // TODO once old implementation removed, recurse for test case dir too.
-                        test_cases.addAll(getTestCasesWithin(test_directory_path_string));
+
+                    test_cases.addAll(getTestCasesWithin(test_directory_path_string));
                 }
             }
             return test_cases;

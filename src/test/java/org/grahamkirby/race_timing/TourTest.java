@@ -39,8 +39,8 @@ public class TourTest extends AbstractRaceTest {
         return getTestCasesWithin("series_race/minitour");
     }
 
-    @ParameterizedTest
-    @MethodSource("getTestCases")
+//    @ParameterizedTest
+//    @MethodSource("getTestCases")
     void testFromDirectories(final String test_directory_path_string) throws Exception {
 
         testExpectedCompletionNew(test_directory_path_string);

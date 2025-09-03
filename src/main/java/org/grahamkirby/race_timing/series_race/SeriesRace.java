@@ -128,12 +128,12 @@ public abstract class SeriesRace extends Race {
         return position;
     }
 
-    protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
+    public static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
         return Boolean.compare(r2.canComplete(), r1.canComplete());
     }
 
-    protected static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
+    public static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
 
         final int minimum_races_to_qualify = ((SeriesRace) r1.race).minimum_number_of_races;
 
