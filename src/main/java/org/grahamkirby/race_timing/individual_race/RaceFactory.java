@@ -15,18 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.common.Race;
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
+import java.io.IOException;
+import java.nio.file.Path;
 
-public abstract class Participant {
+public abstract class RaceFactory {
 
-    public String name;
-    public EntryCategory category;
+    public void createAndProcessRace(String[] args) {
 
-    protected Participant(final String name, final EntryCategory category) {
-        this.name = name;
-        this.category = category;
+        try {
+            final Race race = makeRace(Path.of(args[0]));
+            race.processResults();
+            race.outputResults();
+
+        } catch (final Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
+
+    protected abstract Race makeRace(final Path config_file_path) throws IOException;
 }

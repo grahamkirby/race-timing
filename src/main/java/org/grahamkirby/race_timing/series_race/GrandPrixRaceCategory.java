@@ -15,30 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("IncorrectFormatting")
-public abstract class RaceResult {
-
-    public final Race race;
-    public String position_string;
-    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
-
-    protected RaceResult(final Race race) {
-        this.race = race;
-    }
-
-    public abstract String getParticipantName();
-    public abstract Participant getParticipant();
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
-    public abstract boolean shouldDisplayPosition();
-    public abstract EntryCategory getCategory();
+public record GrandPrixRaceCategory(String category_title, int minimum_number_to_be_completed, List<Integer> race_numbers) {
 }

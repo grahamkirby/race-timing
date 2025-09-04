@@ -17,28 +17,26 @@
  */
 package org.grahamkirby.race_timing.common;
 
-
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("IncorrectFormatting")
-public abstract class RaceResult {
+public class RaceDataImpl implements RaceData {
 
-    public final Race race;
-    public String position_string;
-    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
+    private final List<RawResult> raw_results;
+    private final List<RaceEntry> entries;
 
-    protected RaceResult(final Race race) {
-        this.race = race;
+    public RaceDataImpl(List<RawResult> raw_results, List<RaceEntry> entries) {
+
+        this.raw_results = raw_results;
+        this.entries = entries;
     }
 
-    public abstract String getParticipantName();
-    public abstract Participant getParticipant();
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
-    public abstract boolean shouldDisplayPosition();
-    public abstract EntryCategory getCategory();
+    @Override
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        return entries;
+    }
 }

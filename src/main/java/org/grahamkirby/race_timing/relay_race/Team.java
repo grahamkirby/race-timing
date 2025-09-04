@@ -15,30 +15,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
+import org.grahamkirby.race_timing.common.Participant;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@SuppressWarnings("IncorrectFormatting")
-public abstract class RaceResult {
+public class Team extends Participant {
 
-    public final Race race;
-    public String position_string;
-    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
+    public List<String> runner_names;
 
-    protected RaceResult(final Race race) {
-        this.race = race;
+    public Team(final String name, final EntryCategory category, final List<String> runner_names) {
+        super(name, category);
+        this.runner_names = runner_names;
     }
 
-    public abstract String getParticipantName();
-    public abstract Participant getParticipant();
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
-    public abstract boolean shouldDisplayPosition();
-    public abstract EntryCategory getCategory();
+    @Override
+    public boolean equals(final Object obj) {
+
+        return obj instanceof final Team other_team &&
+            name.equals(other_team.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

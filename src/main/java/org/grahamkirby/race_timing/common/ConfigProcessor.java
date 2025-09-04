@@ -17,28 +17,10 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import java.nio.file.Path;
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
+public interface ConfigProcessor {
+    Config loadConfig(Path configFilePath);
 
-import java.util.ArrayList;
-import java.util.List;
-
-@SuppressWarnings("IncorrectFormatting")
-public abstract class RaceResult {
-
-    public final Race race;
-    public String position_string;
-    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
-
-    protected RaceResult(final Race race) {
-        this.race = race;
-    }
-
-    public abstract String getParticipantName();
-    public abstract Participant getParticipant();
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
-    public abstract boolean shouldDisplayPosition();
-    public abstract EntryCategory getCategory();
+    void setRace(Race race);
 }

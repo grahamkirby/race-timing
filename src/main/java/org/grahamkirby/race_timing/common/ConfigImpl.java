@@ -17,28 +17,32 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import java.nio.file.Path;
+import java.util.Map;
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
+public class ConfigImpl implements Config {
 
-import java.util.ArrayList;
-import java.util.List;
+    private final Map<String, Object> config_map;
+    private final Path config_path;
 
-@SuppressWarnings("IncorrectFormatting")
-public abstract class RaceResult {
+    public ConfigImpl(Map<String, Object> config_map, final Path config_path) {
 
-    public final Race race;
-    public String position_string;
-    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
-
-    protected RaceResult(final Race race) {
-        this.race = race;
+        this.config_map = config_map;
+        this.config_path = config_path;
     }
 
-    public abstract String getParticipantName();
-    public abstract Participant getParticipant();
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
-    public abstract boolean shouldDisplayPosition();
-    public abstract EntryCategory getCategory();
+    @Override
+    public Object get(final String key) {
+        return config_map.get(key);
+    }
+
+    @Override
+    public boolean containsKey(final String key) {
+        return config_map.containsKey(key);
+    }
+
+    @Override
+    public Path getConfigPath() {
+        return config_path;
+    }
 }

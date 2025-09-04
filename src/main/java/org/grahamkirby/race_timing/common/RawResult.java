@@ -20,8 +20,8 @@ package org.grahamkirby.race_timing.common;
 
 import java.time.Duration;
 
-import static org.grahamkirby.race_timing_experimental.common.Config.UNKNOWN_BIB_NUMBER;
-import static org.grahamkirby.race_timing_experimental.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Config.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public class RawResult {
 

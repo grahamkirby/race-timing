@@ -15,18 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.categories;
 
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
+/**
+ * Category specific to a particular runner or team entry.
+ * <br />
+ * Values are read from a configuration file such as
+ * {@link /src/main/resources/configuration/categories_entry_individual_junior.csv}.
+ */
+public final class EntryCategory extends Category {
 
-public abstract class Participant {
+    /**
+     * Creates an instance from a comma-separated string containing:
+     * long name, short name, gender, minimum age, maximum age.
+     * Minimum and maximum ages are inclusive.
+     */
+    public EntryCategory(final String components) {
 
-    public String name;
-    public EntryCategory category;
-
-    protected Participant(final String name, final EntryCategory category) {
-        this.name = name;
-        this.category = category;
+        super(components);
     }
 }

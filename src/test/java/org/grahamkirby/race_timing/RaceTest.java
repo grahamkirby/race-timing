@@ -21,12 +21,11 @@ package org.grahamkirby.race_timing;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing_experimental.individual_race.IndividualRaceFactory;
-import org.grahamkirby.race_timing_experimental.relay_race.RelayRaceFactory;
-import org.grahamkirby.race_timing_experimental.series_race.GrandPrixRaceFactory;
-import org.grahamkirby.race_timing_experimental.series_race.MidweekRaceFactory;
-import org.grahamkirby.race_timing_experimental.series_race.TourRaceFactory;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
+import org.grahamkirby.race_timing.relay_race.RelayRaceFactory;
+import org.grahamkirby.race_timing.series_race.GrandPrixRaceFactory;
+import org.grahamkirby.race_timing.series_race.MidweekRaceFactory;
+import org.grahamkirby.race_timing.series_race.TourRaceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.AnnotatedElementContext;
@@ -51,9 +50,7 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
-import static org.grahamkirby.race_timing.common.Normalisation.SUFFIX_PDF;
-import static org.grahamkirby.race_timing.common.Race.loadProperties;
-import static org.grahamkirby.race_timing_experimental.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("preview")
@@ -112,6 +109,8 @@ public class RaceTest {
     private Path expected_output_directory;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     @AfterEach
     public void tearDown() throws IOException {
@@ -227,7 +226,7 @@ public class RaceTest {
 
     private static List<String> getTestCasesWithin(final String parent_test_directory) throws IOException {
 
-        final Path parent_test_directory_path = Race.getTestResourcesRootPath(parent_test_directory);
+        final Path parent_test_directory_path = getTestResourcesRootPath(parent_test_directory);
 
         try (final Stream<Path> paths = Files.list(parent_test_directory_path).sorted()) {
 
@@ -236,7 +235,7 @@ public class RaceTest {
 
                 final String test_directory_path_string = Path.of(parent_test_directory).resolve(test_directory_path.getFileName()).toString();
 
-                Path testResourcesRootPath = Race.getTestResourcesRootPath(test_directory_path_string);
+                Path testResourcesRootPath = getTestResourcesRootPath(test_directory_path_string);
                 if (Files.isDirectory(testResourcesRootPath)) {
 
                     final boolean this_is_test_case_directory = Files.isDirectory(testResourcesRootPath.resolve("expected"));
@@ -249,6 +248,21 @@ public class RaceTest {
             }
             return test_cases;
         }
+    }
+
+    private static Path getPathRelativeToProjectRoot(final String path) {
+
+        return Path.of(path.substring(1));
+    }
+
+    private Path getPathRelativeToRaceConfigFile(final String path) {
+
+        return config_file_path.getParent().resolve(path);
+    }
+
+    public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
+
+        return getPathRelativeToProjectRoot(STR."/src/test/resources/\{individual_test_resource_root}");
     }
 
     private static void setLoggingLevel(final Level level) {
@@ -317,7 +331,7 @@ public class RaceTest {
 
     private void configureDirectories(final String individual_test_resource_root) {
 
-        final Path resources_root_directory = Race.getTestResourcesRootPath(individual_test_resource_root);
+        final Path resources_root_directory = getTestResourcesRootPath(individual_test_resource_root);
 
         resources_input_directory = resources_root_directory.resolve("input");
         expected_output_directory = resources_root_directory.resolve("expected");
@@ -404,7 +418,7 @@ public class RaceTest {
     private static List<String> getFileContent(final Path path) {
 
         try {
-            if (path.toString().endsWith(SUFFIX_PDF)) {
+            if (path.toString().endsWith(PDF_FILE_SUFFIX)) {
                 try (final PdfDocument document = new PdfDocument(new PdfReader(path.toString()))) {
 
                     final List<String> contents = new ArrayList<>();

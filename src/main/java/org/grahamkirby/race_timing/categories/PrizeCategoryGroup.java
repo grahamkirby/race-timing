@@ -15,30 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.categories;
 
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("IncorrectFormatting")
-public abstract class RaceResult {
-
-    public final Race race;
-    public String position_string;
-    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
-
-    protected RaceResult(final Race race) {
-        this.race = race;
-    }
-
-    public abstract String getParticipantName();
-    public abstract Participant getParticipant();
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
-    public abstract boolean shouldDisplayPosition();
-    public abstract EntryCategory getCategory();
+/**
+ * Represents a grouping of prize categories, used in some cases to structure results output.
+ * For example, the 'Under 9' group in a junior race may include prize categories
+ * 'Female Under 9' and 'Male Under 9'. The results may be split into different groups where
+ * runners of different ages complete different courses.
+ * <br />
+ * Values are read from a configuration file such as
+ * {@link /src/main/resources/configuration/categories_prize_individual_junior.csv}.
+ */
+public record PrizeCategoryGroup(String group_title, List<PrizeCategory> categories) {
 }

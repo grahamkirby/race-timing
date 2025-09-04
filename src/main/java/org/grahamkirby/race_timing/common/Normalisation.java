@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.common;
 
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,34 +25,13 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing_experimental.common.Config.*;
-
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
 public class Normalisation {
 
-    public static final String SUFFIX_CSV = ".csv";
-    public static final String SUFFIX_PDF = ".pdf";
-
     private static final int SECONDS_PER_HOUR = 3600;
     private static final int SECONDS_PER_MINUTE = 60;
     private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;
-
-//    private static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
-//    private static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
-//    public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
-//    private static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
-//    private static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
-//    private static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
-
-    private static final String DEFAULT_CONFIG_ROOT_PATH = "/src/main/resources/configuration";
-    private static final String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/capitalisation_stop_words\{SUFFIX_CSV}";
-    private static final String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/html_entities\{SUFFIX_CSV}";
-    private static final String DEFAULT_NORMALISED_CLUB_NAMES_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/club_names\{SUFFIX_CSV}";
-    private static final String DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = STR."\{DEFAULT_CONFIG_ROOT_PATH}/gender_eligibility_default\{SUFFIX_CSV}";
-
-    /** Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering. */
-    private static final String DEFAULT_ENTRY_COLUMN_MAP = "1,2,3,4";
 
     /** Characters treated as word separators when converting string to title case. */
     private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '’');
@@ -89,10 +67,20 @@ public class Normalisation {
 
     private final Race race;
 
-    public Normalisation(final Race race) throws IOException {
+    public Normalisation(final Race race) {
 
         this.race = race;
         configure();
+    }
+
+    public static String stripComment(final String line) {
+
+        return line.split(Config.COMMENT_SYMBOL)[0];
+    }
+
+    public static String stripEntryComment(final String line) {
+
+        return line.startsWith(Config.COMMENT_SYMBOL) ? "" : line;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,31 +154,39 @@ public class Normalisation {
     /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
     public static String format(final Duration duration) {
 
-        if (duration == null) return DNF_STRING;
+        if (duration == null) return Config.DNF_STRING;
         return formatWholePart(duration) + formatFractionalPart(duration);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void configure() throws IOException {
+    private void configure() {
 
-        entry_column_mappings = loadEntryColumnMapping();
-        category_map = loadCategoryMap();
-        gender_eligibility_map = loadGenderEligibilityMap();
-        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH, false);
-        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH, true);
-        capitalisation_stop_words = new HashSet<>(Files.readAllLines(race.getPath(race.getProperty(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH))));
-        non_title_case_words = new HashSet<>();
+        try {
+            entry_column_mappings = loadEntryColumnMapping();
+            category_map = loadCategoryMap();
+            gender_eligibility_map = loadGenderEligibilityMap();
+            normalised_club_names = loadNormalisationMap(Config.KEY_NORMALISED_CLUB_NAMES_PATH, false);
+            normalised_html_entities = loadNormalisationMap(Config.KEY_NORMALISED_HTML_ENTITIES_PATH, true);
+
+            final Path capitalisation_stop_words_path = (Path) race.getConfig().get(Config.KEY_CAPITALISATION_STOP_WORDS_PATH);
+            capitalisation_stop_words = new HashSet<>(Files.readAllLines(capitalisation_stop_words_path));
+
+            non_title_case_words = new HashSet<>();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Map<String, List<String>> loadGenderEligibilityMap() throws IOException {
 
         final Map<String, List<String>> map = new HashMap<>();
 
-        final String gender_eligibility_map_path = race.getProperty(KEY_GENDER_ELIGIBILITY_MAP_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
+        final Path gender_eligibility_map_path = (Path) race.getConfig().get(Config.KEY_GENDER_ELIGIBILITY_MAP_PATH);
 
-        Files.readAllLines(race.getPath(gender_eligibility_map_path)).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+        Files.readAllLines(gender_eligibility_map_path).stream().
+            filter(line -> !line.startsWith(Config.COMMENT_SYMBOL)).
             forEachOrdered(line -> {
                 final String[] elements = line.split(",");
                 map.putIfAbsent(elements[0], new ArrayList<>());
@@ -206,8 +202,10 @@ public class Normalisation {
         // space character, by grouping column numbers with a dash.
         // E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
 
-        // TODO update default column map to deal with relay races - move definition to SingleRaceInput.
-        final String entry_column_map_string = race.getProperty(KEY_ENTRY_COLUMN_MAP, DEFAULT_ENTRY_COLUMN_MAP);
+        final String entry_column_map_string = (String) race.getConfig().get(Config.KEY_ENTRY_COLUMN_MAP);
+
+        // Column mapping not used for relay races, so may not be set.
+        if (entry_column_map_string == null) return Collections.emptyList();
 
         return Arrays.asList(entry_column_map_string.split(","));
     }
@@ -216,14 +214,12 @@ public class Normalisation {
 
         final Map<String, String> map = new HashMap<>();
 
-        final String category_map_path_string = race.getOptionalProperty(KEY_CATEGORY_MAP_PATH);
-        if (category_map_path_string != null) {
-
-            final Path category_map_path = race.getPath(category_map_path_string);
+        final Path category_map_path = (Path) race.getConfig().get(Config.KEY_CATEGORY_MAP_PATH);
+        if (category_map_path != null) {
 
             Files.readAllLines(category_map_path).stream().
                 filter(line -> !line.isEmpty()).
-                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+                filter(line -> !line.startsWith(Config.COMMENT_SYMBOL)).
                 forEachOrdered(line -> {
                     final String[] parts = line.split(",");
                     map.put(parts[0], parts[1]);
@@ -233,10 +229,10 @@ public class Normalisation {
         return map;
     }
 
-    private Map<String, String> loadNormalisationMap(final String path_key, final String default_path, final boolean key_case_sensitive) throws IOException {
+    private Map<String, String> loadNormalisationMap(final String path_key, final boolean key_case_sensitive) throws IOException {
 
         final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        final Path path = race.getPath(race.getProperty(path_key, default_path));
+        final Path path = (Path) race.getConfig().get(path_key);
 
         Files.readAllLines(path).forEach(line -> {
 
@@ -259,14 +255,18 @@ public class Normalisation {
             collect(Collectors.joining(" "));
     }
 
-    /** Gets the first element of the array resulting from splitting the given name on the space character. */
-    public static String getFirstName(final String name) {
-        return name.split(" ")[0];
+    /** Gets the first name of the given runner, or of the first runner if it's a pair. */
+    public static String getFirstNameOfFirstRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return runner.split(" ")[0];
     }
 
-    /** Gets the last element of the array resulting from splitting the given name on the space character. */
-    public static String getLastName(final String name) {
-        return Arrays.stream(name.split(" ")).toList().getLast();
+    /** Gets the last name of the given runner, or of the first runner if it's a pair. */
+    public static String getLastNameOfFirstRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return Arrays.stream(runner.split(" ")).toList().getLast();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
