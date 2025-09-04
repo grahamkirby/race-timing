@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing_experimental.relay_race;
 
-import org.grahamkirby.race_timing.relay_race.RelayRace;
 import org.grahamkirby.race_timing_experimental.common.*;
 
 import java.io.IOException;
@@ -28,14 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Race.loadProperties;
 import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.makeDefaultEntryColumnMap;
 import static org.grahamkirby.race_timing_experimental.common.CommonConfigProcessor.validateDNFRecords;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
-import static org.grahamkirby.race_timing_experimental.common.Normalisation.format;
 import static org.grahamkirby.race_timing_experimental.common.Normalisation.parseTime;
 
 @SuppressWarnings("preview")

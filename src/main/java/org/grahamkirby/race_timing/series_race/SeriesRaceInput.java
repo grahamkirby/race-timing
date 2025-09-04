@@ -20,18 +20,13 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceInput;
-import org.grahamkirby.race_timing.individual_race.TimedIndividualRace;
-import org.grahamkirby.race_timing.individual_race.UntimedIndividualRace;
 import org.grahamkirby.race_timing.single_race.SingleRace;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Race.loadProperties;
 import static org.grahamkirby.race_timing_experimental.common.Config.*;
 
 public class SeriesRaceInput extends RaceInput {
@@ -91,20 +86,20 @@ public class SeriesRaceInput extends RaceInput {
 
     private SingleRace getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
-        final SingleRace individual_race;
-        final Path config_path = race.getPath(race_config_path);
-        if (!Files.exists(config_path))
-            throw new RuntimeException(STR."invalid config for race \{race_number} in file '\{race.config_file_path.getFileName()}'");
+//        final SingleRace individual_race;
+//        final Path config_path = race.getPath(race_config_path);
+//        if (!Files.exists(config_path))
+//            throw new RuntimeException(STR."invalid config for race \{race_number} in file '\{race.config_file_path.getFileName()}'");
+//
+////        if (loa*/dProperties(config_path).containsKey(KEY_RAW_RESULTS_PATH))
+//            individual_race = new TimedIndividualRace(config_path);
+////        else
+////            individual_race = new UntimedIndividualRace(config_path);
+//
+//        configureIndividualRace(individual_race, race_number);
+//        individual_race.calculateResults();
 
-        if (loadProperties(config_path).containsKey(KEY_RAW_RESULTS_PATH))
-            individual_race = new TimedIndividualRace(config_path);
-        else
-            individual_race = new UntimedIndividualRace(config_path);
-
-        configureIndividualRace(individual_race, race_number);
-        individual_race.calculateResults();
-
-        return individual_race;
+        return null;
     }
 
     protected void configureIndividualRace(final SingleRace individual_race, final int race_number) {

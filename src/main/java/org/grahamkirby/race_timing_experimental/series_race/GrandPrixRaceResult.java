@@ -20,9 +20,7 @@ package org.grahamkirby.race_timing_experimental.series_race;
 
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.Runner;
-
 import org.grahamkirby.race_timing.common.categories.EntryCategory;
-import org.grahamkirby.race_timing.series_race.grand_prix.GrandPrixRace;
 import org.grahamkirby.race_timing_experimental.common.Config;
 import org.grahamkirby.race_timing_experimental.common.Race;
 import org.grahamkirby.race_timing_experimental.common.RaceResult;
