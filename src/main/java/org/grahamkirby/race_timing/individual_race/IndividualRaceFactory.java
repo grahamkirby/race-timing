@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.common.CommonRace;
 import org.grahamkirby.race_timing.common.Race;
 
 import java.io.IOException;
@@ -34,9 +33,11 @@ public class IndividualRaceFactory extends RaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        Race race = new CommonRace(config_file_path);
+        Race race = new Race(config_file_path);
 
-        race.setConfigProcessor(new IndividualRaceConfigProcessor());
+        race.addConfigProcessor(new IndividualRaceConfigAdjuster());
+        race.addConfigProcessor(new IndividualRaceConfigValidator());
+        race.loadConfig();
         race.setSpecific(new IndividualRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setRaceDataProcessor(new IndividualRaceDataProcessorImpl());

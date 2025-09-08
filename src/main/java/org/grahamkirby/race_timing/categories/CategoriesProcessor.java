@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Config.COMMENT_SYMBOL;
 
 public class CategoriesProcessor  {
 

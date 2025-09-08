@@ -117,7 +117,7 @@ class MidweekRaceOutputHTML {
     public String getPrizesHeader() {
 
 
-        final String header = ((MidweekRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace() < Integer.parseInt((String) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES)) ? "Current Standings" : "Prizes";
+        final String header = ((MidweekRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace() < (int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
         return STR."<h4>\{header}</h4>\{Config.LINE_SEPARATOR}";
     }
 

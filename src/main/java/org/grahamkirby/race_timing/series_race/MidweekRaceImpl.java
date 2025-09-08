@@ -150,12 +150,12 @@ public class MidweekRaceImpl implements SpecificRace {
             takeWhile(result -> !result.getParticipant().equals(runner)).
             count() + 1;
 
-        return gender_position <= gender_results.size() ? Math.max(Integer.parseInt((String)race.getConfig().get(Config.KEY_SCORE_FOR_FIRST_PLACE)) - gender_position + 1, 0) : 0;
+        return gender_position <= gender_results.size() ? Math.max((int) race.getConfig().get(Config.KEY_SCORE_FOR_FIRST_PLACE) - gender_position + 1, 0) : 0;
     }
 
     private List<Race> loadRaces() throws IOException {
 
-        final int number_of_race_in_series = Integer.parseInt((String) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES));
+        final int number_of_race_in_series =(int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_race_in_series != race_config_paths.size())
             throw new RuntimeException(STR."invalid number of races specified in file '\{race.getConfig().getConfigPath().getFileName()}'");
 
@@ -196,7 +196,7 @@ public class MidweekRaceImpl implements SpecificRace {
 
     protected void configureIndividualRace(final Race individual_race, final int race_number) {
 
-        ((CommonRace)individual_race).completeConfiguration();
+        ((Race)individual_race).completeConfiguration();
     }
 
     public int getNumberOfRacesTakenPlace() {

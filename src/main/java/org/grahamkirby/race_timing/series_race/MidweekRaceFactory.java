@@ -18,7 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.common.CommonRace;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.individual_race.RaceFactory;
 
@@ -35,12 +35,13 @@ public class MidweekRaceFactory extends RaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        Race race = new CommonRace(config_file_path);
+        Race race = new Race(config_file_path);
 
-        race.setConfigProcessor(new MidweekRaceConfigProcessor());
+        race.addConfigProcessor(new MidweekRaceConfigAdjuster());
+        race.addConfigProcessor(new MidweekRaceConfigValidator());
+        race.loadConfig();
         race.setSpecific(new MidweekRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
-        race.setRaceDataProcessor(new MidweekRaceDataProcessorImpl());
         race.setResultsCalculator(new MidweekRaceResultsCalculatorImpl());
         race.setResultsOutput(new MidweekRaceResultsOutput());
 

@@ -25,6 +25,9 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.grahamkirby.race_timing.common.Config.COMMENT_SYMBOL;
+import static org.grahamkirby.race_timing.common.Config.KEY_GENDER_ELIGIBILITY_MAP_PATH;
+
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
 public class Normalisation {
@@ -75,12 +78,12 @@ public class Normalisation {
 
     public static String stripComment(final String line) {
 
-        return line.split(Config.COMMENT_SYMBOL)[0];
+        return line.split(COMMENT_SYMBOL)[0];
     }
 
     public static String stripEntryComment(final String line) {
 
-        return line.startsWith(Config.COMMENT_SYMBOL) ? "" : line;
+        return line.startsWith(COMMENT_SYMBOL) ? "" : line;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,10 +186,10 @@ public class Normalisation {
 
         final Map<String, List<String>> map = new HashMap<>();
 
-        final Path gender_eligibility_map_path = (Path) race.getConfig().get(Config.KEY_GENDER_ELIGIBILITY_MAP_PATH);
+        final Path gender_eligibility_map_path = (Path) race.getConfig().get(KEY_GENDER_ELIGIBILITY_MAP_PATH);
 
         Files.readAllLines(gender_eligibility_map_path).stream().
-            filter(line -> !line.startsWith(Config.COMMENT_SYMBOL)).
+            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             forEachOrdered(line -> {
                 final String[] elements = line.split(",");
                 map.putIfAbsent(elements[0], new ArrayList<>());
@@ -219,7 +222,7 @@ public class Normalisation {
 
             Files.readAllLines(category_map_path).stream().
                 filter(line -> !line.isEmpty()).
-                filter(line -> !line.startsWith(Config.COMMENT_SYMBOL)).
+                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
                 forEachOrdered(line -> {
                     final String[] parts = line.split(",");
                     map.put(parts[0], parts[1]);

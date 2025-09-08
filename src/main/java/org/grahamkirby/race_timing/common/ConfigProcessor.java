@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import java.nio.file.Path;
-
 public interface ConfigProcessor {
-    Config loadConfig(Path configFilePath);
 
-    void setRace(Race race);
+    void processConfig(Race race);
 }

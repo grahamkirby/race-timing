@@ -56,7 +56,6 @@ public class CommonDataProcessor {
             peek(_ -> line_number.incrementAndGet()).
             map(Normalisation::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
-//            filter(line -> line.split("\t").length != number_of_columns).
             filter(line -> line.split("\t").length < number_of_columns).
             forEach(line -> {
                 throw new RuntimeException(STR."invalid entry '\{line}' at line \{line_number.get()} in file '\{entries_path.getFileName()}'");

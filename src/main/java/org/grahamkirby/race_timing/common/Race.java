@@ -17,14 +17,15 @@
  */
 package org.grahamkirby.race_timing.common;
 
-
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.categories.CategoryDetails;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface Race {
+public class Race {
 
     // TODO rationalise Female/Women gender categories.
     // TODO consolidate input validation.
@@ -51,37 +52,171 @@ public interface Race {
     // TODO individual race with team prizes - output sorted club names to notes
     // TODO suppress prize output in individual tour races.
 
+    public Path config_file_path;
 
+    public Normalisation normalisation;
 
-    void setResultsOutput(ResultsOutput results_output);
+    private CategoriesProcessor categories_processor;
+    private CategoryDetails category_details;
+    private RaceData race_data;
+    private Config config;
+    private RaceDataProcessor race_data_processor;
+    private SpecificRace specific;
+    RaceResultsCalculator results_calculator;
+    ResultsOutput results_output;
 
-    void processResults() throws IOException;
-    void outputResults() throws IOException;
+    public Race(final Path config_file_path) {
 
-    Path interpretPath(Path path);
+        try {
+            this.config_file_path = config_file_path;
+            loadConfig();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    Path getOutputDirectoryPath();
+    public void completeConfiguration() {
 
-    void setConfigProcessor(ConfigProcessor config_processor);
+        specific.completeConfiguration();
+    }
 
-    void setCategoriesProcessor(CategoriesProcessor categories_processor);
+    public Config getConfig() {
+        return config;
+    }
 
-    Config getConfig();
+    public synchronized Normalisation getNormalisation() {
 
-    Normalisation getNormalisation();
+        if (normalisation == null)
+            normalisation = new Normalisation(this);
 
-    CategoryDetails getCategoryDetails();
+        return normalisation;
+    }
 
-    void appendToNotes(String s);
+    public CategoryDetails getCategoryDetails() {
+        return category_details;
+    }
 
-    String getNotes();
+    public RaceData getRaceData() {
+        return race_data;
+    }
 
-    void setResultsCalculator(RaceResultsCalculator results_calculator);
-    RaceResultsCalculator getResultsCalculator();
+    public void appendToNotes(String s) {
+        results_calculator.getNotes().append(s);
+    }
 
-    RaceData getRaceData();
-    void setRaceDataProcessor(RaceDataProcessor race_data_processor);
+    public String getNotes() {
+        return results_calculator.getNotes().toString();
+    }
 
-    SpecificRace getSpecific();
-    void setSpecific(SpecificRace specific);
+    public void processResults() throws IOException {
+
+        category_details = categories_processor.getCategoryDetails();
+        if (race_data_processor != null) race_data = race_data_processor.getRaceData();
+        completeConfiguration();
+        results_calculator.calculateResults();
+    }
+
+    public void outputResults() throws IOException {
+        results_output.outputResults();
+    }
+
+    /**
+     * Resolves the given path relative to either the race configuration file,
+     * if it's specified as a relative path, or to the project root. Examples:
+     *
+     * Relative to race configuration:
+     * entries.txt -> /Users/gnck/Desktop/myrace/input/entries.txt
+     *
+     * Relative to project root:
+     * /src/main/resources/configuration/categories_entry_individual_senior.csv ->
+     *    src/main/resources/configuration/categories_entry_individual_senior.csv
+     */
+    @SuppressWarnings("JavadocBlankLines")
+    public Path interpretPath(Path path) {
+
+        // Absolute paths originate from config file where path starting with "/" denotes
+        // a path relative to the project root.
+        // Can't test with isAbsolute() since that will return false on Windows.
+        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
+
+        return getPathRelativeToRaceConfigFile(path);
+    }
+
+    public void setSpecific(SpecificRace specific) {
+        this.specific = specific;
+        specific.setRace(this);
+    }
+
+    public Path getOutputDirectoryPath() {
+
+        // This assumes that the config file is in the "input" directory
+        // which is at the same level as the "output" directory.
+        return config_file_path.getParent().resolveSibling("output");
+    }
+
+//    @Override
+//    public void setConfigProcessor(ConfigProcessor config_processor) {
+//
+//        config_processor.setRace(this);
+//        config = config_processor.loadConfig(config_file_path);
+//    }
+
+    public void addConfigProcessor(final ConfigProcessor processor) {
+
+        config_processors.add(processor);
+    }
+
+    private List<ConfigProcessor> config_processors = new ArrayList<>();
+
+    public void loadConfig() throws IOException {
+
+        config = new Config(config_file_path);
+
+        for (ConfigProcessor processor : config_processors) {
+
+            processor.processConfig(this);
+        }
+    }
+
+    public void setCategoriesProcessor(CategoriesProcessor categories_processor) {
+
+        this.categories_processor = categories_processor;
+        categories_processor.setRace(this);
+    }
+
+    public void setRaceDataProcessor(RaceDataProcessor race_data_processor) {
+
+        this.race_data_processor = race_data_processor;
+        race_data_processor.setRace(this);
+    }
+
+    public SpecificRace getSpecific() {
+        return specific;
+    }
+
+    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
+        this.results_calculator = results_calculator;
+        results_calculator.setRace(this);
+    }
+
+    public void setResultsOutput(final ResultsOutput results_output) {
+        this.results_output = results_output;
+        results_output.setRace(this);
+    }
+
+    private static Path makeRelativeToProjectRoot(final Path path) {
+
+        // Path is specified as absolute path, should be reinterpreted relative to project root.
+        return path.subpath(0, path.getNameCount());
+    }
+
+    private Path getPathRelativeToRaceConfigFile(final Path path) {
+
+        return config_file_path.resolveSibling(path);
+    }
+
+    public RaceResultsCalculator getResultsCalculator() {
+        return results_calculator;
+    }
 }

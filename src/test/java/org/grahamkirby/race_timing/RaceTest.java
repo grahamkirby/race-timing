@@ -158,16 +158,13 @@ public class RaceTest {
         if (properties.containsKey(KEY_RACE_TEMPORAL_ORDER))
             GrandPrixRaceFactory.main(args);
 
-        else
-        if (properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE))
+        else if (properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE))
             MidweekRaceFactory.main(args);
 
-        else
-        if (properties.containsKey(KEY_RACES))
+        else if (properties.containsKey(KEY_RACES))
             TourRaceFactory.main(args);
 
-        else
-        if (properties.containsKey(KEY_NUMBER_OF_LEGS))
+        else if (properties.containsKey(KEY_NUMBER_OF_LEGS))
             RelayRaceFactory.main(args);
 
         else
@@ -190,13 +187,13 @@ public class RaceTest {
     @MethodSource("getTestCases")
     public void testFromDirectories(final String test_directory_path_string) throws Exception {
 
-        testExpectedCompletion(test_directory_path_string);
+        runTest(test_directory_path_string);
     }
 
     @Test
     public void missingConfigFile() {
 
-        // This call bypasses the normal setup phase of copying the source and expected files.
+        // This omits the normal setup phase of copying the source and expected files.
 
         final String error_output;
 
@@ -277,7 +274,7 @@ public class RaceTest {
         configureDirectoryContents(resources_input_directory);
     }
 
-    private void testExpectedCompletion(final String individual_test_resource_root) throws Exception {
+    private void runTest(final String individual_test_resource_root) throws Exception {
 
         configureTest(individual_test_resource_root);
         final String error_output;
@@ -285,6 +282,7 @@ public class RaceTest {
         final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
 
         if (!Files.exists(expected_error_message_file)) {
+
             invokeMain(new String[]{config_file_path.toString()});
 
             assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
@@ -396,12 +394,12 @@ public class RaceTest {
         }
 
         if (file_content1.size() < file_content2.size())
-            assertLargerFileDoesNotContainFurtherNonBlankContent(path1, path2);
+            assertThatLargerFileDoesNotContainFurtherNonBlankContent(path1, path2);
         if (file_content1.size() > file_content2.size())
-            assertLargerFileDoesNotContainFurtherNonBlankContent(path2, path1);
+            assertThatLargerFileDoesNotContainFurtherNonBlankContent(path2, path1);
     }
 
-    private static void assertLargerFileDoesNotContainFurtherNonBlankContent(final Path path_smaller_file, final Path path_larger_file) {
+    private static void assertThatLargerFileDoesNotContainFurtherNonBlankContent(final Path path_smaller_file, final Path path_larger_file) {
 
         final List<String> content_smaller_file = getFileContent(path_smaller_file);
         final List<String> content_larger_file = getFileContent(path_larger_file);

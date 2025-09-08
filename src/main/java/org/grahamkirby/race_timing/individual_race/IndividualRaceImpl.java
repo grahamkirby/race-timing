@@ -23,6 +23,8 @@ import org.grahamkirby.race_timing.common.*;
 import java.time.Duration;
 import java.util.*;
 
+import static org.grahamkirby.race_timing.common.Config.*;
+
 public class IndividualRaceImpl implements SpecificRace {
 
     private Race race;
@@ -53,10 +55,10 @@ public class IndividualRaceImpl implements SpecificRace {
 
         final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
 
-        if (race.getConfig().containsKey("CATEGORY_START_OFFSETS")) {
+        if (race.getConfig().containsKey(KEY_CATEGORY_START_OFFSETS)) {
 
             // e.g. FU9/00:01:00,MU9/00:01:00,FU11/00:01:00,MU11/00:01:00
-            final String[] offset_strings = ((String) (race.getConfig().get("CATEGORY_START_OFFSETS"))).split(",", -1);
+            final String[] offset_strings = ((String) (race.getConfig().get(KEY_CATEGORY_START_OFFSETS))).split(",", -1);
 
             for (final String offset_string : offset_strings) {
 
@@ -72,9 +74,9 @@ public class IndividualRaceImpl implements SpecificRace {
 
         final Map<Integer, Duration> results = new HashMap<>();
 
-        if (race.getConfig().containsKey("SEPARATELY_RECORDED_RESULTS")) {
+        if (race.getConfig().containsKey(KEY_SEPARATELY_RECORDED_RESULTS)) {
 
-            final String[] self_timed_strings = ((String) (race.getConfig().get("SEPARATELY_RECORDED_RESULTS"))).split(",", -1);
+            final String[] self_timed_strings = ((String) (race.getConfig().get(KEY_SEPARATELY_RECORDED_RESULTS))).split(",", -1);
 
             // SEPARATELY_RECORDED_RESULTS = 126/8:09
 
@@ -99,10 +101,10 @@ public class IndividualRaceImpl implements SpecificRace {
         // with incomplete waves if there are any gaps in bib numbers.
         // The second option applies when start order is manually determined (e.g. to start current leaders first or last).
 
-        if (race.getConfig().containsKey(Config.KEY_TIME_TRIAL_RUNNERS_PER_WAVE)) {
+        if (race.getConfig().containsKey(KEY_TIME_TRIAL_RUNNERS_PER_WAVE)) {
 
-            time_trial_runners_per_wave = (int) race.getConfig().get(Config.KEY_TIME_TRIAL_RUNNERS_PER_WAVE);
-            time_trial_inter_wave_interval = (Duration) race.getConfig().get(Config.KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
+            time_trial_runners_per_wave = (int) race.getConfig().get(KEY_TIME_TRIAL_RUNNERS_PER_WAVE);
+            time_trial_inter_wave_interval = (Duration) race.getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
 
             for (final RawResult raw_result : race.getRaceData().getRawResults()) {
 
@@ -113,9 +115,9 @@ public class IndividualRaceImpl implements SpecificRace {
             }
         }
 
-        if (race.getConfig().containsKey(Config.KEY_TIME_TRIAL_STARTS)) {
+        if (race.getConfig().containsKey(KEY_TIME_TRIAL_STARTS)) {
 
-            for (final String part : ((String) race.getConfig().get(Config.KEY_TIME_TRIAL_STARTS)).split(",", -1)) {
+            for (final String part : ((String) race.getConfig().get(KEY_TIME_TRIAL_STARTS)).split(",", -1)) {
 
                 final String[] split = part.split("/");
                 starts.put(Integer.parseInt(split[0]), Normalisation.parseTime(split[1]));
@@ -129,7 +131,7 @@ public class IndividualRaceImpl implements SpecificRace {
 
         final Map<Integer, Duration> starts = new HashMap<>();
 
-        final String individual_early_starts_string = (String) race.getConfig().get(Config.KEY_INDIVIDUAL_EARLY_STARTS);
+        final String individual_early_starts_string = (String) race.getConfig().get(KEY_INDIVIDUAL_EARLY_STARTS);
 
         // bib number / start time difference
         // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
@@ -198,7 +200,7 @@ public class IndividualRaceImpl implements SpecificRace {
 
     private int getTeamTotal(final String club, final String gender) {
 
-        int number_to_count_for_team_prize = (Integer) race.getConfig().get(Config.KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
+        int number_to_count_for_team_prize = (Integer) race.getConfig().get(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
 
         int result_position = 0;
         int team_count = 0;

@@ -23,7 +23,10 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RawResult;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 class RelayRaceMissingData {
 

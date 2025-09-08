@@ -25,7 +25,7 @@
 135	Fiona Canavan	Dundee Road Runners	FS
 136	Fiona Callaghan	Dundee Road Runners	FS
 137	Dominic Hughes	Dundee Road Runners	M40
-138	Robbie Dunlop	Dundee Road Runners MS
+138	Robbie Dunlop	Dundee Road Runners	MS
 139	Alison Grey	Dundee Road Runners	F50
 140	Keith Gelly	Dundee Road Runners	M50
 141	Luneau Etienne	Edinburgh Triathletes	MS

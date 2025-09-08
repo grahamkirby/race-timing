@@ -28,6 +28,7 @@ public abstract class RaceFactory {
 
         try {
             final Race race = makeRace(Path.of(args[0]));
+            
             race.processResults();
             race.outputResults();
 

@@ -18,7 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.common.CommonRace;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 
@@ -35,9 +35,11 @@ public class GrandPrixRaceFactory extends IndividualRaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        Race race = new CommonRace(config_file_path);
+        Race race = new Race(config_file_path);
 
-        race.setConfigProcessor(new GrandPrixRaceConfigProcessor());
+        race.addConfigProcessor(new GrandPrixRaceConfigAdjuster());
+        race.addConfigProcessor(new GrandPrixRaceConfigValidator());
+        race.loadConfig();
         race.setSpecific(new GrandPrixRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new GrandPrixRaceResultsCalculatorImpl());

@@ -74,9 +74,9 @@ class TourRaceResult extends RaceResult {
     @Override
     public boolean canComplete() {
 
-        final int number_of_races_remaining = Integer.parseInt((String) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES)) - ((TourRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
+        final int number_of_races_remaining = (int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES) - ((TourRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
 
-        return numberOfRacesCompleted() + number_of_races_remaining >= Integer.parseInt((String) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES));
+        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES);
     }
 
     @Override
@@ -87,7 +87,7 @@ class TourRaceResult extends RaceResult {
 
     public boolean hasCompletedSeries() {
 
-        return numberOfRacesCompleted() >= Integer.parseInt((String) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES));
+        return numberOfRacesCompleted() >= (int) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

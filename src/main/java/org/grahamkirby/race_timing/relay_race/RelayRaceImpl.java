@@ -193,6 +193,8 @@ public class RelayRaceImpl implements SpecificRace {
      */
     Duration getStartOffset() {
 
+        // TODO add to individual race.
+
         return (Duration) race.getConfig().get(Config.KEY_START_OFFSET);
     }
 

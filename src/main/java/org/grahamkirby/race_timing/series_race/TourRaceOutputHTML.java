@@ -92,41 +92,8 @@ class TourRaceOutputHTML {
         }
     }
 
-//    void printIndividualRaces() throws IOException {
-//
-//        for (int i = 1; i <= Integer.parseInt((String) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES)); i++)
-//            printIndividualRaceResults(i);
-//    }
-//
-//    void printIndividualRaceResults(final int race_number) throws IOException {
-//
-//        final Race individual_race = ((TourRaceImpl) race.getSpecific()).getRaces().get(race_number - 1);
-//        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-//        final String year = (String) race.getConfig().get(KEY_YEAR);
-//
-//        if (individual_race != null) {
-//
-//            final OutputStream race_stream = getOutputStream(race_name, STR."race\{race_number}", year);
-//
-//            try (final OutputStreamWriter writer = new OutputStreamWriter(race_stream)) {
-//
-//                for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups())
-//                    printIndividualRaceResults(writer, individual_race, group.categories(), group.group_title());
-//
-//                writer.append(SOFTWARE_CREDIT_LINK_TEXT).append(LINE_SEPARATOR);
-//            }
-//        }
-//    }
-//
-//    private void printIndividualRaceResults(final OutputStreamWriter writer, final Race individual_race, final List<PrizeCategory> prize_categories, final String sub_heading) throws IOException {
-//
-//        final List<RaceResult> category_results = individual_race.getResultsCalculator().getOverallResults(prize_categories);
-//
-//        new IndividualRaceResultPrinter(race, sub_heading, writer).print(category_results);
-//    }
-
     /** Prints prizes, ordered by prize category groups. */
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
@@ -153,7 +120,7 @@ class TourRaceOutputHTML {
 
     public String getPrizesHeader() {
 
-        final String header = ((TourRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace() < Integer.parseInt((String) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES)) ? "Current Standings" : "Prizes";
+        final String header = ((TourRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace() < (int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
         return STR."<h4>\{header}</h4>\{Config.LINE_SEPARATOR}";
     }
 
@@ -216,7 +183,6 @@ class TourRaceOutputHTML {
                     headers.add(STR."Race \{i + 1}");
 
             headers.add("Total");
-//            headers.add("Completed?");
 
             return headers;
         }
@@ -267,45 +233,4 @@ class TourRaceOutputHTML {
             writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.runner.name)} (\{result.runner.club}) \{format(result.duration())}</li>\n");
         }
     }
-
-    private final class IndividualRaceResultPrinter extends ResultPrinterHTML {
-
-        private final String sub_heading;
-
-        private IndividualRaceResultPrinter(final Race race, final String sub_heading, final OutputStreamWriter writer) {
-
-            super(race, writer);
-            this.sub_heading = sub_heading;
-        }
-
-        @Override
-        protected List<String> getResultsColumnHeaders() {
-
-            return List.of("Pos", "No", "Runner", "Category", "Total");
-        }
-
-        @Override
-        protected List<String> getResultsElements(final RaceResult r) {
-
-            final List<String> elements = new ArrayList<>();
-
-            final SingleRaceResult result = (SingleRaceResult) r;
-
-            elements.add(result.position_string);
-            elements.add(String.valueOf(result.entry.bib_number));
-            elements.add(race.getNormalisation().htmlEncode(result.entry.participant.name));
-            elements.add(result.entry.participant.category.getShortName());
-            elements.add(renderDuration(result, Config.DNF_STRING));
-
-            return elements;
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            writer.append(Config.LINE_SEPARATOR).append(getResultsSubHeader(sub_heading));
-            super.printResultsHeader();
-        }
-    }
-
 }

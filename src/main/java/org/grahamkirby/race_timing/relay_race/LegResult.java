@@ -18,11 +18,11 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
-import java.time.Duration;
-
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
+
+import java.time.Duration;
 
 public class LegResult extends SingleRaceResult {
 

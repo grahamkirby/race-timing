@@ -139,14 +139,14 @@ public class TourRaceImpl implements SpecificRace {
 
     private List<Race> loadRaces() throws IOException {
 
-        final int number_of_race_in_series = Integer.parseInt((String) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES));
-        if (number_of_race_in_series != race_config_paths.size())
+        final int number_of_races_in_series = (int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES);
+        if (number_of_races_in_series != race_config_paths.size())
             throw new RuntimeException(STR."invalid number of races specified in file '\{race.getConfig().getConfigPath().getFileName()}'");
 
         final List<Race> races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
 
-        for (int i = 0; i < number_of_race_in_series; i++) {
+        for (int i = 0; i < number_of_races_in_series; i++) {
 
             final String race_config_path = race_config_paths.get(i);
 
