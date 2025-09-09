@@ -217,10 +217,10 @@ public class RaceTest {
 
                 final String test_directory_path_string = Path.of(parent_test_directory).resolve(test_directory_path.getFileName()).toString();
 
-                Path testResourcesRootPath = getTestResourcesRootPath(test_directory_path_string);
-                if (Files.isDirectory(testResourcesRootPath)) {
+                final Path test_resources_root_path = getTestResourcesRootPath(test_directory_path_string);
+                if (Files.isDirectory(test_resources_root_path)) {
 
-                    final boolean this_is_test_case_directory = Files.isDirectory(testResourcesRootPath.resolve("expected"));
+                    final boolean this_is_test_case_directory = Files.isDirectory(test_resources_root_path.resolve("expected"));
 
                     if (this_is_test_case_directory)
                         test_cases.add(test_directory_path_string);
