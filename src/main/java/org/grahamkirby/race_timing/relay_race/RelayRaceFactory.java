@@ -19,19 +19,12 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigAdjuster;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigValidator;
-import org.grahamkirby.race_timing.individual_race.RaceFactory;
+import org.grahamkirby.race_timing.common.RaceFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 public class RelayRaceFactory extends RaceFactory {
-
-    public static void main(String[] args) {
-
-        new RelayRaceFactory().createAndProcessRace(args);
-    }
 
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {

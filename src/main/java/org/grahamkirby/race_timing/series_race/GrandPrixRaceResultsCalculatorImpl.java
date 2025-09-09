@@ -38,7 +38,7 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
     private List<RaceResult> overall_results;
     private final StringBuilder notes;
 
-    GrandPrixRaceResultsCalculatorImpl() {
+    public GrandPrixRaceResultsCalculatorImpl() {
 
         notes = new StringBuilder();
     }

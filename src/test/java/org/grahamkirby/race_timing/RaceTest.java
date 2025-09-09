@@ -21,11 +21,8 @@ package org.grahamkirby.race_timing;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
+import org.grahamkirby.race_timing.common.RaceFactory;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
-import org.grahamkirby.race_timing.relay_race.RelayRaceFactory;
-import org.grahamkirby.race_timing.series_race.GrandPrixRaceFactory;
-import org.grahamkirby.race_timing.series_race.MidweekRaceFactory;
-import org.grahamkirby.race_timing.series_race.TourRaceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.AnnotatedElementContext;
@@ -43,7 +40,6 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -151,24 +147,9 @@ public class RaceTest {
         deleteDirectory(test_output_directory);
     }
 
-    private void invokeMain(String[] args) throws Exception {
+    private void invokeMain(String[] args) {
 
-        Properties properties = loadProperties(Path.of(args[0]));
-
-        if (properties.containsKey(KEY_RACE_TEMPORAL_ORDER))
-            GrandPrixRaceFactory.main(args);
-
-        else if (properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE))
-            MidweekRaceFactory.main(args);
-
-        else if (properties.containsKey(KEY_RACES))
-            TourRaceFactory.main(args);
-
-        else if (properties.containsKey(KEY_NUMBER_OF_LEGS))
-            RelayRaceFactory.main(args);
-
-        else
-            IndividualRaceFactory.main(args);
+        RaceFactory.main(args);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,7 +184,7 @@ public class RaceTest {
 
             String[] args = new String[]{"synthetic/special_cases/missing_config_file"};
 
-            IndividualRaceFactory.main(args);
+            RaceFactory.main(args);
 
             error_output = diverted_err.toString();
 
@@ -252,11 +233,6 @@ public class RaceTest {
         return Path.of(path.substring(1));
     }
 
-    private Path getPathRelativeToRaceConfigFile(final String path) {
-
-        return config_file_path.getParent().resolve(path);
-    }
-
     public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
 
         return getPathRelativeToProjectRoot(STR."/src/test/resources/\{individual_test_resource_root}");
@@ -277,36 +253,44 @@ public class RaceTest {
     private void runTest(final String individual_test_resource_root) throws Exception {
 
         configureTest(individual_test_resource_root);
-        final String error_output;
+
+        final String[] args = {config_file_path.toString()};
 
         final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
 
-        if (!Files.exists(expected_error_message_file)) {
-
-            invokeMain(new String[]{config_file_path.toString()});
-
-            assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
-        }
-        else {
-
-            try {
-                final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
-                System.setErr(new PrintStream(diverted_err));
-
-                invokeMain(new String[]{config_file_path.toString()});
-
-                error_output = diverted_err.toString();
-
-            } finally {
-                System.setErr(System.err);
-            }
-
-            final String expected_error_message = String.join(LINE_SEPARATOR, Files.readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
-            assertEquals(expected_error_message, error_output, "Expected error message was not generated");
-        }
+        if (!Files.exists(expected_error_message_file))
+            runWithExpectedCompletion(args);
+        else
+            runWithExpectedError(args, expected_error_message_file);
 
         // Test has passed if this line is reached.
         failed_test = false;
+    }
+
+    private void runWithExpectedCompletion(String[] args) throws IOException {
+
+        RaceFactory.main(args);
+
+        assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
+    }
+
+    private static void runWithExpectedError(String[] args, Path expected_error_message_file) throws IOException {
+
+        final String error_output;
+        try {
+            final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
+            System.setErr(new PrintStream(diverted_err));
+
+            RaceFactory.main(args);
+
+            error_output = diverted_err.toString();
+
+        } finally {
+            System.setErr(System.err);
+        }
+
+        final String expected_error_message = String.join(LINE_SEPARATOR, Files.readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
+        assertEquals(expected_error_message, error_output, "Expected error message was not generated");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
