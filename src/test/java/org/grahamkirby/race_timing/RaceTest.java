@@ -22,7 +22,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.RaceFactory;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.AnnotatedElementContext;
@@ -106,8 +105,6 @@ public class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
     @AfterEach
     public void tearDown() throws IOException {
 
@@ -147,28 +144,25 @@ public class RaceTest {
         deleteDirectory(test_output_directory);
     }
 
-    private void invokeMain(String[] args) {
-
-        RaceFactory.main(args);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static List<String> getTestCases() throws IOException {
-
-        List<String> test_cases = new ArrayList<>();
-
-        test_cases.addAll(getTestCasesWithin("real"));
-        test_cases.addAll(getTestCasesWithin("synthetic"));
-
-        return test_cases;
-    }
 
     @ParameterizedTest
     @MethodSource("getTestCases")
     public void testFromDirectories(final String test_directory_path_string) throws Exception {
 
-        runTest(test_directory_path_string);
+        configureTest(test_directory_path_string);
+
+        final String[] args = {config_file_path.toString()};
+
+        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
+
+        if (!Files.exists(expected_error_message_file))
+            runWithExpectedCompletion(args);
+        else
+            runWithExpectedError(args, expected_error_message_file);
+
+        // Test has passed if this line is reached.
+        failed_test = false;
     }
 
     @Test
@@ -202,6 +196,16 @@ public class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static List<String> getTestCases() throws IOException {
+
+        List<String> test_cases = new ArrayList<>();
+
+        test_cases.addAll(getTestCasesWithin("real"));
+        test_cases.addAll(getTestCasesWithin("synthetic"));
+
+        return test_cases;
+    }
+
     private static List<String> getTestCasesWithin(final String parent_test_directory) throws IOException {
 
         final Path parent_test_directory_path = getTestResourcesRootPath(parent_test_directory);
@@ -233,7 +237,7 @@ public class RaceTest {
         return Path.of(path.substring(1));
     }
 
-    public static Path getTestResourcesRootPath(final String individual_test_resource_root) {
+    private static Path getTestResourcesRootPath(final String individual_test_resource_root) {
 
         return getPathRelativeToProjectRoot(STR."/src/test/resources/\{individual_test_resource_root}");
     }
@@ -248,23 +252,6 @@ public class RaceTest {
 
         configureDirectories(individual_test_resource_root);
         configureDirectoryContents(resources_input_directory);
-    }
-
-    private void runTest(final String individual_test_resource_root) throws Exception {
-
-        configureTest(individual_test_resource_root);
-
-        final String[] args = {config_file_path.toString()};
-
-        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
-
-        if (!Files.exists(expected_error_message_file))
-            runWithExpectedCompletion(args);
-        else
-            runWithExpectedError(args, expected_error_message_file);
-
-        // Test has passed if this line is reached.
-        failed_test = false;
     }
 
     private void runWithExpectedCompletion(String[] args) throws IOException {

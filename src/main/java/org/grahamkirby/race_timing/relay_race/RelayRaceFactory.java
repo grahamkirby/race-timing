@@ -18,13 +18,16 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Properties;
 
-public class RelayRaceFactory extends RaceFactory {
+import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_LEGS;
+
+public class RelayRaceFactory implements SpecialisedRaceFactory {
 
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
@@ -41,5 +44,11 @@ public class RelayRaceFactory extends RaceFactory {
         race.setResultsOutput(new RelayRaceResultsOutput());
 
         return race;
+    }
+
+    @Override
+    public boolean isValidFor(final Properties properties) {
+
+        return properties.containsKey(KEY_NUMBER_OF_LEGS);
     }
 }

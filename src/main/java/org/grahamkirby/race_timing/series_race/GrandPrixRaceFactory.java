@@ -18,19 +18,16 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Properties;
 
-public class GrandPrixRaceFactory extends IndividualRaceFactory {
+import static org.grahamkirby.race_timing.common.Config.KEY_RACE_TEMPORAL_ORDER;
 
-    public static void main(String[] args) {
-
-        new GrandPrixRaceFactory().createAndProcessRace(args);
-    }
+public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
 
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
@@ -46,5 +43,11 @@ public class GrandPrixRaceFactory extends IndividualRaceFactory {
         race.setResultsOutput(new GrandPrixRaceResultsOutput());
 
         return race;
+    }
+
+    @Override
+    public boolean isValidFor(final Properties properties) {
+
+        return properties.containsKey(KEY_RACE_TEMPORAL_ORDER);
     }
 }

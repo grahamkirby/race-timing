@@ -25,11 +25,20 @@ import org.grahamkirby.race_timing.series_race.TourRaceFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RaceFactory {
+
+    private final List<SpecialisedRaceFactory> specialised_factories = List.of(
+        new IndividualRaceFactory(),
+        new RelayRaceFactory(),
+        new GrandPrixRaceFactory(),
+        new MidweekRaceFactory(),
+        new TourRaceFactory()
+    );
 
     public static void main(String[] args) {
 
@@ -53,18 +62,10 @@ public class RaceFactory {
 
         Properties properties = loadProperties(config_file_path);
 
-        if (properties.containsKey(KEY_RACE_TEMPORAL_ORDER))
-            return new GrandPrixRaceFactory().makeRace(config_file_path);
+        for (SpecialisedRaceFactory specialised_factory : specialised_factories)
+            if (specialised_factory.isValidFor(properties))
+                return specialised_factory.makeRace(config_file_path);
 
-        if (properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE))
-            return new MidweekRaceFactory().makeRace(config_file_path);
-
-        if (properties.containsKey(KEY_RACES))
-            return new TourRaceFactory().makeRace(config_file_path);
-
-        if (properties.containsKey(KEY_NUMBER_OF_LEGS))
-            return new RelayRaceFactory().makeRace(config_file_path);
-
-        return new IndividualRaceFactory().makeRace(config_file_path);
+        throw new RuntimeException("No applicable race type for config file " + config_file_path);
     }
 }

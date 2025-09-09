@@ -18,13 +18,16 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Properties;
 
-public class TourRaceFactory extends RaceFactory {
+import static org.grahamkirby.race_timing.common.Config.*;
+
+public class TourRaceFactory implements SpecialisedRaceFactory {
 
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
@@ -40,5 +43,13 @@ public class TourRaceFactory extends RaceFactory {
         race.setResultsOutput(new TourRaceResultsOutput());
 
         return race;
+    }
+
+    @Override
+    public boolean isValidFor(final Properties properties) {
+
+        return properties.containsKey(KEY_RACES) &&
+            !properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE) &&
+            !properties.containsKey(KEY_RACE_TEMPORAL_ORDER);
     }
 }
