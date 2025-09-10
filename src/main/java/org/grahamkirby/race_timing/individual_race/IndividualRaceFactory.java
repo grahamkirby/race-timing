@@ -18,6 +18,8 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.common.RaceConfigAdjuster;
+import org.grahamkirby.race_timing.common.RaceConfigValidator;
 import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
 import org.grahamkirby.race_timing.common.Race;
 
@@ -32,11 +34,14 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        Race race = new Race(config_file_path);
+        final Race race = new Race(config_file_path);
 
+        race.addConfigProcessor(new RaceConfigAdjuster());
         race.addConfigProcessor(new IndividualRaceConfigAdjuster());
+        race.addConfigProcessor(new RaceConfigValidator());
         race.addConfigProcessor(new IndividualRaceConfigValidator());
         race.loadConfig();
+
         race.setSpecific(new IndividualRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setRaceDataProcessor(new IndividualRaceDataProcessorImpl());

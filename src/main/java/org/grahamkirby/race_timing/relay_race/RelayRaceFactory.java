@@ -18,6 +18,8 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.common.RaceConfigAdjuster;
+import org.grahamkirby.race_timing.common.RaceConfigValidator;
 import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
 import org.grahamkirby.race_timing.common.Race;
 
@@ -34,9 +36,12 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
 
         Race race = new Race(config_file_path);
 
+        race.addConfigProcessor(new RaceConfigAdjuster());
         race.addConfigProcessor(new RelayRaceConfigAdjuster());
+        race.addConfigProcessor(new RaceConfigValidator());
         race.addConfigProcessor(new RelayRaceConfigValidator());
         race.loadConfig();
+
         race.setSpecific(new RelayRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setRaceDataProcessor(new RelayRaceDataProcessorImpl());

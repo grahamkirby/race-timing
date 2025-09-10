@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Race;
 
 import java.nio.file.Path;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_RACE_CATEGORIES_PATH;
 import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POSITION;
@@ -30,21 +29,12 @@ import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POS
 @SuppressWarnings("preview")
 public class GrandPrixRaceConfigAdjuster implements ConfigProcessor {
 
-    private static final List<String> PATH_PROPERTY_KEYS =
-        List.of(KEY_RACE_CATEGORIES_PATH);
-
-    private final ConfigProcessor series_config_processor = new SeriesRaceConfigAdjuster();
-
     @Override
     public void processConfig(Race race) {
 
         final Config config = race.getConfig();
 
-        series_config_processor.processConfig(race);
-
-        for (String key : PATH_PROPERTY_KEYS)
-            config.replaceIfPresent(key, s -> race.interpretPath(Path.of(s)));
-
+        config.replaceIfPresent(KEY_RACE_CATEGORIES_PATH, s -> race.interpretPath(Path.of(s)));
         config.replaceIfPresent(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
     }
 }

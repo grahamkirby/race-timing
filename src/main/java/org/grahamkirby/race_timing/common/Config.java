@@ -28,9 +28,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Normalisation.format;
@@ -76,7 +76,6 @@ public class Config {
     public static String KEY_RESULTS_PATH = "RESULTS_PATH";
     public static String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
     public static String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
-    public static String KEY_SECOND_WAVE_CATEGORIES = "SECOND_WAVE_CATEGORIES";
     public static String KEY_SEPARATELY_RECORDED_RESULTS = "SEPARATELY_RECORDED_RESULTS";
     public static String KEY_START_OFFSET = "START_OFFSET";
     public static String KEY_TIME_TRIAL_INTER_WAVE_INTERVAL = "TIME_TRIAL_INTER_WAVE_INTERVAL";
@@ -107,6 +106,7 @@ public class Config {
     public static Duration NO_MASS_START_DURATION = Duration.ofSeconds(Long.MAX_VALUE);
 
     public static OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+
     /** Web link to application on GitHub. */
     public static String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
@@ -135,11 +135,9 @@ public class Config {
 
     public static String renderDuration(final RaceResult r, final String alternative) {
 
-        SingleRaceResult result = (SingleRaceResult) r;
+        final SingleRaceResult result = (SingleRaceResult) r;
 
-        if (!r.canComplete()) return alternative;
-
-        return format(result.duration());
+        return result.canComplete() ? format(result.duration()) : alternative;
     }
 
     public static Properties loadProperties(final Path config_file_path) throws IOException {
@@ -167,24 +165,26 @@ public class Config {
         return config_path;
     }
 
-    public Map<String, Object> getConfigMap() {
-        return config_map;
-    }
-
     public void addIfAbsent(final String key, final Object value) {
 
         config_map.putIfAbsent(key, value);
     }
 
-    public void replace(String key, Function<String, Object> make_new_value) {
+    public void replace(final String key, final Function<String, Object> make_new_value) {
 
         config_map.replace(key, make_new_value.apply((String) config_map.get(key)));
     }
 
-    public void replaceIfPresent(String key, Function<String, Object> make_new_value) {
+    public void replaceIfPresent(final String key, final Function<String, Object> make_new_value) {
 
         if (config_map.containsKey(key))
             config_map.replace(key, make_new_value.apply((String) config_map.get(key)));
+    }
+
+    public void replaceIfPresent(final List<String> keys, final Function<String, Object> make_new_value) {
+
+        for (String key : keys)
+            replaceIfPresent(key, make_new_value);
     }
 }
 

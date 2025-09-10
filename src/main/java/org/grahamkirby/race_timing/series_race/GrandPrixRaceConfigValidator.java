@@ -20,45 +20,19 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Race;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateFileExists;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
 public class GrandPrixRaceConfigValidator implements ConfigProcessor {
 
     public void processConfig(final Race race) {
 
-        var config = race.getConfig();
-
-        validateKeyPresent(KEY_YEAR, race);
-        validateKeyPresent(KEY_RACE_NAME_FOR_FILENAMES, race);
-        validateKeyPresent(KEY_RACE_NAME_FOR_RESULTS, race);
-        validateKeyPresent(KEY_ENTRY_CATEGORIES_PATH, race);
-        validateKeyPresent(KEY_PRIZE_CATEGORIES_PATH, race);
         validateKeyPresent(KEY_RACE_CATEGORIES_PATH, race);
-        validateKeyPresent(KEY_RACES, race);
-        validateKeyPresent(KEY_NUMBER_OF_RACES_IN_SERIES, race);
-        validateKeyPresent(KEY_MINIMUM_NUMBER_OF_RACES, race);
         validateKeyPresent(KEY_SCORE_FOR_MEDIAN_POSITION, race);
         validateKeyPresent(KEY_RACE_TEMPORAL_ORDER, race);
         validateKeyPresent(KEY_QUALIFYING_CLUBS, race);
 
-        validateFileExists(KEY_ENTRY_CATEGORIES_PATH, race);
-        validateFileExists(KEY_PRIZE_CATEGORIES_PATH, race);
         validateFileExists(KEY_RACE_CATEGORIES_PATH, race);
-    }
-
-    public static void validateKeyPresent(final String key, final Race race) {
-
-        if (!race.getConfig().containsKey(key))
-            throw new RuntimeException(STR."no entry for key '\{key}' in file '\{race.config_file_path.getFileName()}'");
-    }
-
-    public static void validateFileExists(final String key, final Race race) {
-
-        final Path path = (Path) race.getConfig().get(key);
-        if (!Files.exists(path))
-            throw new RuntimeException(STR."invalid entry '\{path.getFileName()}' for key '\{key}' in file '\{race.config_file_path.getFileName()}'");
     }
 }

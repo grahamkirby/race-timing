@@ -22,52 +22,31 @@ import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
-import java.util.function.Consumer;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateFileExists;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
 public class RelayRaceConfigValidator implements ConfigProcessor {
 
     public void processConfig(final Race race) {
 
-        var config = race.getConfig();
+        final var config = race.getConfig();
 
-        validateKeyPresent(KEY_YEAR, race);
-        validateKeyPresent(KEY_RACE_NAME_FOR_FILENAMES, race);
-        validateKeyPresent(KEY_RACE_NAME_FOR_RESULTS, race);
-        validateKeyPresent(KEY_ENTRY_CATEGORIES_PATH, race);
-        validateKeyPresent(KEY_PRIZE_CATEGORIES_PATH, race);
         validateKeyPresent(KEY_RAW_RESULTS_PATH, race);
         validateKeyPresent(KEY_ENTRIES_PATH, race);
         validateKeyPresent(KEY_NUMBER_OF_LEGS, race);
         validateKeyPresent(KEY_PAIRED_LEGS, race);
 
-        validateFileExists(KEY_ENTRY_CATEGORIES_PATH, race);
-        validateFileExists(KEY_PRIZE_CATEGORIES_PATH, race);
         validateFileExists(KEY_RAW_RESULTS_PATH, race);
         validateFileExists(KEY_ENTRIES_PATH, race);
 
         // Each DNF string contains single bib number.
-        // Each DNF string contains single bib number.
         validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.config_file_path);
         validateMassStartTimes((String) config.get(KEY_MASS_START_ELAPSED_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), race.config_file_path);
-    }
-
-    public static void validateKeyPresent(final String key, final Race race) {
-
-        if (!race.getConfig().containsKey(key))
-            throw new RuntimeException(STR."no entry for key '\{key}' in file '\{race.config_file_path.getFileName()}'");
-    }
-
-    public static void validateFileExists(final String key, final Race race) {
-
-        final Path path = (Path) race.getConfig().get(key);
-        if (!Files.exists(path))
-            throw new RuntimeException(STR."invalid entry '\{path.getFileName()}' for key '\{key}' in file '\{race.config_file_path.getFileName()}'");
     }
 
     public static void validateDNFRecords(final String dnf_string, final Path config_file_path) {
@@ -111,7 +90,6 @@ public class RelayRaceConfigValidator implements ConfigProcessor {
 
                     if (leg_number < 1 || leg_number > number_of_legs)
                         throw new RuntimeException(STR."invalid leg number for key '\{Config.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
-
                 }
                 catch (NumberFormatException _) {
                     throw new RuntimeException(STR."invalid leg number for key '\{Config.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
@@ -123,5 +101,4 @@ public class RelayRaceConfigValidator implements ConfigProcessor {
                 previous_time = mass_start_time;
             }
     }
-
 }
