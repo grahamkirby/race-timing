@@ -27,8 +27,9 @@ import java.io.OutputStreamWriter;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.series_race.MidweekRaceOutputCSV.getConcatenatedRaceNames;
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Config.encode;
+import static org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV.getConcatenatedRaceNames;
 
 class GrandPrixRaceOutputCSV {
 
@@ -42,7 +43,7 @@ class GrandPrixRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        MidweekRaceOutputCSV.printResults(getResultsHeader(), race, OverallResultPrinter::new);
+        SeriesRaceOutputCSV.printResults(getResultsHeader(), race, OverallResultPrinter::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,8 +61,6 @@ class GrandPrixRaceOutputCSV {
         return STR."Pos,Runner,Category,\{race_names }" + STR.",Total,Completed?\{race_categories_header }\{LINE_SEPARATOR}";
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private static final class OverallResultPrinter extends ResultPrinter {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
@@ -73,13 +72,14 @@ class GrandPrixRaceOutputCSV {
 
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
             final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
+            final GrandPrixRaceResultsCalculatorImpl calculator = (GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator();
 
             writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{result.runner.category.getShortName()},");
 
             writer.append(
                 race_impl.getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> renderScore(((GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator()).calculateRaceScore(individual_race, result.runner))).
+                    map(individual_race -> renderScore(calculator.calculateRaceScore(individual_race, result.runner))).
                     collect(Collectors.joining(","))
             );
 

@@ -18,20 +18,15 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.time.Duration;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Config.renderDuration;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 class TourRaceOutputCSV {
 
@@ -43,57 +38,20 @@ class TourRaceOutputCSV {
         this.race = race;
     }
 
-    protected String getSeriesResultsHeader() {
-
-        return STR."\{OVERALL_RESULTS_HEADER},\{((TourRaceImpl) race.getSpecific()).getRaces().stream().
-            filter(Objects::nonNull).
-            map(race -> (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_RESULTS)).
-            collect(Collectors.joining(","))}";
-    }
-
-    public String getResultsHeader() {
-        return STR."\{getSeriesResultsHeader()},Total\{Config.LINE_SEPARATOR}";
-    }
-
     void printResults() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
-
-        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_overall_\{year}.\{Config.CSV_FILE_SUFFIX}"), Config.STANDARD_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-//            writer.append(OVERALL_RESULTS_HEADER);
-            writer.append(getResultsHeader());
-            printResults(writer, new OverallResultPrinter(race, writer), _ -> "", race);
-        }
-    }
-
-    static void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Function<String, String> get_results_sub_header, final Race race) throws IOException {
-
-        // Don't display category group headers if there is only one group.
-        final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
-
-        boolean not_first_category_group = false;
-
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
-
-            if (should_display_category_group_headers) {
-                if (not_first_category_group)
-                    writer.append(Config.LINE_SEPARATOR);
-                writer.append(get_results_sub_header.apply(group.group_title()));
-            }
-
-            RaceResultsCalculator raceResults = race.getResultsCalculator();
-            List<RaceResult> overallResults = raceResults.getOverallResults(group.categories());
-            printer.print(overallResults);
-
-            not_first_category_group = true;
-        }
+        SeriesRaceOutputCSV.printResults(getResultsHeader(), race, OverallResultPrinter::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private String getResultsHeader() {
+
+        final TourRaceImpl race_impl = (TourRaceImpl) race.getSpecific();
+        final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
+
+        return STR."\{STR."Pos,Runner,Club,Category,\{race_names}"},Total\{LINE_SEPARATOR}";
+    }
 
     private static final class OverallResultPrinter extends ResultPrinter {
 
@@ -106,23 +64,12 @@ class TourRaceOutputCSV {
 
             final TourRaceResult result = ((TourRaceResult) r);
 
-            writer.append(STR."\{result.position_string},\{Config.encode(result.runner.name)},\{Config.encode(result.runner.club)},\{result.runner.category.getShortName()},");
+            writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
             for (final Duration time : result.times)
-                writer.append(Config.renderDuration(time, "-")).append(",");
+                writer.append(renderDuration(time, "-")).append(",");
 
-            writer.append(renderDuration(result.duration(), "-")).append(Config.LINE_SEPARATOR);
-
-
-//            writer.append(
-//                ((TourRaceImpl) race.getSpecific()).getRaces().stream().
-//                    filter(Objects::nonNull).
-//                    map(individual_race -> ((TourRaceImpl)race.getSpecific()).calculateRaceScore(individual_race, result.runner)).
-//                    map(String::valueOf).
-//                    collect(Collectors.joining(","))
-//            );
-//
-//            writer.append(STR.",\{renderDuration(result.duration(), "-")},\{result.hasCompletedSeries() ? "Y" : "N"}\n");
+            writer.append(renderDuration(result.duration(), "-")).append(LINE_SEPARATOR);
         }
     }
 }

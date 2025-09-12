@@ -25,16 +25,27 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 import java.util.List;
 import java.util.Objects;
 
+import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
+import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+
 class MidweekRaceResult extends RaceResult {
 
     final Runner runner;
     private final List<Integer> scores;
+
+    private final int minimum_number_of_races;
+    private final int number_of_races_in_series;
+    private final int number_of_races_taken_place;
 
     MidweekRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(race);
         this.runner = runner;
         this.scores = scores;
+
+        minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+        number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
+        number_of_races_taken_place = ((MidweekRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
     }
 
     @Override
@@ -56,7 +67,6 @@ class MidweekRaceResult extends RaceResult {
 
     int totalScore() {
 
-        final int minimum_number_of_races = (int) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES);
         final int number_of_races_completed = numberOfRacesCompleted();
         final int number_of_counting_scores = Math.min(minimum_number_of_races, number_of_races_completed);
 
@@ -75,9 +85,9 @@ class MidweekRaceResult extends RaceResult {
     @Override
     public boolean canComplete() {
 
-        final int number_of_races_remaining = (int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES) - ((MidweekRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
+        final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
-        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES);
+        return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
     }
 
     @Override
@@ -88,13 +98,16 @@ class MidweekRaceResult extends RaceResult {
 
     public boolean hasCompletedSeries() {
 
-        return numberOfRacesCompleted() >= (int) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES);
+        return numberOfRacesCompleted() >= minimum_number_of_races;
     }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected int numberOfRacesCompleted() {
+    private int numberOfRacesCompleted() {
 
-        return (int) ((MidweekRaceImpl)race.getSpecific()).getRaces().stream().
+        final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
+
+        return (int) race_impl.getRaces().stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
