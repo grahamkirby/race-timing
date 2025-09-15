@@ -40,7 +40,7 @@ public class SeriesRaceOutputCSV {
             map(race -> (String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
     }
 
-    static void printResults(final String results_header, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_header) throws IOException {
+    static void printResults(final String results_header, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
@@ -50,7 +50,7 @@ public class SeriesRaceOutputCSV {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(results_header);
-            final ResultPrinter printer = make_result_header.apply(race, writer);
+            final ResultPrinter printer = make_result_printer.apply(race, writer);
 
             printResults(writer, printer, race);
         }

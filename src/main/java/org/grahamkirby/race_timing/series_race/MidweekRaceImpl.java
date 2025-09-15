@@ -26,7 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class MidweekRaceImpl implements SpecificRace {
+public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
 
     private Race race;
     private List<Race> races;

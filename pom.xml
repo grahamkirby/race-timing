@@ -78,13 +78,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Run versions:display-dependency-updates to check versions.                     -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.19.0</version>
-            </plugin>
-
             <!-- This checks that the required licence is applied to all source files.  -->
             <plugin>
                 <groupId>com.mycila</groupId>

@@ -29,7 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class TourRaceImpl implements SpecificRace {
+public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
 
     private Race race;
     private List<Race> races;
