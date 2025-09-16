@@ -25,10 +25,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML.getPrizesHeader;
 
 class MidweekRaceOutputHTML {
 
@@ -45,33 +43,12 @@ class MidweekRaceOutputHTML {
 
     void printCombined() throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(SeriesRaceOutputHTML.getOutputStream(race, "combined"))) {
-
-            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
-
-            writer.append(getPrizesHeader(race));
-            SeriesRaceOutputHTML.printPrizes(race, writer, PrizeResultPrinter::new);
-
-            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            final ResultPrinter printer = new OverallResultPrinter(race, writer);
-
-            // Don't display category group headers if there is only one group.
-            SeriesRaceOutputHTML.printResults(writer, printer, this::getResultsSubHeader, race);
-
-            writer.append(Config.SOFTWARE_CREDIT_LINK_TEXT);
-        }
+        SeriesRaceOutputHTML.printCombined(race, OverallResultPrinter::new, PrizeResultPrinter::new);
     }
 
     public void printPrizes() throws IOException {
 
         SeriesRaceOutputHTML.printPrizes(race, PrizeResultPrinter::new);
-    }
-
-    public String getResultsSubHeader(final String s) {
-        return STR."""
-            <p></p>
-            <h4>\{s}</h4>
-            """;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

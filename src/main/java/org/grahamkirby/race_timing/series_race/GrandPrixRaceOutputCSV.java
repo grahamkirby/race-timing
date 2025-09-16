@@ -43,28 +43,29 @@ class GrandPrixRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        SeriesRaceOutputCSV.printResults(getResultsHeader(), race, OverallResultPrinter::new);
+        SeriesRaceOutputCSV.printResults(race, OverallResultPrinter::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private String getResultsHeader() {
-
-        final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
-
-        final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
-
-        final String race_categories_header = race_impl.race_categories.stream().
-            map(category -> STR.",\{category.category_title()}?").
-            collect(Collectors.joining());
-
-        return STR."Pos,Runner,Category,\{race_names }" + STR.",Total,Completed?\{race_categories_header }\{LINE_SEPARATOR}";
-    }
 
     private static final class OverallResultPrinter extends ResultPrinter {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
+
+            final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
+
+            final String race_categories_header = race_impl.race_categories.stream().
+                map(category -> STR.",\{category.category_title()}?").
+                collect(Collectors.joining());
+
+            writer.append(STR."Pos,Runner,Category,\{race_names},Total,Completed?\{race_categories_header}\{LINE_SEPARATOR}");
         }
 
         @Override

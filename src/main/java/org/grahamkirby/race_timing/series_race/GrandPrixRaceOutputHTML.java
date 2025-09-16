@@ -18,13 +18,10 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,24 +44,7 @@ class GrandPrixRaceOutputHTML {
 
     void printCombined() throws IOException {
 
-        printCombined(race, OverallResultPrinter::new);
-    }
-
-    private static void printCombined(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(SeriesRaceOutputHTML.getOutputStream(race, "combined"))) {
-
-            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
-
-            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            SeriesRaceOutputHTML.printPrizes(race, writer, PrizeResultPrinter::new);
-
-            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            final ResultPrinter printer = make_result_printer.apply(race, writer);
-            SeriesRaceOutputHTML.printResults(writer, printer, SeriesRaceOutputHTML::getResultsSubHeader, race);
-
-            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-        }
+        SeriesRaceOutputHTML.printCombined(race, OverallResultPrinter::new, PrizeResultPrinter::new);
     }
 
     public void printPrizes() throws IOException {

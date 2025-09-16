@@ -54,7 +54,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
         }
     }
 
-    List<Race> getRaces() {
+    public List<Race> getRaces() {
         return races;
     }
 

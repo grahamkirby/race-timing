@@ -40,7 +40,7 @@ public class SeriesRaceOutputCSV {
             map(race -> (String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
     }
 
-    static void printResults(final String results_header, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
+    static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
@@ -49,10 +49,7 @@ public class SeriesRaceOutputCSV {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(results_header);
-            final ResultPrinter printer = make_result_printer.apply(race, writer);
-
-            printResults(writer, printer, race);
+            printResults(writer, make_result_printer.apply(race, writer), race);
         }
     }
 
@@ -65,14 +62,11 @@ public class SeriesRaceOutputCSV {
 
         for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
 
-            if (should_display_category_group_headers) {
+            if (should_display_category_group_headers)
                 if (not_first_category_group)
                     writer.append(LINE_SEPARATOR);
-            }
 
-            RaceResultsCalculator raceResults = race.getResultsCalculator();
-            List<RaceResult> overallResults = raceResults.getOverallResults(group.categories());
-            printer.print(overallResults);
+            printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
 
             not_first_category_group = true;
         }

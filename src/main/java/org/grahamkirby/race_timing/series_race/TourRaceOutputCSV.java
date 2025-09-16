@@ -18,13 +18,13 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.ResultPrinter;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
@@ -40,23 +40,24 @@ class TourRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        SeriesRaceOutputCSV.printResults(getResultsHeader(), race, OverallResultPrinter::new);
+        SeriesRaceOutputCSV.printResults(race, OverallResultPrinter::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private String getResultsHeader() {
-
-        final TourRaceImpl race_impl = (TourRaceImpl) race.getSpecific();
-        final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
-
-        return STR."\{STR."Pos,Runner,Club,Category,\{race_names}"},Total\{LINE_SEPARATOR}";
-    }
 
     private static final class OverallResultPrinter extends ResultPrinter {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            final SeriesRaceImpl race_impl = (TourRaceImpl) race.getSpecific();
+            final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
+
+            writer.append(STR."Pos,Runner,Club,Category,\{race_names},Total\{LINE_SEPARATOR}");
         }
 
         @Override

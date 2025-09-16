@@ -46,6 +46,23 @@ public class SeriesRaceOutputHTML {
         }
     }
 
+    public static void printCombined(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(SeriesRaceOutputHTML.getOutputStream(race, "combined"))) {
+
+            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+
+            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
+            SeriesRaceOutputHTML.printPrizes(race, writer, make_prize_printer);
+
+            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+            final ResultPrinter printer = make_result_printer.apply(race, writer);
+            SeriesRaceOutputHTML.printResults(writer, printer, SeriesRaceOutputHTML::getResultsSubHeader, race);
+
+            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+        }
+    }
+
     static void printPrizes(final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);

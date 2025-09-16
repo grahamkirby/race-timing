@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.time.Duration;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -40,23 +39,24 @@ class MidweekRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        SeriesRaceOutputCSV.printResults(getResultsHeader(), race, OverallResultPrinter::new);
+        SeriesRaceOutputCSV.printResults(race, OverallResultPrinter::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private String getResultsHeader() {
-
-        final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
-        final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
-
-        return STR."Pos,Runner,Club,Category,\{race_names},Total,Completed\{LINE_SEPARATOR}";
-    }
 
     private static final class OverallResultPrinter extends ResultPrinter {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            final SeriesRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
+            final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
+
+            writer.append(STR."Pos,Runner,Club,Category,\{race_names},Total,Completed\{LINE_SEPARATOR}");
         }
 
         @Override

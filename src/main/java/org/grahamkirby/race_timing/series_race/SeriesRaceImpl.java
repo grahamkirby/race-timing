@@ -17,7 +17,12 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Race;
+
+import java.util.List;
+
 public interface SeriesRaceImpl {
 
     int getNumberOfRacesTakenPlace();
+    List<Race> getRaces();
 }

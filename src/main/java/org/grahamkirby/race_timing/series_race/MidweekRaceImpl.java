@@ -51,7 +51,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
         }
     }
 
-    List<Race> getRaces() {
+    public List<Race> getRaces() {
         return races;
     }
 
