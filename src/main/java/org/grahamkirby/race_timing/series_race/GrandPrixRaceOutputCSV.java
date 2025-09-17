@@ -27,8 +27,7 @@ import java.io.OutputStreamWriter;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Config.encode;
+import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.series_race.SeriesRaceOutputCSV.getConcatenatedRaceNames;
 
 class GrandPrixRaceOutputCSV {
@@ -62,10 +61,10 @@ class GrandPrixRaceOutputCSV {
             final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
 
             final String race_categories_header = race_impl.race_categories.stream().
-                map(category -> STR.",\{category.category_title()}?").
-                collect(Collectors.joining());
+                map(GrandPrixRaceCategory::category_title).
+                collect(Collectors.joining("?,"));
 
-            writer.append(STR."Pos,Runner,Category,\{race_names},Total,Completed?\{race_categories_header}\{LINE_SEPARATOR}");
+            writer.append(STR."Pos,Runner,Category,\{race_names},Total,Completed,\{race_categories_header}?\{LINE_SEPARATOR}");
         }
 
         @Override
@@ -80,14 +79,18 @@ class GrandPrixRaceOutputCSV {
             writer.append(
                 race_impl.getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> renderScore(calculator.calculateRaceScore(individual_race, result.runner))).
+                    map(individual_race -> calculator.calculateRaceScore(individual_race, result.runner)).
+                    map(OverallResultPrinter::renderScore).
                     collect(Collectors.joining(","))
             );
 
-            writer.append(STR.",\{result.totalScore()},\{result.hasCompletedSeries() ? "Y" : "N"}");
+            writer.append(STR.",\{result.totalScore()},\{result.hasCompletedSeries() ? "Y" : "N"},");
 
-            for (final GrandPrixRaceCategory category : race_impl.race_categories)
-                writer.append(",").append(result.hasCompletedRaceCategory(category) ? "Y" : "N");
+            writer.append(
+                race_impl.race_categories.stream().
+                    map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
+                    collect(Collectors.joining(","))
+            );
 
             writer.append(LINE_SEPARATOR);
         }

@@ -81,6 +81,8 @@ class MidweekRaceOutputHTML {
 
         protected List<String> getResultsElements(final RaceResult r) {
 
+            final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
+
             final List<String> elements = new ArrayList<>();
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
@@ -92,7 +94,7 @@ class MidweekRaceOutputHTML {
 
             for (final Race individual_race : ((MidweekRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
-                    final int score = ((MidweekRaceImpl) race.getSpecific()).calculateRaceScore(individual_race, result.runner);
+                    final int score = calculator.calculateRaceScore(individual_race, result.runner);
                     elements.add(String.valueOf(score));
                 }
 

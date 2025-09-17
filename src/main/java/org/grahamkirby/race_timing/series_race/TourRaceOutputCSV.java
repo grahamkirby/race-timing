@@ -25,18 +25,19 @@ import org.grahamkirby.race_timing.common.ResultPrinter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
 class TourRaceOutputCSV {
-
-    private static final String OVERALL_RESULTS_HEADER = "Pos,Runner,Club,Category";
 
     private final Race race;
 
     TourRaceOutputCSV(final Race race) {
         this.race = race;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     void printResults() throws IOException {
 
@@ -67,10 +68,13 @@ class TourRaceOutputCSV {
 
             writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
-            for (final Duration time : result.times)
-                writer.append(renderDuration(time, "-")).append(",");
+            writer.append(
+                result.times.stream().
+                    map(time -> renderDuration(time, "-")).
+                    collect(Collectors.joining(","))
+            );
 
-            writer.append(renderDuration(result.duration(), "-")).append(LINE_SEPARATOR);
+            writer.append(STR.",\{renderDuration(result.duration(), "-")}\{LINE_SEPARATOR}");
         }
     }
 }

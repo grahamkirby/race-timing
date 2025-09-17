@@ -59,6 +59,25 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int calculateRaceScore(final Race individual_race, final Runner runner) {
+
+        if (individual_race == null) return 0;
+
+        // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
+
+        final List<SingleRaceResult> gender_results = individual_race.getResultsCalculator().getOverallResults().stream().
+            map(result -> (SingleRaceResult) result).
+            filter(SingleRaceResult::canComplete).
+            filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
+            toList();
+
+        final int gender_position = (int) gender_results.stream().
+            takeWhile(result -> !result.getParticipant().equals(runner)).
+            count() + 1;
+
+        return gender_position <= gender_results.size() ? Math.max((int) race.getConfig().get(Config.KEY_SCORE_FOR_FIRST_PLACE) - gender_position + 1, 0) : 0;
+    }
+
     private void initialiseResults() {
 
         getResultsByRunner().forEach(this::checkCategoryConsistencyOverSeries);
@@ -77,7 +96,8 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = ((MidweekRaceImpl)race.getSpecific()).getRaces().stream().
-            map(individual_race -> ((MidweekRaceImpl) race.getSpecific()).calculateRaceScore(individual_race, runner)).
+//            map(individual_race -> ((MidweekRaceImpl) race.getSpecific()).calculateRaceScore(individual_race, runner)).
+            map(individual_race -> calculateRaceScore(individual_race, runner)).
             toList();
 
         return new MidweekRaceResult(runner, scores, race);

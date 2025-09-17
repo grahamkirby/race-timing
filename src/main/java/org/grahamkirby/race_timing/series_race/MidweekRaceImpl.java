@@ -134,25 +134,6 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
             toList();
     }
 
-    int calculateRaceScore(final Race individual_race, final Runner runner) {
-
-        if (individual_race == null) return 0;
-
-        // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
-
-        final List<SingleRaceResult> gender_results = individual_race.getResultsCalculator().getOverallResults().stream().
-            map(result -> (SingleRaceResult) result).
-            filter(SingleRaceResult::canComplete).
-            filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
-            toList();
-
-        final int gender_position = (int) gender_results.stream().
-            takeWhile(result -> !result.getParticipant().equals(runner)).
-            count() + 1;
-
-        return gender_position <= gender_results.size() ? Math.max((int) race.getConfig().get(Config.KEY_SCORE_FOR_FIRST_PLACE) - gender_position + 1, 0) : 0;
-    }
-
     private List<Race> loadRaces() throws IOException {
 
         final int number_of_race_in_series =(int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES);

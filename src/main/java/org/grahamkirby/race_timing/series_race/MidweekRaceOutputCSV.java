@@ -64,6 +64,7 @@ class MidweekRaceOutputCSV {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
             final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
+            final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
 
             writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
 
@@ -72,7 +73,7 @@ class MidweekRaceOutputCSV {
             writer.append(
                 race_impl.getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> race_impl.calculateRaceScore(individual_race, result.runner)).
+                    map(individual_race -> calculator.calculateRaceScore(individual_race, result.runner)).
                     map(String::valueOf).
                     collect(Collectors.joining(","))
             );
