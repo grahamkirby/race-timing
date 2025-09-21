@@ -118,7 +118,7 @@
                 <artifactId>modernizer-maven-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <javaVersion>21</javaVersion>
+                    <javaVersion>25</javaVersion>
                 </configuration>
                 <executions>
                     <execution>
