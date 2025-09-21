@@ -85,7 +85,7 @@ public class IndividualRaceOutputText {
      */
     private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{TEXT_FILE_SUFFIX}");
+        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + TEXT_FILE_SUFFIX);
     }
 
     /** Prints prizes, ordered by prize category groups. */
@@ -118,17 +118,13 @@ public class IndividualRaceOutputText {
 
     private String getPrizeCategoryHeader(final PrizeCategory category) {
 
-        final String header = STR."Category: \{category.getLongName()}";
-        return STR."""
-            \{header}
-            \{"-".repeat(header.length())}
-
-            """;
+        final String header = "Category: " + category.getLongName();
+        return header + LINE_SEPARATOR + "-".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     private void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
@@ -144,12 +140,8 @@ public class IndividualRaceOutputText {
 
     private String getPrizesHeader() {
 
-        final String header = STR."\{(String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)} Results \{(String) race.getConfig().get(KEY_YEAR)}";
-        return STR."""
-            \{header}
-            \{"=".repeat(header.length())}
-
-            """;
+        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
+        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +157,7 @@ public class IndividualRaceOutputText {
 
             SingleRaceResult result = (SingleRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.entry.participant.name} (\{((Runner) result.entry.participant).club}) \{renderDuration(result, DNF_STRING)}\n");
+            writer.append(result.position_string + ": " + result.entry.participant.name + " (" + ((Runner) result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

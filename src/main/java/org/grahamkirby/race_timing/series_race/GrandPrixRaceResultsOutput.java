@@ -23,6 +23,8 @@ import org.grahamkirby.race_timing.common.ResultsOutput;
 
 import java.io.IOException;
 
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+
 @SuppressWarnings("preview")
 public class GrandPrixRaceResultsOutput implements ResultsOutput {
 
@@ -65,9 +67,7 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
 
         for (final RaceResult result : race.getResultsCalculator().getOverallResults())
             if (((GrandPrixRaceResult) result).runner.category == null)
-                race.appendToNotes(STR."""
-                    Runner \{((GrandPrixRaceResult) result).runner.name} unknown category so omitted from overall results
-                    """);
+                race.appendToNotes("Runner " + ((GrandPrixRaceResult) result).runner.name + " unknown category so omitted from overall results" + LINE_SEPARATOR);
     }
 
     private void printPrizes() throws IOException {

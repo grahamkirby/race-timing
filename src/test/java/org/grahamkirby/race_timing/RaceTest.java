@@ -73,7 +73,7 @@ public class RaceTest {
 
     private static final String USER_TEST_DIRECTORY_PATH = "/Users/gnck/Desktop/tests";
     private static final String IGNORED_FILE_NAMES_PATH = "src/main/resources/configuration/test_ignored_file_names.csv";
-    public static final String TEST_CONFIG_FILE_NAME = "config.txt";
+    private static final String TEST_CONFIG_FILE_NAME = "config.txt";
 
     // Whether the current test is the first test in the run.
     private static boolean first_test = true;
@@ -186,7 +186,7 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals(STR."missing config file: 'synthetic\{PATH_SEPARATOR}special_cases\{PATH_SEPARATOR}missing_config_file'" + System.lineSeparator(),
+        assertEquals("missing config file: 'synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "missing_config_file'" + LINE_SEPARATOR,
             error_output,
             "Expected error message was not generated");
 
@@ -239,7 +239,7 @@ public class RaceTest {
 
     private static Path getTestResourcesRootPath(final String individual_test_resource_root) {
 
-        return getPathRelativeToProjectRoot(STR."/src/test/resources/\{individual_test_resource_root}");
+        return getPathRelativeToProjectRoot("/src/test/resources/" + individual_test_resource_root);
     }
 
     private static void setLoggingLevel(final Level level) {
@@ -318,7 +318,7 @@ public class RaceTest {
         if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
 
         if (!Files.exists(resources_inputs))
-            throw new RuntimeException(STR."missing config file: '\{resources_inputs}/\{TEST_CONFIG_FILE_NAME}'");
+            throw new RuntimeException("missing config file: '" + resources_inputs + "/" + TEST_CONFIG_FILE_NAME + "'");
 
         copyDirectory(resources_inputs, test_input_directory);
     }
@@ -358,10 +358,8 @@ public class RaceTest {
         final List<String> file_content2 = getFileContent(path2);
 
         for (int i = 0; i < Math.min(file_content1.size(), file_content2.size()); i++) {
-            assertEquals(file_content1.get(i), file_content2.get(i), STR."""
-                Difference in files: \{path1} and \{path2} at line \{i + 1}:
-                \{file_content1.get(i)}
-                \{file_content2.get(i)}""");
+            assertEquals(file_content1.get(i), file_content2.get(i), LINE_SEPARATOR + "Difference in files: " + path1 + " and " + path2 + " at line " + (i + 1) + ":" + LINE_SEPARATOR +
+                file_content1.get(i) + LINE_SEPARATOR + file_content2.get(i));
         }
 
         if (file_content1.size() < file_content2.size())
@@ -379,9 +377,7 @@ public class RaceTest {
         while (i < content_larger_file.size() && content_larger_file.get(i).isBlank()) i++;
 
         if (i < content_larger_file.size())
-            fail(STR."""
-                Difference in files: \{path_smaller_file} and \{path_larger_file}: at line \{i + 1}:
-                \{content_larger_file.get(i)}""");
+            fail(LINE_SEPARATOR + "Difference in files: " + path_smaller_file + " and " + path_larger_file + ": at line " + (i + 1) + ":" + LINE_SEPARATOR + content_larger_file.get(i));
     }
 
     private static List<String> getFileContent(final Path path) {
@@ -399,7 +395,7 @@ public class RaceTest {
             } else return Files.readAllLines(path);
 
         } catch (final IOException e) {
-            fail(STR."Error reading expected output file \{path}: \{e.toString()}");
+            fail("Error reading expected output file " + path + ": " + e);
             throw new RuntimeException(e);
         }
     }

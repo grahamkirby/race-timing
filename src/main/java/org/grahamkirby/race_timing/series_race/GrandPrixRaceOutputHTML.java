@@ -76,7 +76,7 @@ class GrandPrixRaceOutputHTML {
             headers.add("Completed?");
 
             for (final GrandPrixRaceCategory category : ((GrandPrixRaceImpl) race.getSpecific()).race_categories)
-                headers.add(STR."\{category.category_title()}?");
+                headers.add(category.category_title() + "?");
 
             return headers;
         }
@@ -135,9 +135,7 @@ class GrandPrixRaceOutputHTML {
 
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
 
-            writer.append(STR."""
-                    <li>\{result.position_string}: \{race.getNormalisation().htmlEncode(result.runner.name)} (\{result.runner.category.getShortName()}) \{result.totalScore()}</li>
-                """);
+            writer.append("    <li>" + result.position_string + ": " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
         }
     }
 }

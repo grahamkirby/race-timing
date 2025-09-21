@@ -31,21 +31,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 public class TourRaceOutputText {
 
     private final Race race;
+
     TourRaceOutputText(final Race race) {
         this.race = race;
     }
 
     void printPrizes() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), Config.STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -62,22 +64,18 @@ public class TourRaceOutputText {
         if (!converted_words.isEmpty())
             race.appendToNotes("Converted to title case: " + converted_words);
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "processing_notes", year), Config.STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "processing_notes", year), STANDARD_FILE_OPEN_OPTIONS))) {
             writer.append(race.getNotes());
         }
     }
 
     private String getPrizesHeader() {
 
-        final String header = STR."\{(String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_RESULTS)} Results \{(String) race.getConfig().get(Config.KEY_YEAR)}";
-        return STR."""
-            \{header}
-            \{"=".repeat(header.length())}
-
-            """;
+        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
+        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     /**
@@ -85,11 +83,11 @@ public class TourRaceOutputText {
      */
     private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{Config.TEXT_FILE_SUFFIX}");
+        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + TEXT_FILE_SUFFIX);
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
@@ -106,7 +104,7 @@ public class TourRaceOutputText {
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
 
-            writer.append(Config.LINE_SEPARATOR).append(Config.LINE_SEPARATOR);
+            writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
         // Called from lambda that can't throw checked exception.
         catch (final IOException e) {
@@ -116,12 +114,8 @@ public class TourRaceOutputText {
 
     private String getPrizeCategoryHeader(final PrizeCategory category) {
 
-        final String header = STR."Category: \{category.getLongName()}";
-        return STR."""
-            \{header}
-            \{"-".repeat(header.length())}
-
-            """;
+        final String header = "Category: " + category.getLongName();
+        return header + LINE_SEPARATOR + "-".repeat(header.length())  + LINE_SEPARATOR + LINE_SEPARATOR;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -136,7 +130,7 @@ public class TourRaceOutputText {
 
             final TourRaceResult result = (TourRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.runner.name} (\{result.runner.club}) \{format(result.duration())}\{Config.LINE_SEPARATOR}");
+            writer.append(result.position_string + ": " + result.runner.name + " (" + result.runner.club + ") " + format(result.duration()) + LINE_SEPARATOR);
         }
     }
 }

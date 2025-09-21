@@ -18,11 +18,7 @@
 package org.grahamkirby.race_timing.individual_race;
 
 
-import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinter;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +29,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class IndividualRaceOutputCSV {
 
-    private static final String OVERALL_RESULTS_HEADER = STR."Pos,No,Runner,Club,Category,Time\{Config.LINE_SEPARATOR}";
+    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time" + LINE_SEPARATOR;
     private final Race race;
 
     IndividualRaceOutputCSV(final Race race) {
@@ -42,10 +38,10 @@ public class IndividualRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_overall_\{year}.\{Config.CSV_FILE_SUFFIX}"), Config.STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_overall_" + year + "." + CSV_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -65,10 +61,12 @@ public class IndividualRaceOutputCSV {
 
         public void printResult(final RaceResult r) throws IOException {
 
-            SingleRaceResult result = (SingleRaceResult) r;
+            final SingleRaceResult result = (SingleRaceResult) r;
+            final RaceEntry entry = result.entry;
+            final Participant participant = entry.participant;
 
-            writer.append(STR."\{result.position_string},\{result.entry.bib_number},\{Config.encode(result.entry.participant.name)},").
-                append(STR."\{Config.encode(((Runner)result.entry.participant).club)},\{result.entry.participant.category.getShortName()},\{renderDuration(result, Config.DNF_STRING)}\n");
+            writer.append(result.position_string + "," + entry.bib_number + "," + encode(participant.name) + ",");
+            writer.append(encode(((Runner) participant).club) + "," + participant.category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

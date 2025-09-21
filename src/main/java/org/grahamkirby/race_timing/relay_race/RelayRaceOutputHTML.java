@@ -31,6 +31,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Config.*;
+
 public class RelayRaceOutputHTML {
 
     private final Race race;
@@ -41,10 +43,10 @@ public class RelayRaceOutputHTML {
 
     void printResults() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "overall", year), Config.STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "overall", year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, new OverallResultPrinter(race, writer));
@@ -54,38 +56,38 @@ public class RelayRaceOutputHTML {
     /** Prints all details to a single web page. */
     void printCombined() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "combined", year), Config.STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "combined", year), STANDARD_FILE_OPEN_OPTIONS))) {
 
-            writer.append("<h3>Results</h3>").append(Config.LINE_SEPARATOR);
+            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(getPrizesHeader());
             printPrizes(writer);
 
-            writer.append("<h4>Overall</h4>").append(Config.LINE_SEPARATOR);
+            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             printResults(writer, new OverallResultPrinter(race, writer));
 
-            writer.append("<h4>Full Results</h4>").append(Config.LINE_SEPARATOR);
+            writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResults(writer);
 
             for (int leg_number = 1; leg_number <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg_number++) {
 
-                writer.append(STR."<p></p>\{Config.LINE_SEPARATOR}<h4>Leg \{leg_number} Results</h4>\{Config.LINE_SEPARATOR}");
+                writer.append("<p></p>" + LINE_SEPARATOR + "<h4>Leg " + leg_number + " Results</h4>" + LINE_SEPARATOR);
                 printLegResults(writer, leg_number);
             }
 
-            writer.append(Config.SOFTWARE_CREDIT_LINK_TEXT);
+            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
         }
     }
 
     void printPrizes() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), Config.STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), STANDARD_FILE_OPEN_OPTIONS))) {
 
             writer.append(getPrizesHeader());
             printPrizes(writer);
@@ -94,10 +96,10 @@ public class RelayRaceOutputHTML {
 
     void printDetailedResults() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "detailed", year), Config.STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "detailed", year), STANDARD_FILE_OPEN_OPTIONS))) {
             printDetailedResults(writer);
         }
     }
@@ -114,18 +116,16 @@ public class RelayRaceOutputHTML {
     private void printPrizes(final OutputStreamWriter writer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
+            flatMap(group -> group.categories().stream()).           // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).       // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizes(writer, category));    // Print prizes in this category.
     }
 
     /** Prints prizes within a given category. */
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
 
         try {
-            writer.append(STR."""
-                <p><strong>\{category.getLongName()}</strong></p>
-                """);
+            writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
@@ -137,14 +137,11 @@ public class RelayRaceOutputHTML {
     }
 
     private String getResultsSubHeader(final String s) {
-        return STR."""
-            <p></p>
-            <h4>\{s}</h4>
-            """;
+        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
     }
 
     private String getPrizesHeader() {
-        return STR."<h4>Prizes</h4>\{Config.LINE_SEPARATOR}";
+        return "<h4>Prizes</h4>" + LINE_SEPARATOR;
     }
 
     /**
@@ -152,7 +149,7 @@ public class RelayRaceOutputHTML {
      */
     private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{Config.HTML_FILE_SUFFIX}");
+        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + HTML_FILE_SUFFIX);
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
@@ -182,7 +179,7 @@ public class RelayRaceOutputHTML {
         printResults(writer, new DetailedResultPrinter(race, writer));
 
         if (areAnyResultsInMassStart())
-            writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(Config.LINE_SEPARATOR);
+            writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
     }
 
     private boolean areAnyResultsInMassStart() {
@@ -195,11 +192,11 @@ public class RelayRaceOutputHTML {
 
     private void printLegResults(final int leg) throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String output_type = STR."leg_\{leg}";
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String output_type = "leg_" + leg;
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, output_type, year), Config.STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, output_type, year), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResults(writer, leg);
@@ -237,7 +234,7 @@ public class RelayRaceOutputHTML {
                 String.valueOf(result.entry.bib_number),
                 race.getNormalisation().htmlEncode(result.entry.participant.name),
                 result.entry.participant.category.getLongName(),
-                Config.renderDuration(result, Config.DNF_STRING)
+                renderDuration(result, DNF_STRING)
             );
         }
     }
@@ -257,7 +254,7 @@ public class RelayRaceOutputHTML {
 
             return List.of(
                 "Pos",
-                STR."Runner\{((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : ""}",
+                "Runner" + (((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : ""),
                 "Time");
         }
 
@@ -269,7 +266,7 @@ public class RelayRaceOutputHTML {
             return List.of(
                 leg_result.position_string,
                 race.getNormalisation().htmlEncode(((Team) leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1)),
-                Config.renderDuration(leg_result, Config.DNF_STRING)
+                renderDuration(leg_result, DNF_STRING)
             );
         }
     }
@@ -284,12 +281,13 @@ public class RelayRaceOutputHTML {
         protected List<String> getResultsColumnHeaders() {
 
             final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
+            final RelayRaceImpl race_impl = (RelayRaceImpl) race.getSpecific();
 
-            for (int leg_number = 1; leg_number <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg_number++) {
+            for (int leg_number = 1; leg_number <= race_impl.getNumberOfLegs(); leg_number++) {
 
-                headers.add(STR."Runner\{((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg_number - 1) ? "s" : ""} \{leg_number}");
-                headers.add(STR."Leg \{leg_number}");
-                headers.add(leg_number < ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs() ? STR."Split \{leg_number}" : "Total");
+                headers.add("Runner" + (race_impl.getPairedLegs().get(leg_number - 1) ? "s" : "") + " " + leg_number);
+                headers.add("Leg " + leg_number);
+                headers.add(leg_number < race_impl.getNumberOfLegs() ? "Split " + leg_number : "Total");
             }
 
             return headers;
@@ -323,7 +321,7 @@ public class RelayRaceOutputHTML {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append("<ul>").append(Config.LINE_SEPARATOR);
+            writer.append("<ul>").append(LINE_SEPARATOR);
         }
 
         @Override
@@ -331,15 +329,13 @@ public class RelayRaceOutputHTML {
 
             RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(STR."""
-                    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{result.entry.participant.category.getLongName()}) \{Config.renderDuration(result, Config.DNF_STRING)}</li>
-                """);
+            writer.append("    <li>" + result.position_string + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
         }
 
         @Override
         public void printResultsFooter() throws IOException {
 
-            writer.append("</ul>").append(Config.LINE_SEPARATOR).append(Config.LINE_SEPARATOR);
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
     }
 }

@@ -39,7 +39,7 @@ public class RaceConfigValidator implements ConfigProcessor {
     public static void validateKeyPresent(final String key, final Race race) {
 
         if (!race.getConfig().containsKey(key))
-            throw new RuntimeException(STR."no entry for key '\{key}' in file '\{race.config_file_path.getFileName()}'");
+            throw new RuntimeException("no entry for key '" + key + "' in file '" + race.config_file_path.getFileName() + "'");
     }
 
     public static void validateFileExists(final String key, final Race race) {
@@ -47,6 +47,6 @@ public class RaceConfigValidator implements ConfigProcessor {
         final Path path = (Path) race.getConfig().get(key);
 
         if (!Files.exists(path))
-            throw new RuntimeException(STR."invalid entry '\{path.getFileName()}' for key '\{key}' in file '\{race.config_file_path.getFileName()}'");
+            throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + race.config_file_path.getFileName() + "'");
     }
 }

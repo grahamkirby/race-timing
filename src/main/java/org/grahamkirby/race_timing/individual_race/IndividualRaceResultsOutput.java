@@ -25,6 +25,8 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.function.Function;
 
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+
 @SuppressWarnings("preview")
 public class IndividualRaceResultsOutput implements ResultsOutput {
 
@@ -91,7 +93,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
             if (should_display_category_group_headers) {
                 if (not_first_category_group)
-                    writer.append(Config.LINE_SEPARATOR);
+                    writer.append(LINE_SEPARATOR);
                 writer.append(get_results_sub_header.apply(group.group_title()));
             }
 

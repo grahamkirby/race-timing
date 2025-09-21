@@ -58,7 +58,7 @@ class TourRaceOutputCSV {
             final SeriesRaceImpl race_impl = (TourRaceImpl) race.getSpecific();
             final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
 
-            writer.append(STR."Pos,Runner,Club,Category,\{race_names},Total\{LINE_SEPARATOR}");
+            writer.append("Pos,Runner,Club,Category," + race_names + ",Total" + LINE_SEPARATOR);
         }
 
         @Override
@@ -66,7 +66,7 @@ class TourRaceOutputCSV {
 
             final TourRaceResult result = ((TourRaceResult) r);
 
-            writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
+            writer.append(result.position_string + "," + encode(result.runner.name) + "," + encode(result.runner.club) + "," + result.runner.category.getShortName() + ",");
 
             writer.append(
                 result.times.stream().
@@ -74,7 +74,7 @@ class TourRaceOutputCSV {
                     collect(Collectors.joining(","))
             );
 
-            writer.append(STR.",\{renderDuration(result.duration(), "-")}\{LINE_SEPARATOR}");
+            writer.append("," + renderDuration(result.duration(), "-") + LINE_SEPARATOR);
         }
     }
 }

@@ -125,7 +125,7 @@ public class Config {
 
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
     public static String encode(final String s) {
-        return s.contains(",") ? STR."\"\{s}\"" : s;
+        return s.contains(",") ? "\"" + s + "\"" : s;
     }
 
     public static String renderDuration(final Duration duration, final String alternative) {
@@ -143,7 +143,7 @@ public class Config {
     public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         if (!Files.exists(config_file_path))
-            throw new RuntimeException(STR."missing config file: '\{config_file_path}'");
+            throw new RuntimeException("missing config file: '" + config_file_path + "'");
 
         try (final InputStream stream = Files.newInputStream(config_file_path)) {
 

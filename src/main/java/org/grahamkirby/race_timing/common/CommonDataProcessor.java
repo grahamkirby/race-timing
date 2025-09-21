@@ -42,7 +42,7 @@ public class CommonDataProcessor {
                 try {
                     new RawResult(line);
                 } catch (final Exception _) {
-                    throw new RuntimeException(STR."invalid record '\{line}' at line \{line_number} in file '\{raw_results_path.getFileName()}'");
+                    throw new RuntimeException("invalid record '" + line + "' at line " + line_number + " in file '" + raw_results_path.getFileName() + "'");
                 }
             });
     }
@@ -58,7 +58,7 @@ public class CommonDataProcessor {
             filter(Predicate.not(String::isBlank)).
             filter(line -> line.split("\t").length < number_of_columns).
             forEach(line -> {
-                throw new RuntimeException(STR."invalid entry '\{line}' at line \{line_number.get()} in file '\{entries_path.getFileName()}'");
+                throw new RuntimeException("invalid entry '" + line + "' at line " + line_number.get() + " in file '" + entries_path.getFileName() + "'");
             });
     }
 
@@ -76,11 +76,11 @@ public class CommonDataProcessor {
                         check_category_in_line.accept(line);
 
                     } catch (final RuntimeException e) {
-                        throw new RuntimeException(STR."invalid category in entry '\{e.getMessage()}' at line \{line_number.get()} in file '\{entries_path.getFileName()}'", e);
+                        throw new RuntimeException("invalid category in entry '" + e.getMessage() + "' at line " + line_number.get() + " in file '" + entries_path.getFileName() + "'", e);
                     }
                 });
         } catch (final IOException _) {
-            throw new RuntimeException(STR."invalid file: '\{entries_path}'");
+            throw new RuntimeException("invalid file: '" + entries_path + "'");
         }
     }
 
@@ -99,7 +99,7 @@ public class CommonDataProcessor {
                 final Duration finish_time = time_as_string.equals("?") ? null : Normalisation.parseTime(time_as_string);
 
                 if (finish_time != null && previous_time != null && previous_time.compareTo(finish_time) > 0)
-                    throw new RuntimeException(STR."result out of order at line \{i} in file '\{raw_results_path.getFileName()}'");
+                    throw new RuntimeException("result out of order at line " + i + " in file '" + raw_results_path.getFileName() + "'");
 
                 previous_time = finish_time;
             }
@@ -119,7 +119,7 @@ public class CommonDataProcessor {
             map(CommonDataProcessor::getBibNumber).
             filter(bib_number -> !seen.add(bib_number)).
             forEach(bib_number -> {
-                throw new RuntimeException(STR."duplicate bib number '\{bib_number}' at line \{line_number.get()} in file '\{file_path.getFileName()}'");
+                throw new RuntimeException("duplicate bib number '" + bib_number + "' at line " + line_number.get() + " in file '" + file_path.getFileName() + "'");
             });
     }
 

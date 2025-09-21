@@ -26,6 +26,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.common.Config.*;
+
 public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private Race race;
@@ -75,7 +77,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
             takeWhile(result -> !result.getParticipant().equals(runner)).
             count() + 1;
 
-        return gender_position <= gender_results.size() ? Math.max((int) race.getConfig().get(Config.KEY_SCORE_FOR_FIRST_PLACE) - gender_position + 1, 0) : 0;
+        return gender_position <= gender_results.size() ? Math.max((int) race.getConfig().get(KEY_SCORE_FOR_FIRST_PLACE) - gender_position + 1, 0) : 0;
     }
 
     private void initialiseResults() {
@@ -161,14 +163,12 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
                 if (previous_category != null && !previous_category.equals(current_category)) {
 
-                    final String race_name = (String) result.race.getConfig().get(Config.KEY_RACE_NAME_FOR_RESULTS);
+                    final String race_name = (String) result.race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS);
 
                     checkForChangeToYoungerAgeCategory(result, previous_category, current_category, race_name);
                     checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
 
-                    getNotes().append(STR."""
-                        Runner \{result.entry.participant.name} changed category from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}
-                        """);
+                    getNotes().append("Runner " + result.entry.participant.name + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name + LINE_SEPARATOR);
                 }
 
                 previous_category = current_category;
@@ -185,21 +185,21 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private static void checkForChangeToYoungerAgeCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
 
         if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
-            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.participant.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
+            throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     private static void checkForChangeToDifferentGenderCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
 
         if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
-            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.participant.name}' changed from \{previous_category.getShortName()} to \{current_category.getShortName()} at \{race_name}");
+            throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     private static void checkForChangeToTooMuchOlderAgeCategory(final SingleRaceResult result, final EntryCategory earliest_category, final EntryCategory last_category) {
 
         if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
-            throw new RuntimeException(STR."invalid category change: runner '\{result.entry.participant.name}' changed from \{earliest_category.getShortName()} to \{last_category.getShortName()} during series");
+            throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
     }
 
     private void allocatePrizes() {
@@ -373,7 +373,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<RaceResult> results, final int start_index, final int end_index) {
 
-        final String position_string = STR."\{start_index + 1}=";
+        final String position_string = (start_index + 1) + "=";
 
         for (int i = start_index; i <= end_index; i++)
             results.get(i).position_string = position_string;

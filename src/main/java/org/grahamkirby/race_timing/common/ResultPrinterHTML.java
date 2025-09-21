@@ -43,9 +43,7 @@ public abstract class ResultPrinterHTML extends ResultPrinter {
             """);
 
         for (final String header : getResultsColumnHeaders())
-            writer.append(STR."""
-                            <th>\{header}</th>
-                """);
+            writer.append("            <th>"  + header + "</th>" + LINE_SEPARATOR);
 
         writer.append("""
                     </tr>
@@ -62,9 +60,7 @@ public abstract class ResultPrinterHTML extends ResultPrinter {
             """);
 
         for (final String element : getResultsElements(result))
-            writer.append(STR."""
-                            <td>\{element}</td>
-                """);
+            writer.append("            <td>" + element + "</td>" + LINE_SEPARATOR);
 
         writer.append("""
                     </tr>

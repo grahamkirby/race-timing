@@ -28,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import static org.grahamkirby.race_timing.common.Config.UNKNOWN_BIB_NUMBER;
+
 class RelayRaceMissingData {
 
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
@@ -202,7 +204,7 @@ class RelayRaceMissingData {
     private void recordCommentsForNonGuessedResults() {
 
         for (final RawResult result : race.getRaceData().getRawResults())
-            if (result.getBibNumber() == Config.UNKNOWN_BIB_NUMBER)
+            if (result.getBibNumber() == UNKNOWN_BIB_NUMBER)
                 result.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
     }
 
@@ -226,7 +228,7 @@ class RelayRaceMissingData {
         final List<RawResult> results = race.getRaceData().getRawResults();
 
         for (int i = 0; i < results.size(); i++)
-            if (results.get(i).getBibNumber() == Config.UNKNOWN_BIB_NUMBER) return i + 1;
+            if (results.get(i).getBibNumber() == UNKNOWN_BIB_NUMBER) return i + 1;
 
         return 0;
     }

@@ -59,7 +59,7 @@ public class RelayRaceConfigValidator implements ConfigProcessor {
                     Integer.parseInt(elements[1]);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'", e);
+                    throw new RuntimeException("invalid entry '" + dnf_string + "' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_path.getFileName() + "'", e);
                 }
             }
     }
@@ -76,27 +76,27 @@ public class RelayRaceConfigValidator implements ConfigProcessor {
                 final Duration mass_start_time;
                 try {
                     if (split.length < 2)
-                        throw new RuntimeException(STR."invalid mass start time for key '\{Config.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                        throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_ELAPSED_TIMES + "' in file '" + config_file_path.getFileName() + "'");
 
                     String time_string = split[1];
                     mass_start_time = Normalisation.parseTime(time_string);
 
                 } catch (final DateTimeParseException _) {
-                    throw new RuntimeException(STR."invalid mass start time for key '\{Config.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                    throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_ELAPSED_TIMES + "' in file '" + config_file_path.getFileName() + "'");
                 }
 
                 try {
                     int leg_number = Integer.parseInt(split[0]);
 
                     if (leg_number < 1 || leg_number > number_of_legs)
-                        throw new RuntimeException(STR."invalid leg number for key '\{Config.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                        throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_ELAPSED_TIMES + "' in file '" + config_file_path.getFileName() + "'");
                 }
                 catch (NumberFormatException _) {
-                    throw new RuntimeException(STR."invalid leg number for key '\{Config.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                    throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_ELAPSED_TIMES + "' in file '" + config_file_path.getFileName() + "'");
                 }
 
                 if (previous_time != null && previous_time.compareTo(mass_start_time) > 0)
-                    throw new RuntimeException(STR."invalid mass start time order for key '\{Config.KEY_MASS_START_ELAPSED_TIMES}' in file '\{config_file_path.getFileName()}'");
+                    throw new RuntimeException("invalid mass start time order for key '" + KEY_MASS_START_ELAPSED_TIMES + "' in file '" + config_file_path.getFileName() + "'");
 
                 previous_time = mass_start_time;
             }

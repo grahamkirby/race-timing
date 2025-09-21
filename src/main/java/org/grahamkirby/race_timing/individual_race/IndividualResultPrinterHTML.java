@@ -46,7 +46,7 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
             result.position_string,
             String.valueOf(result.entry.bib_number),
             race.getNormalisation().htmlEncode(result.entry.participant.name),
-            ((Runner)result.entry.participant).club,
+            ((Runner) result.entry.participant).club,
             result.entry.participant.category.getShortName(),
             renderDuration(result, DNF_STRING)
         );

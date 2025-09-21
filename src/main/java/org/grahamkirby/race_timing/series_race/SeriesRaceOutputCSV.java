@@ -45,7 +45,7 @@ public class SeriesRaceOutputCSV {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_overall_\{year}.\{Config.CSV_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_overall_" + year + "." + CSV_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

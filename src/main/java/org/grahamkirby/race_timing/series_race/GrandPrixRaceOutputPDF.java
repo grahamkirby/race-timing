@@ -49,21 +49,21 @@ class GrandPrixRaceOutputPDF {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final PdfWriter writer = new PdfWriter(race.getOutputDirectoryPath().resolve(STR."\{race_name}_prizes_\{year}.\{PDF_FILE_SUFFIX}").toString());
+        final PdfWriter writer = new PdfWriter(race.getOutputDirectoryPath().resolve(race_name + "_prizes_" + year + "." + PDF_FILE_SUFFIX).toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
             final Paragraph section_header = new Paragraph().
                 setFont(getFont(PDF_PRIZE_FONT_NAME)).
                 setFontSize(PDF_PRIZE_FONT_SIZE).
-                add(STR."\{race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)} \{race.getConfig().get(KEY_YEAR)} Category Prizes");
+                add(race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + race.getConfig().get(KEY_YEAR) + " Category Prizes");
 
             document.add(section_header);
 
             race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(document, category));                       // Print prizes in this category.
+                flatMap(group -> group.categories().stream()).               // Get all prize categories.
+                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).           // Ignore further categories once all prizes have been output.
+                forEachOrdered(category -> printPrizes(document, category));      // Print prizes in this category.
         }
     }
 
@@ -73,7 +73,7 @@ class GrandPrixRaceOutputPDF {
     private void printPrizes(final Document document, final PrizeCategory category) {
 
         try {
-            final Paragraph category_header = new Paragraph(STR."Category: \{category.getLongName()}").
+            final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
                 setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
                 setPaddingTop(PDF_PRIZE_FONT_SIZE);
@@ -120,9 +120,9 @@ class GrandPrixRaceOutputPDF {
 
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
-            paragraph.add(new Text(STR."\{details.position_string}: ").setFont(font));
+            paragraph.add(new Text(details.position_string + ": ").setFont(font));
             paragraph.add(new Text(details.name).setFont(bold_font));
-            paragraph.add(new Text(STR." (\{details.detail1}) \{details.detail2}").setFont(font));
+            paragraph.add(new Text(" (" + details.detail1 + ") " + details.detail2).setFont(font));
 
             document.add(paragraph);
         }

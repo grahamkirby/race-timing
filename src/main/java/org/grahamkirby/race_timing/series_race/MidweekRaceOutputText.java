@@ -31,6 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Config.*;
+
 public class MidweekRaceOutputText {
 
     private final Race race;
@@ -40,10 +42,11 @@ public class MidweekRaceOutputText {
 
     void printPrizes() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, "prizes", year), Config.STANDARD_FILE_OPEN_OPTIONS);
+        Path prizes = getOutputFilePath(race_name, "prizes", year);
+        final OutputStream stream = Files.newOutputStream(prizes, STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -60,22 +63,18 @@ public class MidweekRaceOutputText {
         if (!converted_words.isEmpty())
             race.appendToNotes("Converted to title case: " + converted_words);
 
-        final String race_name = (String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(Config.KEY_YEAR);
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "processing_notes", year), Config.STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "processing_notes", year), STANDARD_FILE_OPEN_OPTIONS))) {
             writer.append(race.getNotes());
         }
     }
 
     private String getPrizesHeader() {
 
-        final String header = STR."\{(String) race.getConfig().get(Config.KEY_RACE_NAME_FOR_RESULTS)} Results \{(String) race.getConfig().get(Config.KEY_YEAR)}";
-        return STR."""
-            \{header}
-            \{"=".repeat(header.length())}
-
-            """;
+        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
+        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     /**
@@ -83,7 +82,7 @@ public class MidweekRaceOutputText {
      */
     private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{Config.TEXT_FILE_SUFFIX}");
+        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + TEXT_FILE_SUFFIX);
     }
 
     /** Prints prizes, ordered by prize category groups. */
@@ -104,7 +103,7 @@ public class MidweekRaceOutputText {
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
 
-            writer.append(Config.LINE_SEPARATOR).append(Config.LINE_SEPARATOR);
+            writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
         // Called from lambda that can't throw checked exception.
         catch (final IOException e) {
@@ -114,12 +113,8 @@ public class MidweekRaceOutputText {
 
     private String getPrizeCategoryHeader(final PrizeCategory category) {
 
-        final String header = STR."Category: \{category.getLongName()}";
-        return STR."""
-            \{header}
-            \{"-".repeat(header.length())}
-
-            """;
+        final String header = "Category: " + category.getLongName();
+        return header + LINE_SEPARATOR + "-".repeat(header.length())  + LINE_SEPARATOR + LINE_SEPARATOR;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,7 +129,7 @@ public class MidweekRaceOutputText {
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.runner.name} (\{result.runner.club}) \{result.totalScore()}\n");
+            writer.append(result.position_string + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
         }
     }
 }

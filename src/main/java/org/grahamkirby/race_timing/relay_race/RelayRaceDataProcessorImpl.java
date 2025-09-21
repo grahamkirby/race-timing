@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.*;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
@@ -45,9 +46,9 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
     @Override
     public RaceData getRaceData() {
 
-        final Path entries_path = (Path) race.getConfig().get(Config.KEY_ENTRIES_PATH);
-        final Path electronic_results_path = (Path) race.getConfig().get(Config.KEY_RAW_RESULTS_PATH);
-        final Path paper_results_path = (Path) race.getConfig().get(Config.KEY_PAPER_RESULTS_PATH);
+        final Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
+        final Path electronic_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
+        final Path paper_results_path = (Path) race.getConfig().get(KEY_PAPER_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, electronic_results_path, paper_results_path);
@@ -84,7 +85,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
     }
     private void validateDataFiles(final Path entries_path, final Path electronic_results_path, final Path paper_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, (int) race.getConfig().get(Config.KEY_NUMBER_OF_LEGS) + 3, (String) race.getConfig().get(Config.KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, (int) race.getConfig().get(KEY_NUMBER_OF_LEGS) + 3, (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
 
@@ -145,9 +146,9 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
             line++;
             final int result_bib_number = raw_result.getBibNumber();
-            if (result_bib_number != Config.UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number)) {
-                String message = STR."unregistered bib number '\{result_bib_number}' at line \{line} in file '\{electronic_results_path.getFileName()}'";
-                if (paper_results_path != null) message += STR." or '\{paper_results_path.getFileName()}'";
+            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number)) {
+                String message = "unregistered bib number '" + result_bib_number + "' at line " + line + " in file '" + electronic_results_path.getFileName() + "'";
+                if (paper_results_path != null) message += " or '" + paper_results_path.getFileName() + "'";
                 throw new RuntimeException(message);
             }
         }
@@ -158,7 +159,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.participant != entry2.participant && entry1.participant.equals(entry2.participant))
-                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{entries_path.getFileName()}'");
+                    throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
     }
 
     private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) {
@@ -170,10 +171,10 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
             countLegResults(bib_counts, paper_results_path);
 
             for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
-                if (entry.getValue() > (int) race.getConfig().get(Config.KEY_NUMBER_OF_LEGS)) {
-                    String message = STR."surplus result for team '\{entry.getKey()}' in file '\{raw_results_path.getFileName()}'";
+                if (entry.getValue() > (int) race.getConfig().get(KEY_NUMBER_OF_LEGS)) {
+                    String message = "surplus result for team '" + entry.getKey() + "' in file '" + raw_results_path.getFileName() + "'";
                     if (paper_results_path != null)
-                        message += STR." or '\{paper_results_path.getFileName()}'";
+                        message += " or '" + paper_results_path.getFileName() + "'";
                     throw new RuntimeException(message);
                 }
         } catch (final IOException e) {
@@ -186,7 +187,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         if (results_path != null)
             for (final String line : Files.readAllLines(results_path))
                 // TODO rationalise with other comment handling. Use stripComment.
-                if (!line.startsWith(Config.COMMENT_SYMBOL) && !line.isBlank()) {
+                if (!line.startsWith(COMMENT_SYMBOL) && !line.isBlank()) {
 
                     final String bib_number = line.split("\t")[0];
                     if (!bib_number.equals("?"))
@@ -196,7 +197,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
     void loadTimeAnnotations(final List<? extends RawResult> raw_results) throws IOException {
 
-        final Path annotations_path = (Path) race.getConfig().get(Config.KEY_ANNOTATIONS_PATH);
+        final Path annotations_path = (Path) race.getConfig().get(KEY_ANNOTATIONS_PATH);
 
         if (annotations_path != null) {
 
@@ -219,7 +220,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);
 
-        if (elements[2].equals("?")) raw_result.setBibNumber(Config.UNKNOWN_BIB_NUMBER);
+        if (elements[2].equals("?")) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
         if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);

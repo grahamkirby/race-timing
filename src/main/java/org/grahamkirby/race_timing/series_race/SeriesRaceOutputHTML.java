@@ -63,12 +63,12 @@ public class SeriesRaceOutputHTML {
         }
     }
 
-    static void printPrizes(final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
+    static void printPrizes(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_prizes_\{year}.\{HTML_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_prizes_" + year + "." + HTML_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -79,21 +79,19 @@ public class SeriesRaceOutputHTML {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizes(final Race race, final OutputStreamWriter writer, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
+    public static void printPrizes(final Race race, final OutputStreamWriter writer, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
+            flatMap(group -> group.categories().stream()).                                   // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).                               // Ignore further categories once all prizes have been output.
             forEachOrdered(category -> printPrizes(race, writer, category, make_prize_printer));
     }
 
     /** Prints prizes within a given category. */
-    private static void printPrizes(final Race race, final OutputStreamWriter writer, final PrizeCategory category, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) {
+    private static void printPrizes(final Race race, final OutputStreamWriter writer, final PrizeCategory category, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) {
 
         try {
-            writer.append(STR."""
-                <p><strong>\{category.getLongName()}</strong></p>
-                """);
+            writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             make_prize_printer.apply(race, writer).print(category_prize_winners);
@@ -107,7 +105,7 @@ public class SeriesRaceOutputHTML {
     public static String getPrizesHeader(final Race race) {
 
         final String header = ((SeriesRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace() < (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
-        return STR."<h4>\{header}</h4>\{LINE_SEPARATOR}";
+        return "<h4>" + header + "</h4>" + LINE_SEPARATOR;
     }
 
     public static OutputStream getOutputStream(final Race race, final String output_type) throws IOException {
@@ -115,14 +113,11 @@ public class SeriesRaceOutputHTML {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        return Files.newOutputStream(race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{HTML_FILE_SUFFIX}"), STANDARD_FILE_OPEN_OPTIONS);
+        return Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + HTML_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS);
     }
 
     public static String getResultsSubHeader(final String s) {
-        return STR."""
-            <p></p>
-            <h4>\{s}</h4>
-            """;
+        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
     }
 
     static void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Function<String, String> get_results_sub_header, final Race race) throws IOException {

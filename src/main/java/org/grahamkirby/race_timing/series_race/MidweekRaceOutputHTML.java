@@ -71,7 +71,7 @@ class MidweekRaceOutputHTML {
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
-                    headers.add(STR."Race \{i + 1}");
+                    headers.add("Race " + (i + 1));
 
             headers.add("Total");
             headers.add("Completed?");
@@ -128,9 +128,7 @@ class MidweekRaceOutputHTML {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
 
-            writer.append(STR."""
-                    <li>\{result.position_string}: \{result.runner.name} (\{result.runner.category.getShortName()}) \{result.totalScore()}</li>
-                """);
+            writer.append("    <li>" + result.position_string + ": " + result.runner.name + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
         }
     }
 }

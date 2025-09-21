@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
@@ -85,7 +86,7 @@ public class RelayRaceImpl implements SpecificRace {
      * Value is read from configuration file using key KEY_NUMBER_OF_LEGS.
      */
     public int getNumberOfLegs() {
-        return (int) race.getConfig().get(Config.KEY_NUMBER_OF_LEGS);
+        return (int) race.getConfig().get(KEY_NUMBER_OF_LEGS);
     }
 
     List<Duration> getStartTimesForMassStarts() {
@@ -132,8 +133,8 @@ public class RelayRaceImpl implements SpecificRace {
 
             final String leg_runner_names = ((Team)leg_result.entry.participant).runner_names.get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
-            final String leg_time = Config.renderDuration(leg_result, Config.DNF_STRING);
-            final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : Config.DNF_STRING;
+            final String leg_time = renderDuration(leg_result, DNF_STRING);
+            final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
 
             leg_details.add(leg_runner_names + leg_mass_start_annotation);
             leg_details.add(leg_time);
@@ -169,7 +170,7 @@ public class RelayRaceImpl implements SpecificRace {
 
         for (RawResult result : race.getRaceData().getRawResults())
             bib_numbers_recorded.add(result.getBibNumber());
-        bib_numbers_recorded.remove(Config.UNKNOWN_BIB_NUMBER);
+        bib_numbers_recorded.remove(UNKNOWN_BIB_NUMBER);
 
         return bib_numbers_recorded;
     }
@@ -179,7 +180,7 @@ public class RelayRaceImpl implements SpecificRace {
         final List<Duration> times_with_missing_bib_numbers = new ArrayList<>();
 
         for (final RawResult raw_result : race.getRaceData().getRawResults())
-            if (raw_result.getBibNumber() == Config.UNKNOWN_BIB_NUMBER)
+            if (raw_result.getBibNumber() == UNKNOWN_BIB_NUMBER)
                 times_with_missing_bib_numbers.add(raw_result.getRecordedFinishTime());
 
         return times_with_missing_bib_numbers;
@@ -195,7 +196,7 @@ public class RelayRaceImpl implements SpecificRace {
 
         // TODO add to individual race.
 
-        return (Duration) race.getConfig().get(Config.KEY_START_OFFSET);
+        return (Duration) race.getConfig().get(KEY_START_OFFSET);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,7 +251,7 @@ public class RelayRaceImpl implements SpecificRace {
     private String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
-        return leg_result.in_mass_start ? STR." (M\{getNextMassStartLeg(leg_number)})" : "";
+        return leg_result.in_mass_start ? " (M" + getNextMassStartLeg(leg_number) + ")" : "";
     }
 
     private int getNextMassStartLeg(final int leg_number) {
@@ -278,7 +279,7 @@ public class RelayRaceImpl implements SpecificRace {
 
     private void configurePairedLegs() {
 
-        final String paired_legs_string = (String) race.getConfig().get(Config.KEY_PAIRED_LEGS);
+        final String paired_legs_string = (String) race.getConfig().get(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
         paired_legs = Stream.generate(() -> false)
@@ -294,7 +295,7 @@ public class RelayRaceImpl implements SpecificRace {
         start_times_for_mass_starts = new ArrayList<>();
         mass_start_legs = new ArrayList<>();
 
-        for (int i = 0; i < (int)race.getConfig().get(Config.KEY_NUMBER_OF_LEGS); i++) {
+        for (int i = 0; i < (int)race.getConfig().get(KEY_NUMBER_OF_LEGS); i++) {
             start_times_for_mass_starts.add(null);
             mass_start_legs.add(false);
         }

@@ -18,22 +18,19 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Config;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.ResultPrinterHTML;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.Config.renderDuration;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 
@@ -80,7 +77,7 @@ class TourRaceOutputHTML {
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
-                    headers.add(STR."Race \{i + 1}");
+                    headers.add("Race " + (i + 1));
 
             headers.add("Total");
 
@@ -99,7 +96,7 @@ class TourRaceOutputHTML {
             elements.add(result.runner.club);
 
             for (final Duration duration : result.times)
-                elements.add(Config.renderDuration(duration, "-"));
+                elements.add(renderDuration(duration, "-"));
 
             elements.add(renderDuration(result.duration(), "-"));
 
@@ -116,13 +113,13 @@ class TourRaceOutputHTML {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append("<ul>").append(Config.LINE_SEPARATOR);
+            writer.append("<ul>").append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResultsFooter() throws IOException {
 
-            writer.append("</ul>").append(Config.LINE_SEPARATOR).append(Config.LINE_SEPARATOR);
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
         @Override
@@ -130,7 +127,7 @@ class TourRaceOutputHTML {
 
             final TourRaceResult result = ((TourRaceResult) r);
 
-            writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.runner.name)} (\{result.runner.club}) \{format(result.duration())}</li>\n");
+            writer.append("    <li>" + result.position_string + " " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.club + ") " + format(result.duration()) + "</li>" + LINE_SEPARATOR);
         }
     }
 }

@@ -24,6 +24,8 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.common.Config.*;
+
 public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private static final int UNKNOWN_LEG_NUMBER = 0;
@@ -106,7 +108,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private void recordLegResults() {
 
         race.getRaceData().getRawResults().stream().
-            filter(result -> result.getBibNumber() != Config.UNKNOWN_BIB_NUMBER).
+            filter(result -> result.getBibNumber() != UNKNOWN_BIB_NUMBER).
             forEachOrdered(this::recordLegResult);
     }
 
@@ -202,7 +204,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         if (previous_team_member_finish_time == null) return null;
 
         // Use the earlier of the mass start time, if present, and the previous runner's finish time.
-        return !mass_start_time.equals(Config.NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+        return !mass_start_time.equals(NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     @SuppressWarnings("TypeMayBeWeakened")
@@ -215,7 +217,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         if (previous_runner_finish_time == null) return race_impl.getMassStartLegs().get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-        return !mass_start_time.equals(Config.NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
+        return !mass_start_time.equals(NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
     @SuppressWarnings({"TypeMayBeWeakened", "IfCanBeAssertion"})
@@ -350,7 +352,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
-        final String dnf_string = (String) race.getConfig().get(Config.KEY_DNF_FINISHERS);
+        final String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))
@@ -486,7 +488,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int end_index) {
 
-        final String position_string = STR."\{start_index + 1}=";
+        final String position_string = (start_index + 1) + "=";
 
         for (int i = start_index; i <= end_index; i++)
             results.get(i).position_string = position_string;
@@ -508,11 +510,12 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).entry.participant.category, prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult) result).entry.participant.category, prize_categories);
+
         final List<RaceResult> results = overall_results.stream().
             filter(prize_category_filter).
-            map(result -> (RaceResult) result).
             toList();
+
         setPositionStrings(results);
         return results;
     }

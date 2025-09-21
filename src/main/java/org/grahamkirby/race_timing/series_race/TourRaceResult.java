@@ -27,6 +27,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
+import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+
 class TourRaceResult extends RaceResult {
 
     final Runner runner;
@@ -74,9 +77,9 @@ class TourRaceResult extends RaceResult {
     @Override
     public boolean canComplete() {
 
-        final int number_of_races_remaining = (int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES) - ((TourRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
+        final int number_of_races_remaining = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) - ((TourRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
 
-        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES);
+        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
     }
 
     @Override
@@ -87,7 +90,7 @@ class TourRaceResult extends RaceResult {
 
     public boolean hasCompletedSeries() {
 
-        return numberOfRacesCompleted() >= (int) race.getConfig().get(Config.KEY_MINIMUM_NUMBER_OF_RACES);
+        return numberOfRacesCompleted() >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -49,21 +49,21 @@ public class IndividualRaceOutputPDF {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final PdfWriter writer = new PdfWriter(race.getOutputDirectoryPath().resolve(STR."\{race_name}_prizes_\{year}.\{PDF_FILE_SUFFIX}").toString());
+        final PdfWriter writer = new PdfWriter(race.getOutputDirectoryPath().resolve(race_name + "_prizes_" + year + "." + PDF_FILE_SUFFIX).toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
             final Paragraph section_header = new Paragraph().
                 setFont(getFont(PDF_PRIZE_FONT_NAME)).
                 setFontSize(PDF_PRIZE_FONT_SIZE).
-                add(STR."\{race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)} \{race.getConfig().get(KEY_YEAR)} Category Prizes");
+                add(race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + race.getConfig().get(KEY_YEAR) + " Category Prizes");
 
             document.add(section_header);
 
             race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(document, category));                       // Print prizes in this category.
+                flatMap(group -> group.categories().stream()).                 // Get all prize categories.
+                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).             // Ignore further categories once all prizes have been output.
+                forEachOrdered(category -> printPrizes(document, category));        // Print prizes in this category.
 
             final List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
 
@@ -73,9 +73,8 @@ public class IndividualRaceOutputPDF {
                     setUnderline().
                     setPaddingTop(PDF_PRIZE_FONT_SIZE));
 
-                for (String team_prize : team_prizes) {
+                for (String team_prize : team_prizes)
                     document.add(new Paragraph(team_prize));
-                }
             }
         }
     }
@@ -86,7 +85,7 @@ public class IndividualRaceOutputPDF {
     private void printPrizes(final Document document, final PrizeCategory category) {
 
         try {
-            final Paragraph category_header = new Paragraph(STR."Category: \{category.getLongName()}").
+            final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
                 setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
                 setPaddingTop(PDF_PRIZE_FONT_SIZE);
@@ -125,9 +124,9 @@ public class IndividualRaceOutputPDF {
 
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
-            paragraph.add(new Text(STR."\{result.position_string}: ").setFont(font));
+            paragraph.add(new Text(result.position_string + ": ").setFont(font));
             paragraph.add(new Text(result.entry.participant.name).setFont(bold_font));
-            paragraph.add(new Text(STR." (\{((Runner) result.entry.participant).club}) \{renderDuration(result, DNF_STRING)}").setFont(font));
+            paragraph.add(new Text(" (" + ((Runner) result.entry.participant).club + ") " + renderDuration(result, DNF_STRING)).setFont(font));
 
             document.add(paragraph);
         }

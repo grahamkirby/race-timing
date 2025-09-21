@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static org.grahamkirby.race_timing.common.Config.*;
+
 public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
 
     private Race race;
@@ -42,7 +44,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
     public void completeConfiguration() {
 
         try {
-            race_config_paths = Arrays.asList(((String) race.getConfig().get(Config.KEY_RACES)).split(",", -1));
+            race_config_paths = Arrays.asList(((String) race.getConfig().get(KEY_RACES)).split(",", -1));
             races = loadRaces();
             configureClubs();
 
@@ -86,7 +88,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
 
     protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
 
-        race.getResultsCalculator().getNotes().append(STR."Runner \{runner_name} recorded for multiple clubs: \{String.join(", ", defined_clubs)}\n");
+        race.getResultsCalculator().getNotes().append("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {
@@ -136,9 +138,9 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
 
     private List<Race> loadRaces() throws IOException {
 
-        final int number_of_race_in_series =(int) race.getConfig().get(Config.KEY_NUMBER_OF_RACES_IN_SERIES);
+        final int number_of_race_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_race_in_series != race_config_paths.size())
-            throw new RuntimeException(STR."invalid number of races specified in file '\{race.getConfig().getConfigPath().getFileName()}'");
+            throw new RuntimeException("invalid number of races specified in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
         final List<Race> races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
@@ -151,7 +153,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
                 races.add(null);
             else {
                 if (config_paths_seen.contains(race_config_path))
-                    throw new RuntimeException(STR."duplicate races specified in file '\{race.getConfig().getConfigPath().getFileName()}'");
+                    throw new RuntimeException("duplicate races specified in file '" + race.getConfig().getConfigPath().getFileName() + "'");
                 config_paths_seen.add(race_config_path);
                 races.add(getIndividualRace(race_config_path, i + 1));
             }
@@ -165,7 +167,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
         final Path config_path = race.interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
-            throw new RuntimeException(STR."invalid config for race \{race_number} in file '\{race.getConfig().getConfigPath().getFileName()}'");
+            throw new RuntimeException("invalid config for race " + race_number + " in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
         final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
 

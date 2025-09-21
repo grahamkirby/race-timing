@@ -121,9 +121,7 @@ public class IndividualRaceOutputHTML {
     private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
 
         try {
-            writer.append(STR."""
-                <p><strong>\{category.getLongName()}</strong></p>
-                """);
+            writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
@@ -135,19 +133,16 @@ public class IndividualRaceOutputHTML {
     }
 
     private String getResultsSubHeader(final String s) {
-        return STR."""
-            <p></p>
-            <h4>\{s}</h4>
-            """;
+        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
     }
 
     private String getPrizesHeader() {
-        return STR."<h4>Prizes</h4>\{LINE_SEPARATOR}";
+        return "<h4>Prizes</h4>" + LINE_SEPARATOR;
     }
 
     private OutputStream getOutputStream(final String race_name, final String output_type, final String year, final OpenOption... options) throws IOException {
 
-        final Path path = race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{HTML_FILE_SUFFIX}");
+        final Path path = race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + HTML_FILE_SUFFIX);
         return Files.newOutputStream(path, options);
     }
 
@@ -182,7 +177,7 @@ public class IndividualRaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             SingleRaceResult result = (SingleRaceResult) r;
-            writer.append(STR."    <li>\{result.position_string} \{race.getNormalisation().htmlEncode(result.entry.participant.name)} (\{((Runner)result.entry.participant).club}) \{renderDuration(result, DNF_STRING)}</li>\n");
+            writer.append("    <li>" + result.position_string + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + ((Runner)result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
         }
 
         @Override

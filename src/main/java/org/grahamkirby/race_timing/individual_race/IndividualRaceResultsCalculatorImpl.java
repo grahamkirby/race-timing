@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.readAllLines;
+import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculator {
@@ -114,7 +115,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     private void configureIndividualEarlyStarts() {
 
-        final String individual_early_starts_string = (String) race.getConfig().get(Config.KEY_INDIVIDUAL_EARLY_STARTS);
+        final String individual_early_starts_string = (String) race.getConfig().get(KEY_INDIVIDUAL_EARLY_STARTS);
 
         // bib number / start time difference
         // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
@@ -213,7 +214,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     List<RaceResult> loadOverallResults() throws IOException {
 
-        return readAllLines((Path) race.getConfig().get(Config.KEY_RESULTS_PATH)).stream().
+        return readAllLines((Path) race.getConfig().get(KEY_RESULTS_PATH)).stream().
             map(Normalisation::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
             map(race_result_mapper).
@@ -268,7 +269,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     /** Gets the median finish time for the race. */
     public Duration getMedianTime() {
 
-        String median_time_string = (String) race.getConfig().get(Config.KEY_MEDIAN_TIME);
+        String median_time_string = (String) race.getConfig().get(KEY_MEDIAN_TIME);
         // The median time may be recorded explicitly if not all results are recorded.
         if (median_time_string != null) return parseTime(median_time_string);
 
@@ -304,7 +305,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
-        String dnf_string = (String) race.getConfig().get(Config.KEY_DNF_FINISHERS);
+        String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))
@@ -484,7 +485,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<RaceResult> results, final int start_index, final int end_index) {
 
-        final String position_string = STR."\{start_index + 1}=";
+        final String position_string = (start_index + 1) + "=";
 
         for (int i = start_index; i <= end_index; i++)
             results.get(i).position_string = position_string;

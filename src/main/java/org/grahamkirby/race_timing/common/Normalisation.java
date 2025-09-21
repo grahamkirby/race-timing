@@ -25,8 +25,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Config.COMMENT_SYMBOL;
-import static org.grahamkirby.race_timing.common.Config.KEY_GENDER_ELIGIBILITY_MAP_PATH;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
@@ -157,7 +156,7 @@ public class Normalisation {
     /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
     public static String format(final Duration duration) {
 
-        if (duration == null) return Config.DNF_STRING;
+        if (duration == null) return DNF_STRING;
         return formatWholePart(duration) + formatFractionalPart(duration);
     }
 
@@ -169,10 +168,10 @@ public class Normalisation {
             entry_column_mappings = loadEntryColumnMapping();
             category_map = loadCategoryMap();
             gender_eligibility_map = loadGenderEligibilityMap();
-            normalised_club_names = loadNormalisationMap(Config.KEY_NORMALISED_CLUB_NAMES_PATH, false);
-            normalised_html_entities = loadNormalisationMap(Config.KEY_NORMALISED_HTML_ENTITIES_PATH, true);
+            normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
+            normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
 
-            final Path capitalisation_stop_words_path = (Path) race.getConfig().get(Config.KEY_CAPITALISATION_STOP_WORDS_PATH);
+            final Path capitalisation_stop_words_path = (Path) race.getConfig().get(KEY_CAPITALISATION_STOP_WORDS_PATH);
             capitalisation_stop_words = new HashSet<>(Files.readAllLines(capitalisation_stop_words_path));
 
             non_title_case_words = new HashSet<>();
@@ -205,7 +204,7 @@ public class Normalisation {
         // space character, by grouping column numbers with a dash.
         // E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
 
-        final String entry_column_map_string = (String) race.getConfig().get(Config.KEY_ENTRY_COLUMN_MAP);
+        final String entry_column_map_string = (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP);
 
         // Column mapping not used for relay races, so may not be set.
         if (entry_column_map_string == null) return Collections.emptyList();
@@ -217,7 +216,7 @@ public class Normalisation {
 
         final Map<String, String> map = new HashMap<>();
 
-        final Path category_map_path = (Path) race.getConfig().get(Config.KEY_CATEGORY_MAP_PATH);
+        final Path category_map_path = (Path) race.getConfig().get(KEY_CATEGORY_MAP_PATH);
         if (category_map_path != null) {
 
             Files.readAllLines(category_map_path).stream().
@@ -350,7 +349,7 @@ public class Normalisation {
 
         for (final Map.Entry<String, String> entry : normalisation_map.entrySet())
             // "(?i)" specifies case insensitive map lookup.
-            result = result.replaceAll(STR."(?i)\{entry.getKey()}", entry.getValue());
+            result = result.replaceAll("(?i)" + entry.getKey(), entry.getValue());
 
         return result;
     }
@@ -361,14 +360,14 @@ public class Normalisation {
         time = time.strip();
 
         // Deal with missing hours or seconds component.
-        if (time.startsWith(separator)) time = STR."0\{time}";
-        if (time.endsWith(separator)) time = STR."\{time}0";
+        if (time.startsWith(separator)) time = "0" + time;
+        if (time.endsWith(separator)) time = time + "0";
 
         try {
             final String[] parts = time.split(separator);
 
             // Construct ISO-8601 duration format.
-            return Duration.parse(STR."PT\{hours(parts)}\{minutes(parts)}\{seconds(parts)}");
+            return Duration.parse("PT" + hours(parts) + minutes(parts) + seconds(parts));
 
         } catch (final RuntimeException _) {
             throw new DateTimeParseException(time, time, 0);
@@ -401,14 +400,14 @@ public class Normalisation {
     }
 
     private static String hours(final String[] parts) {
-        return parts.length > 2 ? STR."\{parts[0]}H" : "";
+        return parts.length > 2 ? parts[0] + "H" : "";
     }
 
     private static String minutes(final String[] parts) {
-        return STR."\{parts.length > 2 ? parts[1] : parts[0]}M";
+        return (parts.length > 2 ? parts[1] : parts[0]) + "M";
     }
 
     private static String seconds(final String[] parts) {
-        return STR."\{parts.length > 2 ? parts[2] : parts[1]}S";
+        return (parts.length > 2 ? parts[2] : parts[1]) + "S";
     }
 }

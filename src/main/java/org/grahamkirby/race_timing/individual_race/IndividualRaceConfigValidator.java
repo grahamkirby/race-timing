@@ -31,7 +31,7 @@ public class IndividualRaceConfigValidator implements ConfigProcessor {
         final var config = race.getConfig();
 
         if (!(config.containsKey(KEY_RAW_RESULTS_PATH) || config.containsKey(KEY_RESULTS_PATH)))
-            throw new RuntimeException(STR."no entry for either of keys '\{KEY_RAW_RESULTS_PATH}' or '\{KEY_RESULTS_PATH}' in file '\{race.config_file_path.getFileName()}'");
+            throw new RuntimeException("no entry for either of keys '" + KEY_RAW_RESULTS_PATH + "' or '" + KEY_RESULTS_PATH + "' in file '" + race.config_file_path.getFileName() + "'");
 
         // Each DNF string contains single bib number.
         validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.config_file_path);
@@ -40,13 +40,12 @@ public class IndividualRaceConfigValidator implements ConfigProcessor {
     public static void validateDNFRecords(final String dnf_string, final Path config_file_path) {
 
         if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(",")) {
+            for (final String individual_dnf_string : dnf_string.split(","))
                 try {
                     Integer.parseInt(individual_dnf_string);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException(STR."invalid entry '\{dnf_string}' for key '\{KEY_DNF_FINISHERS}' in file '\{config_file_path.getFileName()}'", e);
+                    throw new RuntimeException("invalid entry '" + dnf_string +"' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_path.getFileName() + "'", e);
                 }
-            }
     }
 }

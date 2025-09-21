@@ -56,7 +56,7 @@ class MidweekRaceOutputCSV {
             final SeriesRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
             final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
 
-            writer.append(STR."Pos,Runner,Club,Category,\{race_names},Total,Completed\{LINE_SEPARATOR}");
+            writer.append("Pos,Runner,Club,Category," + race_names + ",Total,Completed" + LINE_SEPARATOR);
         }
 
         @Override
@@ -66,7 +66,7 @@ class MidweekRaceOutputCSV {
             final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
             final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
 
-            writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{encode(result.runner.club)},\{result.runner.category.getShortName()},");
+            writer.append(result.position_string + "," + encode(result.runner.name) + "," + encode(result.runner.club) + "," + result.runner.category.getShortName() + ",");
 
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
             // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
@@ -78,7 +78,7 @@ class MidweekRaceOutputCSV {
                     collect(Collectors.joining(","))
             );
 
-            writer.append(STR.",\{result.totalScore()},\{result.hasCompletedSeries() ? "Y" : "N"}");
+            writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N"));
             writer.append(LINE_SEPARATOR);
         }
     }

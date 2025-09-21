@@ -136,9 +136,9 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRaceImpl {
             processMultipleClubsForRunner(runner_name, defined_clubs);
     }
 
-    protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
+    protected void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
 
-        race.getResultsCalculator().getNotes().append(STR."Runner \{runner_name} recorded for multiple clubs: \{String.join(", ", defined_clubs)}\n");
+        race.getResultsCalculator().getNotes().append("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {
@@ -190,7 +190,7 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRaceImpl {
 
         final int number_of_race_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_race_in_series != race_config_paths.size())
-            throw new RuntimeException(STR."invalid number of races specified in file '\{race.getConfig().getConfigPath().getFileName()}'");
+            throw new RuntimeException("invalid number of races specified in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
         final List<Race> races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
@@ -203,7 +203,7 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRaceImpl {
                 races.add(null);
             else {
                 if (config_paths_seen.contains(race_config_path))
-                    throw new RuntimeException(STR."duplicate races specified in file '\{race.getConfig().getConfigPath().getFileName()}'");
+                    throw new RuntimeException("duplicate races specified in file '" + race.getConfig().getConfigPath().getFileName() + "'");
                 config_paths_seen.add(race_config_path);
                 races.add(getIndividualRace(race_config_path, i + 1));
             }
@@ -217,7 +217,7 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRaceImpl {
         final Path config_path = race.interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
-            throw new RuntimeException(STR."invalid config for race \{race_number} in file '\{race.getConfig().getConfigPath().getFileName()}'");
+            throw new RuntimeException("invalid config for race " + race_number + " in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
         final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();

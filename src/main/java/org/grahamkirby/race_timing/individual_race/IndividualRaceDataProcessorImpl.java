@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.*;
+import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
 
 public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
@@ -44,8 +45,8 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
     @Override
     public RaceData getRaceData() {
 
-        final Path entries_path = (Path) race.getConfig().get(Config.KEY_ENTRIES_PATH);
-        final Path raw_results_path = (Path) race.getConfig().get(Config.KEY_RAW_RESULTS_PATH);
+        final Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
+        final Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, raw_results_path);
@@ -79,7 +80,7 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
     private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, (String) race.getConfig().get(Config.KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
         validateRawResults(raw_results_path);
@@ -113,8 +114,8 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
         raw_results.forEach(raw_result -> {
             line.incrementAndGet();
             final int result_bib_number = raw_result.getBibNumber();
-            if (result_bib_number != Config.UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
-                throw new RuntimeException(STR."unregistered bib number '\{result_bib_number}' at line \{line.get()} in file '\{raw_results_path.getFileName()}'");
+            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
+                throw new RuntimeException("unregistered bib number '" + result_bib_number + "' at line " + line.get() + " in file '" + raw_results_path.getFileName() + "'");
         });
     }
 
@@ -123,7 +124,7 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.participant != entry2.participant && entry1.participant.equals(entry2.participant))
-                    throw new RuntimeException(STR."duplicate entry '\{entry1}' in file '\{entries_path.getFileName()}'");
+                    throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
     }
 
     List<RaceEntry> loadEntries(Path entries_path) throws IOException {

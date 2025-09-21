@@ -71,12 +71,8 @@ public class GrandPrixRaceOutputText {
 
     private String getPrizesHeader() {
 
-        final String header = STR."\{(String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)} Results \{(String) race.getConfig().get(KEY_YEAR)}";
-        return STR."""
-            \{header}
-            \{"=".repeat(header.length())}
-
-            """;
+        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
+        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     /**
@@ -84,7 +80,7 @@ public class GrandPrixRaceOutputText {
      */
     private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
-        return race.getOutputDirectoryPath().resolve(STR."\{race_name}_\{output_type}_\{year}.\{TEXT_FILE_SUFFIX}");
+        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + TEXT_FILE_SUFFIX);
     }
 
     /** Prints prizes, ordered by prize category groups. */
@@ -115,12 +111,8 @@ public class GrandPrixRaceOutputText {
 
     private String getPrizeCategoryHeader(final PrizeCategory category) {
 
-        final String header = STR."Category: \{category.getLongName()}";
-        return STR."""
-            \{header}
-            \{"-".repeat(header.length())}
-
-            """;
+        final String header = "Category: " + category.getLongName();
+        return header + LINE_SEPARATOR + "-".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,7 +127,7 @@ public class GrandPrixRaceOutputText {
 
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
 
-            writer.append(STR."\{result.position_string}: \{result.runner.name} (\{result.runner.club}) \{result.totalScore()}\{LINE_SEPARATOR}");
+            writer.append(result.position_string + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
         }
     }
 }

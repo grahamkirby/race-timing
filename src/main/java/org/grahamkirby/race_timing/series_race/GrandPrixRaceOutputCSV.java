@@ -64,7 +64,7 @@ class GrandPrixRaceOutputCSV {
                 map(GrandPrixRaceCategory::category_title).
                 collect(Collectors.joining("?,"));
 
-            writer.append(STR."Pos,Runner,Category,\{race_names},Total,Completed,\{race_categories_header}?\{LINE_SEPARATOR}");
+            writer.append("Pos,Runner,Category," + race_names + ",Total,Completed," + race_categories_header + "?" + LINE_SEPARATOR);
         }
 
         @Override
@@ -74,7 +74,7 @@ class GrandPrixRaceOutputCSV {
             final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
             final GrandPrixRaceResultsCalculatorImpl calculator = (GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator();
 
-            writer.append(STR."\{result.position_string},\{encode(result.runner.name)},\{result.runner.category.getShortName()},");
+            writer.append(result.position_string + "," + encode(result.runner.name) + "," + result.runner.category.getShortName() + ",");
 
             writer.append(
                 race_impl.getRaces().stream().
@@ -84,7 +84,7 @@ class GrandPrixRaceOutputCSV {
                     collect(Collectors.joining(","))
             );
 
-            writer.append(STR.",\{result.totalScore()},\{result.hasCompletedSeries() ? "Y" : "N"},");
+            writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + ",");
 
             writer.append(
                 race_impl.race_categories.stream().
