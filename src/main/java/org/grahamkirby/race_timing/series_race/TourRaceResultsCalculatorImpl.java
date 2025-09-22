@@ -43,7 +43,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         this.race = race;
     }
@@ -215,7 +215,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return prize_results;
     }
 
-    private void setPrizeWinners(PrizeCategory category) {
+    private void setPrizeWinners(final PrizeCategory category) {
 
         final AtomicInteger position = new AtomicInteger(1);
 
@@ -371,7 +371,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
         final Predicate<RaceResult> prize_category_filter = r -> {
-            TourRaceResult result = (TourRaceResult) r;
+            final TourRaceResult result = (TourRaceResult) r;
             return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(result.runner.club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
         };
 

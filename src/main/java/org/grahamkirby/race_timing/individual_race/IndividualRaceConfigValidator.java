@@ -33,7 +33,6 @@ public class IndividualRaceConfigValidator implements ConfigProcessor {
         if (!(config.containsKey(KEY_RAW_RESULTS_PATH) || config.containsKey(KEY_RESULTS_PATH)))
             throw new RuntimeException("no entry for either of keys '" + KEY_RAW_RESULTS_PATH + "' or '" + KEY_RESULTS_PATH + "' in file '" + race.config_file_path.getFileName() + "'");
 
-        // Each DNF string contains single bib number.
         validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.config_file_path);
     }
 
@@ -42,6 +41,7 @@ public class IndividualRaceConfigValidator implements ConfigProcessor {
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))
                 try {
+                    // Each DNF string contains single bib number.
                     Integer.parseInt(individual_dnf_string);
 
                 } catch (final NumberFormatException e) {

@@ -25,8 +25,6 @@ import java.io.IOException;
 @SuppressWarnings("preview")
 public class MidweekRaceResultsOutput implements ResultsOutput {
 
-    private Race race;
-
     private MidweekRaceOutputCSV output_CSV;
     private MidweekRaceOutputHTML output_HTML;
     private MidweekRaceOutputText output_text;
@@ -45,9 +43,7 @@ public class MidweekRaceResultsOutput implements ResultsOutput {
     }
 
     @Override
-    public void setRace(Race race) {
-
-        this.race = race;
+    public void setRace(final Race race) {
 
         output_CSV = new MidweekRaceOutputCSV(race);
         output_HTML = new MidweekRaceOutputHTML(race);

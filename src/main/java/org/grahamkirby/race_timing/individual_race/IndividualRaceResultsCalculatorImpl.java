@@ -39,9 +39,11 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     private List<RaceResult> overall_results;
     private StringBuilder notes;
+    private int next_fake_bib_number = 1;
+    private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         this.race = race;
         notes = new StringBuilder();
@@ -79,62 +81,36 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     private void addSeparatelyRecordedTimes() {
 
-        Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRaceImpl) race.getSpecific()).separately_recorded_finish_times;
+        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRaceImpl) race.getSpecific()).separately_recorded_finish_times;
 
-        for (Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet()) {
-            RaceResult raceResult = makeResult(new RawResult(entry.getKey(), entry.getValue()));
-            overall_results.add(raceResult);
-        }
+        for (final Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet())
+            overall_results.add(makeResult(new RawResult(entry.getKey(), entry.getValue())));
     }
 
-    private void adjustTimesByCategory(Map<EntryCategory, Duration> offsets) {
+    private void adjustTimesByCategory(final Map<EntryCategory, Duration> offsets) {
 
-        for (RaceResult r : overall_results) {
+        for (final RaceResult r : overall_results) {
 
-            SingleRaceResult result = (SingleRaceResult)r;
+            final SingleRaceResult result = (SingleRaceResult)r;
 
             if (offsets.containsKey(result.entry.participant.category)) {
-                EntryCategory category = result.entry.participant.category;
-                Duration duration = offsets.get(category);
+                final EntryCategory category = result.entry.participant.category;
+                final Duration duration = offsets.get(category);
+
                 result.finish_time = result.finish_time.minus(duration);
-                int x = 3;
             }
         }
     }
 
-    private void adjustTimes(Map<Integer, Duration> offsets) {
+    private void adjustTimes(final Map<Integer, Duration> offsets) {
 
-        for (RaceResult r : overall_results) {
+        for (final RaceResult r : overall_results) {
 
-            SingleRaceResult result = (SingleRaceResult)r;
-            if (offsets.containsKey(result.entry.bib_number)) {
+            final SingleRaceResult result = (SingleRaceResult) r;
+
+            if (offsets.containsKey(result.entry.bib_number))
                 result.finish_time = result.finish_time.minus(offsets.get(result.entry.bib_number));
-            }
         }
-    }
-
-    private void configureIndividualEarlyStarts() {
-
-        final String individual_early_starts_string = (String) race.getConfig().get(KEY_INDIVIDUAL_EARLY_STARTS);
-
-        // bib number / start time difference
-        // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
-
-        if (individual_early_starts_string != null)
-            Arrays.stream(individual_early_starts_string.split(",")).
-                forEach(this::recordEarlyStart);
-    }
-
-    private void recordEarlyStart(final String early_starts_string) {
-
-        final String[] split = early_starts_string.split("/");
-
-        final int bib_number = Integer.parseInt(split[0]);
-        final Duration offset = parseTime(split[1]);
-
-        final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
-
-        result.finish_time = result.finish_time.plus(offset);
     }
 
     private void allocatePrizes() {
@@ -155,7 +131,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
         return prize_results;
     }
 
-    private void setPrizeWinners(PrizeCategory category) {
+    private void setPrizeWinners(final PrizeCategory category) {
 
         final AtomicInteger position = new AtomicInteger(1);
 
@@ -192,13 +168,13 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     private void initialiseResults() {
 
-        List<RawResult> raw_results = race.getRaceData().getRawResults();
+        final List<RawResult> raw_results = race.getRaceData().getRawResults();
 
         if (raw_results.isEmpty()) {
             try {
                 overall_results = loadOverallResults();
             }
-            catch (IOException e) {
+            catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -221,8 +197,6 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
             filter(Objects::nonNull).
             toList();
     }
-    private int next_fake_bib_number = 1;
-    private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
 
     private RaceResult makeRaceResult(final List<String> elements) {
 
@@ -241,15 +215,15 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
+    @SuppressWarnings({"OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public RaceEntry makeRaceEntry(final List<String> elements, final Race race) {
 
-        Normalisation normalisation = race.getNormalisation();
+        final Normalisation normalisation = race.getNormalisation();
 
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
-            int bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
+            final int bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
 
             final String name = normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
@@ -257,7 +231,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
             final EntryCategory category = category_name.isEmpty() ? null : race.getCategoryDetails().lookupEntryCategory(category_name);
 
-            Participant participant = new Runner(name, club, category);
+            final Participant participant = new Runner(name, club, category);
 
             return new RaceEntry(participant, bib_number, race);
 
@@ -269,7 +243,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     /** Gets the median finish time for the race. */
     public Duration getMedianTime() {
 
-        String median_time_string = (String) race.getConfig().get(KEY_MEDIAN_TIME);
+        final String median_time_string = (String) race.getConfig().get(KEY_MEDIAN_TIME);
         // The median time may be recorded explicitly if not all results are recorded.
         if (median_time_string != null) return parseTime(median_time_string);
 
@@ -305,7 +279,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
-        String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
+        final String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))
@@ -346,7 +320,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     private int getRecordedPosition(final int bib_number) {
 
-        List<RawResult> raw_results = race.getRaceData().getRawResults();
+        final List<RawResult> raw_results = race.getRaceData().getRawResults();
 
         return (int) raw_results.stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
@@ -410,7 +384,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     protected RaceEntry getEntryWithBibNumber(final int bib_number) {
 
-        List<RaceEntry> entries = race.getRaceData().getEntries();
+        final List<RaceEntry> entries = race.getRaceData().getEntries();
 
         return entries.stream().
             filter(entry -> entry.bib_number == bib_number).
@@ -512,8 +486,8 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
         final Predicate<RaceResult> prize_category_filter = r -> {
-            SingleRaceResult result = (SingleRaceResult) r;
-            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner)result.entry.participant).club, race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_categories);
+            final SingleRaceResult result = (SingleRaceResult) r;
+            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner) result.entry.participant).club, race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_categories);
         };
 
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();

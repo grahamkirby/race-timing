@@ -41,7 +41,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         this.race = race;
     }
@@ -98,7 +98,6 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = ((MidweekRaceImpl)race.getSpecific()).getRaces().stream().
-//            map(individual_race -> ((MidweekRaceImpl) race.getSpecific()).calculateRaceScore(individual_race, runner)).
             map(individual_race -> calculateRaceScore(individual_race, runner)).
             toList();
 
@@ -220,7 +219,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return prize_results;
     }
 
-    private void setPrizeWinners(PrizeCategory category) {
+    private void setPrizeWinners(final PrizeCategory category) {
 
         final AtomicInteger position = new AtomicInteger(1);
 
@@ -293,24 +292,6 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
             if (r1.canComplete() && !r2.canComplete()) return -1;
 
             return base_comparator.compare(r1, r2);
-        };
-    }
-
-    protected static Comparator<RaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super RaceResult> base_comparator) {
-
-        return (r1, r2) -> {
-
-            if (!r1.canComplete() || !r2.canComplete()) return 0;
-            else return base_comparator.compare(r1, r2);
-        };
-    }
-
-    protected static Comparator<RaceResult> ignoreIfBothResultsAreDNF(final Comparator<? super RaceResult> base_comparator) {
-
-        return (r1, r2) -> {
-
-            if (!r1.canComplete() && !r2.canComplete()) return 0;
-            else return base_comparator.compare(r1, r2);
         };
     }
 
@@ -400,7 +381,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
         final Predicate<RaceResult> prize_category_filter = r -> {
-            MidweekRaceResult result = (MidweekRaceResult) r;
+            final MidweekRaceResult result = (MidweekRaceResult) r;
             return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(result.runner.club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
         };
 

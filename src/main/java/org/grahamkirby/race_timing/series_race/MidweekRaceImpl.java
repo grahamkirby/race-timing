@@ -36,7 +36,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
         this.race = race;
     }
 
@@ -171,15 +171,15 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
 
         final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
 
-        configureIndividualRace(individual_race, race_number);
+        configureIndividualRace(individual_race);
         individual_race.processResults();
 
         return individual_race;
     }
 
-    protected void configureIndividualRace(final Race individual_race, final int race_number) {
+    protected void configureIndividualRace(final Race individual_race) {
 
-        ((Race)individual_race).completeConfiguration();
+        individual_race.completeConfiguration();
     }
 
     public int getNumberOfRacesTakenPlace() {

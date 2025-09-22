@@ -48,9 +48,10 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         this.race = race;
+
         notes = new StringBuilder();
         race_impl = ((RelayRaceImpl) race.getSpecific());
         missing_data = new RelayRaceMissingData(race);
@@ -120,9 +121,10 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         final int leg_index = findIndexOfNextUnfilledLegResult(result.leg_results);
         final LegResult leg_result = result.leg_results.get(leg_index);
 
-        Duration recordedFinishTime = raw_result.getRecordedFinishTime();
-        Duration startOffset = race_impl.getStartOffset();
-        leg_result.finish_time = recordedFinishTime.plus(startOffset);
+        final Duration recorded_finish_time = raw_result.getRecordedFinishTime();
+        final Duration start_offset = race_impl.getStartOffset();
+
+        leg_result.finish_time = recorded_finish_time.plus(start_offset);
 
         // Leg number will be zero in most cases, unless explicitly recorded in raw results.
         leg_result.leg_number = ((RelayRaceDataImpl) race.getRaceData()).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER);

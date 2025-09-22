@@ -29,6 +29,8 @@ import java.util.stream.Stream;
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.format;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.relay_race.RelayRaceResultsCalculatorImpl.ignoreIfBothResultsAreDNF;
+import static org.grahamkirby.race_timing.relay_race.RelayRaceResultsCalculatorImpl.penaliseDNF;
 
 public class RelayRaceImpl implements SpecificRace {
 
@@ -121,7 +123,7 @@ public class RelayRaceImpl implements SpecificRace {
         return results;
     }
 
-    List<String> getLegDetails(RelayRaceResult result) {
+    List<String> getLegDetails(final RelayRaceResult result) {
 
         final List<String> leg_details = new ArrayList<>();
         boolean all_previous_legs_completed = true;
@@ -217,12 +219,14 @@ public class RelayRaceImpl implements SpecificRace {
 
     private List<Comparator<RaceResult>> getLegResultComparators(final int leg_number) {
 
+        final Comparator<RaceResult> performance_comparator = ignoreIfBothResultsAreDNF(penaliseDNF(IndividualRaceResultsCalculatorImpl::comparePerformance));
+
         return leg_number == 1 ?
             List.of(
-                RelayRaceResultsCalculatorImpl.ignoreIfBothResultsAreDNF(RelayRaceResultsCalculatorImpl.penaliseDNF(IndividualRaceResultsCalculatorImpl::comparePerformance)),
+                performance_comparator,
                 this::compareRecordedLegPosition) :
             List.of(
-                RelayRaceResultsCalculatorImpl.ignoreIfBothResultsAreDNF(RelayRaceResultsCalculatorImpl.penaliseDNF(IndividualRaceResultsCalculatorImpl::comparePerformance)),
+                performance_comparator,
                 RelayRaceImpl::compareLastNameOfFirstRunner, RelayRaceImpl::compareFirstNameOfFirstRunner);
     }
 

@@ -88,10 +88,6 @@ class TourRaceResult extends RaceResult {
         return canComplete();
     }
 
-    public boolean hasCompletedSeries() {
-
-        return numberOfRacesCompleted() >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
-    }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected int numberOfRacesCompleted() {

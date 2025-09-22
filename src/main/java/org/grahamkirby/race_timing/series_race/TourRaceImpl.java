@@ -38,7 +38,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
         this.race = race;
     }
 
@@ -50,7 +50,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
             races = loadRaces();
             configureClubs();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }

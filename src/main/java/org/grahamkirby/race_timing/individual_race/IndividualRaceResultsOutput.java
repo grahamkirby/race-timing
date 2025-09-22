@@ -18,14 +18,19 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.common.ResultsOutput;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.List;
+import java.nio.file.Files;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 @SuppressWarnings("preview")
 public class IndividualRaceResultsOutput implements ResultsOutput {
@@ -48,7 +53,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     }
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         output_CSV = new IndividualRaceOutputCSV(race);
         output_HTML = new IndividualRaceOutputHTML(race);
@@ -82,7 +87,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
     }
 
     /** Prints results using a specified printer, ordered by prize category groups. */
-    static void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Function<String, String> get_results_sub_header, final Race race) throws IOException {
+    public static void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Function<String, String> get_results_sub_header, final Race race) throws IOException {
 
         // Don't display category group headers if there is only one group.
         final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
@@ -97,11 +102,26 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
                 writer.append(get_results_sub_header.apply(group.group_title()));
             }
 
-            RaceResultsCalculator raceResults = race.getResultsCalculator();
-            List<RaceResult> overallResults = raceResults.getOverallResults(group.categories());
-            printer.print(overallResults);
+            printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
 
             not_first_category_group = true;
+        }
+    }
+
+    public static OutputStream getOutputStream(final Race race, final String output_type) throws IOException {
+
+        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        return Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + HTML_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS);
+    }
+
+    public static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race, "overall"))) {
+
+            final ResultPrinter printer = make_result_printer.apply(race, writer);
+            printResults(writer, printer, SeriesRaceOutputHTML::getResultsSubHeader, race);
         }
     }
 }

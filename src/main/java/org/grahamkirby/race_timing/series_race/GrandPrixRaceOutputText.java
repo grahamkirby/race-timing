@@ -84,12 +84,12 @@ public class GrandPrixRaceOutputText {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
+            flatMap(group -> group.categories().stream()).              // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizes(writer, category));       // Print prizes in this category.
     }
 
     /** Prints prizes within a given category. */
@@ -114,6 +114,7 @@ public class GrandPrixRaceOutputText {
         final String header = "Category: " + category.getLongName();
         return header + LINE_SEPARATOR + "-".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     static class PrizeResultPrinter extends ResultPrinterText {

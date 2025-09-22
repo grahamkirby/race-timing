@@ -38,7 +38,7 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
     private Race race;
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
         this.race = race;
     }
 
@@ -58,7 +58,7 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
             return new RaceDataImpl(raw_results, entries);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -103,23 +103,24 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
             toList();
     }
 
-    private void validateRecordedBibNumbersAreRegistered(List<RaceEntry> entries, List<RawResult> raw_results, Path raw_results_path) {
+    private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path raw_results_path) {
 
         final Set<Integer> entry_bib_numbers = entries.stream().
             map(entry -> entry.bib_number).
             collect(Collectors.toSet());
 
-        AtomicInteger line = new AtomicInteger(0);
+        final AtomicInteger line = new AtomicInteger(0);
 
         raw_results.forEach(raw_result -> {
             line.incrementAndGet();
             final int result_bib_number = raw_result.getBibNumber();
+
             if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
                 throw new RuntimeException("unregistered bib number '" + result_bib_number + "' at line " + line.get() + " in file '" + raw_results_path.getFileName() + "'");
         });
     }
 
-    private void validateEntriesUnique(final List<RaceEntry> entries, Path entries_path) {
+    private void validateEntriesUnique(final List<RaceEntry> entries, final Path entries_path) {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
@@ -127,7 +128,7 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
                     throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
     }
 
-    List<RaceEntry> loadEntries(Path entries_path) throws IOException {
+    List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
         return readAllLines(entries_path).stream().
             map(Normalisation::stripEntryComment).

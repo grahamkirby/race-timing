@@ -45,7 +45,7 @@ public class MidweekRaceOutputText {
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        Path prizes = getOutputFilePath(race_name, "prizes", year);
+        final Path prizes = getOutputFilePath(race_name, "prizes", year);
         final OutputStream stream = Files.newOutputStream(prizes, STANDARD_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
@@ -86,12 +86,12 @@ public class MidweekRaceOutputText {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
+    private void printPrizes(final OutputStreamWriter writer) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
+            flatMap(group -> group.categories().stream()).                // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).            // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizes(writer, category));         // Print prizes in this category.
     }
 
     /** Prints prizes within a given category. */
@@ -116,6 +116,7 @@ public class MidweekRaceOutputText {
         final String header = "Category: " + category.getLongName();
         return header + LINE_SEPARATOR + "-".repeat(header.length())  + LINE_SEPARATOR + LINE_SEPARATOR;
     }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     static class PrizeResultPrinter extends ResultPrinterText {
