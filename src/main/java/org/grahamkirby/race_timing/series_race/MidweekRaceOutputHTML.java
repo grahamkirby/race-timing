@@ -18,7 +18,9 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.ResultPrinterHTML;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
 class MidweekRaceOutputHTML {
 
@@ -62,7 +64,6 @@ class MidweekRaceOutputHTML {
         protected List<String> getResultsColumnHeaders() {
 
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
-
             final List<String> headers = new ArrayList<>(common_headers);
 
             headers.add("Club");
@@ -81,13 +82,12 @@ class MidweekRaceOutputHTML {
 
         protected List<String> getResultsElements(final RaceResult r) {
 
-            final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
-
             final List<String> elements = new ArrayList<>();
 
+            final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            elements.add(result.position_string);
+            elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(result.runner.name));
             elements.add(result.runner.category.getShortName());
             elements.add(result.runner.club);
@@ -107,7 +107,7 @@ class MidweekRaceOutputHTML {
 
     private static final class PrizeResultPrinter extends ResultPrinterHTML {
 
-        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -128,7 +128,7 @@ class MidweekRaceOutputHTML {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
 
-            writer.append("    <li>" + result.position_string + ": " + result.runner.name + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + ": " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
         }
     }
 }

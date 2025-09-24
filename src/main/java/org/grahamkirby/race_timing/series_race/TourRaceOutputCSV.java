@@ -66,7 +66,7 @@ class TourRaceOutputCSV {
 
             final TourRaceResult result = ((TourRaceResult) r);
 
-            writer.append(result.position_string + "," + encode(result.runner.name) + "," + encode(result.runner.club) + "," + result.runner.category.getShortName() + ",");
+            writer.append(result.getPositionString() + "," + encode(result.runner.name) + "," + encode(result.runner.club) + "," + result.runner.category.getShortName() + ",");
 
             writer.append(
                 result.times.stream().

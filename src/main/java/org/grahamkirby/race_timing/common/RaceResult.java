@@ -27,12 +27,28 @@ import java.util.List;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class RaceResult {
 
-    public final Race race;
-    public String position_string;
-    public List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
+    protected final Race race;
+    protected String position_string;
+    protected List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
     protected RaceResult(final Race race) {
         this.race = race;
+    }
+
+    public Race getRace() {
+        return race;
+    }
+
+    public String getPositionString() {
+        return position_string;
+    }
+
+    public void setPositionString(final String position_string) {
+        this.position_string  = position_string;
+    }
+
+    public List<PrizeCategory> getCategoriesOfPrizesAwarded() {
+        return categories_of_prizes_awarded;
     }
 
     public abstract String getParticipantName();

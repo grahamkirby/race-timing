@@ -43,7 +43,7 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
         final SingleRaceResult result = (SingleRaceResult) r;
 
         return List.of(
-            result.position_string,
+            result.getPositionString(),
             String.valueOf(result.entry.bib_number),
             race.getNormalisation().htmlEncode(result.entry.participant.name),
             ((Runner) result.entry.participant).club,

@@ -128,7 +128,7 @@ public class GrandPrixRaceOutputText {
 
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
 
-            writer.append(result.position_string + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
         }
     }
 }

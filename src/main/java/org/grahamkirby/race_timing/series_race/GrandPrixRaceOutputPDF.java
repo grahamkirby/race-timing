@@ -131,7 +131,7 @@ class GrandPrixRaceOutputPDF {
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
         final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
-        return new PrizeWinnerDetails(result.position_string, result.runner.name, result.runner.club, String.valueOf(result.totalScore()));
+        return new PrizeWinnerDetails(result.getPositionString(), result.runner.name, result.runner.club, String.valueOf(result.totalScore()));
     }
 
     public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {

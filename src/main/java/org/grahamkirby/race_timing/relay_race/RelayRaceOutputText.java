@@ -264,7 +264,7 @@ public class RelayRaceOutputText {
         public void printResult(final RaceResult r) throws IOException {
 
             RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(result.position_string + ": " + result.entry.participant.name + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.entry.participant.name + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

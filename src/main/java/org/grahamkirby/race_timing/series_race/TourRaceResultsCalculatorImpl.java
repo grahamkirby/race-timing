@@ -158,7 +158,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
                 if (previous_category != null && !previous_category.equals(current_category)) {
 
-                    final String race_name = (String) result.race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS);
+                    final String race_name = (String) result.getRace().getConfig().get(KEY_RACE_NAME_FOR_RESULTS);
 
                     checkForChangeToYoungerAgeCategory(result, previous_category, current_category, race_name);
                     checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
@@ -207,7 +207,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
         final List<RaceResult> prize_results = overall_results.stream().
-            filter(result -> result.categories_of_prizes_awarded.contains(prize_category)).
+            filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
             toList();
 
         setPositionStrings(prize_results);
@@ -239,7 +239,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         if (!new_prize_category.isExclusive()) return true;
 
-        for (final PrizeCategory category_already_won : result.categories_of_prizes_awarded)
+        for (final PrizeCategory category_already_won : result.getCategoriesOfPrizesAwarded())
             if (category_already_won.isExclusive()) return false;
 
         return true;
@@ -247,7 +247,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        result.categories_of_prizes_awarded.add(category);
+        result.getCategoriesOfPrizesAwarded().add(category);
     }
 
     /** Sorts all results by relevant comparators. */
@@ -331,12 +331,12 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
                         result_index = highest_index_with_same_performance;
                     } else
                         // The following result has a different performance, so just record current position for this one.
-                        result.position_string = String.valueOf(result_index + 1);
+                        result.setPositionString(String.valueOf(result_index + 1));
                 } else {
-                    result.position_string = String.valueOf(result_index + 1);
+                    result.setPositionString(String.valueOf(result_index + 1));
                 }
             } else {
-                result.position_string = "-";
+                result.setPositionString("-");
             }
         }
     }
@@ -347,7 +347,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         final String position_string = (start_index + 1) + "=";
 
         for (int i = start_index; i <= end_index; i++)
-            results.get(i).position_string = position_string;
+            results.get(i).setPositionString(position_string);
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */

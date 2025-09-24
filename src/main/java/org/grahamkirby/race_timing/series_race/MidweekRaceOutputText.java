@@ -130,7 +130,7 @@ public class MidweekRaceOutputText {
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            writer.append(result.position_string + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
         }
     }
 }

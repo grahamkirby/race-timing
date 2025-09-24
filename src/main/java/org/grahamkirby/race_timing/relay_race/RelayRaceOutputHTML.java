@@ -177,7 +177,7 @@ public class RelayRaceOutputHTML {
             final RelayRaceResult result = (RelayRaceResult) r;
 
             return List.of(
-                result.position_string,
+                result.getPositionString(),
                 String.valueOf(result.entry.bib_number),
                 race.getNormalisation().htmlEncode(result.entry.participant.name),
                 result.entry.participant.category.getLongName(),
@@ -211,7 +211,7 @@ public class RelayRaceOutputHTML {
             final LegResult leg_result = (LegResult) r;
 
             return List.of(
-                leg_result.position_string,
+                leg_result.getPositionString(),
                 race.getNormalisation().htmlEncode(((Team) leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1)),
                 renderDuration(leg_result, DNF_STRING)
             );
@@ -247,7 +247,7 @@ public class RelayRaceOutputHTML {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            elements.add(result.position_string);
+            elements.add(result.getPositionString());
             elements.add(String.valueOf(result.entry.bib_number));
             elements.add(race.getNormalisation().htmlEncode(result.entry.participant.name));
             elements.add(result.entry.participant.category.getLongName());
@@ -276,7 +276,7 @@ public class RelayRaceOutputHTML {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append("    <li>" + result.position_string + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
         }
 
         @Override

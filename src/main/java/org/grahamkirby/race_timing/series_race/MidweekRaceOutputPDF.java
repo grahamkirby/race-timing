@@ -113,7 +113,7 @@ class MidweekRaceOutputPDF {
 
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
-            paragraph.add(new Text(result.position_string + ": ").setFont(font));
+            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
             paragraph.add(new Text(result.runner.name).setFont(bold_font));
             paragraph.add(new Text(" (" + result.runner.club + ") " + result.totalScore()).setFont(font));
 

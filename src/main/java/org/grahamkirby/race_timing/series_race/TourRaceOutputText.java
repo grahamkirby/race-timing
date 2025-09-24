@@ -130,7 +130,7 @@ public class TourRaceOutputText {
 
             final TourRaceResult result = (TourRaceResult) r;
 
-            writer.append(result.position_string + ": " + result.runner.name + " (" + result.runner.club + ") " + format(result.duration()) + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.runner.name + " (" + result.runner.club + ") " + format(result.duration()) + LINE_SEPARATOR);
         }
     }
 }

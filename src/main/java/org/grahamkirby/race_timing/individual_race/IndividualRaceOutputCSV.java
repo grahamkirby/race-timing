@@ -65,7 +65,7 @@ public class IndividualRaceOutputCSV {
             final RaceEntry entry = result.entry;
             final Participant participant = entry.participant;
 
-            writer.append(result.position_string + "," + entry.bib_number + "," + encode(participant.name) + ",");
+            writer.append(result.getPositionString() + "," + entry.bib_number + "," + encode(participant.name) + ",");
             writer.append(encode(((Runner) participant).club) + "," + participant.category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }

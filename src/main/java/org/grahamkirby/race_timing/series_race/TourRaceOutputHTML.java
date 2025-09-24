@@ -90,7 +90,7 @@ class TourRaceOutputHTML {
 
             final TourRaceResult result = (TourRaceResult) r;
 
-            elements.add(result.position_string);
+            elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(result.runner.name));
             elements.add(result.runner.category.getShortName());
             elements.add(result.runner.club);
@@ -127,7 +127,7 @@ class TourRaceOutputHTML {
 
             final TourRaceResult result = ((TourRaceResult) r);
 
-            writer.append("    <li>" + result.position_string + " " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.club + ") " + format(result.duration()) + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.club + ") " + format(result.duration()) + "</li>" + LINE_SEPARATOR);
         }
     }
 }

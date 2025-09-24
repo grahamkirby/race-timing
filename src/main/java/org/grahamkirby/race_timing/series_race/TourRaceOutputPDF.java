@@ -133,7 +133,7 @@ class TourRaceOutputPDF {
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
         final TourRaceResult result = (TourRaceResult) r;
-        return new PrizeWinnerDetails(result.position_string, result.runner.name, result.runner.club, format(result.duration()));
+        return new PrizeWinnerDetails(result.getPositionString(), result.runner.name, result.runner.club, format(result.duration()));
     }
 
     public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {

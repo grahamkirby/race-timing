@@ -18,16 +18,18 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.ResultPrinterHTML;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.KEY_RACE_NAME_FOR_RESULTS;
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
 class GrandPrixRaceOutputHTML {
 
@@ -63,11 +65,12 @@ class GrandPrixRaceOutputHTML {
         protected List<String> getResultsColumnHeaders() {
 
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
-
             final List<String> headers = new ArrayList<>(common_headers);
 
             // This traverses races in order of listing in config, sorted first by race type and then date.
-            for (final Race individual_race : ((GrandPrixRaceImpl) race.getSpecific()).getRaces())
+            final List<Race> races = ((GrandPrixRaceImpl) race.getSpecific()).getRaces();
+
+            for (final Race individual_race : races)
                 // Check whether race has taken place at this point.
                 if (individual_race != null)
                     headers.add((String) individual_race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS));
@@ -85,15 +88,16 @@ class GrandPrixRaceOutputHTML {
 
             final List<String> elements = new ArrayList<>();
 
+            final GrandPrixRaceResultsCalculatorImpl calculator = (GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator();
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
 
-            elements.add(result.position_string);
+            elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(result.runner.name));
             elements.add(result.runner.category.getShortName());
 
             for (final Race individual_race : ((GrandPrixRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
-                    final int score = ((GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator()).calculateRaceScore(individual_race, result.runner);
+                    final int score = calculator.calculateRaceScore(individual_race, result.runner);
                     elements.add(renderScore(score));
                 }
 
@@ -135,7 +139,7 @@ class GrandPrixRaceOutputHTML {
 
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
 
-            writer.append("    <li>" + result.position_string + ": " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + ": " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
         }
     }
 }

@@ -123,7 +123,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
         final List<RaceResult> prize_results = overall_results.stream().
-            filter(result -> result.categories_of_prizes_awarded.contains(prize_category)).
+            filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
             toList();
 
         setPositionStrings(prize_results);
@@ -155,7 +155,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         if (!new_prize_category.isExclusive()) return true;
 
-        for (final PrizeCategory category_already_won : result.categories_of_prizes_awarded)
+        for (final PrizeCategory category_already_won : result.getCategoriesOfPrizesAwarded())
             if (category_already_won.isExclusive()) return false;
 
         return true;
@@ -163,7 +163,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
     protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
-        result.categories_of_prizes_awarded.add(category);
+        result.getCategoriesOfPrizesAwarded().add(category);
     }
 
     private void initialiseResults() {
@@ -446,12 +446,12 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
                         result_index = highest_index_with_same_performance;
                     } else
                         // The following result has a different performance, so just record current position for this one.
-                        result.position_string = String.valueOf(result_index + 1);
+                        result.setPositionString(String.valueOf(result_index + 1));
                 } else {
-                    result.position_string = String.valueOf(result_index + 1);
+                    result.setPositionString(String.valueOf(result_index + 1));
                 }
             } else {
-                result.position_string = "-";
+                result.setPositionString("-");
             }
         }
     }
@@ -462,7 +462,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
         final String position_string = (start_index + 1) + "=";
 
         for (int i = start_index; i <= end_index; i++)
-            results.get(i).position_string = position_string;
+            results.get(i).setPositionString(position_string);
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */

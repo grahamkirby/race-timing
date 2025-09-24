@@ -124,7 +124,7 @@ public class IndividualRaceOutputPDF {
 
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
-            paragraph.add(new Text(result.position_string + ": ").setFont(font));
+            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
             paragraph.add(new Text(result.entry.participant.name).setFont(bold_font));
             paragraph.add(new Text(" (" + ((Runner) result.entry.participant).club + ") " + renderDuration(result, DNF_STRING)).setFont(font));
 

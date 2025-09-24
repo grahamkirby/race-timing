@@ -57,14 +57,13 @@ class GrandPrixRaceOutputCSV {
         public void printResultsHeader() throws IOException {
 
             final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
-
             final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
 
             final String race_categories_header = race_impl.race_categories.stream().
                 map(GrandPrixRaceCategory::category_title).
-                collect(Collectors.joining("?,"));
+                collect(Collectors.joining("?,")) + "?";
 
-            writer.append("Pos,Runner,Category," + race_names + ",Total,Completed," + race_categories_header + "?" + LINE_SEPARATOR);
+            writer.append("Pos,Runner,Category," + race_names + ",Total,Completed," + race_categories_header + LINE_SEPARATOR);
         }
 
         @Override
@@ -74,7 +73,7 @@ class GrandPrixRaceOutputCSV {
             final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
             final GrandPrixRaceResultsCalculatorImpl calculator = (GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator();
 
-            writer.append(result.position_string + "," + encode(result.runner.name) + "," + result.runner.category.getShortName() + ",");
+            writer.append(result.getPositionString() + "," + encode(result.runner.name) + "," + result.runner.category.getShortName() + ",");
 
             writer.append(
                 race_impl.getRaces().stream().
