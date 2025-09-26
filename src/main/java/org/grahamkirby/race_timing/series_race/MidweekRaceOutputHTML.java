@@ -21,6 +21,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinterHTML;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -86,15 +87,16 @@ class MidweekRaceOutputHTML {
 
             final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
             final MidweekRaceResult result = (MidweekRaceResult) r;
+            final Runner runner = (Runner) result.getParticipant();
 
             elements.add(result.getPositionString());
-            elements.add(race.getNormalisation().htmlEncode(result.runner.name));
-            elements.add(result.runner.category.getShortName());
-            elements.add(result.runner.club);
+            elements.add(race.getNormalisation().htmlEncode(runner.name));
+            elements.add(runner.category.getShortName());
+            elements.add(runner.club);
 
             for (final Race individual_race : ((MidweekRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
-                    final int score = calculator.calculateRaceScore(individual_race, result.runner);
+                    final int score = calculator.calculateRaceScore(individual_race, runner);
                     elements.add(String.valueOf(score));
                 }
 
@@ -128,7 +130,7 @@ class MidweekRaceOutputHTML {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
 
-            writer.append("    <li>" + result.getPositionString() + ": " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + ": " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + result.getParticipant().category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
         }
     }
 }

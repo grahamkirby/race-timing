@@ -20,24 +20,18 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.List;
 import java.util.Objects;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+class GrandPrixRaceResult extends SeriesRaceResult {
 
-class GrandPrixRaceResult extends RaceResult {
-
-    final Runner runner;
     private final List<Integer> scores;
 
     GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(race, runner);
-        this.runner = runner;
         this.scores = scores;
     }
 
@@ -49,7 +43,9 @@ class GrandPrixRaceResult extends RaceResult {
 
     public boolean hasCompletedSeries() {
 
-        return numberOfRacesCompleted() >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+        // TODO tests pass without check for race category completion - add test.
+        return numberOfRacesCompleted() >= minimum_number_of_races &&
+            ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
     }
 
     private boolean hasCompletedRace(final int race_number) {
@@ -65,21 +61,10 @@ class GrandPrixRaceResult extends RaceResult {
     @Override
     public boolean canComplete() {
 
-        final int number_of_races_remaining = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) - ((GrandPrixRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
+        final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
-        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES) &&
+        return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races &&
             ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
-    }
-
-    protected int numberOfRacesCompleted() {
-
-        return (int) ((GrandPrixRaceImpl) race.getSpecific()).getRaces().stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-            map(result -> (SingleRaceResult) result).
-            filter(result -> result.getParticipant().equals(runner)).
-            filter(SingleRaceResult::canComplete).
-            count();
     }
 
     @Override
@@ -105,7 +90,6 @@ class GrandPrixRaceResult extends RaceResult {
 
     int totalScore() {
 
-        final int minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         final int number_of_races_completed = numberOfRacesCompleted();
         final int number_of_counting_scores = Math.min(minimum_number_of_races, number_of_races_completed);
 

@@ -18,8 +18,8 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
@@ -30,7 +30,7 @@ import java.util.Objects;
 import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
 import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
 
-class TourRaceResult extends RaceResult {
+class TourRaceResult extends SeriesRaceResult {
 
     public final List<Duration> times;
 
@@ -71,16 +71,4 @@ class TourRaceResult extends RaceResult {
         return canComplete();
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected int numberOfRacesCompleted() {
-
-        return (int) ((TourRaceImpl) race.getSpecific()).getRaces().stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-            map(result -> (SingleRaceResult) result).
-            filter(result -> result.getParticipant().equals(participant)).
-            filter(SingleRaceResult::canComplete).
-            count();
-    }
 }

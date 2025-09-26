@@ -21,6 +21,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinterHTML;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -92,12 +93,12 @@ class GrandPrixRaceOutputHTML {
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
 
             elements.add(result.getPositionString());
-            elements.add(race.getNormalisation().htmlEncode(result.runner.name));
-            elements.add(result.runner.category.getShortName());
+            elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
+            elements.add(result.getParticipant().category.getShortName());
 
             for (final Race individual_race : ((GrandPrixRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
-                    final int score = calculator.calculateRaceScore(individual_race, result.runner);
+                    final int score = calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant());
                     elements.add(renderScore(score));
                 }
 
@@ -139,7 +140,7 @@ class GrandPrixRaceOutputHTML {
 
             final GrandPrixRaceResult result = ((GrandPrixRaceResult) r);
 
-            writer.append("    <li>" + result.getPositionString() + ": " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + ": " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + result.getParticipant().category.getShortName() + ") " + result.totalScore() + "</li>" + LINE_SEPARATOR);
         }
     }
 }

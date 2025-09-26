@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -53,7 +54,7 @@ class MidweekRaceOutputCSV {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final SeriesRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
+            final SeriesRace race_impl = (MidweekRaceImpl) race.getSpecific();
             final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total,Completed" + LINE_SEPARATOR);
@@ -66,14 +67,14 @@ class MidweekRaceOutputCSV {
             final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
             final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
 
-            writer.append(result.getPositionString() + "," + encode(result.runner.name) + "," + encode(result.runner.club) + "," + result.runner.category.getShortName() + ",");
+            writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).club) + "," + result.getParticipant().category.getShortName() + ",");
 
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
             // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
             writer.append(
                 race_impl.getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> calculator.calculateRaceScore(individual_race, result.runner)).
+                    map(individual_race -> calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant())).
                     map(String::valueOf).
                     collect(Collectors.joining(","))
             );

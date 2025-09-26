@@ -18,35 +18,21 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+class MidweekRaceResult extends SeriesRaceResult {
 
-class MidweekRaceResult extends RaceResult {
-
-    final Runner runner;
     private final List<Integer> scores;
-
-    private final int minimum_number_of_races;
-    private final int number_of_races_in_series;
-    private final int number_of_races_taken_place;
 
     MidweekRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(race, runner);
-        this.runner = runner;
         this.scores = scores;
 
-        minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
-        number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
-        number_of_races_taken_place = ((MidweekRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
     }
 
     @Override
@@ -85,20 +71,5 @@ class MidweekRaceResult extends RaceResult {
     public boolean hasCompletedSeries() {
 
         return numberOfRacesCompleted() >= minimum_number_of_races;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private int numberOfRacesCompleted() {
-
-        final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
-
-        return (int) race_impl.getRaces().stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-            map(result -> (SingleRaceResult) result).
-            filter(result -> result.getParticipant().equals(runner)).
-            filter(SingleRaceResult::canComplete).
-            count();
     }
 }

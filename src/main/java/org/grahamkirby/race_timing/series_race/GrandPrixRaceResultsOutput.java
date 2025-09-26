@@ -48,7 +48,7 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
     }
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         this.race = race;
 
@@ -66,8 +66,8 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
         output_HTML.printResults();
 
         for (final RaceResult result : race.getResultsCalculator().getOverallResults())
-            if (((GrandPrixRaceResult) result).runner.category == null)
-                race.appendToNotes("Runner " + ((GrandPrixRaceResult) result).runner.name + " unknown category so omitted from overall results" + LINE_SEPARATOR);
+            if (result.getParticipant().category == null)
+                race.appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
     }
 
     private void printPrizes() throws IOException {

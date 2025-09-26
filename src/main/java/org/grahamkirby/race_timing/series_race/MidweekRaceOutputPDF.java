@@ -30,6 +30,7 @@ import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 
@@ -106,7 +107,8 @@ class MidweekRaceOutputPDF {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            MidweekRaceResult result = (MidweekRaceResult) r;
+            final MidweekRaceResult result = (MidweekRaceResult) r;
+            final Runner runner = (Runner) result.getParticipant();
 
             final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
             final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
@@ -114,8 +116,8 @@ class MidweekRaceOutputPDF {
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
             paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
-            paragraph.add(new Text(result.runner.name).setFont(bold_font));
-            paragraph.add(new Text(" (" + result.runner.club + ") " + result.totalScore()).setFont(font));
+            paragraph.add(new Text(runner.name).setFont(bold_font));
+            paragraph.add(new Text(" (" + runner.club + ") " + result.totalScore()).setFont(font));
 
             document.add(paragraph);
         }

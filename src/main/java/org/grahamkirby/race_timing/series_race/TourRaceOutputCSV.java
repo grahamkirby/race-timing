@@ -25,7 +25,6 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.time.Duration;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -56,7 +55,7 @@ class TourRaceOutputCSV {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final SeriesRaceImpl race_impl = (TourRaceImpl) race.getSpecific();
+            final SeriesRace race_impl = (TourRaceImpl) race.getSpecific();
             final String race_names = SeriesRaceOutputCSV.getConcatenatedRaceNames(race_impl.getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total" + LINE_SEPARATOR);

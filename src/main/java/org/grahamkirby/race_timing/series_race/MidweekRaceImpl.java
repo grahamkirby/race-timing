@@ -28,7 +28,7 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
+public class MidweekRaceImpl implements SpecificRace, SeriesRace {
 
     private Race race;
     private List<Race> races;

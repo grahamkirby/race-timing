@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinterText;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -130,7 +131,7 @@ public class MidweekRaceOutputText {
 
             final MidweekRaceResult result = (MidweekRaceResult) r;
 
-            writer.append(result.getPositionString() + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " (" + ((Runner) result.getParticipant()).club + ") " + result.totalScore() + LINE_SEPARATOR);
         }
     }
 }

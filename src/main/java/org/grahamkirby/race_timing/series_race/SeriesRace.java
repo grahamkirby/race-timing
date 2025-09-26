@@ -21,7 +21,7 @@ import org.grahamkirby.race_timing.common.Race;
 
 import java.util.List;
 
-public interface SeriesRaceImpl {
+public interface SeriesRace {
 
     int getNumberOfRacesTakenPlace();
     List<Race> getRaces();

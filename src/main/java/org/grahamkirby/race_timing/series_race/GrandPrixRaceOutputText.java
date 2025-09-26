@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinterText;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -127,8 +128,9 @@ public class GrandPrixRaceOutputText {
         public void printResult(final RaceResult r) throws IOException {
 
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
+            final Runner runner = (Runner) result.getParticipant();
 
-            writer.append(result.getPositionString() + ": " + result.runner.name + " (" + result.runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + runner.name + " (" + runner.club + ") " + result.totalScore() + LINE_SEPARATOR);
         }
     }
 }

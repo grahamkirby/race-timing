@@ -21,6 +21,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -72,13 +73,14 @@ class GrandPrixRaceOutputCSV {
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
             final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
             final GrandPrixRaceResultsCalculatorImpl calculator = (GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator();
+            final Runner runner = (Runner) result.getParticipant();
 
-            writer.append(result.getPositionString() + "," + encode(result.runner.name) + "," + result.runner.category.getShortName() + ",");
+            writer.append(result.getPositionString() + "," + encode(runner.name) + "," + runner.category.getShortName() + ",");
 
             writer.append(
                 race_impl.getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> calculator.calculateRaceScore(individual_race, result.runner)).
+                    map(individual_race -> calculator.calculateRaceScore(individual_race, runner)).
                     map(OverallResultPrinter::renderScore).
                     collect(Collectors.joining(","))
             );

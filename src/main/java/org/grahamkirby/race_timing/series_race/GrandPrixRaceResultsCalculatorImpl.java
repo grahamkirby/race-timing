@@ -271,7 +271,7 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            race.getCategoryDetails().isResultEligibleForPrizeCategory(((GrandPrixRaceResult)result).runner.club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_category);
+            race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner) result.getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
@@ -421,7 +421,7 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
         final Predicate<RaceResult> prize_category_filter = r -> {
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
-            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(result.runner.club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
+            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner) result.getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
         };
 
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();

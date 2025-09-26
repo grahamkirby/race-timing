@@ -31,7 +31,7 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
+public class TourRaceImpl implements SpecificRace, SeriesRace {
 
     private Race race;
     private List<Race> races;
