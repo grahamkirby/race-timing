@@ -32,7 +32,6 @@ class MidweekRaceResult extends SeriesRaceResult {
 
         super(race, runner);
         this.scores = scores;
-
     }
 
     @Override
@@ -52,24 +51,5 @@ class MidweekRaceResult extends SeriesRaceResult {
             sorted().
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
-    }
-
-    @Override
-    public boolean canComplete() {
-
-        final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
-
-        return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
-    }
-
-    @Override
-    public boolean shouldDisplayPosition() {
-
-        return canComplete();
-    }
-
-    public boolean hasCompletedSeries() {
-
-        return numberOfRacesCompleted() >= minimum_number_of_races;
     }
 }

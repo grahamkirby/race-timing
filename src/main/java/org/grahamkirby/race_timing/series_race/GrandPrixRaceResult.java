@@ -35,21 +35,12 @@ class GrandPrixRaceResult extends SeriesRaceResult {
         this.scores = scores;
     }
 
-    boolean hasCompletedRaceCategory(final GrandPrixRaceCategory category) {
-
-        return category.race_numbers().stream().
-            anyMatch(this::hasCompletedRace);
-    }
-
+    @Override
     public boolean hasCompletedSeries() {
 
         // TODO tests pass without check for race category completion - add test.
-        return numberOfRacesCompleted() >= minimum_number_of_races &&
+        return super.hasCompletedSeries() &&
             ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
-    }
-
-    private boolean hasCompletedRace(final int race_number) {
-        return race_number <= scores.size() && scores.get(race_number - 1) > 0.0;
     }
 
     @Override
@@ -61,32 +52,11 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     @Override
     public boolean canComplete() {
 
-        final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
-
-        return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races &&
+        return super.canComplete() &&
             ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
     }
 
-    @Override
-    public boolean shouldDisplayPosition() {
-        return canComplete();
-    }
-
-    private boolean canCompleteRaceCategory(final GrandPrixRaceCategory category) {
-
-        final int number_of_races_remaining_in_category = (int) category.race_numbers().stream().
-            map(race_number -> ((GrandPrixRaceImpl) race.getSpecific()).getRaces().get(race_number - 1)).
-            filter(Objects::nonNull).
-            count();
-
-        final int number_of_races_required_in_category = category.minimum_number_to_be_completed();
-
-        final int number_of_races_completed_in_category = (int) category.race_numbers().stream().
-            filter(this::hasCompletedRace).
-            count();
-
-        return number_of_races_completed_in_category + number_of_races_remaining_in_category >= number_of_races_required_in_category;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     int totalScore() {
 
@@ -98,5 +68,43 @@ class GrandPrixRaceResult extends SeriesRaceResult {
             filter(score -> score > 0).
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
+    }
+
+    boolean hasCompletedRaceCategory(final GrandPrixRaceCategory category) {
+
+        return category.race_numbers().stream().
+            anyMatch(this::hasCompletedRace);
+    }
+
+    private boolean hasCompletedRace(final int race_number) {
+
+        return race_number <= scores.size() && scores.get(race_number - 1) > 0;
+    }
+
+    private boolean canCompleteRaceCategory(final GrandPrixRaceCategory category) {
+
+        final List<Race> races = ((SeriesRace) race.getSpecific()).getRaces();
+
+        final int number_of_races_required_in_category = category.minimum_number_to_be_completed();
+        final int number_of_races_completed_in_category = numberOfRacesCompletedInCategory(category);
+        final int number_of_races_remaining_in_category = numberOfRacesRemainingInCategory(races, category);
+
+        return number_of_races_completed_in_category + number_of_races_remaining_in_category >= number_of_races_required_in_category;
+    }
+
+    private int numberOfRacesCompletedInCategory(final GrandPrixRaceCategory category) {
+
+        return (int) category.race_numbers().stream().
+            filter(this::hasCompletedRace).
+            count();
+    }
+
+    private int numberOfRacesRemainingInCategory(final List<Race> races, final GrandPrixRaceCategory category) {
+
+        // TODO tests pass when filter is for non null.
+        return (int) category.race_numbers().stream().
+            map(race_number -> races.get(race_number - 1)).
+            filter(Objects::isNull).
+            count();
     }
 }

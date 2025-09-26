@@ -42,7 +42,26 @@ public abstract class SeriesRaceResult extends RaceResult {
         number_of_races_taken_place = ((SeriesRace) race.getSpecific()).getNumberOfRacesTakenPlace();
     }
 
-    /// ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public boolean canComplete() {
+
+        final int number_of_races_remaining = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) - ((SeriesRace) race.getSpecific()).getNumberOfRacesTakenPlace();
+
+        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+    }
+
+    @Override
+    public boolean shouldDisplayPosition() {
+
+        return canComplete();
+    }
+
+    public boolean hasCompletedSeries() {
+
+        return numberOfRacesCompleted() >= minimum_number_of_races;
+    }
 
     protected int numberOfRacesCompleted() {
 

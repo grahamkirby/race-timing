@@ -43,10 +43,9 @@ class TourRaceResult extends SeriesRaceResult {
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
-        final Duration duration = duration();
         final Duration other_duration = ((TourRaceResult) other).duration();
 
-        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
+        return Comparator.nullsLast(Duration::compareTo).compare(duration(), other_duration);
     }
 
     public Duration duration() {
@@ -55,20 +54,6 @@ class TourRaceResult extends SeriesRaceResult {
             times.stream().
                 filter(Objects::nonNull).
                 reduce(Duration.ZERO, Duration::plus);
-    }
-
-    @Override
-    public boolean canComplete() {
-
-        final int number_of_races_remaining = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) - ((TourRaceImpl) race.getSpecific()).getNumberOfRacesTakenPlace();
-
-        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
-    }
-
-    @Override
-    public boolean shouldDisplayPosition() {
-
-        return canComplete();
     }
 
 }
