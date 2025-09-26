@@ -28,15 +28,29 @@ import java.util.List;
 public abstract class RaceResult {
 
     protected final Race race;
+    protected Participant participant;
     protected String position_string;
     protected List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
-    protected RaceResult(final Race race) {
+    protected RaceResult(final Race race, final Participant participant) {
         this.race = race;
+        this.participant = participant;
     }
 
     public Race getRace() {
         return race;
+    }
+
+    public Participant getParticipant() {
+        return participant;
+    }
+
+    public String getParticipantName() {
+        return participant.name;
+    }
+
+    public EntryCategory getCategory() {
+        return participant.category;
     }
 
     public String getPositionString() {
@@ -51,10 +65,7 @@ public abstract class RaceResult {
         return categories_of_prizes_awarded;
     }
 
-    public abstract String getParticipantName();
-    public abstract Participant getParticipant();
     public abstract int comparePerformanceTo(RaceResult other);
     public abstract boolean canComplete();
     public abstract boolean shouldDisplayPosition();
-    public abstract EntryCategory getCategory();
 }

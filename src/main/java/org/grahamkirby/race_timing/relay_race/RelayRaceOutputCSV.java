@@ -142,7 +142,8 @@ public class RelayRaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(result.getPositionString() + "," + result.entry.bib_number + "," + encode(result.entry.participant.name) + "," + result.entry.participant.category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+//            writer.append(result.getPositionString() + "," + result.entry.bib_number + "," + encode(result.entry.participant.name) + "," + result.entry.participant.category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 
@@ -157,7 +158,8 @@ public class RelayRaceOutputCSV {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(result.getPositionString() + "," + result.entry.bib_number + "," + encode(result.entry.participant.name) + "," + result.entry.participant.category.getLongName() + ",");
+            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getLongName() + ",");
+//            writer.append(result.getPositionString() + "," + result.entry.bib_number + "," + encode(result.entry.participant.name) + "," + result.entry.participant.category.getLongName() + ",");
 
             final List<String> leg_strings = ((RelayRaceImpl) race.getSpecific()).getLegDetails(result).stream().
                 map(Config::encode).toList();
@@ -188,7 +190,8 @@ public class RelayRaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             final LegResult result = (LegResult) r;
-            final String runner_names = encode(((Team) result.entry.participant).runner_names.get(result.leg_number - 1));
+            final String runner_names = encode(((Team) result.getParticipant()).runner_names.get(result.leg_number - 1));
+//            final String runner_names = encode(((Team) result.entry.participant).runner_names.get(result.leg_number - 1));
 
             writer.append(result.getPositionString() + "," + runner_names + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }

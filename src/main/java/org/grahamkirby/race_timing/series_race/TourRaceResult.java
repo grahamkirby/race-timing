@@ -32,24 +32,12 @@ import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_S
 
 class TourRaceResult extends RaceResult {
 
-    final Runner runner;
     public final List<Duration> times;
 
     TourRaceResult(final Runner runner, final List<Duration> times, final Race race) {
 
-        super(race);
-        this.runner = runner;
+        super(race, runner);
         this.times = times;
-    }
-
-    @Override
-    public String getParticipantName() {
-        return runner.name;
-    }
-
-    @Override
-    public Participant getParticipant() {
-        return runner;
     }
 
     @Override
@@ -67,11 +55,6 @@ class TourRaceResult extends RaceResult {
             times.stream().
                 filter(Objects::nonNull).
                 reduce(Duration.ZERO, Duration::plus);
-    }
-
-    @Override
-    public EntryCategory getCategory() {
-        return runner.category;
     }
 
     @Override
@@ -96,7 +79,7 @@ class TourRaceResult extends RaceResult {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            filter(result -> result.entry.participant.equals(runner)).
+            filter(result -> result.getParticipant().equals(participant)).
             filter(SingleRaceResult::canComplete).
             count();
     }

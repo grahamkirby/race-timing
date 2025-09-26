@@ -225,9 +225,6 @@ public class RelayRaceOutputText {
                 bib_numbers_with_missing_times.stream().
                     map(String::valueOf).
                     collect(Collectors.joining(", ")));
-
-//                    reduce((i1, i2) -> i1 + ", " + i2).
-//                    orElse(""));
         }
     }
 
@@ -246,9 +243,6 @@ public class RelayRaceOutputText {
                 times_with_missing_bib_numbers.stream().
                     map(Normalisation::format).
                     collect(Collectors.joining(LINE_SEPARATOR)));
-
-//                    reduce((i1, i2) -> i1 + LINE_SEPARATOR + i2).
-//                    orElse(""));
         }
     }
 
@@ -263,8 +257,8 @@ public class RelayRaceOutputText {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(result.getPositionString() + ": " + result.entry.participant.name + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            final RelayRaceResult result = (RelayRaceResult) r;
+            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

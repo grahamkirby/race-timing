@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.common.SpecificRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
@@ -108,7 +109,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.entry.participant).
+            map(RaceResult::getParticipant).
             filter(participant -> participant.name.equals(runner_name)).
             map(participant -> ((Runner)participant).club).
             distinct().
@@ -122,7 +123,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.entry.participant).
+            map(RaceResult::getParticipant).
             filter(participant -> participant.name.equals(runner_name)).
             forEachOrdered(participant -> ((Runner)participant).club = defined_club);
     }
@@ -133,7 +134,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRaceImpl {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.entry.participant.name).
+            map(RaceResult::getParticipantName).
             distinct().
             toList();
     }

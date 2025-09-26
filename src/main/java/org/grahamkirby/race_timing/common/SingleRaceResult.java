@@ -18,28 +18,21 @@
 package org.grahamkirby.race_timing.common;
 
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-
 import java.time.Duration;
 import java.util.Comparator;
 
 public class SingleRaceResult extends RaceResult {
 
-    public RaceEntry entry;
     public Duration finish_time;
     public boolean dnf;
+    public int bib_number;
 
     public SingleRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 
-        super(race);
-        this.entry = entry;
+        super(race, entry.participant);
+
+        bib_number = entry.bib_number;
         this.finish_time = finish_time;
-    }
-
-    @Override
-    public String getParticipantName() {
-
-        return entry.participant.name;
     }
 
     @Override
@@ -61,17 +54,7 @@ public class SingleRaceResult extends RaceResult {
     }
 
     @Override
-    public EntryCategory getCategory() {
-        return entry.participant.category;
-    }
-
-    @Override
     public boolean canComplete() {
         return !dnf;
-    }
-
-    @Override
-    public Participant getParticipant() {
-        return entry.participant;
     }
 }

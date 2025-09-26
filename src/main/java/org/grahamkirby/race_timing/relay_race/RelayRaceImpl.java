@@ -88,6 +88,7 @@ public class RelayRaceImpl implements SpecificRace {
      * Value is read from configuration file using key KEY_NUMBER_OF_LEGS.
      */
     public int getNumberOfLegs() {
+        // TODO inline this.
         return (int) race.getConfig().get(KEY_NUMBER_OF_LEGS);
     }
 
@@ -133,7 +134,8 @@ public class RelayRaceImpl implements SpecificRace {
             final LegResult leg_result = result.leg_results.get(leg - 1);
             final boolean completed = leg_result.canComplete();
 
-            final String leg_runner_names = ((Team)leg_result.entry.participant).runner_names.get(leg - 1);
+            final String leg_runner_names = ((Team)leg_result.getParticipant()).runner_names.get(leg - 1);
+//            final String leg_runner_names = ((Team)leg_result.entry.participant).runner_names.get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
             final String leg_time = renderDuration(leg_result, DNF_STRING);
             final String split_time = completed && all_previous_legs_completed ? format(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
@@ -234,8 +236,11 @@ public class RelayRaceImpl implements SpecificRace {
 
         final int leg_number = ((LegResult) r1).leg_number;
 
-        final int recorded_position1 = getRecordedLegPosition(((SingleRaceResult)r1).entry.bib_number, leg_number);
-        final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult) r2).entry.bib_number, leg_number);
+        final int recorded_position1 = getRecordedLegPosition(((SingleRaceResult)r1).bib_number, leg_number);
+        final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult) r2).bib_number, leg_number);
+
+//        final int recorded_position1 = getRecordedLegPosition(((SingleRaceResult)r1).entry.bib_number, leg_number);
+//        final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult) r2).entry.bib_number, leg_number);
 
         return Integer.compare(recorded_position1, recorded_position2);
     }

@@ -112,8 +112,12 @@ public class RelayRaceOutputPDF {
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
             paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
-            paragraph.add(new Text(result.entry.participant.name).setFont(bold_font));
-            paragraph.add(new Text(" (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING)).setFont(font));
+            paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
+            paragraph.add(new Text(" (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING)).setFont(font));
+
+//            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
+//            paragraph.add(new Text(result.entry.participant.name).setFont(bold_font));
+//            paragraph.add(new Text(" (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING)).setFont(font));
 
             document.add(paragraph);
         }

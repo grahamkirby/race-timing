@@ -18,10 +18,10 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinterHTML;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -90,10 +90,12 @@ class TourRaceOutputHTML {
 
             final TourRaceResult result = (TourRaceResult) r;
 
+            final Runner runner = (Runner) result.getParticipant();
+
             elements.add(result.getPositionString());
-            elements.add(race.getNormalisation().htmlEncode(result.runner.name));
-            elements.add(result.runner.category.getShortName());
-            elements.add(result.runner.club);
+            elements.add(race.getNormalisation().htmlEncode(runner.name));
+            elements.add(runner.category.getShortName());
+            elements.add(runner.club);
 
             for (final Duration duration : result.times)
                 elements.add(renderDuration(duration, "-"));
@@ -126,8 +128,9 @@ class TourRaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             final TourRaceResult result = ((TourRaceResult) r);
+            final Runner runner = (Runner) result.getParticipant();
 
-            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.runner.name) + " (" + result.runner.club + ") " + format(result.duration()) + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(runner.name) + " (" + runner.club + ") " + format(result.duration()) + "</li>" + LINE_SEPARATOR);
         }
     }
 }

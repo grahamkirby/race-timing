@@ -93,12 +93,18 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
             final SingleRaceResult result = (SingleRaceResult)r;
 
-            if (offsets.containsKey(result.entry.participant.category)) {
-                final EntryCategory category = result.entry.participant.category;
+            if (offsets.containsKey(result.getParticipant().category)) {
+                final EntryCategory category = result.getParticipant().category;
                 final Duration duration = offsets.get(category);
 
                 result.finish_time = result.finish_time.minus(duration);
             }
+//            if (offsets.containsKey(result.entry.participant.category)) {
+//                final EntryCategory category = result.entry.participant.category;
+//                final Duration duration = offsets.get(category);
+//
+//                result.finish_time = result.finish_time.minus(duration);
+//            }
         }
     }
 
@@ -108,8 +114,10 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
             final SingleRaceResult result = (SingleRaceResult) r;
 
-            if (offsets.containsKey(result.entry.bib_number))
-                result.finish_time = result.finish_time.minus(offsets.get(result.entry.bib_number));
+            if (offsets.containsKey(result.bib_number))
+                result.finish_time = result.finish_time.minus(offsets.get(result.bib_number));
+//            if (offsets.containsKey(result.entry.bib_number))
+//                result.finish_time = result.finish_time.minus(offsets.get(result.entry.bib_number));
         }
     }
 
@@ -148,7 +156,8 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner)((SingleRaceResult)result).entry.participant).club, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).entry.participant.category, prize_category);
+            race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner)((SingleRaceResult)result).getParticipant()).club, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).getParticipant().category, prize_category);
+//        race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner)((SingleRaceResult)result).entry.participant).club, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).entry.participant.category, prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
@@ -312,8 +321,11 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
     /** Compares the given results on the basis of their finish positions. */
     private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
-        final int recorded_position1 = getRecordedPosition(((SingleRaceResult)r1).entry.bib_number);
-        final int recorded_position2 = getRecordedPosition(((SingleRaceResult)r2).entry.bib_number);
+        final int recorded_position1 = getRecordedPosition(((SingleRaceResult)r1).bib_number);
+        final int recorded_position2 = getRecordedPosition(((SingleRaceResult)r2).bib_number);
+
+//        final int recorded_position1 = getRecordedPosition(((SingleRaceResult)r1).entry.bib_number);
+//        final int recorded_position2 = getRecordedPosition(((SingleRaceResult)r2).entry.bib_number);
 
         return Integer.compare(recorded_position1, recorded_position2);
     }
@@ -396,9 +408,14 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         return overall_results.stream().
             map(result -> (SingleRaceResult) result).
-            filter(result -> result.entry.bib_number == bib_number).
+            filter(result -> result.bib_number == bib_number).
             findFirst().
             orElseThrow();
+//        return overall_results.stream().
+//            map(result -> (SingleRaceResult) result).
+//            filter(result -> result.entry.bib_number == bib_number).
+//            findFirst().
+//            orElseThrow();
     }
 
     public boolean areEqualPositionsAllowed() {
@@ -487,7 +504,8 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         final Predicate<RaceResult> prize_category_filter = r -> {
             final SingleRaceResult result = (SingleRaceResult) r;
-            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner) result.entry.participant).club, race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_categories);
+            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner) result.getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getParticipant().category, prize_categories);
+//            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner) result.entry.participant).club, race.getNormalisation().gender_eligibility_map, result.entry.participant.category, prize_categories);
         };
 
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();

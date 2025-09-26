@@ -29,7 +29,7 @@ public class LegResult extends SingleRaceResult {
     int leg_number;
     boolean in_mass_start;
 
-    // TODO move to SingleRaceResult.
+    // TODO move to SingleRaceResult, integrate with early starts.
     Duration start_time;  // Relative to start of leg 1.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ public class LegResult extends SingleRaceResult {
     }
 
     public String getParticipantName() {
-        return ((Team) entry.participant).runner_names.get(leg_number - 1);
+
+        return ((Team) getParticipant()).runner_names.get(leg_number - 1);
     }
 }

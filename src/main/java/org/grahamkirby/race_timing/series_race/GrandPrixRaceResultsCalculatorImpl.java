@@ -72,10 +72,19 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
                 filter(Objects::nonNull).
                 flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
                 filter(getResultInclusionPredicate()).
-                map(result -> (Runner)((SingleRaceResult) result).entry.participant).
+                map(result -> (Runner)((SingleRaceResult) result).getParticipant()).
                 distinct().
                 map(this::getOverallResult).
                 toList());
+//        overall_results = new ArrayList<>(
+//            getRacesInTemporalOrder().stream().
+//                filter(Objects::nonNull).
+//                flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
+//                filter(getResultInclusionPredicate()).
+//                map(result -> (Runner)((SingleRaceResult) result).entry.participant).
+//                distinct().
+//                map(this::getOverallResult).
+//                toList());
     }
 
     protected RaceResult getOverallResult(final Runner runner) {
@@ -89,7 +98,8 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
     protected Predicate<RaceResult> getResultInclusionPredicate() {
 
-        return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner)((SingleRaceResult) result).entry.participant).club);
+        return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner)((SingleRaceResult) result).getParticipant()).club);
+//        return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner)((SingleRaceResult) result).entry.participant).club);
     }
 
     int calculateRaceScore(final Race individual_race, final Runner runner) {
@@ -128,10 +138,20 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
             filter(getResultInclusionPredicate()).
             map(result -> ((SingleRaceResult) result)).
             forEachOrdered(result -> {
-                final Runner runner = (Runner)result.entry.participant;
+                final Runner runner = (Runner) result.getParticipant();
                 map.putIfAbsent(runner, new ArrayList<>());
                 map.get(runner).add(result);
             });
+//        getRacesInTemporalOrder().stream().
+//            filter(Objects::nonNull).
+//            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
+//            filter(getResultInclusionPredicate()).
+//            map(result -> ((SingleRaceResult) result)).
+//            forEachOrdered(result -> {
+//                final Runner runner = (Runner)result.entry.participant;
+//                map.putIfAbsent(runner, new ArrayList<>());
+//                map.get(runner).add(result);
+//            });
 
         return new ArrayList<>(map.values());
     }
@@ -160,7 +180,8 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
         for (final SingleRaceResult result : runner_results) {
 
-            final EntryCategory current_category = result.entry.participant.category;
+            final EntryCategory current_category = result.getParticipant().category;
+//            final EntryCategory current_category = result.entry.participant.category;
 
             if (current_category != null) {
 
@@ -176,7 +197,8 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
                     checkForChangeToYoungerAgeCategory(result, previous_category, current_category, race_name);
                     checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
 
-                    getNotes().append("Runner ").append(result.entry.participant.name).append(" changed category from ").append(previous_category.getShortName()).append(" to ").append(current_category.getShortName()).append(" at ").append(race_name).append(LINE_SEPARATOR);
+                    getNotes().append("Runner ").append(result.getParticipantName()).append(" changed category from ").append(previous_category.getShortName()).append(" to ").append(current_category.getShortName()).append(" at ").append(race_name).append(LINE_SEPARATOR);
+//                    getNotes().append("Runner ").append(result.entry.participant.name).append(" changed category from ").append(previous_category.getShortName()).append(" to ").append(current_category.getShortName()).append(" at ").append(race_name).append(LINE_SEPARATOR);
                 }
 
                 previous_category = current_category;
@@ -186,28 +208,32 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
         checkForChangeToTooMuchOlderAgeCategory(runner_results.getFirst(), earliest_category, last_category);
 
         for (final SingleRaceResult result : runner_results)
-            result.entry.participant.category = earliest_category;
+            result.getParticipant().category = earliest_category;
+//        result.entry.participant.category = earliest_category;
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     private static void checkForChangeToYoungerAgeCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
 
         if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
-            throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
+            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
+//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     private static void checkForChangeToDifferentGenderCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
 
         if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
-            throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name+ "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
+            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
+//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name+ "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     private static void checkForChangeToTooMuchOlderAgeCategory(final SingleRaceResult result, final EntryCategory earliest_category, final EntryCategory last_category) {
 
         if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
-            throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
+            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
+//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
     }
 
     private void allocatePrizes() {

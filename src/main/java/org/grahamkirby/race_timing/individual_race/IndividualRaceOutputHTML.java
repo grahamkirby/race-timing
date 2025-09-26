@@ -130,7 +130,8 @@ public class IndividualRaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             final SingleRaceResult result = (SingleRaceResult) r;
-            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + ((Runner)result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
+//            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + ((Runner)result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
         }
 
         @Override

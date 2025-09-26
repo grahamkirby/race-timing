@@ -18,8 +18,9 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.List;
@@ -35,7 +36,7 @@ class GrandPrixRaceResult extends RaceResult {
 
     GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
-        super(race);
+        super(race, runner);
         this.runner = runner;
         this.scores = scores;
     }
@@ -53,16 +54,6 @@ class GrandPrixRaceResult extends RaceResult {
 
     private boolean hasCompletedRace(final int race_number) {
         return race_number <= scores.size() && scores.get(race_number - 1) > 0.0;
-    }
-
-    @Override
-    public String getParticipantName() {
-        return runner.name;
-    }
-
-    @Override
-    public Participant getParticipant() {
-        return runner;
     }
 
     @Override
@@ -86,7 +77,7 @@ class GrandPrixRaceResult extends RaceResult {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            filter(result -> result.entry.participant.equals(runner)).
+            filter(result -> result.getParticipant().equals(runner)).
             filter(SingleRaceResult::canComplete).
             count();
     }
@@ -94,11 +85,6 @@ class GrandPrixRaceResult extends RaceResult {
     @Override
     public boolean shouldDisplayPosition() {
         return canComplete();
-    }
-
-    @Override
-    public EntryCategory getCategory() {
-        return runner.category;
     }
 
     private boolean canCompleteRaceCategory(final GrandPrixRaceCategory category) {

@@ -21,6 +21,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -65,8 +66,9 @@ class TourRaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             final TourRaceResult result = ((TourRaceResult) r);
+            final Runner runner = (Runner) result.getParticipant();
 
-            writer.append(result.getPositionString() + "," + encode(result.runner.name) + "," + encode(result.runner.club) + "," + result.runner.category.getShortName() + ",");
+            writer.append(result.getPositionString() + "," + encode(runner.name) + "," + encode(runner.club) + "," + runner.category.getShortName() + ",");
 
             writer.append(
                 result.times.stream().

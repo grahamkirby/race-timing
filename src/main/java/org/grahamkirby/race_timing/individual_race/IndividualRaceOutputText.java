@@ -157,7 +157,8 @@ public class IndividualRaceOutputText {
 
             SingleRaceResult result = (SingleRaceResult) r;
 
-            writer.append(result.getPositionString() + ": " + result.entry.participant.name + " (" + ((Runner) result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+//            writer.append(result.getPositionString() + ": " + result.entry.participant.name + " (" + ((Runner) result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

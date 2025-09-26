@@ -44,11 +44,20 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
 
         return List.of(
             result.getPositionString(),
-            String.valueOf(result.entry.bib_number),
-            race.getNormalisation().htmlEncode(result.entry.participant.name),
-            ((Runner) result.entry.participant).club,
-            result.entry.participant.category.getShortName(),
+            String.valueOf(result.bib_number),
+            race.getNormalisation().htmlEncode(result.getParticipant().name),
+            ((Runner) result.getParticipant()).club,
+            result.getParticipant().category.getShortName(),
             renderDuration(result, DNF_STRING)
         );
+
+//        return List.of(
+//            result.getPositionString(),
+//            String.valueOf(result.entry.bib_number),
+//            race.getNormalisation().htmlEncode(result.entry.participant.name),
+//            ((Runner) result.entry.participant).club,
+//            result.entry.participant.category.getShortName(),
+//            renderDuration(result, DNF_STRING)
+//        );
     }
 }

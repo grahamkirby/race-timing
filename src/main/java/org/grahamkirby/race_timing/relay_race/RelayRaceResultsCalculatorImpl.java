@@ -186,11 +186,17 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
         return race_impl.getIndividualStarts().stream().
-            filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.entry.bib_number).
+            filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.bib_number).
             filter(individual_leg_start -> individual_leg_start.leg_number() == leg_index + 1).
             map(RelayRaceImpl.IndividualStart::start_time).
             findFirst().
             orElse(null);
+//        return race_impl.getIndividualStarts().stream().
+//            filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.entry.bib_number).
+//            filter(individual_leg_start -> individual_leg_start.leg_number() == leg_index + 1).
+//            map(RelayRaceImpl.IndividualStart::start_time).
+//            findFirst().
+//            orElse(null);
     }
 
     private static Duration getLegStartTime(final int leg_index, final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time) {
@@ -235,8 +241,12 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         return (int) overall_results.stream().
             map(result -> (RelayRaceResult)result).
-            takeWhile(result -> result.entry.bib_number != bib_number).
+            takeWhile(result -> result.bib_number != bib_number).
             count();
+//        return (int) overall_results.stream().
+//            map(result -> (RelayRaceResult)result).
+//            takeWhile(result -> result.entry.bib_number != bib_number).
+//            count();
     }
 
     private void addPaperRecordingComments() {
@@ -304,7 +314,8 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            race.getCategoryDetails().isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((RelayRaceResult) result).entry.participant.category, prize_category);
+            race.getCategoryDetails().isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((RelayRaceResult) result).getParticipant().category, prize_category);
+//        race.getCategoryDetails().isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((RelayRaceResult) result).entry.participant.category, prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
@@ -512,7 +523,8 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult) result).entry.participant.category, prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult) result).getParticipant().category, prize_categories);
+//        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult) result).entry.participant.category, prize_categories);
 
         final List<RaceResult> results = overall_results.stream().
             filter(prize_category_filter).

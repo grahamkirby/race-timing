@@ -178,11 +178,18 @@ public class RelayRaceOutputHTML {
 
             return List.of(
                 result.getPositionString(),
-                String.valueOf(result.entry.bib_number),
-                race.getNormalisation().htmlEncode(result.entry.participant.name),
-                result.entry.participant.category.getLongName(),
+                String.valueOf(result.bib_number),
+                race.getNormalisation().htmlEncode(result.getParticipant().name),
+                result.getParticipant().category.getLongName(),
                 renderDuration(result, DNF_STRING)
             );
+//            return List.of(
+//                result.getPositionString(),
+//                String.valueOf(result.entry.bib_number),
+//                race.getNormalisation().htmlEncode(result.entry.participant.name),
+//                result.entry.participant.category.getLongName(),
+//                renderDuration(result, DNF_STRING)
+//            );
         }
     }
 
@@ -212,7 +219,7 @@ public class RelayRaceOutputHTML {
 
             return List.of(
                 leg_result.getPositionString(),
-                race.getNormalisation().htmlEncode(((Team) leg_result.entry.participant).runner_names.get(leg_result.leg_number - 1)),
+                race.getNormalisation().htmlEncode(((Team) leg_result.getParticipant()).runner_names.get(leg_result.leg_number - 1)),
                 renderDuration(leg_result, DNF_STRING)
             );
         }
@@ -248,9 +255,14 @@ public class RelayRaceOutputHTML {
             final RelayRaceResult result = (RelayRaceResult) r;
 
             elements.add(result.getPositionString());
-            elements.add(String.valueOf(result.entry.bib_number));
-            elements.add(race.getNormalisation().htmlEncode(result.entry.participant.name));
-            elements.add(result.entry.participant.category.getLongName());
+            elements.add(String.valueOf(result.bib_number));
+            elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
+            elements.add(result.getParticipant().category.getLongName());
+
+//            elements.add(result.getPositionString());
+//            elements.add(String.valueOf(result.entry.bib_number));
+//            elements.add(race.getNormalisation().htmlEncode(result.entry.participant.name));
+//            elements.add(result.entry.participant.category.getLongName());
 
             for (final String element : ((RelayRaceImpl) race.getSpecific()).getLegDetails(result))
                 elements.add(race.getNormalisation().htmlEncode(element));
@@ -276,7 +288,8 @@ public class RelayRaceOutputHTML {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
+//            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
         }
 
         @Override

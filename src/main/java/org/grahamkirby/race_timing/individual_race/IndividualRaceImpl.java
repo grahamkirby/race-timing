@@ -210,7 +210,8 @@ public class IndividualRaceImpl implements SpecificRace {
 
             result_position++;
 
-            final Runner runner = (Runner) ((SingleRaceResult) result).entry.participant;
+            final Runner runner = (Runner) ((SingleRaceResult) result).getParticipant();
+//            final Runner runner = (Runner) ((SingleRaceResult) result).entry.participant;
 
             if (team_count < number_to_count_for_team_prize && runner.club.equals(club) && runner.category.getGender().equals(gender)) {
                 team_count++;
@@ -226,7 +227,8 @@ public class IndividualRaceImpl implements SpecificRace {
         final Set<String> clubs = new HashSet<>();
         for (final RaceResult result : results) {
 
-            final String club = ((Runner) ((SingleRaceResult) result).entry.participant).club;
+            final String club = ((Runner) ((SingleRaceResult) result).getParticipant()).club;
+//            final String club = ((Runner) ((SingleRaceResult) result).entry.participant).club;
             clubs.add(club);
         }
         return clubs;

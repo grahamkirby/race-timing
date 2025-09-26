@@ -106,7 +106,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.entry.participant).
+            map(RaceResult::getParticipant).
             filter(participant -> participant.name.equals(runner_name)).
             map(participant -> ((Runner)participant).club).
             distinct().
@@ -120,7 +120,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.entry.participant).
+            map(RaceResult::getParticipant).
             filter(participant -> participant.name.equals(runner_name)).
             forEachOrdered(participant -> ((Runner)participant).club = defined_club);
     }
@@ -131,7 +131,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRaceImpl {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.entry.participant.name).
+            map(RaceResult::getParticipantName).
             distinct().
             toList();
     }

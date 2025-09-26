@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultsOutput;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 
@@ -45,12 +46,10 @@ public class TourRaceResultsOutput implements ResultsOutput {
         printPrizes();
         printNotes();
         printCombined();
-
-//        output_HTML.printIndividualRaces();
     }
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         this.race = race;
 
@@ -68,8 +67,8 @@ public class TourRaceResultsOutput implements ResultsOutput {
         output_HTML.printResults();
 
         for (final RaceResult result : race.getResultsCalculator().getOverallResults())
-            if (((TourRaceResult)result).runner.category == null)
-                race.appendToNotes(LINE_SEPARATOR + "Runner " + ((TourRaceResult) result).runner.name + " unknown category so omitted from overall results" + LINE_SEPARATOR);
+            if (result.getCategory() == null)
+                race.appendToNotes(LINE_SEPARATOR + "Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
     }
 
     private void printPrizes() throws IOException {

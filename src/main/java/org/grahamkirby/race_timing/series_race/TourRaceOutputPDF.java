@@ -30,6 +30,7 @@ import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 
@@ -133,7 +134,9 @@ class TourRaceOutputPDF {
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
         final TourRaceResult result = (TourRaceResult) r;
-        return new PrizeWinnerDetails(result.getPositionString(), result.runner.name, result.runner.club, format(result.duration()));
+        Runner runner = (Runner) ((TourRaceResult) result).getParticipant();
+
+        return new PrizeWinnerDetails(result.getPositionString(), runner.name, runner.club, format(result.duration()));
     }
 
     public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {
