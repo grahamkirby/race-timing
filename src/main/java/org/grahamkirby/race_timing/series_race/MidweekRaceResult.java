@@ -22,7 +22,10 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.util.Comparator;
 import java.util.List;
+
+import static java.util.Comparator.reverseOrder;
 
 class MidweekRaceResult extends SeriesRaceResult {
 
@@ -37,18 +40,20 @@ class MidweekRaceResult extends SeriesRaceResult {
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
-        // Negate so that a higher score gives an earlier ranking.
-        return -Integer.compare(totalScore(), ((MidweekRaceResult) other).totalScore());
+        // Sort highest scores first.
+        final Comparator<Integer> comparator = reverseOrder();
+        final int other_score = ((MidweekRaceResult) other).totalScore();
+
+        return comparator.compare(totalScore(), other_score);
     }
 
     int totalScore() {
 
-        final int number_of_races_completed = numberOfRacesCompleted();
-        final int number_of_counting_scores = Math.min(minimum_number_of_races, number_of_races_completed);
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted());
 
-        return -scores.stream().
-            map(score -> -score).
-            sorted().
+        // Consider the highest scores, since higher score is better.
+        return scores.stream().
+            sorted(reverseOrder()).
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
     }

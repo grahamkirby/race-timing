@@ -76,15 +76,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
                 distinct().
                 map(this::getOverallResult).
                 toList());
-//        overall_results = new ArrayList<>(
-//            getRacesInTemporalOrder().stream().
-//                filter(Objects::nonNull).
-//                flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-//                filter(getResultInclusionPredicate()).
-//                map(result -> (Runner)((SingleRaceResult) result).entry.participant).
-//                distinct().
-//                map(this::getOverallResult).
-//                toList());
     }
 
     protected RaceResult getOverallResult(final Runner runner) {
@@ -128,16 +119,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
                 map.putIfAbsent(runner, new ArrayList<>());
                 map.get(runner).add(result);
             });
-//        getRacesInTemporalOrder().stream().
-//            filter(Objects::nonNull).
-//            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-//            filter(getResultInclusionPredicate()).
-//            map(result -> ((SingleRaceResult) result)).
-//            forEachOrdered(result -> {
-//                final Runner runner = (Runner)result.entry.participant;
-//                map.putIfAbsent(runner, new ArrayList<>());
-//                map.get(runner).add(result);
-//            });
 
         return new ArrayList<>(map.values());
     }
@@ -167,7 +148,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         for (final SingleRaceResult result : runner_results) {
 
             final EntryCategory current_category = result.getParticipant().category;
-//            final EntryCategory current_category = result.entry.participant.category;
 
             if (current_category != null) {
 
@@ -184,7 +164,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
                     checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
 
                     getNotes().append(LINE_SEPARATOR + "Runner " + result.getParticipantName() + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name + LINE_SEPARATOR);
-//                    getNotes().append(LINE_SEPARATOR + "Runner " + result.entry.participant.name + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name + LINE_SEPARATOR);
                 }
 
                 previous_category = current_category;
@@ -195,7 +174,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         for (final SingleRaceResult result : runner_results)
             result.getParticipant().category = earliest_category;
-//        result.entry.participant.category = earliest_category;
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -203,7 +181,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
             throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
-//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -211,7 +188,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
             throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
-//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -219,7 +195,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
             throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
-//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
     }
 
     private void allocatePrizes() {
@@ -258,8 +233,6 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
             race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner)((TourRaceResult) result).getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_category);
-
-//        race.getCategoryDetails().isResultEligibleForPrizeCategory(((TourRaceResult) result).runner.club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {

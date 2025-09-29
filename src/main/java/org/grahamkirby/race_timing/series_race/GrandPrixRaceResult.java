@@ -36,6 +36,13 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     }
 
     @Override
+    public boolean canComplete() {
+
+        return super.canComplete() &&
+            ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
+    }
+
+    @Override
     public boolean hasCompletedSeries() {
 
         // TODO tests pass without check for race category completion - add test.
@@ -46,26 +53,20 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
+        // Sort lowest scores first since lower score is better.
         return Integer.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
-    }
-
-    @Override
-    public boolean canComplete() {
-
-        return super.canComplete() &&
-            ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     int totalScore() {
 
-        final int number_of_races_completed = numberOfRacesCompleted();
-        final int number_of_counting_scores = Math.min(minimum_number_of_races, number_of_races_completed);
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted());
 
+        // Consider the lowest non-zero scores, since lower score is better.
         return scores.stream().
-            sorted().
             filter(score -> score > 0).
+            sorted().
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
     }
@@ -75,6 +76,8 @@ class GrandPrixRaceResult extends SeriesRaceResult {
         return category.race_numbers().stream().
             anyMatch(this::hasCompletedRace);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private boolean hasCompletedRace(final int race_number) {
 

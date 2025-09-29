@@ -27,9 +27,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
-
 class TourRaceResult extends SeriesRaceResult {
 
     public final List<Duration> times;
@@ -48,12 +45,12 @@ class TourRaceResult extends SeriesRaceResult {
         return Comparator.nullsLast(Duration::compareTo).compare(duration(), other_duration);
     }
 
-    public Duration duration() {
+    Duration duration() {
 
+        // If still possible to complete series, consider all non-null times.
         return !canComplete() ? null :
             times.stream().
                 filter(Objects::nonNull).
                 reduce(Duration.ZERO, Duration::plus);
     }
-
 }
