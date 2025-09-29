@@ -154,10 +154,20 @@ public class Normalisation {
     }
 
     /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
-    public static String format(final Duration duration) {
+    public static String renderDuration(final Duration duration) {
 
         if (duration == null) return DNF_STRING;
         return formatWholePart(duration) + formatFractionalPart(duration);
+    }
+
+    public static String renderDuration(final Duration duration, final String alternative) {
+
+        return duration != null ? renderDuration(duration) : alternative;
+    }
+
+    public static String renderDuration(final RaceResultWithDuration result, final String alternative) {
+
+        return result.canComplete() ? renderDuration(result.duration()) : alternative;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

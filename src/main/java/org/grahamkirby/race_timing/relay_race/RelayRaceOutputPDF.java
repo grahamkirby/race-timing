@@ -26,7 +26,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
@@ -34,6 +33,7 @@ import org.grahamkirby.race_timing.common.ResultPrinter;
 import java.io.IOException;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceOutputPDF {
 
@@ -60,9 +60,9 @@ public class RelayRaceOutputPDF {
             document.add(section_header);
 
             race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(document, category));                       // Print prizes in this category.
+                flatMap(group -> group.categories().stream()).              // Get all prize categories.
+                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
+                forEachOrdered(category -> printPrizes(document, category));     // Print prizes in this category.
         }
     }
 
@@ -104,7 +104,7 @@ public class RelayRaceOutputPDF {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            RelayRaceResult result = (RelayRaceResult) r;
+            final RelayRaceResult result = (RelayRaceResult) r;
 
             final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
             final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
@@ -114,10 +114,6 @@ public class RelayRaceOutputPDF {
             paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
             paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
             paragraph.add(new Text(" (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING)).setFont(font));
-
-//            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
-//            paragraph.add(new Text(result.entry.participant.name).setFont(bold_font));
-//            paragraph.add(new Text(" (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING)).setFont(font));
 
             document.add(paragraph);
         }

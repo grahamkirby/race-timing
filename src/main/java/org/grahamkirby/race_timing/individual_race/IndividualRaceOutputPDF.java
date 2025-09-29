@@ -26,15 +26,13 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinter;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class IndividualRaceOutputPDF {
 
@@ -73,7 +71,7 @@ public class IndividualRaceOutputPDF {
                     setUnderline().
                     setPaddingTop(PDF_PRIZE_FONT_SIZE));
 
-                for (String team_prize : team_prizes)
+                for (final String team_prize : team_prizes)
                     document.add(new Paragraph(team_prize));
             }
         }
@@ -117,7 +115,7 @@ public class IndividualRaceOutputPDF {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            SingleRaceResult result = (SingleRaceResult) r;
+            final SingleRaceResult result = (SingleRaceResult) r;
 
             final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
             final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
@@ -127,10 +125,6 @@ public class IndividualRaceOutputPDF {
             paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
             paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
             paragraph.add(new Text(" (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING)).setFont(font));
-
-//            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
-//            paragraph.add(new Text(result.entry.participant.name).setFont(bold_font));
-//            paragraph.add(new Text(" (" + ((Runner) result.entry.participant).club + ") " + renderDuration(result, DNF_STRING)).setFont(font));
 
             document.add(paragraph);
         }

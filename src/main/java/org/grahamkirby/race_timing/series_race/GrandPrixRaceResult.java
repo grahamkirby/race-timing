@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.List;
@@ -51,7 +51,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(final RaceResult other) {
+    public int comparePerformanceTo(final CommonRaceResult other) {
 
         // Sort lowest scores first since lower score is better.
         return Integer.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());

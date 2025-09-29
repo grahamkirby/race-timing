@@ -19,10 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinterText;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
@@ -33,7 +30,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.format;
 
 public class TourRaceOutputText {
 
@@ -102,7 +98,7 @@ public class TourRaceOutputText {
         try {
             writer.append(getPrizeCategoryHeader(category));
 
-            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
 
             writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
@@ -130,9 +126,9 @@ public class TourRaceOutputText {
         public void printResult(final RaceResult r) throws IOException {
 
             final TourRaceResult result = (TourRaceResult) r;
-            Runner runner = (Runner) ((TourRaceResult) result).getParticipant();
+            final Runner runner = (Runner) result.getParticipant();
 
-            writer.append(result.getPositionString() + ": " + runner.name + " (" + runner.club + ") " + format(result.duration()) + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + runner.name + " (" + runner.club + ") " + Normalisation.renderDuration(result.duration()) + LINE_SEPARATOR);
         }
     }
 }

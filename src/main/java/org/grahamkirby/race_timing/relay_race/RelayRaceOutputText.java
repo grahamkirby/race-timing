@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 /** Base class for plaintext output. */
 @SuppressWarnings("preview")
@@ -87,6 +88,7 @@ public class RelayRaceOutputText {
     /**
      * Constructs a path for a file in the project output directory with name constructed from the given components.
      */
+    // TODO rationalise duplicates.
     Path getOutputFilePath(final String race_name, final String output_type, final String year) {
 
         return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + TEXT_FILE_SUFFIX);
@@ -98,7 +100,7 @@ public class RelayRaceOutputText {
         try {
             writer.append(getPrizeCategoryHeader(category));
 
-            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
 
             writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
@@ -181,7 +183,7 @@ public class RelayRaceOutputText {
 
         writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : "?").
             append("\t").
-            append(raw_result.getRecordedFinishTime() != null ? Normalisation.format(raw_result.getRecordedFinishTime()) : "?");
+            append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime()) : "?");
     }
 
     private void printLegNumber(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
@@ -241,7 +243,7 @@ public class RelayRaceOutputText {
 
             race.appendToNotes(
                 times_with_missing_bib_numbers.stream().
-                    map(Normalisation::format).
+                    map(Normalisation::renderDuration).
                     collect(Collectors.joining(LINE_SEPARATOR)));
         }
     }

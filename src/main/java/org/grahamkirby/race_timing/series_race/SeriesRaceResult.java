@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 
 import java.util.Objects;
@@ -27,7 +27,7 @@ import java.util.Objects;
 import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
 import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
 
-public abstract class SeriesRaceResult extends RaceResult {
+public abstract class SeriesRaceResult extends CommonRaceResult {
 
     protected final int minimum_number_of_races;
     protected final int number_of_races_in_series;
@@ -47,9 +47,9 @@ public abstract class SeriesRaceResult extends RaceResult {
     @Override
     public boolean canComplete() {
 
-        final int number_of_races_remaining = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) - ((SeriesRace) race.getSpecific()).getNumberOfRacesTakenPlace();
+        final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
-        return numberOfRacesCompleted() + number_of_races_remaining >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+        return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
     }
 
     @Override

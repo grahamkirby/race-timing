@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class IndividualRaceOutputCSV {
 
@@ -62,13 +63,10 @@ public class IndividualRaceOutputCSV {
         public void printResult(final RaceResult r) throws IOException {
 
             final SingleRaceResult result = (SingleRaceResult) r;
-//            final RaceEntry entry = result.entry;
-//            final Participant participant = entry.participant;
             final Participant participant = result.getParticipant();
 
             writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(participant.name) + ",");
-//            writer.append(result.getPositionString() + "," + entry.bib_number + "," + encode(participant.name) + ",");
-            writer.append(encode(((Runner) participant).club) + "," + participant.category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            writer.append(encode(((Runner) participant).club) + "," + participant.category.getShortName() + "," + renderDuration(((RaceResultWithDuration) result), DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

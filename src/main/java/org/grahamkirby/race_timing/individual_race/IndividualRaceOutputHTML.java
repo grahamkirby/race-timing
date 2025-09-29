@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.individual_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinter;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
@@ -30,6 +27,7 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.SOFTWARE_CREDIT_LINK_TEXT;
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class IndividualRaceOutputHTML {
 
@@ -131,7 +129,6 @@ public class IndividualRaceOutputHTML {
 
             final SingleRaceResult result = (SingleRaceResult) r;
             writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
-//            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + ((Runner)result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
         }
 
         @Override

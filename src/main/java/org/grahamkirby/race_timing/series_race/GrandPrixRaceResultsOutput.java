@@ -18,7 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.ResultsOutput;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
         output_CSV.printResults();
         output_HTML.printResults();
 
-        for (final RaceResult result : race.getResultsCalculator().getOverallResults())
+        for (final CommonRaceResult result : race.getResultsCalculator().getOverallResults())
             if (result.getParticipant().category == null)
                 race.appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
     }

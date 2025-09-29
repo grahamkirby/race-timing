@@ -26,7 +26,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
@@ -63,9 +62,9 @@ class MidweekRaceOutputPDF {
             document.add(section_header);
 
             race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(document, category));                       // Print prizes in this category.
+                flatMap(group -> group.categories().stream()).                // Get all prize categories.
+                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).            // Ignore further categories once all prizes have been output.
+                forEachOrdered(category -> printPrizes(document, category));       // Print prizes in this category.
         }
     }
 

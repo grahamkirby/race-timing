@@ -26,16 +26,13 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceOutputPDF {
 
@@ -134,9 +131,9 @@ class TourRaceOutputPDF {
     protected PrizeWinnerDetails getPrizeWinnerDetails(final RaceResult r) {
 
         final TourRaceResult result = (TourRaceResult) r;
-        Runner runner = (Runner) ((TourRaceResult) result).getParticipant();
+        final Runner runner = (Runner) result.getParticipant();
 
-        return new PrizeWinnerDetails(result.getPositionString(), runner.name, runner.club, format(result.duration()));
+        return new PrizeWinnerDetails(result.getPositionString(), runner.name, runner.club, renderDuration(result.duration()));
     }
 
     public record PrizeWinnerDetails(String position_string, String name, String detail1, String detail2) {

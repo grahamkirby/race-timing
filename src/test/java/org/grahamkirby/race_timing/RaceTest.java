@@ -171,14 +171,13 @@ public class RaceTest {
         // This omits the normal setup phase of copying the source and expected files.
 
         final String error_output;
+        final String missing_config_path = "synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "missing_config_file'";
 
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(diverted_err));
 
-            String[] args = new String[]{"synthetic/special_cases/missing_config_file"};
-
-            RaceFactory.main(args);
+            RaceFactory.main(new String[]{missing_config_path});
 
             error_output = diverted_err.toString();
 
@@ -186,7 +185,7 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals("missing config file: 'synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "missing_config_file'" + LINE_SEPARATOR,
+        assertEquals("missing config file: '" + missing_config_path + "'" + LINE_SEPARATOR,
             error_output,
             "Expected error message was not generated");
 
@@ -198,7 +197,7 @@ public class RaceTest {
 
     private static List<String> getTestCases() throws IOException {
 
-        List<String> test_cases = new ArrayList<>();
+        final List<String> test_cases = new ArrayList<>();
 
         test_cases.addAll(getTestCasesWithin("real"));
         test_cases.addAll(getTestCasesWithin("synthetic"));
@@ -254,14 +253,14 @@ public class RaceTest {
         configureDirectoryContents(resources_input_directory);
     }
 
-    private void runWithExpectedCompletion(String[] args) throws IOException {
+    private void runWithExpectedCompletion(final String[] args) throws IOException {
 
         RaceFactory.main(args);
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
     }
 
-    private static void runWithExpectedError(String[] args, Path expected_error_message_file) throws IOException {
+    private static void runWithExpectedError(final String[] args, final Path expected_error_message_file) throws IOException {
 
         final String error_output;
         try {

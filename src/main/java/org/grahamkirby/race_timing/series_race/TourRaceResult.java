@@ -19,7 +19,8 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.CommonRaceResult;
+import org.grahamkirby.race_timing.common.RaceResultWithDuration;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
@@ -27,7 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-class TourRaceResult extends SeriesRaceResult {
+class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration {
 
     public final List<Duration> times;
 
@@ -38,19 +39,18 @@ class TourRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(final RaceResult other) {
+    public int comparePerformanceTo(final CommonRaceResult other) {
 
         final Duration other_duration = ((TourRaceResult) other).duration();
 
-        return Comparator.nullsLast(Duration::compareTo).compare(duration(), other_duration);
+        return duration().compareTo(other_duration);
     }
 
-    Duration duration() {
+    public Duration duration() {
 
         // If still possible to complete series, consider all non-null times.
-        return !canComplete() ? null :
-            times.stream().
-                filter(Objects::nonNull).
-                reduce(Duration.ZERO, Duration::plus);
+        return times.stream().
+            filter(Objects::nonNull).
+            reduce(Duration.ZERO, Duration::plus);
     }
 }

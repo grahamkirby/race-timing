@@ -19,10 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinterText;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,6 +29,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 /** Base class for plaintext output. */
 @SuppressWarnings("preview")
@@ -92,9 +90,9 @@ public class IndividualRaceOutputText {
     private void printPrizes(final OutputStreamWriter writer) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).                       // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(writer, category));                       // Print prizes in this category.
+            flatMap(group -> group.categories().stream()).                // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).            // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizes(writer, category));         // Print prizes in this category.
 
         printTeamPrizes(writer);
     }
@@ -105,7 +103,7 @@ public class IndividualRaceOutputText {
         try {
             writer.append(getPrizeCategoryHeader(category));
 
-            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
 
             writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
@@ -155,10 +153,9 @@ public class IndividualRaceOutputText {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            SingleRaceResult result = (SingleRaceResult) r;
+            final SingleRaceResult result = (SingleRaceResult) r;
 
             writer.append(result.getPositionString() + ": " + result.getParticipantName() + " (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
-//            writer.append(result.getPositionString() + ": " + result.entry.participant.name + " (" + ((Runner) result.entry.participant).club + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

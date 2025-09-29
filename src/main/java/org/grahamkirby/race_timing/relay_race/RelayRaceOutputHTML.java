@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceOutputHTML {
 
@@ -183,13 +184,6 @@ public class RelayRaceOutputHTML {
                 result.getParticipant().category.getLongName(),
                 renderDuration(result, DNF_STRING)
             );
-//            return List.of(
-//                result.getPositionString(),
-//                String.valueOf(result.entry.bib_number),
-//                race.getNormalisation().htmlEncode(result.entry.participant.name),
-//                result.entry.participant.category.getLongName(),
-//                renderDuration(result, DNF_STRING)
-//            );
         }
     }
 
@@ -259,11 +253,6 @@ public class RelayRaceOutputHTML {
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().category.getLongName());
 
-//            elements.add(result.getPositionString());
-//            elements.add(String.valueOf(result.entry.bib_number));
-//            elements.add(race.getNormalisation().htmlEncode(result.entry.participant.name));
-//            elements.add(result.entry.participant.category.getLongName());
-
             for (final String element : ((RelayRaceImpl) race.getSpecific()).getLegDetails(result))
                 elements.add(race.getNormalisation().htmlEncode(element));
 
@@ -288,7 +277,6 @@ public class RelayRaceOutputHTML {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-//            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.entry.participant.name) + " (" + result.entry.participant.category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
             writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
         }
 

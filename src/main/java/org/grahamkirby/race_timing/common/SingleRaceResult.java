@@ -21,7 +21,7 @@ package org.grahamkirby.race_timing.common;
 import java.time.Duration;
 import java.util.Comparator;
 
-public class SingleRaceResult extends RaceResult {
+public class SingleRaceResult extends CommonRaceResult implements RaceResultWithDuration {
 
     public Duration finish_time;
     public boolean dnf;
@@ -45,7 +45,7 @@ public class SingleRaceResult extends RaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(final RaceResult other) {
+    public int comparePerformanceTo(final CommonRaceResult other) {
 
         final Duration duration = duration();
         final Duration other_duration = ((SingleRaceResult) other).duration();

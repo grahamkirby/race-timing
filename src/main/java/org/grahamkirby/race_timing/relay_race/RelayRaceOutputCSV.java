@@ -19,18 +19,18 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceOutputCSV {
 
@@ -141,9 +141,8 @@ public class RelayRaceOutputCSV {
 
         public void printResult(final RaceResult r) throws IOException {
 
-            RelayRaceResult result = (RelayRaceResult) r;
+            final RelayRaceResult result = (RelayRaceResult) r;
             writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
-//            writer.append(result.getPositionString() + "," + result.entry.bib_number + "," + encode(result.entry.participant.name) + "," + result.entry.participant.category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 
@@ -159,12 +158,12 @@ public class RelayRaceOutputCSV {
             final RelayRaceResult result = (RelayRaceResult) r;
 
             writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getLongName() + ",");
-//            writer.append(result.getPositionString() + "," + result.entry.bib_number + "," + encode(result.entry.participant.name) + "," + result.entry.participant.category.getLongName() + ",");
 
-            final List<String> leg_strings = ((RelayRaceImpl) race.getSpecific()).getLegDetails(result).stream().
-                map(Config::encode).toList();
+            final String leg_details = ((RelayRaceImpl) race.getSpecific()).getLegDetails(result).stream().
+                map(Config::encode).
+                collect(Collectors.joining(","));
 
-            writer.append(String.join(",", leg_strings));
+            writer.append(leg_details);
             writer.append(LINE_SEPARATOR);
         }
     }
@@ -191,7 +190,6 @@ public class RelayRaceOutputCSV {
 
             final LegResult result = (LegResult) r;
             final String runner_names = encode(((Team) result.getParticipant()).runner_names.get(result.leg_number - 1));
-//            final String runner_names = encode(((Team) result.entry.participant).runner_names.get(result.leg_number - 1));
 
             writer.append(result.getPositionString() + "," + runner_names + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }

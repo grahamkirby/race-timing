@@ -17,55 +17,28 @@
  */
 package org.grahamkirby.race_timing.common;
 
-
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("IncorrectFormatting")
-public abstract class RaceResult {
+public interface RaceResult {
 
-    protected final Race race;
-    protected Participant participant;
-    protected String position_string;
-    protected List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
+    Race getRace();
 
-    protected RaceResult(final Race race, final Participant participant) {
-        this.race = race;
-        this.participant = participant;
-    }
+    Participant getParticipant();
 
-    public Race getRace() {
-        return race;
-    }
+    String getParticipantName();
 
-    public Participant getParticipant() {
-        return participant;
-    }
+    EntryCategory getCategory();
 
-    public String getParticipantName() {
-        return participant.name;
-    }
+    String getPositionString();
 
-    public EntryCategory getCategory() {
-        return participant.category;
-    }
+    void setPositionString(final String position_string);
 
-    public String getPositionString() {
-        return position_string;
-    }
+    List<PrizeCategory> getCategoriesOfPrizesAwarded();
 
-    public void setPositionString(final String position_string) {
-        this.position_string  = position_string;
-    }
-
-    public List<PrizeCategory> getCategoriesOfPrizesAwarded() {
-        return categories_of_prizes_awarded;
-    }
-
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
-    public abstract boolean shouldDisplayPosition();
+    int comparePerformanceTo(CommonRaceResult other);
+    boolean canComplete();
+    boolean shouldDisplayPosition();
 }

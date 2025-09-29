@@ -40,12 +40,12 @@ public class RaceFactory {
         new TourRaceFactory()
     );
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
         new RaceFactory().createAndProcessRace(args);
     }
 
-    public void createAndProcessRace(String[] args) {
+    public void createAndProcessRace(final String[] args) {
 
         try {
             final Race race = makeRace(Path.of(args[0]));
@@ -60,9 +60,9 @@ public class RaceFactory {
 
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        Properties properties = loadProperties(config_file_path);
+        final Properties properties = loadProperties(config_file_path);
 
-        for (SpecialisedRaceFactory specialised_factory : specialised_factories)
+        for (final SpecialisedRaceFactory specialised_factory : specialised_factories)
             if (specialised_factory.isValidFor(properties))
                 return specialised_factory.makeRace(config_file_path);
 

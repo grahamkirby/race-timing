@@ -18,16 +18,13 @@
 package org.grahamkirby.race_timing.individual_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinterHTML;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.OutputStreamWriter;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Config.renderDuration;
+import static org.grahamkirby.race_timing.common.Normalisation.*;
 
 /** Base class for printing results to HTML files. */
 public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
@@ -48,16 +45,7 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
             race.getNormalisation().htmlEncode(result.getParticipant().name),
             ((Runner) result.getParticipant()).club,
             result.getParticipant().category.getShortName(),
-            renderDuration(result, DNF_STRING)
+            renderDuration((RaceResultWithDuration) r, DNF_STRING)
         );
-
-//        return List.of(
-//            result.getPositionString(),
-//            String.valueOf(result.entry.bib_number),
-//            race.getNormalisation().htmlEncode(result.entry.participant.name),
-//            ((Runner) result.entry.participant).club,
-//            result.entry.participant.category.getShortName(),
-//            renderDuration(result, DNF_STRING)
-//        );
     }
 }

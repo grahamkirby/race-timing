@@ -161,7 +161,7 @@ public class IndividualRaceImpl implements SpecificRace {
 
     public List<String> getTeamPrizes() {
 
-        final List<RaceResult> overall_results = race.getResultsCalculator().getOverallResults();
+        final List<CommonRaceResult> overall_results = race.getResultsCalculator().getOverallResults();
         final Set<String> clubs = getClubs(overall_results);
 
         int best_male_team_total = Integer.MAX_VALUE;
@@ -206,7 +206,7 @@ public class IndividualRaceImpl implements SpecificRace {
         int team_count = 0;
         int total = 0;
 
-        for (final RaceResult result : race.getResultsCalculator().getOverallResults()) {
+        for (final CommonRaceResult result : race.getResultsCalculator().getOverallResults()) {
 
             result_position++;
 
@@ -222,10 +222,10 @@ public class IndividualRaceImpl implements SpecificRace {
         return team_count >= number_to_count_for_team_prize ? total : Integer.MAX_VALUE;
     }
 
-    private Set<String> getClubs(final List<RaceResult> results) {
+    private Set<String> getClubs(final List<CommonRaceResult> results) {
 
         final Set<String> clubs = new HashSet<>();
-        for (final RaceResult result : results) {
+        for (final CommonRaceResult result : results) {
 
             final String club = ((Runner) ((SingleRaceResult) result).getParticipant()).club;
 //            final String club = ((Runner) ((SingleRaceResult) result).entry.participant).club;

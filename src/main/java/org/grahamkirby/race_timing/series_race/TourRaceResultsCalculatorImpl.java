@@ -34,7 +34,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private Race race;
 
-    private List<RaceResult> overall_results;
+    private List<CommonRaceResult> overall_results;
     private final StringBuilder notes;
 
     TourRaceResultsCalculatorImpl() {
@@ -78,7 +78,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
                 toList());
     }
 
-    protected RaceResult getOverallResult(final Runner runner) {
+    protected CommonRaceResult getOverallResult(final Runner runner) {
 
         final List<Duration> times = ((TourRaceImpl) race.getSpecific()).getRaces().stream().
             filter(Objects::nonNull).
@@ -90,7 +90,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     public Duration getRunnerTime(final Race race, final Runner runner) {
 
-        for (final RaceResult result : race.getResultsCalculator().getOverallResults()) {
+        for (final CommonRaceResult result : race.getResultsCalculator().getOverallResults()) {
 
             final SingleRaceResult individual_result = (SingleRaceResult) result;
             if (individual_result.getParticipant().equals(runner))
@@ -100,7 +100,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return null;
     }
 
-    protected Predicate<RaceResult> getResultInclusionPredicate() {
+    protected Predicate<CommonRaceResult> getResultInclusionPredicate() {
 
         return (_ -> true);
     }
@@ -204,9 +204,9 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Returns prize winners in given category. */
-    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
+    public List<CommonRaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
-        final List<RaceResult> prize_results = overall_results.stream().
+        final List<CommonRaceResult> prize_results = overall_results.stream().
             filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
             toList();
 
@@ -228,14 +228,14 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
             });
     }
 
-    protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
+    protected boolean isPrizeWinner(final CommonRaceResult result, final PrizeCategory prize_category) {
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
             race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner)((TourRaceResult) result).getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_category);
     }
 
-    private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
+    private static boolean isStillEligibleForPrize(final CommonRaceResult result, final PrizeCategory new_prize_category) {
 
         if (!new_prize_category.isExclusive()) return true;
 
@@ -245,7 +245,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return true;
     }
 
-    protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
+    protected static void setPrizeWinner(final CommonRaceResult result, final PrizeCategory category) {
 
         result.getCategoriesOfPrizesAwarded().add(category);
     }
@@ -256,37 +256,42 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         overall_results.sort(combineComparators(getComparators()));
     }
 
-    protected List<Comparator<RaceResult>> getComparators() {
+    protected List<Comparator<CommonRaceResult>> getComparators() {
 
-        return List.of(TourRaceResultsCalculatorImpl::comparePossibleCompletion, TourRaceResultsCalculatorImpl::comparePerformance, TourRaceResultsCalculatorImpl::compareRunnerLastName, TourRaceResultsCalculatorImpl::compareRunnerFirstName);
+        return List.of(
+            TourRaceResultsCalculatorImpl::comparePossibleCompletion,
+            TourRaceResultsCalculatorImpl::comparePerformance,
+            TourRaceResultsCalculatorImpl::compareRunnerLastName,
+            TourRaceResultsCalculatorImpl::compareRunnerFirstName);
     }
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,
      *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    public static int comparePerformance(final RaceResult r1, final RaceResult r2) {
+    public static int comparePerformance(final CommonRaceResult r1, final CommonRaceResult r2) {
 
+        if (!r1.canComplete() && !r2.canComplete()) return 0;
         return r1.comparePerformanceTo(r2);
     }
 
-    protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
+    protected static int comparePossibleCompletion(final CommonRaceResult r1, final CommonRaceResult r2) {
 
         return Boolean.compare(r2.canComplete(), r1.canComplete());
     }
 
     /** Compares two results based on alphabetical ordering of the runners' first names. */
-    public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+    public static int compareRunnerFirstName(final CommonRaceResult r1, final CommonRaceResult r2) {
 
         return Normalisation.getFirstNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getFirstNameOfFirstRunner(r2.getParticipant().name));
     }
 
     /** Compares two results based on alphabetical ordering of the runners' last names. */
-    public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+    public static int compareRunnerLastName(final CommonRaceResult r1, final CommonRaceResult r2) {
 
         return Normalisation.getLastNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getLastNameOfFirstRunner(r2.getParticipant().name));
     }
 
     /** Combines multiple comparators into a single comparator. */
-    protected static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
+    protected static Comparator<CommonRaceResult> combineComparators(final Collection<Comparator<CommonRaceResult>> comparators) {
 
         return comparators.stream().
             reduce((_, _) -> 0, Comparator::thenComparing);
@@ -295,7 +300,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the particular race type. */
-    void setPositionStrings(final List<RaceResult> results) {
+    void setPositionStrings(final List<CommonRaceResult> results) {
 
         setPositionStrings(results, true);
     }
@@ -303,7 +308,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the second parameter. */
-    protected static void setPositionStrings(final List<RaceResult> results, final boolean allow_equal_positions) {
+    protected static void setPositionStrings(final List<CommonRaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -314,7 +319,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            final RaceResult result = results.get(result_index);
+            final CommonRaceResult result = results.get(result_index);
 
             if (result.shouldDisplayPosition()) {
                 if (allow_equal_positions) {
@@ -342,7 +347,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Records the same position for the given range of results. */
-    private static void recordEqualPositions(final List<RaceResult> results, final int start_index, final int end_index) {
+    private static void recordEqualPositions(final List<CommonRaceResult> results, final int start_index, final int end_index) {
 
         final String position_string = (start_index + 1) + "=";
 
@@ -351,7 +356,7 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */
-    private static int getHighestIndexWithSamePerformance(final List<RaceResult> results, final int start_index) {
+    private static int getHighestIndexWithSamePerformance(final List<CommonRaceResult> results, final int start_index) {
 
         int highest_index_with_same_result = start_index;
 
@@ -363,20 +368,20 @@ public class TourRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return highest_index_with_same_result;
     }
 
-    public List<RaceResult> getOverallResults() {
+    public List<CommonRaceResult> getOverallResults() {
         return overall_results;
     }
 
     /** Gets all the results eligible for the given prize categories. */
-    public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
+    public List<CommonRaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = r -> {
+        final Predicate<CommonRaceResult> prize_category_filter = r -> {
             final TourRaceResult result = (TourRaceResult) r;
             return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner) result.getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
 //            return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(result.runner.club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
         };
 
-        final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
+        final List<CommonRaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
         setPositionStrings(results);
         return results;
     }

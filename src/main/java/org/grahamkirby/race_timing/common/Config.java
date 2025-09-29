@@ -33,8 +33,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
-import static org.grahamkirby.race_timing.common.Normalisation.format;
-
 public class Config {
 
     public static String CSV_FILE_SUFFIX = "csv";
@@ -126,18 +124,6 @@ public class Config {
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
     public static String encode(final String s) {
         return s.contains(",") ? "\"" + s + "\"" : s;
-    }
-
-    public static String renderDuration(final Duration duration, final String alternative) {
-
-        return duration != null ? format(duration) : alternative;
-    }
-
-    public static String renderDuration(final RaceResult r, final String alternative) {
-
-        final SingleRaceResult result = (SingleRaceResult) r;
-
-        return result.canComplete() ? format(result.duration()) : alternative;
     }
 
     public static Properties loadProperties(final Path config_file_path) throws IOException {

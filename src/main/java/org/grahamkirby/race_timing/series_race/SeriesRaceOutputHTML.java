@@ -20,7 +20,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 
@@ -75,7 +75,7 @@ public class SeriesRaceOutputHTML {
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
-            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             make_prize_printer.apply(race, writer).print(category_prize_winners);
         }
         // Called from lambda that can't throw checked exception.
@@ -99,7 +99,7 @@ public class SeriesRaceOutputHTML {
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
-            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             make_prize_printer.apply(race, writer).print(category_prize_winners);
         }
         // Called from lambda that can't throw checked exception.
@@ -124,22 +124,6 @@ public class SeriesRaceOutputHTML {
 
     static void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Function<String, String> get_results_sub_header, final Race race) throws IOException {
 
-        // Don't display category group headers if there is only one group.
-        final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
-
-        boolean not_first_category_group = false;
-
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
-
-            if (should_display_category_group_headers) {
-                if (not_first_category_group)
-                    writer.append(LINE_SEPARATOR);
-                writer.append(get_results_sub_header.apply(group.group_title()));
-            }
-
-            printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
-
-            not_first_category_group = true;
-        }
+        IndividualRaceResultsOutput.printResults(writer, printer, get_results_sub_header, race);
     }
 }

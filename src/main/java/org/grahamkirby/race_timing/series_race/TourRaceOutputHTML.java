@@ -31,8 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Config.renderDuration;
-import static org.grahamkirby.race_timing.common.Normalisation.format;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceOutputHTML {
 
@@ -73,7 +72,7 @@ class TourRaceOutputHTML {
 
             headers.add("Club");
 
-            final List<Race> races = ((TourRaceImpl) race.getSpecific()).getRaces();
+            final List<Race> races = ((SeriesRace) race.getSpecific()).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
@@ -100,7 +99,7 @@ class TourRaceOutputHTML {
             for (final Duration duration : result.times)
                 elements.add(renderDuration(duration, "-"));
 
-            elements.add(renderDuration(result.duration(), "-"));
+            elements.add(renderDuration(result, "-"));
 
             return elements;
         }
@@ -130,7 +129,7 @@ class TourRaceOutputHTML {
             final TourRaceResult result = ((TourRaceResult) r);
             final Runner runner = (Runner) result.getParticipant();
 
-            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(runner.name) + " (" + runner.club + ") " + format(result.duration()) + "</li>" + LINE_SEPARATOR);
+            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(runner.name) + " (" + runner.club + ") " + (result.canComplete() ? renderDuration(result.duration()) : "-") + "</li>" + LINE_SEPARATOR);
         }
     }
 }
