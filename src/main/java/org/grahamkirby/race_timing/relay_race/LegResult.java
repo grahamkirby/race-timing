@@ -25,6 +25,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
+
 public class LegResult extends SingleRaceResult {
 
     int leg_number;

@@ -101,7 +101,7 @@ public class Config {
     /** Used when a result is recorded without a bib number. */
     public static int UNKNOWN_BIB_NUMBER = 0;
 
-    public static Duration NO_MASS_START_DURATION = Duration.ofSeconds(Long.MAX_VALUE);
+    public static final Duration VERY_LONG_DURATION = Duration.ofDays(Integer.MAX_VALUE);
 
     public static OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 

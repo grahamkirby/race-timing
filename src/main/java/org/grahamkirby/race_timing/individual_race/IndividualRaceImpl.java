@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
@@ -161,7 +162,7 @@ public class IndividualRaceImpl implements SpecificRace {
 
     public List<String> getTeamPrizes() {
 
-        final List<CommonRaceResult> overall_results = race.getResultsCalculator().getOverallResults();
+        final List<RaceResult> overall_results = race.getResultsCalculator().getOverallResults();
         final Set<String> clubs = getClubs(overall_results);
 
         int best_male_team_total = Integer.MAX_VALUE;
@@ -206,12 +207,11 @@ public class IndividualRaceImpl implements SpecificRace {
         int team_count = 0;
         int total = 0;
 
-        for (final CommonRaceResult result : race.getResultsCalculator().getOverallResults()) {
+        for (final RaceResult result : race.getResultsCalculator().getOverallResults()) {
 
             result_position++;
 
-            final Runner runner = (Runner) ((SingleRaceResult) result).getParticipant();
-//            final Runner runner = (Runner) ((SingleRaceResult) result).entry.participant;
+            final Runner runner = (Runner) result.getParticipant();
 
             if (team_count < number_to_count_for_team_prize && runner.club.equals(club) && runner.category.getGender().equals(gender)) {
                 team_count++;
@@ -222,15 +222,18 @@ public class IndividualRaceImpl implements SpecificRace {
         return team_count >= number_to_count_for_team_prize ? total : Integer.MAX_VALUE;
     }
 
-    private Set<String> getClubs(final List<CommonRaceResult> results) {
+    private Set<String> getClubs(final List<RaceResult> results) {
 
-        final Set<String> clubs = new HashSet<>();
-        for (final CommonRaceResult result : results) {
+        return results.stream().
+            map(result -> ((Runner) result.getParticipant()).club).
+            collect(Collectors.toSet());
 
-            final String club = ((Runner) ((SingleRaceResult) result).getParticipant()).club;
-//            final String club = ((Runner) ((SingleRaceResult) result).entry.participant).club;
-            clubs.add(club);
-        }
-        return clubs;
+//        final Set<String> clubs = new HashSet<>();
+//        for (final RaceResult result : results) {
+//
+//            final String club = ((Runner) result.getParticipant()).club;
+//            clubs.add(club);
+//        }
+//        return clubs;
     }
 }

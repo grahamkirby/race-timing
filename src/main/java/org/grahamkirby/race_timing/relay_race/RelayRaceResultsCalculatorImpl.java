@@ -40,7 +40,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private Race race;
     private RelayRaceImpl race_impl;
 
-    private List<CommonRaceResult> overall_results;
+    private List<RaceResult> overall_results;
     private StringBuilder notes;
 
     /** Provides functionality for inferring missing bib number or timing data in the results. */
@@ -76,7 +76,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     @Override
-    public List<CommonRaceResult> getOverallResults() {
+    public List<RaceResult> getOverallResults() {
         return overall_results;
     }
 
@@ -87,9 +87,9 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     /** Returns prize winners in given category. */
     @Override
-    public List<CommonRaceResult> getPrizeWinners(final PrizeCategory prize_category) {
+    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
-        final List<CommonRaceResult> prize_results = overall_results.stream().
+        final List<RaceResult> prize_results = overall_results.stream().
             filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
             toList();
 
@@ -139,7 +139,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         overall_results.forEach(RelayRaceResultsCalculatorImpl::sortLegResults);
     }
 
-    private static void sortLegResults(final CommonRaceResult result) {
+    private static void sortLegResults(final RaceResult result) {
 
         final List<LegResult> leg_results = ((RelayRaceResult) result).leg_results;
 
@@ -163,7 +163,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         overall_results.forEach(this::fillLegResultDetails);
     }
 
-    private void fillLegResultDetails(final CommonRaceResult result) {
+    private void fillLegResultDetails(final RaceResult result) {
 
         for (int leg_index = 0; leg_index < race_impl.getNumberOfLegs(); leg_index++)
             fillLegResultDetails(((RelayRaceResult) result).leg_results, leg_index);
@@ -206,7 +206,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         if (previous_team_member_finish_time == null) return null;
 
         // Use the earlier of the mass start time, if present, and the previous runner's finish time.
-        return !mass_start_time.equals(NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     @SuppressWarnings("TypeMayBeWeakened")
@@ -219,7 +219,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         if (previous_runner_finish_time == null) return race_impl.getMassStartLegs().get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-        return !mass_start_time.equals(NO_MASS_START_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
+        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
     @SuppressWarnings({"TypeMayBeWeakened", "IfCanBeAssertion"})
@@ -272,7 +272,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     private void allocateFirstPrizes(final Iterable<PrizeCategory> prize_categories) {
 
         for (final PrizeCategory category : prize_categories)
-            for (final CommonRaceResult result : getOverallResults())
+            for (final RaceResult result : getOverallResults())
                 if (isPrizeWinner(result, category)) {
                     setPrizeWinner(result, category);
                     break;
@@ -289,7 +289,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         int position = 2;
 
-        for (final CommonRaceResult result : getOverallResults()) {
+        for (final RaceResult result : getOverallResults()) {
 
             if (position > category.numberOfPrizes()) return;
 
@@ -300,14 +300,14 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         }
     }
 
-    private boolean isPrizeWinner(final CommonRaceResult result, final PrizeCategory prize_category) {
+    private boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
             race.getCategoryDetails().isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((RelayRaceResult) result).getParticipant().category, prize_category);
     }
 
-    private static boolean isStillEligibleForPrize(final CommonRaceResult result, final PrizeCategory new_prize_category) {
+    private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
 
         if (!new_prize_category.isExclusive()) return true;
 
@@ -317,7 +317,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return true;
     }
 
-    protected static void setPrizeWinner(final CommonRaceResult result, final PrizeCategory category) {
+    protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
         result.getCategoriesOfPrizesAwarded().add(category);
     }
@@ -335,11 +335,11 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         overall_results = makeMutableCopy(overall_results);
     }
 
-    public static List<CommonRaceResult> makeMutableCopy(final List<? extends CommonRaceResult> results) {
+    public static List<RaceResult> makeMutableCopy(final List<? extends RaceResult> results) {
         return new ArrayList<>(results);
     }
 
-    private CommonRaceResult makeResult(final RawResult raw_result) {
+    private RaceResult makeResult(final RawResult raw_result) {
 
         final RaceEntry entry = getEntryWithBibNumber(raw_result.getBibNumber());
         return new RelayRaceResult(race, entry, null);
@@ -394,7 +394,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the particular race type. */
-    void setPositionStrings(final List<CommonRaceResult> results) {
+    void setPositionStrings(final List<RaceResult> results) {
 
         setPositionStrings(results, ARE_EQUAL_POSITIONS_ALLOWED_IN_OVERALL_RESULTS);
     }
@@ -402,7 +402,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the second parameter. */
-    static void setPositionStrings(final List<? extends CommonRaceResult> results, final boolean allow_equal_positions) {
+    static void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -413,7 +413,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            final CommonRaceResult result = results.get(result_index);
+            final RaceResult result = results.get(result_index);
 
             if (result.canComplete()) {
                 if (allow_equal_positions) {
@@ -441,7 +441,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Records the same position for the given range of results. */
-    private static void recordEqualPositions(final List<? extends CommonRaceResult> results, final int start_index, final int end_index) {
+    private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int end_index) {
 
         final String position_string = (start_index + 1) + "=";
 
@@ -450,7 +450,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */
-    private static int getHighestIndexWithSamePerformance(final List<? extends CommonRaceResult> results, final int start_index) {
+    private static int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
 
         int highest_index_with_same_result = start_index;
 
@@ -463,11 +463,11 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Gets all the results eligible for the given prize categories. */
-    public List<CommonRaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
+    public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<CommonRaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult) result).getParticipant().category, prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult) result).getParticipant().category, prize_categories);
 
-        final List<CommonRaceResult> results = overall_results.stream().
+        final List<RaceResult> results = overall_results.stream().
             filter(prize_category_filter).
             toList();
 

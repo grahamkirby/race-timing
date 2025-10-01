@@ -101,7 +101,7 @@ public class MidweekRaceOutputText {
         try {
             writer.append(getPrizeCategoryHeader(category));
 
-            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             new PrizeResultPrinter(race, writer).print(category_prize_winners);
 
             writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);

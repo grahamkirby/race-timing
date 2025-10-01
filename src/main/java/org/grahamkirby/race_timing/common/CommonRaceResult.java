@@ -33,8 +33,6 @@ import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfFirs
 @SuppressWarnings("IncorrectFormatting")
 public abstract class CommonRaceResult implements RaceResult {
 
-    public static final Duration VERY_LONG_DURATION = Duration.ofDays(Integer.MAX_VALUE);
-
     protected final Race race;
     protected Participant participant;
     protected String position_string;

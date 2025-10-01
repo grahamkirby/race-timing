@@ -52,8 +52,7 @@ public abstract class ResultPrinter {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Prints out the given list of results. */
-    @SuppressWarnings("TypeMayBeWeakened")
-    public final void print(final List<? extends CommonRaceResult> results) throws IOException {
+    public final void print(final List<? extends RaceResult> results) throws IOException {
 
         if (results.isEmpty())
             printNoResults();
@@ -61,7 +60,7 @@ public abstract class ResultPrinter {
         else {
             printResultsHeader();
 
-            for (final CommonRaceResult result : results)
+            for (final RaceResult result : results)
                 printResult(result);
 
             printResultsFooter();

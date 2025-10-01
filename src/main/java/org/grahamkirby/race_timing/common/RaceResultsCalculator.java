@@ -26,9 +26,9 @@ public interface RaceResultsCalculator {
 
     void setRace(Race race);
     void calculateResults();
-    List<CommonRaceResult> getOverallResults();
-    List<CommonRaceResult> getOverallResults(List<PrizeCategory> categories);
+    List<RaceResult> getOverallResults();
+    List<RaceResult> getOverallResults(List<PrizeCategory> categories);
+    List<RaceResult> getPrizeWinners(PrizeCategory category);
     boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
-    List<CommonRaceResult> getPrizeWinners(PrizeCategory category);
     StringBuilder getNotes();
 }

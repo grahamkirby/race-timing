@@ -32,7 +32,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
     private Race race;
 
-    private List<CommonRaceResult> overall_results;
+    private List<RaceResult> overall_results;
     private final StringBuilder notes;
 
     MidweekRaceResultsCalculatorImpl() {
@@ -89,13 +89,13 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
                 filter(Objects::nonNull).
                 flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
                 filter(getResultInclusionPredicate()).
-                map(result -> (Runner)((SingleRaceResult) result).getParticipant()).
+                map(result -> (Runner) result.getParticipant()).
                 distinct().
                 map(this::getOverallResult).
                 toList());
     }
 
-    protected CommonRaceResult getOverallResult(final Runner runner) {
+    protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = ((MidweekRaceImpl)race.getSpecific()).getRaces().stream().
             map(individual_race -> calculateRaceScore(individual_race, runner)).
@@ -104,7 +104,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return new MidweekRaceResult(runner, scores, race);
     }
 
-    protected Predicate<CommonRaceResult> getResultInclusionPredicate() {
+    protected Predicate<RaceResult> getResultInclusionPredicate() {
 
         return (_ -> true);
     }
@@ -208,9 +208,9 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Returns prize winners in given category. */
-    public List<CommonRaceResult> getPrizeWinners(final PrizeCategory prize_category) {
+    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
-        final List<CommonRaceResult> prize_results = overall_results.stream().
+        final List<RaceResult> prize_results = overall_results.stream().
             filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
             toList();
 
@@ -232,14 +232,14 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
             });
     }
 
-    protected boolean isPrizeWinner(final CommonRaceResult result, final PrizeCategory prize_category) {
+    protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
             race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner) result.getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_category);
     }
 
-    private static boolean isStillEligibleForPrize(final CommonRaceResult result, final PrizeCategory new_prize_category) {
+    private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
 
         if (!new_prize_category.isExclusive()) return true;
 
@@ -249,7 +249,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return true;
     }
 
-    protected static void setPrizeWinner(final CommonRaceResult result, final PrizeCategory category) {
+    protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
 
         result.getCategoriesOfPrizesAwarded().add(category);
     }
@@ -263,7 +263,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the particular race type. */
-    void setPositionStrings(final List<CommonRaceResult> results) {
+    void setPositionStrings(final List<RaceResult> results) {
 
         setPositionStrings(results, true);
     }
@@ -271,7 +271,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the second parameter. */
-    protected static void setPositionStrings(final List<CommonRaceResult> results, final boolean allow_equal_positions) {
+    protected static void setPositionStrings(final List<RaceResult> results, final boolean allow_equal_positions) {
 
         // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -282,7 +282,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
         for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            final CommonRaceResult result = results.get(result_index);
+            final RaceResult result = results.get(result_index);
 
             if (result.canComplete()) {
                 if (allow_equal_positions) {
@@ -310,7 +310,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Records the same position for the given range of results. */
-    private static void recordEqualPositions(final List<CommonRaceResult> results, final int start_index, final int end_index) {
+    private static void recordEqualPositions(final List<RaceResult> results, final int start_index, final int end_index) {
 
         final String position_string = (start_index + 1) + "=";
 
@@ -319,7 +319,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */
-    private static int getHighestIndexWithSamePerformance(final List<CommonRaceResult> results, final int start_index) {
+    private static int getHighestIndexWithSamePerformance(final List<RaceResult> results, final int start_index) {
 
         int highest_index_with_same_result = start_index;
 
@@ -331,19 +331,19 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return highest_index_with_same_result;
     }
 
-    public List<CommonRaceResult> getOverallResults() {
+    public List<RaceResult> getOverallResults() {
         return overall_results;
     }
 
     /** Gets all the results eligible for the given prize categories. */
-    public List<CommonRaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
+    public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<CommonRaceResult> prize_category_filter = r -> {
+        final Predicate<RaceResult> prize_category_filter = r -> {
             final MidweekRaceResult result = (MidweekRaceResult) r;
             return race.getCategoryDetails().isResultEligibleInSomePrizeCategory(((Runner) result.getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
         };
 
-        final List<CommonRaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
+        final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
         setPositionStrings(results);
         return results;
     }

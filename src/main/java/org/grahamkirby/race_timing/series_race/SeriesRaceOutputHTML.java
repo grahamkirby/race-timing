@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.CommonRaceResult;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 
@@ -75,7 +76,7 @@ public class SeriesRaceOutputHTML {
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
-            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             make_prize_printer.apply(race, writer).print(category_prize_winners);
         }
         // Called from lambda that can't throw checked exception.
@@ -99,7 +100,7 @@ public class SeriesRaceOutputHTML {
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
-            final List<CommonRaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
             make_prize_printer.apply(race, writer).print(category_prize_winners);
         }
         // Called from lambda that can't throw checked exception.

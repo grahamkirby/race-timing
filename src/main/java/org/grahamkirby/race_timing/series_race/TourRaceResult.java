@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
+
 class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration {
 
     public final List<Duration> times;
