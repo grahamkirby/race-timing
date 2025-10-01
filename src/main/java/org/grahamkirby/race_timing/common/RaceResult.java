@@ -38,6 +38,6 @@ public interface RaceResult extends Comparable<RaceResult> {
 
     List<PrizeCategory> getCategoriesOfPrizesAwarded();
 
-    int comparePerformanceTo(CommonRaceResult other);
+    int comparePerformanceTo(RaceResult other);
     boolean canComplete();
 }

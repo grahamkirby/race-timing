@@ -39,7 +39,7 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
     }
 
     @Override
-    public int comparePerformanceTo(final CommonRaceResult other) {
+    public int comparePerformanceTo(final RaceResult other) {
 
         final Duration duration = duration();
         final Duration other_duration = ((SingleRaceResult) other).duration();

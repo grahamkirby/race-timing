@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.CommonRaceResult;
-import org.grahamkirby.race_timing.common.Participant;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 
 import java.util.Objects;
 
@@ -68,7 +65,7 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
             count();
     }
 
-    public static int compareNumberOfRacesCompleted(final CommonRaceResult r1, final CommonRaceResult r2) {
+    public static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
 
         final int minimum_races_to_qualify = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
 

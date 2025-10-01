@@ -18,18 +18,12 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
-import org.grahamkirby.race_timing.common.CommonRaceResult;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.grahamkirby.race_timing.common.Normalisation.getFirstNameOfFirstRunner;
-import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfFirstRunner;
 
 public class LegResult extends SingleRaceResult {
 
@@ -60,7 +54,7 @@ public class LegResult extends SingleRaceResult {
         return ((Team) getParticipant()).runner_names.get(leg_number - 1);
     }
 
-    public List<Comparator<CommonRaceResult>> getComparators() {
+    public List<Comparator<RaceResult>> getComparators() {
 
         return leg_number == 1 ?
             List.of(
@@ -77,13 +71,13 @@ public class LegResult extends SingleRaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares the given results on the basis of their finish positions. */
-    private int compareRecordedPosition(final CommonRaceResult r1, final CommonRaceResult r2) {
+    private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
         if (r1.getRace() != r2.getRace())
             throw new RuntimeException("results compared from two different races");
 
-        final int recorded_position1 = getRecordedLegPosition(((SingleRaceResult)r1).bib_number);
-        final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult)r2).bib_number);
+        final int recorded_position1 = getRecordedLegPosition(((LegResult)r1).bib_number);
+        final int recorded_position2 = getRecordedLegPosition(((LegResult)r2).bib_number);
 
         return Integer.compare(recorded_position1, recorded_position2);
     }

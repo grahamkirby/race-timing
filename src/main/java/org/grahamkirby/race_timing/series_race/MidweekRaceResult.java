@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
@@ -38,7 +39,7 @@ class MidweekRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public int comparePerformanceTo(final CommonRaceResult other) {
+    public int comparePerformanceTo(final RaceResult other) {
 
         // Sort highest scores first.
         final Comparator<Integer> comparator = reverseOrder();
@@ -58,7 +59,7 @@ class MidweekRaceResult extends SeriesRaceResult {
             reduce(0, Integer::sum);
     }
 
-    public List<Comparator<CommonRaceResult>> getComparators() {
+    public List<Comparator<RaceResult>> getComparators() {
 
         return List.of(
             CommonRaceResult::comparePossibleCompletion,

@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.RaceResultWithDuration;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -39,7 +40,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
     }
 
     @Override
-    public int comparePerformanceTo(final CommonRaceResult other) {
+    public int comparePerformanceTo(final RaceResult other) {
 
         final Duration other_duration = ((TourRaceResult) other).duration();
 
@@ -55,7 +56,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
             reduce(Duration.ZERO, Duration::plus);
     }
 
-    public List<Comparator<CommonRaceResult>> getComparators() {
+    public List<Comparator<RaceResult>> getComparators() {
 
         return List.of(
             CommonRaceResult::comparePossibleCompletion,

@@ -24,14 +24,14 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 
-public class IndividualRaceResult extends SingleRaceResult implements Comparable<RaceResult> {
+public class IndividualRaceResult extends SingleRaceResult {
 
     public IndividualRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 
         super(race, entry, finish_time);
     }
 
-    public List<Comparator<CommonRaceResult>> getComparators() {
+    public List<Comparator<RaceResult>> getComparators() {
 
         return List.of(
             CommonRaceResult::comparePossibleCompletion,
@@ -42,7 +42,7 @@ public class IndividualRaceResult extends SingleRaceResult implements Comparable
     }
 
     /** Compares the given results on the basis of their finish positions. */
-    private int compareRecordedPosition(final CommonRaceResult r1, final CommonRaceResult r2) {
+    private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
         final int recorded_position1 = getRecordedPosition(((SingleRaceResult)r1).bib_number);
         final int recorded_position2 = getRecordedPosition(((SingleRaceResult)r2).bib_number);

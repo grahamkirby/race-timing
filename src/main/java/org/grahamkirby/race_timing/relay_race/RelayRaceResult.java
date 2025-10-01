@@ -58,7 +58,7 @@ public class RelayRaceResult extends SingleRaceResult {
                 reduce(Duration.ZERO, Duration::plus);
     }
 
-    public List<Comparator<CommonRaceResult>> getComparators() {
+    public List<Comparator<RaceResult>> getComparators() {
 
         return List.of(
             CommonRaceResult::comparePossibleCompletion,
@@ -69,7 +69,7 @@ public class RelayRaceResult extends SingleRaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares two results based on alphabetical ordering of the team name. */
-    static int compareTeamName(final CommonRaceResult r1, final CommonRaceResult r2) {
+    static int compareTeamName(final RaceResult r1, final RaceResult r2) {
 
         return r1.getParticipantName().compareToIgnoreCase(r2.getParticipantName());
     }

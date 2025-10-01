@@ -73,34 +73,34 @@ public abstract class CommonRaceResult implements RaceResult {
         return categories_of_prizes_awarded;
     }
 
-    public abstract int comparePerformanceTo(CommonRaceResult other);
+    public abstract int comparePerformanceTo(RaceResult other);
     public abstract boolean canComplete();
 
-    protected static int comparePossibleCompletion(final CommonRaceResult r1, final CommonRaceResult r2) {
+    protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
         return Boolean.compare(r2.canComplete(), r1.canComplete());
     }
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,
      *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    public static int comparePerformance(final CommonRaceResult r1, final CommonRaceResult r2) {
+    public static int comparePerformance(final RaceResult r1, final RaceResult r2) {
 
         return r1.comparePerformanceTo(r2);
     }
 
     /** Compares two results based on alphabetical ordering of the runners' first names. */
-    public static int compareRunnerFirstName(final CommonRaceResult r1, final CommonRaceResult r2) {
+    public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
         return getFirstNameOfFirstRunner(r1.getParticipantName()).compareTo(getFirstNameOfFirstRunner(r2.getParticipantName()));
     }
 
     /** Compares two results based on alphabetical ordering of the runners' last names. */
-    public static int compareRunnerLastName(final CommonRaceResult r1, final CommonRaceResult r2) {
+    public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
         return getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(getLastNameOfFirstRunner(r2.getParticipantName()));
     }
 
-    public static Comparator<CommonRaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super CommonRaceResult> base_comparator) {
+    public static Comparator<RaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super RaceResult> base_comparator) {
 
         return (r1, r2) -> {
 
@@ -110,19 +110,17 @@ public abstract class CommonRaceResult implements RaceResult {
     }
 
     @Override
-    public int compareTo(final RaceResult o) {
-
-        CommonRaceResult other = (CommonRaceResult)o;
+    public int compareTo(final RaceResult other) {
 
         return combineComparators(getComparators()).compare(this, other);
     }
 
     /** Combines multiple comparators into a single comparator. */
-    public static Comparator<CommonRaceResult> combineComparators(final Collection<Comparator<CommonRaceResult>> comparators) {
+    public static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
 
         return comparators.stream().
             reduce((_, _) -> 0, Comparator::thenComparing);
     }
 
-    public abstract List<Comparator<CommonRaceResult>> getComparators();
+    public abstract List<Comparator<RaceResult>> getComparators();
 }
