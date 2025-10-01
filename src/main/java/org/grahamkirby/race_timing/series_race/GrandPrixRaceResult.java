@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,6 +56,17 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         // Sort lowest scores first since lower score is better.
         return Integer.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
+    }
+
+    public List<Comparator<CommonRaceResult>> getComparators() {
+
+        return List.of(
+            CommonRaceResult::comparePossibleCompletion,
+            SeriesRaceResult::compareNumberOfRacesCompleted,
+            CommonRaceResult::comparePerformance,
+            CommonRaceResult::compareRunnerLastName,
+            CommonRaceResult::compareRunnerFirstName
+        );
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

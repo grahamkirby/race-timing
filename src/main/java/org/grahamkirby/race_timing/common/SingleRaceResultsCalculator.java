@@ -17,27 +17,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
+public interface SingleRaceResultsCalculator extends RaceResultsCalculator {
 
-import java.util.List;
 
-public interface RaceResult extends Comparable<RaceResult> {
-
-    Race getRace();
-
-    Participant getParticipant();
-
-    String getParticipantName();
-
-    EntryCategory getCategory();
-
-    String getPositionString();
-
-    void setPositionString(final String position_string);
-
-    List<PrizeCategory> getCategoriesOfPrizesAwarded();
-
-    int comparePerformanceTo(CommonRaceResult other);
-    boolean canComplete();
 }

@@ -18,11 +18,18 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
+import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceEntry;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 
 import java.time.Duration;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.grahamkirby.race_timing.common.Normalisation.getFirstNameOfFirstRunner;
+import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfFirstRunner;
 
 public class LegResult extends SingleRaceResult {
 
@@ -44,11 +51,52 @@ public class LegResult extends SingleRaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Duration duration() {
-        return !canComplete() ? null : finish_time.minus(start_time);
+
+        return canComplete() ?  finish_time.minus(start_time) : VERY_LONG_DURATION;
     }
 
     public String getParticipantName() {
 
         return ((Team) getParticipant()).runner_names.get(leg_number - 1);
+    }
+
+    public List<Comparator<CommonRaceResult>> getComparators() {
+
+        return leg_number == 1 ?
+            List.of(
+                CommonRaceResult::comparePossibleCompletion,
+                CommonRaceResult::comparePerformance,
+                this::compareRecordedPosition) :
+            List.of(
+                CommonRaceResult::comparePossibleCompletion,
+                CommonRaceResult::comparePerformance,
+                CommonRaceResult::compareRunnerLastName,
+                CommonRaceResult::compareRunnerFirstName);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Compares the given results on the basis of their finish positions. */
+    private int compareRecordedPosition(final CommonRaceResult r1, final CommonRaceResult r2) {
+
+        if (r1.getRace() != r2.getRace())
+            throw new RuntimeException("results compared from two different races");
+
+        final int recorded_position1 = getRecordedLegPosition(((SingleRaceResult)r1).bib_number);
+        final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult)r2).bib_number);
+
+        return Integer.compare(recorded_position1, recorded_position2);
+    }
+
+    private int getRecordedLegPosition(final int bib_number) {
+
+        final AtomicInteger legs_completed = new AtomicInteger(0);
+
+        return (int) race.getRaceData().getRawResults().stream().
+            peek(result -> {
+                if (result.getBibNumber() == bib_number) legs_completed.incrementAndGet();
+            }).
+            takeWhile(result -> result.getBibNumber() != bib_number || legs_completed.get() < leg_number).
+            count() + 1;
     }
 }

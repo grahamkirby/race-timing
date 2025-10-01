@@ -191,12 +191,6 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
             map(RelayRaceImpl.IndividualStart::start_time).
             findFirst().
             orElse(null);
-//        return race_impl.getIndividualStarts().stream().
-//            filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.entry.bib_number).
-//            filter(individual_leg_start -> individual_leg_start.leg_number() == leg_index + 1).
-//            map(RelayRaceImpl.IndividualStart::start_time).
-//            findFirst().
-//            orElse(null);
     }
 
     private static Duration getLegStartTime(final int leg_index, final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time) {
@@ -243,10 +237,6 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
             map(result -> (RelayRaceResult)result).
             takeWhile(result -> result.bib_number != bib_number).
             count();
-//        return (int) overall_results.stream().
-//            map(result -> (RelayRaceResult)result).
-//            takeWhile(result -> result.entry.bib_number != bib_number).
-//            count();
     }
 
     private void addPaperRecordingComments() {
@@ -315,7 +305,6 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
             race.getCategoryDetails().isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((RelayRaceResult) result).getParticipant().category, prize_category);
-//        race.getCategoryDetails().isResultEligibleForPrizeCategory(null, race.getNormalisation().gender_eligibility_map, ((RelayRaceResult) result).entry.participant.category, prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final CommonRaceResult result, final PrizeCategory new_prize_category) {
@@ -343,10 +332,10 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
             map(this::makeResult).
             toList();
 
-        overall_results = makeMutable(overall_results);
+        overall_results = makeMutableCopy(overall_results);
     }
 
-    public static List<CommonRaceResult> makeMutable(final List<? extends CommonRaceResult> results) {
+    public static List<CommonRaceResult> makeMutableCopy(final List<? extends CommonRaceResult> results) {
         return new ArrayList<>(results);
     }
 
@@ -391,57 +380,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sorts all results by relevant comparators. */
     private void sortResults() {
 
-        overall_results.sort(combineComparators(getComparators()));
-    }
-
-    private List<Comparator<CommonRaceResult>> getComparators() {
-
-        return List.of(
-            ignoreIfBothResultsAreDNF(penaliseDNF(RelayRaceResultsCalculatorImpl::comparePerformance)),
-            RelayRaceResultsCalculatorImpl::compareTeamName);
-    }
-
-    /** Compares two results based on their performances, which may be based on a single or aggregate time,
-     *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    private static int comparePerformance(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return r1.comparePerformanceTo(r2);
-    }
-
-    /** Compares two results based on alphabetical ordering of the team name. */
-    private static int compareTeamName(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return r1.getParticipantName().compareToIgnoreCase(r2.getParticipantName());
-    }
-
-    static Comparator<CommonRaceResult> penaliseDNF(final Comparator<? super CommonRaceResult> base_comparator) {
-
-        // TODO rationalise with nullsLast.
-        // TODO rationalise all comparators.
-        // TODO type as RaceResult.
-        return (r1, r2) -> {
-
-            if (!r1.canComplete() && r2.canComplete()) return 1;
-            if (r1.canComplete() && !r2.canComplete()) return -1;
-
-            return base_comparator.compare(r1, r2);
-        };
-    }
-
-    static Comparator<CommonRaceResult> ignoreIfBothResultsAreDNF(final Comparator<? super CommonRaceResult> base_comparator) {
-
-        return (r1, r2) -> {
-
-            if (!r1.canComplete() && !r2.canComplete()) return 0;
-            else return base_comparator.compare(r1, r2);
-        };
-    }
-
-    /** Combines multiple comparators into a single comparator. */
-    static Comparator<CommonRaceResult> combineComparators(final Collection<Comparator<CommonRaceResult>> comparators) {
-
-        return comparators.stream().
-            reduce((_, _) -> 0, Comparator::thenComparing);
+        overall_results.sort(null);
     }
 
     RaceEntry getEntryWithBibNumber(final int bib_number) {
@@ -476,7 +415,7 @@ public class RelayRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
             final CommonRaceResult result = results.get(result_index);
 
-            if (result.shouldDisplayPosition()) {
+            if (result.canComplete()) {
                 if (allow_equal_positions) {
 
                     // Skip over any following results with the same performance.

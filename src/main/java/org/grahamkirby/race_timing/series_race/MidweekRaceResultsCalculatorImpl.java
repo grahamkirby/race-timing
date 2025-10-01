@@ -257,49 +257,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
     /** Sorts all results by relevant comparators. */
     protected void sortResults() {
 
-        overall_results.sort(combineComparators(getComparators()));
-    }
-
-    protected List<Comparator<CommonRaceResult>> getComparators() {
-
-        return List.of(penaliseDNF(MidweekRaceResultsCalculatorImpl::comparePerformance), MidweekRaceResultsCalculatorImpl::compareRunnerLastName, MidweekRaceResultsCalculatorImpl::compareRunnerFirstName);
-    }
-
-    /** Compares two results based on their performances, which may be based on a single or aggregate time,
-     *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    public static int comparePerformance(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return r1.comparePerformanceTo(r2);
-    }
-
-    /** Compares two results based on alphabetical ordering of the runners' first names. */
-    public static int compareRunnerFirstName(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return Normalisation.getFirstNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getFirstNameOfFirstRunner(r2.getParticipant().name));
-    }
-
-    /** Compares two results based on alphabetical ordering of the runners' last names. */
-    public static int compareRunnerLastName(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return Normalisation.getLastNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getLastNameOfFirstRunner(r2.getParticipant().name));
-    }
-
-    protected static Comparator<CommonRaceResult> penaliseDNF(final Comparator<? super CommonRaceResult> base_comparator) {
-
-        return (r1, r2) -> {
-
-            if (!r1.canComplete() && r2.canComplete()) return 1;
-            if (r1.canComplete() && !r2.canComplete()) return -1;
-
-            return base_comparator.compare(r1, r2);
-        };
-    }
-
-    /** Combines multiple comparators into a single comparator. */
-    protected static Comparator<CommonRaceResult> combineComparators(final Collection<Comparator<CommonRaceResult>> comparators) {
-
-        return comparators.stream().
-            reduce((_, _) -> 0, Comparator::thenComparing);
+        overall_results.sort(null);
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
@@ -326,7 +284,7 @@ public class MidweekRaceResultsCalculatorImpl implements RaceResultsCalculator {
 
             final CommonRaceResult result = results.get(result_index);
 
-            if (result.shouldDisplayPosition()) {
+            if (result.canComplete()) {
                 if (allow_equal_positions) {
 
                     // Skip over any following results with the same performance.

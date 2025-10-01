@@ -18,8 +18,8 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.CommonRaceResult;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResultWithDuration;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -48,9 +48,19 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
 
     public Duration duration() {
 
-        // If still possible to complete series, consider all non-null times.
+        if (!canComplete()) return VERY_LONG_DURATION;
+
         return times.stream().
             filter(Objects::nonNull).
             reduce(Duration.ZERO, Duration::plus);
+    }
+
+    public List<Comparator<CommonRaceResult>> getComparators() {
+
+        return List.of(
+            CommonRaceResult::comparePossibleCompletion,
+            CommonRaceResult::comparePerformance,
+            CommonRaceResult::compareRunnerLastName,
+            CommonRaceResult::compareRunnerFirstName);
     }
 }

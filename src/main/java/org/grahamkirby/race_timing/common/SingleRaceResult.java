@@ -19,9 +19,8 @@ package org.grahamkirby.race_timing.common;
 
 
 import java.time.Duration;
-import java.util.Comparator;
 
-public class SingleRaceResult extends CommonRaceResult implements RaceResultWithDuration {
+public abstract class SingleRaceResult extends CommonRaceResult implements RaceResultWithDuration {
 
     public Duration finish_time;
     public boolean dnf;
@@ -35,11 +34,6 @@ public class SingleRaceResult extends CommonRaceResult implements RaceResultWith
         this.finish_time = finish_time;
     }
 
-    @Override
-    public boolean shouldDisplayPosition() {
-        return canComplete();
-    }
-
     public Duration duration() {
         return finish_time;
     }
@@ -50,7 +44,7 @@ public class SingleRaceResult extends CommonRaceResult implements RaceResultWith
         final Duration duration = duration();
         final Duration other_duration = ((SingleRaceResult) other).duration();
 
-        return Comparator.nullsLast(Duration::compareTo).compare(duration, other_duration);
+        return duration.compareTo(other_duration);
     }
 
     @Override

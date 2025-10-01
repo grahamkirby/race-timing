@@ -18,18 +18,14 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculatorImpl;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.*;
-import static org.grahamkirby.race_timing.relay_race.RelayRaceResultsCalculatorImpl.ignoreIfBothResultsAreDNF;
-import static org.grahamkirby.race_timing.relay_race.RelayRaceResultsCalculatorImpl.penaliseDNF;
 
 public class RelayRaceImpl implements SpecificRace {
 
@@ -79,10 +75,8 @@ public class RelayRaceImpl implements SpecificRace {
 
     /**
      * The number of legs in the relay race.
-     * Value is read from configuration file using key KEY_NUMBER_OF_LEGS.
      */
     public int getNumberOfLegs() {
-        // TODO inline this.
         return (int) race.getConfig().get(KEY_NUMBER_OF_LEGS);
     }
 
@@ -109,7 +103,7 @@ public class RelayRaceImpl implements SpecificRace {
         final List<LegResult> results = race.getResultsCalculator().getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
             map(result -> result.leg_results.get(leg_number - 1)).
-            sorted(RelayRaceResultsCalculatorImpl.combineComparators(getLegResultComparators(leg_number))).
+            sorted().
             toList();
 
         // Deal with dead heats in legs after the first.
@@ -196,55 +190,6 @@ public class RelayRaceImpl implements SpecificRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Compares two results based on alphabetical ordering of the runners' first names. */
-    private static int compareFirstNameOfFirstRunner(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return getFirstNameOfFirstRunner(r1.getParticipantName()).compareTo(getFirstNameOfFirstRunner(r2.getParticipantName()));
-    }
-
-    /** Compares two results based on alphabetical ordering of the runners' last names. */
-    private static int compareLastNameOfFirstRunner(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(getLastNameOfFirstRunner(r2.getParticipantName()));
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private List<Comparator<CommonRaceResult>> getLegResultComparators(final int leg_number) {
-
-        final Comparator<CommonRaceResult> performance_comparator = ignoreIfBothResultsAreDNF(penaliseDNF(IndividualRaceResultsCalculatorImpl::comparePerformance));
-
-        return leg_number == 1 ?
-            List.of(
-                performance_comparator,
-                this::compareRecordedLegPosition) :
-            List.of(
-                performance_comparator,
-                RelayRaceImpl::compareLastNameOfFirstRunner, RelayRaceImpl::compareFirstNameOfFirstRunner);
-    }
-
-    private int compareRecordedLegPosition(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        final int leg_number = ((LegResult) r1).leg_number;
-
-        final int recorded_position1 = getRecordedLegPosition(((SingleRaceResult)r1).bib_number, leg_number);
-        final int recorded_position2 = getRecordedLegPosition(((SingleRaceResult) r2).bib_number, leg_number);
-
-        return Integer.compare(recorded_position1, recorded_position2);
-    }
-
-    private int getRecordedLegPosition(final int bib_number, final int leg_number) {
-
-        final AtomicInteger legs_completed = new AtomicInteger(0);
-
-        return (int) race.getRaceData().getRawResults().stream().
-            peek(result -> {
-                if (result.getBibNumber() == bib_number) legs_completed.incrementAndGet();
-            }).
-            takeWhile(result -> result.getBibNumber() != bib_number || legs_completed.get() < leg_number).
-            count() + 1;
-    }
-
     private String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
@@ -307,10 +252,10 @@ public class RelayRaceImpl implements SpecificRace {
     private void setMassStartTimes() {
 
         // Example: MASS_START_ELAPSED_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
+        final String mass_start_string = (String) race.getConfig().get(Config.KEY_MASS_START_ELAPSED_TIMES);
 
-        String s = (String) race.getConfig().get(Config.KEY_MASS_START_ELAPSED_TIMES);
-        if (s != null) {
-            final String[] mass_start_elapsed_times_strings = s.split(",");
+        if (mass_start_string != null) {
+            final String[] mass_start_elapsed_times_strings = mass_start_string.split(",");
 
             for (final String bib_time_as_string : mass_start_elapsed_times_strings)
                 setMassStartTime(bib_time_as_string);

@@ -25,15 +25,10 @@ import java.util.List;
 public interface RaceResultsCalculator {
 
     void setRace(Race race);
-
     void calculateResults();
-
     List<CommonRaceResult> getOverallResults();
     List<CommonRaceResult> getOverallResults(List<PrizeCategory> categories);
-
     boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
-
     List<CommonRaceResult> getPrizeWinners(PrizeCategory category);
-
     StringBuilder getNotes();
 }

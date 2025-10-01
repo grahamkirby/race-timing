@@ -18,12 +18,11 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceEntry;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class RelayRaceResult extends SingleRaceResult {
@@ -38,8 +37,10 @@ public class RelayRaceResult extends SingleRaceResult {
 
         final int number_of_legs = ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs();
 
-        for (int i = 0; i < number_of_legs; i++)
+        for (int i = 0; i < number_of_legs; i++) {
+
             leg_results.add(new LegResult(race, entry));
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,13 +50,27 @@ public class RelayRaceResult extends SingleRaceResult {
         return leg_results.stream().allMatch(LegResult::canComplete);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     public Duration duration() {
 
-        return !canComplete() ? null :
+        return !canComplete() ? VERY_LONG_DURATION :
             leg_results.stream().
                 map(LegResult::duration).
                 reduce(Duration.ZERO, Duration::plus);
+    }
+
+    public List<Comparator<CommonRaceResult>> getComparators() {
+
+        return List.of(
+            CommonRaceResult::comparePossibleCompletion,
+            CommonRaceResult::comparePerformance,
+            RelayRaceResult::compareTeamName);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Compares two results based on alphabetical ordering of the team name. */
+    static int compareTeamName(final CommonRaceResult r1, final CommonRaceResult r2) {
+
+        return r1.getParticipantName().compareToIgnoreCase(r2.getParticipantName());
     }
 }

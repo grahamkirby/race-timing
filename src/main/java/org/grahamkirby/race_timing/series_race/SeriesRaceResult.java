@@ -17,9 +17,9 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.Participant;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 
 import java.util.Objects;
@@ -52,12 +52,6 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
         return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
     }
 
-    @Override
-    public boolean shouldDisplayPosition() {
-
-        return canComplete();
-    }
-
     public boolean hasCompletedSeries() {
 
         return numberOfRacesCompleted() >= minimum_number_of_races;
@@ -72,5 +66,15 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
             filter(result -> result.getParticipant().equals(participant)).
             filter(SingleRaceResult::canComplete).
             count();
+    }
+
+    public static int compareNumberOfRacesCompleted(final CommonRaceResult r1, final CommonRaceResult r2) {
+
+        final int minimum_races_to_qualify = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+
+        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_races_to_qualify);
+        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_races_to_qualify);
+
+        return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
     }
 }

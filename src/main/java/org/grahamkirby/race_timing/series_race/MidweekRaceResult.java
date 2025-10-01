@@ -18,8 +18,8 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.CommonRaceResult;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
@@ -56,5 +56,15 @@ class MidweekRaceResult extends SeriesRaceResult {
             sorted(reverseOrder()).
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
+    }
+
+    public List<Comparator<CommonRaceResult>> getComparators() {
+
+        return List.of(
+            CommonRaceResult::comparePossibleCompletion,
+            SeriesRaceResult::compareNumberOfRacesCompleted,
+            CommonRaceResult::comparePerformance,
+            CommonRaceResult::compareRunnerLastName,
+            CommonRaceResult::compareRunnerFirstName);
     }
 }

@@ -1,0 +1,61 @@
+/*
+ * race-timing - <https://github.com/grahamkirby/race-timing>
+ * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.grahamkirby.race_timing.individual_race;
+
+
+import org.grahamkirby.race_timing.common.*;
+
+import java.time.Duration;
+import java.util.Comparator;
+import java.util.List;
+
+public class IndividualRaceResult extends SingleRaceResult implements Comparable<RaceResult> {
+
+    public IndividualRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
+
+        super(race, entry, finish_time);
+    }
+
+    public List<Comparator<CommonRaceResult>> getComparators() {
+
+        return List.of(
+            CommonRaceResult::comparePossibleCompletion,
+            ignoreIfEitherResultIsDNF(CommonRaceResult::comparePerformance),
+            ignoreIfEitherResultIsDNF(this::compareRecordedPosition),
+            CommonRaceResult::compareRunnerLastName,
+            CommonRaceResult::compareRunnerFirstName);
+    }
+
+    /** Compares the given results on the basis of their finish positions. */
+    private int compareRecordedPosition(final CommonRaceResult r1, final CommonRaceResult r2) {
+
+        final int recorded_position1 = getRecordedPosition(((SingleRaceResult)r1).bib_number);
+        final int recorded_position2 = getRecordedPosition(((SingleRaceResult)r2).bib_number);
+
+        return Integer.compare(recorded_position1, recorded_position2);
+    }
+
+    private int getRecordedPosition(final int bib_number) {
+
+        final List<RawResult> raw_results = race.getRaceData().getRawResults();
+
+        return (int) raw_results.stream().
+            takeWhile(result -> result.getBibNumber() != bib_number).
+            count();
+    }
+}

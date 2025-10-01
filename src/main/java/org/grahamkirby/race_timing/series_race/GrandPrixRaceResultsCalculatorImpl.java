@@ -43,7 +43,7 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
     }
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
 
         this.race = race;
     }
@@ -76,15 +76,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
                 distinct().
                 map(this::getOverallResult).
                 toList());
-//        overall_results = new ArrayList<>(
-//            getRacesInTemporalOrder().stream().
-//                filter(Objects::nonNull).
-//                flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-//                filter(getResultInclusionPredicate()).
-//                map(result -> (Runner)((SingleRaceResult) result).entry.participant).
-//                distinct().
-//                map(this::getOverallResult).
-//                toList());
     }
 
     protected CommonRaceResult getOverallResult(final Runner runner) {
@@ -99,7 +90,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
     protected Predicate<CommonRaceResult> getResultInclusionPredicate() {
 
         return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner)((SingleRaceResult) result).getParticipant()).club);
-//        return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner)((SingleRaceResult) result).entry.participant).club);
     }
 
     int calculateRaceScore(final Race individual_race, final Runner runner) {
@@ -142,16 +132,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
                 map.putIfAbsent(runner, new ArrayList<>());
                 map.get(runner).add(result);
             });
-//        getRacesInTemporalOrder().stream().
-//            filter(Objects::nonNull).
-//            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-//            filter(getResultInclusionPredicate()).
-//            map(result -> ((SingleRaceResult) result)).
-//            forEachOrdered(result -> {
-//                final Runner runner = (Runner)result.entry.participant;
-//                map.putIfAbsent(runner, new ArrayList<>());
-//                map.get(runner).add(result);
-//            });
 
         return new ArrayList<>(map.values());
     }
@@ -181,7 +161,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
         for (final SingleRaceResult result : runner_results) {
 
             final EntryCategory current_category = result.getParticipant().category;
-//            final EntryCategory current_category = result.entry.participant.category;
 
             if (current_category != null) {
 
@@ -198,7 +177,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
                     checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
 
                     getNotes().append("Runner ").append(result.getParticipantName()).append(" changed category from ").append(previous_category.getShortName()).append(" to ").append(current_category.getShortName()).append(" at ").append(race_name).append(LINE_SEPARATOR);
-//                    getNotes().append("Runner ").append(result.entry.participant.name).append(" changed category from ").append(previous_category.getShortName()).append(" to ").append(current_category.getShortName()).append(" at ").append(race_name).append(LINE_SEPARATOR);
                 }
 
                 previous_category = current_category;
@@ -209,7 +187,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
         for (final SingleRaceResult result : runner_results)
             result.getParticipant().category = earliest_category;
-//        result.entry.participant.category = earliest_category;
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -217,7 +194,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
         if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
             throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
-//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -225,7 +201,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
         if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
             throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
-//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name+ "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -233,7 +208,6 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
         if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
             throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
-//        throw new RuntimeException("invalid category change: runner '" + result.entry.participant.name + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
     }
 
     private void allocatePrizes() {
@@ -292,53 +266,7 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
     /** Sorts all results by relevant comparators. */
     protected void sortResults() {
 
-        overall_results.sort(combineComparators(getComparators()));
-    }
-
-    protected List<Comparator<CommonRaceResult>> getComparators() {
-
-        return List.of(GrandPrixRaceResultsCalculatorImpl::comparePossibleCompletion, this::compareNumberOfRacesCompleted, GrandPrixRaceResultsCalculatorImpl::comparePerformance, GrandPrixRaceResultsCalculatorImpl::compareRunnerLastName, GrandPrixRaceResultsCalculatorImpl::compareRunnerFirstName);
-    }
-
-    public int compareNumberOfRacesCompleted(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        final int minimum_races_to_qualify = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
-
-        final int relevant_number_of_races_r1 = Math.min(((GrandPrixRaceResult) r1).numberOfRacesCompleted(), minimum_races_to_qualify);
-        final int relevant_number_of_races_r2 = Math.min(((GrandPrixRaceResult) r2).numberOfRacesCompleted(), minimum_races_to_qualify);
-
-        return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
-    }
-
-    /** Compares two results based on their performances, which may be based on a single or aggregate time,
-     *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    public static int comparePerformance(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return r1.comparePerformanceTo(r2);
-    }
-
-    protected static int comparePossibleCompletion(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return Boolean.compare(r2.canComplete(), r1.canComplete());
-    }
-
-    /** Compares two results based on alphabetical ordering of the runners' first names. */
-    public static int compareRunnerFirstName(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return Normalisation.getFirstNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getFirstNameOfFirstRunner(r2.getParticipant().name));
-    }
-
-    /** Compares two results based on alphabetical ordering of the runners' last names. */
-    public static int compareRunnerLastName(final CommonRaceResult r1, final CommonRaceResult r2) {
-
-        return Normalisation.getLastNameOfFirstRunner(r1.getParticipant().name).compareTo(Normalisation.getLastNameOfFirstRunner(r2.getParticipant().name));
-    }
-
-    /** Combines multiple comparators into a single comparator. */
-    protected static Comparator<CommonRaceResult> combineComparators(final Collection<Comparator<CommonRaceResult>> comparators) {
-
-        return comparators.stream().
-            reduce((_, _) -> 0, Comparator::thenComparing);
+        overall_results.sort(null);
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
@@ -365,7 +293,7 @@ public class GrandPrixRaceResultsCalculatorImpl implements RaceResultsCalculator
 
             final CommonRaceResult result = results.get(result_index);
 
-            if (result.shouldDisplayPosition()) {
+            if (result.canComplete()) {
                 if (allow_equal_positions) {
 
                     // Skip over any following results with the same performance.
