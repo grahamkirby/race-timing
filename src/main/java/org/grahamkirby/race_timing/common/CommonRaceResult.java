@@ -21,7 +21,6 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -30,7 +29,6 @@ import java.util.List;
 import static org.grahamkirby.race_timing.common.Normalisation.getFirstNameOfFirstRunner;
 import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfFirstRunner;
 
-@SuppressWarnings("IncorrectFormatting")
 public abstract class CommonRaceResult implements RaceResult {
 
     protected final Race race;

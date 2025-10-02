@@ -146,7 +146,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner)((SingleRaceResult)result).getParticipant()).club, race.getNormalisation().gender_eligibility_map, ((SingleRaceResult)result).getParticipant().category, prize_category);
+            race.getCategoryDetails().isResultEligibleForPrizeCategory(((Runner) result.getParticipant()).club, race.getNormalisation().gender_eligibility_map, result.getParticipant().category, prize_category);
     }
 
     private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
@@ -309,7 +309,7 @@ public class IndividualRaceResultsCalculatorImpl implements RaceResultsCalculato
             orElseThrow();
     }
 
-    private CommonRaceResult getResultWithBibNumber(final int bib_number) {
+    private RaceResult getResultWithBibNumber(final int bib_number) {
 
         return overall_results.stream().
             map(result -> (SingleRaceResult) result).

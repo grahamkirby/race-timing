@@ -155,13 +155,6 @@ public class Race {
         return config_file_path.getParent().resolveSibling("output");
     }
 
-//    @Override
-//    public void setConfigProcessor(ConfigProcessor config_processor) {
-//
-//        config_processor.setRace(this);
-//        config = config_processor.loadConfig(config_file_path);
-//    }
-
     public void addConfigProcessor(final ConfigProcessor processor) {
 
         config_processors.add(processor);
