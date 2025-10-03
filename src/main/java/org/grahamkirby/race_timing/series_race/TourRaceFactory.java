@@ -45,7 +45,7 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
 
         race.setSpecific(new TourRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
-        race.setResultsCalculator(new TourRaceResultsCalculatorImpl());
+        race.setResultsCalculator(new TourRaceResultsCalculator());
         race.setResultsOutput(new TourRaceResultsOutput());
 
         return race;

@@ -46,7 +46,7 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
 
         race.setSpecific(new GrandPrixRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
-        race.setResultsCalculator(new GrandPrixRaceResultsCalculatorImpl());
+        race.setResultsCalculator(new GrandPrixRaceResultsCalculator());
         race.setResultsOutput(new GrandPrixRaceResultsOutput());
 
         return race;

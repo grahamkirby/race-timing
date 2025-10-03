@@ -19,14 +19,14 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculatorImpl;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class GrandPrixRaceResultsCalculatorImpl extends SeriesRaceResultsCalculatorImpl {
+public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator {
 
     protected RaceResult getOverallResult(final Runner runner) {
 
@@ -48,7 +48,7 @@ public class GrandPrixRaceResultsCalculatorImpl extends SeriesRaceResultsCalcula
 
         final Duration runner_time = getRunnerTime(individual_race, runner);
 
-        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculatorImpl) individual_race.getResultsCalculator()).getMedianTime()) * ((GrandPrixRaceImpl) race.getSpecific()).score_for_median_position);
+        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime()) * ((GrandPrixRaceImpl) race.getSpecific()).score_for_median_position);
     }
 
     private static double divide(final Duration d1, final Duration d2) {

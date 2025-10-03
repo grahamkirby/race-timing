@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.*;
-import static org.grahamkirby.race_timing.relay_race.RelayRaceResultsCalculatorImpl.setPositionStrings;
 
 public class RelayRaceImpl implements SpecificRace {
 
@@ -108,7 +107,7 @@ public class RelayRaceImpl implements SpecificRace {
             toList();
 
         // Deal with dead heats in legs after the first.
-        RelayRaceResultsCalculatorImpl.setPositionStrings(results, leg_number > 1);
+        RelayRaceResultsCalculator.setPositionStrings(results, leg_number > 1);
 
         return results;
     }

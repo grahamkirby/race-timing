@@ -15,9 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.series_race;
 
-public interface SingleRaceResultsCalculator extends RaceResultsCalculator {
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.time.Duration;
+import java.util.List;
+import java.util.Objects;
 
+public class TourRaceResultsCalculator extends SeriesRaceResultsCalculator {
+
+    protected RaceResult getOverallResult(final Runner runner) {
+
+        final List<Duration> times = ((TourRaceImpl) race.getSpecific()).getRaces().stream().
+            filter(Objects::nonNull).
+            map(race -> getRunnerTime(race, runner)).
+            toList();
+
+        return new TourRaceResult(runner, times, race);
+    }
 }

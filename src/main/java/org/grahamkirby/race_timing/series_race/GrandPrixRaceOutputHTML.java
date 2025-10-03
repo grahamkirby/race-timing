@@ -89,7 +89,7 @@ class GrandPrixRaceOutputHTML {
 
             final List<String> elements = new ArrayList<>();
 
-            final GrandPrixRaceResultsCalculatorImpl calculator = (GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator();
+            final GrandPrixRaceResultsCalculator calculator = (GrandPrixRaceResultsCalculator) race.getResultsCalculator();
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
 
             elements.add(result.getPositionString());

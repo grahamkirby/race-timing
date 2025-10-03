@@ -26,7 +26,7 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 
-public class MidweekRaceResultsCalculatorImpl extends SeriesRaceResultsCalculatorImpl {
+public class MidweekRaceResultsCalculator extends SeriesRaceResultsCalculator {
 
     int calculateRaceScore(final Race individual_race, final Runner runner) {
 

@@ -85,7 +85,7 @@ class MidweekRaceOutputHTML {
 
             final List<String> elements = new ArrayList<>();
 
-            final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
+            final MidweekRaceResultsCalculator calculator = (MidweekRaceResultsCalculator) race.getResultsCalculator();
             final MidweekRaceResult result = (MidweekRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
 

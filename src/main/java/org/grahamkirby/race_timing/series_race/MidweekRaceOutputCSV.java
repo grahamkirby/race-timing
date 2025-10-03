@@ -65,7 +65,7 @@ class MidweekRaceOutputCSV {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
             final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
-            final MidweekRaceResultsCalculatorImpl calculator = (MidweekRaceResultsCalculatorImpl) race.getResultsCalculator();
+            final MidweekRaceResultsCalculator calculator = (MidweekRaceResultsCalculator) race.getResultsCalculator();
 
             writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).club) + "," + result.getParticipant().category.getShortName() + ",");
 

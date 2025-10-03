@@ -18,10 +18,9 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.RaceResultsCalculatorImpl;
+import org.grahamkirby.race_timing.common.RaceResultsCalculator;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -32,13 +31,12 @@ import java.util.function.Predicate;
 import static org.grahamkirby.race_timing.common.Config.KEY_RACE_NAME_FOR_RESULTS;
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
-public abstract class SeriesRaceResultsCalculatorImpl extends RaceResultsCalculatorImpl {
+public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     abstract RaceResult getOverallResult(final Runner runner);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
     public void calculateResults() {
 
         checkCategoryConsistencyOverSeries();

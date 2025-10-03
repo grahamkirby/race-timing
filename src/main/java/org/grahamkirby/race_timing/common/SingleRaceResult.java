@@ -19,8 +19,6 @@ package org.grahamkirby.race_timing.common;
 
 
 import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SingleRaceResult extends CommonRaceResult implements RaceResultWithDuration {
 

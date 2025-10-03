@@ -73,7 +73,7 @@ class GrandPrixRaceOutputCSV {
 
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
             final GrandPrixRaceImpl race_impl = (GrandPrixRaceImpl) race.getSpecific();
-            final GrandPrixRaceResultsCalculatorImpl calculator = (GrandPrixRaceResultsCalculatorImpl) race.getResultsCalculator();
+            final GrandPrixRaceResultsCalculator calculator = (GrandPrixRaceResultsCalculator) race.getResultsCalculator();
             final Runner runner = (Runner) result.getParticipant();
 
             writer.append(result.getPositionString() + "," + encode(runner.name) + "," + runner.category.getShortName() + ",");

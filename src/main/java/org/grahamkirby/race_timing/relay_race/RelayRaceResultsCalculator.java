@@ -22,11 +22,10 @@ import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class RelayRaceResultsCalculatorImpl extends RaceResultsCalculatorImpl {
+public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private static final int UNKNOWN_LEG_NUMBER = 0;
     private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
@@ -119,7 +118,7 @@ public class RelayRaceResultsCalculatorImpl extends RaceResultsCalculatorImpl {
 
     private void sortLegResults() {
 
-        overall_results.forEach(RelayRaceResultsCalculatorImpl::sortLegResults);
+        overall_results.forEach(RelayRaceResultsCalculator::sortLegResults);
     }
 
     private static void sortLegResults(final RaceResult result) {

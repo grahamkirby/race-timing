@@ -31,7 +31,7 @@ import static org.grahamkirby.race_timing.common.CommonDataProcessor.readAllLine
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
-public class IndividualRaceResultsCalculatorImpl extends RaceResultsCalculatorImpl {
+public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int NAME_INDEX = 1;
