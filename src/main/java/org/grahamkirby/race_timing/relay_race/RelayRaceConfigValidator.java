@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
@@ -71,14 +70,14 @@ public class RelayRaceConfigValidator implements ConfigProcessor {
         if (mass_start_elapsed_times != null)
             for (final String leg_time_string : mass_start_elapsed_times.split(",")) {
 
-                String[] split = leg_time_string.split("/");
+                final String[] split = leg_time_string.split("/");
 
                 final Duration mass_start_time;
                 try {
                     if (split.length < 2)
                         throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_ELAPSED_TIMES + "' in file '" + config_file_path.getFileName() + "'");
 
-                    String time_string = split[1];
+                    final String time_string = split[1];
                     mass_start_time = Normalisation.parseTime(time_string);
 
                 } catch (final DateTimeParseException _) {
@@ -86,7 +85,7 @@ public class RelayRaceConfigValidator implements ConfigProcessor {
                 }
 
                 try {
-                    int leg_number = Integer.parseInt(split[0]);
+                    final int leg_number = Integer.parseInt(split[0]);
 
                     if (leg_number < 1 || leg_number > number_of_legs)
                         throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_ELAPSED_TIMES + "' in file '" + config_file_path.getFileName() + "'");

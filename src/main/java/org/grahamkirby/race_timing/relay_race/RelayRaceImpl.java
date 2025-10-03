@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.*;
+import static org.grahamkirby.race_timing.relay_race.RelayRaceResultsCalculatorImpl.setPositionStrings;
 
 public class RelayRaceImpl implements SpecificRace {
 

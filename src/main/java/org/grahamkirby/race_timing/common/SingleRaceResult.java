@@ -19,6 +19,8 @@ package org.grahamkirby.race_timing.common;
 
 
 import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SingleRaceResult extends CommonRaceResult implements RaceResultWithDuration {
 
@@ -50,5 +52,24 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
     @Override
     public boolean canComplete() {
         return !dnf;
+    }
+
+    /** Compares the given results on the basis of their finish positions. */
+    protected int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
+
+        if (r1.getRace() != r2.getRace())
+            throw new RuntimeException("results compared from two different races");
+
+        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) r1).bib_number);
+        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) r2).bib_number);
+
+        return Integer.compare(recorded_position1, recorded_position2);
+    }
+
+    protected int getRecordedPosition(final int bib_number) {
+
+        return (int) race.getRaceData().getRawResults().stream().
+            takeWhile(result -> result.getBibNumber() != bib_number).
+            count() + 1;
     }
 }

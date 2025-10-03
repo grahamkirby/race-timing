@@ -46,16 +46,19 @@ public class LegResult extends SingleRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @Override
     public Duration duration() {
 
         return canComplete() ?  finish_time.minus(start_time) : VERY_LONG_DURATION;
     }
 
+    @Override
     public String getParticipantName() {
 
         return ((Team) getParticipant()).runner_names.get(leg_number - 1);
     }
 
+    @Override
     public List<Comparator<RaceResult>> getComparators() {
 
         return leg_number == 1 ?
@@ -72,19 +75,7 @@ public class LegResult extends SingleRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Compares the given results on the basis of their finish positions. */
-    private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
-
-        if (r1.getRace() != r2.getRace())
-            throw new RuntimeException("results compared from two different races");
-
-        final int recorded_position1 = getRecordedLegPosition(((LegResult)r1).bib_number);
-        final int recorded_position2 = getRecordedLegPosition(((LegResult)r2).bib_number);
-
-        return Integer.compare(recorded_position1, recorded_position2);
-    }
-
-    private int getRecordedLegPosition(final int bib_number) {
+    protected int getRecordedPosition(final int bib_number) {
 
         final AtomicInteger legs_completed = new AtomicInteger(0);
 

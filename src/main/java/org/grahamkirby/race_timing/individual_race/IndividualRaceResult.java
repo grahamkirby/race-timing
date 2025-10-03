@@ -31,6 +31,7 @@ public class IndividualRaceResult extends SingleRaceResult {
         super(race, entry, finish_time);
     }
 
+    @Override
     public List<Comparator<RaceResult>> getComparators() {
 
         return List.of(
@@ -39,23 +40,5 @@ public class IndividualRaceResult extends SingleRaceResult {
             ignoreIfEitherResultIsDNF(this::compareRecordedPosition),
             CommonRaceResult::compareRunnerLastName,
             CommonRaceResult::compareRunnerFirstName);
-    }
-
-    /** Compares the given results on the basis of their finish positions. */
-    private int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
-
-        final int recorded_position1 = getRecordedPosition(((SingleRaceResult)r1).bib_number);
-        final int recorded_position2 = getRecordedPosition(((SingleRaceResult)r2).bib_number);
-
-        return Integer.compare(recorded_position1, recorded_position2);
-    }
-
-    private int getRecordedPosition(final int bib_number) {
-
-        final List<RawResult> raw_results = race.getRaceData().getRawResults();
-
-        return (int) raw_results.stream().
-            takeWhile(result -> result.getBibNumber() != bib_number).
-            count();
     }
 }
