@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinterText;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
@@ -43,11 +44,7 @@ public class MidweekRaceOutputText {
 
     void printPrizes() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
-
-        final Path prizes = getOutputFilePath(race_name, "prizes", year);
-        final OutputStream stream = Files.newOutputStream(prizes, STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -64,10 +61,9 @@ public class MidweekRaceOutputText {
         if (!converted_words.isEmpty())
             race.appendToNotes("Converted to title case: " + converted_words);
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "processing_notes", year), STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.append(race.getNotes());
         }
     }
@@ -76,14 +72,6 @@ public class MidweekRaceOutputText {
 
         final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
         return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
-    }
-
-    /**
-     * Constructs a path for a file in the project output directory with name constructed from the given components.
-     */
-    private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-
-        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + TEXT_FILE_SUFFIX);
     }
 
     /** Prints prizes, ordered by prize category groups. */

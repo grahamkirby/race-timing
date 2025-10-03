@@ -52,10 +52,9 @@ public class RelayRaceOutputHTML {
     /** Prints all details to a single web page. */
     void printCombined() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "combined", year), STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
@@ -80,7 +79,9 @@ public class RelayRaceOutputHTML {
 
     void printPrizes() throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "prizes"))) {
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader());
             printPrizes(writer);
@@ -89,10 +90,9 @@ public class RelayRaceOutputHTML {
 
     void printDetailedResults() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "detailed", HTML_FILE_SUFFIX);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getOutputFilePath(race_name, "detailed", year), STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResults(writer);
         }
     }
@@ -140,11 +140,7 @@ public class RelayRaceOutputHTML {
 
     private void printLegResults(final int leg) throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String output_type = "leg_" + leg;
-        final String year = (String) race.getConfig().get(KEY_YEAR);
-
-        final OutputStream stream = Files.newOutputStream(getOutputFilePath(race_name, output_type, year), STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "leg_" + leg, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResults(writer, leg);

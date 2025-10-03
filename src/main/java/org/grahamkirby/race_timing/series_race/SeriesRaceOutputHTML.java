@@ -18,9 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
@@ -37,7 +35,7 @@ public class SeriesRaceOutputHTML {
 
     public static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "overall"))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "overall", HTML_FILE_SUFFIX))) {
 
             final ResultPrinter printer = make_result_printer.apply(race, writer);
             printResults(writer, printer, SeriesRaceOutputHTML::getResultsSubHeader, race);
@@ -46,7 +44,7 @@ public class SeriesRaceOutputHTML {
 
     public static void printCombined(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "combined"))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX))) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
@@ -63,7 +61,7 @@ public class SeriesRaceOutputHTML {
 
     static void printPrizes(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "prizes"))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX))) {
 
             writer.append(getPrizesHeader(race));
             printPrizes(race, writer, make_prize_printer);

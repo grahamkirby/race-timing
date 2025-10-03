@@ -45,7 +45,7 @@ public class IndividualRaceOutputHTML {
     /** Prints all details to a single web page. */
     void printCombined() throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "combined"))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX))) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
@@ -63,7 +63,7 @@ public class IndividualRaceOutputHTML {
 
     void printPrizes() throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "prizes"))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX))) {
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader());
             printPrizes(writer);

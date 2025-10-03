@@ -19,16 +19,18 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Config;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
@@ -43,27 +45,19 @@ public class RelayRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
-
-        final OutputStream stream = Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_overall_" + year + "." + CSV_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "overall", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(OVERALL_RESULTS_HEADER + "Total" + LINE_SEPARATOR);
             printResults(writer, new OverallResultPrinter(race, writer));
         }
     }
 
     void printDetailedResults() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "detailed", CSV_FILE_SUFFIX);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_detailed_" + year + "." + CSV_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS))) {
-
-            printDetailedResultsHeader(writer);
-            printDetailedResults(writer);
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            printResults(writer, new DetailedResultPrinter(race, writer));
         }
     }
 
@@ -75,36 +69,11 @@ public class RelayRaceOutputCSV {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void printDetailedResultsHeader(final OutputStreamWriter writer) throws IOException {
-
-        final int number_of_legs = ((RelayRaceImpl)race.getSpecific()).getNumberOfLegs();
-
-        writer.append(OVERALL_RESULTS_HEADER);
-
-        for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
-
-            writer.append("Runners " + leg_number + ",Leg " + leg_number + ",");
-            if (leg_number < number_of_legs) writer.append("Split " + leg_number + ",");
-        }
-
-        writer.append("Total").append(LINE_SEPARATOR);
-    }
-
-    private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
-
-        final ResultPrinter printer = new DetailedResultPrinter(race, writer);
-
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups())
-            printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
-    }
-
     private void printLegResults(final int leg) throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String output_type = "leg_" + leg;
-        final String year = (String) race.getConfig().get(KEY_YEAR);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "leg_" + leg, CSV_FILE_SUFFIX);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + CSV_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
             new LegResultPrinter(race, writer, leg).print(leg_results);
@@ -139,6 +108,13 @@ public class RelayRaceOutputCSV {
             super(race, writer);
         }
 
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append(OVERALL_RESULTS_HEADER + "Total" + LINE_SEPARATOR);
+        }
+
+        @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final RelayRaceResult result = (RelayRaceResult) r;
@@ -150,6 +126,22 @@ public class RelayRaceOutputCSV {
 
         private DetailedResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            final int number_of_legs = ((RelayRaceImpl)race.getSpecific()).getNumberOfLegs();
+
+            writer.append(OVERALL_RESULTS_HEADER);
+
+            for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
+
+                writer.append("Runners " + leg_number + ",Leg " + leg_number + ",");
+                if (leg_number < number_of_legs) writer.append("Split " + leg_number + ",");
+            }
+
+            writer.append("Total").append(LINE_SEPARATOR);
         }
 
         @Override

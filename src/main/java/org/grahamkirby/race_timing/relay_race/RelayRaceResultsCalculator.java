@@ -28,11 +28,10 @@ import static org.grahamkirby.race_timing.common.Config.*;
 public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private static final int UNKNOWN_LEG_NUMBER = 0;
+
+    // TODO tidy treatment of category configuration files.
+    // TODO integrate with category configuration files.
     private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
-
-    private static final boolean ARE_EQUAL_POSITIONS_ALLOWED_IN_OVERALL_RESULTS = true;
-
-
 
     @Override
     public boolean areEqualPositionsAllowed() {
@@ -250,6 +249,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void allocateFirstPrizes(final Iterable<PrizeCategory> prize_categories) {
 
+        // TODO unify with RaceResultsCalculator. Need configuration option for whether 2/3 in open age category is preferred over 1st in older category.
         for (final PrizeCategory category : prize_categories)
             for (final RaceResult result : getOverallResults())
                 if (isPrizeWinner(result, category)) {

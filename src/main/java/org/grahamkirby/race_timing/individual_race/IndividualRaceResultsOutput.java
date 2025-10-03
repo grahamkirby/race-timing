@@ -108,17 +108,17 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         }
     }
 
-    public static OutputStream getOutputStream(final Race race, final String output_type) throws IOException {
+    public static OutputStream getOutputStream(final Race race, final String output_type, final String file_suffix) throws IOException {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        return Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + HTML_FILE_SUFFIX), STANDARD_FILE_OPEN_OPTIONS);
+        return Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix), STANDARD_FILE_OPEN_OPTIONS);
     }
 
     public static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race, "overall"))) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race, "overall", HTML_FILE_SUFFIX))) {
 
             final ResultPrinter printer = make_result_printer.apply(race, writer);
             printResults(writer, printer, SeriesRaceOutputHTML::getResultsSubHeader, race);
