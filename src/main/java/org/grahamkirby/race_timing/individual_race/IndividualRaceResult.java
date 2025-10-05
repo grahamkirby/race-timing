@@ -41,4 +41,10 @@ public class IndividualRaceResult extends SingleRaceResult {
             CommonRaceResult::compareRunnerLastName,
             CommonRaceResult::compareRunnerFirstName);
     }
+
+    @Override
+    public String getPrizeDetail() {
+
+        return ((Runner) getParticipant()).club;
+    }
 }

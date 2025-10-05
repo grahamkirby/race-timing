@@ -73,6 +73,12 @@ public class LegResult extends SingleRaceResult {
                 CommonRaceResult::compareRunnerFirstName);
     }
 
+    @Override
+    public String getPrizeDetail() {
+
+        return null;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected int getRecordedPosition(final int bib_number) {

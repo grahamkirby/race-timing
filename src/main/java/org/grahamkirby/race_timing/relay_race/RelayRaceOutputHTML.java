@@ -18,9 +18,8 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinterHTML;
+import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceOutputHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.individual_race.IndividualResultPrinterHTML;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
@@ -28,10 +27,9 @@ import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
@@ -59,7 +57,7 @@ public class RelayRaceOutputHTML {
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader());
-            printPrizes(writer);
+            IndividualRaceOutputHTML.printPrizes(writer, race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             IndividualRaceResultsOutput.printResults(writer, new OverallResultPrinter(race, writer), SeriesRaceOutputHTML::getResultsSubHeader, race);
@@ -77,14 +75,19 @@ public class RelayRaceOutputHTML {
         }
     }
 
-    void printPrizes() throws IOException {
+    public void printPrizes() throws IOException {
+
+        printPrizes(IndividualRaceOutputHTML.PrizeResultPrinter::new, race);
+    }
+
+    static void printPrizes(BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew, Race race) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader());
-            printPrizes(writer);
+            IndividualRaceOutputHTML.printPrizes(writer, race, aNew);
         }
     }
 
@@ -104,23 +107,6 @@ public class RelayRaceOutputHTML {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /** Prints prizes, ordered by prize category groups. */
-    private void printPrizes(final OutputStreamWriter writer) {
-
-        race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).           // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).       // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> SeriesRaceOutputHTML.printPrizes(writer, category, race, PrizeResultPrinter::new));    // Print prizes in this category.
-    }
-
-    /**
-     * Constructs a path for a file in the project output directory with name constructed from the given components.
-     */
-    private Path getOutputFilePath(final String race_name, final String output_type, final String year) {
-
-        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + HTML_FILE_SUFFIX);
-    }
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
@@ -253,33 +239,6 @@ public class RelayRaceOutputHTML {
                 elements.add(race.getNormalisation().htmlEncode(element));
 
             return elements;
-        }
-    }
-
-    private static final class PrizeResultPrinter extends IndividualResultPrinterHTML {
-
-        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            writer.append("<ul>").append(LINE_SEPARATOR);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final RelayRaceResult result = (RelayRaceResult) r;
-
-            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
-        }
-
-        @Override
-        public void printResultsFooter() throws IOException {
-
-            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
     }
 }

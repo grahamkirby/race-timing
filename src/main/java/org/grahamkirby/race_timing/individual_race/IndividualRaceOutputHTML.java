@@ -22,8 +22,10 @@ import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.SOFTWARE_CREDIT_LINK_TEXT;
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -50,7 +52,8 @@ public class IndividualRaceOutputHTML {
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader());
-            printPrizes(writer);
+            printPrizes(writer, race, PrizeResultPrinter::new);
+            printTeamPrizes(writer, race);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             final ResultPrinter printer = new OverallResultPrinter(race, writer);
@@ -63,25 +66,31 @@ public class IndividualRaceOutputHTML {
 
     void printPrizes() throws IOException {
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX))) {
+        printPrizes(race, PrizeResultPrinter::new);
+    }
+
+    public static void printPrizes(final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew) throws IOException {
+
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader());
-            printPrizes(writer);
+            printPrizes(writer, race, aNew);
+            printTeamPrizes(writer, race);
         }
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
+    public static void printPrizes(final OutputStreamWriter writer, Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> SeriesRaceOutputHTML.printPrizes(writer, category, race, PrizeResultPrinter::new));
-
-        printTeamPrizes(writer);
+            forEachOrdered(category -> SeriesRaceOutputHTML.printPrizes(writer, category, race, aNew));
     }
 
-    private void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
+    private static void printTeamPrizes(final OutputStreamWriter writer, Race race) throws IOException {
 
         final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
 
@@ -112,9 +121,9 @@ public class IndividualRaceOutputHTML {
         }
     }
 
-    private static final class PrizeResultPrinter extends IndividualResultPrinterHTML {
+    public static final class PrizeResultPrinter extends IndividualResultPrinterHTML {
 
-        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -128,7 +137,14 @@ public class IndividualRaceOutputHTML {
         public void printResult(final RaceResult r) throws IOException {
 
             final SingleRaceResult result = (SingleRaceResult) r;
-            writer.append("    <li>" + result.getPositionString() + " " + race.getNormalisation().htmlEncode(result.getParticipantName()) + " (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING) + "</li>" + LINE_SEPARATOR);
+
+            writer.append(
+                "    <li>" +
+                result.getPositionString() + " " +
+                race.getNormalisation().htmlEncode(result.getParticipantName()) +
+                " (" + result.getPrizeDetail() + ") " +
+                renderDuration(result, DNF_STRING) +
+                "</li>" + LINE_SEPARATOR);
         }
 
         @Override
