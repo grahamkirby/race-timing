@@ -34,7 +34,7 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
     private GrandPrixRaceOutputCSV output_CSV;
     private GrandPrixRaceOutputHTML output_HTML;
     private GrandPrixRaceOutputText output_text;
-    private GrandPrixRaceOutputPDF output_PDF;
+    private SeriesRaceOutputPDF output_PDF;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,7 +56,7 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
         output_CSV = new GrandPrixRaceOutputCSV(race);
         output_HTML = new GrandPrixRaceOutputHTML(race);
         output_text = new GrandPrixRaceOutputText(race);
-        output_PDF = new GrandPrixRaceOutputPDF(race);
+        output_PDF = new SeriesRaceOutputPDF(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

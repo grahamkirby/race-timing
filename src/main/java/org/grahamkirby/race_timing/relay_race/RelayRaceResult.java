@@ -19,14 +19,15 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
 import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceResult extends SingleRaceResult {
 
@@ -76,6 +77,12 @@ public class RelayRaceResult extends SingleRaceResult {
     public String getPrizeDetail() {
 
         return getParticipant().category.getLongName();
+    }
+
+    @Override
+    public String getPrizeDetailPDF() {
+
+        return "(" + getParticipant().category.getLongName() + ") " + renderDuration(this, DNF_STRING);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

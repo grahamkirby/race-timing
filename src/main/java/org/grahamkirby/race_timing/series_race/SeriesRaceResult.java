@@ -55,6 +55,12 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
         return null;
     }
 
+    @Override
+    public String getPrizeDetailPDF() {
+
+        return null;
+    }
+
     public boolean hasCompletedSeries() {
 
         return numberOfRacesCompleted() >= minimum_number_of_races;

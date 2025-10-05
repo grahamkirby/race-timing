@@ -34,7 +34,7 @@ public class TourRaceResultsOutput implements ResultsOutput {
     private TourRaceOutputCSV output_CSV;
     private TourRaceOutputHTML output_HTML;
     private TourRaceOutputText output_text;
-    private TourRaceOutputPDF output_PDF;
+    private SeriesRaceOutputPDF output_PDF;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,7 +56,7 @@ public class TourRaceResultsOutput implements ResultsOutput {
         output_CSV = new TourRaceOutputCSV(race);
         output_HTML = new TourRaceOutputHTML(race);
         output_text = new TourRaceOutputText(race);
-        output_PDF = new TourRaceOutputPDF(race);
+        output_PDF = new SeriesRaceOutputPDF(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

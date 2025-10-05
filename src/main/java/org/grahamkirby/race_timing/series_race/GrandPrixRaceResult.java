@@ -59,6 +59,12 @@ class GrandPrixRaceResult extends SeriesRaceResult {
         return Integer.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
     }
 
+    @Override
+    public String getPrizeDetailPDF() {
+
+        return "(" + ((Runner) getParticipant()).club + ") " + totalScore();
+    }
+
     public List<Comparator<RaceResult>> getComparators() {
 
         return List.of(

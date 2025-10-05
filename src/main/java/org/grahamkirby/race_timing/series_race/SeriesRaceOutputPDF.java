@@ -15,32 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
 
-import java.util.List;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.relay_race.RelayRaceOutputPDF;
 
-public interface RaceResult extends Comparable<RaceResult> {
+import java.io.IOException;
 
-    Race getRace();
+class SeriesRaceOutputPDF {
 
-    Participant getParticipant();
+    private final Race race;
 
-    String getParticipantName();
+    SeriesRaceOutputPDF(final Race race) {
+        this.race = race;
+    }
 
-    EntryCategory getCategory();
+    void printPrizes() throws IOException {
 
-    String getPositionString();
-
-    void setPositionString(final String position_string);
-
-    List<PrizeCategory> getCategoriesOfPrizesAwarded();
-
-    String getPrizeDetail();
-    String getPrizeDetailPDF();
-
-    int comparePerformanceTo(RaceResult other);
-    boolean canComplete();
+        RelayRaceOutputPDF.printPrizes(race);
+    }
 }

@@ -28,7 +28,7 @@ public class MidweekRaceResultsOutput implements ResultsOutput {
     private MidweekRaceOutputCSV output_CSV;
     private MidweekRaceOutputHTML output_HTML;
     private MidweekRaceOutputText output_text;
-    private MidweekRaceOutputPDF output_PDF;
+    private SeriesRaceOutputPDF output_PDF;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +48,7 @@ public class MidweekRaceResultsOutput implements ResultsOutput {
         output_CSV = new MidweekRaceOutputCSV(race);
         output_HTML = new MidweekRaceOutputHTML(race);
         output_text = new MidweekRaceOutputText(race);
-        output_PDF = new MidweekRaceOutputPDF(race);
+        output_PDF = new SeriesRaceOutputPDF(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

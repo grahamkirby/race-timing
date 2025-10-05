@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -108,12 +109,17 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         }
     }
 
-    public static OutputStream getOutputStream(final Race race, final String output_type, final String file_suffix) throws IOException {
+    public static Path getOutputStreamPath(final Race race, final String output_type, final String file_suffix) throws IOException {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        return Files.newOutputStream(race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix), STANDARD_FILE_OPEN_OPTIONS);
+        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
+    }
+
+    public static OutputStream getOutputStream(final Race race, final String output_type, final String file_suffix) throws IOException {
+
+        return Files.newOutputStream(getOutputStreamPath(race, output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
     }
 
     public static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {

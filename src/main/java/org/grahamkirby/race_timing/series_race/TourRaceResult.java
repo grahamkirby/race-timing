@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration {
 
@@ -47,6 +48,11 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
         final Duration other_duration = ((TourRaceResult) other).duration();
 
         return duration().compareTo(other_duration);
+    }
+
+    public String getPrizeDetailPDF() {
+
+        return "(" +((Runner) getParticipant()).club +") " + renderDuration(duration());
     }
 
     public Duration duration() {

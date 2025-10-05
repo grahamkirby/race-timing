@@ -82,7 +82,7 @@ public class IndividualRaceOutputHTML {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizes(final OutputStreamWriter writer, Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew) throws IOException {
+    public static void printPrizes(final OutputStreamWriter writer, final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.

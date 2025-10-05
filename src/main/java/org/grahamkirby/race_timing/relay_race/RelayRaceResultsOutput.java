@@ -25,8 +25,6 @@ import java.io.IOException;
 @SuppressWarnings("preview")
 public class RelayRaceResultsOutput implements ResultsOutput {
 
-    private Race race;
-
     private RelayRaceOutputCSV output_CSV;
     private RelayRaceOutputHTML output_HTML;
     private RelayRaceOutputText output_text;
@@ -48,9 +46,7 @@ public class RelayRaceResultsOutput implements ResultsOutput {
     }
 
     @Override
-    public void setRace(Race race) {
-
-        this.race = race;
+    public void setRace(final Race race) {
 
         output_CSV = new RelayRaceOutputCSV(race);
         output_HTML = new RelayRaceOutputHTML(race);

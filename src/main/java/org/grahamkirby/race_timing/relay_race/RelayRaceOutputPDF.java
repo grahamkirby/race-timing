@@ -29,11 +29,12 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceOutputPDF {
 
@@ -45,10 +46,15 @@ public class RelayRaceOutputPDF {
 
     void printPrizes() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
+        printPrizes(race);
+    }
+
+    public static void printPrizes(final Race race) throws IOException {
+
         final String year = (String) race.getConfig().get(KEY_YEAR);
 
-        final PdfWriter writer = new PdfWriter(race.getOutputDirectoryPath().resolve(race_name + "_prizes_" + year + "." + PDF_FILE_SUFFIX).toString());
+        final Path path = IndividualRaceResultsOutput.getOutputStreamPath(race, "prizes", PDF_FILE_SUFFIX);
+        final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
@@ -62,14 +68,14 @@ public class RelayRaceOutputPDF {
             race.getCategoryDetails().getPrizeCategoryGroups().stream().
                 flatMap(group -> group.categories().stream()).              // Get all prize categories.
                 filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(document, category));     // Print prizes in this category.
+                forEachOrdered(category -> printPrizes(document, category, race));     // Print prizes in this category.
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Prints prizes within a given category. */
-    private void printPrizes(final Document document, final PrizeCategory category) {
+    private static void printPrizes(final Document document, final PrizeCategory category, Race race) {
 
         try {
             final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
@@ -92,19 +98,17 @@ public class RelayRaceOutputPDF {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class PrizeResultPrinter extends ResultPrinter {
+    public static final class PrizeResultPrinter extends ResultPrinter {
 
         private final Document document;
 
-        private PrizeResultPrinter(final Race race, final Document document) {
+        public PrizeResultPrinter(final Race race, final Document document) {
             super(race, null);
             this.document = document;
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final RelayRaceResult result = (RelayRaceResult) r;
+        public void printResult(final RaceResult result) throws IOException {
 
             final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
             final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
@@ -113,7 +117,7 @@ public class RelayRaceOutputPDF {
 
             paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
             paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
-            paragraph.add(new Text(" (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING)).setFont(font));
+            paragraph.add(new Text(" " + result.getPrizeDetailPDF()).setFont(font));
 
             document.add(paragraph);
         }

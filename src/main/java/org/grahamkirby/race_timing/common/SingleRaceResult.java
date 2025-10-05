@@ -52,6 +52,11 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
         return !dnf;
     }
 
+    @Override
+    public String getPrizeDetailPDF() {
+        return null;
+    }
+
     /** Compares the given results on the basis of their finish positions. */
     protected int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 

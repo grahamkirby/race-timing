@@ -72,6 +72,7 @@ public abstract class CommonRaceResult implements RaceResult {
     public abstract int comparePerformanceTo(RaceResult other);
     public abstract boolean canComplete();
     public abstract String getPrizeDetail();
+    public abstract String getPrizeDetailPDF();
 
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
