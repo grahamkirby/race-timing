@@ -27,6 +27,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+
 class GrandPrixRaceResult extends SeriesRaceResult {
 
     private final List<Integer> scores;
@@ -61,6 +65,12 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     @Override
     public String getPrizeDetailPDF() {
+
+        return "(" + ((Runner) getParticipant()).club + ") " + totalScore();
+    }
+
+    @Override
+    public String getPrizeDetailText() {
 
         return "(" + ((Runner) getParticipant()).club + ") " + totalScore();
     }

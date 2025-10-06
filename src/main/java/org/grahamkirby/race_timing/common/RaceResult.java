@@ -40,6 +40,7 @@ public interface RaceResult extends Comparable<RaceResult> {
 
     String getPrizeDetail();
     String getPrizeDetailPDF();
+    String getPrizeDetailText();
 
     int comparePerformanceTo(RaceResult other);
     boolean canComplete();

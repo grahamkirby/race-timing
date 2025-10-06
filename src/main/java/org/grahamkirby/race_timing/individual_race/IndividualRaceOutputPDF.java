@@ -24,15 +24,14 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Text;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.relay_race.RelayRaceOutputPDF;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class IndividualRaceOutputPDF {
 
@@ -44,24 +43,12 @@ public class IndividualRaceOutputPDF {
 
     void printPrizes() throws IOException {
 
-        final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = (String) race.getConfig().get(KEY_YEAR);
-
-        final PdfWriter writer = new PdfWriter(race.getOutputDirectoryPath().resolve(race_name + "_prizes_" + year + "." + PDF_FILE_SUFFIX).toString());
+        final Path path = IndividualRaceResultsOutput.getOutputStreamPath(race, "prizes", PDF_FILE_SUFFIX);
+        final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            final Paragraph section_header = new Paragraph().
-                setFont(getFont(PDF_PRIZE_FONT_NAME)).
-                setFontSize(PDF_PRIZE_FONT_SIZE).
-                add(race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + race.getConfig().get(KEY_YEAR) + " Category Prizes");
-
-            document.add(section_header);
-
-            race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).                 // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).             // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(document, category));        // Print prizes in this category.
+            RelayRaceOutputPDF.printPrizes(race, document);
 
             final List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
 
@@ -79,60 +66,7 @@ public class IndividualRaceOutputPDF {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Prints prizes within a given category. */
-    private void printPrizes(final Document document, final PrizeCategory category) {
-
-        try {
-            final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
-                setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
-                setUnderline().
-                setPaddingTop(PDF_PRIZE_FONT_SIZE);
-
-            document.add(category_header);
-
-            new PrizeResultPrinter(race, document).print(race.getResultsCalculator().getPrizeWinners(category));
-
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static PdfFont getFont(final String font_name) throws IOException {
+    public static PdfFont getFont(final String font_name) throws IOException {
         return PdfFontFactory.createFont(font_name);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final class PrizeResultPrinter extends ResultPrinter {
-
-        private final Document document;
-
-        private PrizeResultPrinter(final Race race, final Document document) {
-            super(race, null);
-            this.document = document;
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final SingleRaceResult result = (SingleRaceResult) r;
-
-            final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
-            final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
-
-            final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
-
-            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
-            paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
-            paragraph.add(new Text(" (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING)).setFont(font));
-
-            document.add(paragraph);
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
-        }
     }
 }

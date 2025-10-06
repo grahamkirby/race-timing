@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -35,6 +34,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutputPDF.getFont;
 
 public class RelayRaceOutputPDF {
 
@@ -51,31 +51,36 @@ public class RelayRaceOutputPDF {
 
     public static void printPrizes(final Race race) throws IOException {
 
-        final String year = (String) race.getConfig().get(KEY_YEAR);
-
         final Path path = IndividualRaceResultsOutput.getOutputStreamPath(race, "prizes", PDF_FILE_SUFFIX);
         final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            final Paragraph section_header = new Paragraph().
-                setFont(getFont(PDF_PRIZE_FONT_NAME)).
-                setFontSize(PDF_PRIZE_FONT_SIZE).
-                add(race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + year + " Category Prizes");
-
-            document.add(section_header);
-
-            race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).              // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(document, category, race));     // Print prizes in this category.
+            printPrizes(race, document);
         }
+    }
+
+    public static void printPrizes(final Race race, final Document document) throws IOException {
+
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final Paragraph section_header = new Paragraph().
+            setFont(getFont(PDF_PRIZE_FONT_NAME)).
+            setFontSize(PDF_PRIZE_FONT_SIZE).
+            add(race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + year + " Category Prizes");
+
+        document.add(section_header);
+
+        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+            flatMap(group -> group.categories().stream()).              // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizes(document, category, race));     // Print prizes in this category.
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Prints prizes within a given category. */
-    private static void printPrizes(final Document document, final PrizeCategory category, Race race) {
+    public static void printPrizes(final Document document, final PrizeCategory category, final Race race) {
 
         try {
             final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
@@ -90,10 +95,6 @@ public class RelayRaceOutputPDF {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static PdfFont getFont(final String font_name) throws IOException {
-        return PdfFontFactory.createFont(font_name);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -20,13 +20,13 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceOutputText;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -60,36 +60,23 @@ public class RelayRaceOutputText {
 
             writer.append(getPrizesHeader());
 
-            race.getCategoryDetails().getPrizeCategoryGroups().stream().
-                flatMap(group -> group.categories().stream()).              // Get all prize categories.
-                filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-                forEachOrdered(category -> printPrizes(writer, category));       // Print prizes in this category.
+            SeriesRaceOutputText.printPrizes(writer, race);
         }
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
     void printNotes() throws IOException {
 
-        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
-
-        if (!converted_words.isEmpty())
-            race.appendToNotes("Converted to title case: " + converted_words);
-
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(race.getNotes());
-        }
+        SeriesRaceOutputText.printNotes(race);
     }
 
-    /** Prints prizes within a given category. */
-    private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
+    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race) {
 
         try {
             writer.append(getPrizeCategoryHeader(category));
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
-            new PrizeResultPrinter(race, writer).print(category_prize_winners);
+            new IndividualRaceOutputText.PrizeResultPrinter(race, writer).print(category_prize_winners);
 
             writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
@@ -99,7 +86,7 @@ public class RelayRaceOutputText {
         }
     }
 
-    private String getPrizeCategoryHeader(final PrizeCategory category) {
+    private static String getPrizeCategoryHeader(final PrizeCategory category) {
 
         final String header = "Category: " + category.getLongName();
         return header + LINE_SEPARATOR + "-".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
@@ -230,22 +217,6 @@ public class RelayRaceOutputText {
                 times_with_missing_bib_numbers.stream().
                     map(Normalisation::renderDuration).
                     collect(Collectors.joining(LINE_SEPARATOR)));
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final class PrizeResultPrinter extends ResultPrinterText {
-
-        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " (" + result.getParticipant().category.getLongName() + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
         }
     }
 }

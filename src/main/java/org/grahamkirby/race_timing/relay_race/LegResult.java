@@ -79,6 +79,12 @@ public class LegResult extends SingleRaceResult {
         return null;
     }
 
+    @Override
+    public String getPrizeDetailText() {
+
+        return null;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected int getRecordedPosition(final int bib_number) {

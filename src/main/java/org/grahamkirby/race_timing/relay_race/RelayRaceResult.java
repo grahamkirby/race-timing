@@ -85,6 +85,12 @@ public class RelayRaceResult extends SingleRaceResult {
         return "(" + getParticipant().category.getLongName() + ") " + renderDuration(this, DNF_STRING);
     }
 
+    @Override
+    public String getPrizeDetailText() {
+
+        return "(" + getParticipant().category.getLongName() + ") " + renderDuration(this, DNF_STRING);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares two results based on alphabetical ordering of the team name. */

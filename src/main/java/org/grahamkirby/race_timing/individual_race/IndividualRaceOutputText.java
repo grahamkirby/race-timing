@@ -19,17 +19,17 @@ package org.grahamkirby.race_timing.individual_race;
 
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.ResultPrinterText;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 /** Base class for plaintext output. */
 @SuppressWarnings("preview")
@@ -43,11 +43,6 @@ public class IndividualRaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Prints race prizes. Used for HTML and text output.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
     void printPrizes() throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
@@ -62,16 +57,7 @@ public class IndividualRaceOutputText {
     /** Prints out the words converted to title case, and any other processing notes. */
     void printNotes() throws IOException {
 
-        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
-
-        if (!converted_words.isEmpty())
-            race.appendToNotes("Converted to title case: " + converted_words);
-
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(race.getNotes());
-        }
+        SeriesRaceOutputText.printNotes(race);
     }
 
     /** Prints prizes, ordered by prize category groups. */
@@ -132,18 +118,16 @@ public class IndividualRaceOutputText {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class PrizeResultPrinter extends ResultPrinterText {
+    public static final class PrizeResultPrinter extends ResultPrinterText {
 
-        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
-        public void printResult(final RaceResult r) throws IOException {
+        public void printResult(final RaceResult result) throws IOException {
 
-            final SingleRaceResult result = (SingleRaceResult) r;
-
-            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " (" + ((Runner) result.getParticipant()).club + ") " + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result.getPrizeDetailText() + LINE_SEPARATOR);
         }
     }
 }

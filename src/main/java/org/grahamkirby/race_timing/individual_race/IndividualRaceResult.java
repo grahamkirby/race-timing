@@ -24,6 +24,9 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+
 public class IndividualRaceResult extends SingleRaceResult {
 
     public IndividualRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
@@ -46,5 +49,17 @@ public class IndividualRaceResult extends SingleRaceResult {
     public String getPrizeDetail() {
 
         return ((Runner) getParticipant()).club;
+    }
+
+    @Override
+    public String getPrizeDetailPDF() {
+
+        return "(" + ((Runner) getParticipant()).club + ") " + renderDuration(this, DNF_STRING);
+    }
+
+    @Override
+    public String getPrizeDetailText() {
+
+        return "(" + ((Runner) getParticipant()).club + ") " + renderDuration(this, DNF_STRING);
     }
 }

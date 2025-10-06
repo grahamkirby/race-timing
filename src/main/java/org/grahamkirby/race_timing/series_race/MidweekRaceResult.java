@@ -53,6 +53,12 @@ class MidweekRaceResult extends SeriesRaceResult {
         return "(" +((Runner) getParticipant()).club +") " + totalScore();
     }
 
+    @Override
+    public String getPrizeDetailText() {
+
+        return "(" + ((Runner) getParticipant()).club + ") " + totalScore();
+    }
+
     int totalScore() {
 
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted());
