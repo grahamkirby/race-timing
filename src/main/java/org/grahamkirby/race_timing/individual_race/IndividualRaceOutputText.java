@@ -31,7 +31,6 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-/** Base class for plaintext output. */
 @SuppressWarnings("preview")
 public class IndividualRaceOutputText {
 
@@ -49,8 +48,9 @@ public class IndividualRaceOutputText {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(getPrizesHeader());
-            printPrizes(writer);
+            writer.append(SeriesRaceOutputText.getPrizesHeader(race));
+            SeriesRaceOutputText.printPrizes(writer, race);
+            printTeamPrizes(writer);
         }
     }
 
@@ -58,40 +58,6 @@ public class IndividualRaceOutputText {
     void printNotes() throws IOException {
 
         SeriesRaceOutputText.printNotes(race);
-    }
-
-    /** Prints prizes, ordered by prize category groups. */
-    private void printPrizes(final OutputStreamWriter writer) throws IOException {
-
-        race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).                // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).            // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(writer, category));         // Print prizes in this category.
-
-        printTeamPrizes(writer);
-    }
-
-    /** Prints prizes within a given category. */
-    private void printPrizes(final OutputStreamWriter writer, final PrizeCategory category) {
-
-        try {
-            writer.append(getPrizeCategoryHeader(category));
-
-            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
-            new PrizeResultPrinter(race, writer).print(category_prize_winners);
-
-            writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-        }
-        // Called from lambda that can't throw checked exception.
-        catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String getPrizeCategoryHeader(final PrizeCategory category) {
-
-        final String header = "Category: " + category.getLongName();
-        return header + LINE_SEPARATOR + "-".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     private void printTeamPrizes(final OutputStreamWriter writer) throws IOException {
@@ -108,12 +74,6 @@ public class IndividualRaceOutputText {
                 writer.append(LINE_SEPARATOR);
             }
         }
-    }
-
-    private String getPrizesHeader() {
-
-        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
-        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

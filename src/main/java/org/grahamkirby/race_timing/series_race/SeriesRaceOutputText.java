@@ -71,7 +71,7 @@ public class SeriesRaceOutputText {
         }
     }
 
-    private static String getPrizesHeader(final Race race) {
+    public static String getPrizesHeader(final Race race) {
 
         final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
         return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;

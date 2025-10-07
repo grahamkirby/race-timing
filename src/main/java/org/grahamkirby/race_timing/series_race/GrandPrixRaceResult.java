@@ -18,18 +18,14 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.CommonRaceResult;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-
-import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class GrandPrixRaceResult extends SeriesRaceResult {
 
@@ -61,6 +57,12 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         // Sort lowest scores first since lower score is better.
         return Integer.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
+    }
+
+    @Override
+    public String getPrizeDetailHTML() {
+
+        return "(" + ((Runner) getParticipant()).category.getShortName() + ") " + totalScore();
     }
 
     @Override

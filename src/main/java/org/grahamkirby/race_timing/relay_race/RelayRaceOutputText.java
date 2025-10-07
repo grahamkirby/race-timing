@@ -53,15 +53,7 @@ public class RelayRaceOutputText {
      * @throws IOException if an I/O error occurs.
      */
     void printPrizes() throws IOException {
-
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeader());
-
-            SeriesRaceOutputText.printPrizes(writer, race);
-        }
+        SeriesRaceOutputText.printPrizes( race);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
@@ -90,12 +82,6 @@ public class RelayRaceOutputText {
 
         final String header = "Category: " + category.getLongName();
         return header + LINE_SEPARATOR + "-".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
-    }
-
-    private String getPrizesHeader() {
-
-        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
-        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -48,9 +48,16 @@ class MidweekRaceResult extends SeriesRaceResult {
         return comparator.compare(totalScore(), other_score);
     }
 
+    @Override
+    public String getPrizeDetailHTML() {
+
+        return "(" + getParticipant().category.getShortName() + ") " + totalScore();
+    }
+
+    @Override
     public String getPrizeDetailPDF() {
 
-        return "(" +((Runner) getParticipant()).club +") " + totalScore();
+        return "(" + ((Runner) getParticipant()).club + ") " + totalScore();
     }
 
     @Override

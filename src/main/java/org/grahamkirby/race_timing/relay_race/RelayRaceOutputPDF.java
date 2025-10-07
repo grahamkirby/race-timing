@@ -40,11 +40,11 @@ public class RelayRaceOutputPDF {
 
     private final Race race;
 
-    RelayRaceOutputPDF(final Race race) {
+    public RelayRaceOutputPDF(final Race race) {
         this.race = race;
     }
 
-    void printPrizes() throws IOException {
+    public void printPrizes() throws IOException {
 
         printPrizes(race);
     }

@@ -50,12 +50,6 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
     }
 
     @Override
-    public String getPrizeDetail() {
-
-        return null;
-    }
-
-    @Override
     public String getPrizeDetailPDF() {
 
         return null;

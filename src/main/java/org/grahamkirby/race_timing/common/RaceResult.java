@@ -38,7 +38,7 @@ public interface RaceResult extends Comparable<RaceResult> {
 
     List<PrizeCategory> getCategoriesOfPrizesAwarded();
 
-    String getPrizeDetail();
+    String getPrizeDetailHTML();
     String getPrizeDetailPDF();
     String getPrizeDetailText();
 

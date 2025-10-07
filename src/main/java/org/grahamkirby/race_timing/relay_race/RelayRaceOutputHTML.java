@@ -56,7 +56,7 @@ public class RelayRaceOutputHTML {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
-            writer.append(SeriesRaceOutputHTML.getPrizesHeader());
+            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
             IndividualRaceOutputHTML.printPrizes(writer, race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
@@ -86,7 +86,7 @@ public class RelayRaceOutputHTML {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(SeriesRaceOutputHTML.getPrizesHeader());
+            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
             IndividualRaceOutputHTML.printPrizes(writer, race, aNew);
         }
     }

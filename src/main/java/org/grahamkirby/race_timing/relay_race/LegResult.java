@@ -74,7 +74,13 @@ public class LegResult extends SingleRaceResult {
     }
 
     @Override
-    public String getPrizeDetail() {
+    public String getPrizeDetailHTML() {
+
+        return null;
+    }
+
+    @Override
+    public String getPrizeDetailPDF() {
 
         return null;
     }

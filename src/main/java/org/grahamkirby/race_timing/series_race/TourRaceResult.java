@@ -50,9 +50,16 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
         return duration().compareTo(other_duration);
     }
 
+    @Override
+    public String getPrizeDetailHTML() {
+
+        return "(" + ((Runner) getParticipant()).club + ") " + (canComplete() ? renderDuration(duration()) : "-");
+    }
+
+    @Override
     public String getPrizeDetailPDF() {
 
-        return "(" +((Runner) getParticipant()).club +") " + renderDuration(duration());
+        return "(" + ((Runner) getParticipant()).club + ") " + renderDuration(duration());
     }
 
     @Override
