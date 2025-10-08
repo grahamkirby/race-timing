@@ -51,7 +51,7 @@ class MidweekRaceOutputHTML {
 
     public void printPrizes() throws IOException {
 
-        SeriesRaceOutputHTML.printPrizes(race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
+        SeriesRaceOutputHTML.printPrizes(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

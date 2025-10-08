@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.individual_race;
 
 
+import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
@@ -56,54 +57,86 @@ public class IndividualRaceOutputHTML {
             }
         };
 
-        printCombined(race, print_team_prizes, PrizeResultPrinter::new, OverallResultPrinter::new);
+        printCombined(race, print_team_prizes, OverallResultPrinter::new);
     }
 
-    public static void printCombined(final Race race, final BiConsumer<Race, OutputStreamWriter> print_team_prizes, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
+    public static void printCombined(final Race race, final BiConsumer<Race, OutputStreamWriter> print_team_prizes, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX);
+
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-
-            printPrizes(writer, race, make_prize_printer);
+            printPrizes(writer, race);
             print_team_prizes.accept(race, writer);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             final ResultPrinter printer = make_result_printer.apply(race, writer);
 
-            IndividualRaceResultsOutput.printResults(writer, printer, SeriesRaceOutputHTML::getResultsSubHeader, race);
+            IndividualRaceResultsOutput.printResults(writer, printer, IndividualRaceOutputHTML::getResultsSubHeader, race);
 
             writer.append(SOFTWARE_CREDIT_LINK_TEXT);
         }
     }
 
-    void printPrizes() throws IOException {
-
-        printPrizes(race, PrizeResultPrinter::new);
+    public static String getResultsSubHeader(final String s) {
+        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
     }
 
-    public static void printPrizes(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
+    void printPrizes() throws IOException {
+
+        printPrizes(race);
+        printTeamPrizes(race);
+    }
+
+    public static void printPrizes(final Race race) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            printPrizes(writer, race, make_prize_printer);
+            printPrizes(writer, race);
+//            printTeamPrizes(writer, race);
+        }
+    }
+
+    public static void printTeamPrizes(final Race race) throws IOException {
+
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX, APPEND_FILE_OPEN_OPTIONS);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+//            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
+//            printPrizes(writer, race);
             printTeamPrizes(writer, race);
         }
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizes(final OutputStreamWriter writer, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
+    public static void printPrizes(final OutputStreamWriter writer, final Race race) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> SeriesRaceOutputHTML.printPrizes(writer, category, race, make_prize_printer));
+            forEachOrdered(category -> printPrizes(writer, category, race));
+    }
+
+    /** Prints prizes within a given category. */
+    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race) {
+
+        try {
+            writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
+
+            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            new IndividualRaceOutputHTML.PrizeResultPrinter(race, writer).print(category_prize_winners);
+        }
+        // Called from lambda that can't throw checked exception.
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void printTeamPrizes(final OutputStreamWriter writer, final Race race) throws IOException {

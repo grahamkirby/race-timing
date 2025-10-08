@@ -29,7 +29,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
@@ -57,10 +56,10 @@ public class RelayRaceOutputHTML {
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            IndividualRaceOutputHTML.printPrizes(writer, race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
+            IndividualRaceOutputHTML.printPrizes(writer, race);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            IndividualRaceResultsOutput.printResults(writer, new OverallResultPrinter(race, writer), SeriesRaceOutputHTML::getResultsSubHeader, race);
+            IndividualRaceResultsOutput.printResults(writer, new OverallResultPrinter(race, writer), IndividualRaceOutputHTML::getResultsSubHeader, race);
 
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResults(writer);
@@ -77,17 +76,12 @@ public class RelayRaceOutputHTML {
 
     public void printPrizes() throws IOException {
 
-        printPrizes(IndividualRaceOutputHTML.PrizeResultPrinter::new, race);
-    }
-
-    static void printPrizes(BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew, Race race) throws IOException {
-
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            IndividualRaceOutputHTML.printPrizes(writer, race, aNew);
+            IndividualRaceOutputHTML.printPrizes(writer, race);
         }
     }
 
@@ -110,7 +104,7 @@ public class RelayRaceOutputHTML {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        IndividualRaceResultsOutput.printResults(writer, new DetailedResultPrinter(race, writer), SeriesRaceOutputHTML::getResultsSubHeader, race);
+        IndividualRaceResultsOutput.printResults(writer, new DetailedResultPrinter(race, writer), IndividualRaceOutputHTML::getResultsSubHeader, race);
 
         if (areAnyResultsInMassStart())
             writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);

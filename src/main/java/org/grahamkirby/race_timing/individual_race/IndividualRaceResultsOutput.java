@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -109,7 +110,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         }
     }
 
-    public static Path getOutputStreamPath(final Race race, final String output_type, final String file_suffix) throws IOException {
+    public static Path getOutputStreamPath(final Race race, final String output_type, final String file_suffix) {
 
         final String race_name = (String) race.getConfig().get(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = (String) race.getConfig().get(KEY_YEAR);
@@ -119,7 +120,12 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
 
     public static OutputStream getOutputStream(final Race race, final String output_type, final String file_suffix) throws IOException {
 
-        return Files.newOutputStream(getOutputStreamPath(race, output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
+        return getOutputStream(race, output_type, file_suffix, STANDARD_FILE_OPEN_OPTIONS);
+    }
+
+    public static OutputStream getOutputStream(final Race race, final String output_type, final String file_suffix, final OpenOption[] file_open_options) throws IOException {
+
+        return Files.newOutputStream(getOutputStreamPath(race, output_type, file_suffix), file_open_options);
     }
 
     public static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
@@ -127,7 +133,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race, "overall", HTML_FILE_SUFFIX))) {
 
             final ResultPrinter printer = make_result_printer.apply(race, writer);
-            printResults(writer, printer, SeriesRaceOutputHTML::getResultsSubHeader, race);
+            printResults(writer, printer, IndividualRaceOutputHTML::getResultsSubHeader, race);
         }
     }
 }

@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_RACE_NAME_FOR_RESULTS;
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
 class GrandPrixRaceOutputHTML {
 
@@ -54,7 +53,7 @@ class GrandPrixRaceOutputHTML {
 
     public void printPrizes() throws IOException {
 
-        SeriesRaceOutputHTML.printPrizes(race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
+        SeriesRaceOutputHTML.printPrizes(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
