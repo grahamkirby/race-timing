@@ -18,19 +18,19 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.common.ResultPrinterGenerator;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 public class SeriesRaceOutputCSV {
 
@@ -43,7 +43,7 @@ public class SeriesRaceOutputCSV {
 
     static void printResults(final Race race, final ResultPrinterGenerator make_result_printer) throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "overall", CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "overall", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

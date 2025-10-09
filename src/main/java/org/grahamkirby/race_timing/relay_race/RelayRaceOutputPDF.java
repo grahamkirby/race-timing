@@ -28,13 +28,13 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutputPDF.getFont;
+import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStreamPath;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.getFont;
 
 public class RelayRaceOutputPDF {
 
@@ -51,7 +51,7 @@ public class RelayRaceOutputPDF {
 
     public static void printPrizes(final Race race) throws IOException {
 
-        final Path path = IndividualRaceResultsOutput.getOutputStreamPath(race, "prizes", PDF_FILE_SUFFIX);
+        final Path path = getOutputStreamPath(race, "prizes", PDF_FILE_SUFFIX);
         final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {

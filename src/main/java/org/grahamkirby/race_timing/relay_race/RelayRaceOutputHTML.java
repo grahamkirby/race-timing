@@ -19,10 +19,8 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceOutputHTML;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
-import org.grahamkirby.race_timing.individual_race.IndividualResultPrinterHTML;
-import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
+import org.grahamkirby.race_timing.individual_race.SingleRaceOutputPrinterHTML;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,6 +30,7 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 public class RelayRaceOutputHTML {
 
@@ -43,23 +42,23 @@ public class RelayRaceOutputHTML {
 
     void printResults() throws IOException {
 
-        IndividualRaceResultsOutput.printResults(race, OverallResultPrinter::new);
+        RaceOutput.printResults(race, OverallResultPrinter::new);
     }
 
     /** Prints all details to a single web page. */
     void printCombined() throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "combined", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
-            writer.append(IndividualRaceOutputHTML.getPrizesHeader(race));
-            IndividualRaceOutputHTML.printPrizes(writer, race, PrizeResultPrinter::new);
+            writer.append(IndividualRaceOutput.getPrizesHeaderHTML(race));
+            RaceOutput.printPrizes(race, writer, PrizeResultPrinter::new);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            IndividualRaceResultsOutput.printResults(writer, new OverallResultPrinter(race, writer), IndividualRaceOutputHTML::getResultsSubHeader, race);
+            RaceOutput.printResults(writer, new OverallResultPrinter(race, writer), IndividualRaceOutput::getResultsSubHeaderHTML, race);
 
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResults(writer);
@@ -76,18 +75,18 @@ public class RelayRaceOutputHTML {
 
     public void printPrizes() throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(IndividualRaceOutputHTML.getPrizesHeader(race));
-            IndividualRaceOutputHTML.printPrizes(writer, race, PrizeResultPrinter::new);
+            writer.append(IndividualRaceOutput.getPrizesHeaderHTML(race));
+            RaceOutput.printPrizes(race, writer, PrizeResultPrinter::new);
         }
     }
 
     void printDetailedResults() throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "detailed", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "detailed", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResults(writer);
@@ -104,7 +103,7 @@ public class RelayRaceOutputHTML {
 
     private void printDetailedResults(final OutputStreamWriter writer) throws IOException {
 
-        IndividualRaceResultsOutput.printResults(writer, new DetailedResultPrinter(race, writer), IndividualRaceOutputHTML::getResultsSubHeader, race);
+        RaceOutput.printResults(writer, new DetailedResultPrinter(race, writer), IndividualRaceOutput::getResultsSubHeaderHTML, race);
 
         if (areAnyResultsInMassStart())
             writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
@@ -120,7 +119,7 @@ public class RelayRaceOutputHTML {
 
     private void printLegResults(final int leg) throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "leg_" + leg, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "leg_" + leg, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResults(writer, leg);
@@ -136,7 +135,7 @@ public class RelayRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class OverallResultPrinter extends IndividualResultPrinterHTML {
+    private static final class OverallResultPrinter extends SingleRaceOutputPrinterHTML {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);

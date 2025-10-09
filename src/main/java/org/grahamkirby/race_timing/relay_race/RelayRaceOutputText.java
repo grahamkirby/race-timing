@@ -20,8 +20,7 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceOutputText;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
 import java.io.IOException;
@@ -34,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 /** Base class for plaintext output. */
 @SuppressWarnings("preview")
@@ -68,7 +68,7 @@ public class RelayRaceOutputText {
             writer.append(getPrizeCategoryHeader(category));
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
-            new IndividualRaceOutputText.PrizeResultPrinter(race, writer).print(category_prize_winners);
+            new IndividualRaceOutput.PrizeResultPrinterText(race, writer).print(category_prize_winners);
 
             writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
@@ -88,7 +88,7 @@ public class RelayRaceOutputText {
 
     void printCollatedResults() throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "times_collated", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "times_collated", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

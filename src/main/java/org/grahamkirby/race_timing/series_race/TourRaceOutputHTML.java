@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
@@ -41,7 +40,7 @@ class TourRaceOutputHTML {
 
     void printResults() throws IOException {
 
-        IndividualRaceResultsOutput.printResults(race, OverallResultPrinter::new);
+        RaceOutput.printResults(race, OverallResultPrinter::new);
     }
 
     void printCombined() throws IOException {

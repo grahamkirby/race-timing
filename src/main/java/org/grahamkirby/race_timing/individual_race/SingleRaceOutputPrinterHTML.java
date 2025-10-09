@@ -27,9 +27,9 @@ import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
 import static org.grahamkirby.race_timing.common.Normalisation.*;
 
 /** Base class for printing results to HTML files. */
-public abstract class IndividualResultPrinterHTML extends OverallResultPrinterHTML {
+public abstract class SingleRaceOutputPrinterHTML extends OverallResultPrinterHTML {
 
-    protected IndividualResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+    protected SingleRaceOutputPrinterHTML(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 

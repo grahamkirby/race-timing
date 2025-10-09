@@ -23,7 +23,6 @@ import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,6 +32,7 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 public class RelayRaceOutputCSV {
 
@@ -45,7 +45,7 @@ public class RelayRaceOutputCSV {
 
     void printResults() throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "overall", CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "overall", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, new OverallResultPrinter(race, writer));
@@ -54,7 +54,7 @@ public class RelayRaceOutputCSV {
 
     void printDetailedResults() throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "detailed", CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "detailed", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, new DetailedResultPrinter(race, writer));
@@ -71,7 +71,7 @@ public class RelayRaceOutputCSV {
 
     private void printLegResults(final int leg) throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "leg_" + leg, CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "leg_" + leg, CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

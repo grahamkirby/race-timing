@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.relay_race.RelayRaceOutputText;
 
 import java.io.IOException;
@@ -27,6 +26,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 public class SeriesRaceOutputText {
 
@@ -42,7 +42,7 @@ public class SeriesRaceOutputText {
 
     public static void printPrizes(final Race race) throws IOException {
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -64,7 +64,7 @@ public class SeriesRaceOutputText {
         if (!converted_words.isEmpty())
             race.appendToNotes("Converted to title case: " + converted_words);
 
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.append(race.getNotes());

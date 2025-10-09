@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
@@ -28,9 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.Config.KEY_RACE_NAME_FOR_RESULTS;
 
 class GrandPrixRaceOutputHTML {
 
@@ -42,7 +39,7 @@ class GrandPrixRaceOutputHTML {
 
     void printResults() throws IOException {
 
-        IndividualRaceResultsOutput.printResults(race, OverallResultPrinter::new);
+        RaceOutput.printResults(race, OverallResultPrinter::new);
     }
 
     void printCombined() throws IOException {
