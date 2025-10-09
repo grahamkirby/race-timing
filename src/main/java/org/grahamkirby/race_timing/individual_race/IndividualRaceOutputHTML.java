@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class IndividualRaceOutputHTML {
 
@@ -57,10 +59,10 @@ public class IndividualRaceOutputHTML {
             }
         };
 
-        printCombined(race, print_team_prizes, OverallResultPrinter::new);
+        printCombined(race, print_team_prizes, OverallResultPrinter::new, PrizeResultPrinter::new);
     }
 
-    public static void printCombined(final Race race, final BiConsumer<Race, OutputStreamWriter> print_team_prizes, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
+    public static void printCombined(final Race race, final BiConsumer<Race, OutputStreamWriter> print_team_prizes, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer, BiFunction<Race, OutputStreamWriter, ResultPrinter> prize_result_printer) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX);
 
@@ -69,7 +71,7 @@ public class IndividualRaceOutputHTML {
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            printPrizes(writer, race);
+            printPrizes(writer, race, prize_result_printer);
             print_team_prizes.accept(race, writer);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
@@ -96,10 +98,8 @@ public class IndividualRaceOutputHTML {
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            printPrizes(writer, race);
-//            printTeamPrizes(writer, race);
+            printPrizes(writer, race, PrizeResultPrinter::new);
         }
     }
 
@@ -108,30 +108,27 @@ public class IndividualRaceOutputHTML {
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX, APPEND_FILE_OPEN_OPTIONS);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-//            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-//            printPrizes(writer, race);
             printTeamPrizes(writer, race);
         }
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizes(final OutputStreamWriter writer, final Race race) throws IOException {
+    public static void printPrizes(final OutputStreamWriter writer, final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(writer, category, race));
+            forEachOrdered(category -> printPrizes(writer, category, race, aNew));
     }
 
     /** Prints prizes within a given category. */
-    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race) {
+    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) {
 
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
 
             final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
-            new IndividualRaceOutputHTML.PrizeResultPrinter(race, writer).print(category_prize_winners);
+            make_prize_result_printer.apply(race, writer).print(category_prize_winners);
         }
         // Called from lambda that can't throw checked exception.
         catch (final IOException e) {
@@ -182,15 +179,43 @@ public class IndividualRaceOutputHTML {
             writer.append("<ul>").append(LINE_SEPARATOR);
         }
 
+//        @Override
+//        public void printResult(final RaceResult result) throws IOException {
+//
+//            writer.append(
+//                "    <li>" +
+//                    result.getPositionString() + " " +
+//                    race.getNormalisation().htmlEncode(result.getParticipantName()) +
+//                    " " + result.getPrizeDetailHTML() +
+//                    "</li>" + LINE_SEPARATOR);
+//        }
+
         @Override
         public void printResult(final RaceResult result) throws IOException {
 
+            List<String> elements = getResultsElements(result);
+
             writer.append(
                 "    <li>" +
-                result.getPositionString() + " " +
-                race.getNormalisation().htmlEncode(result.getParticipantName()) +
-                " " + result.getPrizeDetailHTML() +
-                "</li>" + LINE_SEPARATOR);
+                elements.get(0) + " " +
+                elements.get(1) + " " +
+                "(" + elements.get(2) + ") " +
+                elements.get(3) +
+                "</li>" +
+                LINE_SEPARATOR);
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+
+            return List.of(
+                result.getPositionString(),
+                race.getNormalisation().htmlEncode(result.getParticipant().name),
+                ((Runner) result.getParticipant()).club,
+                renderDuration(result, DNF_STRING)
+            );
         }
 
         @Override

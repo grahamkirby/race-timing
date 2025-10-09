@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.ResultPrinter;
 import org.grahamkirby.race_timing.common.ResultsOutput;
-import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
 import java.io.OutputStream;

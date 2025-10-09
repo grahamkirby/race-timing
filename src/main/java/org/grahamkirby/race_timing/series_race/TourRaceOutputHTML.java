@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceOutputHTML {
@@ -49,12 +50,12 @@ class TourRaceOutputHTML {
 
     void printCombined() throws IOException {
 
-        SeriesRaceOutputHTML.printCombined(race, OverallResultPrinter::new, IndividualRaceOutputHTML.PrizeResultPrinter::new);
+        SeriesRaceOutputHTML.printCombined(race, OverallResultPrinter::new, PrizeResultPrinter::new);
     }
 
     public void printPrizes() throws IOException {
 
-        SeriesRaceOutputHTML.printPrizes(race);
+        SeriesRaceOutputHTML.printPrizes(race, PrizeResultPrinter::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,4 +106,52 @@ class TourRaceOutputHTML {
             return elements;
         }
     }
+
+    public static final class PrizeResultPrinter extends ResultPrinterHTML {
+
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append("<ul>").append(LINE_SEPARATOR);
+        }
+
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            List<String> elements = getResultsElements(result);
+
+            writer.append(
+                "    <li>" +
+                    elements.get(0) + " " +
+                    elements.get(1) + " " +
+                    "(" + elements.get(2) + ") " +
+                    elements.get(3) +
+                    "</li>" +
+                    LINE_SEPARATOR);
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final TourRaceResult result = (TourRaceResult) r;
+
+            return List.of(
+                result.getPositionString(),
+                race.getNormalisation().htmlEncode(result.getParticipant().name),
+                ((Runner) result.getParticipant()).club,
+                String.valueOf((result.canComplete() ? renderDuration(result.duration()) : "-"))
+            );
+        }
+
+        @Override
+        public void printResultsFooter() throws IOException {
+
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+        }
+    }
+
 }

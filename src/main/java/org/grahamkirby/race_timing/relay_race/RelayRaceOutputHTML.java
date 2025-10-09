@@ -56,7 +56,8 @@ public class RelayRaceOutputHTML {
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            IndividualRaceOutputHTML.printPrizes(writer, race);
+//            IndividualRaceOutputHTML.printPrizes(writer, race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
+            IndividualRaceOutputHTML.printPrizes(writer, race, PrizeResultPrinter::new);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             IndividualRaceResultsOutput.printResults(writer, new OverallResultPrinter(race, writer), IndividualRaceOutputHTML::getResultsSubHeader, race);
@@ -81,7 +82,8 @@ public class RelayRaceOutputHTML {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            IndividualRaceOutputHTML.printPrizes(writer, race);
+//            IndividualRaceOutputHTML.printPrizes(writer, race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
+            IndividualRaceOutputHTML.printPrizes(writer, race, PrizeResultPrinter::new);
         }
     }
 
@@ -235,4 +237,63 @@ public class RelayRaceOutputHTML {
             return elements;
         }
     }
+
+    public static final class PrizeResultPrinter extends ResultPrinterHTML {
+
+        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append("<ul>").append(LINE_SEPARATOR);
+        }
+
+//        @Override
+//        public void printResult(final RaceResult result) throws IOException {
+//
+//            writer.append(
+//                "    <li>" +
+//                    result.getPositionString() + " " +
+//                    race.getNormalisation().htmlEncode(result.getParticipantName()) +
+//                    " " + result.getPrizeDetailHTML() +
+//                    "</li>" + LINE_SEPARATOR);
+//        }
+
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            List<String> elements = getResultsElements(result);
+
+            writer.append(
+                "    <li>" +
+                    elements.get(0) + " " +
+                    elements.get(1) + " " +
+                    "(" + elements.get(2) + ") " +
+                    elements.get(3) +
+                    "</li>" +
+                    LINE_SEPARATOR);
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+
+            return List.of(
+                result.getPositionString(),
+                race.getNormalisation().htmlEncode(result.getParticipant().name),
+                result.getParticipant().category.getLongName(),
+                renderDuration(result, DNF_STRING)
+            );
+        }
+
+        @Override
+        public void printResultsFooter() throws IOException {
+
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+        }
+    }
+
 }

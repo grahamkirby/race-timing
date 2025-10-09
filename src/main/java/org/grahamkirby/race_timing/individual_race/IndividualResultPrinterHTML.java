@@ -35,6 +35,7 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @Override
     protected List<String> getResultsElements(final RaceResult r) {
 
         final SingleRaceResult result = (SingleRaceResult) r;
@@ -45,7 +46,7 @@ public abstract class IndividualResultPrinterHTML extends ResultPrinterHTML {
             race.getNormalisation().htmlEncode(result.getParticipant().name),
             ((Runner) result.getParticipant()).club,
             result.getParticipant().category.getShortName(),
-            renderDuration((RaceResultWithDuration) r, DNF_STRING)
+            renderDuration(result, DNF_STRING)
         );
     }
 }
