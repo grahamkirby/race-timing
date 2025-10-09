@@ -25,9 +25,9 @@ import java.util.List;
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
 /** Base class for printing results to HTML files. */
-public abstract class ResultPrinterHTML extends ResultPrinter {
+public abstract class OverallResultPrinterHTML extends ResultPrinter {
 
-    protected ResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+    protected OverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 

@@ -18,11 +18,10 @@
 package org.grahamkirby.race_timing.series_race;
 
 
+import org.grahamkirby.race_timing.common.PrizeResultPrinterHTML;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinterHTML;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceOutputHTML;
+import org.grahamkirby.race_timing.common.OverallResultPrinterHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -51,19 +50,17 @@ class GrandPrixRaceOutputHTML {
 
     void printCombined() throws IOException {
 
-//        SeriesRaceOutputHTML.printCombined(race, OverallResultPrinter::new, IndividualRaceOutputHTML.PrizeResultPrinter::new);
         SeriesRaceOutputHTML.printCombined(race, OverallResultPrinter::new, PrizeResultPrinter::new);
     }
 
     public void printPrizes() throws IOException {
 
         SeriesRaceOutputHTML.printPrizes(race, PrizeResultPrinter::new);
-//        SeriesRaceOutputHTML.printPrizes(race, IndividualRaceOutputHTML.PrizeResultPrinter::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class OverallResultPrinter extends ResultPrinterHTML {
+    private static final class OverallResultPrinter extends OverallResultPrinterHTML {
 
         private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -123,42 +120,10 @@ class GrandPrixRaceOutputHTML {
         }
     }
 
-    public static final class PrizeResultPrinter extends ResultPrinterHTML {
+    public static final class PrizeResultPrinter extends PrizeResultPrinterHTML {
 
         public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            writer.append("<ul>").append(LINE_SEPARATOR);
-        }
-
-//        @Override
-//        public void printResult(final RaceResult result) throws IOException {
-//
-//            writer.append(
-//                "    <li>" +
-//                    result.getPositionString() + " " +
-//                    race.getNormalisation().htmlEncode(result.getParticipantName()) +
-//                    " " + result.getPrizeDetailHTML() +
-//                    "</li>" + LINE_SEPARATOR);
-//        }
-
-        @Override
-        public void printResult(final RaceResult result) throws IOException {
-
-            List<String> elements = getResultsElements(result);
-
-            writer.append(
-                "    <li>" +
-                    elements.get(0) + " " +
-                    elements.get(1) + " " +
-                    "(" + elements.get(2) + ") " +
-                    elements.get(3) +
-                    "</li>" +
-                    LINE_SEPARATOR);
         }
 
         @Override
@@ -168,17 +133,10 @@ class GrandPrixRaceOutputHTML {
 
             return List.of(
                 result.getPositionString(),
-                race.getNormalisation().htmlEncode(result.getParticipant().name),
+                race.getNormalisation().htmlEncode(result.getParticipantName()),
                 result.getParticipant().category.getShortName(),
                 String.valueOf(result.totalScore())
             );
         }
-
-        @Override
-        public void printResultsFooter() throws IOException {
-
-            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-        }
     }
-
 }

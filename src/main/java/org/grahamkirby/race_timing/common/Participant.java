@@ -22,8 +22,8 @@ import org.grahamkirby.race_timing.categories.EntryCategory;
 
 public abstract class Participant {
 
-    public String name;
-    public EntryCategory category;
+    public final String name;
+    public EntryCategory category; // Not final since may be updated if category changes during a series.
 
     protected Participant(final String name, final EntryCategory category) {
         this.name = name;

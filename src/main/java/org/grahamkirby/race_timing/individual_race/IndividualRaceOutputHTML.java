@@ -19,10 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.ResultPrinter;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
 
 import java.io.IOException;
@@ -167,42 +164,10 @@ public class IndividualRaceOutputHTML {
         }
     }
 
-    public static final class PrizeResultPrinter extends IndividualResultPrinterHTML {
+    public static final class PrizeResultPrinter extends PrizeResultPrinterHTML {
 
         public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            writer.append("<ul>").append(LINE_SEPARATOR);
-        }
-
-//        @Override
-//        public void printResult(final RaceResult result) throws IOException {
-//
-//            writer.append(
-//                "    <li>" +
-//                    result.getPositionString() + " " +
-//                    race.getNormalisation().htmlEncode(result.getParticipantName()) +
-//                    " " + result.getPrizeDetailHTML() +
-//                    "</li>" + LINE_SEPARATOR);
-//        }
-
-        @Override
-        public void printResult(final RaceResult result) throws IOException {
-
-            List<String> elements = getResultsElements(result);
-
-            writer.append(
-                "    <li>" +
-                elements.get(0) + " " +
-                elements.get(1) + " " +
-                "(" + elements.get(2) + ") " +
-                elements.get(3) +
-                "</li>" +
-                LINE_SEPARATOR);
         }
 
         @Override
@@ -212,16 +177,10 @@ public class IndividualRaceOutputHTML {
 
             return List.of(
                 result.getPositionString(),
-                race.getNormalisation().htmlEncode(result.getParticipant().name),
+                race.getNormalisation().htmlEncode(result.getParticipantName()),
                 ((Runner) result.getParticipant()).club,
                 renderDuration(result, DNF_STRING)
             );
-        }
-
-        @Override
-        public void printResultsFooter() throws IOException {
-
-            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
     }
 }
