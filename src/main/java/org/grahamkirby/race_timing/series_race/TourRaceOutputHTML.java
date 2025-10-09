@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.PrizeResultPrinterHTML;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.OverallResultPrinterHTML;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -32,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceOutputHTML {
@@ -115,16 +111,13 @@ class TourRaceOutputHTML {
         }
 
         @Override
-        protected List<String> getResultsElements(final RaceResult r) {
+        protected String renderDetail(final RaceResult result) {
+            return ((Runner) result.getParticipant()).club;
+        }
 
-            final TourRaceResult result = (TourRaceResult) r;
-
-            return List.of(
-                result.getPositionString(),
-                race.getNormalisation().htmlEncode(result.getParticipantName()),
-                ((Runner) result.getParticipant()).club,
-                renderDuration(result, "-")
-            );
+        @Override
+        protected String renderPerformance(final RaceResult result) {
+            return renderDuration((RaceResultWithDuration) result, "-");
         }
     }
 }

@@ -60,12 +60,6 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public String getPrizeDetailHTML() {
-
-        return "(" + ((Runner) getParticipant()).category.getShortName() + ") " + totalScore();
-    }
-
-    @Override
     public String getPrizeDetailPDF() {
 
         return "(" + ((Runner) getParticipant()).club + ") " + totalScore();

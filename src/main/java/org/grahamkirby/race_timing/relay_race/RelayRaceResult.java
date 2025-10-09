@@ -74,12 +74,6 @@ public class RelayRaceResult extends SingleRaceResult {
     }
 
     @Override
-    public String getPrizeDetailHTML() {
-
-        return "(" + getParticipant().category.getLongName() + ") " + renderDuration(this, DNF_STRING);
-    }
-
-    @Override
     public String getPrizeDetailPDF() {
 
         return "(" + getParticipant().category.getLongName() + ") " + renderDuration(this, DNF_STRING);

@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 
 public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator {
 
+    // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
     protected RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = ((GrandPrixRaceImpl) race.getSpecific()).getRaces().stream().

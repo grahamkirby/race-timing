@@ -46,12 +46,6 @@ public class IndividualRaceResult extends SingleRaceResult {
     }
 
     @Override
-    public String getPrizeDetailHTML() {
-
-        return "(" + ((Runner) getParticipant()).club + ") " + renderDuration(this, DNF_STRING);
-    }
-
-    @Override
     public String getPrizeDetailPDF() {
 
         return "(" + ((Runner) getParticipant()).club + ") " + renderDuration(this, DNF_STRING);

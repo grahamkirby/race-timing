@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing.common;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
@@ -42,16 +41,14 @@ public abstract class PrizeResultPrinterHTML extends ResultPrinter {
     @Override
     public void printResult(final RaceResult result) throws IOException {
 
-        final List<String> elements = getResultsElements(result);
-
         writer.append(
             "    <li>" +
-                elements.get(0) + " " +
-                elements.get(1) + " " +
-                "(" + elements.get(2) + ") " +
-                elements.get(3) +
-                "</li>" +
-                LINE_SEPARATOR);
+            result.getPositionString() + " " +
+            race.getNormalisation().htmlEncode(result.getParticipantName()) + " " +
+            "(" + renderDetail(result) + ") " +
+            renderPerformance(result) +
+            "</li>" +
+            LINE_SEPARATOR);
     }
 
     @Override
@@ -66,11 +63,6 @@ public abstract class PrizeResultPrinterHTML extends ResultPrinter {
         writer.append("<p>No results</p>").append(LINE_SEPARATOR);
     }
 
-    protected List<String> getResultsColumnHeaders() {
-        throw new UnsupportedOperationException();
-    }
-
-    protected List<String> getResultsElements(final RaceResult r) {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract String renderDetail(RaceResult result);
+    protected abstract String renderPerformance(RaceResult r);
 }

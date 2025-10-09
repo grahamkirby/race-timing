@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.PrizeResultPrinterHTML;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.OverallResultPrinterHTML;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -127,16 +124,13 @@ class GrandPrixRaceOutputHTML {
         }
 
         @Override
-        protected List<String> getResultsElements(final RaceResult r) {
+        protected String renderDetail(final RaceResult result) {
+            return ((Runner) result.getParticipant()).club;
+        }
 
-            final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
-
-            return List.of(
-                result.getPositionString(),
-                race.getNormalisation().htmlEncode(result.getParticipantName()),
-                result.getParticipant().category.getShortName(),
-                String.valueOf(result.totalScore())
-            );
+        @Override
+        protected String renderPerformance(final RaceResult result) {
+            return String.valueOf(((GrandPrixRaceResult) result).totalScore());
         }
     }
 }

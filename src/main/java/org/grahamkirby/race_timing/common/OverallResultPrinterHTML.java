@@ -82,11 +82,6 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
         writer.append("<p>No results</p>").append(LINE_SEPARATOR);
     }
 
-    protected List<String> getResultsColumnHeaders() {
-        throw new UnsupportedOperationException();
-    }
-
-    protected List<String> getResultsElements(final RaceResult r) {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract List<String> getResultsColumnHeaders();
+    protected abstract List<String> getResultsElements(final RaceResult r);
 }

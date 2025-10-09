@@ -119,17 +119,13 @@ class MidweekRaceOutputHTML {
         }
 
         @Override
-        protected List<String> getResultsElements(final RaceResult r) {
+        protected String renderDetail(final RaceResult result) {
+            return ((Runner) result.getParticipant()).club;
+        }
 
-            final MidweekRaceResult result = (MidweekRaceResult) r;
-
-            return List.of(
-                result.getPositionString(),
-                race.getNormalisation().htmlEncode(result.getParticipantName()),
-                result.getParticipant().category.getShortName(),
-                String.valueOf(result.totalScore())
-            );
+        @Override
+        protected String renderPerformance(final RaceResult result) {
+            return String.valueOf(((MidweekRaceResult) result).totalScore());
         }
     }
-
 }

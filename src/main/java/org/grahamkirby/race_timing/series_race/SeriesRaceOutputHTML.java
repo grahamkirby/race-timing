@@ -36,14 +36,14 @@ public class SeriesRaceOutputHTML {
         IndividualRaceOutputHTML.printCombined(race, (_, _) -> {}, make_result_printer, make_prize_printer);
     }
 
-    static void printPrizes(final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew) throws IOException {
+    static void printPrizes(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeader(race));
-            IndividualRaceOutputHTML.printPrizes(writer, race, aNew);
+            IndividualRaceOutputHTML.printPrizes(writer, race, make_prize_result_printer);
         }
     }
 

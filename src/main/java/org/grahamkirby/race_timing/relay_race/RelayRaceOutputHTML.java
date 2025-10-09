@@ -245,16 +245,13 @@ public class RelayRaceOutputHTML {
         }
 
         @Override
-        protected List<String> getResultsElements(final RaceResult r) {
+        protected String renderDetail(final RaceResult result) {
+            return result.getParticipant().category.getLongName();
+        }
 
-            final SingleRaceResult result = (SingleRaceResult) r;
-
-            return List.of(
-                result.getPositionString(),
-                race.getNormalisation().htmlEncode(result.getParticipantName()),
-                result.getParticipant().category.getLongName(),
-                renderDuration(result, DNF_STRING)
-            );
+        @Override
+        protected String renderPerformance(final RaceResult result) {
+            return renderDuration((RaceResultWithDuration) result, DNF_STRING);
         }
     }
 }

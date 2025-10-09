@@ -59,7 +59,7 @@ public class IndividualRaceOutputHTML {
         printCombined(race, print_team_prizes, OverallResultPrinter::new, PrizeResultPrinter::new);
     }
 
-    public static void printCombined(final Race race, final BiConsumer<Race, OutputStreamWriter> print_team_prizes, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer, BiFunction<Race, OutputStreamWriter, ResultPrinter> prize_result_printer) throws IOException {
+    public static void printCombined(final Race race, final BiConsumer<Race, OutputStreamWriter> print_team_prizes, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer, final BiFunction<Race, OutputStreamWriter, ResultPrinter> prize_result_printer) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX);
 
@@ -110,16 +110,16 @@ public class IndividualRaceOutputHTML {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizes(final OutputStreamWriter writer, final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> aNew) throws IOException {
+    public static void printPrizes(final OutputStreamWriter writer, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory). // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(writer, category, race, aNew));
+            forEachOrdered(category -> printPrizes(writer, category, race, make_prize_result_printer));
     }
 
     /** Prints prizes within a given category. */
-    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) {
+    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) {
 
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
@@ -164,23 +164,20 @@ public class IndividualRaceOutputHTML {
         }
     }
 
-    public static final class PrizeResultPrinter extends PrizeResultPrinterHTML {
+    private static final class PrizeResultPrinter extends PrizeResultPrinterHTML {
 
-        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
-        protected List<String> getResultsElements(final RaceResult r) {
+        protected String renderDetail(final RaceResult result) {
+            return ((Runner) result.getParticipant()).club;
+        }
 
-            final SingleRaceResult result = (SingleRaceResult) r;
-
-            return List.of(
-                result.getPositionString(),
-                race.getNormalisation().htmlEncode(result.getParticipantName()),
-                ((Runner) result.getParticipant()).club,
-                renderDuration(result, DNF_STRING)
-            );
+        @Override
+        protected String renderPerformance(final RaceResult result) {
+            return renderDuration((RaceResultWithDuration) result, DNF_STRING);
         }
     }
 }
