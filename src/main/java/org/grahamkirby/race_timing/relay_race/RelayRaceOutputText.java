@@ -19,7 +19,10 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.RawResult;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 

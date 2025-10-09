@@ -46,7 +46,7 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setRaceDataProcessor(new IndividualRaceDataProcessorImpl());
         race.setResultsCalculator(new IndividualRaceResultsCalculator());
-        race.setResultsOutput(new IndividualRaceResultsOutput());
+        race.setResultsOutput(new IndividualRaceOutput());
 
         return race;
     }

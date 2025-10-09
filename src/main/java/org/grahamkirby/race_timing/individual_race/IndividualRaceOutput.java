@@ -35,20 +35,66 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.CSV_FILE_SUFFIX;
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+import static org.grahamkirby.race_timing.common.Config.PDF_FILE_SUFFIX;
+import static org.grahamkirby.race_timing.common.Config.PDF_PRIZE_FONT_BOLD_NAME;
+import static org.grahamkirby.race_timing.common.Config.PDF_PRIZE_FONT_SIZE;
+import static org.grahamkirby.race_timing.common.Config.TEXT_FILE_SUFFIX;
 import static org.grahamkirby.race_timing.common.Config.encode;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStreamPath;
 
-public class IndividualRaceOutput {
+@SuppressWarnings("preview")
+public class IndividualRaceOutput implements ResultsOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time" + LINE_SEPARATOR;
 
-    private final Race race;
+    private Race race;
 
-    IndividualRaceOutput(final Race race) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void outputResults() throws IOException {
+
+        printOverallResults();
+
+        printPrizes();
+        printNotes();
+        printCombined();
+    }
+
+    @Override
+    public void setRace(final Race race) {
+
         this.race = race;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void printOverallResults() throws IOException {
+
+        printResultsCSV();
+        printResultsHTML();
+    }
+
+    private void printPrizes() throws IOException {
+
+        printPrizesPDF();
+        printPrizesHTML();
+        printPrizesText();
+    }
+
+    private void printNotes() throws IOException {
+
+        printNotesText();
+    }
+
+    private void printCombined() throws IOException {
+
+        printCombinedHTML();
     }
 
     void printResultsHTML() throws IOException {

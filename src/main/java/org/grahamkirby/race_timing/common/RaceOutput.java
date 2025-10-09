@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Config.STANDARD_FILE_OPEN_OPTIONS;
 
 public class RaceOutput {
 
