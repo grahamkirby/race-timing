@@ -18,25 +18,31 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.common.ResultPrinterGenerator;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceOutputHTML;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutputHTML.*;
 
 public class SeriesRaceOutputHTML {
 
-    public static void printCombined(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer, BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_printer) throws IOException {
+    public static void printCombined(final Race race, final ResultPrinterGenerator make_result_printer, final ResultPrinterGenerator make_prize_printer) throws IOException {
 
-        IndividualRaceOutputHTML.printCombined(race, (_, _) -> {}, make_result_printer, make_prize_printer);
+        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            printPrizesWithHeader(writer, race, make_prize_printer);
+            printResultsWithHeader(writer, race, make_result_printer);
+        }
     }
 
-    static void printPrizes(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) throws IOException {
+    static void printPrizes(final Race race, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
@@ -45,11 +51,5 @@ public class SeriesRaceOutputHTML {
             writer.append(getPrizesHeader(race));
             IndividualRaceOutputHTML.printPrizes(writer, race, make_prize_result_printer);
         }
-    }
-
-    public static String getPrizesHeader(final Race race) {
-
-        final String header = race.getSpecific() instanceof final SeriesRace series_race && series_race.getNumberOfRacesTakenPlace() < (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
-        return "<h4>" + header + "</h4>" + LINE_SEPARATOR;
     }
 }

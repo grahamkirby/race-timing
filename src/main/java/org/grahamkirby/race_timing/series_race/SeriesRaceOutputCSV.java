@@ -41,7 +41,7 @@ public class SeriesRaceOutputCSV {
             map(race -> (String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
     }
 
-    static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
+    static void printResults(final Race race, final ResultPrinterGenerator make_result_printer) throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "overall", CSV_FILE_SUFFIX);
 

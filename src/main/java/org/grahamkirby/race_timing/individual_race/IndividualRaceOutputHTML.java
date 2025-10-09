@@ -20,14 +20,12 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.series_race.SeriesRaceOutputHTML;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
@@ -48,69 +46,56 @@ public class IndividualRaceOutputHTML {
     /** Prints all details to a single web page. */
     void printCombined() throws IOException {
 
-        final BiConsumer<Race, OutputStreamWriter> print_team_prizes = (race, writer) -> {
-            try {
-                printTeamPrizes(writer, race);
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
-        };
-
-        printCombined(race, print_team_prizes, OverallResultPrinter::new, PrizeResultPrinter::new);
-    }
-
-    public static void printCombined(final Race race, final BiConsumer<Race, OutputStreamWriter> print_team_prizes, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer, final BiFunction<Race, OutputStreamWriter, ResultPrinter> prize_result_printer) throws IOException {
-
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "combined", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
-
-            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
-            printPrizes(writer, race, prize_result_printer);
-            print_team_prizes.accept(race, writer);
-
-            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            final ResultPrinter printer = make_result_printer.apply(race, writer);
-
-            IndividualRaceResultsOutput.printResults(writer, printer, IndividualRaceOutputHTML::getResultsSubHeader, race);
-
-            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+            printPrizesWithHeader(writer, race, PrizeResultPrinter::new);
+            printTeamPrizes(writer, race);
+            printResultsWithHeader(writer, race, OverallResultPrinter::new);
         }
+    }
+
+    public static void printPrizesWithHeader(final OutputStreamWriter writer, final Race race, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
+
+        writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+        writer.append(getPrizesHeader(race));
+
+        printPrizes(writer, race, make_prize_result_printer);
+    }
+
+    public static void printResultsWithHeader(final OutputStreamWriter writer, final Race race, final ResultPrinterGenerator make_overall_result_printer) throws IOException {
+
+        writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+
+        IndividualRaceResultsOutput.printResults(writer, make_overall_result_printer.apply(race, writer), IndividualRaceOutputHTML::getResultsSubHeader, race);
+        writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 
     public static String getResultsSubHeader(final String s) {
         return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
     }
 
-    void printPrizes() throws IOException {
+    public static String getPrizesHeader(final Race race) {
 
-        printPrizes(race);
-        printTeamPrizes(race);
+        final String header = race.getSpecific() instanceof final SeriesRace series_race && series_race.getNumberOfRacesTakenPlace() < (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
+        return "<h4>" + header + "</h4>" + LINE_SEPARATOR;
     }
 
-    public static void printPrizes(final Race race) throws IOException {
+    void printPrizes() throws IOException {
 
         final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(SeriesRaceOutputHTML.getPrizesHeader(race));
+
+            writer.append(getPrizesHeader(race));
             printPrizes(writer, race, PrizeResultPrinter::new);
-        }
-    }
-
-    public static void printTeamPrizes(final Race race) throws IOException {
-
-        final OutputStream stream = IndividualRaceResultsOutput.getOutputStream(race, "prizes", HTML_FILE_SUFFIX, APPEND_FILE_OPEN_OPTIONS);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printTeamPrizes(writer, race);
         }
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizes(final OutputStreamWriter writer, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) throws IOException {
+    public static void printPrizes(final OutputStreamWriter writer, final Race race, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                       // Get all prize categories.
@@ -119,7 +104,7 @@ public class IndividualRaceOutputHTML {
     }
 
     /** Prints prizes within a given category. */
-    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_prize_result_printer) {
+    public static void printPrizes(final OutputStreamWriter writer, final PrizeCategory category, final Race race, final ResultPrinterGenerator make_prize_result_printer) {
 
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
@@ -151,9 +136,9 @@ public class IndividualRaceOutputHTML {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final class OverallResultPrinter extends IndividualResultPrinterHTML {
+    private static final class OverallResultPrinter extends IndividualResultPrinterHTML {
 
-        OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

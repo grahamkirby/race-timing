@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.ResultPrinter;
+import org.grahamkirby.race_timing.common.ResultPrinterGenerator;
 import org.grahamkirby.race_timing.common.ResultsOutput;
 
 import java.io.IOException;
@@ -127,7 +128,7 @@ public class IndividualRaceResultsOutput implements ResultsOutput {
         return Files.newOutputStream(getOutputStreamPath(race, output_type, file_suffix), file_open_options);
     }
 
-    public static void printResults(final Race race, final BiFunction<Race, OutputStreamWriter, ResultPrinter> make_result_printer) throws IOException {
+    public static void printResults(final Race race, final ResultPrinterGenerator make_result_printer) throws IOException {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race, "overall", HTML_FILE_SUFFIX))) {
 
