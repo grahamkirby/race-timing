@@ -47,7 +47,7 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
         race.setSpecific(new MidweekRaceImpl());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new MidweekRaceResultsCalculator());
-        race.setResultsOutput(new MidweekRaceResultsOutput());
+        race.setResultsOutput(new MidweekRaceOutput());
 
         return race;
     }

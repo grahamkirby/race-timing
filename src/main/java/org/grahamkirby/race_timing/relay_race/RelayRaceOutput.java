@@ -23,6 +23,7 @@ import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
 import org.grahamkirby.race_timing.individual_race.SingleRaceOutputPrinterHTML;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutput;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
 import java.io.IOException;
@@ -460,13 +461,13 @@ public class RelayRaceOutput extends RaceOutput {
     }
 
     void printPrizesText() throws IOException {
-        SeriesRaceOutputText.printPrizesCSV( race);
+        SeriesRaceOutput.printPrizesCSV( race);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
     void printNotes() throws IOException {
 
-        SeriesRaceOutputText.printNotes(race);
+        SeriesRaceOutput.printNotes(race);
     }
 
     public static void printPrizesText(final OutputStreamWriter writer, final PrizeCategory category, final Race race) {

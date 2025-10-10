@@ -25,6 +25,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
+import org.grahamkirby.race_timing.series_race.SeriesRaceOutput;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
 import java.io.IOException;
@@ -231,8 +232,8 @@ public class IndividualRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(SeriesRaceOutputText.getPrizesHeader(race));
-            SeriesRaceOutputText.printPrizesText(writer, race);
+            writer.append(SeriesRaceOutput.getPrizesHeaderText(race));
+            SeriesRaceOutput.printPrizesText(writer, race);
             printTeamPrizesText(writer);
         }
     }
@@ -240,7 +241,7 @@ public class IndividualRaceOutput extends RaceOutput {
     /** Prints out the words converted to title case, and any other processing notes. */
     void printNotesText() throws IOException {
 
-        SeriesRaceOutputText.printNotes(race);
+        SeriesRaceOutput.printNotes(race);
     }
 
     private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {

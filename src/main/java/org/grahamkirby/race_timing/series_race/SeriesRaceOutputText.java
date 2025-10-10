@@ -35,53 +35,53 @@ public class SeriesRaceOutputText {
         this.race = race;
     }
 
-    void printPrizesCSV() throws IOException {
+//    void printPrizesCSV() throws IOException {
+//
+//        printPrizesCSV(race);
+//    }
 
-        printPrizesCSV(race);
-    }
-
-    public static void printPrizesCSV(final Race race) throws IOException {
-
-        final OutputStream stream = getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeader(race));
-            printPrizesText(writer, race);
-        }
-    }
-
-    /** Prints out the words converted to title case, and any other processing notes. */
-    void printNotes() throws IOException {
-
-        printNotes(race);
-    }
-
-    public static void printNotes(final Race race) throws IOException {
-
-        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
-
-        if (!converted_words.isEmpty())
-            race.appendToNotes("Converted to title case: " + converted_words);
-
-        final OutputStream stream = getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(race.getNotes());
-        }
-    }
-
-    public static String getPrizesHeader(final Race race) {
-
-        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
-        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
-    }
-
-    public static void printPrizesText(final OutputStreamWriter writer, final Race race) {
-
-        race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).              // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> RelayRaceOutput.printPrizesText(writer, category, race));       // Print prizes in this category.
-    }
+//    public static void printPrizesCSV(final Race race) throws IOException {
+//
+//        final OutputStream stream = getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
+//
+//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+//
+//            writer.append(getPrizesHeaderText(race));
+//            printPrizesText(writer, race);
+//        }
+//    }
+//
+//    /** Prints out the words converted to title case, and any other processing notes. */
+//    void printNotes() throws IOException {
+//
+//        printNotes(race);
+//    }
+//
+//    public static void printNotes(final Race race) throws IOException {
+//
+//        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
+//
+//        if (!converted_words.isEmpty())
+//            race.appendToNotes("Converted to title case: " + converted_words);
+//
+//        final OutputStream stream = getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
+//
+//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+//            writer.append(race.getNotes());
+//        }
+//    }
+//
+//    public static String getPrizesHeaderText(final Race race) {
+//
+//        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
+//        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
+//    }
+//
+//    public static void printPrizesText(final OutputStreamWriter writer, final Race race) {
+//
+//        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+//            flatMap(group -> group.categories().stream()).              // Get all prize categories.
+//            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
+//            forEachOrdered(category -> RelayRaceOutput.printPrizesText(writer, category, race));       // Print prizes in this category.
+//    }
 }

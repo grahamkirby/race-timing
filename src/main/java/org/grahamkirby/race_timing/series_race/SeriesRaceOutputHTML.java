@@ -31,25 +31,25 @@ import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.*
 
 public class SeriesRaceOutputHTML {
 
-    public static void printCombined(final Race race, final ResultPrinterGenerator make_result_printer, final ResultPrinterGenerator make_prize_printer) throws IOException {
-
-        final OutputStream stream = getOutputStream(race, "combined", HTML_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            printPrizesWithHeaderHTML(writer, race, make_prize_printer);
-            printResultsWithHeaderHTML(writer, race, make_result_printer);
-        }
-    }
-
-    static void printPrizes(final Race race, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
-
-        final OutputStream stream = getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeaderHTML(race));
-            RaceOutput.printPrizesHTML(race, writer, make_prize_result_printer);
-        }
-    }
+//    public static void printCombinedHTML(final Race race, final ResultPrinterGenerator make_result_printer, final ResultPrinterGenerator make_prize_printer) throws IOException {
+//
+//        final OutputStream stream = getOutputStream(race, "combined", HTML_FILE_SUFFIX);
+//
+//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+//
+//            printPrizesWithHeaderHTML(writer, race, make_prize_printer);
+//            printResultsWithHeaderHTML(writer, race, make_result_printer);
+//        }
+//    }
+//
+//    static void printPrizesHTML(final Race race, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
+//
+//        final OutputStream stream = getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
+//
+//        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+//
+//            writer.append(getPrizesHeaderHTML(race));
+//            RaceOutput.printPrizesHTML(race, writer, make_prize_result_printer);
+//        }
+//    }
 }
