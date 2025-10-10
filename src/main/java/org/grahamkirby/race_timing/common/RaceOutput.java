@@ -17,6 +17,12 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
@@ -31,8 +37,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.getFont;
 
-public class RaceOutput {
+public abstract class RaceOutput implements ResultsOutput {
+
+    protected Race race;
 
     public static Path getOutputStreamPath(final Race race, final String output_type, final String file_suffix) {
 
@@ -53,7 +62,7 @@ public class RaceOutput {
     }
 
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizes(final Race race, final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
+    public static void printPrizesHTML(final Race race, final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
 
         final ResultPrinter printer = make_prize_result_printer.apply(race, writer);
 
@@ -108,4 +117,86 @@ public class RaceOutput {
             printResults(writer, printer, IndividualRaceOutput::getResultsSubHeaderHTML, race);
         }
     }
+
+    public static void printPrizesPDF(final Race race) throws IOException {
+
+        final Path path = getOutputStreamPath(race, "prizes", PDF_FILE_SUFFIX);
+        final PdfWriter writer = new PdfWriter(path.toString());
+
+        try (final Document document = new Document(new PdfDocument(writer))) {
+
+            printPrizesPDF(race, document);
+        }
+    }
+
+    public static void printPrizesPDF(final Race race, final Document document) throws IOException {
+
+        final String year = (String) race.getConfig().get(KEY_YEAR);
+
+        final Paragraph section_header = new Paragraph().
+            setFont(getFont(PDF_PRIZE_FONT_NAME)).
+            setFontSize(PDF_PRIZE_FONT_SIZE).
+            add(race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + year + " Category Prizes");
+
+        document.add(section_header);
+
+        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+            flatMap(group -> group.categories().stream()).              // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizesPDF(document, category, race));     // Print prizes in this category.
+    }
+
+
+    /** Prints prizes within a given category. */
+    public static void printPrizesPDF(final Document document, final PrizeCategory category, final Race race) {
+
+        try {
+            final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
+                setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
+                setUnderline().
+                setPaddingTop(PDF_PRIZE_FONT_SIZE);
+
+            document.add(category_header);
+
+            new PrizeResultPrinterPDF(race, document).print(race.getResultsCalculator().getPrizeWinners(category));
+
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static final class PrizeResultPrinterPDF extends ResultPrinter {
+
+        private final Document document;
+
+        public PrizeResultPrinterPDF(final Race race, final Document document) {
+            super(race, null);
+            this.document = document;
+        }
+
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
+            final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
+
+            final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
+
+            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
+            paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
+            paragraph.add(new Text(" " + result.getPrizeDetailPDF()).setFont(font));
+
+            document.add(paragraph);
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+        }
+    }
+
+
 }

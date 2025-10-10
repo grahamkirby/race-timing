@@ -24,7 +24,6 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.relay_race.RelayRaceOutput;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
@@ -45,14 +44,11 @@ import static org.grahamkirby.race_timing.common.Config.TEXT_FILE_SUFFIX;
 import static org.grahamkirby.race_timing.common.Config.encode;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
-import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStreamPath;
 
 @SuppressWarnings("preview")
-public class IndividualRaceOutput implements ResultsOutput {
+public class IndividualRaceOutput extends RaceOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time" + LINE_SEPARATOR;
-
-    private Race race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -122,7 +118,7 @@ public class IndividualRaceOutput implements ResultsOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeaderHTML(race));
-            RaceOutput.printPrizes(race, writer, PrizeResultPrinterHTML::new);
+            printPrizesHTML(race, writer, PrizeResultPrinterHTML::new);
             printTeamPrizesHTML(writer, race);
         }
     }
@@ -132,7 +128,7 @@ public class IndividualRaceOutput implements ResultsOutput {
         writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
         writer.append(getPrizesHeaderHTML(race));
 
-        RaceOutput.printPrizes(race, writer, make_prize_result_printer);
+        printPrizesHTML(race, writer, make_prize_result_printer);
     }
 
     public static void printResultsWithHeaderHTML(final OutputStreamWriter writer, final Race race, final ResultPrinterGenerator make_overall_result_printer) throws IOException {
@@ -285,7 +281,7 @@ public class IndividualRaceOutput implements ResultsOutput {
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            RelayRaceOutput.printPrizesPDF(race, document);
+            RaceOutput.printPrizesPDF(race, document);
 
             final List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
 

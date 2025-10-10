@@ -49,7 +49,7 @@ public class SeriesRaceOutputHTML {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeaderHTML(race));
-            RaceOutput.printPrizes(race, writer, make_prize_result_printer);
+            RaceOutput.printPrizesHTML(race, writer, make_prize_result_printer);
         }
     }
 }

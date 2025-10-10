@@ -46,7 +46,7 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setRaceDataProcessor(new RelayRaceDataProcessorImpl());
         race.setResultsCalculator(new RelayRaceResultsCalculator());
-        race.setResultsOutput(new RelayRaceResultsOutput());
+        race.setResultsOutput(new RelayRaceOutput());
 
         return race;
     }

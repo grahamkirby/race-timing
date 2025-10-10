@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.RaceOutput;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultsOutput;
 import org.grahamkirby.race_timing.relay_race.RelayRaceOutput;
@@ -56,7 +57,6 @@ public class TourRaceResultsOutput implements ResultsOutput {
         output_CSV = new TourRaceOutputCSV(race);
         output_HTML = new TourRaceOutputHTML(race);
         output_text = new SeriesRaceOutputText(race);
-        output_PDF = new RelayRaceOutput(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ public class TourRaceResultsOutput implements ResultsOutput {
 
     private void printPrizes() throws IOException {
 
-        output_PDF.printPrizesPDF();
+        RaceOutput.printPrizesPDF(race);
         output_HTML.printPrizes();
         output_text.printPrizesCSV();
     }

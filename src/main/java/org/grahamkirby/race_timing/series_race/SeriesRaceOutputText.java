@@ -18,15 +18,14 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.relay_race.*;
+import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.relay_race.RelayRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 public class SeriesRaceOutputText {
