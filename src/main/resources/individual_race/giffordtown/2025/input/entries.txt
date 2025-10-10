@@ -1,0 +1,189 @@
+1	David Aitken	Dundee RR	M50
+2	Monica Anderson	Falkirk Victoria H	F50
+3	Jenny Ashcroft	Kirkcaldy Wizards	F40
+4	Vinnie Atkinson	Fife AC	M50
+5	Andy Ballantyne	Kirkcaldy Wizards	M50
+6	Gary Barclay	Kirkcaldy Wizards	M40
+7	Michael Barker	Metro Aberdeen RC	M50
+8	Shona Barry	Dundee RR	F60
+9	Aaron Bennet	PH Racing Club	MS
+10	Ross Bennet	PH Racing Club	M50
+11	Colin Birtwistle	Dundee RR	M50
+12	Ernesto Bonafe	Dundee RR	M40
+13	Keith Bonthrone	Fife AC	M60
+14	Alan Bothwell	Perth RR	M60
+15	Kevin Brady	Anster Haddies RC	M40
+16	John Brady	Anster Haddies RC	MU20
+17	Nick Brian	Fife AC	M70
+18	Joanne Brinkman	Perth RR	F40
+19	Ian Brooks		M50
+20	Bob Brown	Perth RR	M80
+21	Matt Buck	Dundee RR	M40
+22	Arman Buta	Kirkcaldy Wizards	MS
+23	Rachel Callaghan	Dundee RR	FS
+24	Ross Campbell	Kirkcaldy Wizards	MS
+25	Keith Crane	Fife AC	M40
+26	John Crookston	PH Racing Club	M60
+27	Alan Cunningham	Corstorphine AAC	M50
+28	Ian Cuthbert		M70
+29	Maria Dale	Perth RR	F60
+30	Finlay Dale	Perth RR	M70
+31	Lindsay Darling-Brackenridge	Dundee RR	M40
+32	Laura Darling-Brackenridge	Dundee RR	F40
+33	Andrew Deans	Perth RR	M50
+34	Sonya Drummond		F50
+35	Jack Dryburgh	Kirkcaldy Wizards	MS
+36	Caroline Duffin	Perth RR	F50
+37	Scott Duffin		M50
+38	Ryan Dunning	Fife AC	M40
+39	Ewan Duthie	Dundee RR	MS
+40	Daniel Fields	Dundee RR	M40
+41	Malcolm Finlayson	Falkirk Victoria H	M50
+42	Heather Finlayson	Kirkcaldy Wizards	F50
+43	Malcolm Forbes	Dundee RR	M60
+44	Paul Forbes	Edinburgh AC	M60
+45	Kim Forbes	Pitreavie AAC	F60
+46	Liam Fotheringham	Perth RR	MS
+47	James Fotheringham	Perth RR	M60
+48	Lucy Fraser	Kinross RR	F40
+49	Lucy Fyffe	Dundee RR	F50
+50	Thomas Gambino	Fife AC	MS
+51	Niamh Gibbons	Kirkcaldy Wizards	FS
+52	Peter Gibson	PH Racing Club	MS
+53	Rikki Gillespie	Dundee RR	MS
+54	Harry Godson	Fife AC	M50
+55	Stuart Goodfellow	Kirkcaldy Wizards	M50
+56	Scott Graves		M40
+57	Cole Gray	Dunfermline T&F Club	MU20
+58	Ryan Gray	Fife AC	MS
+59	Wendy Grieve	Kinross RR	F60
+60	Adam Hart	Dundee RR	MS
+61	Kerry Hayes	Kirkcaldy Wizards	F40
+62	Lynne Herd	Anster Haddies RC	F40
+63	Kenneth Hislop	Central Athletic Club	M40
+64	Hannah Hislop	Central Athletic Club	FS
+65	Dominic Hughes	Dundee RR	M40
+66	Kevin Hughes	PH Racing Club	M50
+67	John Hynd	Carnegie H	M60
+68	Eleanor Johnston	Fife AC	F70
+69	Liz Johnston	Perth RR	F50
+70	Graham Keddie	Kirkcaldy Wizards	M40
+71	Karen Kennedy	Falkirk Victoria H	F50
+72	Allan Kettles	Dundee RR	M50
+73	Paul Kieran	PH Racing Club	M50
+74	Liz Killean	Fife AC	F50
+75	Tim Kinnaird	Fife AC	M40
+76	Isla Kinnaird	Fife AC	FU20
+77	Murray Kinnaird	Fife AC	MU20
+78	Ben Kinninmonth	Fife AC	MS
+79	John Kinninmonth	Fife AC	M60
+80	Tony Kivistik		M40
+81	Vikki Laing	Kirkcaldy Wizards	F40
+82	Lynsey Langlands	Dundee RR	F50
+83	Brian Lawrence	Dundee RR	M60
+84	Jamie Lessels	Fife AC	MS
+85	Kirsty Letham	Kirkcaldy Wizards	FS
+86	Andrew Letham	Kirkcaldy Wizards	MS
+87	Michael Lindsay	PH Racing Club	M40
+88	Mairi Littleson	Dundee RR	FS
+89	Scott Love	PH Racing Club	M40
+90	Kristin Lownie	PH Racing Club	F40
+91	Iain Luke	Dundee RR	M70
+92	George MacDonald	Kirkcaldy Wizards	M60
+93	Linda MacEachen	Kinross RR	F60
+94	Marcas Macfarlane	Fife AC	MU20
+95	Morag Martin	Dundee RR	F40
+96	Grant Matheson	Falkirk Victoria H	M60
+97	Fiona Matheson	Falkirk Victoria H	F60
+98	Sarah Matheson	Kirkcaldy Wizards	F40
+99	Holly Mathie		FS
+100	Jonny May		M60
+101	Kenneth McAllister	Pitreavie AAC	M60
+102	Scott McClung	Fife AC	MS
+103	Sandy McDougall	Dundee Hawkhill H	F40
+104	Nick McGowan-Lowe		M50
+105	Teo Mcinally	Corstorphine AAC	MU20
+106	Abby McIntosh		F40
+107	John Mcintyre	Fife AC	MS
+108	John Mcintyre snr	Fife AC	M50
+109	Ivor McIvor	PH Racing Club	M70
+110	Josh McKay	Dundee RR	MS
+111	Michaela McLean	Fife AC	F40
+112	Laura McMahon	Dundee RR	FS
+113	Luke Mcneil	PH Racing Club	MS
+114	Alison McNeilly	Dundee RR	F40
+115	Stuart Meiklejohn	PH Racing Club	M40
+116	Louise Menzies	Dundee RR	F40
+117	Julie Menzies	PH Racing Club	F50
+118	Neil Millar	Fife AC	M50
+119	Michael Mitchell	Dundee RR	M50
+120	Janet Murray	Falkirk Victoria H	F40
+121	Josie Murray	Kirkcaldy Wizards	F40
+122	Melanie Newsome	Kirkcaldy Wizards	F50
+123	Matt Newton	Kinross RR	M50
+124	Chloe Newton	Kirkcaldy Wizards	FS
+125	Kevin Norman	Dundee RR	M40
+126	Ed Norton	PH Racing Club	M70
+127	Matthew O'Connor	Aberdeen AAC	MS
+128	Stefan O'Grady	Dundee RR	M40
+129	Jack O'Rourke		M60
+130	Laura Ogilvie	Dundee RR	FS
+131	Gail Rattray	Dundee RR	F60
+132	Ann Reed	Perth RR	F70
+133	Logan Rees	Fife AC	MS
+134	Helen Reid	Kirkcaldy Wizards	F60
+135	Calum Reid	Kirkcaldy Wizards	MS
+136	Leanne Reid	Kirkcaldy Wizards	F40
+137	Colin Reynolds	Carnegie H	M50
+138	Michael Richardson	Dundee RR	MS
+139	Imogen Rickell		F60
+140	Hilary Ritchie	Fife AC	F60
+141	Kirsty Ritchie	Kirkcaldy Wizards	FS
+142	Peter Ritchie	Perth RR	M60
+143	Jimmy Robertson	Kirkcaldy Wizards	M50
+144	Linda Robertson		F40
+145	Dale Robertson		MS
+146	Martin Rollo	Dundee RR	M60
+147	Michael Royden	Dundee RR	M50
+148	Kim Russell	Dundee RR	F40
+149	Michael Sanderson	Fife AC	MS
+150	Darren Sayer		MS
+151	Jim Scobie	Fife AC	M80
+152	Jocelyn Scott	Fife AC	F70
+153	Ian Simmons	Kirkcaldy Wizards	M50
+154	Allan Skivington	Kirkcaldy Wizards	M50
+155	Arron Small	Dundee RR	MS
+156	Keirra Small	Dundee RR	FS
+157	James Small	Dundee RR	M50
+158	Isla Smith	Kirkcaldy Wizards	F40
+159	Damani Smith		MS
+160	Sondai Smith		MS
+161	Phoebe Somerville	Anster Haddies RC	FS
+162	James Squires	Pitreavie AAC	M40
+163	Eric Stenhouse	Kirkcaldy Wizards	M50
+164	Lissa Stewart	Dundee RR	F40
+165	Alison Sutherland	Fife AC	F40
+166	Valerie Symon	Kirkcaldy Wizards	F40
+167	April Tait	Kirkcaldy Wizards	F50
+168	Amy Tavendale	Dundee RR	F40
+169	Carter Taylor	Fife AC	MS
+170	Gaynor Thomson	Dundee RR	F40
+171	Claire Thornton-Granville	Dundee RR	F40
+172	Ruan Van Rensburg	Fife AC	MS
+173	Louise Walker	Kirkcaldy Wizards	FS
+174	Richard Ward	Perth RR	M50
+175	Tessa Ward	Perth RR	F50
+176	Ian Watters	Kirkcaldy Wizards	M70
+177	David Webster	Dundee RR	MS
+178	Abigail Wheel	Falkland TR	FS
+179	Iain Wheel	Falkland TR	MS
+180	Denis Williams	Shettleston H	M60
+181	John Wilson	Fife AC	M40
+182	lee wilson	Fife AC	MS
+183	Greg Wilson	Kirkcaldy Wizards	M40
+184	Sharron Wilson	Kirkcaldy Wizards	F50
+185	Alexander Wishart		MS
+186	Frances Wood	Linlithgow AC	F60
+187	Alex Wood	Linlithgow AC	M70
+188	Alastair Wood		M70
+189	Ross Young	Anster Haddies RC	MS
