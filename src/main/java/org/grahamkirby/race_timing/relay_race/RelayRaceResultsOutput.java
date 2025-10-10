@@ -25,10 +25,7 @@ import java.io.IOException;
 @SuppressWarnings("preview")
 public class RelayRaceResultsOutput implements ResultsOutput {
 
-    private RelayRaceOutputCSV output_CSV;
-    private RelayRaceOutputHTML output_HTML;
-    private RelayRaceOutputText output_text;
-    private RelayRaceOutputPDF output_PDF;
+    private RelayRaceOutput output;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,51 +45,48 @@ public class RelayRaceResultsOutput implements ResultsOutput {
     @Override
     public void setRace(final Race race) {
 
-        output_CSV = new RelayRaceOutputCSV(race);
-        output_HTML = new RelayRaceOutputHTML(race);
-        output_text = new RelayRaceOutputText(race);
-        output_PDF = new RelayRaceOutputPDF(race);
+        output = new RelayRaceOutput(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printOverallResults() throws IOException {
 
-        output_CSV.printResults();
-        output_HTML.printResults();
+        output.printResultsCSV();
+        output.printResultsHTML();
     }
 
     private void printDetailedResults() throws IOException {
 
-        output_CSV.printDetailedResults();
-        output_HTML.printDetailedResults();
+        output.printDetailedResultsCSV();
+        output.printDetailedResultsHTML();
     }
 
     private void printLegResults() throws IOException {
 
-        output_CSV.printLegResults();
-        output_HTML.printLegResults();
+        output.printLegResultsCSV();
+        output.printLegResultsHTML();
     }
 
     private void printCollatedTimes() throws IOException {
 
-        output_text.printCollatedResults();
+        output.printCollatedResultsText();
     }
 
     private void printPrizes() throws IOException {
 
-        output_PDF.printPrizes();
-        output_HTML.printPrizes();
-        output_text.printPrizes();
+        output.printPrizesPDF();
+        output.printPrizesHTML();
+        output.printPrizesText();
     }
 
     private void printNotes() throws IOException {
 
-        output_text.printNotes();
+        output.printNotes();
     }
 
     private void printCombined() throws IOException {
 
-        output_HTML.printCombined();
+        output.printCombinedHTML();
     }
 }

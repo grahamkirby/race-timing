@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.ResultsOutput;
-import org.grahamkirby.race_timing.relay_race.RelayRaceOutputPDF;
+import org.grahamkirby.race_timing.relay_race.RelayRaceOutput;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class MidweekRaceResultsOutput implements ResultsOutput {
     private MidweekRaceOutputCSV output_CSV;
     private MidweekRaceOutputHTML output_HTML;
     private SeriesRaceOutputText output_text;
-    private RelayRaceOutputPDF output_PDF;
+    private RelayRaceOutput output_PDF;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,7 +49,7 @@ public class MidweekRaceResultsOutput implements ResultsOutput {
         output_CSV = new MidweekRaceOutputCSV(race);
         output_HTML = new MidweekRaceOutputHTML(race);
         output_text = new SeriesRaceOutputText(race);
-        output_PDF = new RelayRaceOutputPDF(race);
+        output_PDF = new RelayRaceOutput(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,9 +62,9 @@ public class MidweekRaceResultsOutput implements ResultsOutput {
 
     private void printPrizes() throws IOException {
 
-        output_PDF.printPrizes();
+        output_PDF.printPrizesPDF();
         output_HTML.printPrizes();
-        output_text.printPrizes();
+        output_text.printPrizesCSV();
     }
 
     private void printNotes() throws IOException {

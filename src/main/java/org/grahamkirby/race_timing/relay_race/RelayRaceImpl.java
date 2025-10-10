@@ -88,7 +88,7 @@ public class RelayRaceImpl implements SpecificRace {
         return individual_starts;
     }
 
-    List<Boolean> getPairedLegs() {
+    public List<Boolean> getPairedLegs() {
         return paired_legs;
     }
 
@@ -98,7 +98,7 @@ public class RelayRaceImpl implements SpecificRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    List<LegResult> getLegResults(final int leg_number) {
+    public List<LegResult> getLegResults(final int leg_number) {
 
         final List<LegResult> results = race.getResultsCalculator().getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
@@ -112,7 +112,7 @@ public class RelayRaceImpl implements SpecificRace {
         return results;
     }
 
-    List<String> getLegDetails(final RelayRaceResult result) {
+    public List<String> getLegDetails(final RelayRaceResult result) {
 
         final List<String> leg_details = new ArrayList<>();
         boolean all_previous_legs_completed = true;

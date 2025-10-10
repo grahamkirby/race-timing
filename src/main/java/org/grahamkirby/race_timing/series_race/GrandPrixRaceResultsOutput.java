@@ -18,10 +18,9 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.ResultsOutput;
-import org.grahamkirby.race_timing.relay_race.RelayRaceOutputPDF;
+import org.grahamkirby.race_timing.relay_race.RelayRaceOutput;
 
 import java.io.IOException;
 
@@ -35,7 +34,7 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
     private GrandPrixRaceOutputCSV output_CSV;
     private GrandPrixRaceOutputHTML output_HTML;
     private SeriesRaceOutputText output_text;
-    private RelayRaceOutputPDF output_PDF;
+    private RelayRaceOutput output_PDF;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,7 +56,7 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
         output_CSV = new GrandPrixRaceOutputCSV(race);
         output_HTML = new GrandPrixRaceOutputHTML(race);
         output_text = new SeriesRaceOutputText(race);
-        output_PDF = new RelayRaceOutputPDF(race);
+        output_PDF = new RelayRaceOutput(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,9 +73,9 @@ public class GrandPrixRaceResultsOutput implements ResultsOutput {
 
     private void printPrizes() throws IOException {
 
-        output_PDF.printPrizes();
+        output_PDF.printPrizesPDF();
         output_HTML.printPrizes();
-        output_text.printPrizes();
+        output_text.printPrizesCSV();
     }
 
     private void printNotes() throws IOException {

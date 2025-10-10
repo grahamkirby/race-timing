@@ -29,8 +29,8 @@ import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
 
 public class LegResult extends SingleRaceResult {
 
-    int leg_number;
-    boolean in_mass_start;
+    public int leg_number;
+    public boolean in_mass_start;
 
     // TODO move to SingleRaceResult, integrate with early starts.
     Duration start_time;  // Relative to start of leg 1.

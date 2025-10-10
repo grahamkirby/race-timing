@@ -31,7 +31,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceResult extends SingleRaceResult {
 
-    final List<LegResult> leg_results;
+    public final List<LegResult> leg_results;
 
     RelayRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 

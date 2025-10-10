@@ -18,14 +18,15 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.relay_race.RelayRaceOutputText;
+import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.relay_race.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 public class SeriesRaceOutputText {
@@ -35,19 +36,19 @@ public class SeriesRaceOutputText {
         this.race = race;
     }
 
-    void printPrizes() throws IOException {
+    void printPrizesCSV() throws IOException {
 
-        printPrizes(race);
+        printPrizesCSV(race);
     }
 
-    public static void printPrizes(final Race race) throws IOException {
+    public static void printPrizesCSV(final Race race) throws IOException {
 
         final OutputStream stream = getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeader(race));
-            printPrizes(writer, race);
+            printPrizesText(writer, race);
         }
     }
 
@@ -77,11 +78,11 @@ public class SeriesRaceOutputText {
         return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
     }
 
-    public static void printPrizes(final OutputStreamWriter writer, final Race race) {
+    public static void printPrizesText(final OutputStreamWriter writer, final Race race) {
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).              // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> RelayRaceOutputText.printPrizes(writer, category, race));       // Print prizes in this category.
+            forEachOrdered(category -> RelayRaceOutput.printPrizesText(writer, category, race));       // Print prizes in this category.
     }
 }

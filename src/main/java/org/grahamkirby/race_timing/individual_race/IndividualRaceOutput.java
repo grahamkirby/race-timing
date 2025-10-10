@@ -24,7 +24,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.relay_race.RelayRaceOutputPDF;
+import org.grahamkirby.race_timing.relay_race.RelayRaceOutput;
 import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
@@ -236,7 +236,7 @@ public class IndividualRaceOutput implements ResultsOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(SeriesRaceOutputText.getPrizesHeader(race));
-            SeriesRaceOutputText.printPrizes(writer, race);
+            SeriesRaceOutputText.printPrizesText(writer, race);
             printTeamPrizesText(writer);
         }
     }
@@ -285,7 +285,7 @@ public class IndividualRaceOutput implements ResultsOutput {
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            RelayRaceOutputPDF.printPrizes(race, document);
+            RelayRaceOutput.printPrizesPDF(race, document);
 
             final List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
 
