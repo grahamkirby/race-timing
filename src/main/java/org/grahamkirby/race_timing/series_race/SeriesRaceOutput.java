@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceOutput;
 import org.grahamkirby.race_timing.common.ResultPrinter;
 import org.grahamkirby.race_timing.common.ResultPrinterGenerator;
-import org.grahamkirby.race_timing.relay_race.RelayRaceOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,8 +31,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.printPrizesWithHeaderHTML;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.printResultsWithHeaderHTML;
 
 public abstract class SeriesRaceOutput extends RaceOutput {
 
@@ -49,7 +48,6 @@ public abstract class SeriesRaceOutput extends RaceOutput {
         final OutputStream stream = getOutputStream(race, "overall", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
             printResultsCSV(writer, make_result_printer.apply(race, writer), race);
         }
     }
@@ -57,11 +55,13 @@ public abstract class SeriesRaceOutput extends RaceOutput {
     private static void printResultsCSV(final OutputStreamWriter writer, final ResultPrinter printer, final Race race) throws IOException {
 
         // Don't display category group headers if there is only one group.
-        final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
+        final List<PrizeCategoryGroup> category_groups = race.getCategoryDetails().getPrizeCategoryGroups();
+
+        final boolean should_display_category_group_headers = category_groups.size() > 1;
 
         boolean not_first_category_group = false;
 
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
+        for (final PrizeCategoryGroup group : category_groups) {
 
             if (should_display_category_group_headers)
                 if (not_first_category_group)
@@ -95,49 +95,9 @@ public abstract class SeriesRaceOutput extends RaceOutput {
         }
     }
 
-    public static void printPrizesCSV(final Race race) throws IOException {
-
-        final OutputStream stream = getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeaderText(race));
-            printPrizesText(writer, race);
-        }
-    }
-
     /** Prints out the words converted to title case, and any other processing notes. */
     void printNotes() throws IOException {
 
         printNotes(race);
     }
-
-    public static void printNotes(final Race race) throws IOException {
-
-        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
-
-        if (!converted_words.isEmpty())
-            race.appendToNotes("Converted to title case: " + converted_words);
-
-        final OutputStream stream = getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(race.getNotes());
-        }
-    }
-
-    public static String getPrizesHeaderText(final Race race) {
-
-        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
-        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
-    }
-
-    public static void printPrizesText(final OutputStreamWriter writer, final Race race) {
-
-        race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).              // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> RelayRaceOutput.printPrizesText(writer, category, race));       // Print prizes in this category.
-    }
-
 }

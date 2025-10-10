@@ -25,7 +25,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -61,8 +61,77 @@ public abstract class RaceOutput implements ResultsOutput {
         return Files.newOutputStream(getOutputStreamPath(race, output_type, file_suffix), file_open_options);
     }
 
+    public static void printNotes(final Race race) throws IOException {
+
+        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
+
+        if (!converted_words.isEmpty())
+            race.appendToNotes("Converted to title case: " + converted_words);
+
+        final OutputStream stream = getOutputStream(race, "processing_notes", TEXT_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            writer.append(race.getNotes());
+        }
+    }
+
+    private static String getPrizeCategoryHeader(final PrizeCategory category) {
+
+        final String header = "Category: " + category.getLongName();
+        return header + LINE_SEPARATOR + "-".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
+    }
+
+    public static void printPrizesText(final OutputStreamWriter writer, final PrizeCategory category, final Race race) {
+
+        try {
+            writer.append(getPrizeCategoryHeader(category));
+
+            final List<RaceResult> category_prize_winners = race.getResultsCalculator().getPrizeWinners(category);
+            new PrizeResultPrinterText(race, writer).print(category_prize_winners);
+
+            writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+        }
+        // Called from lambda that can't throw checked exception.
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getPrizesHeaderHTML(final Race race) {
+
+        final String header = race.getSpecific() instanceof final SeriesRace series_race && series_race.getNumberOfRacesTakenPlace() < (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
+        return "<h4>" + header + "</h4>" + LINE_SEPARATOR;
+    }
+
+    public static void printPrizesText(final OutputStreamWriter writer, final Race race) {
+
+        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+            flatMap(group -> group.categories().stream()).              // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
+            forEachOrdered(category -> printPrizesText(writer, category, race));       // Print prizes in this category.
+    }
+
+    public static String getPrizesHeaderText(final Race race) {
+
+        final String header = race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().get(KEY_YEAR);
+        return header + LINE_SEPARATOR + "=".repeat(header.length()) + LINE_SEPARATOR + LINE_SEPARATOR;
+    }
+
+    public static final class PrizeResultPrinterText extends ResultPrinterText {
+
+        public PrizeResultPrinterText(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result.getPrizeDetailText() + LINE_SEPARATOR);
+        }
+    }
+
     /** Prints prizes, ordered by prize category groups. */
-    public static void printPrizesHTML(final Race race, final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
+    public static void printPrizesHTML(final Race race, final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) {
 
         final ResultPrinter printer = make_prize_result_printer.apply(race, writer);
 
@@ -114,7 +183,22 @@ public abstract class RaceOutput implements ResultsOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream(race, "overall", HTML_FILE_SUFFIX))) {
 
             final ResultPrinter printer = make_result_printer.apply(race, writer);
-            printResults(writer, printer, IndividualRaceOutput::getResultsSubHeaderHTML, race);
+            printResults(writer, printer, RaceOutput::getResultsSubHeaderHTML, race);
+        }
+    }
+
+    public static String getResultsSubHeaderHTML(final String s) {
+        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
+    }
+
+    public static void printPrizesCSV(final Race race) throws IOException {
+
+        final OutputStream stream = getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesHeaderText(race));
+            printPrizesText(writer, race);
         }
     }
 

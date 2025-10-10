@@ -36,10 +36,9 @@ import static org.grahamkirby.race_timing.common.Normalisation.*;
 
 class TourRaceOutput extends SeriesRaceOutput {
 
-
     void printResultsCSV() throws IOException {
 
-        SeriesRaceOutput.printResultsCSV(race, OverallResultPrinterCSV::new);
+        printResultsCSV(race, OverallResultPrinterCSV::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,9 +75,10 @@ class TourRaceOutput extends SeriesRaceOutput {
             writer.append("," + renderDuration(result, "-") + LINE_SEPARATOR);
         }
     }
+
     void printResultsHTML() throws IOException {
 
-        RaceOutput.printResults(race, OverallResultPrinterHTML::new);
+        printResults(race, OverallResultPrinterHTML::new);
     }
 
     void printCombinedHTML() throws IOException {
@@ -157,6 +157,7 @@ class TourRaceOutput extends SeriesRaceOutput {
             return renderDuration((RaceResultWithDuration) result, "-");
         }
     }
+
     @Override
     public void outputResults() throws IOException {
 
@@ -171,10 +172,6 @@ class TourRaceOutput extends SeriesRaceOutput {
     public void setRace(final Race race) {
 
         this.race = race;
-
-//        output_CSV = new TourRaceOutput(race);
-//        output_HTML = new TourRaceOutputHTML(race);
-//        output_text = new SeriesRaceOutputText(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +188,7 @@ class TourRaceOutput extends SeriesRaceOutput {
 
     private void printPrizes() throws IOException {
 
-        RaceOutput.printPrizesPDF(race);
+        printPrizesPDF(race);
         printPrizesHTML();
         printPrizesCSV();
     }
@@ -247,6 +244,6 @@ class TourRaceOutput extends SeriesRaceOutput {
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).              // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> RelayRaceOutput.printPrizesText(writer, category, race));       // Print prizes in this category.
+            forEachOrdered(category -> printPrizesText(writer, category, race));       // Print prizes in this category.
     }
 }

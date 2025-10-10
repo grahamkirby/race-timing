@@ -24,9 +24,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.series_race.SeriesRace;
 import org.grahamkirby.race_timing.series_race.SeriesRaceOutput;
-import org.grahamkirby.race_timing.series_race.SeriesRaceOutputText;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,16 +33,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Config.CSV_FILE_SUFFIX;
-import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
-import static org.grahamkirby.race_timing.common.Config.PDF_FILE_SUFFIX;
-import static org.grahamkirby.race_timing.common.Config.PDF_PRIZE_FONT_BOLD_NAME;
-import static org.grahamkirby.race_timing.common.Config.PDF_PRIZE_FONT_SIZE;
-import static org.grahamkirby.race_timing.common.Config.TEXT_FILE_SUFFIX;
-import static org.grahamkirby.race_timing.common.Config.encode;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
-import static org.grahamkirby.race_timing.common.RaceOutput.getOutputStream;
 
 @SuppressWarnings("preview")
 public class IndividualRaceOutput extends RaceOutput {
@@ -96,7 +85,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     void printResultsHTML() throws IOException {
 
-        RaceOutput.printResults(race, OverallResultPrinterHTML::new);
+        printResults(race, IndividualRaceOverallResultPrinterHTML::new);
     }
 
     /** Prints all details to a single web page. */
@@ -106,9 +95,9 @@ public class IndividualRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            printPrizesWithHeaderHTML(writer, race, PrizeResultPrinterHTML::new);
+            printPrizesWithHeaderHTML(writer, race, IndividualRacePrizeResultPrinterHTML::new);
             printTeamPrizesHTML(writer, race);
-            printResultsWithHeaderHTML(writer, race, OverallResultPrinterHTML::new);
+            printResultsWithHeaderHTML(writer, race, IndividualRaceOverallResultPrinterHTML::new);
         }
     }
 
@@ -119,7 +108,7 @@ public class IndividualRaceOutput extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeaderHTML(race));
-            printPrizesHTML(race, writer, PrizeResultPrinterHTML::new);
+            printPrizesHTML(race, writer, IndividualRacePrizeResultPrinterHTML::new);
             printTeamPrizesHTML(writer, race);
         }
     }
@@ -136,18 +125,8 @@ public class IndividualRaceOutput extends RaceOutput {
 
         writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
 
-        RaceOutput.printResults(writer, make_overall_result_printer.apply(race, writer), IndividualRaceOutput::getResultsSubHeaderHTML, race);
+        printResults(writer, make_overall_result_printer.apply(race, writer), RaceOutput::getResultsSubHeaderHTML, race);
         writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-    }
-
-    public static String getResultsSubHeaderHTML(final String s) {
-        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
-    }
-
-    public static String getPrizesHeaderHTML(final Race race) {
-
-        final String header = race.getSpecific() instanceof final SeriesRace series_race && series_race.getNumberOfRacesTakenPlace() < (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
-        return "<h4>" + header + "</h4>" + LINE_SEPARATOR;
     }
 
     private static void printTeamPrizesHTML(final OutputStreamWriter writer, final Race race) throws IOException {
@@ -168,9 +147,9 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class OverallResultPrinterHTML extends SingleRaceOutputPrinterHTML {
+    private static final class IndividualRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private OverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -181,9 +160,9 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    private static final class PrizeResultPrinterHTML extends org.grahamkirby.race_timing.common.PrizeResultPrinterHTML {
+    private static final class IndividualRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        private PrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private IndividualRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -205,13 +184,12 @@ public class IndividualRaceOutput extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(OVERALL_RESULTS_HEADER);
-            RaceOutput.printResults(writer, new OverallResultPrinterCSV(race, writer), _ -> "", race);
+            printResults(writer, new OverallResultPrinterCSV(race, writer), _ -> "", race);
         }
     }
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        // TODO investigate Files.write.
         private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
@@ -232,7 +210,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(SeriesRaceOutput.getPrizesHeaderText(race));
+            writer.append(getPrizesHeaderText(race));
             SeriesRaceOutput.printPrizesText(writer, race);
             printTeamPrizesText(writer);
         }
@@ -241,7 +219,7 @@ public class IndividualRaceOutput extends RaceOutput {
     /** Prints out the words converted to title case, and any other processing notes. */
     void printNotesText() throws IOException {
 
-        SeriesRaceOutput.printNotes(race);
+        printNotes(race);
     }
 
     private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {
@@ -262,19 +240,6 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final class PrizeResultPrinterText extends ResultPrinterText {
-
-        public PrizeResultPrinterText(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        public void printResult(final RaceResult result) throws IOException {
-
-            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result.getPrizeDetailText() + LINE_SEPARATOR);
-        }
-    }
-
     void printPrizesPDF() throws IOException {
 
         final Path path = getOutputStreamPath(race, "prizes", PDF_FILE_SUFFIX);
@@ -282,9 +247,9 @@ public class IndividualRaceOutput extends RaceOutput {
 
         try (final Document document = new Document(new PdfDocument(writer))) {
 
-            RaceOutput.printPrizesPDF(race, document);
+            printPrizesPDF(race, document);
 
-            final List<String> team_prizes = ((IndividualRaceImpl)race.getSpecific()).getTeamPrizes();
+            final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
 
             if (!team_prizes.isEmpty()) {
                 document.add(new Paragraph("Team Prizes").
