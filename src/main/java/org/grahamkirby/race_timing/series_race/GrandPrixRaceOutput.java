@@ -38,7 +38,7 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
 
     void printResultsCSV() throws IOException {
 
-        printResultsCSV(race, OverallResultPrinterCSV::new);
+        printResultsCSV(OverallResultPrinterCSV::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,9 +127,9 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
 
     private void printPrizes() throws IOException {
 
-        printPrizesPDF(race);
+        printPrizesPDF();
         printPrizesHTML();
-        printPrizesCSV();
+        printPrizesText();
     }
 
     private void printCombined() throws IOException {
@@ -139,17 +139,17 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
 
     void printResultsHTML() throws IOException {
 
-        printResults(race, GrandPrixOverallResultPrinterHTML::new);
+        printResults(GrandPrixOverallResultPrinterHTML::new);
     }
 
     void printCombinedHTML() throws IOException {
 
-        printCombinedHTML(race, GrandPrixOverallResultPrinterHTML::new, GrandPrixPrizeResultPrinterHTML::new);
+        printCombinedHTML(GrandPrixOverallResultPrinterHTML::new, GrandPrixPrizeResultPrinterHTML::new);
     }
 
     public void printPrizesHTML() throws IOException {
 
-        printPrizesHTML(race, GrandPrixPrizeResultPrinterHTML::new);
+        printPrizesHTML(GrandPrixPrizeResultPrinterHTML::new);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,29 +229,5 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
         protected String renderPerformance(final RaceResult result) {
             return String.valueOf(((GrandPrixRaceResult) result).totalScore());
         }
-    }
-
-    void printPrizesCSV() throws IOException {
-
-        printPrizesCSV(race);
-    }
-
-    public static void printPrizesCSV(final Race race) throws IOException {
-
-        final OutputStream stream = getOutputStream(race, "prizes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeaderText(race));
-            printPrizesText(writer, race);
-        }
-    }
-
-    public static void printPrizesText(final OutputStreamWriter writer, final Race race) {
-
-        race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).              // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizesText(writer, category, race));       // Print prizes in this category.
     }
 }

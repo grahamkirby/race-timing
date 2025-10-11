@@ -95,7 +95,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     void printResultsCSV() throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "overall", CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResultsCSV(writer, new OverallResultPrinterCSV(race, writer));
@@ -104,7 +104,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     void printDetailedResultsCSV() throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "detailed", CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("detailed", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResultsCSV(writer, new DetailedResultPrinterCSV(race, writer));
@@ -121,7 +121,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsCSV(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "leg_" + leg, CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("leg_" + leg, CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -238,23 +238,23 @@ public class RelayRaceOutput extends RaceOutput {
 
     void printResultsHTML() throws IOException {
 
-        printResults(race, OverallResultPrinter::new);
+        printResults(OverallResultPrinter::new);
     }
 
     /** Prints all details to a single web page. */
     void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "combined", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
-            writer.append(getPrizesHeaderHTML(race));
-            printPrizesHTML(race, writer, PrizeResultPrinter::new);
+            writer.append(getPrizesHeaderHTML());
+            printPrizesHTML(writer, PrizeResultPrinter::new);
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            printResults(writer, new OverallResultPrinter(race, writer), RaceOutput::getResultsSubHeaderHTML, race);
+            printResults(writer, new OverallResultPrinter(race, writer), this::getResultsSubHeaderHTML);
 
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResultsHTML(writer);
@@ -271,18 +271,18 @@ public class RelayRaceOutput extends RaceOutput {
 
     public void printPrizesHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(getPrizesHeaderHTML(race));
-            printPrizesHTML(race, writer, PrizeResultPrinter::new);
+            writer.append(getPrizesHeaderHTML());
+            printPrizesHTML(writer, PrizeResultPrinter::new);
         }
     }
 
     void printDetailedResultsHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "detailed", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("detailed", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResultsHTML(writer);
@@ -299,7 +299,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsHTML(final OutputStreamWriter writer) throws IOException {
 
-        printResults(writer, new DetailedResultPrinter(race, writer), RaceOutput::getResultsSubHeaderHTML, race);
+        printResults(writer, new DetailedResultPrinter(race, writer), this::getResultsSubHeaderHTML);
 
         if (areAnyResultsInMassStart())
             writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
@@ -315,7 +315,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsHTML(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "leg_" + leg, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("leg_" + leg, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResultsHTML(writer, leg);
@@ -448,26 +448,11 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    public void printPrizesPDF() throws IOException {
-
-        printPrizesPDF(race);
-    }
-
-    void printPrizesText() throws IOException {
-        printPrizesCSV(race);
-    }
-
-    /** Prints out the words converted to title case, and any other processing notes. */
-    void printNotes() throws IOException {
-
-        printNotes(race);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     void printCollatedResultsText() throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "times_collated", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("times_collated", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -515,7 +500,7 @@ public class RelayRaceOutput extends RaceOutput {
         printComment(writer, raw_result);
     }
 
-    private static void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
+    private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
 
         final int bib_number = raw_result.getBibNumber();
 

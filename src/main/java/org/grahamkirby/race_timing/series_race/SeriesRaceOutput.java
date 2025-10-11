@@ -31,8 +31,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.printPrizesWithHeaderHTML;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceOutput.printResultsWithHeaderHTML;
 
 public abstract class SeriesRaceOutput extends RaceOutput {
 
@@ -43,16 +41,16 @@ public abstract class SeriesRaceOutput extends RaceOutput {
             map(race -> (String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
     }
 
-    static void printResultsCSV(final Race race, final ResultPrinterGenerator make_result_printer) throws IOException {
+    void printResultsCSV(final ResultPrinterGenerator make_result_printer) throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "overall", CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printResultsCSV(writer, make_result_printer.apply(race, writer), race);
+            printResultsCSV(writer, make_result_printer.apply(race, writer));
         }
     }
 
-    private static void printResultsCSV(final OutputStreamWriter writer, final ResultPrinter printer, final Race race) throws IOException {
+    private void printResultsCSV(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
 
         // Don't display category group headers if there is only one group.
         final List<PrizeCategoryGroup> category_groups = race.getCategoryDetails().getPrizeCategoryGroups();
@@ -73,31 +71,25 @@ public abstract class SeriesRaceOutput extends RaceOutput {
         }
     }
 
-    public static void printCombinedHTML(final Race race, final ResultPrinterGenerator make_result_printer, final ResultPrinterGenerator make_prize_printer) throws IOException {
+    public void printCombinedHTML(final ResultPrinterGenerator make_result_printer, final ResultPrinterGenerator make_prize_printer) throws IOException {
 
-        final OutputStream stream = getOutputStream(race, "combined", HTML_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            printPrizesWithHeaderHTML(writer, race, make_prize_printer);
-            printResultsWithHeaderHTML(writer, race, make_result_printer);
-        }
-    }
-
-    static void printPrizesHTML(final Race race, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
-
-        final OutputStream stream = getOutputStream(race, "prizes", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(getPrizesHeaderHTML(race));
-            RaceOutput.printPrizesHTML(race, writer, make_prize_result_printer);
+            printPrizesWithHeaderHTML(writer, make_prize_printer);
+            printResultsWithHeaderHTML(writer, make_result_printer);
         }
     }
 
-    /** Prints out the words converted to title case, and any other processing notes. */
-    void printNotes() throws IOException {
+    void printPrizesHTML(final ResultPrinterGenerator make_prize_result_printer) throws IOException {
 
-        printNotes(race);
+        final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesHeaderHTML());
+            printPrizesHTML(writer, make_prize_result_printer);
+        }
     }
 }
