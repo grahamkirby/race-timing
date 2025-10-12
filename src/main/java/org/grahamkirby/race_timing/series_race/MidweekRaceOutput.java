@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +80,7 @@ class MidweekRaceOutput extends SeriesRaceOutput {
 
     void printResultsHTML() throws IOException {
 
-        printResults(OverallResultPrinterHTML::new);
+        printResultsHTML(OverallResultPrinterHTML::new);
     }
 
     void printCombinedHTML() throws IOException {

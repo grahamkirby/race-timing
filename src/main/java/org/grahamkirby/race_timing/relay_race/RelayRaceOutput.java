@@ -93,7 +93,7 @@ public class RelayRaceOutput extends RaceOutput {
         printCombinedHTML();
     }
 
-    void printResultsCSV() throws IOException {
+    private void printResultsCSV() throws IOException {
 
         final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
 
@@ -102,7 +102,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    void printDetailedResultsCSV() throws IOException {
+    private void printDetailedResultsCSV() throws IOException {
 
         final OutputStream stream = getOutputStream("detailed", CSV_FILE_SUFFIX);
 
@@ -111,7 +111,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    void printLegResultsCSV() throws IOException {
+    private void printLegResultsCSV() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
             printLegResultsCSV(leg);
@@ -236,13 +236,13 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    void printResultsHTML() throws IOException {
+    private void printResultsHTML() throws IOException {
 
-        printResults(OverallResultPrinter::new);
+        printResultsHTML(OverallResultPrinter::new);
     }
 
     /** Prints all details to a single web page. */
-    void printCombinedHTML() throws IOException {
+    private void printCombinedHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
 
@@ -269,7 +269,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    public void printPrizesHTML() throws IOException {
+    private void printPrizesHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
 
@@ -280,7 +280,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    void printDetailedResultsHTML() throws IOException {
+    private void printDetailedResultsHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("detailed", HTML_FILE_SUFFIX);
 
@@ -289,7 +289,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    void printLegResultsHTML() throws IOException {
+    private void printLegResultsHTML() throws IOException {
 
         for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
             printLegResultsHTML(leg);
@@ -431,7 +431,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    public static final class PrizeResultPrinter extends PrizeResultPrinterHTML {
+    private static final class PrizeResultPrinter extends PrizeResultPrinterHTML {
 
         public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -450,7 +450,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void printCollatedResultsText() throws IOException {
+    private void printCollatedResultsText() throws IOException {
 
         final OutputStream stream = getOutputStream("times_collated", TEXT_FILE_SUFFIX);
 

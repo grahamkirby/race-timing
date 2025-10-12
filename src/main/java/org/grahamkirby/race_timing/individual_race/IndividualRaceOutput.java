@@ -17,8 +17,6 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -77,13 +75,13 @@ public class IndividualRaceOutput extends RaceOutput {
         printCombinedHTML();
     }
 
-    void printResultsHTML() throws IOException {
+    private void printResultsHTML() throws IOException {
 
-        printResults(IndividualRaceOverallResultPrinterHTML::new);
+        printResultsHTML(IndividualRaceOverallResultPrinterHTML::new);
     }
 
     /** Prints all details to a single web page. */
-    void printCombinedHTML() throws IOException {
+    private void printCombinedHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
 
@@ -95,7 +93,7 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    void printPrizesHTML() throws IOException {
+    private void printPrizesHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
 
@@ -155,7 +153,7 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    void printResultsCSV() throws IOException {
+    private void printResultsCSV() throws IOException {
 
         final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
 
@@ -165,6 +163,10 @@ public class IndividualRaceOutput extends RaceOutput {
             printResults(writer, new OverallResultPrinterCSV(race, writer), _ -> "");
         }
     }
+
+//    protected String getResultsSubHeaderHTML(final String s) {
+//        return "";
+//    }
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
@@ -182,13 +184,13 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    public void printPrizesText() throws IOException {
+    protected void printPrizesText() throws IOException {
 
         final OutputStream stream = getOutputStream("prizes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(getPrizesHeaderText());
+            printPrizesHeaderText(writer);
             printPrizesText(writer);
             printTeamPrizesText(writer);
         }
@@ -212,7 +214,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void printPrizesPDF() throws IOException {
+    protected void printPrizesPDF() throws IOException {
 
         final Path path = getOutputStreamPath("prizes", PDF_FILE_SUFFIX);
         final PdfWriter writer = new PdfWriter(path.toString());
@@ -220,24 +222,22 @@ public class IndividualRaceOutput extends RaceOutput {
         try (final Document document = new Document(new PdfDocument(writer))) {
 
             printPrizesPDF(document);
-
-            final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
-
-            if (!team_prizes.isEmpty()) {
-                document.add(new Paragraph("Team Prizes").
-                    setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
-                    setUnderline().
-                    setPaddingTop(PDF_PRIZE_FONT_SIZE));
-
-                for (final String team_prize : team_prizes)
-                    document.add(new Paragraph(team_prize));
-            }
+            printTeamPrizesPDF(document);
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    private void printTeamPrizesPDF(final Document document) throws IOException {
 
-    public static PdfFont getFont(final String font_name) throws IOException {
-        return PdfFontFactory.createFont(font_name);
+        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            document.add(new Paragraph("Team Prizes").
+                setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
+                setUnderline().
+                setPaddingTop(PDF_PRIZE_FONT_SIZE));
+
+            for (final String team_prize : team_prizes)
+                document.add(new Paragraph(team_prize));
+        }
     }
 }

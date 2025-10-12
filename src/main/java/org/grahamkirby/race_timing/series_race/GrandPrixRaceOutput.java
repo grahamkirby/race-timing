@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,7 +138,7 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
 
     void printResultsHTML() throws IOException {
 
-        printResults(GrandPrixOverallResultPrinterHTML::new);
+        printResultsHTML(GrandPrixOverallResultPrinterHTML::new);
     }
 
     void printCombinedHTML() throws IOException {
