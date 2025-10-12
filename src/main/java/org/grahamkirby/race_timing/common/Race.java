@@ -134,7 +134,7 @@ public class Race {
      *    src/main/resources/configuration/categories_entry_individual_senior.csv
      */
     @SuppressWarnings("JavadocBlankLines")
-    public Path interpretPath(Path path) {
+    public Path interpretPath(final Path path) {
 
         // Absolute paths originate from config file where path starting with "/" denotes
         // a path relative to the project root.
@@ -144,7 +144,7 @@ public class Race {
         return getPathRelativeToRaceConfigFile(path);
     }
 
-    public void setSpecific(SpecificRace specific) {
+    public void setSpecific(final SpecificRace specific) {
         this.specific = specific;
         specific.setRace(this);
     }
@@ -161,25 +161,25 @@ public class Race {
         config_processors.add(processor);
     }
 
-    private List<ConfigProcessor> config_processors = new ArrayList<>();
+    private final List<ConfigProcessor> config_processors = new ArrayList<>();
 
     public void loadConfig() throws IOException {
 
         config = new Config(config_file_path);
 
-        for (ConfigProcessor processor : config_processors) {
+        for (final ConfigProcessor processor : config_processors) {
 
             processor.processConfig(this);
         }
     }
 
-    public void setCategoriesProcessor(CategoriesProcessor categories_processor) {
+    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
 
         this.categories_processor = categories_processor;
         categories_processor.setRace(this);
     }
 
-    public void setRaceDataProcessor(RaceDataProcessor race_data_processor) {
+    public void setRaceDataProcessor(final RaceDataProcessor race_data_processor) {
 
         this.race_data_processor = race_data_processor;
         race_data_processor.setRace(this);

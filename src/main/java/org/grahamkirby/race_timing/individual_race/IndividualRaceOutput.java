@@ -39,43 +39,8 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void outputResults() throws IOException {
-
-        printOverallResults();
-
-        printPrizes();
-        printNotes();
-        printCombined();
-    }
-
-    @Override
-    public void setRace(final Race race) {
-
-        this.race = race;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printPrizes() throws IOException {
-
-        printPrizesPDF();
-        printPrizesHTML();
-        printPrizesText();
-    }
-
-    private void printCombined() throws IOException {
-
-        printCombinedHTML();
-    }
-
-    protected void printResultsHTML() throws IOException {
-
-        printResultsHTML(IndividualRaceOverallResultPrinterHTML::new);
-    }
-
     /** Prints all details to a single web page. */
-    private void printCombinedHTML() throws IOException {
+    protected void printCombinedHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
 
@@ -87,14 +52,14 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    private void printPrizesHTML() throws IOException {
+    protected void printPrizesHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeaderHTML());
-            printPrizesHTML(writer, IndividualRacePrizeResultPrinterHTML::new);
+            printPrizesHTML(writer, getPrizeHTMLPrinterGenerator());
             printTeamPrizesHTML(writer, race);
         }
     }
@@ -147,15 +112,19 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    protected void printResultsCSV() throws IOException {
+    @Override
+    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
+        return OverallResultPrinterCSV::new;
+    }
 
-        final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
+    @Override
+    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
+        return IndividualRaceOverallResultPrinterHTML::new;
+    }
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(OVERALL_RESULTS_HEADER);
-            printResults(writer, new OverallResultPrinterCSV(race, writer), _ -> "");
-        }
+    @Override
+    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
+        return IndividualRacePrizeResultPrinterHTML::new;
     }
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
@@ -164,6 +133,13 @@ public class IndividualRaceOutput extends RaceOutput {
             super(race, writer);
         }
 
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append(OVERALL_RESULTS_HEADER);
+        }
+
+        @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final SingleRaceResult result = (SingleRaceResult) r;
@@ -174,6 +150,7 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
+    @Override
     protected void printPrizesText() throws IOException {
 
         final OutputStream stream = getOutputStream("prizes", TEXT_FILE_SUFFIX);

@@ -29,14 +29,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.*;
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Config.encode;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
-class TourRaceOutput extends SeriesRaceOutput {
+class TourRaceOutput extends RaceOutput {
 
-    protected void printResultsCSV() throws IOException {
+    @Override
+    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
+        return OverallResultPrinterCSV::new;
+    }
 
-        printResultsCSV(OverallResultPrinterCSV::new);
+    @Override
+    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
+        return TourRaceOverallResultPrinterHTML::new;
+    }
+
+    @Override
+    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
+        return TourRacePrizeResultPrinterHTML::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +62,7 @@ class TourRaceOutput extends SeriesRaceOutput {
         public void printResultsHeader() throws IOException {
 
             final SeriesRace race_impl = (TourRaceImpl) race.getSpecific();
-            final String race_names = SeriesRaceOutput.getConcatenatedRaceNames(race_impl.getRaces());
+            final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total" + LINE_SEPARATOR);
         }
@@ -74,26 +85,9 @@ class TourRaceOutput extends SeriesRaceOutput {
         }
     }
 
-    protected void printResultsHTML() throws IOException {
+    private static final class TourRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        printResultsHTML(OverallResultPrinterHTML::new);
-    }
-
-    void printCombinedHTML() throws IOException {
-
-        printCombinedHTML(OverallResultPrinterHTML::new, PrizeResultPrinterHTML::new);
-    }
-
-    public void printPrizesHTML() throws IOException {
-
-        printPrizesHTML(PrizeResultPrinterHTML::new);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final class OverallResultPrinterHTML extends org.grahamkirby.race_timing.common.OverallResultPrinterHTML {
-
-        private OverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private TourRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -139,9 +133,9 @@ class TourRaceOutput extends SeriesRaceOutput {
         }
     }
 
-    public static final class PrizeResultPrinterHTML extends org.grahamkirby.race_timing.common.PrizeResultPrinterHTML {
+    private static final class TourRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public PrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        public TourRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -154,35 +148,5 @@ class TourRaceOutput extends SeriesRaceOutput {
         protected String renderPerformance(final RaceResult result) {
             return renderDuration((RaceResultWithDuration) result, "-");
         }
-    }
-
-    @Override
-    public void outputResults() throws IOException {
-
-        printOverallResults();
-
-        printPrizes();
-        printNotes();
-        printCombined();
-    }
-
-    @Override
-    public void setRace(final Race race) {
-
-        this.race = race;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printPrizes() throws IOException {
-
-        printPrizesPDF();
-        printPrizesHTML();
-        printPrizesText();
-    }
-
-    private void printCombined() throws IOException {
-
-        printCombinedHTML();
     }
 }

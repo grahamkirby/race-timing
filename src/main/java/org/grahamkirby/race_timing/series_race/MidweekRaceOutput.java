@@ -31,11 +31,21 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-class MidweekRaceOutput extends SeriesRaceOutput {
+class MidweekRaceOutput extends RaceOutput {
 
-    protected void printResultsCSV() throws IOException {
+    @Override
+    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
+        return OverallResultPrinterCSV::new;
+    }
 
-        printResultsCSV(OverallResultPrinterCSV::new);
+    @Override
+    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
+        return MidweekRaceOverallResultPrinterHTML::new;
+    }
+
+    @Override
+    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
+        return MidweekRacePrizeResultPrinterHTML::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +60,7 @@ class MidweekRaceOutput extends SeriesRaceOutput {
         public void printResultsHeader() throws IOException {
 
             final SeriesRace race_impl = (MidweekRaceImpl) race.getSpecific();
-            final String race_names = SeriesRaceOutput.getConcatenatedRaceNames(race_impl.getRaces());
+            final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total,Completed" + LINE_SEPARATOR);
         }
@@ -78,26 +88,9 @@ class MidweekRaceOutput extends SeriesRaceOutput {
         }
     }
 
-    protected void printResultsHTML() throws IOException {
+    private static final class MidweekRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        printResultsHTML(OverallResultPrinterHTML::new);
-    }
-
-    void printCombinedHTML() throws IOException {
-
-        printCombinedHTML(OverallResultPrinterHTML::new, PrizeResultPrinterHTML::new);
-    }
-
-    public void printPrizesHTML() throws IOException {
-
-        printPrizesHTML(PrizeResultPrinterHTML::new);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final class OverallResultPrinterHTML extends org.grahamkirby.race_timing.common.OverallResultPrinterHTML {
-
-        private OverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private MidweekRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -149,9 +142,9 @@ class MidweekRaceOutput extends SeriesRaceOutput {
         }
     }
 
-    public static final class PrizeResultPrinterHTML extends org.grahamkirby.race_timing.common.PrizeResultPrinterHTML {
+    private static final class MidweekRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public PrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        public MidweekRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -164,36 +157,5 @@ class MidweekRaceOutput extends SeriesRaceOutput {
         protected String renderPerformance(final RaceResult result) {
             return String.valueOf(((MidweekRaceResult) result).totalScore());
         }
-    }
-
-    @Override
-    public void outputResults() throws IOException {
-
-        printOverallResults();
-
-        printPrizes();
-        printNotes();
-        printCombined();
-    }
-
-    @Override
-    public void setRace(final Race race) {
-
-        this.race = race;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printPrizes() throws IOException {
-
-        printPrizesPDF();
-
-        printPrizesHTML();
-        printPrizesText();
-    }
-
-    private void printCombined() throws IOException {
-
-        printCombinedHTML();
     }
 }

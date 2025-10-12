@@ -18,8 +18,8 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -50,12 +50,6 @@ public class RelayRaceOutput extends RaceOutput {
         printCombined();
     }
 
-    @Override
-    public void setRace(final Race race) {
-
-        this.race = race;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printDetailedResults() throws IOException {
@@ -75,25 +69,17 @@ public class RelayRaceOutput extends RaceOutput {
         printCollatedResultsText();
     }
 
-    private void printPrizes() throws IOException {
-
-        printPrizesPDF();
-        printPrizesHTML();
-        printPrizesText();
+    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
+        return OverallResultPrinterCSV::new;
     }
 
-    private void printCombined() throws IOException {
-
-        printCombinedHTML();
+    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
+        return OverallResultPrinter::new;
     }
 
-    protected void printResultsCSV() throws IOException {
-
-        final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printResultsCSV(writer, new OverallResultPrinterCSV(race, writer));
-        }
+    @Override
+    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
+        return PrizeResultPrinter::new;
     }
 
     private void printDetailedResultsCSV() throws IOException {
@@ -101,7 +87,8 @@ public class RelayRaceOutput extends RaceOutput {
         final OutputStream stream = getOutputStream("detailed", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            printResultsCSV(writer, new DetailedResultPrinterCSV(race, writer));
+
+            printResults(writer, new DetailedResultPrinterCSV(race, writer), _ -> "");
         }
     }
 
@@ -121,25 +108,6 @@ public class RelayRaceOutput extends RaceOutput {
 
             final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
             new LegResultPrinterCSV(race, writer, leg).print(leg_results);
-        }
-    }
-
-    /** Prints results using a specified printer, ordered by prize category groups. */
-    private void printResultsCSV(final OutputStreamWriter writer, final ResultPrinter printer) throws IOException {
-
-        // Don't display category group headers if there is only one group.
-        final boolean should_display_category_group_headers = race.getCategoryDetails().getPrizeCategoryGroups().size() > 1;
-
-        boolean not_first_category_group = false;
-
-        for (final PrizeCategoryGroup group : race.getCategoryDetails().getPrizeCategoryGroups()) {
-
-            if (should_display_category_group_headers && not_first_category_group)
-                writer.append(LINE_SEPARATOR);
-
-            printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
-
-            not_first_category_group = true;
         }
     }
 
@@ -230,13 +198,8 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    protected void printResultsHTML() throws IOException {
-
-        printResultsHTML(OverallResultPrinter::new);
-    }
-
     /** Prints all details to a single web page. */
-    private void printCombinedHTML() throws IOException {
+    protected void printCombinedHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
 
@@ -260,17 +223,6 @@ public class RelayRaceOutput extends RaceOutput {
             }
 
             writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-        }
-    }
-
-    private void printPrizesHTML() throws IOException {
-
-        final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append(getPrizesHeaderHTML());
-            printPrizesHTML(writer, PrizeResultPrinter::new);
         }
     }
 
@@ -531,7 +483,6 @@ public class RelayRaceOutput extends RaceOutput {
         writer.append(LINE_SEPARATOR);
     }
 
-    @SuppressWarnings("IncorrectFormatting")
     private void printBibNumbersWithMissingTimes(final List<Integer> bib_numbers_with_missing_times) {
 
         if (!bib_numbers_with_missing_times.isEmpty()) {
@@ -547,7 +498,6 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    @SuppressWarnings("IncorrectFormatting")
     private void printTimesWithMissingBibNumbers(final List<Duration> times_with_missing_bib_numbers) {
 
         if (!times_with_missing_bib_numbers.isEmpty()) {

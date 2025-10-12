@@ -35,13 +35,38 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceOutput implements ResultsOutput {
 
     protected Race race;
+
+    @Override
+    public void outputResults() throws IOException {
+
+        printOverallResults();
+
+        printPrizes();
+        printNotes();
+        printCombined();
+    }
+
+    @Override
+    public void setRace(final Race race) {
+
+        this.race = race;
+    }
+
+    protected static String getConcatenatedRaceNames(final List<Race> races) {
+
+        return races.stream().
+            filter(Objects::nonNull).
+            map(race -> (String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
+    }
 
     protected Path getOutputStreamPath(final String output_type, final String file_suffix) {
 
@@ -113,8 +138,39 @@ public abstract class RaceOutput implements ResultsOutput {
         printResultsHTML();
     }
 
-    protected abstract void printResultsCSV() throws IOException;
-    protected abstract void printResultsHTML() throws IOException;
+    protected void printPrizes() throws IOException {
+
+        printPrizesPDF();
+        printPrizesHTML();
+        printPrizesText();
+    }
+
+    protected void printPrizesHTML() throws IOException {
+
+        final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            writer.append(getPrizesHeaderHTML());
+            printPrizesHTML(writer, getPrizeHTMLPrinterGenerator());
+        }
+    }
+
+    protected void printCombined() throws IOException {
+
+        printCombinedHTML();
+    }
+
+    protected void printCombinedHTML() throws IOException {
+
+        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            printPrizesWithHeaderHTML(writer, getPrizeHTMLPrinterGenerator());
+            printResultsWithHeaderHTML(writer, getOverallResultHTMLPrinterGenerator());
+        }
+    }
 
     protected void printPrizesWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
 
@@ -173,11 +229,11 @@ public abstract class RaceOutput implements ResultsOutput {
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).                        // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).                    // Ignore further categories once all prizes have been output.
-            forEachOrdered(category -> printPrizes(category, writer, printer));
+            forEachOrdered(category -> printPrizesHTML(category, writer, printer));
     }
 
     /** Prints prizes within a given category. */
-    private void printPrizes(final PrizeCategory category, final OutputStreamWriter writer, final ResultPrinter printer) {
+    private void printPrizesHTML(final PrizeCategory category, final OutputStreamWriter writer, final ResultPrinter printer) {
 
         try {
             writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
@@ -213,12 +269,28 @@ public abstract class RaceOutput implements ResultsOutput {
         }
     }
 
-    protected void printResultsHTML(final ResultPrinterGenerator make_result_printer) throws IOException {
+    protected abstract ResultPrinterGenerator getOverallResultCSVPrinterGenerator();
+    protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
+    protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(getOutputStream("overall", HTML_FILE_SUFFIX))) {
+    protected void printResultsHTML() throws IOException {
 
-            final ResultPrinter printer = make_result_printer.apply(race, writer);
-            printResults(writer, printer, this::getResultsSubHeaderHTML);
+        printResults(getOverallResultHTMLPrinterGenerator(), this::getResultsSubHeaderHTML, HTML_FILE_SUFFIX);
+    }
+
+    protected void printResultsCSV() throws IOException {
+
+        printResults(getOverallResultCSVPrinterGenerator(), _ -> "", CSV_FILE_SUFFIX);
+    }
+
+    private void printResults(final ResultPrinterGenerator printer_generator, final Function<String, String> get_results_sub_header, final String suffix) throws IOException {
+
+        final OutputStream stream = getOutputStream("overall", suffix);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            final ResultPrinter printer = printer_generator.apply(race, writer);
+            printResults(writer, printer, get_results_sub_header);
         }
     }
 

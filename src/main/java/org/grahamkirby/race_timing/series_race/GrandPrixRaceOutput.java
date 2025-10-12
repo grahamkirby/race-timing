@@ -31,13 +31,21 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-class GrandPrixRaceOutput extends SeriesRaceOutput {
+class GrandPrixRaceOutput extends RaceOutput {
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
+        return OverallResultPrinterCSV::new;
+    }
 
-    protected void printResultsCSV() throws IOException {
+    @Override
+    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
+        return GrandPrixOverallResultPrinterHTML::new;
+    }
 
-        printResultsCSV(OverallResultPrinterCSV::new);
+    @Override
+    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
+        return GrandPrixPrizeResultPrinterHTML::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,53 +103,6 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
             return score != 0 ? String.valueOf(score) : "-";
         }
     }
-
-    @Override
-    public void outputResults() throws IOException {
-
-        printOverallResults();
-
-        printPrizes();
-        printNotes();
-        printCombined();
-    }
-
-    @Override
-    public void setRace(final Race race) {
-
-        this.race = race;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printPrizes() throws IOException {
-
-        printPrizesPDF();
-        printPrizesHTML();
-        printPrizesText();
-    }
-
-    private void printCombined() throws IOException {
-
-        printCombinedHTML();
-    }
-
-    protected void printResultsHTML() throws IOException {
-
-        printResultsHTML(GrandPrixOverallResultPrinterHTML::new);
-    }
-
-    void printCombinedHTML() throws IOException {
-
-        printCombinedHTML(GrandPrixOverallResultPrinterHTML::new, GrandPrixPrizeResultPrinterHTML::new);
-    }
-
-    public void printPrizesHTML() throws IOException {
-
-        printPrizesHTML(GrandPrixPrizeResultPrinterHTML::new);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final class GrandPrixOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
@@ -203,7 +164,7 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
         }
     }
 
-    public static final class GrandPrixPrizeResultPrinterHTML extends PrizeResultPrinterHTML {
+    private static final class GrandPrixPrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
         public GrandPrixPrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
