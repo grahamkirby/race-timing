@@ -33,7 +33,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 class MidweekRaceOutput extends SeriesRaceOutput {
 
-    void printResultsCSV() throws IOException {
+    protected void printResultsCSV() throws IOException {
 
         printResultsCSV(OverallResultPrinterCSV::new);
     }
@@ -78,7 +78,7 @@ class MidweekRaceOutput extends SeriesRaceOutput {
         }
     }
 
-    void printResultsHTML() throws IOException {
+    protected void printResultsHTML() throws IOException {
 
         printResultsHTML(OverallResultPrinterHTML::new);
     }
@@ -183,12 +183,6 @@ class MidweekRaceOutput extends SeriesRaceOutput {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printOverallResults() throws IOException {
-
-        printResultsCSV();
-        printResultsHTML();
-    }
 
     private void printPrizes() throws IOException {
 

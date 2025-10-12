@@ -51,6 +51,7 @@ public class Race {
     // TODO series race with separate entries - output sorted runner names to notes.
     // TODO individual race with team prizes - output sorted club names to notes
     // TODO suppress prize output in individual tour races.
+    // TODO control category order in prize list output.
 
     public Path config_file_path;
 

@@ -64,16 +64,25 @@ public abstract class RaceOutput implements ResultsOutput {
     /** Prints out the words converted to title case, and any other processing notes. */
     protected void printNotes() throws IOException {
 
-        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
-
-        if (!converted_words.isEmpty())
-            race.appendToNotes("Converted to title case: " + converted_words);
+        finaliseNotes();
 
         final OutputStream stream = getOutputStream("processing_notes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.append(race.getNotes());
         }
+    }
+
+    private void finaliseNotes() {
+
+        for (final RaceResult result : race.getResultsCalculator().getOverallResults())
+            if (result.getCategory() == null)
+                race.appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
+
+        final String converted_words = race.getNormalisation().getNonTitleCaseWords();
+
+        if (!converted_words.isEmpty())
+            race.appendToNotes("Converted to title case: " + converted_words);
     }
 
     private void printPrizeCategoryHeader(final OutputStreamWriter writer, final PrizeCategory category) throws IOException {
@@ -97,6 +106,15 @@ public abstract class RaceOutput implements ResultsOutput {
             throw new RuntimeException(e);
         }
     }
+
+    protected void printOverallResults() throws IOException {
+
+        printResultsCSV();
+        printResultsHTML();
+    }
+
+    protected abstract void printResultsCSV() throws IOException;
+    protected abstract void printResultsHTML() throws IOException;
 
     protected void printPrizesWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
 
@@ -187,11 +205,6 @@ public abstract class RaceOutput implements ResultsOutput {
                 if (not_first_category_group)
                     writer.append(LINE_SEPARATOR);
                 writer.append(get_results_sub_header.apply(group.group_title()));
-
-
-//                                writer.append(getResultsSubHeaderHTML(group.group_title()));
-
-
             }
 
             printer.print(race.getResultsCalculator().getOverallResults(group.categories()));
@@ -247,8 +260,8 @@ public abstract class RaceOutput implements ResultsOutput {
         document.add(section_header);
 
         race.getCategoryDetails().getPrizeCategoryGroups().stream().
-            flatMap(group -> group.categories().stream()).              // Get all prize categories.
-            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
+            flatMap(group -> group.categories().stream()).                 // Get all prize categories.
+            filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).             // Ignore further categories once all prizes have been output.
             forEachOrdered(category -> printPrizesPDF(document, category));     // Print prizes in this category.
     }
 
@@ -260,8 +273,11 @@ public abstract class RaceOutput implements ResultsOutput {
     private void printPrizesPDF(final Document document, final PrizeCategory category) {
 
         try {
+
+            final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
+
             final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
-                setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
+                setFont(bold_font).
                 setUnderline().
                 setPaddingTop(PDF_PRIZE_FONT_SIZE);
 

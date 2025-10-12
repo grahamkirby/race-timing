@@ -57,12 +57,6 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void printOverallResults() throws IOException {
-
-        printResultsCSV();
-        printResultsHTML();
-    }
-
     private void printPrizes() throws IOException {
 
         printPrizesPDF();
@@ -75,7 +69,7 @@ public class IndividualRaceOutput extends RaceOutput {
         printCombinedHTML();
     }
 
-    private void printResultsHTML() throws IOException {
+    protected void printResultsHTML() throws IOException {
 
         printResultsHTML(IndividualRaceOverallResultPrinterHTML::new);
     }
@@ -153,7 +147,7 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    private void printResultsCSV() throws IOException {
+    protected void printResultsCSV() throws IOException {
 
         final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
 
@@ -163,10 +157,6 @@ public class IndividualRaceOutput extends RaceOutput {
             printResults(writer, new OverallResultPrinterCSV(race, writer), _ -> "");
         }
     }
-
-//    protected String getResultsSubHeaderHTML(final String s) {
-//        return "";
-//    }
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 

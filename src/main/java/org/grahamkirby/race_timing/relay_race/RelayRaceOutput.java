@@ -58,12 +58,6 @@ public class RelayRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void printOverallResults() throws IOException {
-
-        printResultsCSV();
-        printResultsHTML();
-    }
-
     private void printDetailedResults() throws IOException {
 
         printDetailedResultsCSV();
@@ -93,7 +87,7 @@ public class RelayRaceOutput extends RaceOutput {
         printCombinedHTML();
     }
 
-    private void printResultsCSV() throws IOException {
+    protected void printResultsCSV() throws IOException {
 
         final OutputStream stream = getOutputStream("overall", CSV_FILE_SUFFIX);
 
@@ -236,7 +230,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    private void printResultsHTML() throws IOException {
+    protected void printResultsHTML() throws IOException {
 
         printResultsHTML(OverallResultPrinter::new);
     }

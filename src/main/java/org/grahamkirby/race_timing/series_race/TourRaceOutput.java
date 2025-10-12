@@ -34,7 +34,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.*;
 
 class TourRaceOutput extends SeriesRaceOutput {
 
-    void printResultsCSV() throws IOException {
+    protected void printResultsCSV() throws IOException {
 
         printResultsCSV(OverallResultPrinterCSV::new);
     }
@@ -74,7 +74,7 @@ class TourRaceOutput extends SeriesRaceOutput {
         }
     }
 
-    void printResultsHTML() throws IOException {
+    protected void printResultsHTML() throws IOException {
 
         printResultsHTML(OverallResultPrinterHTML::new);
     }
@@ -173,16 +173,6 @@ class TourRaceOutput extends SeriesRaceOutput {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printOverallResults() throws IOException {
-
-        printResultsCSV();
-        printResultsHTML();
-
-        for (final RaceResult result : race.getResultsCalculator().getOverallResults())
-            if (result.getCategory() == null)
-                race.appendToNotes(LINE_SEPARATOR + "Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
-    }
 
     private void printPrizes() throws IOException {
 

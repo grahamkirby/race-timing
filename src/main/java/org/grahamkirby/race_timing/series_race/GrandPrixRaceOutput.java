@@ -35,7 +35,7 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void printResultsCSV() throws IOException {
+    protected void printResultsCSV() throws IOException {
 
         printResultsCSV(OverallResultPrinterCSV::new);
     }
@@ -114,16 +114,6 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void printOverallResults() throws IOException {
-
-        printResultsCSV();
-        printResultsHTML();
-
-        for (final RaceResult result : race.getResultsCalculator().getOverallResults())
-            if (result.getParticipant().category == null)
-                race.appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
-    }
-
     private void printPrizes() throws IOException {
 
         printPrizesPDF();
@@ -136,7 +126,7 @@ class GrandPrixRaceOutput extends SeriesRaceOutput {
         printCombinedHTML();
     }
 
-    void printResultsHTML() throws IOException {
+    protected void printResultsHTML() throws IOException {
 
         printResultsHTML(GrandPrixOverallResultPrinterHTML::new);
     }
