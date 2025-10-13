@@ -193,6 +193,8 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private void printTeamPrizesPDF(final Document document) throws IOException {
 
         final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();

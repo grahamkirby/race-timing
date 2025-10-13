@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.series_race.SeriesRace;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,14 +39,11 @@ public class RelayRaceOutput extends RaceOutput {
     @Override
     public void outputResults() throws IOException {
 
-        printOverallResults();
         printDetailedResults();
         printLegResults();
         printCollatedTimes();
 
-        printPrizes();
-        printNotes();
-        printCombined();
+        super.outputResults();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -419,8 +415,8 @@ public class RelayRaceOutput extends RaceOutput {
                 -------------
                 """);
 
-            printBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
-            printTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
+            recordBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
+            recordTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
 
             if (discrepancies_exist)
                 race.appendToNotes("""
@@ -483,7 +479,7 @@ public class RelayRaceOutput extends RaceOutput {
         writer.append(LINE_SEPARATOR);
     }
 
-    private void printBibNumbersWithMissingTimes(final List<Integer> bib_numbers_with_missing_times) {
+    private void recordBibNumbersWithMissingTimes(final List<Integer> bib_numbers_with_missing_times) {
 
         if (!bib_numbers_with_missing_times.isEmpty()) {
 
@@ -498,7 +494,7 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    private void printTimesWithMissingBibNumbers(final List<Duration> times_with_missing_bib_numbers) {
+    private void recordTimesWithMissingBibNumbers(final List<Duration> times_with_missing_bib_numbers) {
 
         if (!times_with_missing_bib_numbers.isEmpty()) {
 
