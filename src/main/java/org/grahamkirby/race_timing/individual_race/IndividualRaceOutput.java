@@ -59,7 +59,7 @@ public class IndividualRaceOutput extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeaderHTML());
-            printPrizesHTML(writer, getPrizeHTMLPrinterGenerator());
+            printPrizesHTML(writer, getPrizeHTMLPrinterGenerator().apply(race, writer));
             printTeamPrizesHTML(writer, race);
         }
     }
@@ -158,7 +158,7 @@ public class IndividualRaceOutput extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             printPrizesHeaderText(writer);
-            printPrizesText(writer);
+            printPrizesText(writer, new PrizeResultPrinterText(race, writer));
             printTeamPrizesText(writer);
         }
     }

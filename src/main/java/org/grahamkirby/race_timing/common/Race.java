@@ -145,6 +145,7 @@ public class Race {
     }
 
     public void setSpecific(final SpecificRace specific) {
+
         this.specific = specific;
         specific.setRace(this);
     }
@@ -171,6 +172,11 @@ public class Race {
 
             processor.processConfig(this);
         }
+    }
+
+    public String getStringConfig(final String key) {
+
+        return (String) getConfig().get(key);
     }
 
     public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {

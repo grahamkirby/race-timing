@@ -204,7 +204,7 @@ public class RelayRaceOutput extends RaceOutput {
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(getPrizesHeaderHTML());
-            printPrizesHTML(writer, PrizeResultPrinter::new);
+            printPrizesHTML(writer, new PrizeResultPrinter(race, writer));
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             printResults(writer, new OverallResultPrinter(race, writer), this::getResultsSubHeaderHTML);
