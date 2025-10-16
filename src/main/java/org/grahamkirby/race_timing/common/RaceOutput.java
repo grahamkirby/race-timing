@@ -35,7 +35,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Flow;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -140,6 +139,16 @@ public abstract class RaceOutput implements ResultsOutput {
         return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
     }
 
+    protected String getResultsSubHeaderHTML(final String s) {
+
+        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
+    }
+
+    private static String underline(final String header, final String character) {
+
+        return character.repeat(header.length());
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printResultsHTML() throws IOException {
@@ -153,11 +162,6 @@ public abstract class RaceOutput implements ResultsOutput {
 
         printResults(writer, make_overall_result_printer.apply(race, writer), this::getResultsSubHeaderHTML);
         writer.append(SOFTWARE_CREDIT_LINK_TEXT);
-    }
-
-    protected String getResultsSubHeaderHTML(final String s) {
-
-        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
     }
 
     private void printResultsCSV() throws IOException {
@@ -211,14 +215,6 @@ public abstract class RaceOutput implements ResultsOutput {
         }
     }
 
-    protected void printPrizesWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
-
-        writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
-        writer.append(getPrizesHeaderHTML());
-
-        printPrizesHTML(writer, make_prize_result_printer.apply(race, writer));
-    }
-
     /** Prints prizes, ordered by prize category groups. */
     protected void printPrizesHTML(final OutputStreamWriter writer, final ResultPrinter printer) {
 
@@ -238,6 +234,14 @@ public abstract class RaceOutput implements ResultsOutput {
         catch (final IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void printPrizesWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
+
+        writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+        writer.append(getPrizesHeaderHTML());
+
+        printPrizesHTML(writer, make_prize_result_printer.apply(race, writer));
     }
 
     protected String getPrizesHeaderHTML() {
@@ -276,11 +280,6 @@ public abstract class RaceOutput implements ResultsOutput {
         }
     }
 
-    private static String underline(final String header, final String character) {
-
-        return character.repeat(header.length());
-    }
-
     protected void printPrizesHeaderText(final OutputStreamWriter writer) throws IOException {
 
         final String header = race.getStringConfig(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getStringConfig(KEY_YEAR);
@@ -313,17 +312,19 @@ public abstract class RaceOutput implements ResultsOutput {
 
         final String year = race.getStringConfig(KEY_YEAR);
 
+        final ResultPrinter printer = new PrizeResultPrinterPDF(race, document);
+
         final Paragraph section_header = new Paragraph().
             setFont(getFont(PDF_PRIZE_FONT_NAME)).
             setFontSize(PDF_PRIZE_FONT_SIZE).
             add(race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + year + " Category Prizes");
 
         document.add(section_header);
-        printPrizes(category -> printPrizesPDF(document, category));
+        printPrizes(category -> printPrizesPDF(category, document, printer));
     }
 
     /** Prints prizes within a given category. */
-    private void printPrizesPDF(final Document document, final PrizeCategory category) {
+    private void printPrizesPDF(final PrizeCategory category, final Document document, final ResultPrinter printer) {
 
         try {
             final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
@@ -335,7 +336,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
             document.add(category_header);
 
-            new PrizeResultPrinterPDF(race, document).print(race.getResultsCalculator().getPrizeWinners(category));
+            printer.print(race.getResultsCalculator().getPrizeWinners(category));
 
         } catch (final IOException e) {
             throw new RuntimeException(e);

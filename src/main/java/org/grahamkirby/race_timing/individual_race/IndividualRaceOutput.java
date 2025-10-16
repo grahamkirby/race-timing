@@ -39,19 +39,24 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Prints all details to a single web page. */
-    protected void printCombinedHTML() throws IOException {
-
-        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            printPrizesWithHeaderHTML(writer, IndividualRacePrizeResultPrinterHTML::new);
-            printTeamPrizesHTML(writer, race);
-            printResultsWithHeaderHTML(writer, IndividualRaceOverallResultPrinterHTML::new);
-        }
+    @Override
+    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
+        return OverallResultPrinterCSV::new;
     }
 
+    @Override
+    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
+        return IndividualRaceOverallResultPrinterHTML::new;
+    }
+
+    @Override
+    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
+        return IndividualRacePrizeResultPrinterHTML::new;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
     protected void printPrizesHTML() throws IOException {
 
         final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
@@ -60,11 +65,39 @@ public class IndividualRaceOutput extends RaceOutput {
 
             writer.append(getPrizesHeaderHTML());
             printPrizesHTML(writer, getPrizeHTMLPrinterGenerator().apply(race, writer));
-            printTeamPrizesHTML(writer, race);
+            printTeamPrizesHTML(writer);
         }
     }
 
-    private void printTeamPrizesHTML(final OutputStreamWriter writer, final Race race1) throws IOException {
+    @Override
+    protected void printPrizesPDF() throws IOException {
+
+        final Path path = getOutputStreamPath("prizes", PDF_FILE_SUFFIX);
+        final PdfWriter writer = new PdfWriter(path.toString());
+
+        try (final Document document = new Document(new PdfDocument(writer))) {
+
+            printPrizesPDF(document);
+            printTeamPrizesPDF(document);
+        }
+    }
+
+    @Override
+    protected void printPrizesText() throws IOException {
+
+        final OutputStream stream = getOutputStream("prizes", TEXT_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            printPrizesHeaderText(writer);
+            printPrizesText(writer, new PrizeResultPrinterText(race, writer));
+            printTeamPrizesText(writer);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void printTeamPrizesHTML(final OutputStreamWriter writer) throws IOException {
 
         final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
 
@@ -77,6 +110,53 @@ public class IndividualRaceOutput extends RaceOutput {
                 writer.append("<li>").append(team_prize).append("</li>").append(LINE_SEPARATOR);
 
             writer.append("</ul>").append(LINE_SEPARATOR);
+        }
+    }
+
+    private void printTeamPrizesPDF(final Document document) throws IOException {
+
+        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+            document.add(new Paragraph("Team Prizes").
+                setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
+                setUnderline().
+                setPaddingTop(PDF_PRIZE_FONT_SIZE));
+
+            for (final String team_prize : team_prizes)
+                document.add(new Paragraph(team_prize));
+        }
+    }
+
+    private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {
+
+        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
+
+        if (!team_prizes.isEmpty()) {
+
+            writer.append("Team Prizes\n");
+            writer.append("-----------\n\n");
+
+            for (final String team_prize : team_prizes) {
+                writer.append(team_prize);
+                writer.append(LINE_SEPARATOR);
+            }
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Prints all details to a single web page. */
+    @Override
+    protected void printCombinedHTML() throws IOException {
+
+        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            printPrizesWithHeaderHTML(writer, IndividualRacePrizeResultPrinterHTML::new);
+            printTeamPrizesHTML(writer);
+            printResultsWithHeaderHTML(writer, IndividualRaceOverallResultPrinterHTML::new);
         }
     }
 
@@ -112,21 +192,6 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    @Override
-    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
-        return OverallResultPrinterCSV::new;
-    }
-
-    @Override
-    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
-        return IndividualRaceOverallResultPrinterHTML::new;
-    }
-
-    @Override
-    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
-        return IndividualRacePrizeResultPrinterHTML::new;
-    }
-
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
         private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
@@ -147,66 +212,6 @@ public class IndividualRaceOutput extends RaceOutput {
 
             writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(participant.name) + ",");
             writer.append(encode(((Runner) participant).club) + "," + participant.category.getShortName() + "," + renderDuration(((RaceResultWithDuration) result), DNF_STRING) + LINE_SEPARATOR);
-        }
-    }
-
-    @Override
-    protected void printPrizesText() throws IOException {
-
-        final OutputStream stream = getOutputStream("prizes", TEXT_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            printPrizesHeaderText(writer);
-            printPrizesText(writer, new PrizeResultPrinterText(race, writer));
-            printTeamPrizesText(writer);
-        }
-    }
-
-    private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {
-
-        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
-
-        if (!team_prizes.isEmpty()) {
-
-            writer.append("Team Prizes\n");
-            writer.append("-----------\n\n");
-
-            for (final String team_prize : team_prizes) {
-                writer.append(team_prize);
-                writer.append(LINE_SEPARATOR);
-            }
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected void printPrizesPDF() throws IOException {
-
-        final Path path = getOutputStreamPath("prizes", PDF_FILE_SUFFIX);
-        final PdfWriter writer = new PdfWriter(path.toString());
-
-        try (final Document document = new Document(new PdfDocument(writer))) {
-
-            printPrizesPDF(document);
-            printTeamPrizesPDF(document);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printTeamPrizesPDF(final Document document) throws IOException {
-
-        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
-
-        if (!team_prizes.isEmpty()) {
-            document.add(new Paragraph("Team Prizes").
-                setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
-                setUnderline().
-                setPaddingTop(PDF_PRIZE_FONT_SIZE));
-
-            for (final String team_prize : team_prizes)
-                document.add(new Paragraph(team_prize));
         }
     }
 }
