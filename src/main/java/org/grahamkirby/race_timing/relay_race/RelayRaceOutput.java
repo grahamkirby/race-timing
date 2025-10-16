@@ -36,6 +36,8 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public void outputResults() throws IOException {
 
@@ -44,6 +46,23 @@ public class RelayRaceOutput extends RaceOutput {
         printCollatedTimes();
 
         super.outputResults();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
+        return RelayRaceOverallResultPrinterCSV::new;
+    }
+
+    @Override
+    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
+        return RelayRaceOverallResultPrinterHTML::new;
+    }
+
+    @Override
+    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
+        return RelayRacePrizeResultPrinterHTML::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,18 +84,7 @@ public class RelayRaceOutput extends RaceOutput {
         printCollatedResultsText();
     }
 
-    protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
-        return OverallResultPrinterCSV::new;
-    }
-
-    protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
-        return OverallResultPrinter::new;
-    }
-
-    @Override
-    protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
-        return PrizeResultPrinter::new;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void printDetailedResultsCSV() throws IOException {
 
@@ -85,140 +93,6 @@ public class RelayRaceOutput extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             printResults(writer, new DetailedResultPrinterCSV(race, writer), _ -> "");
-        }
-    }
-
-    private void printLegResultsCSV() throws IOException {
-
-        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
-            printLegResultsCSV(leg);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printLegResultsCSV(final int leg) throws IOException {
-
-        final OutputStream stream = getOutputStream("leg_" + leg, CSV_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
-            new LegResultPrinterCSV(race, writer, leg).print(leg_results);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final class OverallResultPrinterCSV extends ResultPrinter {
-
-        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            writer.append(OVERALL_RESULTS_HEADER + "Total" + LINE_SEPARATOR);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
-        }
-    }
-
-    private static final class DetailedResultPrinterCSV extends ResultPrinter {
-
-        private DetailedResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            final int number_of_legs = ((RelayRaceImpl)race.getSpecific()).getNumberOfLegs();
-
-            writer.append(OVERALL_RESULTS_HEADER);
-
-            for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
-
-                writer.append("Runners " + leg_number + ",Leg " + leg_number + ",");
-                if (leg_number < number_of_legs) writer.append("Split " + leg_number + ",");
-            }
-
-            writer.append("Total").append(LINE_SEPARATOR);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final RelayRaceResult result = (RelayRaceResult) r;
-
-            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getLongName() + ",");
-
-            final String leg_details = ((RelayRaceImpl) race.getSpecific()).getLegDetails(result).stream().
-                map(Config::encode).
-                collect(Collectors.joining(","));
-
-            writer.append(leg_details);
-            writer.append(LINE_SEPARATOR);
-        }
-    }
-
-    private static final class LegResultPrinterCSV extends ResultPrinter {
-
-        final int leg;
-
-        private LegResultPrinterCSV(final Race race, final OutputStreamWriter writer, final int leg) {
-
-            super(race, writer);
-            this.leg = leg;
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            final String plural = ((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : "";
-            writer.append("Pos,Runner" + plural + ",Time" + LINE_SEPARATOR);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final LegResult result = (LegResult) r;
-            final String runner_names = encode(((Team) result.getParticipant()).runner_names.get(result.leg_number - 1));
-
-            writer.append(result.getPositionString() + "," + runner_names + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
-        }
-    }
-
-    /** Prints all details to a single web page. */
-    protected void printCombinedHTML() throws IOException {
-
-        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
-            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
-
-            writer.append(getPrizesHeaderHTML());
-            printPrizesHTML(writer, new PrizeResultPrinter(race, writer));
-
-            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-            printResults(writer, new OverallResultPrinter(race, writer), this::getResultsSubHeaderHTML);
-
-            writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
-            printDetailedResultsHTML(writer);
-
-            for (int leg_number = 1; leg_number <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg_number++) {
-
-                writer.append("<p></p>" + LINE_SEPARATOR + "<h4>Leg " + leg_number + " Results</h4>" + LINE_SEPARATOR);
-                printLegResultsHTML(writer, leg_number);
-            }
-
-            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
         }
     }
 
@@ -231,28 +105,37 @@ public class RelayRaceOutput extends RaceOutput {
         }
     }
 
-    private void printLegResultsHTML() throws IOException {
-
-        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
-            printLegResultsHTML(leg);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void printDetailedResultsHTML(final OutputStreamWriter writer) throws IOException {
 
-        printResults(writer, new DetailedResultPrinter(race, writer), this::getResultsSubHeaderHTML);
+        printResults(writer, new DetailedResultPrinterHTML(race, writer), this::getResultsSubHeaderHTML);
 
         if (areAnyResultsInMassStart())
             writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
     }
 
-    private boolean areAnyResultsInMassStart() {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return race.getResultsCalculator().getOverallResults().stream().
-            map(result -> (RelayRaceResult) result).
-            flatMap(result -> result.leg_results.stream()).
-            anyMatch(result -> result.in_mass_start);
+    private void printLegResultsCSV() throws IOException {
+
+        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
+            printLegResultsCSV(leg);
+    }
+
+    private void printLegResultsCSV(final int leg) throws IOException {
+
+        final OutputStream stream = getOutputStream("leg_" + leg, CSV_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+
+            final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
+            new LegResultPrinterCSV(race, writer, leg).print(leg_results);
+        }
+    }
+
+    private void printLegResultsHTML() throws IOException {
+
+        for (int leg = 1; leg <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg++)
+            printLegResultsHTML(leg);
     }
 
     private void printLegResultsHTML(final int leg) throws IOException {
@@ -268,129 +151,66 @@ public class RelayRaceOutput extends RaceOutput {
 
         final List<LegResult> leg_results = ((RelayRaceImpl) race.getSpecific()).getLegResults(leg);
 
-        new LegResultPrinter(race, writer, leg).print(leg_results);
+        new LegResultPrinterHTML(race, writer, leg).print(leg_results);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class OverallResultPrinter extends OverallResultPrinterHTML {
+    /** Prints all details to a single web page. */
+    protected void printCombinedHTML() throws IOException {
 
-        private OverallResultPrinter(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
+        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
 
-        @Override
-        protected List<String> getResultsColumnHeaders() {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            return List.of("Pos", "No", "Team", "Category", "Total");
-        }
+            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
-        @Override
-        protected List<String> getResultsElements(final RaceResult r) {
+            writer.append(getPrizesHeaderHTML());
+            printPrizesHTML(writer, new RelayRacePrizeResultPrinterHTML(race, writer));
 
-            final RelayRaceResult result = (RelayRaceResult) r;
+            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+            printResults(writer, new RelayRaceOverallResultPrinterHTML(race, writer), this::getResultsSubHeaderHTML);
 
-            return List.of(
-                result.getPositionString(),
-                String.valueOf(result.bib_number),
-                race.getNormalisation().htmlEncode(result.getParticipant().name),
-                result.getParticipant().category.getLongName(),
-                renderDuration(result, DNF_STRING)
-            );
-        }
-    }
+            writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
+            printDetailedResultsHTML(writer);
 
-    private static final class LegResultPrinter extends OverallResultPrinterHTML {
+            for (int leg_number = 1; leg_number <= ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs(); leg_number++) {
 
-        final int leg;
-
-        private LegResultPrinter(final Race race, final OutputStreamWriter writer, final int leg) {
-
-            super(race, writer);
-            this.leg = leg;
-        }
-
-        @Override
-        protected List<String> getResultsColumnHeaders() {
-
-            return List.of(
-                "Pos",
-                "Runner" + (((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : ""),
-                "Time");
-        }
-
-        @Override
-        protected List<String> getResultsElements(final RaceResult r) {
-
-            final LegResult leg_result = (LegResult) r;
-
-            return List.of(
-                leg_result.getPositionString(),
-                race.getNormalisation().htmlEncode(((Team) leg_result.getParticipant()).runner_names.get(leg_result.leg_number - 1)),
-                renderDuration(leg_result, DNF_STRING)
-            );
-        }
-    }
-
-    private static final class DetailedResultPrinter extends OverallResultPrinterHTML {
-
-        private DetailedResultPrinter(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        protected List<String> getResultsColumnHeaders() {
-
-            final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
-            final RelayRaceImpl race_impl = (RelayRaceImpl) race.getSpecific();
-
-            for (int leg_number = 1; leg_number <= race_impl.getNumberOfLegs(); leg_number++) {
-
-                headers.add("Runner" + (race_impl.getPairedLegs().get(leg_number - 1) ? "s" : "") + " " + leg_number);
-                headers.add("Leg " + leg_number);
-                headers.add(leg_number < race_impl.getNumberOfLegs() ? "Split " + leg_number : "Total");
+                writer.append("<p></p>" + LINE_SEPARATOR + "<h4>Leg " + leg_number + " Results</h4>" + LINE_SEPARATOR);
+                printLegResultsHTML(writer, leg_number);
             }
 
-            return headers;
-        }
-
-        @Override
-        protected List<String> getResultsElements(final RaceResult r) {
-
-            final List<String> elements = new ArrayList<>();
-
-            final RelayRaceResult result = (RelayRaceResult) r;
-
-            elements.add(result.getPositionString());
-            elements.add(String.valueOf(result.bib_number));
-            elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
-            elements.add(result.getParticipant().category.getLongName());
-
-            for (final String element : ((RelayRaceImpl) race.getSpecific()).getLegDetails(result))
-                elements.add(race.getNormalisation().htmlEncode(element));
-
-            return elements;
-        }
-    }
-
-    private static final class PrizeResultPrinter extends PrizeResultPrinterHTML {
-
-        public PrizeResultPrinter(final Race race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        protected String renderDetail(final RaceResult result) {
-            return result.getParticipant().category.getLongName();
-        }
-
-        @Override
-        protected String renderPerformance(final RaceResult result) {
-            return renderDuration((RaceResultWithDuration) result, DNF_STRING);
+            writer.append(SOFTWARE_CREDIT_LINK_TEXT);
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean areAnyResultsInMassStart() {
+
+        return race.getResultsCalculator().getOverallResults().stream().
+            map(result -> (RelayRaceResult) result).
+            flatMap(result -> result.leg_results.stream()).
+            anyMatch(result -> result.in_mass_start);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
+
+        for (final RawResult result : race.getRaceData().getRawResults()) {
+
+            final int legs_already_finished = legs_finished_per_team.get(result.getBibNumber()) - 1;
+            printResult(writer, result, legs_already_finished);
+        }
+    }
+
+    private void printResult(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
+
+        printBibNumberAndTime(writer, raw_result);
+        printLegNumber(writer, raw_result, legs_already_finished);
+        printComment(writer, raw_result);
+    }
 
     private void printCollatedResultsText() throws IOException {
 
@@ -424,22 +244,6 @@ public class RelayRaceOutput extends RaceOutput {
                 
                 """);
         }
-    }
-
-    private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
-
-        for (final RawResult result : race.getRaceData().getRawResults()) {
-
-            final int legs_already_finished = legs_finished_per_team.get(result.getBibNumber()) - 1;
-            printResult(writer, result, legs_already_finished);
-        }
-    }
-
-    private void printResult(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
-
-        printBibNumberAndTime(writer, raw_result);
-        printLegNumber(writer, raw_result, legs_already_finished);
-        printComment(writer, raw_result);
     }
 
     private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
@@ -508,6 +312,210 @@ public class RelayRaceOutput extends RaceOutput {
                 times_with_missing_bib_numbers.stream().
                     map(Normalisation::renderDuration).
                     collect(Collectors.joining(LINE_SEPARATOR)));
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final class RelayRaceOverallResultPrinterCSV extends ResultPrinter {
+
+        private RelayRaceOverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append(OVERALL_RESULTS_HEADER + "Total" + LINE_SEPARATOR);
+        }
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+        }
+    }
+
+    private static final class RelayRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
+
+        private RelayRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        protected List<String> getResultsColumnHeaders() {
+
+            return List.of("Pos", "No", "Team", "Category", "Total");
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+
+            return List.of(
+                result.getPositionString(),
+                String.valueOf(result.bib_number),
+                race.getNormalisation().htmlEncode(result.getParticipant().name),
+                result.getParticipant().category.getLongName(),
+                renderDuration(result, DNF_STRING)
+            );
+        }
+    }
+
+    private static final class DetailedResultPrinterCSV extends ResultPrinter {
+
+        private DetailedResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            final int number_of_legs = ((RelayRaceImpl)race.getSpecific()).getNumberOfLegs();
+
+            writer.append(OVERALL_RESULTS_HEADER);
+
+            for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
+
+                writer.append("Runners " + leg_number + ",Leg " + leg_number + ",");
+                if (leg_number < number_of_legs) writer.append("Split " + leg_number + ",");
+            }
+
+            writer.append("Total").append(LINE_SEPARATOR);
+        }
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+
+            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getLongName() + ",");
+
+            final String leg_details = ((RelayRaceImpl) race.getSpecific()).getLegDetails(result).stream().
+                map(Config::encode).
+                collect(Collectors.joining(","));
+
+            writer.append(leg_details);
+            writer.append(LINE_SEPARATOR);
+        }
+    }
+
+    private static final class DetailedResultPrinterHTML extends OverallResultPrinterHTML {
+
+        private DetailedResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        protected List<String> getResultsColumnHeaders() {
+
+            final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
+            final RelayRaceImpl race_impl = (RelayRaceImpl) race.getSpecific();
+
+            for (int leg_number = 1; leg_number <= race_impl.getNumberOfLegs(); leg_number++) {
+
+                headers.add("Runner" + (race_impl.getPairedLegs().get(leg_number - 1) ? "s" : "") + " " + leg_number);
+                headers.add("Leg " + leg_number);
+                headers.add(leg_number < race_impl.getNumberOfLegs() ? "Split " + leg_number : "Total");
+            }
+
+            return headers;
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final List<String> elements = new ArrayList<>();
+
+            final RelayRaceResult result = (RelayRaceResult) r;
+
+            elements.add(result.getPositionString());
+            elements.add(String.valueOf(result.bib_number));
+            elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
+            elements.add(result.getParticipant().category.getLongName());
+
+            for (final String element : ((RelayRaceImpl) race.getSpecific()).getLegDetails(result))
+                elements.add(race.getNormalisation().htmlEncode(element));
+
+            return elements;
+        }
+    }
+
+    private static final class LegResultPrinterCSV extends ResultPrinter {
+
+        final int leg;
+
+        private LegResultPrinterCSV(final Race race, final OutputStreamWriter writer, final int leg) {
+
+            super(race, writer);
+            this.leg = leg;
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            final String plural = ((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : "";
+            writer.append("Pos,Runner" + plural + ",Time" + LINE_SEPARATOR);
+        }
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final LegResult result = (LegResult) r;
+            final String runner_names = encode(((Team) result.getParticipant()).runner_names.get(result.leg_number - 1));
+
+            writer.append(result.getPositionString() + "," + runner_names + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+        }
+    }
+
+    private static final class LegResultPrinterHTML extends OverallResultPrinterHTML {
+
+        final int leg;
+
+        private LegResultPrinterHTML(final Race race, final OutputStreamWriter writer, final int leg) {
+
+            super(race, writer);
+            this.leg = leg;
+        }
+
+        @Override
+        protected List<String> getResultsColumnHeaders() {
+
+            return List.of(
+                "Pos",
+                "Runner" + (((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : ""),
+                "Time");
+        }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final LegResult leg_result = (LegResult) r;
+
+            return List.of(
+                leg_result.getPositionString(),
+                race.getNormalisation().htmlEncode(((Team) leg_result.getParticipant()).runner_names.get(leg_result.leg_number - 1)),
+                renderDuration(leg_result, DNF_STRING)
+            );
+        }
+    }
+
+    private static final class RelayRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
+
+        public RelayRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        protected String renderDetail(final RaceResult result) {
+            return result.getParticipant().category.getLongName();
+        }
+
+        @Override
+        protected String renderPerformance(final RaceResult result) {
+            return renderDuration((RaceResultWithDuration) result, DNF_STRING);
         }
     }
 }
