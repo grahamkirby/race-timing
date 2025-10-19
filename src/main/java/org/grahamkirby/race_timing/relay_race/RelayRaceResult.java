@@ -31,7 +31,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceResult extends SingleRaceResult {
 
-    public final List<LegResult> leg_results;
+    private final List<LegResult> leg_results;
 
     RelayRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 
@@ -77,13 +77,13 @@ public class RelayRaceResult extends SingleRaceResult {
         return "(" + getParticipant().getCategory().getLongName() + ") " + renderDuration(this, DNF_STRING);
     }
 
-//    public List<LegResult> getLegResults() {
-//        return leg_results;
-//    }
-//
-//    public LegResult getLegResult(final int leg_number) {
-//        return leg_results.get(leg_number - 1);
-//    }
+    public List<LegResult> getLegResults() {
+        return leg_results;
+    }
+
+    public LegResult getLegResult(final int leg_number) {
+        return leg_results.get(leg_number - 1);
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

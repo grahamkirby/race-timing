@@ -102,7 +102,7 @@ public class RelayRaceImpl implements SpecificRace {
 
         final List<LegResult> results = race.getResultsCalculator().getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
-            map(result -> result.leg_results.get(leg_number - 1)).
+            map(result -> result.getLegResult(leg_number)).
             sorted().
             toList();
 
@@ -119,13 +119,13 @@ public class RelayRaceImpl implements SpecificRace {
 
         for (int leg = 1; leg <= getNumberOfLegs(); leg++) {
 
-            final LegResult leg_result = result.leg_results.get(leg - 1);
+            final LegResult leg_result = result.getLegResult(leg);
             final boolean completed = leg_result.canComplete();
 
             final String leg_runner_names = ((Team)leg_result.getParticipant()).getRunnerNames().get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
             final String leg_time = renderDuration(leg_result, DNF_STRING);
-            final String split_time = completed && all_previous_legs_completed ? renderDuration(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
+            final String split_time = completed && all_previous_legs_completed ? renderDuration(sumDurationsUpToLeg(result.getLegResults(), leg)) : DNF_STRING;
 
             leg_details.add(leg_runner_names + leg_mass_start_annotation);
             leg_details.add(leg_time);

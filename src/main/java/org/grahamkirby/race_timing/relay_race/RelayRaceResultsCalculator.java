@@ -96,8 +96,8 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final int team_index = findIndexOfTeamWithBibNumber(raw_result.getBibNumber());
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(team_index);
 
-        final int leg_index = findIndexOfNextUnfilledLegResult(result.leg_results);
-        final LegResult leg_result = result.leg_results.get(leg_index);
+        final int leg_index = findIndexOfNextUnfilledLegResult(result.getLegResults());
+        final LegResult leg_result = result.getLegResult(leg_index + 1);
 
         final Duration recorded_finish_time = raw_result.getRecordedFinishTime();
         final Duration start_offset = race_impl.getStartOffset();
@@ -119,7 +119,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private static void sortLegResults(final RaceResult result) {
 
-        final List<LegResult> leg_results = ((RelayRaceResult) result).leg_results;
+        final List<LegResult> leg_results = ((RelayRaceResult) result).getLegResults();
 
         // Sort by explicitly recorded leg number (most results will not have explicit leg number).
         leg_results.sort(Comparator.comparingInt(LegResult::getLegNumber));
@@ -133,8 +133,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
 
-//        return result.getLegResult(leg_number);
-        return result.leg_results.get(leg_number - 1);
+        return result.getLegResult(leg_number);
     }
 
     private void recordStartTimes() {
@@ -144,8 +143,10 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void fillLegResultDetails(final RaceResult result) {
 
+        final List<LegResult> leg_results = ((RelayRaceResult) result).getLegResults();
+
         for (int leg_index = 0; leg_index < race_impl.getNumberOfLegs(); leg_index++)
-            fillLegResultDetails(((RelayRaceResult) result).leg_results, leg_index);
+            fillLegResultDetails(leg_results, leg_index);
     }
 
     private void fillLegResultDetails(final List<? extends LegResult> leg_results, final int leg_index) {

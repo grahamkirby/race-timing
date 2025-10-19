@@ -189,7 +189,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         return race.getResultsCalculator().getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
-            flatMap(result -> result.leg_results.stream()).
+            flatMap(result -> result.getLegResults().stream()).
             anyMatch(LegResult::isInMassStart);
     }
 
