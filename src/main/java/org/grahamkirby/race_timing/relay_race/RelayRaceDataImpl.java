@@ -31,7 +31,7 @@ public class RelayRaceDataImpl implements RaceData {
     public final Map<RawResult, Integer> explicitly_recorded_leg_numbers;
     public final int number_of_electronically_recorded_raw_results;
 
-    public RelayRaceDataImpl(List<RaceEntry> entries, List<RawResult> raw_results, Map<RawResult, Integer> explicitly_recorded_leg_numbers, int number_of_raw_results) {
+    public RelayRaceDataImpl(final List<RaceEntry> entries, final List<RawResult> raw_results, final Map<RawResult, Integer> explicitly_recorded_leg_numbers, final int number_of_raw_results) {
 
         this.raw_results = raw_results;
         this.entries = entries;

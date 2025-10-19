@@ -117,7 +117,7 @@ public class Config {
         this.config_path = config_file_path;
         config_map = new HashMap<>();
 
-        Properties properties = loadProperties(config_file_path);
+        final Properties properties = loadProperties(config_file_path);
 
         properties.forEach((key, value) -> config_map.put((String) key, value));
     }
@@ -170,7 +170,7 @@ public class Config {
 
     public void replaceIfPresent(final List<String> keys, final Function<String, Object> make_new_value) {
 
-        for (String key : keys)
+        for (final String key : keys)
             replaceIfPresent(key, make_new_value);
     }
 }

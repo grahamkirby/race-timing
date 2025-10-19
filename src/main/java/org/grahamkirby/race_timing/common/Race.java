@@ -179,6 +179,11 @@ public class Race {
         return (String) getConfig().get(key);
     }
 
+    public Path getPathConfig(final String key) {
+
+        return (Path) getConfig().get(key);
+    }
+
     public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
 
         this.categories_processor = categories_processor;

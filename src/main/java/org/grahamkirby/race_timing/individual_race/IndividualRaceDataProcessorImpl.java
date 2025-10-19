@@ -45,8 +45,8 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
     @Override
     public RaceData getRaceData() {
 
-        final Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
-        final Path raw_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
+        final Path entries_path = race.getPathConfig(KEY_ENTRIES_PATH);
+        final Path raw_results_path = race.getPathConfig(KEY_RAW_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, raw_results_path);
@@ -56,7 +56,7 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
             validateData(entries, raw_results, entries_path, raw_results_path);
 
-            return new RaceDataImpl(raw_results, entries);
+            return new IndividualRaceDataImpl(raw_results, entries);
 
         } catch (final IOException e) {
             throw new RuntimeException(e);
