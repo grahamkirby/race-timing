@@ -73,7 +73,10 @@ class TourRaceOutput extends RaceOutput {
             final TourRaceResult result = (TourRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
 
-            writer.append(result.getPositionString() + "," + encode(runner.name) + "," + encode(runner.club) + "," + runner.category.getShortName() + ",");
+            writer.append(result.getPositionString()).append(",").
+                append(encode(runner.getName())).append(",").
+                append(encode(runner.getClub())).append(",").
+                append(runner.getCategory().getShortName()).append(",");
 
             writer.append(
                 result.times.stream().
@@ -120,9 +123,9 @@ class TourRaceOutput extends RaceOutput {
             final Runner runner = (Runner) result.getParticipant();
 
             elements.add(result.getPositionString());
-            elements.add(race.getNormalisation().htmlEncode(runner.name));
-            elements.add(runner.category.getShortName());
-            elements.add(runner.club);
+            elements.add(race.getNormalisation().htmlEncode(runner.getName()));
+            elements.add(runner.getCategory().getShortName());
+            elements.add(runner.getClub());
 
             for (final Duration duration : result.times)
                 elements.add(renderDuration(duration, "-"));
@@ -141,7 +144,7 @@ class TourRaceOutput extends RaceOutput {
 
         @Override
         protected String renderDetail(final RaceResult result) {
-            return ((Runner) result.getParticipant()).club;
+            return ((Runner) result.getParticipant()).getClub();
         }
 
         @Override

@@ -154,7 +154,8 @@ public abstract class RaceResultsCalculator {
     }
 
     protected String getClub(final RaceResult result) {
-        return ((Runner) result.getParticipant()).club;
+
+        return result.getParticipant() instanceof final Runner runner ? runner.getClub() : null;
     }
 
     protected void recordDNFs() {

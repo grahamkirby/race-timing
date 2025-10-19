@@ -22,9 +22,10 @@ import java.time.Duration;
 
 public abstract class SingleRaceResult extends CommonRaceResult implements RaceResultWithDuration {
 
-    public Duration finish_time;
-    public boolean dnf;
-    public int bib_number;
+    // TODO add start time.
+    protected Duration finish_time;
+    protected boolean dnf;
+    protected int bib_number;
 
     public SingleRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
 
@@ -36,6 +37,26 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
 
     public Duration duration() {
         return finish_time;
+    }
+
+    public Duration getFinishTime() {
+        return finish_time;
+    }
+
+    public void setFinishTime(final Duration finish_time) {
+        this.finish_time = finish_time;
+    }
+
+    public int getBibNumber() {
+        return bib_number;
+    }
+
+    public boolean isDnf() {
+        return dnf;
+    }
+
+    public void setDnf(final boolean dnf) {
+        this.dnf = dnf;
     }
 
     @Override

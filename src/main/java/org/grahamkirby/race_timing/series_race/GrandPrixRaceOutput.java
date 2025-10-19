@@ -77,7 +77,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             final GrandPrixRaceResultsCalculator calculator = (GrandPrixRaceResultsCalculator) race.getResultsCalculator();
             final Runner runner = (Runner) result.getParticipant();
 
-            writer.append(result.getPositionString() + "," + encode(runner.name) + "," + runner.category.getShortName() + ",");
+            writer.append(result.getPositionString() + "," + encode(runner.getName()) + "," + runner.getCategory().getShortName() + ",");
 
             writer.append(
                 race_impl.getRaces().stream().
@@ -141,7 +141,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
             elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
-            elements.add(result.getParticipant().category.getShortName());
+            elements.add(result.getParticipant().getCategory().getShortName());
 
             for (final Race individual_race : ((GrandPrixRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
@@ -172,7 +172,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
         @Override
         protected String renderDetail(final RaceResult result) {
-            return ((Runner) result.getParticipant()).club;
+            return ((Runner) result.getParticipant()).getClub();
         }
 
         @Override

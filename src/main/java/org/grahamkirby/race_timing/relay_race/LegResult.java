@@ -29,8 +29,8 @@ import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
 
 public class LegResult extends SingleRaceResult {
 
-    public int leg_number;
-    public boolean in_mass_start;
+    private int leg_number;
+    private boolean in_mass_start;
 
     // TODO move to SingleRaceResult, integrate with early starts.
     Duration start_time;  // Relative to start of leg 1.
@@ -40,7 +40,7 @@ public class LegResult extends SingleRaceResult {
     LegResult(final Race race, final RaceEntry entry) {
 
         super(race, entry, null);
-        dnf = true;
+        setDnf(true);
         in_mass_start = false;
     }
 
@@ -55,7 +55,7 @@ public class LegResult extends SingleRaceResult {
     @Override
     public String getParticipantName() {
 
-        return ((Team) getParticipant()).runner_names.get(leg_number - 1);
+        return ((Team) getParticipant()).getRunnerNames().get(leg_number - 1);
     }
 
     @Override
@@ -74,15 +74,25 @@ public class LegResult extends SingleRaceResult {
     }
 
     @Override
-    public String getPrizeDetailPDF() {
+    public String getPrizeDetail() {
 
         return null;
     }
 
-    @Override
-    public String getPrizeDetailText() {
+    public boolean isInMassStart() {
+        return in_mass_start;
+    }
 
-        return null;
+    public void setInMassStart(final boolean in_mass_start) {
+        this.in_mass_start = in_mass_start;
+    }
+
+    public int getLegNumber() {
+        return leg_number;
+    }
+
+    public void setLegNumber(final int leg_number) {
+        this.leg_number = leg_number;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

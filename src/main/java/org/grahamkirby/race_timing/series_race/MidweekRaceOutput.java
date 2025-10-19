@@ -72,7 +72,7 @@ class MidweekRaceOutput extends RaceOutput {
             final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
             final MidweekRaceResultsCalculator calculator = (MidweekRaceResultsCalculator) race.getResultsCalculator();
 
-            writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).club) + "," + result.getParticipant().category.getShortName() + ",");
+            writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).getClub()) + "," + result.getParticipant().getCategory().getShortName() + ",");
 
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
             // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
@@ -124,10 +124,10 @@ class MidweekRaceOutput extends RaceOutput {
             final Runner runner = (Runner) result.getParticipant();
 
             elements.add(result.getPositionString());
-            elements.add(race.getNormalisation().htmlEncode(runner.name));
-            elements.add(runner.category.getShortName());
+            elements.add(race.getNormalisation().htmlEncode(runner.getName()));
+            elements.add(runner.getCategory().getShortName());
 
-            elements.add(runner.club);
+            elements.add(runner.getClub());
 
             for (final Race individual_race : ((MidweekRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
@@ -150,7 +150,7 @@ class MidweekRaceOutput extends RaceOutput {
 
         @Override
         protected String renderDetail(final RaceResult result) {
-            return ((Runner) result.getParticipant()).club;
+            return ((Runner) result.getParticipant()).getClub();
         }
 
         @Override

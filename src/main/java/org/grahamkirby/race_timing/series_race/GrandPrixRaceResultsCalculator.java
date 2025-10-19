@@ -40,7 +40,7 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
 
     protected Predicate<RaceResult> getResultInclusionPredicate() {
 
-        return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner) result.getParticipant()).club);
+        return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
     }
 
     int calculateRaceScore(final Race individual_race, final Runner runner) {

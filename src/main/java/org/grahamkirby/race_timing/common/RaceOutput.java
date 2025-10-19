@@ -367,7 +367,7 @@ public abstract class RaceOutput implements ResultsOutput {
         @Override
         public void printResult(final RaceResult result) throws IOException {
 
-            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result.getPrizeDetailText() + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result.getPrizeDetail() + LINE_SEPARATOR);
         }
 
         @Override
@@ -402,7 +402,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
             paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
             paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
-            paragraph.add(new Text(" " + result.getPrizeDetailPDF()).setFont(font));
+            paragraph.add(new Text(" " + result.getPrizeDetail()).setFont(font));
 
             document.add(paragraph);
         }

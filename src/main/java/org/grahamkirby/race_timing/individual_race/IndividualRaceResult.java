@@ -45,15 +45,15 @@ public class IndividualRaceResult extends SingleRaceResult {
             CommonRaceResult::compareRunnerFirstName);
     }
 
+//    @Override
+//    public String getPrizeDetailPDF() {
+//
+//        return getPrizeDetailText();
+//    }
+
     @Override
-    public String getPrizeDetailPDF() {
+    public String getPrizeDetail() {
 
-        return "(" + ((Runner) getParticipant()).club + ") " + renderDuration(this, DNF_STRING);
-    }
-
-    @Override
-    public String getPrizeDetailText() {
-
-        return "(" + ((Runner) getParticipant()).club + ") " + renderDuration(this, DNF_STRING);
+        return "(" + ((Runner) getParticipant()).getClub() + ") " + renderDuration(this, DNF_STRING);
     }
 }

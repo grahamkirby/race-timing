@@ -107,8 +107,8 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
             map(CommonRaceResult::getParticipant).
-            filter(participant -> participant.name.equals(runner_name)).
-            map(participant -> ((Runner)participant).club).
+            filter(participant -> participant.getName().equals(runner_name)).
+            map(participant -> ((Runner) participant).getClub()).
             distinct().
             sorted().
             toList();
@@ -121,8 +121,8 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
             map(CommonRaceResult::getParticipant).
-            filter(participant -> participant.name.equals(runner_name)).
-            forEachOrdered(participant -> ((Runner)participant).club = defined_club);
+            filter(participant -> participant.getName().equals(runner_name)).
+            forEachOrdered(participant -> ((Runner)participant).setClub(defined_club));
     }
 
     private List<String> getRunnerNames() {

@@ -49,15 +49,9 @@ class MidweekRaceResult extends SeriesRaceResult {
     }
 
     @Override
-    public String getPrizeDetailPDF() {
+    public String getPrizeDetail() {
 
-        return "(" + ((Runner) getParticipant()).club + ") " + totalScore();
-    }
-
-    @Override
-    public String getPrizeDetailText() {
-
-        return "(" + ((Runner) getParticipant()).club + ") " + totalScore();
+        return "(" + ((Runner) getParticipant()).getClub() + ") " + totalScore();
     }
 
     int totalScore() {

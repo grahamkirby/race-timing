@@ -26,7 +26,7 @@ import java.util.Objects;
 
 public class Team extends Participant {
 
-    public List<String> runner_names;
+    private final List<String> runner_names;
 
     public Team(final String name, final EntryCategory category, final List<String> runner_names) {
         super(name, category);
@@ -48,5 +48,9 @@ public class Team extends Participant {
     @Override
     public String toString() {
         return name;
+    }
+
+    public List<String> getRunnerNames() {
+        return runner_names;
     }
 }

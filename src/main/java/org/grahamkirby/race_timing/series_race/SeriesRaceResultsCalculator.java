@@ -132,7 +132,7 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
 
         for (final SingleRaceResult result : runner_results) {
 
-            final EntryCategory current_category = result.getParticipant().category;
+            final EntryCategory current_category = result.getParticipant().getCategory();
 
             if (current_category != null) {
 
@@ -158,7 +158,7 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
         checkForChangeToTooMuchOlderAgeCategory(runner_results.getFirst(), earliest_category, last_category);
 
         for (final SingleRaceResult result : runner_results)
-            result.getParticipant().category = earliest_category;
+            result.getParticipant().setCategory(earliest_category);
     }
 
     private static void checkForChangeToYoungerAgeCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {

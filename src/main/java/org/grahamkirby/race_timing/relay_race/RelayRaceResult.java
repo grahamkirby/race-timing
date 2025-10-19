@@ -41,10 +41,8 @@ public class RelayRaceResult extends SingleRaceResult {
 
         final int number_of_legs = ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs();
 
-        for (int i = 0; i < number_of_legs; i++) {
-
+        for (int i = 0; i < number_of_legs; i++)
             leg_results.add(new LegResult(race, entry));
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,16 +72,18 @@ public class RelayRaceResult extends SingleRaceResult {
     }
 
     @Override
-    public String getPrizeDetailPDF() {
+    public String getPrizeDetail() {
 
-        return "(" + getParticipant().category.getLongName() + ") " + renderDuration(this, DNF_STRING);
+        return "(" + getParticipant().getCategory().getLongName() + ") " + renderDuration(this, DNF_STRING);
     }
 
-    @Override
-    public String getPrizeDetailText() {
-
-        return "(" + getParticipant().category.getLongName() + ") " + renderDuration(this, DNF_STRING);
-    }
+//    public List<LegResult> getLegResults() {
+//        return leg_results;
+//    }
+//
+//    public LegResult getLegResult(final int leg_number) {
+//        return leg_results.get(leg_number - 1);
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

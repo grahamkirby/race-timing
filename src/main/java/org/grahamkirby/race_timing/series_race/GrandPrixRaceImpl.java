@@ -17,6 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.common.SpecificRace;
@@ -43,7 +44,7 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(Race race) {
+    public void setRace(final Race race) {
         this.race = race;
     }
 
@@ -156,22 +157,12 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.getParticipant()).
-            filter(participant -> participant.name.equals(runner_name)).
-            map(participant -> ((Runner) participant).club).
+            map(CommonRaceResult::getParticipant).
+            filter(participant -> participant.getName().equals(runner_name)).
+            map(participant -> ((Runner) participant).getClub()).
             distinct().
             sorted().
             toList();
-//        return races.stream().
-//            filter(Objects::nonNull).
-//            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-//            map(result -> (SingleRaceResult) result).
-//            map(result -> result.entry.participant).
-//            filter(participant -> participant.name.equals(runner_name)).
-//            map(participant -> ((Runner)participant).club).
-//            distinct().
-//            sorted().
-//            toList();
     }
 
     protected void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
@@ -180,17 +171,9 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.getParticipant()).
-            filter(participant -> participant.name.equals(runner_name)).
-            forEachOrdered(participant -> ((Runner)participant).club = defined_club);
-
-//        races.stream().
-//            filter(Objects::nonNull).
-//            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-//            map(result -> (SingleRaceResult) result).
-//            map(result -> result.entry.participant).
-//            filter(participant -> participant.name.equals(runner_name)).
-//            forEachOrdered(participant -> ((Runner)participant).club = defined_club);
+            map(CommonRaceResult::getParticipant).
+            filter(participant -> participant.getName().equals(runner_name)).
+            forEachOrdered(participant -> ((Runner)participant).setClub(defined_club));
     }
 
     private List<String> getRunnerNames() {
@@ -199,16 +182,9 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
-            map(result -> result.getParticipantName()).
+            map(CommonRaceResult::getParticipantName).
             distinct().
             toList();
-//        return races.stream().
-//            filter(Objects::nonNull).
-//            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-//            map(result -> (SingleRaceResult) result).
-//            map(result -> result.entry.participant.name).
-//            distinct().
-//            toList();
     }
 
     private List<Race> loadRaces() throws IOException {

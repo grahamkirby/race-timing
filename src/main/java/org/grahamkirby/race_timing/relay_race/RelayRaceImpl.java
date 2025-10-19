@@ -122,7 +122,7 @@ public class RelayRaceImpl implements SpecificRace {
             final LegResult leg_result = result.leg_results.get(leg - 1);
             final boolean completed = leg_result.canComplete();
 
-            final String leg_runner_names = ((Team)leg_result.getParticipant()).runner_names.get(leg - 1);
+            final String leg_runner_names = ((Team)leg_result.getParticipant()).getRunnerNames().get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
             final String leg_time = renderDuration(leg_result, DNF_STRING);
             final String split_time = completed && all_previous_legs_completed ? renderDuration(sumDurationsUpToLeg(result.leg_results, leg)) : DNF_STRING;
@@ -193,7 +193,7 @@ public class RelayRaceImpl implements SpecificRace {
     private String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
-        return leg_result.in_mass_start ? " (M" + getNextMassStartLeg(leg_number) + ")" : "";
+        return leg_result.isInMassStart() ? " (M" + getNextMassStartLeg(leg_number) + ")" : "";
     }
 
     private int getNextMassStartLeg(final int leg_number) {

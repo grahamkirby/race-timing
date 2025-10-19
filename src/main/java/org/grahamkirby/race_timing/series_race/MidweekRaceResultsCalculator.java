@@ -37,7 +37,7 @@ public class MidweekRaceResultsCalculator extends SeriesRaceResultsCalculator {
         final List<SingleRaceResult> gender_results = individual_race.getResultsCalculator().getOverallResults().stream().
             map(result -> (SingleRaceResult) result).
             filter(SingleRaceResult::canComplete).
-            filter(result -> result.getCategory().getGender().equals(runner.category.getGender())).
+            filter(result -> result.getCategory().getGender().equals(runner.getCategory().getGender())).
             toList();
 
         final int gender_position = (int) gender_results.stream().

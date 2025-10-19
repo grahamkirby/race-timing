@@ -23,12 +23,15 @@ import org.grahamkirby.race_timing.common.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.readAllLines;
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.KEY_MEDIAN_TIME;
+import static org.grahamkirby.race_timing.common.Config.KEY_RESULTS_PATH;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
@@ -39,7 +42,8 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
     private static final int CATEGORY_INDEX = 3;
 
     private int next_fake_bib_number = 1;
-    private final Function<String, RaceResult> race_result_mapper = line -> makeRaceResult(new ArrayList<>(Arrays.stream(line.split("\t")).toList()));
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void calculateResults() {
@@ -59,6 +63,8 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return false;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     /** Gets the median finish time for the race. */
     public Duration getMedianTime() {
 
@@ -74,11 +80,11 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             final SingleRaceResult median_result1 = (SingleRaceResult) results.get(results.size() / 2 - 1);
             final SingleRaceResult median_result2 = (SingleRaceResult) results.get(results.size() / 2);
 
-            return median_result1.finish_time.plus(median_result2.finish_time).dividedBy(2);
+            return median_result1.duration().plus(median_result2.duration()).dividedBy(2);
 
         } else {
             final SingleRaceResult median_result = (SingleRaceResult) results.get(results.size() / 2);
-            return median_result.finish_time;
+            return median_result.duration();
         }
     }
 
@@ -107,12 +113,12 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
             final SingleRaceResult result = (SingleRaceResult)r;
 
-            if (offsets.containsKey(result.getParticipant().category)) {
+            if (offsets.containsKey(result.getParticipant().getCategory())) {
 
-                final EntryCategory category = result.getParticipant().category;
+                final EntryCategory category = result.getParticipant().getCategory();
                 final Duration duration = offsets.get(category);
 
-                result.finish_time = result.finish_time.minus(duration);
+                result.setFinishTime(result.getFinishTime().minus(duration));
             }
         }
     }
@@ -123,8 +129,8 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
             final SingleRaceResult result = (SingleRaceResult) r;
 
-            if (offsets.containsKey(result.bib_number))
-                result.finish_time = result.finish_time.minus(offsets.get(result.bib_number));
+            if (offsets.containsKey(result.getBibNumber()))
+                result.setFinishTime(result.getFinishTime().minus(offsets.get(result.getBibNumber())));
         }
     }
 
@@ -157,9 +163,28 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return readAllLines((Path) race.getConfig().get(KEY_RESULTS_PATH)).stream().
             map(Normalisation::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
-            map(race_result_mapper).
-            filter(Objects::nonNull).
+            map(this::makeRaceResult).
             toList();
+    }
+
+    private RaceResult makeRaceResult(final String line) {
+
+        final List<String> elements = new ArrayList<>(Arrays.stream(line.split("\t")).toList());
+
+        elements.addFirst(String.valueOf(next_fake_bib_number++));
+
+        final RaceEntry entry = makeRaceEntry(elements, race);
+        final Duration finish_time = parseTime(elements.getLast());
+
+        return new IndividualRaceResult(race, entry, finish_time);
+    }
+
+    private RaceResult makeRaceResult(final RawResult raw_result) {
+
+        final int bib_number = raw_result.getBibNumber();
+        final Duration finish_time = raw_result.getRecordedFinishTime();
+
+        return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
     }
 
     private RaceEntry makeRaceEntry(final List<String> elements, final Race race) {
@@ -186,30 +211,12 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         }
     }
 
-    private RaceResult makeRaceResult(final List<String> elements) {
-
-        elements.addFirst(String.valueOf(next_fake_bib_number++));
-
-        final RaceEntry entry = makeRaceEntry(elements, race);
-        final Duration finish_time = parseTime(elements.getLast());
-
-        return new IndividualRaceResult(race, entry, finish_time);
-    }
-
-    private RaceResult makeRaceResult(final RawResult raw_result) {
-
-        final int bib_number = raw_result.getBibNumber();
-        final Duration finish_time = raw_result.getRecordedFinishTime();
-
-        return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
-    }
-
     protected void recordDNF(final String dnf_specification) {
 
         final int bib_number = Integer.parseInt(dnf_specification);
         final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
 
-        result.dnf = true;
+        result.setDnf(true);
     }
 
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
@@ -226,7 +233,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
         return overall_results.stream().
             map(result -> (SingleRaceResult) result).
-            filter(result -> result.bib_number == bib_number).
+            filter(result -> result.getBibNumber() == bib_number).
             findFirst().
             orElseThrow();
     }

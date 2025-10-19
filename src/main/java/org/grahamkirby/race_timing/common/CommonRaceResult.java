@@ -36,43 +36,62 @@ public abstract class CommonRaceResult implements RaceResult {
     protected String position_string;
     protected List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected CommonRaceResult(final Race race, final Participant participant) {
+
         this.race = race;
         this.participant = participant;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public abstract List<Comparator<RaceResult>> getComparators();
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
     public Race getRace() {
         return race;
     }
 
+    @Override
     public Participant getParticipant() {
         return participant;
     }
 
+    @Override
     public String getParticipantName() {
         return participant.name;
     }
 
+    @Override
     public EntryCategory getCategory() {
         return participant.category;
     }
 
+    @Override
     public String getPositionString() {
         return position_string;
     }
 
+    @Override
     public void setPositionString(final String position_string) {
         this.position_string  = position_string;
     }
 
+    @Override
     public List<PrizeCategory> getCategoriesOfPrizesAwarded() {
         return categories_of_prizes_awarded;
     }
 
-    public abstract int comparePerformanceTo(RaceResult other);
-    public abstract boolean canComplete();
+    @Override
+    public int compareTo(final RaceResult other) {
 
-    public abstract String getPrizeDetailPDF();
+        return combineComparators(getComparators()).compare(this, other);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
@@ -107,18 +126,10 @@ public abstract class CommonRaceResult implements RaceResult {
         };
     }
 
-    @Override
-    public int compareTo(final RaceResult other) {
-
-        return combineComparators(getComparators()).compare(this, other);
-    }
-
     /** Combines multiple comparators into a single comparator. */
     public static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
 
         return comparators.stream().
             reduce((_, _) -> 0, Comparator::thenComparing);
     }
-
-    public abstract List<Comparator<RaceResult>> getComparators();
 }

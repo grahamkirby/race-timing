@@ -41,7 +41,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     @Override
     protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
-        return OverallResultPrinterCSV::new;
+        return IndividualRaceOverallResultPrinterCSV::new;
     }
 
     @Override
@@ -173,6 +173,21 @@ public class IndividualRaceOutput extends RaceOutput {
 
             return List.of("Pos", "No", "Runner", "Club", "Category", "Time");
         }
+
+        @Override
+        protected List<String> getResultsElements(final RaceResult r) {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+
+            return List.of(
+                result.getPositionString(),
+                String.valueOf(result.getBibNumber()),
+                race.getNormalisation().htmlEncode(result.getParticipant().getName()),
+                ((Runner) result.getParticipant()).getClub(),
+                result.getParticipant().getCategory().getShortName(),
+                renderDuration(result, DNF_STRING)
+            );
+        }
     }
 
     private static final class IndividualRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
@@ -183,7 +198,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
         @Override
         protected String renderDetail(final RaceResult result) {
-            return ((Runner) result.getParticipant()).club;
+            return ((Runner) result.getParticipant()).getClub();
         }
 
         @Override
@@ -192,9 +207,9 @@ public class IndividualRaceOutput extends RaceOutput {
         }
     }
 
-    private static final class OverallResultPrinterCSV extends ResultPrinter {
+    private static final class IndividualRaceOverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -210,8 +225,13 @@ public class IndividualRaceOutput extends RaceOutput {
             final SingleRaceResult result = (SingleRaceResult) r;
             final Participant participant = result.getParticipant();
 
-            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(participant.name) + ",");
-            writer.append(encode(((Runner) participant).club) + "," + participant.category.getShortName() + "," + renderDuration(((RaceResultWithDuration) result), DNF_STRING) + LINE_SEPARATOR);
+            writer.append(result.getPositionString()).append(",").
+                append(String.valueOf(result.getBibNumber())).append(",").
+                append(encode(participant.getName())).append(",").
+                append(encode(((Runner) participant).getClub())).append(",").
+                append(participant.getCategory().getShortName()).append(",").
+                append(renderDuration(((RaceResultWithDuration) result), DNF_STRING)).
+                append(LINE_SEPARATOR);
         }
     }
 }

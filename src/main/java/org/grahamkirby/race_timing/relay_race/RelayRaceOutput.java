@@ -91,7 +91,6 @@ public class RelayRaceOutput extends RaceOutput {
         final OutputStream stream = getOutputStream("detailed", CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-
             printResults(writer, new DetailedResultPrinterCSV(race, writer), _ -> "");
         }
     }
@@ -191,7 +190,7 @@ public class RelayRaceOutput extends RaceOutput {
         return race.getResultsCalculator().getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
             flatMap(result -> result.leg_results.stream()).
-            anyMatch(result -> result.in_mass_start);
+            anyMatch(LegResult::isInMassStart);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,32 +217,37 @@ public class RelayRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            final RelayRaceImpl impl = (RelayRaceImpl) race.getSpecific();
-
-            final Map<Integer, Integer> legs_finished_per_team = impl.countLegsFinishedPerTeam();
-            final List<Integer> bib_numbers_with_missing_times = impl.getBibNumbersWithMissingTimes(legs_finished_per_team);
-            final List<Duration> times_with_missing_bib_numbers = impl.getTimesWithMissingBibNumbers();
+            final Map<Integer, Integer> legs_finished_per_team = ((RelayRaceImpl) race.getSpecific()).countLegsFinishedPerTeam();
 
             printResults(writer, legs_finished_per_team);
-
-            final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
-
-            if (discrepancies_exist)
-                race.appendToNotes("""
-                
-                Discrepancies:
-                -------------
-                """);
-
-            recordBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
-            recordTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
-
-            if (discrepancies_exist)
-                race.appendToNotes("""
-                
-                
-                """);
+            printNotes(legs_finished_per_team);
         }
+    }
+
+    private void printNotes(final Map<Integer, Integer> legs_finished_per_team) {
+
+        final RelayRaceImpl impl = (RelayRaceImpl) race.getSpecific();
+
+        final List<Integer> bib_numbers_with_missing_times = impl.getBibNumbersWithMissingTimes(legs_finished_per_team);
+        final List<Duration> times_with_missing_bib_numbers = impl.getTimesWithMissingBibNumbers();
+
+        final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
+
+        if (discrepancies_exist)
+            race.appendToNotes("""
+            
+            Discrepancies:
+            -------------
+            """);
+
+        recordBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
+        recordTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
+
+        if (discrepancies_exist)
+            race.appendToNotes("""
+            
+            
+            """);
     }
 
     private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
@@ -262,8 +266,7 @@ public class RelayRaceOutput extends RaceOutput {
         if (explicitly_recorded_leg_numbers.containsKey(raw_result)) {
 
             final int leg_number = explicitly_recorded_leg_numbers.get(raw_result);
-
-            writer.append("\t").append(String.valueOf(leg_number));
+            writer.append("\t" + leg_number);
 
             if (legs_already_finished >= leg_number)
                 raw_result.appendComment("Leg " + leg_number + " finisher was runner " + (legs_already_finished + 1) + " to finish for team.");
@@ -332,8 +335,14 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final RelayRaceResult result = (RelayRaceResult) r;
-            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getShortName() + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            final SingleRaceResult result = (SingleRaceResult) r;
+
+            writer.append(result.getPositionString()).append(",").
+                append(String.valueOf(result.getBibNumber())).append(",").
+                append(encode(result.getParticipantName())).append(",").
+                append(result.getParticipant().getCategory().getShortName()).append(",").
+                append(renderDuration(result, DNF_STRING)).
+                append(LINE_SEPARATOR);
         }
     }
 
@@ -356,9 +365,9 @@ public class RelayRaceOutput extends RaceOutput {
 
             return List.of(
                 result.getPositionString(),
-                String.valueOf(result.bib_number),
-                race.getNormalisation().htmlEncode(result.getParticipant().name),
-                result.getParticipant().category.getLongName(),
+                String.valueOf(result.getBibNumber()),
+                race.getNormalisation().htmlEncode(result.getParticipant().getName()),
+                result.getParticipant().getCategory().getLongName(),
                 renderDuration(result, DNF_STRING)
             );
         }
@@ -373,7 +382,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final int number_of_legs = ((RelayRaceImpl)race.getSpecific()).getNumberOfLegs();
+            final int number_of_legs = ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs();
 
             writer.append(OVERALL_RESULTS_HEADER);
 
@@ -391,7 +400,10 @@ public class RelayRaceOutput extends RaceOutput {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            writer.append(result.getPositionString() + "," + result.bib_number + "," + encode(result.getParticipantName()) + "," + result.getParticipant().category.getLongName() + ",");
+            writer.append(result.getPositionString()).append(",").
+                append(String.valueOf(result.getBibNumber())).append(",").
+                append(encode(result.getParticipantName())).append(",").
+                append(result.getParticipant().getCategory().getLongName()).append(",");
 
             final String leg_details = ((RelayRaceImpl) race.getSpecific()).getLegDetails(result).stream().
                 map(Config::encode).
@@ -413,12 +425,15 @@ public class RelayRaceOutput extends RaceOutput {
 
             final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
             final RelayRaceImpl race_impl = (RelayRaceImpl) race.getSpecific();
+            final int number_of_legs = race_impl.getNumberOfLegs();
 
-            for (int leg_number = 1; leg_number <= race_impl.getNumberOfLegs(); leg_number++) {
+            for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
-                headers.add("Runner" + (race_impl.getPairedLegs().get(leg_number - 1) ? "s" : "") + " " + leg_number);
+                final String plural = race_impl.getPairedLegs().get(leg_number - 1) ? "s" : "";
+
+                headers.add("Runner" + plural + " " + leg_number);
                 headers.add("Leg " + leg_number);
-                headers.add(leg_number < race_impl.getNumberOfLegs() ? "Split " + leg_number : "Total");
+                headers.add(leg_number < number_of_legs ? "Split " + leg_number : "Total");
             }
 
             return headers;
@@ -427,16 +442,17 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsElements(final RaceResult r) {
 
-            final List<String> elements = new ArrayList<>();
-
+            final RelayRaceImpl impl = (RelayRaceImpl) race.getSpecific();
             final RelayRaceResult result = (RelayRaceResult) r;
 
-            elements.add(result.getPositionString());
-            elements.add(String.valueOf(result.bib_number));
-            elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
-            elements.add(result.getParticipant().category.getLongName());
+            final List<String> elements = new ArrayList<>();
 
-            for (final String element : ((RelayRaceImpl) race.getSpecific()).getLegDetails(result))
+            elements.add(result.getPositionString());
+            elements.add(String.valueOf(result.getBibNumber()));
+            elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
+            elements.add(result.getParticipant().getCategory().getLongName());
+
+            for (final String element : impl.getLegDetails(result))
                 elements.add(race.getNormalisation().htmlEncode(element));
 
             return elements;
@@ -464,9 +480,12 @@ public class RelayRaceOutput extends RaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             final LegResult result = (LegResult) r;
-            final String runner_names = encode(((Team) result.getParticipant()).runner_names.get(result.leg_number - 1));
+            final String runner_names = encode(((Team) result.getParticipant()).getRunnerNames().get(result.getLegNumber() - 1));
 
-            writer.append(result.getPositionString() + "," + runner_names + "," + renderDuration(result, DNF_STRING) + LINE_SEPARATOR);
+            writer.append(result.getPositionString()).append(",").
+                append(runner_names).append(",").
+                append(renderDuration(result, DNF_STRING)).
+                append(LINE_SEPARATOR);
         }
     }
 
@@ -483,9 +502,12 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
+            final List<Boolean> paired_legs = ((RelayRaceImpl) race.getSpecific()).getPairedLegs();
+            final String plural = paired_legs.get(leg - 1) ? "s" : "";
+
             return List.of(
                 "Pos",
-                "Runner" + (((RelayRaceImpl) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : ""),
+                "Runner" + plural,
                 "Time");
         }
 
@@ -493,10 +515,11 @@ public class RelayRaceOutput extends RaceOutput {
         protected List<String> getResultsElements(final RaceResult r) {
 
             final LegResult leg_result = (LegResult) r;
+            final String runner_names = ((Team) leg_result.getParticipant()).getRunnerNames().get(leg_result.getLegNumber() - 1);
 
             return List.of(
                 leg_result.getPositionString(),
-                race.getNormalisation().htmlEncode(((Team) leg_result.getParticipant()).runner_names.get(leg_result.leg_number - 1)),
+                race.getNormalisation().htmlEncode(runner_names),
                 renderDuration(leg_result, DNF_STRING)
             );
         }
@@ -510,7 +533,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         @Override
         protected String renderDetail(final RaceResult result) {
-            return result.getParticipant().category.getLongName();
+            return result.getParticipant().getCategory().getLongName();
         }
 
         @Override

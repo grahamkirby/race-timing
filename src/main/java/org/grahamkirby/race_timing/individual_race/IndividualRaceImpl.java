@@ -201,7 +201,7 @@ public class IndividualRaceImpl implements SpecificRace {
 
     private int getTeamTotal(final String club, final String gender) {
 
-        int number_to_count_for_team_prize = (Integer) race.getConfig().get(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
+        final int number_to_count_for_team_prize = (Integer) race.getConfig().get(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
 
         int result_position = 0;
         int team_count = 0;
@@ -213,7 +213,7 @@ public class IndividualRaceImpl implements SpecificRace {
 
             final Runner runner = (Runner) result.getParticipant();
 
-            if (team_count < number_to_count_for_team_prize && runner.club.equals(club) && runner.category.getGender().equals(gender)) {
+            if (team_count < number_to_count_for_team_prize && runner.getClub().equals(club) && runner.getCategory().getGender().equals(gender)) {
                 team_count++;
                 total += result_position;
             }
@@ -225,15 +225,7 @@ public class IndividualRaceImpl implements SpecificRace {
     private Set<String> getClubs(final List<RaceResult> results) {
 
         return results.stream().
-            map(result -> ((Runner) result.getParticipant()).club).
+            map(result -> ((Runner) result.getParticipant()).getClub()).
             collect(Collectors.toSet());
-
-//        final Set<String> clubs = new HashSet<>();
-//        for (final RaceResult result : results) {
-//
-//            final String club = ((Runner) result.getParticipant()).club;
-//            clubs.add(club);
-//        }
-//        return clubs;
     }
 }

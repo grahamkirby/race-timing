@@ -18,15 +18,11 @@
 package org.grahamkirby.race_timing.common;
 
 
-import org.grahamkirby.race_timing.individual_race.Runner;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 /** Base class for printing results to HTML files. */
 public abstract class OverallResultPrinterHTML extends ResultPrinter {
@@ -80,25 +76,12 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
             """);
     }
 
-    protected List<String> getResultsElements(final RaceResult r) {
-
-        final SingleRaceResult result = (SingleRaceResult) r;
-
-        return List.of(
-            result.getPositionString(),
-            String.valueOf(result.bib_number),
-            race.getNormalisation().htmlEncode(result.getParticipant().name),
-            ((Runner) result.getParticipant()).club,
-            result.getParticipant().category.getShortName(),
-            renderDuration(result, DNF_STRING)
-        );
-    }
-
     @Override
     public void printNoResults() throws IOException {
 
         writer.append("<p>No results</p>").append(LINE_SEPARATOR);
     }
 
+    protected abstract List<String> getResultsElements(final RaceResult result) throws IOException;
     protected abstract List<String> getResultsColumnHeaders();
 }

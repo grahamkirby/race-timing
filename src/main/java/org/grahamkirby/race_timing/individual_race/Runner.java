@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class Runner extends Participant {
 
-    public String club;
+    private String club;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,21 +37,32 @@ public class Runner extends Participant {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public String getClub() {
+        return club;
+    }
+    public void setClub(final String club) {
+        this.club = club;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SuppressWarnings("NonFinalFieldReferenceInEquals")
     @Override
     public boolean equals(final Object obj) {
 
         return obj instanceof final Runner other_runner &&
-            name.equals(other_runner.name) &&
+            getName().equals(other_runner.getName()) &&
             club.equals(other_runner.club);
     }
 
+    @SuppressWarnings("NonFinalFieldReferencedInHashCode")
     @Override
     public int hashCode() {
-        return Objects.hash(name, club);
+        return Objects.hash(getName(), club);
     }
 
     @Override
     public String toString() {
-        return name + ", " + club;
+        return getName() + ", " + club;
     }
 }

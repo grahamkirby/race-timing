@@ -22,11 +22,23 @@ import org.grahamkirby.race_timing.categories.EntryCategory;
 
 public abstract class Participant {
 
-    public final String name;
-    public EntryCategory category; // Not final since may be updated if category changes during a series.
+    protected final String name;
+    protected EntryCategory category; // Not final since may be updated if category changes during a series.
 
     protected Participant(final String name, final EntryCategory category) {
         this.name = name;
+        this.category = category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public EntryCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(final EntryCategory category) {
         this.category = category;
     }
 }
