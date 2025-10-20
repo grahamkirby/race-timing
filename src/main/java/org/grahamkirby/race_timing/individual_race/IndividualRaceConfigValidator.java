@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.Race2;
 
 import java.nio.file.Path;
 
@@ -26,14 +27,14 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class IndividualRaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race race) {
+    public void processConfig(final Race2 race) {
 
         final var config = race.getConfig();
 
         if (!(config.containsKey(KEY_RAW_RESULTS_PATH) || config.containsKey(KEY_RESULTS_PATH)))
-            throw new RuntimeException("no entry for either of keys '" + KEY_RAW_RESULTS_PATH + "' or '" + KEY_RESULTS_PATH + "' in file '" + race.config_file_path.getFileName() + "'");
+            throw new RuntimeException("no entry for either of keys '" + KEY_RAW_RESULTS_PATH + "' or '" + KEY_RESULTS_PATH + "' in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
-        validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.config_file_path);
+        validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.getConfig().getConfigPath());
     }
 
     public static void validateDNFRecords(final String dnf_string, final Path config_file_path) {

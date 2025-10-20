@@ -60,11 +60,12 @@ public class Race implements Race2 {
     private CategoriesProcessor categories_processor;
     private CategoryDetails category_details;
     private RaceData race_data;
-    private Config config;
     private RaceDataProcessor race_data_processor;
     private SpecificRace specific;
     RaceResultsCalculator results_calculator;
     ResultsOutput results_output;
+    private final List<ConfigProcessor> config_processors = new ArrayList<>();
+    private Config config;
 
     public Race(final Path config_file_path) {
 
@@ -161,8 +162,6 @@ public class Race implements Race2 {
 
         config_processors.add(processor);
     }
-
-    private final List<ConfigProcessor> config_processors = new ArrayList<>();
 
     public void loadConfig() throws IOException {
 

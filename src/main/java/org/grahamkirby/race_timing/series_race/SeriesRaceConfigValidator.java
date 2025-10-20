@@ -19,13 +19,14 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.Race2;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
 public class SeriesRaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race race) {
+    public void processConfig(final Race2 race) {
 
         validateKeyPresent(KEY_RACES, race);
         validateKeyPresent(KEY_NUMBER_OF_RACES_IN_SERIES, race);

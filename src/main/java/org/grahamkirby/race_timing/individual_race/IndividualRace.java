@@ -55,8 +55,30 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     int time_trial_runners_per_wave;
     Duration time_trial_inter_wave_interval;
 
+    private final List<ConfigProcessor> config_processors = new ArrayList<>();
+    private Config config;
+    public Path config_file_path;
 
     private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
+
+    public void addConfigProcessor(final ConfigProcessor processor) {
+
+        config_processors.add(processor);
+    }
+
+    public void loadConfig() throws IOException {
+
+        config = new Config(config_file_path);
+
+        for (final ConfigProcessor processor : config_processors) {
+
+            processor.processConfig(this);
+        }
+    }
+
+    public Config getConfig() {
+        return config;
+    }
 
     @Override
     public RaceData getRaceData() {
@@ -171,6 +193,13 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
     }
 
+    public IndividualRace(final Path config_file_path) {
+
+
+            this.config_file_path = config_file_path;
+
+    }
+
     public IndividualRace(List<RawResult> raw_results, List<RaceEntry> entries) {
 
         this.raw_results = raw_results;
@@ -213,14 +242,47 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         separately_recorded_finish_times = readSeparatelyRecordedResults();
     }
 
-    @Override
-    public Config getConfig() {
-        return race.getConfig();
-    }
+//    @Override
+//    public Config getConfig() {
+//        return race.getConfig();
+//    }
 
     @Override
     public RaceResultsCalculator getResultsCalculator() {
         return race.getResultsCalculator();
+    }
+
+    /**
+     * Resolves the given path relative to either the race configuration file,
+     * if it's specified as a relative path, or to the project root. Examples:
+     *
+     * Relative to race configuration:
+     * entries.txt -> /Users/gnck/Desktop/myrace/input/entries.txt
+     *
+     * Relative to project root:
+     * /src/main/resources/configuration/categories_entry_individual_senior.csv ->
+     *    src/main/resources/configuration/categories_entry_individual_senior.csv
+     */
+    @SuppressWarnings("JavadocBlankLines")
+    public Path interpretPath(final Path path) {
+
+        // Absolute paths originate from config file where path starting with "/" denotes
+        // a path relative to the project root.
+        // Can't test with isAbsolute() since that will return false on Windows.
+        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
+
+        return getPathRelativeToRaceConfigFile(path);
+    }
+
+    private static Path makeRelativeToProjectRoot(final Path path) {
+
+        // Path is specified as absolute path, should be reinterpreted relative to project root.
+        return path.subpath(0, path.getNameCount());
+    }
+
+    private Path getPathRelativeToRaceConfigFile(final Path path) {
+
+        return config_file_path.resolveSibling(path);
     }
 
     private Map<EntryCategory, Duration> readCategoryStartOffsets() {

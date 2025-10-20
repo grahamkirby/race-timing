@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.Race2;
 
 import java.nio.file.Path;
 
@@ -30,7 +31,7 @@ import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POS
 public class GrandPrixRaceConfigAdjuster implements ConfigProcessor {
 
     @Override
-    public void processConfig(Race race) {
+    public void processConfig(Race2 race) {
 
         final Config config = race.getConfig();
 

@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.ConfigProcessor;
-import org.grahamkirby.race_timing.common.Normalisation;
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
@@ -31,7 +28,7 @@ public class IndividualRaceConfigAdjuster implements ConfigProcessor {
     public static final int DEFAULT_NUMBER_OF_COLUMNS = 4;
 
     @Override
-    public void processConfig(Race race) {
+    public void processConfig(Race2 race) {
 
         final Config config = race.getConfig();
 

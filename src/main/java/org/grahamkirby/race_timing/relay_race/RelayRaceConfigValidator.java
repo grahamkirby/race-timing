@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Normalisation;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.Race2;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -31,7 +32,7 @@ import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKey
 
 public class RelayRaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race race) {
+    public void processConfig(final Race2 race) {
 
         final var config = race.getConfig();
 
@@ -44,8 +45,8 @@ public class RelayRaceConfigValidator implements ConfigProcessor {
         validateFileExists(KEY_ENTRIES_PATH, race);
 
         // Each DNF string contains single bib number.
-        validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.config_file_path);
-        validateMassStartTimes((String) config.get(KEY_MASS_START_ELAPSED_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), race.config_file_path);
+        validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.getConfig().getConfigPath());
+        validateMassStartTimes((String) config.get(KEY_MASS_START_ELAPSED_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), race.getConfig().getConfigPath());
     }
 
     public static void validateDNFRecords(final String dnf_string, final Path config_file_path) {

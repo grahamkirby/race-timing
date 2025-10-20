@@ -39,7 +39,16 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
         race.addConfigProcessor(new IndividualRaceConfigValidator());
         race.loadConfig();
 
-        final IndividualRace individualRace = new IndividualRace();
+        final IndividualRace individualRace = new IndividualRace(config_file_path);
+
+        individualRace.addConfigProcessor(new RaceConfigAdjuster());
+        individualRace.addConfigProcessor(new IndividualRaceConfigAdjuster());
+        individualRace.addConfigProcessor(new RaceConfigValidator());
+        individualRace.addConfigProcessor(new IndividualRaceConfigValidator());
+        individualRace.loadConfig();
+
+
+
         race.setSpecific(individualRace);
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setRaceDataProcessor(individualRace);

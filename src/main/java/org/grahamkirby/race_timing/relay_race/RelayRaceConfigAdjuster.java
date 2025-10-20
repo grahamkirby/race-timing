@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.ConfigProcessor;
-import org.grahamkirby.race_timing.common.Normalisation;
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.*;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -35,7 +32,7 @@ public class RelayRaceConfigAdjuster implements ConfigProcessor {
         List.of(KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
 
     @Override
-    public void processConfig(Race race) {
+    public void processConfig(Race2 race) {
 
         final Config config = race.getConfig();
 

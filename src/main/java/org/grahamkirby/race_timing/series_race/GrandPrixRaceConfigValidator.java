@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.Race2;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateFileExists;
@@ -26,7 +27,7 @@ import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKey
 
 public class GrandPrixRaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race race) {
+    public void processConfig(final Race2 race) {
 
         validateKeyPresent(KEY_RACE_CATEGORIES_PATH, race);
         validateKeyPresent(KEY_SCORE_FOR_MEDIAN_POSITION, race);

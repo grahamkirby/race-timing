@@ -24,7 +24,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race race) {
+    public void processConfig(final Race2 race) {
 
         validateKeyPresent(KEY_YEAR, race);
         validateKeyPresent(KEY_RACE_NAME_FOR_FILENAMES, race);
@@ -36,17 +36,17 @@ public class RaceConfigValidator implements ConfigProcessor {
         validateFileExists(KEY_PRIZE_CATEGORIES_PATH, race);
     }
 
-    public static void validateKeyPresent(final String key, final Race race) {
+    public static void validateKeyPresent(final String key, final Race2 race) {
 
         if (!race.getConfig().containsKey(key))
-            throw new RuntimeException("no entry for key '" + key + "' in file '" + race.config_file_path.getFileName() + "'");
+            throw new RuntimeException("no entry for key '" + key + "' in file '" + race.getConfig().getConfigPath().getFileName() + "'");
     }
 
-    public static void validateFileExists(final String key, final Race race) {
+    public static void validateFileExists(final String key, final Race2 race) {
 
         final Path path = (Path) race.getConfig().get(key);
 
         if (!Files.exists(path))
-            throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + race.config_file_path.getFileName() + "'");
+            throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + race.getConfig().getConfigPath().getFileName() + "'");
     }
 }

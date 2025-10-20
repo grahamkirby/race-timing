@@ -19,5 +19,5 @@ package org.grahamkirby.race_timing.common;
 
 public interface ConfigProcessor {
 
-    void processConfig(Race race);
+    void processConfig(Race2 race);
 }

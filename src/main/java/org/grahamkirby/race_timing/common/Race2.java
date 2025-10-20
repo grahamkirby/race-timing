@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.common;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 public interface Race2 {
 
@@ -26,4 +27,6 @@ public interface Race2 {
     void completeConfiguration();
     Config getConfig();
     RaceResultsCalculator getResultsCalculator();
+
+    Path interpretPath(final Path path);
 }

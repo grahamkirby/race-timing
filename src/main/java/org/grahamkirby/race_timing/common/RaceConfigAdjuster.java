@@ -38,7 +38,7 @@ public class RaceConfigAdjuster implements ConfigProcessor {
             KEY_CATEGORY_MAP_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH, KEY_RESULTS_PATH);
 
     @Override
-    public void processConfig(Race race) {
+    public void processConfig(Race2 race) {
 
         final Config config = race.getConfig();
 
