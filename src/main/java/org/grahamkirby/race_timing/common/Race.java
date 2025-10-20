@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Race {
+public class Race implements Race2 {
 
     // TODO rationalise Female/Women gender categories.
     // TODO consolidate input validation.
@@ -110,7 +110,7 @@ public class Race {
         return results_calculator.getNotes().toString();
     }
 
-    public void processResults() throws IOException {
+    public void processResults() {
 
         category_details = categories_processor.getCategoryDetails();
         if (race_data_processor != null) race_data = race_data_processor.getRaceData();

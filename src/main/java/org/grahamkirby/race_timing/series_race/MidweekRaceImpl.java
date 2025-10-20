@@ -31,7 +31,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 public class MidweekRaceImpl implements SpecificRace, SeriesRace {
 
     private Race race;
-    private List<Race> races;
+    private List<Race2> races;
     private List<String> race_config_paths;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
         }
     }
 
-    public List<Race> getRaces() {
+    public List<Race2> getRaces() {
         return races;
     }
 
@@ -136,13 +136,13 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
             toList();
     }
 
-    private List<Race> loadRaces() throws IOException {
+    private List<Race2> loadRaces() throws IOException {
 
         final int number_of_race_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_race_in_series != race_config_paths.size())
             throw new RuntimeException("invalid number of races specified in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
-        final List<Race> races = new ArrayList<>();
+        final List<Race2> races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
 
         for (int i = 0; i < number_of_race_in_series; i++) {
@@ -162,14 +162,14 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
         return races;
     }
 
-    private Race getIndividualRace(final String race_config_path, final int race_number) throws IOException {
+    private Race2 getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
         final Path config_path = race.interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
-        final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
+        final Race2 individual_race = new IndividualRaceFactory().makeRace(config_path);
 
         configureIndividualRace(individual_race);
         individual_race.processResults();
@@ -177,7 +177,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
         return individual_race;
     }
 
-    protected void configureIndividualRace(final Race individual_race) {
+    protected void configureIndividualRace(final Race2 individual_race) {
 
         individual_race.completeConfiguration();
     }

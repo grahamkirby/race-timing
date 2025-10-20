@@ -56,7 +56,8 @@ public class IndividualRaceDataProcessorImpl implements RaceDataProcessor {
 
             validateData(entries, raw_results, entries_path, raw_results_path);
 
-            return new IndividualRaceDataImpl(raw_results, entries);
+            return new IndividualRace(raw_results, entries);
+//            return new IndividualRaceDataImpl(raw_results, entries);
 
         } catch (final IOException e) {
             throw new RuntimeException(e);

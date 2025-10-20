@@ -20,13 +20,22 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.*;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class IndividualRaceImpl implements SpecificRace {
+public class IndividualRace implements SpecificRace, Race2, RaceData {
+
+    // Components:
+    //
+    // Config
+    // Raw data manager
+    // Results calculator
+    // Categories processor
+    // Output handling
 
     private Race race;
     Map<EntryCategory, Duration> category_start_offsets;
@@ -39,6 +48,43 @@ public class IndividualRaceImpl implements SpecificRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private  List<RawResult> raw_results;
+    private  List<RaceEntry> entries;
+
+    public IndividualRace() {
+
+
+    }
+
+    public IndividualRace(List<RawResult> raw_results, List<RaceEntry> entries) {
+
+        this.raw_results = raw_results;
+        this.entries = entries;
+    }
+
+    @Override
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        return entries;
+    }
+
+    @Override
+    public void processResults() {
+
+        race.processResults();
+    }
+
+    @Override
+    public void outputResults() throws IOException {
+
+        race.outputResults();
+    }
+
+
     public void setRace(Race race) {
         this.race = race;
     }
@@ -50,6 +96,16 @@ public class IndividualRaceImpl implements SpecificRace {
         individual_start_offsets = loadIndividualStartOffsets();
         time_trial_start_offsets = loadTimeTrialStarts();
         separately_recorded_finish_times = readSeparatelyRecordedResults();
+    }
+
+    @Override
+    public Config getConfig() {
+        return race.getConfig();
+    }
+
+    @Override
+    public RaceResultsCalculator getResultsCalculator() {
+        return race.getResultsCalculator();
     }
 
     private Map<EntryCategory, Duration> readCategoryStartOffsets() {

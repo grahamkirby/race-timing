@@ -99,7 +99,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesHTML(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRace) race.getSpecific()).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
@@ -115,7 +115,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesPDF(final Document document) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRace) race.getSpecific()).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
             document.add(new Paragraph("Team Prizes").
@@ -130,7 +130,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRaceImpl) race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRace) race.getSpecific()).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 

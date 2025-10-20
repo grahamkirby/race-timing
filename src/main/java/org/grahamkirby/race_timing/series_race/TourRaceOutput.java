@@ -102,7 +102,7 @@ class TourRaceOutput extends RaceOutput {
 
             headers.add("Club");
 
-            final List<Race> races = ((SeriesRace) race.getSpecific()).getRaces();
+            final List<Race2> races = ((SeriesRace) race.getSpecific()).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)

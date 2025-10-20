@@ -112,7 +112,7 @@ public abstract class RaceOutput implements ResultsOutput {
     protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
     protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
 
-    protected static String getConcatenatedRaceNames(final List<Race> races) {
+    protected static String getConcatenatedRaceNames(final List<Race2> races) {
 
         return races.stream().
             filter(Objects::nonNull).

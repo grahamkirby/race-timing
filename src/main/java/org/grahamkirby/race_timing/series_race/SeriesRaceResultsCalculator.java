@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.RaceResultsCalculator;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
@@ -62,7 +59,7 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
         return position;
     }
 
-    static Duration getRunnerTime(final Race individual_race, final Runner runner) {
+    static Duration getRunnerTime(final Race2 individual_race, final Runner runner) {
 
         for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
 
@@ -107,10 +104,10 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
         return new ArrayList<>(map.values());
     }
 
-    private List<Race> getRacesInTemporalOrder() {
+    private List<Race2> getRacesInTemporalOrder() {
 
-        final List<Race> races = ((SeriesRace) race.getSpecific()).getRaces();
-        final List<Race> races_in_order = new ArrayList<>();
+        final List<Race2> races = ((SeriesRace) race.getSpecific()).getRaces();
+        final List<Race2> races_in_order = new ArrayList<>();
 
         // TODO write as permutation.
         for (int i = 0; i < races.size(); i++)

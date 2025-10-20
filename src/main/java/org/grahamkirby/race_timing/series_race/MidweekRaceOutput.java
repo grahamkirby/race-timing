@@ -102,7 +102,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             headers.add("Club");
 
-            final List<Race> races = ((MidweekRaceImpl) race.getSpecific()).getRaces();
+            final List<Race2> races = ((MidweekRaceImpl) race.getSpecific()).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
@@ -129,7 +129,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             elements.add(runner.getClub());
 
-            for (final Race individual_race : ((MidweekRaceImpl) race.getSpecific()).getRaces())
+            for (final Race2 individual_race : ((MidweekRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
                     final int score = calculator.calculateRaceScore(individual_race, runner);
                     elements.add(String.valueOf(score));

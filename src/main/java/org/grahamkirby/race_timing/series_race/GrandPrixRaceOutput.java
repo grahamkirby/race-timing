@@ -116,9 +116,9 @@ class GrandPrixRaceOutput extends RaceOutput {
             final List<String> headers = new ArrayList<>(common_headers);
 
             // This traverses races in order of listing in config, sorted first by race type and then date.
-            final List<Race> races = ((GrandPrixRaceImpl) race.getSpecific()).getRaces();
+            final List<Race2> races = ((GrandPrixRaceImpl) race.getSpecific()).getRaces();
 
-            for (final Race individual_race : races)
+            for (final Race2 individual_race : races)
                 // Check whether race has taken place at this point.
                 if (individual_race != null)
                     headers.add((String) individual_race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS));
@@ -143,7 +143,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getShortName());
 
-            for (final Race individual_race : ((GrandPrixRaceImpl) race.getSpecific()).getRaces())
+            for (final Race2 individual_race : ((GrandPrixRaceImpl) race.getSpecific()).getRaces())
                 if (individual_race != null) {
                     final int score = calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant());
                     elements.add(renderScore(score));

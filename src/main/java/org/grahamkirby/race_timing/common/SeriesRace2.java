@@ -15,15 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.series_race;
+package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.Race2;
-
-import java.util.List;
-
-public interface SeriesRace {
-
-    int getNumberOfRacesTakenPlace();
-    List<Race2> getRaces();
+public interface SeriesRace2 extends Race2 {
 }

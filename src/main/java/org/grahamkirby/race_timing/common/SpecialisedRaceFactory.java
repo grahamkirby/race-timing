@@ -23,6 +23,6 @@ import java.util.Properties;
 
 public interface SpecialisedRaceFactory {
 
-    Race makeRace(Path config_file_path) throws IOException;
+    Race2 makeRace(Path config_file_path) throws IOException;
     boolean isValidFor(Properties properties);
 }
