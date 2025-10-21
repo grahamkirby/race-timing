@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.common;
 
 public interface SpecificRace {
 
-    void setRace(Race race);
+    void setRace(Race2 race);
 
     void completeConfiguration();
 }

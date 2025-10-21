@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.CommonRaceResult;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.RaceResultWithDuration;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
@@ -36,7 +33,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
 
     public final List<Duration> times;
 
-    TourRaceResult(final Runner runner, final List<Duration> times, final Race race) {
+    TourRaceResult(final Runner runner, final List<Duration> times, final Race2 race) {
 
         super(race, runner);
         this.times = times;

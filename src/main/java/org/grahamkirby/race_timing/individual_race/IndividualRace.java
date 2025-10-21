@@ -17,6 +17,8 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.*;
 
@@ -46,7 +48,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     // Categories processor
     // Output handling
 
-    private Race race;
+    private Race2 race = this;
     Map<EntryCategory, Duration> category_start_offsets;
     Map<Integer, Duration> individual_start_offsets;
     Map<Integer, Duration> time_trial_start_offsets;
@@ -58,6 +60,18 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     private final List<ConfigProcessor> config_processors = new ArrayList<>();
     private Config config;
     public Path config_file_path;
+    private CategoriesProcessor categories_processor;
+    private CategoryDetails category_details;
+    RaceResultsCalculator results_calculator;
+    ResultsOutput results_output;
+    public Normalisation normalisation;
+    private List<RawResult> raw_results;
+    private List<RaceEntry> entries;
+
+    public IndividualRace(final Path config_file_path) {
+
+        this.config_file_path = config_file_path;
+    }
 
     private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
 
@@ -80,6 +94,29 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         return config;
     }
 
+    public Path getPathConfig(final String key) {
+
+        return (Path) getConfig().get(key);
+    }
+
+    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
+
+        this.categories_processor = categories_processor;
+        categories_processor.setRace(this);
+    }
+
+    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
+
+        this.results_calculator = results_calculator;
+        results_calculator.setRace(this);
+    }
+
+    public void setResultsOutput(final ResultsOutput results_output) {
+
+        this.results_output = results_output;
+        results_output.setRace(this);
+    }
+
     @Override
     public RaceData getRaceData() {
 
@@ -89,16 +126,12 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         try {
             validateDataFiles(entries_path, raw_results_path);
 
-//            final List<RaceEntry> entries = loadEntries(entries_path);
-//            final List<RawResult> raw_results = loadRawResults(raw_results_path);
             entries = loadEntries(entries_path);
             raw_results = loadRawResults(raw_results_path);
 
             validateData(entries, raw_results, entries_path, raw_results_path);
 
             return this;
-//            return new IndividualRace(raw_results, entries);
-//            return new IndividualRaceDataImpl(raw_results, entries);
 
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -113,9 +146,9 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
         try {
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            race.getCategoryDetails().lookupEntryCategory(category_name);
+            getCategoryDetails().lookupEntryCategory(category_name);
 
-        } catch (final RuntimeException _) {
+        } catch (final RuntimeException e) {
             throw new RuntimeException(String.join(" ", elements));
         }
     }
@@ -175,36 +208,11 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         return readAllLines(entries_path).stream().
             map(Normalisation::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
-            map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), race)).
+            map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), this)).
             toList();
     }
 
-
-
-
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private  List<RawResult> raw_results;
-    private  List<RaceEntry> entries;
-
-    public IndividualRace() {
-
-
-    }
-
-    public IndividualRace(final Path config_file_path) {
-
-
-            this.config_file_path = config_file_path;
-
-    }
-
-    public IndividualRace(List<RawResult> raw_results, List<RaceEntry> entries) {
-
-        this.raw_results = raw_results;
-        this.entries = entries;
-    }
 
     @Override
     public List<RawResult> getRawResults() {
@@ -216,21 +224,21 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         return entries;
     }
 
-    @Override
     public void processResults() {
 
-        race.processResults();
+        category_details = categories_processor.getCategoryDetails();
+        getRaceData();
+
+        completeConfiguration();
+        results_calculator.calculateResults();
     }
 
-    @Override
     public void outputResults() throws IOException {
-
-        race.outputResults();
+        results_output.outputResults();
     }
 
-
-    public void setRace(Race race) {
-        this.race = race;
+    public void setRace(Race2 race) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -242,14 +250,13 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         separately_recorded_finish_times = readSeparatelyRecordedResults();
     }
 
-//    @Override
-//    public Config getConfig() {
-//        return race.getConfig();
-//    }
-
     @Override
     public RaceResultsCalculator getResultsCalculator() {
-        return race.getResultsCalculator();
+        return results_calculator;
+    }
+
+    public CategoryDetails getCategoryDetails() {
+        return category_details;
     }
 
     /**
@@ -272,6 +279,42 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
+    }
+
+    @Override
+    public synchronized Normalisation getNormalisation() {
+
+        if (normalisation == null)
+            normalisation = new Normalisation(this);
+
+        return normalisation;
+    }
+
+    public void appendToNotes(String s) {
+        results_calculator.getNotes().append(s);
+    }
+
+    public String getNotes() {
+        return results_calculator.getNotes().toString();
+    }
+
+    @Override
+    public String getStringConfig(final String key) {
+
+        return (String) getConfig().get(key);
+    }
+
+    @Override
+    public Path getOutputDirectoryPath() {
+
+        // This assumes that the config file is in the "input" directory
+        // which is at the same level as the "output" directory.
+        return config_file_path.getParent().resolveSibling("output");
+    }
+
+    @Override
+    public Object getSpecific() {
+        return this;
     }
 
     private static Path makeRelativeToProjectRoot(final Path path) {
@@ -395,7 +438,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
     public List<String> getTeamPrizes() {
 
-        final List<RaceResult> overall_results = race.getResultsCalculator().getOverallResults();
+        final List<RaceResult> overall_results = getResultsCalculator().getOverallResults();
         final Set<String> clubs = getClubs(overall_results);
 
         int best_male_team_total = Integer.MAX_VALUE;
@@ -440,7 +483,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         int team_count = 0;
         int total = 0;
 
-        for (final RaceResult result : race.getResultsCalculator().getOverallResults()) {
+            for (final RaceResult result : getResultsCalculator().getOverallResults()) {
 
             result_position++;
 

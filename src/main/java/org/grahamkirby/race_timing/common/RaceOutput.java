@@ -43,7 +43,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceOutput implements ResultsOutput {
 
-    protected Race race;
+    protected Race2 race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +59,7 @@ public abstract class RaceOutput implements ResultsOutput {
     }
 
     @Override
-    public void setRace(final Race race) {
+    public void setRace(final Race2 race) {
 
         this.race = race;
     }
@@ -360,7 +360,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
     public static final class PrizeResultPrinterText extends ResultPrinter {
 
-        public PrizeResultPrinterText(final Race race, final OutputStreamWriter writer) {
+        public PrizeResultPrinterText(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -386,7 +386,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
         private final Document document;
 
-        public PrizeResultPrinterPDF(final Race race, final Document document) {
+        public PrizeResultPrinterPDF(final Race2 race, final Document document) {
 
             super(race, null);
             this.document = document;

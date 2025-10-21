@@ -99,7 +99,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesHTML(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRace) race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRace) race).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
@@ -115,7 +115,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesPDF(final Document document) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRace) race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRace) race).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
             document.add(new Paragraph("Team Prizes").
@@ -130,7 +130,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRace) race.getSpecific()).getTeamPrizes();
+        final List<String> team_prizes = ((IndividualRace) race).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
@@ -164,7 +164,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private IndividualRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -192,7 +192,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        private IndividualRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private IndividualRacePrizeResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -209,7 +209,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRaceOverallResultPrinterCSV extends ResultPrinter {
 
-        private IndividualRaceOverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterCSV(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

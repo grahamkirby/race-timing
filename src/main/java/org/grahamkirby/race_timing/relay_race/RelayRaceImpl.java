@@ -29,7 +29,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.*;
 
 public class RelayRaceImpl implements SpecificRace {
 
-    private Race race;
+    private Race2 race;
 
     /**
      * For each leg, records whether there was a mass start.
@@ -55,7 +55,7 @@ public class RelayRaceImpl implements SpecificRace {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(final Race race) {
+    public void setRace(final Race2 race) {
         this.race = race;
     }
 

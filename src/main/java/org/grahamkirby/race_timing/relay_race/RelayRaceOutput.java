@@ -322,7 +322,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class RelayRaceOverallResultPrinterCSV extends ResultPrinter {
 
-        private RelayRaceOverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+        private RelayRaceOverallResultPrinterCSV(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -348,7 +348,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class RelayRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private RelayRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private RelayRaceOverallResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -375,7 +375,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class DetailedResultPrinterCSV extends ResultPrinter {
 
-        private DetailedResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+        private DetailedResultPrinterCSV(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -416,7 +416,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class DetailedResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private DetailedResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private DetailedResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -463,7 +463,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         final int leg;
 
-        private LegResultPrinterCSV(final Race race, final OutputStreamWriter writer, final int leg) {
+        private LegResultPrinterCSV(final Race2 race, final OutputStreamWriter writer, final int leg) {
 
             super(race, writer);
             this.leg = leg;
@@ -493,7 +493,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         final int leg;
 
-        private LegResultPrinterHTML(final Race race, final OutputStreamWriter writer, final int leg) {
+        private LegResultPrinterHTML(final Race2 race, final OutputStreamWriter writer, final int leg) {
 
             super(race, writer);
             this.leg = leg;
@@ -527,7 +527,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class RelayRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public RelayRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        public RelayRacePrizeResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

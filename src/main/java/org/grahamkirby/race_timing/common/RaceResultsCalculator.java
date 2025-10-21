@@ -28,7 +28,7 @@ import static org.grahamkirby.race_timing.common.Config.KEY_DNF_FINISHERS;
 
 public abstract class RaceResultsCalculator {
 
-    protected Race race;
+    protected Race2 race;
     protected List<RaceResult> overall_results;
     protected final StringBuilder notes;
 
@@ -39,7 +39,7 @@ public abstract class RaceResultsCalculator {
 
     public abstract void calculateResults();
 
-    public void setRace(final Race race) {
+    public void setRace(final Race2 race) {
 
         this.race = race;
     }

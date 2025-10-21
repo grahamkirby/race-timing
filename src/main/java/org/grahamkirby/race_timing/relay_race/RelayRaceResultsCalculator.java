@@ -50,7 +50,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void setRace(final Race race) {
+    public void setRace(final Race2 race) {
 
         super.setRace(race);
 

@@ -29,7 +29,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class IndividualRaceResult extends SingleRaceResult {
 
-    public IndividualRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
+    public IndividualRaceResult(final Race2 race, final RaceEntry entry, final Duration finish_time) {
 
         super(race, entry, finish_time);
     }
@@ -44,12 +44,6 @@ public class IndividualRaceResult extends SingleRaceResult {
             CommonRaceResult::compareRunnerLastName,
             CommonRaceResult::compareRunnerFirstName);
     }
-
-//    @Override
-//    public String getPrizeDetailPDF() {
-//
-//        return getPrizeDetailText();
-//    }
 
     @Override
     public String getPrizeDetail() {

@@ -30,7 +30,7 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
     protected final int number_of_races_in_series;
     protected final int number_of_races_taken_place;
 
-    public SeriesRaceResult(final Race race, final Participant participant) {
+    public SeriesRaceResult(final Race2 race, final Participant participant) {
 
         super(race, participant);
 
@@ -48,12 +48,6 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
 
         return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
     }
-
-//    @Override
-//    public String getPrizeDetailPDF() {
-//
-//        return null;
-//    }
 
     @Override
     public String getPrizeDetail() {

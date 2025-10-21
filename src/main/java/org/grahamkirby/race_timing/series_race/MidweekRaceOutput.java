@@ -52,7 +52,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -90,7 +90,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class MidweekRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private MidweekRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private MidweekRaceOverallResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -144,7 +144,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class MidweekRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public MidweekRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        public MidweekRacePrizeResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

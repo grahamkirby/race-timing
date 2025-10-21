@@ -22,5 +22,5 @@ public interface RaceDataProcessor {
 
     RaceData getRaceData();
 
-    void setRace(Race race);
+    void setRace(Race2 race);
 }

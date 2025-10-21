@@ -37,7 +37,7 @@ public class LegResult extends SingleRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LegResult(final Race race, final RaceEntry entry) {
+    LegResult(final Race2 race, final RaceEntry entry) {
 
         super(race, entry, null);
         setDnf(true);

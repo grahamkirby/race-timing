@@ -32,11 +32,11 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
 
-    private Race race;
+    private Race2 race;
     private final Map<RawResult, Integer> explicitly_recorded_leg_numbers = new HashMap<>();
 
     @Override
-    public void setRace(Race race) {
+    public void setRace(Race2 race) {
 
         this.race = race;
     }
@@ -244,7 +244,7 @@ public class RelayRaceDataProcessorImpl implements RaceDataProcessor {
     private static final int FIRST_RUNNER_NAME_INDEX = 3;
 
     @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
-    RaceEntry makeRelayRaceEntry(final List<String> elements, final Race race) {
+    RaceEntry makeRelayRaceEntry(final List<String> elements, final Race2 race) {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 

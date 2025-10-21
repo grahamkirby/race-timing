@@ -31,7 +31,7 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
     public Race2 makeRace(final Path config_file_path) throws IOException {
 
-        final Race race = new Race(config_file_path);
+        final IndividualRace race = new IndividualRace(config_file_path);
 
         race.addConfigProcessor(new RaceConfigAdjuster());
         race.addConfigProcessor(new IndividualRaceConfigAdjuster());
@@ -39,19 +39,7 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
         race.addConfigProcessor(new IndividualRaceConfigValidator());
         race.loadConfig();
 
-        final IndividualRace individualRace = new IndividualRace(config_file_path);
-
-        individualRace.addConfigProcessor(new RaceConfigAdjuster());
-        individualRace.addConfigProcessor(new IndividualRaceConfigAdjuster());
-        individualRace.addConfigProcessor(new RaceConfigValidator());
-        individualRace.addConfigProcessor(new IndividualRaceConfigValidator());
-        individualRace.loadConfig();
-
-
-
-        race.setSpecific(individualRace);
         race.setCategoriesProcessor(new CategoriesProcessor());
-        race.setRaceDataProcessor(individualRace);
         race.setResultsCalculator(new IndividualRaceResultsCalculator());
         race.setResultsOutput(new IndividualRaceOutput());
 

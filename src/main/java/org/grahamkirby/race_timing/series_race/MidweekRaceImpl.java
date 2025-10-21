@@ -30,13 +30,13 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class MidweekRaceImpl implements SpecificRace, SeriesRace {
 
-    private Race race;
+    private Race2 race;
     private List<Race2> races;
     private List<String> race_config_paths;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(final Race race) {
+    public void setRace(final Race2 race) {
         this.race = race;
     }
 

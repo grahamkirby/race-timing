@@ -32,7 +32,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     private final List<Integer> scores;
 
-    GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
+    GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race2 race) {
 
         super(race, runner);
         this.scores = scores;

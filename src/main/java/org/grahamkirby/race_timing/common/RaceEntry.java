@@ -17,6 +17,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.individual_race.Runner;
 import org.grahamkirby.race_timing.categories.EntryCategory;
 
@@ -35,10 +36,12 @@ public class RaceEntry {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "OverlyBroadCatchBlock", "IfCanBeAssertion"})
-    public RaceEntry(final List<String> elements, final Race race) {
+    @SuppressWarnings({"OverlyBroadCatchBlock", "IfCanBeAssertion"})
+    public RaceEntry(final List<String> elements, final Race2 race) {
 
-        Normalisation normalisation = race.getNormalisation();
+        final Normalisation normalisation = race.getNormalisation();
+        final CategoryDetails category_details = race.getCategoryDetails();
+
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
@@ -48,16 +51,16 @@ public class RaceEntry {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = race.getCategoryDetails().lookupEntryCategory(category_name);
+            final EntryCategory category = category_details.lookupEntryCategory(category_name);
 
             participant = new Runner(name, club, category);
 
-        } catch (final RuntimeException _) {
+        } catch (final RuntimeException e) {
             throw new RuntimeException(String.join(" ", elements));
         }
     }
 
-    public RaceEntry(final Participant participant, final int bib_number, final Race race) {
+    public RaceEntry(final Participant participant, final int bib_number, final Race2 race) {
 
         this.participant = participant;
         this.bib_number = bib_number;

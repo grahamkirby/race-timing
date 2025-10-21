@@ -92,7 +92,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private void adjustTimes() {
 
-        final IndividualRace impl = (IndividualRace) race.getSpecific();
+        final IndividualRace impl = (IndividualRace) race;
 
         adjustTimesByCategory(impl.category_start_offsets);
         adjustTimes(impl.individual_start_offsets);
@@ -101,7 +101,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private void addSeparatelyRecordedTimes() {
 
-        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race.getSpecific()).separately_recorded_finish_times;
+        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race).separately_recorded_finish_times;
 
         for (final Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet())
             overall_results.add(makeRaceResult(new RawResult(entry.getKey(), entry.getValue())));
@@ -187,7 +187,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
     }
 
-    private RaceEntry makeRaceEntry(final List<String> elements, final Race race) {
+    private RaceEntry makeRaceEntry(final List<String> elements, final Race2 race) {
 
         final Normalisation normalisation = race.getNormalisation();
 
