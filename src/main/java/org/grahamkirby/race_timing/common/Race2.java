@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.categories.CategoryDetails;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 public interface Race2 {
 
@@ -49,4 +50,8 @@ public interface Race2 {
     RaceData getRaceData();
 
     Path getPathConfig(String key);
+
+    List<RawResult> getRawResults();
+
+    List<RaceEntry> getEntries();
 }

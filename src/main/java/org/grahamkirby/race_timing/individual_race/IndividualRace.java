@@ -48,7 +48,6 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     // Categories processor
     // Output handling
 
-    private Race2 race = this;
     Map<EntryCategory, Duration> category_start_offsets;
     Map<Integer, Duration> individual_start_offsets;
     Map<Integer, Duration> time_trial_start_offsets;
@@ -120,8 +119,8 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     @Override
     public RaceData getRaceData() {
 
-        final Path entries_path = race.getPathConfig(KEY_ENTRIES_PATH);
-        final Path raw_results_path = race.getPathConfig(KEY_RAW_RESULTS_PATH);
+        final Path entries_path = getPathConfig(KEY_ENTRIES_PATH);
+        final Path raw_results_path = getPathConfig(KEY_RAW_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, raw_results_path);
@@ -141,7 +140,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     private void validateEntryCategory(final String line) {
 
         final List<String> elements = Arrays.stream(line.split("\t")).toList();
-        final Normalisation normalisation = race.getNormalisation();
+        final Normalisation normalisation = getNormalisation();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
@@ -155,7 +154,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
     private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, getStringConfig(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
         validateRawResults(raw_results_path);
@@ -332,15 +331,15 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
         final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
 
-        if (race.getConfig().containsKey(KEY_CATEGORY_START_OFFSETS)) {
+        if (getConfig().containsKey(KEY_CATEGORY_START_OFFSETS)) {
 
             // e.g. FU9/00:01:00,MU9/00:01:00,FU11/00:01:00,MU11/00:01:00
-            final String[] offset_strings = ((String) (race.getConfig().get(KEY_CATEGORY_START_OFFSETS))).split(",", -1);
+            final String[] offset_strings = getStringConfig(KEY_CATEGORY_START_OFFSETS).split(",", -1);
 
             for (final String offset_string : offset_strings) {
 
                 final String[] split = offset_string.split("/");
-                category_offsets.put(race.getCategoryDetails().lookupEntryCategory(split[0]), Normalisation.parseTime(split[1]));
+                category_offsets.put(category_details.lookupEntryCategory(split[0]), Normalisation.parseTime(split[1]));
             }
         }
 
@@ -351,9 +350,9 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
         final Map<Integer, Duration> results = new HashMap<>();
 
-        if (race.getConfig().containsKey(KEY_SEPARATELY_RECORDED_RESULTS)) {
+        if (getConfig().containsKey(KEY_SEPARATELY_RECORDED_RESULTS)) {
 
-            final String[] self_timed_strings = ((String) (race.getConfig().get(KEY_SEPARATELY_RECORDED_RESULTS))).split(",", -1);
+            final String[] self_timed_strings = getStringConfig(KEY_SEPARATELY_RECORDED_RESULTS).split(",", -1);
 
             // SEPARATELY_RECORDED_RESULTS = 126/8:09
 
@@ -378,12 +377,12 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
         // with incomplete waves if there are any gaps in bib numbers.
         // The second option applies when start order is manually determined (e.g. to start current leaders first or last).
 
-        if (race.getConfig().containsKey(KEY_TIME_TRIAL_RUNNERS_PER_WAVE)) {
+        if (getConfig().containsKey(KEY_TIME_TRIAL_RUNNERS_PER_WAVE)) {
 
-            time_trial_runners_per_wave = (int) race.getConfig().get(KEY_TIME_TRIAL_RUNNERS_PER_WAVE);
-            time_trial_inter_wave_interval = (Duration) race.getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
+            time_trial_runners_per_wave = (int) getConfig().get(KEY_TIME_TRIAL_RUNNERS_PER_WAVE);
+            time_trial_inter_wave_interval = (Duration) getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
 
-            for (final RawResult raw_result : race.getRaceData().getRawResults()) {
+            for (final RawResult raw_result : raw_results) {
 
                 final int wave_number = runnerIndexInBibOrder(raw_result.getBibNumber()) / time_trial_runners_per_wave;
                 final Duration start_offset = time_trial_inter_wave_interval.multipliedBy(wave_number);
@@ -392,9 +391,9 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
             }
         }
 
-        if (race.getConfig().containsKey(KEY_TIME_TRIAL_STARTS)) {
+        if (getConfig().containsKey(KEY_TIME_TRIAL_STARTS)) {
 
-            for (final String part : ((String) race.getConfig().get(KEY_TIME_TRIAL_STARTS)).split(",", -1)) {
+            for (final String part : getStringConfig(KEY_TIME_TRIAL_STARTS).split(",", -1)) {
 
                 final String[] split = part.split("/");
                 starts.put(Integer.parseInt(split[0]), Normalisation.parseTime(split[1]));
@@ -408,7 +407,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
         final Map<Integer, Duration> starts = new HashMap<>();
 
-        final String individual_early_starts_string = (String) race.getConfig().get(KEY_INDIVIDUAL_EARLY_STARTS);
+        final String individual_early_starts_string = getStringConfig(KEY_INDIVIDUAL_EARLY_STARTS);
 
         // bib number / start time difference
         // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
@@ -477,7 +476,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
     private int getTeamTotal(final String club, final String gender) {
 
-        final int number_to_count_for_team_prize = (Integer) race.getConfig().get(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
+        final int number_to_count_for_team_prize = (int) getConfig().get(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
 
         int result_position = 0;
         int team_count = 0;

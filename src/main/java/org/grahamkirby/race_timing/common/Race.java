@@ -183,6 +183,16 @@ public class Race implements Race2 {
         return (Path) getConfig().get(key);
     }
 
+    @Override
+    public List<RawResult> getRawResults() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        throw new UnsupportedOperationException();
+    }
+
     public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
 
         this.categories_processor = categories_processor;

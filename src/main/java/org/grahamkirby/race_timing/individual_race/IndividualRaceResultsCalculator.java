@@ -138,7 +138,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private void initialiseResults() {
 
-        final List<RawResult> raw_results = race.getRaceData().getRawResults();
+        final List<RawResult> raw_results = race.getRawResults();
 
         if (raw_results.isEmpty()) {
             try {
@@ -221,7 +221,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
-        final List<RaceEntry> entries = race.getRaceData().getEntries();
+        final List<RaceEntry> entries = race.getEntries();
 
         return entries.stream().
             filter(entry -> entry.bib_number == bib_number).
