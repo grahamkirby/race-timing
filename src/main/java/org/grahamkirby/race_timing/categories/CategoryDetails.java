@@ -26,7 +26,7 @@ public class CategoryDetails {
     private final List<EntryCategory> entry_categories;
     private final List<PrizeCategoryGroup> prize_category_groups;
 
-    public CategoryDetails(List<EntryCategory> entry_categories, List<PrizeCategoryGroup> prize_category_groups) {
+    public CategoryDetails(final List<EntryCategory> entry_categories, final List<PrizeCategoryGroup> prize_category_groups) {
 
         this.entry_categories = entry_categories;
         this.prize_category_groups = prize_category_groups;

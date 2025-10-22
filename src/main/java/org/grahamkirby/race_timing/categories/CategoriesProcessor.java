@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.categories;
 
 import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.Race2;
 
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class CategoriesProcessor  {
     private List<PrizeCategoryGroup> prize_category_groups;
     private Race2 race;
 
-    public void setRace(Race2 race) {
+    public void setRace(final Race2 race) {
         this.race = race;
     }
 
@@ -46,7 +45,7 @@ public class CategoriesProcessor  {
         try {
             final Config config = race.getConfig();
             final Path results_path = (Path) config.get(KEY_ENTRY_CATEGORIES_PATH);
-            List<EntryCategory> entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+            final List<EntryCategory> entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
             prize_category_groups = new ArrayList<>();
             final Path categories_prize_path = (Path) race.getConfig().get(KEY_PRIZE_CATEGORIES_PATH);
             loadPrizeCategoryGroups(categories_prize_path);

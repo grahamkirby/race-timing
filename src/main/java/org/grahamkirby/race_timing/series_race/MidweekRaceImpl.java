@@ -164,7 +164,7 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
 
     private Race2 getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
-        final Path config_path = race.interpretPath(Path.of(race_config_path));
+        final Path config_path = race.getConfig().interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + race.getConfig().getConfigPath().getFileName() + "'");

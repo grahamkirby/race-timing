@@ -23,7 +23,6 @@ import org.grahamkirby.race_timing.common.*;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
 
@@ -93,19 +92,5 @@ public class LegResult extends SingleRaceResult {
 
     public void setLegNumber(final int leg_number) {
         this.leg_number = leg_number;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected int getRecordedPosition(final int bib_number) {
-
-        final AtomicInteger legs_completed = new AtomicInteger(0);
-
-        return (int) race.getRawResults().stream().
-            peek(result -> {
-                if (result.getBibNumber() == bib_number) legs_completed.incrementAndGet();
-            }).
-            takeWhile(result -> result.getBibNumber() != bib_number || legs_completed.get() < leg_number).
-            count() + 1;
     }
 }

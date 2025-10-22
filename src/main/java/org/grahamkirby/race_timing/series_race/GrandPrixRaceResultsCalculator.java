@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.Race2;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;

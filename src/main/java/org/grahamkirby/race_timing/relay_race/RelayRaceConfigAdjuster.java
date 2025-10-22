@@ -32,13 +32,11 @@ public class RelayRaceConfigAdjuster implements ConfigProcessor {
         List.of(KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
 
     @Override
-    public void processConfig(Race2 race) {
-
-        final Config config = race.getConfig();
+    public void processConfig(final Config config) {
 
         config.addIfAbsent(KEY_START_OFFSET, "00:00:00");
 
-        config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> race.interpretPath(Path.of(s)));
+        config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
 
         config.replaceIfPresent(KEY_NUMBER_OF_LEGS, Integer::parseInt);
         config.replaceIfPresent(KEY_START_OFFSET, Normalisation::parseTime);

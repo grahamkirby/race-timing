@@ -24,29 +24,29 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race2 race) {
+    public void processConfig(final Config config) {
 
-        validateKeyPresent(KEY_YEAR, race);
-        validateKeyPresent(KEY_RACE_NAME_FOR_FILENAMES, race);
-        validateKeyPresent(KEY_RACE_NAME_FOR_RESULTS, race);
-        validateKeyPresent(KEY_ENTRY_CATEGORIES_PATH, race);
-        validateKeyPresent(KEY_PRIZE_CATEGORIES_PATH, race);
+        validateKeyPresent(KEY_YEAR, config);
+        validateKeyPresent(KEY_RACE_NAME_FOR_FILENAMES, config);
+        validateKeyPresent(KEY_RACE_NAME_FOR_RESULTS, config);
+        validateKeyPresent(KEY_ENTRY_CATEGORIES_PATH, config);
+        validateKeyPresent(KEY_PRIZE_CATEGORIES_PATH, config);
 
-        validateFileExists(KEY_ENTRY_CATEGORIES_PATH, race);
-        validateFileExists(KEY_PRIZE_CATEGORIES_PATH, race);
+        validateFileExists(KEY_ENTRY_CATEGORIES_PATH, config);
+        validateFileExists(KEY_PRIZE_CATEGORIES_PATH, config);
     }
 
-    public static void validateKeyPresent(final String key, final Race2 race) {
+    public static void validateKeyPresent(final String key, final Config config) {
 
-        if (!race.getConfig().containsKey(key))
-            throw new RuntimeException("no entry for key '" + key + "' in file '" + race.getConfig().getConfigPath().getFileName() + "'");
+        if (!config.containsKey(key))
+            throw new RuntimeException("no entry for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
     }
 
-    public static void validateFileExists(final String key, final Race2 race) {
+    public static void validateFileExists(final String key, final Config config) {
 
-        final Path path = (Path) race.getConfig().get(key);
+        final Path path = config.getPathConfig(key);
 
         if (!Files.exists(path))
-            throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + race.getConfig().getConfigPath().getFileName() + "'");
+            throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
     }
 }

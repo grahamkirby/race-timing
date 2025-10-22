@@ -17,17 +17,16 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.Race2;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
 public class MidweekRaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race2 race) {
+    public void processConfig(final Config config) {
 
-        validateKeyPresent(KEY_SCORE_FOR_FIRST_PLACE, race);
+        validateKeyPresent(KEY_SCORE_FOR_FIRST_PLACE, config);
     }
 }

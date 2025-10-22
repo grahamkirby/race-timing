@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.ConfigProcessor;
-import org.grahamkirby.race_timing.common.Normalisation;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.Race2;
+import org.grahamkirby.race_timing.common.*;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -32,21 +29,19 @@ import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKey
 
 public class RelayRaceConfigValidator implements ConfigProcessor {
 
-    public void processConfig(final Race2 race) {
+    public void processConfig(final Config config) {
 
-        final var config = race.getConfig();
+        validateKeyPresent(KEY_RAW_RESULTS_PATH, config);
+        validateKeyPresent(KEY_ENTRIES_PATH, config);
+        validateKeyPresent(KEY_NUMBER_OF_LEGS, config);
+        validateKeyPresent(KEY_PAIRED_LEGS, config);
 
-        validateKeyPresent(KEY_RAW_RESULTS_PATH, race);
-        validateKeyPresent(KEY_ENTRIES_PATH, race);
-        validateKeyPresent(KEY_NUMBER_OF_LEGS, race);
-        validateKeyPresent(KEY_PAIRED_LEGS, race);
-
-        validateFileExists(KEY_RAW_RESULTS_PATH, race);
-        validateFileExists(KEY_ENTRIES_PATH, race);
+        validateFileExists(KEY_RAW_RESULTS_PATH, config);
+        validateFileExists(KEY_ENTRIES_PATH, config);
 
         // Each DNF string contains single bib number.
-        validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), race.getConfig().getConfigPath());
-        validateMassStartTimes((String) config.get(KEY_MASS_START_ELAPSED_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), race.getConfig().getConfigPath());
+        validateDNFRecords(config.getStringConfig(KEY_DNF_FINISHERS), config.getConfigPath());
+        validateMassStartTimes(config.getStringConfig(KEY_MASS_START_ELAPSED_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), config.getConfigPath());
     }
 
     public static void validateDNFRecords(final String dnf_string, final Path config_file_path) {

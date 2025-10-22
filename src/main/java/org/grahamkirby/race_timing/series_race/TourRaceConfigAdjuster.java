@@ -17,9 +17,8 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.Race2;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POSITION;
 
@@ -27,8 +26,8 @@ import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POS
 public class TourRaceConfigAdjuster implements ConfigProcessor {
 
     @Override
-    public void processConfig(Race2 race) {
+    public void processConfig(final Config config) {
 
-        race.getConfig().replaceIfPresent(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
+        config.replaceIfPresent(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
     }
 }

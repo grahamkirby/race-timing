@@ -27,10 +27,8 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Config {
@@ -157,6 +155,12 @@ public class Config {
         config_map.putIfAbsent(key, value);
     }
 
+    public void processConfigIfPresent(final String key, final Consumer<Object> processor) {
+
+        if (config_map.containsKey(key))
+            processor.accept(config_map.get(key));
+    }
+
     public void replace(final String key, final Function<String, Object> make_new_value) {
 
         config_map.replace(key, make_new_value.apply((String) config_map.get(key)));
@@ -172,6 +176,69 @@ public class Config {
 
         for (final String key : keys)
             replaceIfPresent(key, make_new_value);
+    }
+
+    private final List<ConfigProcessor> config_processors = new ArrayList<>();
+
+    public void addConfigProcessor(final ConfigProcessor processor) {
+
+        config_processors.add(processor);
+    }
+
+    public void processConfig() throws IOException {
+
+        for (final ConfigProcessor processor : config_processors)
+            processor.processConfig(this);
+    }
+
+    public String getStringConfig(final String key) {
+
+        return (String) config_map.get(key);
+    }
+
+    public Path getPathConfig(final String key) {
+
+        return (Path) config_map.get(key);
+    }
+
+    /**
+     * Resolves the given path relative to either the race configuration file,
+     * if it's specified as a relative path, or to the project root. Examples:
+     *
+     * Relative to race configuration:
+     * entries.txt -> /Users/gnck/Desktop/myrace/input/entries.txt
+     *
+     * Relative to project root:
+     * /src/main/resources/configuration/categories_entry_individual_senior.csv ->
+     *    src/main/resources/configuration/categories_entry_individual_senior.csv
+     */
+    @SuppressWarnings("JavadocBlankLines")
+    public Path interpretPath(final Path path) {
+
+        // Absolute paths originate from config file where path starting with "/" denotes
+        // a path relative to the project root.
+        // Can't test with isAbsolute() since that will return false on Windows.
+        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
+
+        return getPathRelativeToRaceConfigFile(path);
+    }
+
+    private static Path makeRelativeToProjectRoot(final Path path) {
+
+        // Path is specified as absolute path, should be reinterpreted relative to project root.
+        return path.subpath(0, path.getNameCount());
+    }
+
+    private Path getPathRelativeToRaceConfigFile(final Path path) {
+
+        return config_path.resolveSibling(path);
+    }
+
+    public Path getOutputDirectoryPath() {
+
+        // This assumes that the config file is in the "input" directory
+        // which is at the same level as the "output" directory.
+        return config_path.getParent().resolveSibling("output");
     }
 }
 

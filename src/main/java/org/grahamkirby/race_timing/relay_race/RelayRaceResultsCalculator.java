@@ -314,7 +314,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         }
     }
 
-    RaceEntry getEntryWithBibNumber(final int bib_number) {
+    private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
         return race.getEntries().stream().
             filter(entry -> entry.bib_number == bib_number).

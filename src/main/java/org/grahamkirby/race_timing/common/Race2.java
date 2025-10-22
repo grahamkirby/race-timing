@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.categories.CategoryDetails;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 public interface Race2 {
@@ -30,28 +29,11 @@ public interface Race2 {
     void completeConfiguration();
     Config getConfig();
     RaceResultsCalculator getResultsCalculator();
-
-    Path interpretPath(final Path path);
-
     CategoryDetails getCategoryDetails();
-
     Normalisation getNormalisation();
-
     void appendToNotes(String s);
-
     String getNotes();
-
-    String getStringConfig(String key);
-
-    Path getOutputDirectoryPath();
-
     Object getSpecific();
-
-    RaceData getRaceData();
-
-    Path getPathConfig(String key);
-
     List<RawResult> getRawResults();
-
     List<RaceEntry> getEntries();
 }

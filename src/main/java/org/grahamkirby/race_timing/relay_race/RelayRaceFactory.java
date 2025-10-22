@@ -28,16 +28,12 @@ import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_LEGS;
 
 public class RelayRaceFactory implements SpecialisedRaceFactory {
 
+    public static final String KEY_INDICATIVE_OF_RELAY_RACE = KEY_NUMBER_OF_LEGS;
+
     @Override
     public Race2 makeRace(final Path config_file_path) throws IOException {
 
-        final RelayRace race = new RelayRace(config_file_path);
-
-        race.addConfigProcessor(new RaceConfigAdjuster());
-        race.addConfigProcessor(new RelayRaceConfigAdjuster());
-        race.addConfigProcessor(new RaceConfigValidator());
-        race.addConfigProcessor(new RelayRaceConfigValidator());
-        race.loadConfig();
+        final RelayRace race = new RelayRace(makeRelayRaceConfig(config_file_path));
 
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new RelayRaceResultsCalculator());
@@ -49,6 +45,19 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
     @Override
     public boolean isValidFor(final Properties properties) {
 
-        return properties.containsKey(KEY_NUMBER_OF_LEGS);
+        return properties.containsKey(KEY_INDICATIVE_OF_RELAY_RACE);
+    }
+
+    private Config makeRelayRaceConfig(final Path config_file_path) throws IOException {
+
+        final Config config = new Config(config_file_path);
+
+        config.addConfigProcessor(new RaceConfigAdjuster());
+        config.addConfigProcessor(new RelayRaceConfigAdjuster());
+        config.addConfigProcessor(new RaceConfigValidator());
+        config.addConfigProcessor(new RelayRaceConfigValidator());
+        config.processConfig();
+
+        return config;
     }
 }

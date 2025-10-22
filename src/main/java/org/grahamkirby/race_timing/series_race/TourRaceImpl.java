@@ -81,12 +81,12 @@ public class TourRaceImpl implements SpecificRace, SeriesRace {
             processMultipleClubsForRunner(runner_name, defined_clubs);
     }
 
-    protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
+    private void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
 
         noteMultipleClubsForRunnerName(runner_name, defined_clubs);
     }
 
-    protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
+    private void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
 
         race.getResultsCalculator().getNotes().append("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }
@@ -114,7 +114,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRace {
             toList();
     }
 
-    protected void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
+    private void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
 
         races.stream().
             filter(Objects::nonNull).
@@ -164,7 +164,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRace {
 
     private Race2 getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
-        final Path config_path = race.interpretPath(Path.of(race_config_path));
+        final Path config_path = race.getConfig().interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + race.getConfig().getConfigPath().getFileName() + "'");

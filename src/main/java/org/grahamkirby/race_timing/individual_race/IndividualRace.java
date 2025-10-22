@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
 
-public class IndividualRace implements Race2, RaceData {
+public class IndividualRace implements Race2 {
 
     // Components:
     //
@@ -48,54 +49,29 @@ public class IndividualRace implements Race2, RaceData {
     // Categories processor
     // Output handling
 
+    private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
+
     Map<EntryCategory, Duration> category_start_offsets;
     Map<Integer, Duration> individual_start_offsets;
     Map<Integer, Duration> time_trial_start_offsets;
     Map<Integer, Duration> separately_recorded_finish_times;
 
-    int time_trial_runners_per_wave;
-    Duration time_trial_inter_wave_interval;
-
-    private final List<ConfigProcessor> config_processors = new ArrayList<>();
-    private Config config;
-    public Path config_file_path;
+    private final Config config;
     private CategoriesProcessor categories_processor;
     private CategoryDetails category_details;
-    RaceResultsCalculator results_calculator;
-    ResultsOutput results_output;
-    public Normalisation normalisation;
+    private RaceResultsCalculator results_calculator;
+    private ResultsOutput results_output;
+    private Normalisation normalisation;
     private List<RawResult> raw_results;
     private List<RaceEntry> entries;
 
-    public IndividualRace(final Path config_file_path) {
+    public IndividualRace(final Config config) throws IOException {
 
-        this.config_file_path = config_file_path;
-    }
-
-    private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
-
-    public void addConfigProcessor(final ConfigProcessor processor) {
-
-        config_processors.add(processor);
-    }
-
-    public void loadConfig() throws IOException {
-
-        config = new Config(config_file_path);
-
-        for (final ConfigProcessor processor : config_processors) {
-
-            processor.processConfig(this);
-        }
+        this.config = config;
     }
 
     public Config getConfig() {
         return config;
-    }
-
-    public Path getPathConfig(final String key) {
-
-        return (Path) getConfig().get(key);
     }
 
     public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
@@ -116,16 +92,10 @@ public class IndividualRace implements Race2, RaceData {
         results_output.setRace(this);
     }
 
-    @Override
-    public RaceData getRaceData() {
+    private void loadRaceData() {
 
-        return this;
-    }
-
-    public void loadRaceData() {
-
-        final Path entries_path = getPathConfig(KEY_ENTRIES_PATH);
-        final Path raw_results_path = getPathConfig(KEY_RAW_RESULTS_PATH);
+        final Path entries_path = config.getPathConfig(KEY_ENTRIES_PATH);
+        final Path raw_results_path = config.getPathConfig(KEY_RAW_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, raw_results_path);
@@ -157,7 +127,7 @@ public class IndividualRace implements Race2, RaceData {
 
     private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, getStringConfig(KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getStringConfig(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
         validateRawResults(raw_results_path);
@@ -205,7 +175,7 @@ public class IndividualRace implements Race2, RaceData {
                     throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
     }
 
-    List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
+    private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
         return readAllLines(entries_path).stream().
             map(Normalisation::stripEntryComment).
@@ -226,25 +196,26 @@ public class IndividualRace implements Race2, RaceData {
         return entries;
     }
 
+    @Override
     public void processResults() {
 
         category_details = categories_processor.getCategoryDetails();
         loadRaceData();
-
-        completeConfiguration();
+        completeConfiguration2();
         results_calculator.calculateResults();
     }
 
+    @Override
     public void outputResults() throws IOException {
         results_output.outputResults();
     }
 
-    public void setRace(Race2 race) {
+    @Override
+    public void completeConfiguration() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void completeConfiguration() {
+    public void completeConfiguration2() {
 
         category_start_offsets = readCategoryStartOffsets();
         individual_start_offsets = loadIndividualStartOffsets();
@@ -257,30 +228,9 @@ public class IndividualRace implements Race2, RaceData {
         return results_calculator;
     }
 
+    @Override
     public CategoryDetails getCategoryDetails() {
         return category_details;
-    }
-
-    /**
-     * Resolves the given path relative to either the race configuration file,
-     * if it's specified as a relative path, or to the project root. Examples:
-     *
-     * Relative to race configuration:
-     * entries.txt -> /Users/gnck/Desktop/myrace/input/entries.txt
-     *
-     * Relative to project root:
-     * /src/main/resources/configuration/categories_entry_individual_senior.csv ->
-     *    src/main/resources/configuration/categories_entry_individual_senior.csv
-     */
-    @SuppressWarnings("JavadocBlankLines")
-    public Path interpretPath(final Path path) {
-
-        // Absolute paths originate from config file where path starting with "/" denotes
-        // a path relative to the project root.
-        // Can't test with isAbsolute() since that will return false on Windows.
-        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
-
-        return getPathRelativeToRaceConfigFile(path);
     }
 
     @Override
@@ -292,26 +242,14 @@ public class IndividualRace implements Race2, RaceData {
         return normalisation;
     }
 
+    @Override
     public void appendToNotes(String s) {
         results_calculator.getNotes().append(s);
     }
 
+    @Override
     public String getNotes() {
         return results_calculator.getNotes().toString();
-    }
-
-    @Override
-    public String getStringConfig(final String key) {
-
-        return (String) getConfig().get(key);
-    }
-
-    @Override
-    public Path getOutputDirectoryPath() {
-
-        // This assumes that the config file is in the "input" directory
-        // which is at the same level as the "output" directory.
-        return config_file_path.getParent().resolveSibling("output");
     }
 
     @Override
@@ -319,32 +257,23 @@ public class IndividualRace implements Race2, RaceData {
         return this;
     }
 
-    private static Path makeRelativeToProjectRoot(final Path path) {
-
-        // Path is specified as absolute path, should be reinterpreted relative to project root.
-        return path.subpath(0, path.getNameCount());
-    }
-
-    private Path getPathRelativeToRaceConfigFile(final Path path) {
-
-        return config_file_path.resolveSibling(path);
-    }
-
     private Map<EntryCategory, Duration> readCategoryStartOffsets() {
 
         final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
 
-        if (getConfig().containsKey(KEY_CATEGORY_START_OFFSETS)) {
+        final Consumer<Object> process_category_start_offsets = value -> {
 
             // e.g. FU9/00:01:00,MU9/00:01:00,FU11/00:01:00,MU11/00:01:00
-            final String[] offset_strings = getStringConfig(KEY_CATEGORY_START_OFFSETS).split(",", -1);
+            final String[] offset_strings = ((String) value).split(",", -1);
 
             for (final String offset_string : offset_strings) {
 
                 final String[] split = offset_string.split("/");
                 category_offsets.put(category_details.lookupEntryCategory(split[0]), parseTime(split[1]));
             }
-        }
+        };
+
+        config.processConfigIfPresent(KEY_CATEGORY_START_OFFSETS, process_category_start_offsets);
 
         return category_offsets;
     }
@@ -353,9 +282,9 @@ public class IndividualRace implements Race2, RaceData {
 
         final Map<Integer, Duration> results = new HashMap<>();
 
-        if (getConfig().containsKey(KEY_SEPARATELY_RECORDED_RESULTS)) {
+        final Consumer<Object> process_separately_recorded_results = value -> {
 
-            final String[] self_timed_strings = getStringConfig(KEY_SEPARATELY_RECORDED_RESULTS).split(",", -1);
+            final String[] self_timed_strings = ((String) value).split(",", -1);
 
             // SEPARATELY_RECORDED_RESULTS = 126/8:09
 
@@ -367,7 +296,9 @@ public class IndividualRace implements Race2, RaceData {
 
                 results.put(bib_number, finish_time);
             }
-        }
+        };
+
+        config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
 
         return results;
     }
@@ -380,28 +311,31 @@ public class IndividualRace implements Race2, RaceData {
         // with incomplete waves if there are any gaps in bib numbers.
         // The second option applies when start order is manually determined (e.g. to start current leaders first or last).
 
-        if (getConfig().containsKey(KEY_TIME_TRIAL_RUNNERS_PER_WAVE)) {
+        final Consumer<Object> process_runners_per_wave = value -> {
 
-            time_trial_runners_per_wave = (int) getConfig().get(KEY_TIME_TRIAL_RUNNERS_PER_WAVE);
-            time_trial_inter_wave_interval = (Duration) getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
+            final int time_trial_runners_per_wave = (int) value;
+            final Duration time_trial_inter_wave_interval = (Duration) getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
 
             for (final RawResult raw_result : raw_results) {
 
-                final int wave_number = runnerIndexInBibOrder(raw_result.getBibNumber()) / time_trial_runners_per_wave;
+                final int wave_number = (raw_result.getBibNumber() - 1) / time_trial_runners_per_wave;
                 final Duration start_offset = time_trial_inter_wave_interval.multipliedBy(wave_number);
 
                 starts.put(raw_result.getBibNumber(), start_offset);
             }
-        }
+        };
 
-        if (getConfig().containsKey(KEY_TIME_TRIAL_STARTS)) {
+        final Consumer<Object> process_explicit_starts = value -> {
 
-            for (final String part : getStringConfig(KEY_TIME_TRIAL_STARTS).split(",", -1)) {
+            for (final String part : ((String) value).split(",", -1)) {
 
                 final String[] split = part.split("/");
                 starts.put(Integer.parseInt(split[0]), parseTime(split[1]));
             }
-        }
+        };
+
+        config.processConfigIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, process_runners_per_wave);
+        config.processConfigIfPresent(KEY_TIME_TRIAL_STARTS, process_explicit_starts);
 
         return starts;
     }
@@ -410,13 +344,12 @@ public class IndividualRace implements Race2, RaceData {
 
         final Map<Integer, Duration> starts = new HashMap<>();
 
-        final String individual_early_starts_string = getStringConfig(KEY_INDIVIDUAL_EARLY_STARTS);
-
         // bib number / start time difference
         // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
 
-        if (individual_early_starts_string != null)
-            for (final String individual_early_start : individual_early_starts_string.split(",")) {
+        final Consumer<Object> process_early_starts = value -> {
+
+            for (final String individual_early_start : ((String) value).split(",")) {
 
                 final String[] split = individual_early_start.split("/");
 
@@ -428,27 +361,23 @@ public class IndividualRace implements Race2, RaceData {
 
                 starts.put(bib_number, offset.negated());
             }
+        };
+
+        config.processConfigIfPresent(KEY_INDIVIDUAL_EARLY_STARTS, process_early_starts);
 
         return starts;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static int runnerIndexInBibOrder(final int bib_number) {
-        return bib_number - 1;
-    }
-
     public List<String> getTeamPrizes() {
 
-        final List<RaceResult> overall_results = getResultsCalculator().getOverallResults();
-        final Set<String> clubs = getClubs(overall_results);
-
         int best_male_team_total = Integer.MAX_VALUE;
-        String best_male_team = "";
         int best_female_team_total = Integer.MAX_VALUE;
+        String best_male_team = "";
         String best_female_team = "";
 
-        for (final String club : clubs) {
+        for (final String club : getClubs()) {
 
             final int male_team_total = getTeamTotal(club, "Men");
             final int female_team_total = getTeamTotal(club, "Women");
@@ -500,9 +429,9 @@ public class IndividualRace implements Race2, RaceData {
         return team_count >= number_to_count_for_team_prize ? total : Integer.MAX_VALUE;
     }
 
-    private Set<String> getClubs(final List<RaceResult> results) {
+    private Set<String> getClubs() {
 
-        return results.stream().
+        return getResultsCalculator().getOverallResults().stream().
             map(result -> ((Runner) result.getParticipant()).getClub()).
             collect(Collectors.toSet());
     }

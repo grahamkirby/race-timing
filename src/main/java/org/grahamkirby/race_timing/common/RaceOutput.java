@@ -128,10 +128,10 @@ public abstract class RaceOutput implements ResultsOutput {
 
     protected Path getOutputStreamPath(final String output_type, final String file_suffix) {
 
-        final String race_name = race.getStringConfig(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = race.getStringConfig(KEY_YEAR);
+        final String race_name = race.getConfig().getStringConfig(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = race.getConfig().getStringConfig(KEY_YEAR);
 
-        return race.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
+        return race.getConfig().getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
     }
 
     protected OutputStream getOutputStream(final String output_type, final String file_suffix) throws IOException {
@@ -282,7 +282,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
     protected void printPrizesHeaderText(final OutputStreamWriter writer) throws IOException {
 
-        final String header = race.getStringConfig(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getStringConfig(KEY_YEAR);
+        final String header = race.getConfig().getStringConfig(KEY_RACE_NAME_FOR_RESULTS) + " Results " + race.getConfig().getStringConfig(KEY_YEAR);
         writer.append(header + LINE_SEPARATOR + underline(header, "=") + LINE_SEPARATOR + LINE_SEPARATOR);
     }
 
@@ -310,7 +310,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
     protected void printPrizesPDF(final Document document) throws IOException {
 
-        final String year = race.getStringConfig(KEY_YEAR);
+        final String year = race.getConfig().getStringConfig(KEY_YEAR);
 
         final ResultPrinter printer = new PrizeResultPrinterPDF(race, document);
 

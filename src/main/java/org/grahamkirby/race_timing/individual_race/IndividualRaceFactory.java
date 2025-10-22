@@ -24,20 +24,16 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_LEGS;
 import static org.grahamkirby.race_timing.common.Config.KEY_RACES;
+import static org.grahamkirby.race_timing.relay_race.RelayRaceFactory.KEY_INDICATIVE_OF_RELAY_RACE;
 
 public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
+    private static final String KEY_INDICATIVE_OF_SERIES_RACE = KEY_RACES;
+
     public Race2 makeRace(final Path config_file_path) throws IOException {
 
-        final IndividualRace race = new IndividualRace(config_file_path);
-
-        race.addConfigProcessor(new RaceConfigAdjuster());
-        race.addConfigProcessor(new IndividualRaceConfigAdjuster());
-        race.addConfigProcessor(new RaceConfigValidator());
-        race.addConfigProcessor(new IndividualRaceConfigValidator());
-        race.loadConfig();
+        final IndividualRace race = new IndividualRace(makeIndividualRaceConfig(config_file_path));
 
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new IndividualRaceResultsCalculator());
@@ -49,6 +45,19 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
     public boolean isValidFor(final Properties properties) {
 
         // Must be an individual race if it's not a relay race or series race.
-        return !(properties.containsKey(KEY_NUMBER_OF_LEGS) || properties.containsKey(KEY_RACES));
+        return !(properties.containsKey(KEY_INDICATIVE_OF_RELAY_RACE) || properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE));
+    }
+
+    private Config makeIndividualRaceConfig(final Path config_file_path) throws IOException {
+
+        final Config config = new Config(config_file_path);
+
+        config.addConfigProcessor(new RaceConfigAdjuster());
+        config.addConfigProcessor(new IndividualRaceConfigAdjuster());
+        config.addConfigProcessor(new RaceConfigValidator());
+        config.addConfigProcessor(new IndividualRaceConfigValidator());
+        config.processConfig();
+
+        return config;
     }
 }

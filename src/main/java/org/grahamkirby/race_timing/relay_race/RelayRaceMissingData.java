@@ -243,7 +243,6 @@ class RelayRaceMissingData {
 
     private int guessTeamNumber(final int position) {
 
-
         // The general assumption here is that most teams have roughly similar performance,
         // so if one team has fewer finishes than the others at this point, we guess
         // that it's the one finishing now.
@@ -306,6 +305,7 @@ class RelayRaceMissingData {
     private Duration getNextTeamFinishTime(final int position, final int bib_number) {
 
         final List<RawResult> results = race.getRawResults();
+
         for (int i = position + 1; i <= results.size(); i++) {
 
             final Duration finish_time = getFinishTimeIfBibNumberMatches(bib_number, i);

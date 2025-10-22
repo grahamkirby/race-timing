@@ -87,7 +87,7 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
 
     private int getRecordedPosition(final int bib_number) {
 
-        return (int) race.getRaceData().getRawResults().stream().
+        return (int) race.getRawResults().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
             count() + 1;
     }

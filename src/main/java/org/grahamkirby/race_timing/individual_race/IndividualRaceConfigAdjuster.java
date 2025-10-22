@@ -28,9 +28,7 @@ public class IndividualRaceConfigAdjuster implements ConfigProcessor {
     public static final int DEFAULT_NUMBER_OF_COLUMNS = 4;
 
     @Override
-    public void processConfig(Race2 race) {
-
-        final Config config = race.getConfig();
+    public void processConfig(final Config config) {
 
         // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));

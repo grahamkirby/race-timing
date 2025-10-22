@@ -33,21 +33,28 @@ public class RaceConfigAdjuster implements ConfigProcessor {
     public static String DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = DEFAULT_CONFIG_ROOT_PATH + "/gender_eligibility_default." + CSV_FILE_SUFFIX;
 
     private static final List<String> PATH_PROPERTY_KEYS =
-        List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH, KEY_CAPITALISATION_STOP_WORDS_PATH,
-            KEY_NORMALISED_HTML_ENTITIES_PATH, KEY_NORMALISED_CLUB_NAMES_PATH, KEY_GENDER_ELIGIBILITY_MAP_PATH,
-            KEY_CATEGORY_MAP_PATH, KEY_ENTRIES_PATH, KEY_RAW_RESULTS_PATH, KEY_RESULTS_PATH);
+        List.of(
+            KEY_CAPITALISATION_STOP_WORDS_PATH,
+            KEY_CATEGORY_MAP_PATH,
+            KEY_ENTRIES_PATH,
+            KEY_ENTRY_CATEGORIES_PATH,
+            KEY_GENDER_ELIGIBILITY_MAP_PATH,
+            KEY_NORMALISED_CLUB_NAMES_PATH,
+            KEY_NORMALISED_HTML_ENTITIES_PATH,
+            KEY_PRIZE_CATEGORIES_PATH,
+            KEY_RAW_RESULTS_PATH,
+            KEY_RESULTS_PATH
+        );
 
     @Override
-    public void processConfig(Race2 race) {
-
-        final Config config = race.getConfig();
+    public void processConfig(final Config config) {
 
         config.addIfAbsent(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH);
         config.addIfAbsent(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
         config.addIfAbsent(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
         config.addIfAbsent(KEY_GENDER_ELIGIBILITY_MAP_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
 
-        config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> race.interpretPath(Path.of(s)));
+        config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
     }
 
     public static String makeDefaultEntryColumnMap(final int number_of_columns) {
