@@ -31,6 +31,8 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class MidweekRaceFactory implements SpecialisedRaceFactory {
 
+    public static final String KEY_INDICATIVE_OF_MIDWEEK_RACE = KEY_SCORE_FOR_FIRST_PLACE;
+
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
@@ -44,7 +46,7 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
         race.addConfigProcessor(new MidweekRaceConfigValidator());
         race.loadConfig();
 
-        race.setSpecific(new MidweekRaceImpl());
+        race.setSpecific(new MidweekRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new MidweekRaceResultsCalculator());
         race.setResultsOutput(new MidweekRaceOutput());
@@ -55,6 +57,6 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     @Override
     public boolean isValidFor(final Properties properties) {
 
-        return properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE);
+        return properties.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE);
     }
 }

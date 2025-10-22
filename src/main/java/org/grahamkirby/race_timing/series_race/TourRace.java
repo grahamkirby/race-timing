@@ -28,7 +28,7 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class TourRaceImpl implements SpecificRace, SeriesRace {
+public class TourRace implements SpecificRace, SeriesRace {
 
     private Race2 race;
     private List<Race2> races;
@@ -93,7 +93,7 @@ public class TourRaceImpl implements SpecificRace, SeriesRace {
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {
 
-        return clubs.stream().filter(TourRaceImpl::isClubDefined).toList();
+        return clubs.stream().filter(TourRace::isClubDefined).toList();
     }
 
     private static boolean isClubDefined(final String club) {

@@ -31,7 +31,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceResult extends SingleRaceResult {
 
-    private final List<LegResult> leg_results;
+    private final List<RelayRaceLegResult> leg_results;
 
     RelayRaceResult(final Race2 race, final RaceEntry entry, final Duration finish_time) {
 
@@ -42,7 +42,7 @@ public class RelayRaceResult extends SingleRaceResult {
         final int number_of_legs = ((RelayRace) race).getNumberOfLegs();
 
         for (int i = 0; i < number_of_legs; i++)
-            leg_results.add(new LegResult(race, entry));
+            leg_results.add(new RelayRaceLegResult(race, entry));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ public class RelayRaceResult extends SingleRaceResult {
     @Override
     public boolean canComplete() {
 
-        return leg_results.stream().allMatch(LegResult::canComplete);
+        return leg_results.stream().allMatch(RelayRaceLegResult::canComplete);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RelayRaceResult extends SingleRaceResult {
 
         return !canComplete() ? VERY_LONG_DURATION :
             leg_results.stream().
-                map(LegResult::duration).
+                map(RelayRaceLegResult::duration).
                 reduce(Duration.ZERO, Duration::plus);
     }
 
@@ -77,11 +77,11 @@ public class RelayRaceResult extends SingleRaceResult {
         return "(" + getParticipant().getCategory().getLongName() + ") " + renderDuration(this, DNF_STRING);
     }
 
-    public List<LegResult> getLegResults() {
+    public List<RelayRaceLegResult> getLegResults() {
         return leg_results;
     }
 
-    public LegResult getLegResult(final int leg_number) {
+    public RelayRaceLegResult getLegResult(final int leg_number) {
         return leg_results.get(leg_number - 1);
     }
 

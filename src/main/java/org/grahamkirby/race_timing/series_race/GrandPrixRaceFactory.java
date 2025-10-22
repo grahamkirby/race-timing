@@ -31,6 +31,8 @@ import static org.grahamkirby.race_timing.common.Config.KEY_RACE_TEMPORAL_ORDER;
 
 public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
 
+    public static final String KEY_INDICATIVE_OF_GRAND_PRIX_RACE = KEY_RACE_TEMPORAL_ORDER;
+
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
@@ -44,7 +46,7 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
         race.addConfigProcessor(new GrandPrixRaceConfigValidator());
         race.loadConfig();
 
-        race.setSpecific(new GrandPrixRaceImpl());
+        race.setSpecific(new GrandPrixRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new GrandPrixRaceResultsCalculator());
         race.setResultsOutput(new GrandPrixRaceOutput());
@@ -55,6 +57,6 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
     @Override
     public boolean isValidFor(final Properties properties) {
 
-        return properties.containsKey(KEY_RACE_TEMPORAL_ORDER);
+        return properties.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE);
     }
 }

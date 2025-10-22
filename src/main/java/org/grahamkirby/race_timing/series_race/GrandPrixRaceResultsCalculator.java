@@ -31,7 +31,7 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
     // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
     protected RaceResult getOverallResult(final Runner runner) {
 
-        final List<Integer> scores = ((GrandPrixRaceImpl) race.getSpecific()).getRaces().stream().
+        final List<Integer> scores = ((GrandPrixRace) race.getSpecific()).getRaces().stream().
             map(individual_race -> calculateRaceScore(individual_race, runner)).
             toList();
 
@@ -40,7 +40,7 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
 
     protected Predicate<RaceResult> getResultInclusionPredicate() {
 
-        return result -> ((GrandPrixRaceImpl) race.getSpecific()).qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
+        return result -> ((GrandPrixRace) race.getSpecific()).qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
     }
 
     int calculateRaceScore(final Race2 individual_race, final Runner runner) {
@@ -49,7 +49,7 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
 
         final Duration runner_time = getRunnerTime(individual_race, runner);
 
-        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime()) * ((GrandPrixRaceImpl) race.getSpecific()).score_for_median_position);
+        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime()) * ((GrandPrixRace) race.getSpecific()).score_for_median_position);
     }
 
     private static double divide(final Duration d1, final Duration d2) {
@@ -58,6 +58,6 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
     }
 
     int getRaceNumberInTemporalPosition(final int position) {
-        return ((GrandPrixRaceImpl) race.getSpecific()).race_temporal_positions.get(position) - 1;
+        return ((GrandPrixRace) race.getSpecific()).race_temporal_positions.get(position) - 1;
     }
 }

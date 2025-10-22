@@ -126,7 +126,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
+            final List<RelayRaceLegResult> leg_results = ((RelayRace) race).getLegResults(leg);
             new LegResultPrinterCSV(race, writer, leg).print(leg_results);
         }
     }
@@ -148,7 +148,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsHTML(final OutputStreamWriter writer, final int leg) throws IOException {
 
-        final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
+        final List<RelayRaceLegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
         new LegResultPrinterHTML(race, writer, leg).print(leg_results);
     }
@@ -190,7 +190,7 @@ public class RelayRaceOutput extends RaceOutput {
         return race.getResultsCalculator().getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
             flatMap(result -> result.getLegResults().stream()).
-            anyMatch(LegResult::isInMassStart);
+            anyMatch(RelayRaceLegResult::isInMassStart);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -474,7 +474,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final LegResult result = (LegResult) r;
+            final RelayRaceLegResult result = (RelayRaceLegResult) r;
             final String runner_names = encode(((Team) result.getParticipant()).getRunnerNames().get(result.getLegNumber() - 1));
 
             writer.append(result.getPositionString()).append(",").
@@ -509,7 +509,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsElements(final RaceResult r) {
 
-            final LegResult leg_result = (LegResult) r;
+            final RelayRaceLegResult leg_result = (RelayRaceLegResult) r;
             final String runner_names = ((Team) leg_result.getParticipant()).getRunnerNames().get(leg_result.getLegNumber() - 1);
 
             return List.of(

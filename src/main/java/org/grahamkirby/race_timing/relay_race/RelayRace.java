@@ -427,9 +427,9 @@ public class RelayRace implements Race2 {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public List<LegResult> getLegResults(final int leg_number) {
+    public List<RelayRaceLegResult> getLegResults(final int leg_number) {
 
-        final List<LegResult> results = results_calculator.getOverallResults().stream().
+        final List<RelayRaceLegResult> results = results_calculator.getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
             map(result -> result.getLegResult(leg_number)).
             sorted().
@@ -448,7 +448,7 @@ public class RelayRace implements Race2 {
 
         for (int leg = 1; leg <= getNumberOfLegs(); leg++) {
 
-            final LegResult leg_result = result.getLegResult(leg);
+            final RelayRaceLegResult leg_result = result.getLegResult(leg);
             final boolean completed = leg_result.canComplete();
 
             final String leg_runner_names = ((Team)leg_result.getParticipant()).getRunnerNames().get(leg - 1);
@@ -519,7 +519,7 @@ public class RelayRace implements Race2 {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private String getMassStartAnnotation(final LegResult leg_result, final int leg_number) {
+    private String getMassStartAnnotation(final RelayRaceLegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
         return leg_result.isInMassStart() ? " (M" + getNextMassStartLeg(leg_number) + ")" : "";
@@ -533,11 +533,11 @@ public class RelayRace implements Race2 {
                 count();
     }
 
-    private static Duration sumDurationsUpToLeg(final List<? extends LegResult> leg_results, final int leg_number) {
+    private static Duration sumDurationsUpToLeg(final List<? extends RelayRaceLegResult> leg_results, final int leg_number) {
 
         return leg_results.stream().
             limit(leg_number).
-            map(LegResult::duration).
+            map(RelayRaceLegResult::duration).
             reduce(Duration.ZERO, Duration::plus);
     }
 

@@ -93,7 +93,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(team_index);
 
         final int leg_index = findIndexOfNextUnfilledLegResult(result.getLegResults());
-        final LegResult leg_result = result.getLegResult(leg_index + 1);
+        final RelayRaceLegResult leg_result = result.getLegResult(leg_index + 1);
 
         final Duration recorded_finish_time = raw_result.getRecordedFinishTime();
         final Duration start_offset = ((RelayRace) race).getStartOffset();
@@ -115,17 +115,17 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private static void sortLegResults(final RaceResult result) {
 
-        final List<LegResult> leg_results = ((RelayRaceResult) result).getLegResults();
+        final List<RelayRaceLegResult> leg_results = ((RelayRaceResult) result).getLegResults();
 
         // Sort by explicitly recorded leg number (most results will not have explicit leg number).
-        leg_results.sort(Comparator.comparingInt(LegResult::getLegNumber));
+        leg_results.sort(Comparator.comparingInt(RelayRaceLegResult::getLegNumber));
 
         // Reset the leg numbers according to new positions in leg sequence.
         for (int leg_index = 1; leg_index <= leg_results.size(); leg_index++)
             leg_results.get(leg_index - 1).setLegNumber(leg_index);
     }
 
-    private LegResult getLegResult(final int bib_number, final int leg_number) {
+    private RelayRaceLegResult getLegResult(final int bib_number, final int leg_number) {
 
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(findIndexOfTeamWithBibNumber(bib_number));
 
@@ -139,15 +139,15 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void fillLegResultDetails(final RaceResult result) {
 
-        final List<LegResult> leg_results = ((RelayRaceResult) result).getLegResults();
+        final List<RelayRaceLegResult> leg_results = ((RelayRaceResult) result).getLegResults();
 
         for (int leg_index = 0; leg_index < ((RelayRace) race).getNumberOfLegs(); leg_index++)
             fillLegResultDetails(leg_results, leg_index);
     }
 
-    private void fillLegResultDetails(final List<? extends LegResult> leg_results, final int leg_index) {
+    private void fillLegResultDetails(final List<? extends RelayRaceLegResult> leg_results, final int leg_index) {
 
-        final LegResult leg_result = leg_results.get(leg_index);
+        final RelayRaceLegResult leg_result = leg_results.get(leg_index);
 
         final Duration individual_start_time = getIndividualStartTime(leg_result, leg_index);
         final Duration leg_mass_start_time = ((RelayRace) race).getStartTimesForMassStarts().get(leg_index);
@@ -159,7 +159,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         leg_result.setInMassStart(isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index));
     }
 
-    private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
+    private Duration getIndividualStartTime(final RelayRaceLegResult leg_result, final int leg_index) {
 
         return ((RelayRace) race).getIndividualStarts().stream().
             filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.getBibNumber()).
@@ -197,7 +197,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
-    private static int findIndexOfNextUnfilledLegResult(final List<? extends LegResult> leg_results) {
+    private static int findIndexOfNextUnfilledLegResult(final List<? extends RelayRaceLegResult> leg_results) {
 
         return (int) leg_results.stream().
             takeWhile(result -> result.getFinishTime() != null).

@@ -59,7 +59,7 @@ class MidweekRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final SeriesRace race_impl = (MidweekRaceImpl) race.getSpecific();
+            final SeriesRace race_impl = (MidweekRace) race.getSpecific();
             final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total,Completed" + LINE_SEPARATOR);
@@ -69,7 +69,7 @@ class MidweekRaceOutput extends RaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
-            final MidweekRaceImpl race_impl = (MidweekRaceImpl) race.getSpecific();
+            final MidweekRace race_impl = (MidweekRace) race.getSpecific();
             final MidweekRaceResultsCalculator calculator = (MidweekRaceResultsCalculator) race.getResultsCalculator();
 
             writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).getClub()) + "," + result.getParticipant().getCategory().getShortName() + ",");
@@ -102,7 +102,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             headers.add("Club");
 
-            final List<Race2> races = ((MidweekRaceImpl) race.getSpecific()).getRaces();
+            final List<Race2> races = ((MidweekRace) race.getSpecific()).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
@@ -129,7 +129,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             elements.add(runner.getClub());
 
-            for (final Race2 individual_race : ((MidweekRaceImpl) race.getSpecific()).getRaces())
+            for (final Race2 individual_race : ((MidweekRace) race.getSpecific()).getRaces())
                 if (individual_race != null) {
                     final int score = calculator.calculateRaceScore(individual_race, runner);
                     elements.add(String.valueOf(score));

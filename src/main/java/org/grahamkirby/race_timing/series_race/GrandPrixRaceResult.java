@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.CommonRaceResult;
-import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.Race2;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -42,7 +41,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     public boolean canComplete() {
 
         return super.canComplete() &&
-            ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
+            ((GrandPrixRace) race.getSpecific()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
     }
 
     @Override
@@ -50,7 +49,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         // TODO tests pass without check for race category completion - add test.
         return super.hasCompletedSeries() &&
-            ((GrandPrixRaceImpl) race.getSpecific()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
+            ((GrandPrixRace) race.getSpecific()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
     }
 
     @Override

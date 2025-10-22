@@ -18,16 +18,18 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceConfigAdjuster;
 import org.grahamkirby.race_timing.common.RaceConfigValidator;
 import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
-import org.grahamkirby.race_timing.common.Race;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceFactory.KEY_INDICATIVE_OF_SERIES_RACE;
+import static org.grahamkirby.race_timing.series_race.GrandPrixRaceFactory.KEY_INDICATIVE_OF_GRAND_PRIX_RACE;
+import static org.grahamkirby.race_timing.series_race.MidweekRaceFactory.KEY_INDICATIVE_OF_MIDWEEK_RACE;
 
 public class TourRaceFactory implements SpecialisedRaceFactory {
 
@@ -43,7 +45,7 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
         race.addConfigProcessor(new SeriesRaceConfigValidator());
         race.loadConfig();
 
-        race.setSpecific(new TourRaceImpl());
+        race.setSpecific(new TourRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new TourRaceResultsCalculator());
         race.setResultsOutput(new TourRaceOutput());
@@ -54,8 +56,8 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
     @Override
     public boolean isValidFor(final Properties properties) {
 
-        return properties.containsKey(KEY_RACES) &&
-            !properties.containsKey(KEY_SCORE_FOR_FIRST_PLACE) &&
-            !properties.containsKey(KEY_RACE_TEMPORAL_ORDER);
+        return properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE) &&
+            !properties.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE) &&
+            !properties.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE);
     }
 }

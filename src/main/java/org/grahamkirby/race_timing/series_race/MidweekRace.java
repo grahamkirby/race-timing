@@ -28,16 +28,11 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
+public class MidweekRace implements SpecificRace, SeriesRace {
 
     private Race2 race;
     private List<Race2> races;
     private List<String> race_config_paths;
-
-    List<GrandPrixRaceCategory> race_categories;
-    List<Integer> race_temporal_positions;
-    List<String> qualifying_clubs;
-    int score_for_median_position;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,60 +45,12 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
 
         try {
             race_config_paths = Arrays.asList(((String) race.getConfig().get(KEY_RACES)).split(",", -1));
-
-            race_categories = loadRaceCategories();
-            race_temporal_positions = loadRaceTemporalPositions();
-
-            qualifying_clubs = Arrays.asList(((String) race.getConfig().get(KEY_QUALIFYING_CLUBS)).split(","));
-            score_for_median_position = ((int) race.getConfig().get(KEY_SCORE_FOR_MEDIAN_POSITION));
-
             races = loadRaces();
             configureClubs();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private List<GrandPrixRaceCategory> loadRaceCategories() throws IOException {
-
-        return Files.readAllLines((Path) race.getConfig().get(KEY_RACE_CATEGORIES_PATH)).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            map(GrandPrixRaceImpl::makeRaceCategory).
-            toList();
-    }
-
-    private static GrandPrixRaceCategory makeRaceCategory(final String line) {
-
-        final String[] elements = line.split(",");
-
-        final String category_name = elements[0];
-        final int minimum_number = Integer.parseInt(elements[1]);
-
-        final List<Integer> race_numbers = Arrays.stream(elements).skip(2).map(Integer::parseInt).toList();
-
-        return new GrandPrixRaceCategory(category_name, minimum_number, race_numbers);
-    }
-
-    private List<Integer> loadRaceTemporalPositions() {
-
-        return Arrays.stream(((String) (race.getConfig().get(KEY_RACE_TEMPORAL_ORDER))).split(",")).
-            map(Integer::parseInt).toList();
-    }
-
-    protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
-
-        if (new HashSet<>(qualifying_clubs).containsAll(defined_clubs))
-            recordDefinedClubForRunnerName(runner_name, qualifying_clubs.getFirst());
-        else
-            for (final String qualifying_club : qualifying_clubs) {
-                if (defined_clubs.contains(qualifying_club)) {
-                    noteMultipleClubsForRunnerName(runner_name, defined_clubs);
-                    break;
-                }
-            }
     }
 
     public List<Race2> getRaces() {
@@ -134,14 +81,19 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
             processMultipleClubsForRunner(runner_name, defined_clubs);
     }
 
-    protected void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
+    protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
+
+        noteMultipleClubsForRunnerName(runner_name, defined_clubs);
+    }
+
+    protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
 
         race.getResultsCalculator().getNotes().append("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {
 
-        return clubs.stream().filter(GrandPrixRaceImpl::isClubDefined).toList();
+        return clubs.stream().filter(MidweekRace::isClubDefined).toList();
     }
 
     private static boolean isClubDefined(final String club) {
@@ -218,6 +170,7 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + race.getConfig().getConfigPath().getFileName() + "'");
 
         final Race2 individual_race = new IndividualRaceFactory().makeRace(config_path);
+
         individual_race.processResults();
 
         return individual_race;
@@ -226,9 +179,5 @@ public class GrandPrixRaceImpl implements SpecificRace, SeriesRace {
     public int getNumberOfRacesTakenPlace() {
 
         return (int) races.stream().filter(Objects::nonNull).count();
-    }
-
-    public List<GrandPrixRaceCategory> getRaceCategories() {
-        return race_categories;
     }
 }

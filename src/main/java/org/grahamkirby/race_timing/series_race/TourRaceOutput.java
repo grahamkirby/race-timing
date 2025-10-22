@@ -61,7 +61,7 @@ class TourRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final SeriesRace race_impl = (TourRaceImpl) race.getSpecific();
+            final SeriesRace race_impl = (TourRace) race.getSpecific();
             final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total" + LINE_SEPARATOR);

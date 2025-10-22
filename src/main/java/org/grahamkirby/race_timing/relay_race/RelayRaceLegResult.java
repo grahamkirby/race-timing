@@ -26,7 +26,7 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
 
-public class LegResult extends SingleRaceResult {
+public class RelayRaceLegResult extends SingleRaceResult {
 
     private int leg_number;
     private boolean in_mass_start;
@@ -36,7 +36,7 @@ public class LegResult extends SingleRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LegResult(final Race2 race, final RaceEntry entry) {
+    RelayRaceLegResult(final Race2 race, final RaceEntry entry) {
 
         super(race, entry, null);
         setDnf(true);

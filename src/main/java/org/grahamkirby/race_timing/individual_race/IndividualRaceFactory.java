@@ -29,7 +29,7 @@ import static org.grahamkirby.race_timing.relay_race.RelayRaceFactory.KEY_INDICA
 
 public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
-    private static final String KEY_INDICATIVE_OF_SERIES_RACE = KEY_RACES;
+    public static final String KEY_INDICATIVE_OF_SERIES_RACE = KEY_RACES;
 
     public Race2 makeRace(final Path config_file_path) throws IOException {
 
