@@ -42,8 +42,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private RelayRace race_impl;
-
     /** Provides functionality for inferring missing bib number or timing data in the results. */
     private RelayRaceMissingData missing_data;
 
@@ -53,8 +51,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     public void setRace(final Race2 race) {
 
         super.setRace(race);
-
-        race_impl = ((RelayRace) race.getSpecific());
         missing_data = new RelayRaceMissingData(race);
     }
 
@@ -100,13 +96,12 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final LegResult leg_result = result.getLegResult(leg_index + 1);
 
         final Duration recorded_finish_time = raw_result.getRecordedFinishTime();
-        final Duration start_offset = race_impl.getStartOffset();
+        final Duration start_offset = ((RelayRace) race).getStartOffset();
 
         leg_result.setFinishTime(recorded_finish_time.plus(start_offset));
 
         // Leg number will be zero in most cases, unless explicitly recorded in raw results.
         leg_result.setLegNumber(((RelayRace) race).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
-//        leg_result.setLegNumber(((RelayRaceDataImpl) race.getRaceData()).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
 
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in recordDNFs() if the runner missed a checkpoint.
@@ -146,7 +141,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         final List<LegResult> leg_results = ((RelayRaceResult) result).getLegResults();
 
-        for (int leg_index = 0; leg_index < race_impl.getNumberOfLegs(); leg_index++)
+        for (int leg_index = 0; leg_index < ((RelayRace) race).getNumberOfLegs(); leg_index++)
             fillLegResultDetails(leg_results, leg_index);
     }
 
@@ -155,7 +150,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final LegResult leg_result = leg_results.get(leg_index);
 
         final Duration individual_start_time = getIndividualStartTime(leg_result, leg_index);
-        final Duration leg_mass_start_time = race_impl.getStartTimesForMassStarts().get(leg_index);
+        final Duration leg_mass_start_time = ((RelayRace) race).getStartTimesForMassStarts().get(leg_index);
         final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results.get(leg_index - 1).getFinishTime() : null;
 
         leg_result.start_time = getLegStartTime(leg_index, individual_start_time, leg_mass_start_time, previous_team_member_finish_time);
@@ -166,7 +161,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private Duration getIndividualStartTime(final LegResult leg_result, final int leg_index) {
 
-        return race_impl.getIndividualStarts().stream().
+        return ((RelayRace) race).getIndividualStarts().stream().
             filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.getBibNumber()).
             filter(individual_leg_start -> individual_leg_start.leg_number() == leg_index + 1).
             map(RelayRace.IndividualStart::start_time).
@@ -196,7 +191,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         if (individual_start_time != null || leg_index == 0) return false;
 
         // No previously recorded leg time, so record this runner as starting in mass start if it's a mass start leg.
-        if (previous_runner_finish_time == null) return race_impl.getMassStartLegs().get(leg_index);
+        if (previous_runner_finish_time == null) return ((RelayRace) race).getMassStartLegs().get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
         return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;

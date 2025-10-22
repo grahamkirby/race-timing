@@ -116,7 +116,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsCSV() throws IOException {
 
-        for (int leg = 1; leg <= ((RelayRace) race.getSpecific()).getNumberOfLegs(); leg++)
+        for (int leg = 1; leg <= ((RelayRace) race).getNumberOfLegs(); leg++)
             printLegResultsCSV(leg);
     }
 
@@ -126,14 +126,14 @@ public class RelayRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            final List<LegResult> leg_results = ((RelayRace) race.getSpecific()).getLegResults(leg);
+            final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
             new LegResultPrinterCSV(race, writer, leg).print(leg_results);
         }
     }
 
     private void printLegResultsHTML() throws IOException {
 
-        for (int leg = 1; leg <= ((RelayRace) race.getSpecific()).getNumberOfLegs(); leg++)
+        for (int leg = 1; leg <= ((RelayRace) race).getNumberOfLegs(); leg++)
             printLegResultsHTML(leg);
     }
 
@@ -148,7 +148,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsHTML(final OutputStreamWriter writer, final int leg) throws IOException {
 
-        final List<LegResult> leg_results = ((RelayRace) race.getSpecific()).getLegResults(leg);
+        final List<LegResult> leg_results = ((RelayRace) race).getLegResults(leg);
 
         new LegResultPrinterHTML(race, writer, leg).print(leg_results);
     }
@@ -173,7 +173,7 @@ public class RelayRaceOutput extends RaceOutput {
             writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
             printDetailedResultsHTML(writer);
 
-            for (int leg_number = 1; leg_number <= ((RelayRace) race.getSpecific()).getNumberOfLegs(); leg_number++) {
+            for (int leg_number = 1; leg_number <= ((RelayRace) race).getNumberOfLegs(); leg_number++) {
 
                 writer.append("<p></p>" + LINE_SEPARATOR + "<h4>Leg " + leg_number + " Results</h4>" + LINE_SEPARATOR);
                 printLegResultsHTML(writer, leg_number);
@@ -217,7 +217,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            final Map<Integer, Integer> legs_finished_per_team = ((RelayRace) race.getSpecific()).countLegsFinishedPerTeam();
+            final Map<Integer, Integer> legs_finished_per_team = ((RelayRace) race).countLegsFinishedPerTeam();
 
             printResults(writer, legs_finished_per_team);
             printNotes(legs_finished_per_team);
@@ -226,10 +226,8 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printNotes(final Map<Integer, Integer> legs_finished_per_team) {
 
-        final RelayRace impl = (RelayRace) race.getSpecific();
-
-        final List<Integer> bib_numbers_with_missing_times = impl.getBibNumbersWithMissingTimes(legs_finished_per_team);
-        final List<Duration> times_with_missing_bib_numbers = impl.getTimesWithMissingBibNumbers();
+        final List<Integer> bib_numbers_with_missing_times = ((RelayRace) race).getBibNumbersWithMissingTimes(legs_finished_per_team);
+        final List<Duration> times_with_missing_bib_numbers = ((RelayRace) race).getTimesWithMissingBibNumbers();
 
         final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
 
@@ -382,7 +380,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final int number_of_legs = ((RelayRace) race.getSpecific()).getNumberOfLegs();
+            final int number_of_legs = ((RelayRace) race).getNumberOfLegs();
 
             writer.append(OVERALL_RESULTS_HEADER);
 
@@ -405,7 +403,7 @@ public class RelayRaceOutput extends RaceOutput {
                 append(encode(result.getParticipantName())).append(",").
                 append(result.getParticipant().getCategory().getLongName()).append(",");
 
-            final String leg_details = ((RelayRace) race.getSpecific()).getLegDetails(result).stream().
+            final String leg_details = ((RelayRace) race).getLegDetails(result).stream().
                 map(Config::encode).
                 collect(Collectors.joining(","));
 
@@ -424,12 +422,11 @@ public class RelayRaceOutput extends RaceOutput {
         protected List<String> getResultsColumnHeaders() {
 
             final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
-            final RelayRace race_impl = (RelayRace) race.getSpecific();
-            final int number_of_legs = race_impl.getNumberOfLegs();
+            final int number_of_legs = ((RelayRace) race).getNumberOfLegs();
 
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
-                final String plural = race_impl.getPairedLegs().get(leg_number - 1) ? "s" : "";
+                final String plural = ((RelayRace) race).getPairedLegs().get(leg_number - 1) ? "s" : "";
 
                 headers.add("Runner" + plural + " " + leg_number);
                 headers.add("Leg " + leg_number);
@@ -442,9 +439,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsElements(final RaceResult r) {
 
-            final RelayRace impl = (RelayRace) race.getSpecific();
             final RelayRaceResult result = (RelayRaceResult) r;
-
             final List<String> elements = new ArrayList<>();
 
             elements.add(result.getPositionString());
@@ -452,7 +447,7 @@ public class RelayRaceOutput extends RaceOutput {
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getLongName());
 
-            for (final String element : impl.getLegDetails(result))
+            for (final String element : ((RelayRace) race).getLegDetails(result))
                 elements.add(race.getNormalisation().htmlEncode(element));
 
             return elements;
@@ -472,7 +467,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String plural = ((RelayRace) race.getSpecific()).getPairedLegs().get(leg - 1) ? "s" : "";
+            final String plural = ((RelayRace) race).getPairedLegs().get(leg - 1) ? "s" : "";
             writer.append("Pos,Runner" + plural + ",Time" + LINE_SEPARATOR);
         }
 
@@ -502,7 +497,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            final List<Boolean> paired_legs = ((RelayRace) race.getSpecific()).getPairedLegs();
+            final List<Boolean> paired_legs = ((RelayRace) race).getPairedLegs();
             final String plural = paired_legs.get(leg - 1) ? "s" : "";
 
             return List.of(

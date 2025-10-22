@@ -31,7 +31,7 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
     @Override
     public Race2 makeRace(final Path config_file_path) throws IOException {
 
-        RelayRace race = new RelayRace(config_file_path);
+        final RelayRace race = new RelayRace(config_file_path);
 
         race.addConfigProcessor(new RaceConfigAdjuster());
         race.addConfigProcessor(new RelayRaceConfigAdjuster());
@@ -39,9 +39,7 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
         race.addConfigProcessor(new RelayRaceConfigValidator());
         race.loadConfig();
 
-//        race.setSpecific(new RelayRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
-//        race.setRaceDataProcessor(new RelayRaceDataProcessorImpl());
         race.setResultsCalculator(new RelayRaceResultsCalculator());
         race.setResultsOutput(new RelayRaceOutput());
 

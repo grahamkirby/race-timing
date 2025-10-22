@@ -44,13 +44,11 @@ class RelayRaceMissingData {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final Race2 race;
-    private final RelayRace race_impl;
+    private final RelayRace race;
 
     RelayRaceMissingData(final Race2 race) {
 
-        this.race = race;
-        race_impl = ((RelayRace)race.getSpecific());
+        this.race = (RelayRace) race;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,12 +80,12 @@ class RelayRaceMissingData {
 
         final int number_of_times_recorded = race.getRawResults().size();
 
-        return number_of_times_recorded == getUniqueBibNumbersRecorded().size() * race_impl.getNumberOfLegs();
+        return number_of_times_recorded == getUniqueBibNumbersRecorded().size() * race.getNumberOfLegs();
     }
 
     private Set<Integer> getUniqueBibNumbersRecorded() {
 
-        return ((RelayRace) race).getUniqueBibNumbersRecorded();
+        return race.getUniqueBibNumbersRecorded();
     }
 
     private int getIndexOfFirstResultWithRecordedTime() {

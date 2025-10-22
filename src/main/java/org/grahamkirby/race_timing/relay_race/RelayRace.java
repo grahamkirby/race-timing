@@ -38,29 +38,24 @@ import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRaw
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.*;
 
-public class RelayRace implements SpecificRace, RaceData, Race2 {
+public class RelayRace implements RaceData, Race2 {
 
-    private Race2 race;
-
-    private  List<RawResult> raw_results;
-    private  List<RaceEntry> entries;
+    private List<RawResult> raw_results;
+    private List<RaceEntry> entries;
     final Map<RawResult, Integer> explicitly_recorded_leg_numbers = new HashMap<>();
-    public  int number_of_electronically_recorded_raw_results;
+    int number_of_electronically_recorded_raw_results;
     private CategoryDetails category_details;
-    RaceResultsCalculator results_calculator;
+    private RaceResultsCalculator results_calculator;
     private final List<ConfigProcessor> config_processors = new ArrayList<>();
     private Config config;
-    public Path config_file_path;
+    private final Path config_file_path;
     private CategoriesProcessor categories_processor;
-    ResultsOutput results_output;
+    private ResultsOutput results_output;
     public Normalisation normalisation;
-
-    public RelayRace() {}
 
     public RelayRace(final Path config_file_path) {
 
         this.config_file_path = config_file_path;
-        race = this;
     }
 
     public void addConfigProcessor(final ConfigProcessor processor) {
@@ -72,10 +67,8 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
         config = new Config(config_file_path);
 
-        for (final ConfigProcessor processor : config_processors) {
-
+        for (final ConfigProcessor processor : config_processors)
             processor.processConfig(this);
-        }
     }
 
     public Config getConfig() {
@@ -112,9 +105,9 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
     public void loadRaceData() {
 
-        final Path entries_path = (Path) race.getConfig().get(KEY_ENTRIES_PATH);
-        final Path electronic_results_path = (Path) race.getConfig().get(KEY_RAW_RESULTS_PATH);
-        final Path paper_results_path = (Path) race.getConfig().get(KEY_PAPER_RESULTS_PATH);
+        final Path entries_path = getPathConfig(KEY_ENTRIES_PATH);
+        final Path electronic_results_path = getPathConfig(KEY_RAW_RESULTS_PATH);
+        final Path paper_results_path = getPathConfig(KEY_PAPER_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, electronic_results_path, paper_results_path);
@@ -138,12 +131,12 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
     private void validateEntryCategory(final String line) {
 
         final List<String> elements = Arrays.stream(line.split("\t")).toList();
-        final Normalisation normalisation = race.getNormalisation();
+        final Normalisation normalisation = getNormalisation();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            race.getCategoryDetails().lookupEntryCategory(category_name);
+            category_details.lookupEntryCategory(category_name);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
@@ -151,7 +144,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
     }
     private void validateDataFiles(final Path entries_path, final Path electronic_results_path, final Path paper_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, (int) race.getConfig().get(KEY_NUMBER_OF_LEGS) + 3, (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, getNumberOfLegs() + 3, getStringConfig(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
 
@@ -237,7 +230,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
             countLegResults(bib_counts, paper_results_path);
 
             for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
-                if (entry.getValue() > (int) race.getConfig().get(KEY_NUMBER_OF_LEGS)) {
+                if (entry.getValue() > getNumberOfLegs()) {
                     String message = "surplus result for team '" + entry.getKey() + "' in file '" + raw_results_path.getFileName() + "'";
                     if (paper_results_path != null)
                         message += " or '" + paper_results_path.getFileName() + "'";
@@ -263,7 +256,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
     void loadTimeAnnotations(final List<? extends RawResult> raw_results) throws IOException {
 
-        final Path annotations_path = (Path) race.getConfig().get(KEY_ANNOTATIONS_PATH);
+        final Path annotations_path = getPathConfig(KEY_ANNOTATIONS_PATH);
 
         if (annotations_path != null) {
 
@@ -295,12 +288,12 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
         if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
     }
 
-    List<RaceEntry> loadEntries(Path entries_path) throws IOException {
+    private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
         return Files.readAllLines(entries_path).stream().
             map(Normalisation::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
-            map(line -> makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList(), race)).
+            map(line -> makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList(), this)).
             toList();
     }
 
@@ -314,17 +307,16 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
-        if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace) race.getSpecific()).getNumberOfLegs())
+        if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace) race).getNumberOfLegs())
             throw new RuntimeException("Invalid number of elements: " + String.join(" ", elements));
 
-        int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
+        final int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
         try {
             final String name = elements.get(TEAM_NAME_INDEX);
             final EntryCategory category = race.getCategoryDetails().lookupEntryCategory(elements.get(CATEGORY_INDEX));
-
             final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.getNormalisation().cleanRunnerName(s)).toList();
 
-            Participant participant = new Team(name, category, runners);
+            final Participant participant = new Team(name, category, runners);
 
             return new RaceEntry(participant, bib_number, race);
 
@@ -460,9 +452,9 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(final Race2 race) {
-        this.race = race;
-    }
+//    public void setRace(final Race2 race) {
+//        this.race = race;
+//    }
 
     @Override
     public void completeConfiguration() {
@@ -482,7 +474,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
      * The number of legs in the relay race.
      */
     public int getNumberOfLegs() {
-        return (int) race.getConfig().get(KEY_NUMBER_OF_LEGS);
+        return (int) getConfig().get(KEY_NUMBER_OF_LEGS);
     }
 
     List<Duration> getStartTimesForMassStarts() {
@@ -505,7 +497,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
     public List<LegResult> getLegResults(final int leg_number) {
 
-        final List<LegResult> results = race.getResultsCalculator().getOverallResults().stream().
+        final List<LegResult> results = results_calculator.getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
             map(result -> result.getLegResult(leg_number)).
             sorted().
@@ -590,7 +582,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
         // TODO add to individual race.
 
-        return (Duration) race.getConfig().get(KEY_START_OFFSET);
+        return (Duration) getConfig().get(KEY_START_OFFSET);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -626,7 +618,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
     private void configurePairedLegs() {
 
-        final String paired_legs_string = (String) race.getConfig().get(KEY_PAIRED_LEGS);
+        final String paired_legs_string = getStringConfig(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
         paired_legs = Stream.generate(() -> false)
@@ -657,7 +649,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
     private void setMassStartTimes() {
 
         // Example: MASS_START_ELAPSED_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
-        final String mass_start_string = race.getStringConfig(KEY_MASS_START_ELAPSED_TIMES);
+        final String mass_start_string = getStringConfig(KEY_MASS_START_ELAPSED_TIMES);
 
         if (mass_start_string != null) {
             final String[] mass_start_elapsed_times_strings = mass_start_string.split(",");
@@ -694,7 +686,7 @@ public class RelayRace implements SpecificRace, RaceData, Race2 {
 
     private void configureIndividualLegStarts() {
 
-        final String individual_leg_starts_string = race.getStringConfig(KEY_INDIVIDUAL_LEG_STARTS);
+        final String individual_leg_starts_string = getStringConfig(KEY_INDIVIDUAL_LEG_STARTS);
 
         // bib number / leg number / start time
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20
