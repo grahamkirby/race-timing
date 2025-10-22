@@ -39,7 +39,7 @@ public class RelayRaceResult extends SingleRaceResult {
 
         leg_results = new ArrayList<>();
 
-        final int number_of_legs = ((RelayRaceImpl) race.getSpecific()).getNumberOfLegs();
+        final int number_of_legs = ((RelayRace) race.getSpecific()).getNumberOfLegs();
 
         for (int i = 0; i < number_of_legs; i++)
             leg_results.add(new LegResult(race, entry));

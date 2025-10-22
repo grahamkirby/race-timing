@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.common.RaceConfigAdjuster;
-import org.grahamkirby.race_timing.common.RaceConfigValidator;
-import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,9 +29,9 @@ import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_LEGS;
 public class RelayRaceFactory implements SpecialisedRaceFactory {
 
     @Override
-    public Race makeRace(final Path config_file_path) throws IOException {
+    public Race2 makeRace(final Path config_file_path) throws IOException {
 
-        Race race = new Race(config_file_path);
+        RelayRace race = new RelayRace(config_file_path);
 
         race.addConfigProcessor(new RaceConfigAdjuster());
         race.addConfigProcessor(new RelayRaceConfigAdjuster());
@@ -42,9 +39,9 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
         race.addConfigProcessor(new RelayRaceConfigValidator());
         race.loadConfig();
 
-        race.setSpecific(new RelayRaceImpl());
+//        race.setSpecific(new RelayRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
-        race.setRaceDataProcessor(new RelayRaceDataProcessorImpl());
+//        race.setRaceDataProcessor(new RelayRaceDataProcessorImpl());
         race.setResultsCalculator(new RelayRaceResultsCalculator());
         race.setResultsOutput(new RelayRaceOutput());
 

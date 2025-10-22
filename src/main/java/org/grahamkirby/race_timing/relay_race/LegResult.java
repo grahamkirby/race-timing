@@ -101,7 +101,7 @@ public class LegResult extends SingleRaceResult {
 
         final AtomicInteger legs_completed = new AtomicInteger(0);
 
-        return (int) race.getRaceData().getRawResults().stream().
+        return (int) race.getRawResults().stream().
             peek(result -> {
                 if (result.getBibNumber() == bib_number) legs_completed.incrementAndGet();
             }).

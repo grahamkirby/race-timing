@@ -85,7 +85,7 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
         return Integer.compare(recorded_position1, recorded_position2);
     }
 
-    protected int getRecordedPosition(final int bib_number) {
+    private int getRecordedPosition(final int bib_number) {
 
         return (int) race.getRaceData().getRawResults().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).

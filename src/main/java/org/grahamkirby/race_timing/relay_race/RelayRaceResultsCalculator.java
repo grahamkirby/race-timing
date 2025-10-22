@@ -42,7 +42,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private RelayRaceImpl race_impl;
+    private RelayRace race_impl;
 
     /** Provides functionality for inferring missing bib number or timing data in the results. */
     private RelayRaceMissingData missing_data;
@@ -54,7 +54,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         super.setRace(race);
 
-        race_impl = ((RelayRaceImpl) race.getSpecific());
+        race_impl = ((RelayRace) race.getSpecific());
         missing_data = new RelayRaceMissingData(race);
     }
 
@@ -86,7 +86,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void recordLegResults() {
 
-        race.getRaceData().getRawResults().stream().
+        race.getRawResults().stream().
             filter(result -> result.getBibNumber() != UNKNOWN_BIB_NUMBER).
             forEachOrdered(this::recordLegResult);
     }
@@ -105,7 +105,8 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         leg_result.setFinishTime(recorded_finish_time.plus(start_offset));
 
         // Leg number will be zero in most cases, unless explicitly recorded in raw results.
-        leg_result.setLegNumber(((RelayRaceDataImpl) race.getRaceData()).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
+        leg_result.setLegNumber(((RelayRace) race).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
+//        leg_result.setLegNumber(((RelayRaceDataImpl) race.getRaceData()).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
 
         // Provisionally this leg is not DNF since a finish time was recorded.
         // However, it might still be set to DNF in recordDNFs() if the runner missed a checkpoint.
@@ -168,7 +169,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         return race_impl.getIndividualStarts().stream().
             filter(individual_leg_start -> individual_leg_start.bib_number() == leg_result.getBibNumber()).
             filter(individual_leg_start -> individual_leg_start.leg_number() == leg_index + 1).
-            map(RelayRaceImpl.IndividualStart::start_time).
+            map(RelayRace.IndividualStart::start_time).
             findFirst().
             orElse(null);
     }
@@ -218,9 +219,10 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void addPaperRecordingComments() {
 
-        final List<RawResult> raw_results = race.getRaceData().getRawResults();
-        final int number_of_electronically_recorded_results = ((RelayRaceDataImpl) race.getRaceData()).number_of_electronically_recorded_raw_results;
+        final List<RawResult> raw_results = race.getRawResults();
+        final int number_of_electronically_recorded_results = ((RelayRace) race).number_of_electronically_recorded_raw_results;
 
+        // TODO add check for zero.
         if (number_of_electronically_recorded_results < raw_results.size())
             raw_results.get(number_of_electronically_recorded_results - 1).appendComment("Remaining times from paper recording sheet only.");
     }
@@ -282,7 +284,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         final Collection<Integer> bib_numbers_seen = new HashSet<>();
 
-        overall_results = race.getRaceData().getRawResults().stream().
+        overall_results = race.getRawResults().stream().
             filter(raw_result -> raw_result.getBibNumber() != 0).
             filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
             map(this::makeRaceResult).
@@ -319,7 +321,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     RaceEntry getEntryWithBibNumber(final int bib_number) {
 
-        return race.getRaceData().getEntries().stream().
+        return race.getEntries().stream().
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();

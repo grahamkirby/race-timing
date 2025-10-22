@@ -36,14 +36,14 @@ import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateBib
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRawResults;
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRawResultsOrdering;
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
 
-public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataProcessor {
+public class IndividualRace implements Race2, RaceData {
 
     // Components:
     //
     // Config
-    // Raw data manager
     // Results calculator
     // Categories processor
     // Output handling
@@ -119,6 +119,11 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     @Override
     public RaceData getRaceData() {
 
+        return this;
+    }
+
+    public void loadRaceData() {
+
         final Path entries_path = getPathConfig(KEY_ENTRIES_PATH);
         final Path raw_results_path = getPathConfig(KEY_RAW_RESULTS_PATH);
 
@@ -129,8 +134,6 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
             raw_results = loadRawResults(raw_results_path);
 
             validateData(entries, raw_results, entries_path, raw_results_path);
-
-            return this;
 
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -226,7 +229,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
     public void processResults() {
 
         category_details = categories_processor.getCategoryDetails();
-        getRaceData();
+        loadRaceData();
 
         completeConfiguration();
         results_calculator.calculateResults();
@@ -339,7 +342,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
             for (final String offset_string : offset_strings) {
 
                 final String[] split = offset_string.split("/");
-                category_offsets.put(category_details.lookupEntryCategory(split[0]), Normalisation.parseTime(split[1]));
+                category_offsets.put(category_details.lookupEntryCategory(split[0]), parseTime(split[1]));
             }
         }
 
@@ -360,7 +363,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
 
                 final String[] split = s.split("/", -1);
                 final int bib_number = Integer.parseInt(split[0]);
-                final Duration finish_time = Normalisation.parseTime(split[1]);
+                final Duration finish_time = parseTime(split[1]);
 
                 results.put(bib_number, finish_time);
             }
@@ -396,7 +399,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
             for (final String part : getStringConfig(KEY_TIME_TRIAL_STARTS).split(",", -1)) {
 
                 final String[] split = part.split("/");
-                starts.put(Integer.parseInt(split[0]), Normalisation.parseTime(split[1]));
+                starts.put(Integer.parseInt(split[0]), parseTime(split[1]));
             }
         }
 
@@ -418,7 +421,7 @@ public class IndividualRace implements SpecificRace, Race2, RaceData, RaceDataPr
                 final String[] split = individual_early_start.split("/");
 
                 final int bib_number = Integer.parseInt(split[0]);
-                final Duration offset = Normalisation.parseTime(split[1]);
+                final Duration offset = parseTime(split[1]);
 
                 // Offset will be subtracted from recorded time,
                 // so negate since a positive time corresponds to an early start.

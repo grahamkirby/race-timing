@@ -171,15 +171,9 @@ public class MidweekRaceImpl implements SpecificRace, SeriesRace {
 
         final Race2 individual_race = new IndividualRaceFactory().makeRace(config_path);
 
-        configureIndividualRace(individual_race);
         individual_race.processResults();
 
         return individual_race;
-    }
-
-    protected void configureIndividualRace(final Race2 individual_race) {
-
-        individual_race.completeConfiguration();
     }
 
     public int getNumberOfRacesTakenPlace() {
