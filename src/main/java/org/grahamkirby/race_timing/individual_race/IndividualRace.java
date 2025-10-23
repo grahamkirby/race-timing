@@ -40,7 +40,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
 
-public class IndividualRace implements Race {
+public class IndividualRace implements SingleRaceInternal {
 
     // Components:
     //
@@ -62,12 +62,14 @@ public class IndividualRace implements Race {
     private RaceResultsCalculator results_calculator;
     private ResultsOutput results_output;
     private Normalisation normalisation;
+    private final Notes notes;
     private List<RawResult> raw_results;
     private List<RaceEntry> entries;
 
     public IndividualRace(final Config config) {
 
         this.config = config;
+        notes = new Notes();
     }
 
     public Config getConfig() {
@@ -238,14 +240,19 @@ public class IndividualRace implements Race {
     }
 
     @Override
-    public void appendToNotes(String s) {
-        results_calculator.getNotes().append(s);
+    public Notes getNotes() {
+        return notes;
     }
 
-    @Override
-    public String getNotes() {
-        return results_calculator.getNotes().toString();
-    }
+//    @Override
+//    public void appendToNotes(String s) {
+//        results_calculator.getNotes().append(s);
+//    }
+//
+//    @Override
+//    public String getNotes() {
+//        return results_calculator.getNotes().toString();
+//    }
 
     private Map<EntryCategory, Duration> readCategoryStartOffsets() {
 

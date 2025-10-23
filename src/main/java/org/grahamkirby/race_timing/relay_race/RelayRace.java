@@ -39,7 +39,7 @@ import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRaw
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.*;
 
-public class RelayRace implements Race {
+public class RelayRace implements SingleRaceInternal {
 
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int TEAM_NAME_INDEX = 1;
@@ -57,20 +57,17 @@ public class RelayRace implements Race {
     private CategoriesProcessor categories_processor;
     private ResultsOutput results_output;
     private Normalisation normalisation;
+    private final Notes notes;
 
     public RelayRace(final Config config) throws IOException {
 
         this.config = config;
+        notes = new Notes();
     }
 
     public Config getConfig() {
         return config;
     }
-
-//    @Override
-//    public Object getSpecific() {
-//        return this;
-//    }
 
     public CategoryDetails getCategoryDetails() {
         return category_details;
@@ -270,7 +267,7 @@ public class RelayRace implements Race {
             toList();
     }
 
-    private RaceEntry makeRelayRaceEntry(final List<String> elements, final Race race) {
+    private RaceEntry makeRelayRaceEntry(final List<String> elements, final SingleRaceInternal race) {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
@@ -286,7 +283,7 @@ public class RelayRace implements Race {
 
             final Participant participant = new Team(name, category, runners);
 
-            return new RaceEntry(participant, bib_number, race);
+            return new RaceEntry(participant, bib_number);
 
         } catch (final RuntimeException e) {
             throw new RuntimeException(String.join(" ", elements));
@@ -298,14 +295,14 @@ public class RelayRace implements Race {
         return results_calculator;
     }
 
-    @Override
-    public void appendToNotes(final String note) {
-        results_calculator.getNotes().append(note);
-    }
+//    @Override
+//    public void appendToNotes(final String note) {
+//        results_calculator.getNotes().append(note);
+//    }
 
     @Override
-    public String getNotes() {
-        return results_calculator.getNotes().toString();
+    public Notes getNotes() {
+        return notes;
     }
 
     @Override

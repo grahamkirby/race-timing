@@ -33,7 +33,7 @@ public class RelayRaceResult extends SingleRaceResult {
 
     private final List<RelayRaceLegResult> leg_results;
 
-    RelayRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
+    RelayRaceResult(final SingleRaceInternal race, final RaceEntry entry, final Duration finish_time) {
 
         super(race, entry, finish_time);
 

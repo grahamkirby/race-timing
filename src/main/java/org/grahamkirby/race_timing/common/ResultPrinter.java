@@ -26,12 +26,12 @@ import java.util.List;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class ResultPrinter {
 
-    protected final Race race;
+    protected final SingleRaceInternal race;
     protected final OutputStreamWriter writer;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected ResultPrinter(final Race race, final OutputStreamWriter writer) {
+    protected ResultPrinter(final SingleRaceInternal race, final OutputStreamWriter writer) {
         this.race = race;
         this.writer = writer;
     }

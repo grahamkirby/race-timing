@@ -24,5 +24,5 @@ public interface ResultsOutput {
 
     void outputResults() throws IOException;
 
-    void setRace(Race race);
+    void setRace(SingleRaceInternal race);
 }

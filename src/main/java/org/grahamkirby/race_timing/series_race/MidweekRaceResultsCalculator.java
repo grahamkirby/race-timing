@@ -17,7 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -28,7 +28,7 @@ import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLAC
 
 public class MidweekRaceResultsCalculator extends SeriesRaceResultsCalculator {
 
-    int calculateRaceScore(final Race individual_race, final Runner runner) {
+    int calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
 
         if (individual_race == null) return 0;
 

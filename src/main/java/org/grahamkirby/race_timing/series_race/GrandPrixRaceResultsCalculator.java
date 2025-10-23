@@ -17,7 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -43,7 +43,7 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
         return result -> ((GrandPrixRace) race).qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
     }
 
-    int calculateRaceScore(final Race individual_race, final Runner runner) {
+    int calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
 
         if (individual_race == null) return 0;
 

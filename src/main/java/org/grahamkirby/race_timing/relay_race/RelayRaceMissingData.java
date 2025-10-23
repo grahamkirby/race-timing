@@ -46,9 +46,9 @@ class RelayRaceMissingData {
 
     private final RelayRace race;
 
-    RelayRaceMissingData(final Race race) {
+    RelayRaceMissingData(final RelayRace race) {
 
-        this.race = (RelayRace) race;
+        this.race = race;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

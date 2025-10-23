@@ -17,9 +17,13 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import java.io.OutputStreamWriter;
-import java.util.function.BiFunction;
+import org.grahamkirby.race_timing.categories.CategoryDetails;
 
-public interface ResultPrinterGenerator extends BiFunction<SingleRaceInternal, OutputStreamWriter, ResultPrinter> {
+public interface RaceInternal extends Race {
 
+    Config getConfig();
+    CategoryDetails getCategoryDetails();
+    RaceResultsCalculator getResultsCalculator();
+    Normalisation getNormalisation();
+    Notes getNotes();
 }

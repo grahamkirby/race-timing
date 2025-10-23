@@ -52,7 +52,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -88,7 +88,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class MidweekRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private MidweekRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private MidweekRaceOverallResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -100,7 +100,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             headers.add("Club");
 
-            final List<Race> races = ((SeriesRace) race).getRaces();
+            final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
@@ -127,7 +127,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             elements.add(runner.getClub());
 
-            for (final Race individual_race : ((SeriesRace) race).getRaces())
+            for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
                     final int score = calculator.calculateRaceScore(individual_race, runner);
                     elements.add(String.valueOf(score));
@@ -142,7 +142,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class MidweekRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public MidweekRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        public MidweekRacePrizeResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

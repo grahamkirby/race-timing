@@ -31,7 +31,7 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
     public static final String KEY_INDICATIVE_OF_SERIES_RACE = KEY_RACES;
 
-    public Race makeRace(final Path config_file_path) throws IOException {
+    public SingleRaceInternal makeRace(final Path config_file_path) throws IOException {
 
         final IndividualRace race = new IndividualRace(makeIndividualRaceConfig(config_file_path));
 

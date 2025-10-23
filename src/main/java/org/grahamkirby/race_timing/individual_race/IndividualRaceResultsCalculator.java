@@ -187,7 +187,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
     }
 
-    private RaceEntry makeRaceEntry(final List<String> elements, final Race race) {
+    private RaceEntry makeRaceEntry(final List<String> elements, final SingleRaceInternal race) {
 
         final Normalisation normalisation = race.getNormalisation();
 
@@ -204,7 +204,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
             final Participant participant = new Runner(name, club, category);
 
-            return new RaceEntry(participant, bib_number, race);
+            return new RaceEntry(participant, bib_number);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));

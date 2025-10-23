@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.CommonRaceResult;
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -32,7 +32,7 @@ class MidweekRaceResult extends SeriesRaceResult {
 
     private final List<Integer> scores;
 
-    MidweekRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
+    MidweekRaceResult(final Runner runner, final List<Integer> scores, final SingleRaceInternal race) {
 
         super(race, runner);
         this.scores = scores;

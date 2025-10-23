@@ -30,9 +30,9 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class GrandPrixRace implements SeriesRace, Race {
+public class GrandPrixRace implements SeriesRace, SingleRaceInternal {
 
-    private List<Race> races;
+    private List<SingleRaceInternal> races;
     private List<String> race_config_paths;
     private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
@@ -40,6 +40,7 @@ public class GrandPrixRace implements SeriesRace, Race {
     private final Config config;
     private CategoriesProcessor categories_processor;
     private Normalisation normalisation;
+    private final Notes notes;
 
     List<GrandPrixRaceCategory> race_categories;
     List<Integer> race_temporal_positions;
@@ -51,16 +52,14 @@ public class GrandPrixRace implements SeriesRace, Race {
     public GrandPrixRace(final Config config) {
 
         this.config = config;
-    }
-
-    public void setRace(final Race race) {
-
+        notes = new Notes();
     }
 
     @Override
     public void processResults() {
+
         category_details = categories_processor.getCategoryDetails();
-        completeConfiguration2();
+        completeConfiguration();
         results_calculator.calculateResults();
     }
 
@@ -88,7 +87,7 @@ public class GrandPrixRace implements SeriesRace, Race {
         results_output.setRace(this);
     }
 
-    public void completeConfiguration2() {
+    public void completeConfiguration() {
 
         try {
             race_config_paths = Arrays.asList(config.getStringConfig(KEY_RACES).split(",", -1));
@@ -131,14 +130,14 @@ public class GrandPrixRace implements SeriesRace, Race {
         return normalisation;
     }
 
-    @Override
-    public void appendToNotes(String s) {
-        results_calculator.getNotes().append(s);
-    }
+//    @Override
+//    public void appendToNotes(String s) {
+//        results_calculator.getNotes().append(s);
+//    }
 
     @Override
-    public String getNotes() {
-        return results_calculator.getNotes().toString();
+    public Notes getNotes() {
+        return notes;
     }
 
 //    @Override
@@ -197,7 +196,7 @@ public class GrandPrixRace implements SeriesRace, Race {
             }
     }
 
-    public List<Race> getRaces() {
+    public List<SingleRaceInternal> getRaces() {
         return races;
     }
 
@@ -227,7 +226,7 @@ public class GrandPrixRace implements SeriesRace, Race {
 
     protected void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
 
-        results_calculator.getNotes().append("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
+        notes.appendToNotes("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {
@@ -275,13 +274,13 @@ public class GrandPrixRace implements SeriesRace, Race {
             toList();
     }
 
-    private List<Race> loadRaces() throws IOException {
+    private List<SingleRaceInternal> loadRaces() throws IOException {
 
         final int number_of_race_in_series = (int) config.get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_race_in_series != race_config_paths.size())
             throw new RuntimeException("invalid number of races specified in file '" + config.getConfigPath().getFileName() + "'");
 
-        final List<Race> races = new ArrayList<>();
+        final List<SingleRaceInternal> races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
 
         for (int i = 0; i < number_of_race_in_series; i++) {
@@ -301,14 +300,14 @@ public class GrandPrixRace implements SeriesRace, Race {
         return races;
     }
 
-    private Race getIndividualRace(final String race_config_path, final int race_number) throws IOException {
+    private SingleRaceInternal getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
         final Path config_path = config.interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");
 
-        final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
+        final SingleRaceInternal individual_race = new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();
 
         return individual_race;

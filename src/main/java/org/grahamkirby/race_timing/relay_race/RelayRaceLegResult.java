@@ -36,7 +36,7 @@ public class RelayRaceLegResult extends SingleRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RelayRaceLegResult(final Race race, final RaceEntry entry) {
+    RelayRaceLegResult(final SingleRaceInternal race, final RaceEntry entry) {
 
         super(race, entry, null);
         setDnf(true);

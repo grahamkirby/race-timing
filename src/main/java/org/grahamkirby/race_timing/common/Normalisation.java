@@ -67,9 +67,9 @@ public class Normalisation {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final Race race;
+    private final SingleRaceInternal race;
 
-    public Normalisation(final Race race) {
+    public Normalisation(final SingleRaceInternal race) {
 
         this.race = race;
         configure();

@@ -59,7 +59,7 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
         return position;
     }
 
-    static Duration getRunnerTime(final Race individual_race, final Runner runner) {
+    static Duration getRunnerTime(final SingleRaceInternal individual_race, final Runner runner) {
 
         for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
 
@@ -104,10 +104,10 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
         return new ArrayList<>(map.values());
     }
 
-    private List<Race> getRacesInTemporalOrder() {
+    private List<SingleRaceInternal> getRacesInTemporalOrder() {
 
-        final List<Race> races = ((SeriesRace) race).getRaces();
-        final List<Race> races_in_order = new ArrayList<>();
+        final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
+        final List<SingleRaceInternal> races_in_order = new ArrayList<>();
 
         // TODO write as permutation.
         for (int i = 0; i < races.size(); i++)
@@ -145,7 +145,7 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
                     checkForChangeToYoungerAgeCategory(result, previous_category, current_category, race_name);
                     checkForChangeToDifferentGenderCategory(result, previous_category, current_category, race_name);
 
-                    getNotes().append("Runner " + result.getParticipantName() + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name + LINE_SEPARATOR);
+                    race.getNotes().appendToNotes("Runner " + result.getParticipantName() + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name + LINE_SEPARATOR);
                 }
 
                 previous_category = current_category;

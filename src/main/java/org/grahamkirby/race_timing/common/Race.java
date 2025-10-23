@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.categories.CategoryDetails;
-
 import java.io.IOException;
-import java.util.List;
 
 public interface Race {
 
@@ -52,13 +49,4 @@ public interface Race {
 
     void processResults();
     void outputResults() throws IOException;
-
-    Config getConfig();
-    RaceResultsCalculator getResultsCalculator();
-    CategoryDetails getCategoryDetails();
-    Normalisation getNormalisation();
-    void appendToNotes(String s);
-    String getNotes();
-    List<RawResult> getRawResults();
-    List<RaceEntry> getEntries();
 }

@@ -17,9 +17,15 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import java.io.OutputStreamWriter;
-import java.util.function.BiFunction;
+public class Notes {
 
-public interface ResultPrinterGenerator extends BiFunction<SingleRaceInternal, OutputStreamWriter, ResultPrinter> {
+    protected final StringBuilder notes =  new StringBuilder();
 
+    public void appendToNotes(String s) {
+        notes.append(s);
+    }
+
+    public String getCombinedNotes() {
+        return notes.toString();
+    }
 }

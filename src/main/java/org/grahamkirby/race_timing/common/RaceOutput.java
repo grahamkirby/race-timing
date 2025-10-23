@@ -43,7 +43,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceOutput implements ResultsOutput {
 
-    protected Race race;
+    protected SingleRaceInternal race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +59,7 @@ public abstract class RaceOutput implements ResultsOutput {
     }
 
     @Override
-    public void setRace(final Race race) {
+    public void setRace(final SingleRaceInternal race) {
 
         this.race = race;
     }
@@ -88,12 +88,12 @@ public abstract class RaceOutput implements ResultsOutput {
 
         for (final RaceResult result : race.getResultsCalculator().getOverallResults())
             if (result.getCategory() == null)
-                race.appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
+                race.getNotes().appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
 
         final String converted_words = race.getNormalisation().getNonTitleCaseWords();
 
         if (!converted_words.isEmpty())
-            race.appendToNotes("Converted to title case: " + converted_words);
+            race.getNotes().appendToNotes("Converted to title case: " + converted_words);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
@@ -102,7 +102,7 @@ public abstract class RaceOutput implements ResultsOutput {
         final OutputStream stream = getOutputStream("processing_notes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(race.getNotes());
+            writer.append(race.getNotes().getCombinedNotes());
         }
     }
 
@@ -112,7 +112,7 @@ public abstract class RaceOutput implements ResultsOutput {
     protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
     protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
 
-    protected static String getConcatenatedRaceNames(final List<Race> races) {
+    protected static String getConcatenatedRaceNames(final List<SingleRaceInternal> races) {
 
         return races.stream().
             filter(Objects::nonNull).
@@ -360,7 +360,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
     public static final class PrizeResultPrinterText extends ResultPrinter {
 
-        public PrizeResultPrinterText(final Race race, final OutputStreamWriter writer) {
+        public PrizeResultPrinterText(final SingleRaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -386,7 +386,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
         private final Document document;
 
-        public PrizeResultPrinterPDF(final Race race, final Document document) {
+        public PrizeResultPrinterPDF(final SingleRaceInternal race, final Document document) {
 
             super(race, null);
             this.document = document;

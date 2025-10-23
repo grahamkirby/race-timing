@@ -27,7 +27,7 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
     protected boolean dnf;
     protected int bib_number;
 
-    public SingleRaceResult(final Race race, final RaceEntry entry, final Duration finish_time) {
+    public SingleRaceResult(final SingleRaceInternal race, final RaceEntry entry, final Duration finish_time) {
 
         super(race, entry.participant);
 

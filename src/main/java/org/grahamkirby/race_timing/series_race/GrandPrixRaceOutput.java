@@ -52,7 +52,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -104,7 +104,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class GrandPrixOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private GrandPrixOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        private GrandPrixOverallResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -114,9 +114,9 @@ class GrandPrixRaceOutput extends RaceOutput {
             final List<String> headers = new ArrayList<>(common_headers);
 
             // This traverses races in order of listing in config, sorted first by race type and then date.
-            final List<Race> races = ((SeriesRace) race).getRaces();
+            final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
 
-            for (final Race individual_race : races)
+            for (final SingleRaceInternal individual_race : races)
                 // Check whether race has taken place at this point.
                 if (individual_race != null)
                     headers.add((String) individual_race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS));
@@ -141,7 +141,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getShortName());
 
-            for (final Race individual_race : ((SeriesRace) race).getRaces())
+            for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
                     final int score = calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant());
                     elements.add(renderScore(score));
@@ -164,7 +164,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class GrandPrixPrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public GrandPrixPrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
+        public GrandPrixPrizeResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

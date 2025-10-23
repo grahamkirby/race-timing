@@ -28,25 +28,24 @@ import static org.grahamkirby.race_timing.common.Config.KEY_DNF_FINISHERS;
 
 public abstract class RaceResultsCalculator {
 
-    protected Race race;
+    protected SingleRaceInternal race;
     protected List<RaceResult> overall_results;
-    protected final StringBuilder notes;
 
-    protected RaceResultsCalculator() {
-
-        notes = new StringBuilder();
-    }
+//    protected RaceResultsCalculator() {
+//
+//        notes = new StringBuilder();
+//    }
 
     public abstract void calculateResults();
 
-    public void setRace(final Race race) {
+    public void setRace(final SingleRaceInternal race) {
 
         this.race = race;
     }
 
-    public StringBuilder getNotes() {
-        return notes;
-    }
+//    public StringBuilder getNotes() {
+//        return notes;
+//    }
 
     public List<RaceResult> getOverallResults() {
         return overall_results;
