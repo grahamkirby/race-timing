@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.common.RaceConfigAdjuster;
-import org.grahamkirby.race_timing.common.RaceConfigValidator;
-import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,19 +31,10 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     public static final String KEY_INDICATIVE_OF_MIDWEEK_RACE = KEY_SCORE_FOR_FIRST_PLACE;
 
     @Override
-    public Race makeRace(final Path config_file_path) throws IOException {
+    public Race2 makeRace(final Path config_file_path) throws IOException {
 
-        final Race race = new Race(config_file_path);
+        final MidweekRace race = new MidweekRace(makeMidweekRaceConfig(config_file_path));
 
-        race.addConfigProcessor(new RaceConfigAdjuster());
-        race.addConfigProcessor(new SeriesRaceConfigAdjuster());
-        race.addConfigProcessor(new MidweekRaceConfigAdjuster());
-        race.addConfigProcessor(new RaceConfigValidator());
-        race.addConfigProcessor(new SeriesRaceConfigValidator());
-        race.addConfigProcessor(new MidweekRaceConfigValidator());
-        race.loadConfig();
-
-        race.setSpecific(new MidweekRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new MidweekRaceResultsCalculator());
         race.setResultsOutput(new MidweekRaceOutput());
@@ -58,5 +46,20 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     public boolean isValidFor(final Properties properties) {
 
         return properties.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE);
+    }
+
+    private Config makeMidweekRaceConfig(final Path config_file_path) throws IOException {
+
+        final Config config = new Config(config_file_path);
+
+        config.addConfigProcessor(new RaceConfigAdjuster());
+        config.addConfigProcessor(new SeriesRaceConfigAdjuster());
+        config.addConfigProcessor(new MidweekRaceConfigAdjuster());
+        config.addConfigProcessor(new RaceConfigValidator());
+        config.addConfigProcessor(new SeriesRaceConfigValidator());
+        config.addConfigProcessor(new MidweekRaceConfigValidator());
+        config.processConfig();
+
+        return config;
     }
 }

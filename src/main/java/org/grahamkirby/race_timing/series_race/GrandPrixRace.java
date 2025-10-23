@@ -165,7 +165,8 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
 
     private List<GrandPrixRaceCategory> loadRaceCategories() throws IOException {
 
-        return Files.readAllLines(config.getPathConfig(KEY_RACE_CATEGORIES_PATH)).stream().
+        Path pathConfig = config.getPathConfig(KEY_RACE_CATEGORIES_PATH);
+        return Files.readAllLines(pathConfig).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             map(GrandPrixRace::makeRaceCategory).
             toList();
