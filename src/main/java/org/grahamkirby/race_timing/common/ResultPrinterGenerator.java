@@ -20,6 +20,6 @@ package org.grahamkirby.race_timing.common;
 import java.io.OutputStreamWriter;
 import java.util.function.BiFunction;
 
-public interface ResultPrinterGenerator extends BiFunction<SingleRaceInternal, OutputStreamWriter, ResultPrinter> {
+public interface ResultPrinterGenerator extends BiFunction<RaceInternal, OutputStreamWriter, ResultPrinter> {
 
 }

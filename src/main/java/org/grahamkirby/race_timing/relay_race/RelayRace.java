@@ -295,11 +295,6 @@ public class RelayRace implements SingleRaceInternal {
         return results_calculator;
     }
 
-//    @Override
-//    public void appendToNotes(final String note) {
-//        results_calculator.getNotes().append(note);
-//    }
-
     @Override
     public Notes getNotes() {
         return notes;

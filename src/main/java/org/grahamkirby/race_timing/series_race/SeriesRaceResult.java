@@ -30,7 +30,7 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
     protected final int number_of_races_in_series;
     protected final int number_of_races_taken_place;
 
-    public SeriesRaceResult(final SingleRaceInternal race, final Participant participant) {
+    public SeriesRaceResult(final RaceInternal race, final Participant participant) {
 
         super(race, participant);
 

@@ -43,7 +43,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceOutput implements ResultsOutput {
 
-    protected SingleRaceInternal race;
+    protected RaceInternal race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,8 +58,9 @@ public abstract class RaceOutput implements ResultsOutput {
         printNotes();
     }
 
+    // TODO set in constructor?
     @Override
-    public void setRace(final SingleRaceInternal race) {
+    public void setRace(final RaceInternal race) {
 
         this.race = race;
     }
@@ -360,7 +361,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
     public static final class PrizeResultPrinterText extends ResultPrinter {
 
-        public PrizeResultPrinterText(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        public PrizeResultPrinterText(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -386,7 +387,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
         private final Document document;
 
-        public PrizeResultPrinterPDF(final SingleRaceInternal race, final Document document) {
+        public PrizeResultPrinterPDF(final RaceInternal race, final Document document) {
 
             super(race, null);
             this.document = document;

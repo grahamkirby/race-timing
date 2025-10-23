@@ -23,6 +23,5 @@ import java.io.IOException;
 public interface ResultsOutput {
 
     void outputResults() throws IOException;
-
-    void setRace(SingleRaceInternal race);
+    void setRace(RaceInternal race);
 }

@@ -30,7 +30,7 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class GrandPrixRace implements SeriesRace, SingleRaceInternal {
+public class GrandPrixRace implements SeriesRace, RaceInternal {
 
     private List<SingleRaceInternal> races;
     private List<String> race_config_paths;
@@ -58,7 +58,6 @@ public class GrandPrixRace implements SeriesRace, SingleRaceInternal {
     @Override
     public void processResults() {
 
-        category_details = categories_processor.getCategoryDetails();
         completeConfiguration();
         results_calculator.calculateResults();
     }
@@ -87,9 +86,10 @@ public class GrandPrixRace implements SeriesRace, SingleRaceInternal {
         results_output.setRace(this);
     }
 
-    public void completeConfiguration() {
+    private void completeConfiguration() {
 
         try {
+            category_details = categories_processor.getCategoryDetails();
             race_config_paths = Arrays.asList(config.getStringConfig(KEY_RACES).split(",", -1));
 
             race_categories = loadRaceCategories();
@@ -130,29 +130,9 @@ public class GrandPrixRace implements SeriesRace, SingleRaceInternal {
         return normalisation;
     }
 
-//    @Override
-//    public void appendToNotes(String s) {
-//        results_calculator.getNotes().append(s);
-//    }
-
     @Override
     public Notes getNotes() {
         return notes;
-    }
-
-//    @Override
-//    public Object getSpecific() {
-//        return this;
-//    }
-
-    @Override
-    public List<RawResult> getRawResults() {
-        return List.of();
-    }
-
-    @Override
-    public List<RaceEntry> getEntries() {
-        return List.of();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

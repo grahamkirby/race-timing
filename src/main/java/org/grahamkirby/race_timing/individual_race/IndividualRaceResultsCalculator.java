@@ -138,7 +138,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private void initialiseResults() {
 
-        final List<RawResult> raw_results = race.getRawResults();
+        final List<RawResult> raw_results = ((SingleRaceInternal) race).getRawResults();
 
         if (raw_results.isEmpty()) {
             try {
@@ -187,7 +187,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
     }
 
-    private RaceEntry makeRaceEntry(final List<String> elements, final SingleRaceInternal race) {
+    private RaceEntry makeRaceEntry(final List<String> elements, final RaceInternal race) {
 
         final Normalisation normalisation = race.getNormalisation();
 
@@ -221,7 +221,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
-        final List<RaceEntry> entries = race.getEntries();
+        final List<RaceEntry> entries = ((SingleRaceInternal) race).getEntries();
 
         return entries.stream().
             filter(entry -> entry.bib_number == bib_number).

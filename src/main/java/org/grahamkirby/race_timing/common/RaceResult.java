@@ -24,7 +24,7 @@ import java.util.List;
 
 public interface RaceResult extends Comparable<RaceResult> {
 
-    SingleRaceInternal getRace();
+    RaceInternal getRace();
 
     Participant getParticipant();
 
@@ -38,7 +38,6 @@ public interface RaceResult extends Comparable<RaceResult> {
 
     List<PrizeCategory> getCategoriesOfPrizesAwarded();
 
-//    String getPrizeDetailPDF();
     String getPrizeDetail();
 
     int comparePerformanceTo(RaceResult other);

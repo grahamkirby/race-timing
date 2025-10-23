@@ -164,7 +164,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private IndividualRaceOverallResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -192,7 +192,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        private IndividualRacePrizeResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private IndividualRacePrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -209,7 +209,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRaceOverallResultPrinterCSV extends ResultPrinter {
 
-        private IndividualRaceOverallResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

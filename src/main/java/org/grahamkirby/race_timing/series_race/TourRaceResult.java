@@ -33,7 +33,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
 
     public final List<Duration> times;
 
-    TourRaceResult(final Runner runner, final List<Duration> times, final SingleRaceInternal race) {
+    TourRaceResult(final Runner runner, final List<Duration> times, final RaceInternal race) {
 
         super(race, runner);
         this.times = times;

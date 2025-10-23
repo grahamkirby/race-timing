@@ -31,8 +31,8 @@ public class RaceEntry {
     private static final int CLUB_INDEX = 2;
     public static final int CATEGORY_INDEX = 3;
 
-    public Participant participant;
-    public int bib_number;
+    public final Participant participant;
+    public final int bib_number;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,8 +70,8 @@ public class RaceEntry {
 
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof RaceEntry entry && entry.bib_number == bib_number && entry.participant.equals(participant);
+    public boolean equals(final Object obj) {
+        return obj instanceof final RaceEntry entry && entry.bib_number == bib_number && entry.participant.equals(participant);
     }
 
     @Override

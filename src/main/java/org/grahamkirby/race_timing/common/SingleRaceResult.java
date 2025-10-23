@@ -27,7 +27,7 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
     protected boolean dnf;
     protected int bib_number;
 
-    public SingleRaceResult(final SingleRaceInternal race, final RaceEntry entry, final Duration finish_time) {
+    public SingleRaceResult(final RaceInternal race, final RaceEntry entry, final Duration finish_time) {
 
         super(race, entry.participant);
 
@@ -87,7 +87,7 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
 
     private int getRecordedPosition(final int bib_number) {
 
-        return (int) race.getRawResults().stream().
+        return (int) ((SingleRaceInternal) race).getRawResults().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
             count() + 1;
     }

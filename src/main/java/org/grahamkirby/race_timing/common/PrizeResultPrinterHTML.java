@@ -26,7 +26,7 @@ import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 /** Base class for printing results to HTML files. */
 public abstract class PrizeResultPrinterHTML extends ResultPrinter {
 
-    protected PrizeResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+    protected PrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 

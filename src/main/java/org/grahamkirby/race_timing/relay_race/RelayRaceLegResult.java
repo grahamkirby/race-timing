@@ -36,9 +36,10 @@ public class RelayRaceLegResult extends SingleRaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RelayRaceLegResult(final SingleRaceInternal race, final RaceEntry entry) {
+    RelayRaceLegResult(final RaceInternal race, final RaceEntry entry) {
 
         super(race, entry, null);
+
         setDnf(true);
         in_mass_start = false;
     }

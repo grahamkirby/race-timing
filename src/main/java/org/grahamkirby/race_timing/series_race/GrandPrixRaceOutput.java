@@ -52,7 +52,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -104,7 +104,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class GrandPrixOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private GrandPrixOverallResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private GrandPrixOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -164,7 +164,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class GrandPrixPrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public GrandPrixPrizeResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        public GrandPrixPrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

@@ -48,7 +48,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void setRace(final SingleRaceInternal race) {
+    public void setRace(final RaceInternal race) {
 
         super.setRace(race);
         missing_data = new RelayRaceMissingData((RelayRace) race);
@@ -82,7 +82,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void recordLegResults() {
 
-        race.getRawResults().stream().
+        ((SingleRaceInternal) race).getRawResults().stream().
             filter(result -> result.getBibNumber() != UNKNOWN_BIB_NUMBER).
             forEachOrdered(this::recordLegResult);
     }
@@ -214,7 +214,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void addPaperRecordingComments() {
 
-        final List<RawResult> raw_results = race.getRawResults();
+        final List<RawResult> raw_results = ((SingleRaceInternal) race).getRawResults();
         final int number_of_electronically_recorded_results = ((RelayRace) race).number_of_electronically_recorded_raw_results;
 
         // TODO add check for zero.
@@ -279,7 +279,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         final Collection<Integer> bib_numbers_seen = new HashSet<>();
 
-        overall_results = race.getRawResults().stream().
+        overall_results = ((SingleRaceInternal) race).getRawResults().stream().
             filter(raw_result -> raw_result.getBibNumber() != 0).
             filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
             map(this::makeRaceResult).
@@ -316,7 +316,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
-        return race.getEntries().stream().
+        return ((SingleRaceInternal) race).getEntries().stream().
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();

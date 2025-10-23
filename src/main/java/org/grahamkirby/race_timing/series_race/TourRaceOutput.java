@@ -54,7 +54,7 @@ class TourRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -89,7 +89,7 @@ class TourRaceOutput extends RaceOutput {
 
     private static final class TourRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private TourRaceOverallResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private TourRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -137,7 +137,7 @@ class TourRaceOutput extends RaceOutput {
 
     private static final class TourRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public TourRacePrizeResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        public TourRacePrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

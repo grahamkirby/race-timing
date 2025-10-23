@@ -197,7 +197,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
 
-        for (final RawResult result : race.getRawResults()) {
+        for (final RawResult result : ((SingleRaceInternal) race).getRawResults()) {
 
             final int legs_already_finished = legs_finished_per_team.get(result.getBibNumber()) - 1;
             printResult(writer, result, legs_already_finished);
@@ -320,7 +320,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class RelayRaceOverallResultPrinterCSV extends ResultPrinter {
 
-        private RelayRaceOverallResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private RelayRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -346,7 +346,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class RelayRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private RelayRaceOverallResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private RelayRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -373,7 +373,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class DetailedResultPrinterCSV extends ResultPrinter {
 
-        private DetailedResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private DetailedResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -414,7 +414,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class DetailedResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private DetailedResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        private DetailedResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -458,7 +458,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         final int leg;
 
-        private LegResultPrinterCSV(final SingleRaceInternal race, final OutputStreamWriter writer, final int leg) {
+        private LegResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer, final int leg) {
 
             super(race, writer);
             this.leg = leg;
@@ -488,7 +488,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         final int leg;
 
-        private LegResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer, final int leg) {
+        private LegResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer, final int leg) {
 
             super(race, writer);
             this.leg = leg;
@@ -522,7 +522,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private static final class RelayRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public RelayRacePrizeResultPrinterHTML(final SingleRaceInternal race, final OutputStreamWriter writer) {
+        public RelayRacePrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
