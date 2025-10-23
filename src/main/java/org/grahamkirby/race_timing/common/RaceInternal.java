@@ -17,13 +17,15 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.categories.CategoryDetails;
+import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 
 public interface RaceInternal extends Race {
 
     Config getConfig();
-    CategoryDetails getCategoryDetails();
+    CategoriesProcessor getCategoriesProcessor();
     RaceResultsCalculator getResultsCalculator();
+    void setResultsCalculator(RaceResultsCalculator results_calculator);
+    void setResultsOutput(RaceOutput results_output);
     Normalisation getNormalisation();
     Notes getNotes();
 }

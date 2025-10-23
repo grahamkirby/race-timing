@@ -43,10 +43,10 @@ public abstract class RaceResultsCalculator {
 
     public boolean arePrizesInThisOrLaterCategory(final PrizeCategory category) {
 
-        for (final PrizeCategory category2 : race.getCategoryDetails().getPrizeCategories().reversed()) {
+        for (final PrizeCategory other_category : race.getCategoriesProcessor().getPrizeCategories().reversed()) {
 
-            if (!getPrizeWinners(category2).isEmpty()) return true;
-            if (category.equals(category2) && !arePrizesInOtherCategorySameAge(category)) return false;
+            if (!getPrizeWinners(other_category).isEmpty()) return true;
+            if (category.equals(other_category) && !arePrizesInOtherCategorySameAge(category)) return false;
         }
         return false;
     }
@@ -54,7 +54,7 @@ public abstract class RaceResultsCalculator {
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoryDetails().isResultEligibleInSomePrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
 
         setPositionStrings(results, areEqualPositionsAllowed());
@@ -126,7 +126,7 @@ public abstract class RaceResultsCalculator {
 
     protected void allocatePrizes() {
 
-        for (final PrizeCategory category : race.getCategoryDetails().getPrizeCategories())
+        for (final PrizeCategory category : race.getCategoriesProcessor().getPrizeCategories())
             setPrizeWinners(category);
     }
 
@@ -134,7 +134,7 @@ public abstract class RaceResultsCalculator {
 
         return result.canComplete() &&
             isStillEligibleForPrize(result, prize_category) &&
-            race.getCategoryDetails().isResultEligibleForPrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getParticipant().category, prize_category);
+            race.getCategoriesProcessor().isResultEligibleForPrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getParticipant().category, prize_category);
     }
 
     protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
@@ -215,7 +215,7 @@ public abstract class RaceResultsCalculator {
 
     private boolean arePrizesInOtherCategorySameAge(final PrizeCategory category) {
 
-        return race.getCategoryDetails().getPrizeCategories().stream().
+        return race.getCategoriesProcessor().getPrizeCategories().stream().
             filter(cat -> !cat.equals(category)).
             filter(cat -> cat.getMinimumAge() == category.getMinimumAge()).
             anyMatch(cat -> !getPrizeWinners(cat).isEmpty());

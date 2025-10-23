@@ -17,14 +17,13 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 
 public class MidweekRaceFactory implements SpecialisedRaceFactory {
 
@@ -35,7 +34,6 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
 
         final MidweekRace race = new MidweekRace(makeMidweekRaceConfig(config_file_path));
 
-        race.setCategoriesProcessor(new CategoriesProcessor(race));
         race.setResultsCalculator(new MidweekRaceResultsCalculator(race));
         race.setResultsOutput(new MidweekRaceOutput(race));
 

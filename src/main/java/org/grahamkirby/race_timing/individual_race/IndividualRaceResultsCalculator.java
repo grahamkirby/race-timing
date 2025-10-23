@@ -204,7 +204,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoryDetails().lookupEntryCategory(category_name);
+            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().lookupEntryCategory(category_name);
 
             final Participant participant = new Runner(name, club, category);
 

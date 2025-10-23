@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -34,26 +33,25 @@ public class TourRace implements SeriesRace, RaceInternal {
 
     private List<SingleRaceInternal> races;
     private List<String> race_config_paths;
-    private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
     private RaceOutput results_output;
     private final Config config;
-    private CategoriesProcessor categories_processor;
+    private final CategoriesProcessor categories_processor;
     private Normalisation normalisation;
     private final Notes notes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public TourRace(final Config config) {
+    public TourRace(final Config config) throws IOException {
 
         this.config = config;
         notes = new Notes();
+        categories_processor = new CategoriesProcessor(config);
     }
 
     @Override
     public void processResults() {
 
-        category_details = categories_processor.getCategoryDetails();
         completeConfiguration();
         results_calculator.calculateResults();
     }
@@ -68,18 +66,28 @@ public class TourRace implements SeriesRace, RaceInternal {
         return notes;
     }
 
-    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
-
-        this.categories_processor = categories_processor;
+    @Override
+    public Config getConfig() {
+        return config;
     }
 
-    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
+    @Override
+    public CategoriesProcessor getCategoriesProcessor() {
+        return categories_processor;
+    }
 
+    @Override
+    public RaceResultsCalculator getResultsCalculator() {
+        return results_calculator;
+    }
+
+    @Override
+    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
         this.results_calculator = results_calculator;
     }
 
+    @Override
     public void setResultsOutput(final RaceOutput results_output) {
-
         this.results_output = results_output;
     }
 
@@ -96,21 +104,6 @@ public class TourRace implements SeriesRace, RaceInternal {
     }
 
     @Override
-    public Config getConfig() {
-        return config;
-    }
-
-    @Override
-    public RaceResultsCalculator getResultsCalculator() {
-        return results_calculator;
-    }
-
-    @Override
-    public CategoryDetails getCategoryDetails() {
-        return category_details;
-    }
-
-    @Override
     public synchronized Normalisation getNormalisation() {
 
         if (normalisation == null)
@@ -118,16 +111,6 @@ public class TourRace implements SeriesRace, RaceInternal {
 
         return normalisation;
     }
-
-//    @Override
-//    public List<RawResult> getRawResults() {
-//        return List.of();
-//    }
-//
-//    @Override
-//    public List<RaceEntry> getEntries() {
-//        return List.of();
-//    }
 
     public List<SingleRaceInternal> getRaces() {
         return races;

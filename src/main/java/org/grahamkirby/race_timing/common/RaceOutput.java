@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public abstract class RaceOutput {//implements ResultsOutput {
+public abstract class RaceOutput {
 
     protected RaceInternal race;
 
@@ -51,7 +51,6 @@ public abstract class RaceOutput {//implements ResultsOutput {
         this.race = race;
     }
 
-//    @Override
     public void outputResults() throws IOException {
 
         printOverallResults();
@@ -114,7 +113,7 @@ public abstract class RaceOutput {//implements ResultsOutput {
 
         return races.stream().
             filter(Objects::nonNull).
-            map(race -> (String) race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
+            map(race -> race.getConfig().getStringConfig(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
     }
 
     protected static PdfFont getFont(final String font_name) throws IOException {
@@ -126,10 +125,12 @@ public abstract class RaceOutput {//implements ResultsOutput {
 
     protected Path getOutputStreamPath(final String output_type, final String file_suffix) {
 
-        final String race_name = race.getConfig().getStringConfig(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = race.getConfig().getStringConfig(KEY_YEAR);
+        final Config config = race.getConfig();
 
-        return race.getConfig().getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
+        final String race_name = config.getStringConfig(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = config.getStringConfig(KEY_YEAR);
+
+        return config.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
     }
 
     protected OutputStream getOutputStream(final String output_type, final String file_suffix) throws IOException {
@@ -181,7 +182,7 @@ public abstract class RaceOutput {//implements ResultsOutput {
     /** Prints results using a specified printer, ordered by prize category groups. */
     protected void printResults(final OutputStreamWriter writer, final ResultPrinter printer, final Function<String, String> get_results_sub_header) throws IOException {
 
-        final List<PrizeCategoryGroup> category_groups = race.getCategoryDetails().getPrizeCategoryGroups();
+        final List<PrizeCategoryGroup> category_groups = race.getCategoriesProcessor().getPrizeCategoryGroups();
 
         boolean not_first_category_group = false;
 
@@ -255,7 +256,7 @@ public abstract class RaceOutput {//implements ResultsOutput {
 
     private void printPrizes(final Consumer<PrizeCategory> print_category_prizes) {
 
-        race.getCategoryDetails().getPrizeCategoryGroups().stream().
+        race.getCategoriesProcessor().getPrizeCategoryGroups().stream().
             flatMap(group -> group.categories().stream()).              // Get all prize categories.
             filter(race.getResultsCalculator()::arePrizesInThisOrLaterCategory).          // Ignore further categories once all prizes have been output.
             forEachOrdered(print_category_prizes);                                        // Print prizes in this category.

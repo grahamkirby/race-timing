@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -34,61 +33,49 @@ public class MidweekRace implements SeriesRace, RaceInternal {
 
     private List<SingleRaceInternal> races;
     private List<String> race_config_paths;
-    private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
     private RaceOutput results_output;
     private final Config config;
-    private CategoriesProcessor categories_processor;
+    private final CategoriesProcessor categories_processor;
     private Normalisation normalisation;
     private final Notes notes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public MidweekRace(final Config config) {
+    public MidweekRace(final Config config) throws IOException {
 
         this.config = config;
         notes = new Notes();
+        categories_processor = new CategoriesProcessor(config);
     }
 
     @Override
-    public void processResults() {
+    public void processResults() throws IOException {
 
-        category_details = categories_processor.getCategoryDetails();
-        completeConfiguration2();
+        completeConfiguration();
         results_calculator.calculateResults();
     }
 
     @Override
     public void outputResults() throws IOException {
-
         results_output.outputResults();
     }
 
-    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
-
-        this.categories_processor = categories_processor;
-    }
-
+    @Override
     public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
-
         this.results_calculator = results_calculator;
     }
 
+    @Override
     public void setResultsOutput(final RaceOutput results_output) {
-
         this.results_output = results_output;
     }
 
-    public void completeConfiguration2() {
+    public void completeConfiguration() throws IOException {
 
-        try {
-            race_config_paths = Arrays.asList(config.getStringConfig(KEY_RACES).split(",", -1));
-            races = loadRaces();
-            configureClubs();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        race_config_paths = Arrays.asList(config.getStringConfig(KEY_RACES).split(",", -1));
+        races = loadRaces();
+        configureClubs();
     }
 
     @Override
@@ -97,13 +84,13 @@ public class MidweekRace implements SeriesRace, RaceInternal {
     }
 
     @Override
-    public RaceResultsCalculator getResultsCalculator() {
-        return results_calculator;
+    public CategoriesProcessor getCategoriesProcessor() {
+        return categories_processor;
     }
 
     @Override
-    public CategoryDetails getCategoryDetails() {
-        return category_details;
+    public RaceResultsCalculator getResultsCalculator() {
+        return results_calculator;
     }
 
     @Override
@@ -120,6 +107,7 @@ public class MidweekRace implements SeriesRace, RaceInternal {
         return notes;
     }
 
+    @Override
     public List<SingleRaceInternal> getRaces() {
         return races;
     }
@@ -237,9 +225,7 @@ public class MidweekRace implements SeriesRace, RaceInternal {
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");
 
         final SingleRaceInternal individual_race = new IndividualRaceFactory().makeRace(config_path);
-
         individual_race.processResults();
-
         return individual_race;
     }
 

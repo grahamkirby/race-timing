@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -34,11 +33,10 @@ public class GrandPrixRace implements SeriesRace, RaceInternal {
 
     private List<SingleRaceInternal> races;
     private List<String> race_config_paths;
-    private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
     private RaceOutput results_output;
     private final Config config;
-    private CategoriesProcessor categories_processor;
+    private final CategoriesProcessor categories_processor;
     private Normalisation normalisation;
     private final Notes notes;
 
@@ -49,10 +47,11 @@ public class GrandPrixRace implements SeriesRace, RaceInternal {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public GrandPrixRace(final Config config) {
+    public GrandPrixRace(final Config config) throws IOException {
 
         this.config = config;
         notes = new Notes();
+        categories_processor = new CategoriesProcessor(config);
     }
 
     @Override
@@ -67,25 +66,19 @@ public class GrandPrixRace implements SeriesRace, RaceInternal {
         results_output.outputResults();
     }
 
-    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
-
-        this.categories_processor = categories_processor;
-    }
-
+    @Override
     public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
-
         this.results_calculator = results_calculator;
     }
 
+    @Override
     public void setResultsOutput(final RaceOutput results_output) {
-
         this.results_output = results_output;
     }
 
     private void completeConfiguration() {
 
         try {
-            category_details = categories_processor.getCategoryDetails();
             race_config_paths = Arrays.asList(config.getStringConfig(KEY_RACES).split(",", -1));
 
             race_categories = loadRaceCategories();
@@ -97,7 +90,7 @@ public class GrandPrixRace implements SeriesRace, RaceInternal {
             races = loadRaces();
             configureClubs();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -108,13 +101,13 @@ public class GrandPrixRace implements SeriesRace, RaceInternal {
     }
 
     @Override
-    public RaceResultsCalculator getResultsCalculator() {
-        return results_calculator;
+    public CategoriesProcessor getCategoriesProcessor() {
+        return categories_processor;
     }
 
     @Override
-    public CategoryDetails getCategoryDetails() {
-        return category_details;
+    public RaceResultsCalculator getResultsCalculator() {
+        return results_calculator;
     }
 
     @Override

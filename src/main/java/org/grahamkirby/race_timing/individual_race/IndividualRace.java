@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.*;
 
@@ -32,10 +31,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.*;
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.readAllLines;
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateBibNumbersUnique;
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRawResults;
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRawResultsOrdering;
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
@@ -57,8 +52,7 @@ public class IndividualRace implements SingleRaceInternal {
     Map<Integer, Duration> separately_recorded_finish_times;
 
     private final Config config;
-    private CategoriesProcessor categories_processor;
-    private CategoryDetails category_details;
+    private final CategoriesProcessor categories_processor;
     private RaceResultsCalculator results_calculator;
     private RaceOutput results_output;
     private Normalisation normalisation;
@@ -66,28 +60,30 @@ public class IndividualRace implements SingleRaceInternal {
     private List<RawResult> raw_results;
     private List<RaceEntry> entries;
 
-    public IndividualRace(final Config config) {
+    public IndividualRace(final Config config) throws IOException {
 
         this.config = config;
         notes = new Notes();
+        categories_processor = new CategoriesProcessor(config);
     }
 
+    @Override
     public Config getConfig() {
         return config;
     }
 
-    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
-
-        this.categories_processor = categories_processor;
+    @Override
+    public CategoriesProcessor getCategoriesProcessor() {
+        return categories_processor;
     }
 
+    @Override
     public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
-
         this.results_calculator = results_calculator;
     }
 
+    @Override
     public void setResultsOutput(final RaceOutput results_output) {
-
         this.results_output = results_output;
     }
 
@@ -117,7 +113,7 @@ public class IndividualRace implements SingleRaceInternal {
 
         try {
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            getCategoryDetails().lookupEntryCategory(category_name);
+            getCategoriesProcessor().lookupEntryCategory(category_name);
 
         } catch (final RuntimeException e) {
             throw new RuntimeException(String.join(" ", elements));
@@ -198,9 +194,8 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public void processResults() {
 
-        category_details = categories_processor.getCategoryDetails();
         loadRaceData();
-        completeConfiguration2();
+        completeConfiguration();
         results_calculator.calculateResults();
     }
 
@@ -209,7 +204,7 @@ public class IndividualRace implements SingleRaceInternal {
         results_output.outputResults();
     }
 
-    public void completeConfiguration2() {
+    private void completeConfiguration() {
 
         category_start_offsets = readCategoryStartOffsets();
         individual_start_offsets = loadIndividualStartOffsets();
@@ -220,11 +215,6 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public RaceResultsCalculator getResultsCalculator() {
         return results_calculator;
-    }
-
-    @Override
-    public CategoryDetails getCategoryDetails() {
-        return category_details;
     }
 
     @Override
@@ -241,16 +231,6 @@ public class IndividualRace implements SingleRaceInternal {
         return notes;
     }
 
-//    @Override
-//    public void appendToNotes(String s) {
-//        results_calculator.getNotes().append(s);
-//    }
-//
-//    @Override
-//    public String getNotes() {
-//        return results_calculator.getNotes().toString();
-//    }
-
     private Map<EntryCategory, Duration> readCategoryStartOffsets() {
 
         final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
@@ -263,7 +243,7 @@ public class IndividualRace implements SingleRaceInternal {
             for (final String offset_string : offset_strings) {
 
                 final String[] split = offset_string.split("/");
-                category_offsets.put(category_details.lookupEntryCategory(split[0]), parseTime(split[1]));
+                category_offsets.put(categories_processor.lookupEntryCategory(split[0]), parseTime(split[1]));
             }
         };
 

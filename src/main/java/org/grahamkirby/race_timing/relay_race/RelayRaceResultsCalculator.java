@@ -227,7 +227,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
         // prize in open category.
 
-        final List<PrizeCategory> categories_sorted_by_decreasing_generality = sortByDecreasingGenerality(race.getCategoryDetails().getPrizeCategories());
+        final List<PrizeCategory> categories_sorted_by_decreasing_generality = sortByDecreasingGenerality(race.getCategoriesProcessor().getPrizeCategories());
 
         allocateFirstPrizes(categories_sorted_by_decreasing_generality);
         allocateMinorPrizes(categories_sorted_by_decreasing_generality);

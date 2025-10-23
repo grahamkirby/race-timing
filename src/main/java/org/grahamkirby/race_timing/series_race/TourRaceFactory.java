@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
@@ -35,7 +34,6 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
 
         final TourRace race = new TourRace(makeTourRaceConfig(config_file_path));
 
-        race.setCategoriesProcessor(new CategoriesProcessor(race));
         race.setResultsCalculator(new TourRaceResultsCalculator(race));
         race.setResultsOutput(new TourRaceOutput(race));
 

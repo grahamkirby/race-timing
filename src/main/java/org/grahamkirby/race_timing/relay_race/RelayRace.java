@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.*;
 
@@ -33,11 +32,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.CommonDataProcessor.*;
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.readAllLines;
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRawResults;
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRawResultsOrdering;
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.*;
+import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRace implements SingleRaceInternal {
 
@@ -49,12 +46,32 @@ public class RelayRace implements SingleRaceInternal {
     final Map<RawResult, Integer> explicitly_recorded_leg_numbers = new HashMap<>();
     int number_of_electronically_recorded_raw_results;
 
+    /**
+     * For each leg, records whether there was a mass start.
+     */
+    private List<Boolean> mass_start_legs;
+
+    /**
+     * For each leg, records whether it is a leg for paired runners.
+     */
+    private List<Boolean> paired_legs;
+
+    /**
+     * Times relative to start of leg 1 at which each mass start occurred.
+     * For leg 2 onward, legs that didn't have a mass start are recorded with the time of the next actual
+     * mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
+     */
+    private List<Duration> start_times_for_mass_starts;
+
+    /**
+     * List of individually recorded starts (usually empty).
+     */
+    private List<IndividualStart> individual_starts;
     private List<RawResult> raw_results;
     private List<RaceEntry> entries;
-    private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
     private final Config config;
-    private CategoriesProcessor categories_processor;
+    private final CategoriesProcessor categories_processor;
     private RaceOutput results_output;
     private Normalisation normalisation;
     private final Notes notes;
@@ -63,14 +80,68 @@ public class RelayRace implements SingleRaceInternal {
 
         this.config = config;
         notes = new Notes();
+        categories_processor = new CategoriesProcessor(config);
     }
 
     public Config getConfig() {
         return config;
     }
 
-    public CategoryDetails getCategoryDetails() {
-        return category_details;
+    @Override
+    public CategoriesProcessor getCategoriesProcessor() {
+        return categories_processor;
+    }
+
+    @Override
+    public RaceResultsCalculator getResultsCalculator() {
+        return results_calculator;
+    }
+
+    @Override
+    public Notes getNotes() {
+        return notes;
+    }
+
+    @Override
+    public synchronized Normalisation getNormalisation() {
+
+        if (normalisation == null)
+            normalisation = new Normalisation(this);
+
+        return normalisation;
+    }
+
+    @Override
+    public void processResults() {
+
+        loadRaceData();
+        completeConfiguration();
+        results_calculator.calculateResults();
+    }
+
+    @Override
+    public void outputResults() throws IOException {
+        results_output.outputResults();
+    }
+
+    @Override
+    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
+        this.results_calculator = results_calculator;
+    }
+
+    @Override
+    public void setResultsOutput(final RaceOutput results_output) {
+        this.results_output = results_output;
+    }
+
+    @Override
+    public List<RawResult> getRawResults() {
+        return raw_results;
+    }
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        return entries;
     }
 
     private void loadRaceData() {
@@ -106,7 +177,7 @@ public class RelayRace implements SingleRaceInternal {
 
         try {
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            category_details.lookupEntryCategory(category_name);
+            categories_processor.lookupEntryCategory(category_name);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
@@ -271,15 +342,15 @@ public class RelayRace implements SingleRaceInternal {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
-        if (elements.size() != FIRST_RUNNER_NAME_INDEX + ((RelayRace) race).getNumberOfLegs())
+        if (elements.size() != FIRST_RUNNER_NAME_INDEX + getNumberOfLegs())
             throw new RuntimeException("Invalid number of elements: " + String.join(" ", elements));
 
         try {
             final int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
 
             final String name = elements.get(TEAM_NAME_INDEX);
-            final EntryCategory category = race.getCategoryDetails().lookupEntryCategory(elements.get(CATEGORY_INDEX));
-            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> race.getNormalisation().cleanRunnerName(s)).toList();
+            final EntryCategory category = categories_processor.lookupEntryCategory(elements.get(CATEGORY_INDEX));
+            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> getNormalisation().cleanRunnerName(s)).toList();
 
             final Participant participant = new Team(name, category, runners);
 
@@ -290,88 +361,7 @@ public class RelayRace implements SingleRaceInternal {
         }
     }
 
-    @Override
-    public RaceResultsCalculator getResultsCalculator() {
-        return results_calculator;
-    }
-
-    @Override
-    public Notes getNotes() {
-        return notes;
-    }
-
-    @Override
-    public synchronized Normalisation getNormalisation() {
-
-        if (normalisation == null)
-            normalisation = new Normalisation(this);
-
-        return normalisation;
-    }
-
-    @Override
-    public void processResults() {
-
-        category_details = categories_processor.getCategoryDetails();
-        loadRaceData();
-
-        completeConfiguration2();
-        results_calculator.calculateResults();
-    }
-
-    @Override
-    public void outputResults() throws IOException {
-        results_output.outputResults();
-    }
-
-    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
-
-        this.categories_processor = categories_processor;
-    }
-
-    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
-
-        this.results_calculator = results_calculator;
-    }
-
-    public void setResultsOutput(final RaceOutput results_output) {
-
-        this.results_output = results_output;
-    }
-
-    @Override
-    public List<RawResult> getRawResults() {
-        return raw_results;
-    }
-
-    @Override
-    public List<RaceEntry> getEntries() {
-        return entries;
-    }
-
-    /**
-     * For each leg, records whether there was a mass start.
-     */
-    private List<Boolean> mass_start_legs;
-
-    /**
-     * For each leg, records whether it is a leg for paired runners.
-     */
-    private List<Boolean> paired_legs;
-
-    /**
-     * Times relative to start of leg 1 at which each mass start occurred.
-     * For leg 2 onward, legs that didn't have a mass start are recorded with the time of the next actual
-     * mass start. This allows e.g. for a leg 1 runner finishing after a leg 3 mass start - see configureMassStarts().
-     */
-    private List<Duration> start_times_for_mass_starts;
-
-    /**
-     * List of individually recorded starts (usually empty).
-     */
-    private List<IndividualStart> individual_starts;
-
-    public void completeConfiguration2() {
+    public void completeConfiguration() {
 
         configureIndividualLegStarts();
         configureMassStarts();

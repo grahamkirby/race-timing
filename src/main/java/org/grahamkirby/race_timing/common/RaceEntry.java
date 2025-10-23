@@ -17,9 +17,8 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.categories.CategoryDetails;
-import org.grahamkirby.race_timing.individual_race.Runner;
 import org.grahamkirby.race_timing.categories.EntryCategory;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.List;
 
@@ -40,7 +39,6 @@ public class RaceEntry {
     public RaceEntry(final List<String> elements, final SingleRaceInternal race) {
 
         final Normalisation normalisation = race.getNormalisation();
-        final CategoryDetails category_details = race.getCategoryDetails();
 
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
@@ -51,7 +49,7 @@ public class RaceEntry {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = category_details.lookupEntryCategory(category_name);
+            final EntryCategory category = race.getCategoriesProcessor().lookupEntryCategory(category_name);
 
             participant = new Runner(name, club, category);
 
@@ -67,7 +65,6 @@ public class RaceEntry {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     @Override
     public boolean equals(final Object obj) {

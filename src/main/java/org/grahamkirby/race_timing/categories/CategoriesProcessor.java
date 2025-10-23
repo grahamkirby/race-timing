@@ -18,45 +18,34 @@
 package org.grahamkirby.race_timing.categories;
 
 import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.RaceInternal;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
 public class CategoriesProcessor  {
 
-    // TODO combine with CategoryDetails.
-
     /** Index of prize category group name within the relevant config file. */
     public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
-    private List<PrizeCategoryGroup> prize_category_groups;
-    private final RaceInternal race;
+    private final List<PrizeCategoryGroup> prize_category_groups;
+    private final List<EntryCategory> entry_categories;
 
-    public CategoriesProcessor(final RaceInternal race) {
-        this.race = race;
-    }
+    public CategoriesProcessor(final Config config) throws IOException {
 
-    public CategoryDetails getCategoryDetails() {
+        final Path results_path = config.getPathConfig(KEY_ENTRY_CATEGORIES_PATH);
+        final Path categories_prize_path = config.getPathConfig(KEY_PRIZE_CATEGORIES_PATH);
 
-        try {
-            final Config config = race.getConfig();
-            final Path results_path = (Path) config.get(KEY_ENTRY_CATEGORIES_PATH);
-            final List<EntryCategory> entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
-            prize_category_groups = new ArrayList<>();
-            final Path categories_prize_path = (Path) race.getConfig().get(KEY_PRIZE_CATEGORIES_PATH);
-            loadPrizeCategoryGroups(categories_prize_path);
+        prize_category_groups = new ArrayList<>();
+        entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
 
-            return new CategoryDetails(entry_categories, prize_category_groups);
-
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        loadPrizeCategoryGroups(categories_prize_path);
     }
 
     /** Loads prize category groups from the given file. */
@@ -88,5 +77,68 @@ public class CategoriesProcessor  {
         final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
         prize_category_groups.add(group);
         return group;
+    }
+
+    public List<PrizeCategory> getPrizeCategories() {
+
+        return prize_category_groups.stream().
+            flatMap(group -> group.categories().stream()).
+            toList();
+    }
+
+    public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+        return prize_category_groups;
+    }
+
+    public EntryCategory lookupEntryCategory(final String short_name) {
+
+        return entry_categories.stream().
+            filter(category -> category.getShortName().equals(short_name)).
+            findFirst().
+            orElseThrow();
+    }
+
+    /** Tests whether the given entry category is eligible for the given prize category. */
+    public boolean isResultEligibleForPrizeCategory(final String club, final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        return isResultEligibleForPrizeCategoryByGender(gender_eligibility_map, entry_category, prize_category) &&
+            isResultEligibleForPrizeCategoryByAge(entry_category, prize_category) &&
+            isResultEligibleForPrizeCategoryByClub(club, prize_category);
+    }
+
+    private boolean isResultEligibleForPrizeCategoryByClub(final String club, final PrizeCategory prize_category) {
+
+        final Set<String> eligible_clubs = prize_category.getEligibleClubs();
+
+        return club == null || eligible_clubs.isEmpty() || eligible_clubs.contains(club);
+    }
+
+    /** Tests whether the given entry category is eligible in any of the given prize categories. */
+    public boolean isResultEligibleInSomePrizeCategory(final String club, final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final List<PrizeCategory> prize_categories) {
+
+        return prize_categories.stream().
+            anyMatch(category -> isResultEligibleForPrizeCategory(club, gender_eligibility_map, entry_category, category));
+    }
+
+    private boolean isResultEligibleForPrizeCategoryByGender(final Map<String, List<String>> gender_eligibility_map, final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
+
+        if (entry_category == null) return false;
+
+        return gender_eligibility_map.keySet().stream().
+            filter(entry_gender -> entry_category.getGender().equals(entry_gender)).
+            anyMatch(entry_gender -> gender_eligibility_map.get(entry_gender).contains(prize_category.getGender()));
+    }
+
+    private static boolean isResultEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
+
+        return entry_category != null &&
+            entry_category.getMinimumAge() >= prize_category.getMinimumAge() &&
+            entry_category.getMaximumAge() <= prize_category.getMaximumAge();
     }
 }

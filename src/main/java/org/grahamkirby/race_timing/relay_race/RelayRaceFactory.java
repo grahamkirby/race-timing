@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
@@ -35,7 +34,6 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
 
         final RelayRace race = new RelayRace(makeRelayRaceConfig(config_file_path));
 
-        race.setCategoriesProcessor(new CategoriesProcessor(race));
         race.setResultsCalculator(new RelayRaceResultsCalculator(race));
         race.setResultsOutput(new RelayRaceOutput(race));
 
