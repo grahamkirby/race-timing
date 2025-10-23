@@ -17,12 +17,12 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.Race2;
+import org.grahamkirby.race_timing.common.Race;
 
 import java.util.List;
 
 public interface SeriesRace {
 
     int getNumberOfRacesTakenPlace();
-    List<Race2> getRaces();
+    List<Race> getRaces();
 }

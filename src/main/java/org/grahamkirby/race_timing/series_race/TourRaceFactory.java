@@ -18,10 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.common.RaceConfigAdjuster;
-import org.grahamkirby.race_timing.common.RaceConfigValidator;
-import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
+import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,16 +33,8 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        final Race race = new Race(config_file_path);
+        final TourRace race = new TourRace(makeTourRaceConfig(config_file_path));
 
-        race.addConfigProcessor(new RaceConfigAdjuster());
-        race.addConfigProcessor(new SeriesRaceConfigAdjuster());
-        race.addConfigProcessor(new TourRaceConfigAdjuster());
-        race.addConfigProcessor(new RaceConfigValidator());
-        race.addConfigProcessor(new SeriesRaceConfigValidator());
-        race.loadConfig();
-
-        race.setSpecific(new TourRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new TourRaceResultsCalculator());
         race.setResultsOutput(new TourRaceOutput());
@@ -59,5 +48,19 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
         return properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE) &&
             !properties.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE) &&
             !properties.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE);
+    }
+
+    private Config makeTourRaceConfig(final Path config_file_path) throws IOException {
+
+        final Config config = new Config(config_file_path);
+
+        config.addConfigProcessor(new RaceConfigAdjuster());
+        config.addConfigProcessor(new SeriesRaceConfigAdjuster());
+        config.addConfigProcessor(new TourRaceConfigAdjuster());
+        config.addConfigProcessor(new RaceConfigValidator());
+        config.addConfigProcessor(new SeriesRaceConfigValidator());
+        config.processConfig();
+
+        return config;
     }
 }

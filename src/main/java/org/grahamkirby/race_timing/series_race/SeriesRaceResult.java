@@ -30,13 +30,13 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
     protected final int number_of_races_in_series;
     protected final int number_of_races_taken_place;
 
-    public SeriesRaceResult(final Race2 race, final Participant participant) {
+    public SeriesRaceResult(final Race race, final Participant participant) {
 
         super(race, participant);
 
         minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
-        number_of_races_taken_place = ((SeriesRace) race.getSpecific()).getNumberOfRacesTakenPlace();
+        number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
 
     protected int numberOfRacesCompleted() {
 
-        return (int) ((SeriesRace) race.getSpecific()).getRaces().stream().
+        return (int) ((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).

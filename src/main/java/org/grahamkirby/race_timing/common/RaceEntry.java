@@ -37,7 +37,7 @@ public class RaceEntry {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings({"OverlyBroadCatchBlock", "IfCanBeAssertion"})
-    public RaceEntry(final List<String> elements, final Race2 race) {
+    public RaceEntry(final List<String> elements, final Race race) {
 
         final Normalisation normalisation = race.getNormalisation();
         final CategoryDetails category_details = race.getCategoryDetails();
@@ -60,7 +60,7 @@ public class RaceEntry {
         }
     }
 
-    public RaceEntry(final Participant participant, final int bib_number, final Race2 race) {
+    public RaceEntry(final Participant participant, final int bib_number, final Race race) {
 
         this.participant = participant;
         this.bib_number = bib_number;

@@ -52,17 +52,16 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final Race2 race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            final GrandPrixRace race_impl = (GrandPrixRace) race.getSpecific();
-            final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
+            final String race_names = getConcatenatedRaceNames(((GrandPrixRace) race).getRaces());
 
-            final String race_categories_header = race_impl.race_categories.stream().
+            final String race_categories_header = ((GrandPrixRace) race).race_categories.stream().
                 map(GrandPrixRaceCategory::category_title).
                 collect(Collectors.joining("?,")) + "?";
 
@@ -73,14 +72,13 @@ class GrandPrixRaceOutput extends RaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
-            final GrandPrixRace race_impl = (GrandPrixRace) race.getSpecific();
             final GrandPrixRaceResultsCalculator calculator = (GrandPrixRaceResultsCalculator) race.getResultsCalculator();
             final Runner runner = (Runner) result.getParticipant();
 
             writer.append(result.getPositionString() + "," + encode(runner.getName()) + "," + runner.getCategory().getShortName() + ",");
 
             writer.append(
-                race_impl.getRaces().stream().
+                ((GrandPrixRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> calculator.calculateRaceScore(individual_race, runner)).
                     map(OverallResultPrinterCSV::renderScore).
@@ -90,7 +88,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + ",");
 
             writer.append(
-                race_impl.race_categories.stream().
+                ((GrandPrixRace) race).race_categories.stream().
                     map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
                     collect(Collectors.joining(","))
             );
@@ -106,7 +104,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class GrandPrixOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private GrandPrixOverallResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
+        private GrandPrixOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -116,9 +114,9 @@ class GrandPrixRaceOutput extends RaceOutput {
             final List<String> headers = new ArrayList<>(common_headers);
 
             // This traverses races in order of listing in config, sorted first by race type and then date.
-            final List<Race2> races = ((GrandPrixRace) race.getSpecific()).getRaces();
+            final List<Race> races = ((SeriesRace) race).getRaces();
 
-            for (final Race2 individual_race : races)
+            for (final Race individual_race : races)
                 // Check whether race has taken place at this point.
                 if (individual_race != null)
                     headers.add((String) individual_race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS));
@@ -126,7 +124,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             headers.add("Total");
             headers.add("Completed?");
 
-            for (final GrandPrixRaceCategory category : ((GrandPrixRace) race.getSpecific()).race_categories)
+            for (final GrandPrixRaceCategory category : ((GrandPrixRace) race).race_categories)
                 headers.add(category.category_title() + "?");
 
             return headers;
@@ -143,7 +141,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getShortName());
 
-            for (final Race2 individual_race : ((GrandPrixRace) race.getSpecific()).getRaces())
+            for (final Race individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
                     final int score = calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant());
                     elements.add(renderScore(score));
@@ -152,7 +150,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             elements.add(String.valueOf(result.totalScore()));
             elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
-            for (final GrandPrixRaceCategory category : ((GrandPrixRace) race.getSpecific()).race_categories)
+            for (final GrandPrixRaceCategory category : ((GrandPrixRace) race).race_categories)
                 elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;
@@ -166,7 +164,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class GrandPrixPrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public GrandPrixPrizeResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
+        public GrandPrixPrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

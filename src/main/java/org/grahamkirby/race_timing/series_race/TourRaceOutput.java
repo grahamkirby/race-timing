@@ -54,15 +54,14 @@ class TourRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final Race2 race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            final SeriesRace race_impl = (TourRace) race.getSpecific();
-            final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
+            final String race_names = getConcatenatedRaceNames(((SeriesRace) race).getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total" + LINE_SEPARATOR);
         }
@@ -90,7 +89,7 @@ class TourRaceOutput extends RaceOutput {
 
     private static final class TourRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private TourRaceOverallResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
+        private TourRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -102,7 +101,7 @@ class TourRaceOutput extends RaceOutput {
 
             headers.add("Club");
 
-            final List<Race2> races = ((SeriesRace) race.getSpecific()).getRaces();
+            final List<Race> races = ((SeriesRace) race).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
@@ -138,7 +137,7 @@ class TourRaceOutput extends RaceOutput {
 
     private static final class TourRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public TourRacePrizeResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
+        public TourRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

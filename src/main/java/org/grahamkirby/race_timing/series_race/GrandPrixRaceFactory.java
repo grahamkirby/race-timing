@@ -19,8 +19,6 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigAdjuster;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigValidator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,7 +31,7 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
     public static final String KEY_INDICATIVE_OF_GRAND_PRIX_RACE = KEY_RACE_TEMPORAL_ORDER;
 
     @Override
-    public Race2 makeRace(final Path config_file_path) throws IOException {
+    public Race makeRace(final Path config_file_path) throws IOException {
 
         final GrandPrixRace race = new GrandPrixRace(makeGrandPrixRaceConfig(config_file_path));
 

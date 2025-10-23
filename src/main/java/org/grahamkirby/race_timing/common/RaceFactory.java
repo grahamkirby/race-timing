@@ -48,7 +48,7 @@ public class RaceFactory {
     public void createAndProcessRace(final String[] args) {
 
         try {
-            final Race2 race = makeRace(Path.of(args[0]));
+            final Race race = makeRace(Path.of(args[0]));
 
             race.processResults();
             race.outputResults();
@@ -59,7 +59,7 @@ public class RaceFactory {
         }
     }
 
-    public Race2 makeRace(final Path config_file_path) throws IOException {
+    public Race makeRace(final Path config_file_path) throws IOException {
 
         final Properties properties = loadProperties(config_file_path);
 

@@ -18,7 +18,7 @@
 package org.grahamkirby.race_timing.categories;
 
 import org.grahamkirby.race_timing.common.Config;
-import org.grahamkirby.race_timing.common.Race2;
+import org.grahamkirby.race_timing.common.Race;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,9 +34,9 @@ public class CategoriesProcessor  {
     public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
     private List<PrizeCategoryGroup> prize_category_groups;
-    private Race2 race;
+    private Race race;
 
-    public void setRace(final Race2 race) {
+    public void setRace(final Race race) {
         this.race = race;
     }
 

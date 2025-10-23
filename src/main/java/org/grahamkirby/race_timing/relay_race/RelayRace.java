@@ -39,7 +39,7 @@ import static org.grahamkirby.race_timing.common.CommonDataProcessor.validateRaw
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.*;
 
-public class RelayRace implements Race2 {
+public class RelayRace implements Race {
 
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int TEAM_NAME_INDEX = 1;
@@ -67,10 +67,10 @@ public class RelayRace implements Race2 {
         return config;
     }
 
-    @Override
-    public Object getSpecific() {
-        return this;
-    }
+//    @Override
+//    public Object getSpecific() {
+//        return this;
+//    }
 
     public CategoryDetails getCategoryDetails() {
         return category_details;
@@ -270,7 +270,7 @@ public class RelayRace implements Race2 {
             toList();
     }
 
-    private RaceEntry makeRelayRaceEntry(final List<String> elements, final Race2 race) {
+    private RaceEntry makeRelayRaceEntry(final List<String> elements, final Race race) {
 
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
@@ -381,13 +381,6 @@ public class RelayRace implements Race2 {
      * List of individually recorded starts (usually empty).
      */
     private List<IndividualStart> individual_starts;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void completeConfiguration() {
-        throw new UnsupportedOperationException();
-    }
 
     public void completeConfiguration2() {
 

@@ -48,7 +48,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void setRace(final Race2 race) {
+    public void setRace(final Race race) {
 
         super.setRace(race);
         missing_data = new RelayRaceMissingData(race);

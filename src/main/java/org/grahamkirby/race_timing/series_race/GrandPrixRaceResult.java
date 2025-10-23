@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.series_race;
 
 
 import org.grahamkirby.race_timing.common.CommonRaceResult;
-import org.grahamkirby.race_timing.common.Race2;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -31,7 +31,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     private final List<Integer> scores;
 
-    GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race2 race) {
+    GrandPrixRaceResult(final Runner runner, final List<Integer> scores, final Race race) {
 
         super(race, runner);
         this.scores = scores;
@@ -41,7 +41,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     public boolean canComplete() {
 
         return super.canComplete() &&
-            ((GrandPrixRace) race.getSpecific()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
+            ((GrandPrixRace) race).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
     }
 
     @Override
@@ -49,7 +49,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         // TODO tests pass without check for race category completion - add test.
         return super.hasCompletedSeries() &&
-            ((GrandPrixRace) race.getSpecific()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
+            ((GrandPrixRace) race).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
     }
 
     @Override
@@ -58,12 +58,6 @@ class GrandPrixRaceResult extends SeriesRaceResult {
         // Sort lowest scores first since lower score is better.
         return Integer.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
     }
-
-//    @Override
-//    public String getPrizeDetailPDF() {
-//
-//        return getPrizeDetailText();
-//    }
 
     @Override
     public String getPrizeDetail() {
@@ -111,7 +105,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     private boolean canCompleteRaceCategory(final GrandPrixRaceCategory category) {
 
-        final List<Race2> races = ((SeriesRace) race.getSpecific()).getRaces();
+        final List<Race> races = ((SeriesRace) race).getRaces();
 
         final int number_of_races_required_in_category = category.minimum_number_to_be_completed();
         final int number_of_races_completed_in_category = numberOfRacesCompletedInCategory(category);
@@ -127,7 +121,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
             count();
     }
 
-    private int numberOfRacesRemainingInCategory(final List<Race2> races, final GrandPrixRaceCategory category) {
+    private int numberOfRacesRemainingInCategory(final List<Race> races, final GrandPrixRaceCategory category) {
 
         // TODO tests pass when filter is for non null.
         return (int) category.race_numbers().stream().

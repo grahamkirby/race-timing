@@ -187,7 +187,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
     }
 
-    private RaceEntry makeRaceEntry(final List<String> elements, final Race2 race) {
+    private RaceEntry makeRaceEntry(final List<String> elements, final Race race) {
 
         final Normalisation normalisation = race.getNormalisation();
 

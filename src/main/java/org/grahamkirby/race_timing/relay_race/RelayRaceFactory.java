@@ -31,7 +31,7 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
     public static final String KEY_INDICATIVE_OF_RELAY_RACE = KEY_NUMBER_OF_LEGS;
 
     @Override
-    public Race2 makeRace(final Path config_file_path) throws IOException {
+    public Race makeRace(final Path config_file_path) throws IOException {
 
         final RelayRace race = new RelayRace(makeRelayRaceConfig(config_file_path));
 

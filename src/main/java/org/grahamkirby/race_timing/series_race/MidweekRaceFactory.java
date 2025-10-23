@@ -31,7 +31,7 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     public static final String KEY_INDICATIVE_OF_MIDWEEK_RACE = KEY_SCORE_FOR_FIRST_PLACE;
 
     @Override
-    public Race2 makeRace(final Path config_file_path) throws IOException {
+    public Race makeRace(final Path config_file_path) throws IOException {
 
         final MidweekRace race = new MidweekRace(makeMidweekRaceConfig(config_file_path));
 

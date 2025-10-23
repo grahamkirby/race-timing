@@ -43,7 +43,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceOutput implements ResultsOutput {
 
-    protected Race2 race;
+    protected Race race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +59,7 @@ public abstract class RaceOutput implements ResultsOutput {
     }
 
     @Override
-    public void setRace(final Race2 race) {
+    public void setRace(final Race race) {
 
         this.race = race;
     }
@@ -112,7 +112,7 @@ public abstract class RaceOutput implements ResultsOutput {
     protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
     protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
 
-    protected static String getConcatenatedRaceNames(final List<Race2> races) {
+    protected static String getConcatenatedRaceNames(final List<Race> races) {
 
         return races.stream().
             filter(Objects::nonNull).
@@ -246,7 +246,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
     protected String getPrizesHeaderHTML() {
 
-        final String header = race.getSpecific() instanceof final SeriesRace series_race && series_race.getNumberOfRacesTakenPlace() < (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
+        final String header = race instanceof final SeriesRace series_race && series_race.getNumberOfRacesTakenPlace() < (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES) ? "Current Standings" : "Prizes";
         return "<h4>" + header + "</h4>" + LINE_SEPARATOR;
     }
 
@@ -360,7 +360,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
     public static final class PrizeResultPrinterText extends ResultPrinter {
 
-        public PrizeResultPrinterText(final Race2 race, final OutputStreamWriter writer) {
+        public PrizeResultPrinterText(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -386,7 +386,7 @@ public abstract class RaceOutput implements ResultsOutput {
 
         private final Document document;
 
-        public PrizeResultPrinterPDF(final Race2 race, final Document document) {
+        public PrizeResultPrinterPDF(final Race race, final Document document) {
 
             super(race, null);
             this.document = document;

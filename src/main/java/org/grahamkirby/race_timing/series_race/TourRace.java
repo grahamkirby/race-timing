@@ -17,6 +17,8 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.categories.CategoriesProcessor;
+import org.grahamkirby.race_timing.categories.CategoryDetails;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -28,23 +30,63 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class TourRace implements SpecificRace, SeriesRace {
+public class TourRace implements SeriesRace, Race {
 
-    private Race2 race;
-    private List<Race2> races;
+    private List<Race> races;
     private List<String> race_config_paths;
+    private CategoryDetails category_details;
+    private RaceResultsCalculator results_calculator;
+    private ResultsOutput results_output;
+    private final Config config;
+    private CategoriesProcessor categories_processor;
+    private Normalisation normalisation;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setRace(final Race2 race) {
-        this.race = race;
+    public TourRace(final Config config) {
+
+        this.config = config;
+    }
+
+    public void setRace(final Race race) {
+
     }
 
     @Override
-    public void completeConfiguration() {
+    public void processResults() {
+        category_details = categories_processor.getCategoryDetails();
+        completeConfiguration2();
+        results_calculator.calculateResults();
+    }
+
+    @Override
+    public void outputResults() throws IOException {
+        results_output.outputResults();
+
+    }
+
+    public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
+
+        this.categories_processor = categories_processor;
+        categories_processor.setRace(this);
+    }
+
+    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
+
+        this.results_calculator = results_calculator;
+        results_calculator.setRace(this);
+    }
+
+    public void setResultsOutput(final ResultsOutput results_output) {
+
+        this.results_output = results_output;
+        results_output.setRace(this);
+    }
+
+    public void completeConfiguration2() {
 
         try {
-            race_config_paths = Arrays.asList(((String) race.getConfig().get(KEY_RACES)).split(",", -1));
+            race_config_paths = Arrays.asList(config.getStringConfig(KEY_RACES).split(",", -1));
             races = loadRaces();
             configureClubs();
 
@@ -53,7 +95,56 @@ public class TourRace implements SpecificRace, SeriesRace {
         }
     }
 
-    public List<Race2> getRaces() {
+    @Override
+    public Config getConfig() {
+        return config;
+    }
+
+    @Override
+    public RaceResultsCalculator getResultsCalculator() {
+        return results_calculator;
+    }
+
+    @Override
+    public CategoryDetails getCategoryDetails() {
+        return category_details;
+    }
+
+    @Override
+    public synchronized Normalisation getNormalisation() {
+
+        if (normalisation == null)
+            normalisation = new Normalisation(this);
+
+        return normalisation;
+    }
+
+    @Override
+    public void appendToNotes(String s) {
+        results_calculator.getNotes().append(s);
+    }
+
+    @Override
+    public String getNotes() {
+        return results_calculator.getNotes().toString();
+    }
+
+//    @Override
+//    public Object getSpecific() {
+//        return this;
+//    }
+
+    @Override
+    public List<RawResult> getRawResults() {
+        return List.of();
+    }
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        return List.of();
+    }
+
+    public List<Race> getRaces() {
         return races;
     }
 
@@ -88,7 +179,7 @@ public class TourRace implements SpecificRace, SeriesRace {
 
     private void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
 
-        race.getResultsCalculator().getNotes().append("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
+        results_calculator.getNotes().append("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {
@@ -136,13 +227,13 @@ public class TourRace implements SpecificRace, SeriesRace {
             toList();
     }
 
-    private List<Race2> loadRaces() throws IOException {
+    private List<Race> loadRaces() throws IOException {
 
-        final int number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
+        final int number_of_races_in_series = (int) config.get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_races_in_series != race_config_paths.size())
-            throw new RuntimeException("invalid number of races specified in file '" + race.getConfig().getConfigPath().getFileName() + "'");
+            throw new RuntimeException("invalid number of races specified in file '" + config.getConfigPath().getFileName() + "'");
 
-        final List<Race2> races = new ArrayList<>();
+        final List<Race> races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
 
         for (int i = 0; i < number_of_races_in_series; i++) {
@@ -153,7 +244,7 @@ public class TourRace implements SpecificRace, SeriesRace {
                 races.add(null);
             else {
                 if (config_paths_seen.contains(race_config_path))
-                    throw new RuntimeException("duplicate races specified in file '" + race.getConfig().getConfigPath().getFileName() + "'");
+                    throw new RuntimeException("duplicate races specified in file '" + config.getConfigPath().getFileName() + "'");
                 config_paths_seen.add(race_config_path);
                 races.add(getIndividualRace(race_config_path, i + 1));
             }
@@ -162,14 +253,14 @@ public class TourRace implements SpecificRace, SeriesRace {
         return races;
     }
 
-    private Race2 getIndividualRace(final String race_config_path, final int race_number) throws IOException {
+    private Race getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
-        final Path config_path = race.getConfig().interpretPath(Path.of(race_config_path));
+        final Path config_path = config.interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
-            throw new RuntimeException("invalid config for race " + race_number + " in file '" + race.getConfig().getConfigPath().getFileName() + "'");
+            throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");
 
-        final Race2 individual_race = new IndividualRaceFactory().makeRace(config_path);
+        final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();
 
         return individual_race;

@@ -52,15 +52,14 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
-        private OverallResultPrinterCSV(final Race2 race, final OutputStreamWriter writer) {
+        private OverallResultPrinterCSV(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            final SeriesRace race_impl = (MidweekRace) race.getSpecific();
-            final String race_names = getConcatenatedRaceNames(race_impl.getRaces());
+            final String race_names = getConcatenatedRaceNames(((SeriesRace) race).getRaces());
 
             writer.append("Pos,Runner,Club,Category," + race_names + ",Total,Completed" + LINE_SEPARATOR);
         }
@@ -69,7 +68,6 @@ class MidweekRaceOutput extends RaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
-            final MidweekRace race_impl = (MidweekRace) race.getSpecific();
             final MidweekRaceResultsCalculator calculator = (MidweekRaceResultsCalculator) race.getResultsCalculator();
 
             writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).getClub()) + "," + result.getParticipant().getCategory().getShortName() + ",");
@@ -77,7 +75,7 @@ class MidweekRaceOutput extends RaceOutput {
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
             // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
             writer.append(
-                race_impl.getRaces().stream().
+                ((MidweekRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant())).
                     map(String::valueOf).
@@ -90,7 +88,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class MidweekRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private MidweekRaceOverallResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
+        private MidweekRaceOverallResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -102,7 +100,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             headers.add("Club");
 
-            final List<Race2> races = ((MidweekRace) race.getSpecific()).getRaces();
+            final List<Race> races = ((SeriesRace) race).getRaces();
 
             for (int i = 0; i < races.size(); i++)
                 if (races.get(i) != null)
@@ -129,7 +127,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             elements.add(runner.getClub());
 
-            for (final Race2 individual_race : ((MidweekRace) race.getSpecific()).getRaces())
+            for (final Race individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
                     final int score = calculator.calculateRaceScore(individual_race, runner);
                     elements.add(String.valueOf(score));
@@ -144,7 +142,7 @@ class MidweekRaceOutput extends RaceOutput {
 
     private static final class MidweekRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public MidweekRacePrizeResultPrinterHTML(final Race2 race, final OutputStreamWriter writer) {
+        public MidweekRacePrizeResultPrinterHTML(final Race race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

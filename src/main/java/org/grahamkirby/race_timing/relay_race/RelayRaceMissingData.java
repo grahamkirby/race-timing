@@ -18,7 +18,7 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
-import org.grahamkirby.race_timing.common.Race2;
+import org.grahamkirby.race_timing.common.Race;
 import org.grahamkirby.race_timing.common.RawResult;
 
 import java.time.Duration;
@@ -46,7 +46,7 @@ class RelayRaceMissingData {
 
     private final RelayRace race;
 
-    RelayRaceMissingData(final Race2 race) {
+    RelayRaceMissingData(final Race race) {
 
         this.race = (RelayRace) race;
     }

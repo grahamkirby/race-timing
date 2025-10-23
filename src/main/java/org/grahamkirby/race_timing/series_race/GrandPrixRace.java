@@ -30,9 +30,9 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
+public class GrandPrixRace implements SeriesRace, Race {
 
-    private List<Race2> races;
+    private List<Race> races;
     private List<String> race_config_paths;
     private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
@@ -53,7 +53,7 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
         this.config = config;
     }
 
-    public void setRace(final Race2 race) {
+    public void setRace(final Race race) {
 
     }
 
@@ -67,11 +67,6 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
     @Override
     public void outputResults() throws IOException {
         results_output.outputResults();
-
-    }
-
-    @Override
-    public void completeConfiguration() {
 
     }
 
@@ -146,10 +141,10 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
         return results_calculator.getNotes().toString();
     }
 
-    @Override
-    public Object getSpecific() {
-        return this;
-    }
+//    @Override
+//    public Object getSpecific() {
+//        return this;
+//    }
 
     @Override
     public List<RawResult> getRawResults() {
@@ -165,8 +160,7 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
 
     private List<GrandPrixRaceCategory> loadRaceCategories() throws IOException {
 
-        Path pathConfig = config.getPathConfig(KEY_RACE_CATEGORIES_PATH);
-        return Files.readAllLines(pathConfig).stream().
+        return Files.readAllLines(config.getPathConfig(KEY_RACE_CATEGORIES_PATH)).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             map(GrandPrixRace::makeRaceCategory).
             toList();
@@ -203,7 +197,7 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
             }
     }
 
-    public List<Race2> getRaces() {
+    public List<Race> getRaces() {
         return races;
     }
 
@@ -281,13 +275,13 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
             toList();
     }
 
-    private List<Race2> loadRaces() throws IOException {
+    private List<Race> loadRaces() throws IOException {
 
         final int number_of_race_in_series = (int) config.get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_race_in_series != race_config_paths.size())
             throw new RuntimeException("invalid number of races specified in file '" + config.getConfigPath().getFileName() + "'");
 
-        final List<Race2> races = new ArrayList<>();
+        final List<Race> races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
 
         for (int i = 0; i < number_of_race_in_series; i++) {
@@ -307,14 +301,14 @@ public class GrandPrixRace implements SpecificRace, SeriesRace, Race2 {
         return races;
     }
 
-    private Race2 getIndividualRace(final String race_config_path, final int race_number) throws IOException {
+    private Race getIndividualRace(final String race_config_path, final int race_number) throws IOException {
 
         final Path config_path = config.interpretPath(Path.of(race_config_path));
 
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");
 
-        final Race2 individual_race = new IndividualRaceFactory().makeRace(config_path);
+        final Race individual_race = new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();
 
         return individual_race;

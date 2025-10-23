@@ -40,7 +40,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
 
-public class IndividualRace implements Race2 {
+public class IndividualRace implements Race {
 
     // Components:
     //
@@ -210,11 +210,6 @@ public class IndividualRace implements Race2 {
         results_output.outputResults();
     }
 
-    @Override
-    public void completeConfiguration() {
-        throw new UnsupportedOperationException();
-    }
-
     public void completeConfiguration2() {
 
         category_start_offsets = readCategoryStartOffsets();
@@ -250,11 +245,6 @@ public class IndividualRace implements Race2 {
     @Override
     public String getNotes() {
         return results_calculator.getNotes().toString();
-    }
-
-    @Override
-    public Object getSpecific() {
-        return this;
     }
 
     private Map<EntryCategory, Duration> readCategoryStartOffsets() {

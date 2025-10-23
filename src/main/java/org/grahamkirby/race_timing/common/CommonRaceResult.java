@@ -31,14 +31,14 @@ import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfFirs
 
 public abstract class CommonRaceResult implements RaceResult {
 
-    protected final Race2 race;
+    protected final Race race;
     protected Participant participant;
     protected String position_string;
     protected List<PrizeCategory> categories_of_prizes_awarded = new ArrayList<>();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected CommonRaceResult(final Race2 race, final Participant participant) {
+    protected CommonRaceResult(final Race race, final Participant participant) {
 
         this.race = race;
         this.participant = participant;
@@ -51,7 +51,7 @@ public abstract class CommonRaceResult implements RaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Race2 getRace() {
+    public Race getRace() {
         return race;
     }
 
