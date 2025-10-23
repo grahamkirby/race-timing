@@ -17,6 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
@@ -27,6 +28,10 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator {
+
+    public GrandPrixRaceResultsCalculator(final RaceInternal race) {
+        super(race);
+    }
 
     // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
     protected RaceResult getOverallResult(final Runner runner) {

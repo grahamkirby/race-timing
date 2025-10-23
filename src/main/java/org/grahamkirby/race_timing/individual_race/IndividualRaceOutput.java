@@ -39,6 +39,10 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public IndividualRaceOutput(final RaceInternal race) {
+        super(race);
+    }
+
     @Override
     protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
         return IndividualRaceOverallResultPrinterCSV::new;

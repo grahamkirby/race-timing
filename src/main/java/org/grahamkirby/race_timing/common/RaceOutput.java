@@ -41,13 +41,17 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public abstract class RaceOutput implements ResultsOutput {
+public abstract class RaceOutput {//implements ResultsOutput {
 
     protected RaceInternal race;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
+    public RaceOutput(final RaceInternal race) {
+        this.race = race;
+    }
+
+//    @Override
     public void outputResults() throws IOException {
 
         printOverallResults();
@@ -56,13 +60,6 @@ public abstract class RaceOutput implements ResultsOutput {
         printCombined();
         finaliseNotes();
         printNotes();
-    }
-
-    // TODO set in constructor?
-    @Override
-    public void setRace(final RaceInternal race) {
-
-        this.race = race;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

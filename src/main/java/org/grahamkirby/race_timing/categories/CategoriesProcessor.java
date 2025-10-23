@@ -36,10 +36,9 @@ public class CategoriesProcessor  {
     public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
 
     private List<PrizeCategoryGroup> prize_category_groups;
-    private RaceInternal race;
+    private final RaceInternal race;
 
-    // TODO just pass config.
-    public void setRace(final RaceInternal race) {
+    public CategoriesProcessor(final RaceInternal race) {
         this.race = race;
     }
 

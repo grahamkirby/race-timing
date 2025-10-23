@@ -45,6 +45,10 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public IndividualRaceResultsCalculator(final RaceInternal race) {
+        super(race);
+    }
+
     @Override
     public void calculateResults() {
 

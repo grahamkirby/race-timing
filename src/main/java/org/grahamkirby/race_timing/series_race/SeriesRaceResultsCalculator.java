@@ -34,6 +34,10 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public SeriesRaceResultsCalculator(final RaceInternal race) {
+        super(race);
+    }
+
     public void calculateResults() {
 
         checkCategoryConsistencyOverSeries();

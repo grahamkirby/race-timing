@@ -33,6 +33,12 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     // TODO integrate with category configuration files.
     private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
 
+    public RelayRaceResultsCalculator(final RaceInternal race) {
+
+        super(race);
+        missing_data = new RelayRaceMissingData((RelayRace) race);
+    }
+
     @Override
     public boolean areEqualPositionsAllowed() {
 
@@ -43,16 +49,9 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Provides functionality for inferring missing bib number or timing data in the results. */
-    private RelayRaceMissingData missing_data;
+    private final RelayRaceMissingData missing_data;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void setRace(final RaceInternal race) {
-
-        super.setRace(race);
-        missing_data = new RelayRaceMissingData((RelayRace) race);
-    }
 
     @Override
     public void calculateResults() {

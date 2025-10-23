@@ -30,13 +30,13 @@ import java.util.*;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class MidweekRace implements SeriesRace, SingleRaceInternal {
+public class MidweekRace implements SeriesRace, RaceInternal {
 
     private List<SingleRaceInternal> races;
     private List<String> race_config_paths;
     private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
-    private ResultsOutput results_output;
+    private RaceOutput results_output;
     private final Config config;
     private CategoriesProcessor categories_processor;
     private Normalisation normalisation;
@@ -67,19 +67,16 @@ public class MidweekRace implements SeriesRace, SingleRaceInternal {
     public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
 
         this.categories_processor = categories_processor;
-        categories_processor.setRace(this);
     }
 
     public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
 
         this.results_calculator = results_calculator;
-        results_calculator.setRace(this);
     }
 
-    public void setResultsOutput(final ResultsOutput results_output) {
+    public void setResultsOutput(final RaceOutput results_output) {
 
         this.results_output = results_output;
-        results_output.setRace(this);
     }
 
     public void completeConfiguration2() {
@@ -118,24 +115,9 @@ public class MidweekRace implements SeriesRace, SingleRaceInternal {
         return normalisation;
     }
 
-//    @Override
-//    public void appendToNotes(String s) {
-//        results_calculator.getNotes().append(s);
-//    }
-
     @Override
     public Notes getNotes() {
         return notes;
-    }
-
-    @Override
-    public List<RawResult> getRawResults() {
-        return List.of();
-    }
-
-    @Override
-    public List<RaceEntry> getEntries() {
-        return List.of();
     }
 
     public List<SingleRaceInternal> getRaces() {
@@ -173,7 +155,7 @@ public class MidweekRace implements SeriesRace, SingleRaceInternal {
 
     protected void noteMultipleClubsForRunnerName(final String runner_name, final Iterable<String> defined_clubs) {
 
-        getNotes().appendToNotes("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
+        notes.appendToNotes("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }
 
     private static List<String> getDefinedClubs(final Collection<String> clubs) {

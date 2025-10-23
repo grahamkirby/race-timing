@@ -60,7 +60,7 @@ public class IndividualRace implements SingleRaceInternal {
     private CategoriesProcessor categories_processor;
     private CategoryDetails category_details;
     private RaceResultsCalculator results_calculator;
-    private ResultsOutput results_output;
+    private RaceOutput results_output;
     private Normalisation normalisation;
     private final Notes notes;
     private List<RawResult> raw_results;
@@ -79,19 +79,16 @@ public class IndividualRace implements SingleRaceInternal {
     public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
 
         this.categories_processor = categories_processor;
-        categories_processor.setRace(this);
     }
 
     public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
 
         this.results_calculator = results_calculator;
-        results_calculator.setRace(this);
     }
 
-    public void setResultsOutput(final ResultsOutput results_output) {
+    public void setResultsOutput(final RaceOutput results_output) {
 
         this.results_output = results_output;
-        results_output.setRace(this);
     }
 
     private void loadRaceData() {

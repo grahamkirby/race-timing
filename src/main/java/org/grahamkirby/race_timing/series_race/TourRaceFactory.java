@@ -35,9 +35,9 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
 
         final TourRace race = new TourRace(makeTourRaceConfig(config_file_path));
 
-        race.setCategoriesProcessor(new CategoriesProcessor());
-        race.setResultsCalculator(new TourRaceResultsCalculator());
-        race.setResultsOutput(new TourRaceOutput());
+        race.setCategoriesProcessor(new CategoriesProcessor(race));
+        race.setResultsCalculator(new TourRaceResultsCalculator(race));
+        race.setResultsOutput(new TourRaceOutput(race));
 
         return race;
     }

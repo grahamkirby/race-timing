@@ -55,7 +55,7 @@ public class RelayRace implements SingleRaceInternal {
     private RaceResultsCalculator results_calculator;
     private final Config config;
     private CategoriesProcessor categories_processor;
-    private ResultsOutput results_output;
+    private RaceOutput results_output;
     private Normalisation normalisation;
     private final Notes notes;
 
@@ -93,7 +93,7 @@ public class RelayRace implements SingleRaceInternal {
             config.processConfigIfPresent(KEY_ANNOTATIONS_PATH, this::processAnnotations);
             validateData(entries, entries_path, raw_results, electronic_results_path, paper_results_path);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -327,19 +327,16 @@ public class RelayRace implements SingleRaceInternal {
     public void setCategoriesProcessor(final CategoriesProcessor categories_processor) {
 
         this.categories_processor = categories_processor;
-        categories_processor.setRace(this);
     }
 
     public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
 
         this.results_calculator = results_calculator;
-        results_calculator.setRace(this);
     }
 
-    public void setResultsOutput(final ResultsOutput results_output) {
+    public void setResultsOutput(final RaceOutput results_output) {
 
         this.results_output = results_output;
-        results_output.setRace(this);
     }
 
     @Override

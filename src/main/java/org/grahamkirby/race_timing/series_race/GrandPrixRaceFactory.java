@@ -35,9 +35,9 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
 
         final GrandPrixRace race = new GrandPrixRace(makeGrandPrixRaceConfig(config_file_path));
 
-        race.setCategoriesProcessor(new CategoriesProcessor());
-        race.setResultsCalculator(new GrandPrixRaceResultsCalculator());
-        race.setResultsOutput(new GrandPrixRaceOutput());
+        race.setCategoriesProcessor(new CategoriesProcessor(race));
+        race.setResultsCalculator(new GrandPrixRaceResultsCalculator(race));
+        race.setResultsOutput(new GrandPrixRaceOutput(race));
 
         return race;
     }

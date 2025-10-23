@@ -33,8 +33,7 @@ public abstract class RaceResultsCalculator {
 
     public abstract void calculateResults();
 
-    public void setRace(final RaceInternal race) {
-
+    public RaceResultsCalculator(final RaceInternal race) {
         this.race = race;
     }
 

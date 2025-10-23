@@ -52,6 +52,10 @@ class TourRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public TourRaceOutput(final RaceInternal race) {
+        super(race);
+    }
+
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
         private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {

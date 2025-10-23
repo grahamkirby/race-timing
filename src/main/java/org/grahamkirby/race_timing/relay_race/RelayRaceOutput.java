@@ -38,6 +38,10 @@ public class RelayRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public RelayRaceOutput(final RaceInternal race) {
+        super(race);
+    }
+
     @Override
     public void outputResults() throws IOException {
 

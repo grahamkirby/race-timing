@@ -50,6 +50,10 @@ class MidweekRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public MidweekRaceOutput(final RaceInternal race) {
+        super(race);
+    }
+
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
         private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
