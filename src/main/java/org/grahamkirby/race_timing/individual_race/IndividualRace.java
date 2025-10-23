@@ -65,7 +65,7 @@ public class IndividualRace implements Race2 {
     private List<RawResult> raw_results;
     private List<RaceEntry> entries;
 
-    public IndividualRace(final Config config) throws IOException {
+    public IndividualRace(final Config config) {
 
         this.config = config;
     }

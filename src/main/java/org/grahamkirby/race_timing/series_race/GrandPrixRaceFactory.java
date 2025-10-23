@@ -18,10 +18,9 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.common.RaceConfigAdjuster;
-import org.grahamkirby.race_timing.common.RaceConfigValidator;
-import org.grahamkirby.race_timing.common.SpecialisedRaceFactory;
-import org.grahamkirby.race_timing.common.Race;
+import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigAdjuster;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigValidator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,19 +33,10 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
     public static final String KEY_INDICATIVE_OF_GRAND_PRIX_RACE = KEY_RACE_TEMPORAL_ORDER;
 
     @Override
-    public Race makeRace(final Path config_file_path) throws IOException {
+    public Race2 makeRace(final Path config_file_path) throws IOException {
 
-        final Race race = new Race(config_file_path);
+        final GrandPrixRace race = new GrandPrixRace(makeGrandPrixRaceConfig(config_file_path));
 
-        race.addConfigProcessor(new RaceConfigAdjuster());
-        race.addConfigProcessor(new SeriesRaceConfigAdjuster());
-        race.addConfigProcessor(new GrandPrixRaceConfigAdjuster());
-        race.addConfigProcessor(new RaceConfigValidator());
-        race.addConfigProcessor(new SeriesRaceConfigValidator());
-        race.addConfigProcessor(new GrandPrixRaceConfigValidator());
-        race.loadConfig();
-
-        race.setSpecific(new GrandPrixRace());
         race.setCategoriesProcessor(new CategoriesProcessor());
         race.setResultsCalculator(new GrandPrixRaceResultsCalculator());
         race.setResultsOutput(new GrandPrixRaceOutput());
@@ -58,5 +48,20 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
     public boolean isValidFor(final Properties properties) {
 
         return properties.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE);
+    }
+
+    private Config makeGrandPrixRaceConfig(final Path config_file_path) throws IOException {
+
+        final Config config = new Config(config_file_path);
+
+        config.addConfigProcessor(new RaceConfigAdjuster());
+        config.addConfigProcessor(new SeriesRaceConfigAdjuster());
+        config.addConfigProcessor(new GrandPrixRaceConfigAdjuster());
+        config.addConfigProcessor(new RaceConfigValidator());
+        config.addConfigProcessor(new SeriesRaceConfigValidator());
+        config.addConfigProcessor(new GrandPrixRaceConfigValidator());
+        config.processConfig();
+
+        return config;
     }
 }
