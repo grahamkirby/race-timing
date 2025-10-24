@@ -112,7 +112,7 @@ public class RelayRace implements SingleRaceInternal {
     }
 
     @Override
-    public void processResults() {
+    public void processResults() throws IOException {
 
         loadRaceData();
         completeConfiguration();
@@ -198,7 +198,7 @@ public class RelayRace implements SingleRaceInternal {
         validateRawResultsOrdering(paper_results_path);
     }
 
-    private void validateData(final List<RaceEntry> entries, final Path entries_path, final List<RawResult> combined_raw_results, final Path electronic_results_path, Path paper_results_path) {
+    private void validateData(final List<RaceEntry> entries, final Path entries_path, final List<RawResult> combined_raw_results, final Path electronic_results_path, final Path paper_results_path) {
 
         validateEntriesUnique(entries, entries_path);
         validateRecordedBibNumbersAreRegistered(entries, combined_raw_results, electronic_results_path, paper_results_path);

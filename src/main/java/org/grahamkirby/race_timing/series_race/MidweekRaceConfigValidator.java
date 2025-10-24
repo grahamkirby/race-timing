@@ -17,27 +17,16 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.RaceInternal;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.individual_race.Runner;
+import org.grahamkirby.race_timing.common.Config;
+import org.grahamkirby.race_timing.common.ConfigProcessor;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
+import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
-public class TourRaceResultsCalculator extends SeriesRaceResultsCalculator {
+public class MidweekRaceConfigValidator implements ConfigProcessor {
 
-    public TourRaceResultsCalculator(final RaceInternal race) {
-        super(race);
-    }
+    public void processConfig(final Config config) {
 
-    RaceResult getOverallResult(final Runner runner) {
-
-        final List<Duration> times = ((SeriesRace) race).getRaces().stream().
-            filter(Objects::nonNull).
-            map(race -> getRunnerTime(race, runner)).
-            toList();
-
-        return new TourRaceResult(runner, times, race);
+        validateKeyPresent(KEY_SCORE_FOR_FIRST_PLACE, config);
     }
 }

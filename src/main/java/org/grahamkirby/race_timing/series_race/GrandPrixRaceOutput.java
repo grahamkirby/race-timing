@@ -65,8 +65,8 @@ class GrandPrixRaceOutput extends RaceOutput {
 
             final String race_names = getConcatenatedRaceNames(((SeriesRace) race).getRaces());
 
-            final String race_categories_header = ((SeriesRace) race).race_categories.stream().
-                map(GrandPrixRaceCategory::category_title).
+            final String race_categories_header = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().
+                map(SeriesRaceCategory::category_title).
                 collect(Collectors.joining("?,")) + "?";
 
             writer.append("Pos,Runner,Category," + race_names + ",Total,Completed," + race_categories_header + LINE_SEPARATOR);
@@ -92,7 +92,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + ",");
 
             writer.append(
-                ((SeriesRace) race).race_categories.stream().
+                ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().
                     map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
                     collect(Collectors.joining(","))
             );
@@ -128,7 +128,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             headers.add("Total");
             headers.add("Completed?");
 
-            for (final GrandPrixRaceCategory category : ((SeriesRace) race).race_categories)
+            for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
                 headers.add(category.category_title() + "?");
 
             return headers;
@@ -154,7 +154,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             elements.add(String.valueOf(result.totalScore()));
             elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
-            for (final GrandPrixRaceCategory category : ((SeriesRace) race).race_categories)
+            for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
                 elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;

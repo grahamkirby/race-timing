@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -31,7 +32,7 @@ public abstract class RaceResultsCalculator {
     protected RaceInternal race;
     protected List<RaceResult> overall_results;
 
-    public abstract void calculateResults();
+    public abstract void calculateResults() throws IOException;
 
     public RaceResultsCalculator(final RaceInternal race) {
         this.race = race;

@@ -55,7 +55,6 @@ public class RaceFactory {
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());
-//            e.printStackTrace();
         }
     }
 

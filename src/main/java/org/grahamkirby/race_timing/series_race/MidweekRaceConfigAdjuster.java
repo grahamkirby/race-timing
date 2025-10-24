@@ -17,8 +17,16 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Config;
+import org.grahamkirby.race_timing.common.ConfigProcessor;
 
-import java.util.List;
+import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 
-public record GrandPrixRaceCategory(String category_title, int minimum_number_to_be_completed, List<Integer> race_numbers) {
+public class MidweekRaceConfigAdjuster implements ConfigProcessor {
+
+    @Override
+    public void processConfig(final Config config) {
+
+        config.replaceIfPresent(KEY_SCORE_FOR_FIRST_PLACE, Integer::parseInt);
+    }
 }

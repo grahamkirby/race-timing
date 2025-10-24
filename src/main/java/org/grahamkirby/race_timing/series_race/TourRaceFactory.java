@@ -32,7 +32,7 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        final Config config = GrandPrixRaceFactory.makeGrandPrixRaceConfig(config_file_path);
+        final Config config = makeConfig(config_file_path);
         final RaceInternal race = new SeriesRace(config);
 
         race.setResultsCalculator(new TourRaceResultsCalculator(race));
@@ -49,4 +49,16 @@ public class TourRaceFactory implements SpecialisedRaceFactory {
             !properties.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE);
     }
 
+    private Config makeConfig(final Path config_file_path) throws IOException {
+
+        final Config config = new Config(config_file_path);
+
+        config.addConfigProcessor(new RaceConfigAdjuster());
+        config.addConfigProcessor(new SeriesRaceConfigAdjuster());
+        config.addConfigProcessor(new RaceConfigValidator());
+        config.addConfigProcessor(new SeriesRaceConfigValidator());
+        config.processConfig();
+
+        return config;
+    }
 }

@@ -192,7 +192,7 @@ public class IndividualRace implements SingleRaceInternal {
     }
 
     @Override
-    public void processResults() {
+    public void processResults() throws IOException {
 
         loadRaceData();
         completeConfiguration();

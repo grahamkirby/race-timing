@@ -18,23 +18,34 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.RaceInternal;
-import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Predicate;
+
+import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POSITION;
 
 public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator {
+
+    int score_for_median_position;
 
     public GrandPrixRaceResultsCalculator(final RaceInternal race) {
         super(race);
     }
 
+    public void calculateResults() throws IOException {
+
+        score_for_median_position = (int) race.getConfig().get(KEY_SCORE_FOR_MEDIAN_POSITION);
+
+        super.calculateResults();
+    }
+
     // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
-    protected RaceResult getOverallResult(final Runner runner) {
+    RaceResult getOverallResult(final Runner runner) {
 
         final List<Integer> scores = ((SeriesRace) race).getRaces().stream().
             map(individual_race -> calculateRaceScore(individual_race, runner)).
@@ -43,27 +54,17 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
         return new GrandPrixRaceResult(runner, scores, race);
     }
 
-    protected Predicate<RaceResult> getResultInclusionPredicate() {
-
-        final List<String> qualifying_clubs = ((SeriesRace) race).qualifying_clubs;
-        return result -> qualifying_clubs.isEmpty() || qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
-    }
-
     int calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
 
         if (individual_race == null) return 0;
 
         final Duration runner_time = getRunnerTime(individual_race, runner);
 
-        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime()) * ((SeriesRace) race).score_for_median_position);
+        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime()) * score_for_median_position);
     }
 
     private static double divide(final Duration d1, final Duration d2) {
 
         return d1.toMillis() / (double) d2.toMillis();
-    }
-
-    int getRaceNumberInTemporalPosition(final int position) {
-        return ((SeriesRace) race).race_temporal_positions.get(position) - 1;
     }
 }

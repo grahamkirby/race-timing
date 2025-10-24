@@ -17,27 +17,8 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.RaceInternal;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.individual_race.Runner;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 
-public class TourRaceResultsCalculator extends SeriesRaceResultsCalculator {
-
-    public TourRaceResultsCalculator(final RaceInternal race) {
-        super(race);
-    }
-
-    RaceResult getOverallResult(final Runner runner) {
-
-        final List<Duration> times = ((SeriesRace) race).getRaces().stream().
-            filter(Objects::nonNull).
-            map(race -> getRunnerTime(race, runner)).
-            toList();
-
-        return new TourRaceResult(runner, times, race);
-    }
+public record SeriesRaceCategory(String category_title, int minimum_number_to_be_completed, List<Integer> race_numbers) {
 }

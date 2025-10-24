@@ -49,12 +49,6 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
         return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
     }
 
-    @Override
-    public String getPrizeDetail() {
-
-        return null;
-    }
-
     public boolean hasCompletedSeries() {
 
         return numberOfRacesCompleted() >= minimum_number_of_races;
@@ -71,12 +65,12 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
             count();
     }
 
-    public static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
+    protected static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
 
-        final int minimum_races_to_qualify = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+        final int minimum_number_of_races = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
 
-        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_races_to_qualify);
-        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_races_to_qualify);
+        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_number_of_races);
+        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_number_of_races);
 
         return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
     }

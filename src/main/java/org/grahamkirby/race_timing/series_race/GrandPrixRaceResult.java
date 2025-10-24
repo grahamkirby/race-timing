@@ -42,7 +42,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     public boolean canComplete() {
 
         return super.canComplete() &&
-            ((SeriesRace) race).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
+            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
     }
 
     @Override
@@ -50,7 +50,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         // TODO tests pass without check for race category completion - add test.
         return super.hasCompletedSeries() &&
-            ((SeriesRace) race).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
+            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
     }
 
     @Override
@@ -91,7 +91,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
             reduce(0, Integer::sum);
     }
 
-    boolean hasCompletedRaceCategory(final GrandPrixRaceCategory category) {
+    boolean hasCompletedRaceCategory(final SeriesRaceCategory category) {
 
         return category.race_numbers().stream().
             anyMatch(this::hasCompletedRace);
@@ -104,7 +104,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
         return race_number <= scores.size() && scores.get(race_number - 1) > 0;
     }
 
-    private boolean canCompleteRaceCategory(final GrandPrixRaceCategory category) {
+    private boolean canCompleteRaceCategory(final SeriesRaceCategory category) {
 
         final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
 
@@ -115,14 +115,14 @@ class GrandPrixRaceResult extends SeriesRaceResult {
         return number_of_races_completed_in_category + number_of_races_remaining_in_category >= number_of_races_required_in_category;
     }
 
-    private int numberOfRacesCompletedInCategory(final GrandPrixRaceCategory category) {
+    private int numberOfRacesCompletedInCategory(final SeriesRaceCategory category) {
 
         return (int) category.race_numbers().stream().
             filter(this::hasCompletedRace).
             count();
     }
 
-    private int numberOfRacesRemainingInCategory(final List<SingleRaceInternal> races, final GrandPrixRaceCategory category) {
+    private int numberOfRacesRemainingInCategory(final List<SingleRaceInternal> races, final SeriesRaceCategory category) {
 
         // TODO tests pass when filter is for non null.
         return (int) category.race_numbers().stream().
