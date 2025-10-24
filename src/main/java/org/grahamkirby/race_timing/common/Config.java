@@ -102,7 +102,6 @@ public class Config {
     public static final Duration VERY_LONG_DURATION = Duration.ofDays(Integer.MAX_VALUE);
 
     public static OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
-    public static OpenOption[] APPEND_FILE_OPEN_OPTIONS = {StandardOpenOption.APPEND, StandardOpenOption.WRITE};
 
     /** Web link to application on GitHub. */
     public static String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";

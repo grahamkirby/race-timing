@@ -33,7 +33,7 @@ public class TourRaceResultsCalculator extends SeriesRaceResultsCalculator {
 
     protected RaceResult getOverallResult(final Runner runner) {
 
-        final List<Duration> times = ((TourRace) race).getRaces().stream().
+        final List<Duration> times = ((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).
             map(race -> getRunnerTime(race, runner)).
             toList();

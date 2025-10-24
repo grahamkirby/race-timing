@@ -63,9 +63,9 @@ class GrandPrixRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String race_names = getConcatenatedRaceNames(((GrandPrixRace) race).getRaces());
+            final String race_names = getConcatenatedRaceNames(((SeriesRace) race).getRaces());
 
-            final String race_categories_header = ((GrandPrixRace) race).race_categories.stream().
+            final String race_categories_header = ((SeriesRace) race).race_categories.stream().
                 map(GrandPrixRaceCategory::category_title).
                 collect(Collectors.joining("?,")) + "?";
 
@@ -82,7 +82,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             writer.append(result.getPositionString() + "," + encode(runner.getName()) + "," + runner.getCategory().getShortName() + ",");
 
             writer.append(
-                ((GrandPrixRace) race).getRaces().stream().
+                ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> calculator.calculateRaceScore(individual_race, runner)).
                     map(OverallResultPrinterCSV::renderScore).
@@ -92,7 +92,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + ",");
 
             writer.append(
-                ((GrandPrixRace) race).race_categories.stream().
+                ((SeriesRace) race).race_categories.stream().
                     map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
                     collect(Collectors.joining(","))
             );
@@ -128,7 +128,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             headers.add("Total");
             headers.add("Completed?");
 
-            for (final GrandPrixRaceCategory category : ((GrandPrixRace) race).race_categories)
+            for (final GrandPrixRaceCategory category : ((SeriesRace) race).race_categories)
                 headers.add(category.category_title() + "?");
 
             return headers;
@@ -154,7 +154,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             elements.add(String.valueOf(result.totalScore()));
             elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
-            for (final GrandPrixRaceCategory category : ((GrandPrixRace) race).race_categories)
+            for (final GrandPrixRaceCategory category : ((SeriesRace) race).race_categories)
                 elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;

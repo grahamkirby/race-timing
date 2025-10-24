@@ -79,7 +79,7 @@ class MidweekRaceOutput extends RaceOutput {
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
             // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
             writer.append(
-                ((MidweekRace) race).getRaces().stream().
+                ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant())).
                     map(String::valueOf).

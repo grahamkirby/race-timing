@@ -32,7 +32,8 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        final MidweekRace race = new MidweekRace(makeMidweekRaceConfig(config_file_path));
+        final Config config = GrandPrixRaceFactory.makeGrandPrixRaceConfig(config_file_path);
+        final RaceInternal race = new SeriesRace(config);
 
         race.setResultsCalculator(new MidweekRaceResultsCalculator(race));
         race.setResultsOutput(new MidweekRaceOutput(race));
@@ -44,20 +45,5 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     public boolean isValidFor(final Properties properties) {
 
         return properties.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE);
-    }
-
-    private Config makeMidweekRaceConfig(final Path config_file_path) throws IOException {
-
-        final Config config = new Config(config_file_path);
-
-        config.addConfigProcessor(new RaceConfigAdjuster());
-        config.addConfigProcessor(new SeriesRaceConfigAdjuster());
-        config.addConfigProcessor(new MidweekRaceConfigAdjuster());
-        config.addConfigProcessor(new RaceConfigValidator());
-        config.addConfigProcessor(new SeriesRaceConfigValidator());
-        config.addConfigProcessor(new MidweekRaceConfigValidator());
-        config.processConfig();
-
-        return config;
     }
 }

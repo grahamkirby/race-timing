@@ -32,7 +32,7 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        final GrandPrixRace race = new GrandPrixRace(makeGrandPrixRaceConfig(config_file_path));
+        final SeriesRace race = new SeriesRace(makeGrandPrixRaceConfig(config_file_path));
 
         race.setResultsCalculator(new GrandPrixRaceResultsCalculator(race));
         race.setResultsOutput(new GrandPrixRaceOutput(race));
@@ -46,7 +46,7 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
         return properties.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE);
     }
 
-    private Config makeGrandPrixRaceConfig(final Path config_file_path) throws IOException {
+    public static Config makeGrandPrixRaceConfig(final Path config_file_path) throws IOException {
 
         final Config config = new Config(config_file_path);
 

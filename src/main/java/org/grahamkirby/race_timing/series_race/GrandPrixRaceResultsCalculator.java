@@ -45,7 +45,8 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
 
     protected Predicate<RaceResult> getResultInclusionPredicate() {
 
-        return result -> ((GrandPrixRace) race).qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
+        final List<String> qualifying_clubs = ((SeriesRace) race).qualifying_clubs;
+        return result -> qualifying_clubs.isEmpty() || qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
     }
 
     int calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
@@ -54,7 +55,7 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
 
         final Duration runner_time = getRunnerTime(individual_race, runner);
 
-        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime()) * ((GrandPrixRace) race).score_for_median_position);
+        return runner_time == null ? 0 : (int) Math.round(divide(runner_time, ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime()) * ((SeriesRace) race).score_for_median_position);
     }
 
     private static double divide(final Duration d1, final Duration d2) {
@@ -63,6 +64,6 @@ public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator 
     }
 
     int getRaceNumberInTemporalPosition(final int position) {
-        return ((GrandPrixRace) race).race_temporal_positions.get(position) - 1;
+        return ((SeriesRace) race).race_temporal_positions.get(position) - 1;
     }
 }

@@ -42,7 +42,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
     public boolean canComplete() {
 
         return super.canComplete() &&
-            ((GrandPrixRace) race).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
+            ((SeriesRace) race).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
     }
 
     @Override
@@ -50,7 +50,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         // TODO tests pass without check for race category completion - add test.
         return super.hasCompletedSeries() &&
-            ((GrandPrixRace) race).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
+            ((SeriesRace) race).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
     }
 
     @Override

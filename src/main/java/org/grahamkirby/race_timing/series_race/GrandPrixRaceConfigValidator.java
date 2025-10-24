@@ -21,18 +21,17 @@ import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateFileExists;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
 
 public class GrandPrixRaceConfigValidator implements ConfigProcessor {
 
     public void processConfig(final Config config) {
 
-        validateKeyPresent(KEY_RACE_CATEGORIES_PATH, config);
-        validateKeyPresent(KEY_SCORE_FOR_MEDIAN_POSITION, config);
-        validateKeyPresent(KEY_RACE_TEMPORAL_ORDER, config);
-        validateKeyPresent(KEY_QUALIFYING_CLUBS, config);
+//        validateKeyPresent(KEY_RACE_CATEGORIES_PATH, config);
+//        validateKeyPresent(KEY_SCORE_FOR_MEDIAN_POSITION, config);
+//        validateKeyPresent(KEY_RACE_TEMPORAL_ORDER, config);
+//        validateKeyPresent(KEY_QUALIFYING_CLUBS, config);
 
-        validateFileExists(KEY_RACE_CATEGORIES_PATH, config);
+        validateFileExistsIfKeyPresent(KEY_RACE_CATEGORIES_PATH, config);
     }
 }
