@@ -17,22 +17,12 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
-import java.io.IOException;
+public interface SeriesRaceScorer {
 
-public class GrandPrixRaceResultsCalculator extends SeriesRaceResultsCalculator {
-
-
-    public GrandPrixRaceResultsCalculator(final RaceInternal race) throws IOException {
-
-        super(race, new GrandPrixRaceScorer(race, SeriesRaceResultsCalculator::getRunnerTime));
-    }
-
-    RaceResult getOverallResult(final Runner runner) {
-
-        return scorer.getOverallResult(runner);
-    }
+    RaceResult getOverallResult(final Runner runner);
+    int calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner);
 }

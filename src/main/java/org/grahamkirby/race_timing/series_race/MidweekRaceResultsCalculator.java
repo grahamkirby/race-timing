@@ -23,14 +23,19 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 
 public class MidweekRaceResultsCalculator extends SeriesRaceResultsCalculator {
 
-    public MidweekRaceResultsCalculator(final RaceInternal race) {
-        super(race);
+
+    private final int score_for_first_place;
+
+    public MidweekRaceResultsCalculator(final RaceInternal race) throws IOException {
+        super(race, null);
+        score_for_first_place = (int) race.getConfig().get(KEY_SCORE_FOR_FIRST_PLACE);
     }
 
     RaceResult getOverallResult(final Runner runner) {
@@ -58,6 +63,6 @@ public class MidweekRaceResultsCalculator extends SeriesRaceResultsCalculator {
             takeWhile(result -> !result.getParticipant().equals(runner)).
             count() + 1;
 
-        return gender_position <= gender_results.size() ? Math.max((int) race.getConfig().get(KEY_SCORE_FOR_FIRST_PLACE) - gender_position + 1, 0) : 0;
+        return gender_position <= gender_results.size() ? Math.max(score_for_first_place - gender_position + 1, 0) : 0;
     }
 }

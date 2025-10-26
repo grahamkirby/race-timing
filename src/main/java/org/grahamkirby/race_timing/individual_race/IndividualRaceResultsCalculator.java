@@ -49,6 +49,8 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         super(race);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public void calculateResults() {
 
@@ -91,53 +93,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             return median_result.duration();
         }
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void adjustTimes() {
-
-        final IndividualRace impl = (IndividualRace) race;
-
-        adjustTimesByCategory(impl.category_start_offsets);
-        adjustTimes(impl.individual_start_offsets);
-        adjustTimes(impl.time_trial_start_offsets);
-    }
-
-    private void addSeparatelyRecordedTimes() {
-
-        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race).separately_recorded_finish_times;
-
-        for (final Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet())
-            overall_results.add(makeRaceResult(new RawResult(entry.getKey(), entry.getValue())));
-    }
-
-    private void adjustTimesByCategory(final Map<EntryCategory, Duration> offsets) {
-
-        for (final RaceResult r : overall_results) {
-
-            final SingleRaceResult result = (SingleRaceResult)r;
-
-            if (offsets.containsKey(result.getParticipant().getCategory())) {
-
-                final EntryCategory category = result.getParticipant().getCategory();
-                final Duration duration = offsets.get(category);
-
-                result.setFinishTime(result.getFinishTime().minus(duration));
-            }
-        }
-    }
-
-    private void adjustTimes(final Map<Integer, Duration> offsets) {
-
-        for (final RaceResult r : overall_results) {
-
-            final SingleRaceResult result = (SingleRaceResult) r;
-
-            if (offsets.containsKey(result.getBibNumber()))
-                result.setFinishTime(result.getFinishTime().minus(offsets.get(result.getBibNumber())));
-        }
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initialiseResults() {
@@ -159,7 +114,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
                 toList();
         }
 
-        overall_results = new ArrayList<>(overall_results);
+        overall_results = makeMutableCopy(overall_results);
     }
 
     private List<RaceResult> loadOverallResults() throws IOException {
@@ -240,5 +195,51 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             filter(result -> result.getBibNumber() == bib_number).
             findFirst().
             orElseThrow();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void adjustTimes() {
+
+        final IndividualRace impl = (IndividualRace) race;
+
+        adjustTimesByCategory(impl.category_start_offsets);
+        adjustTimes(impl.individual_start_offsets);
+        adjustTimes(impl.time_trial_start_offsets);
+    }
+
+    private void addSeparatelyRecordedTimes() {
+
+        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race).separately_recorded_finish_times;
+
+        for (final Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet())
+            overall_results.add(makeRaceResult(new RawResult(entry.getKey(), entry.getValue())));
+    }
+
+    private void adjustTimesByCategory(final Map<EntryCategory, Duration> offsets) {
+
+        for (final RaceResult r : overall_results) {
+
+            final SingleRaceResult result = (SingleRaceResult)r;
+
+            if (offsets.containsKey(result.getParticipant().getCategory())) {
+
+                final EntryCategory category = result.getParticipant().getCategory();
+                final Duration duration = offsets.get(category);
+
+                result.setFinishTime(result.getFinishTime().minus(duration));
+            }
+        }
+    }
+
+    private void adjustTimes(final Map<Integer, Duration> offsets) {
+
+        for (final RaceResult r : overall_results) {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+
+            if (offsets.containsKey(result.getBibNumber()))
+                result.setFinishTime(result.getFinishTime().minus(offsets.get(result.getBibNumber())));
+        }
     }
 }

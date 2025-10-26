@@ -33,23 +33,16 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     // TODO integrate with category configuration files.
     private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
 
+    /** Provides functionality for inferring missing bib number or timing data in the results. */
+    private final RelayRaceMissingData missing_data;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public RelayRaceResultsCalculator(final RaceInternal race) {
 
         super(race);
         missing_data = new RelayRaceMissingData((RelayRace) race);
     }
-
-    @Override
-    public boolean areEqualPositionsAllowed() {
-
-        // Dead heats allowed in overall results. Although an ordering is imposed at the finish,
-        // this can't be relied on due to mass starts.
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /** Provides functionality for inferring missing bib number or timing data in the results. */
-    private final RelayRaceMissingData missing_data;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,9 +50,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     public void calculateResults() {
 
         initialiseResults();
-
-        missing_data.interpolateMissingTimes();
-        missing_data.guessMissingBibNumbers();
+        guessMissingData();
 
         recordFinishTimes();
         recordStartTimes();
@@ -71,7 +62,52 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         addPaperRecordingComments();
     }
 
+    @Override
+    public boolean areEqualPositionsAllowed() {
+
+        // Dead heats allowed in overall results. Although an ordering is imposed at the finish,
+        // this can't be relied on due to mass starts.
+        return true;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void recordDNF(final String dnf_specification) {
+
+        try {
+            // String of form "bib-number/leg-number"
+
+            final String[] elements = dnf_specification.split("/");
+            final int bib_number = Integer.parseInt(elements[0]);
+            final int leg_number = Integer.parseInt(elements[1]);
+
+            getLegResult(bib_number, leg_number).setDnf(true);
+
+        } catch (final NumberFormatException e) {
+            throw new RuntimeException(dnf_specification, e);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void initialiseResults() {
+
+        final Collection<Integer> bib_numbers_seen = new HashSet<>();
+
+        overall_results = ((SingleRaceInternal) race).getRawResults().stream().
+            filter(raw_result -> raw_result.getBibNumber() != 0).
+            filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
+            map(this::makeRaceResult).
+            toList();
+
+        overall_results = makeMutableCopy(overall_results);
+    }
+
+    private void guessMissingData() {
+
+        missing_data.interpolateMissingTimes();
+        missing_data.guessMissingBibNumbers();
+    }
 
     private void recordFinishTimes() {
 
@@ -274,43 +310,11 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         }
     }
 
-    private void initialiseResults() {
-
-        final Collection<Integer> bib_numbers_seen = new HashSet<>();
-
-        overall_results = ((SingleRaceInternal) race).getRawResults().stream().
-            filter(raw_result -> raw_result.getBibNumber() != 0).
-            filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
-            map(this::makeRaceResult).
-            toList();
-
-        overall_results = makeMutableCopy(overall_results);
-    }
-
-    private static List<RaceResult> makeMutableCopy(final List<? extends RaceResult> results) {
-        return new ArrayList<>(results);
-    }
 
     private RaceResult makeRaceResult(final RawResult raw_result) {
 
         final RaceEntry entry = getEntryWithBibNumber(raw_result.getBibNumber());
         return new RelayRaceResult(race, entry, null);
-    }
-
-    protected void recordDNF(final String dnf_specification) {
-
-        try {
-            // String of form "bib-number/leg-number"
-
-            final String[] elements = dnf_specification.split("/");
-            final int bib_number = Integer.parseInt(elements[0]);
-            final int leg_number = Integer.parseInt(elements[1]);
-
-            getLegResult(bib_number, leg_number).setDnf(true);
-
-        } catch (final NumberFormatException e) {
-            throw new RuntimeException(dnf_specification, e);
-        }
     }
 
     private RaceEntry getEntryWithBibNumber(final int bib_number) {

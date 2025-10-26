@@ -29,29 +29,36 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Config.KEY_QUALIFYING_CLUBS;
-import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POSITION;
 
-public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator {
+public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     private List<SeriesRaceCategory> race_categories;
-    List<Integer> race_temporal_positions;
-    List<String> qualifying_clubs;
+    private List<Integer> race_temporal_positions;
+    private List<String> qualifying_clubs;
+    public SeriesRaceScorer scorer;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public SeriesRaceResultsCalculator(final RaceInternal race) {
+    public SeriesRaceResultsCalculator(final RaceInternal race, final SeriesRaceScorer scorer) throws IOException {
+
         super(race);
-    }
-
-    abstract RaceResult getOverallResult(final Runner runner);
-
-    public void calculateResults() throws IOException {
+        this.scorer = scorer;
 
         loadRaceCategories();
         loadRaceTemporalPositions();
         configureClubs();
         checkCategoryConsistencyOverSeries();
+    }
+
+//    abstract RaceResult getOverallResult(final Runner runner);
+    RaceResult getOverallResult(final Runner runner) {
+
+        return scorer.getOverallResult(runner);
+    }
+
+    @Override
+    public void calculateResults() throws IOException {
+
         initialiseResults();
         sortResults();
         allocatePrizes();
@@ -119,6 +126,8 @@ public abstract class SeriesRaceResultsCalculator extends RaceResultsCalculator 
     }
 
     static Duration getRunnerTime(final SingleRaceInternal individual_race, final Runner runner) {
+
+        if (individual_race == null) return null;
 
         for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
 

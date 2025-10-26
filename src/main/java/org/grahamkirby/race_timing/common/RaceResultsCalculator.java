@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -32,11 +33,18 @@ public abstract class RaceResultsCalculator {
     protected RaceInternal race;
     protected List<RaceResult> overall_results;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public abstract void calculateResults() throws IOException;
+    protected abstract boolean areEqualPositionsAllowed();
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RaceResultsCalculator(final RaceInternal race) {
         this.race = race;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<RaceResult> getOverallResults() {
         return overall_results;
@@ -117,8 +125,6 @@ public abstract class RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract boolean areEqualPositionsAllowed();
-
     /** Sorts all results by relevant comparators. */
     protected void sortResults() {
 
@@ -143,11 +149,6 @@ public abstract class RaceResultsCalculator {
         result.getCategoriesOfPrizesAwarded().add(category);
     }
 
-    protected String getClub(final RaceResult result) {
-
-        return result.getParticipant() instanceof final Runner runner ? runner.getClub() : null;
-    }
-
     protected void recordDNFs() {
 
         // This fills in the DNF results that were specified explicitly in the config
@@ -167,9 +168,18 @@ public abstract class RaceResultsCalculator {
     protected void recordDNF(final String dnf_specification) {
     }
 
+    protected static List<RaceResult> makeMutableCopy(final List<? extends RaceResult> results) {
+        return new ArrayList<>(results);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-     /** Records the same position for the given range of results. */
+    private String getClub(final RaceResult result) {
+
+        return result.getParticipant() instanceof final Runner runner ? runner.getClub() : null;
+    }
+
+    /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int end_index) {
 
         final String position_string = (start_index + 1) + "=";

@@ -21,14 +21,15 @@ import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
 public class TourRaceResultsCalculator extends SeriesRaceResultsCalculator {
 
-    public TourRaceResultsCalculator(final RaceInternal race) {
-        super(race);
+    public TourRaceResultsCalculator(final RaceInternal race) throws IOException {
+        super(race, null);
     }
 
     RaceResult getOverallResult(final Runner runner) {
