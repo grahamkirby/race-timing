@@ -32,10 +32,10 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        final Config config = makeConfig(config_file_path);
-        final RaceInternal race = new SeriesRace(config);
+        final SeriesRace race = new SeriesRace(makeConfig(config_file_path));
+        final SeriesRaceScorer scorer = new MidweekRaceScorer(race, SeriesRaceResultsCalculator::getRunnerTime);
 
-        race.setResultsCalculator(new MidweekRaceResultsCalculator(race));
+        race.setResultsCalculator(new SeriesRaceResultsCalculator(race, scorer));
         race.setResultsOutput(new MidweekRaceOutput(race));
 
         return race;

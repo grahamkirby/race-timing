@@ -45,14 +45,14 @@ public class GrandPrixRaceScorer implements SeriesRaceScorer {
     // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
     public RaceResult getOverallResult(final Runner runner) {
 
-        final List<Integer> scores = ((SeriesRace) race).getRaces().stream().
+        final List<Object> scores = ((SeriesRace) race).getRaces().stream().
             map(individual_race -> calculateRaceScore(individual_race, runner)).
             toList();
 
         return new GrandPrixRaceResult(runner, scores, race);
     }
 
-    public int calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
+    public Object calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
 
         final Duration runner_time = get_runner_time.apply(individual_race, runner);
 

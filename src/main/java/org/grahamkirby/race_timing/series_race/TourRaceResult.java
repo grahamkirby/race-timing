@@ -31,9 +31,9 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration {
 
-    public final List<Duration> times;
+    public final List<Object> times;
 
-    TourRaceResult(final Runner runner, final List<Duration> times, final RaceInternal race) {
+    TourRaceResult(final Runner runner, final List<Object> times, final RaceInternal race) {
 
         super(race, runner);
         this.times = times;
@@ -59,6 +59,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
 
         return times.stream().
             filter(Objects::nonNull).
+            map(obj -> (Duration) obj).
             reduce(Duration.ZERO, Duration::plus);
     }
 

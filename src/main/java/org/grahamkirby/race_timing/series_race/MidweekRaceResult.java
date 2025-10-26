@@ -30,9 +30,9 @@ import static java.util.Comparator.reverseOrder;
 
 class MidweekRaceResult extends SeriesRaceResult {
 
-    private final List<Integer> scores;
+    private final List<Object> scores;
 
-    MidweekRaceResult(final Runner runner, final List<Integer> scores, final RaceInternal race) {
+    MidweekRaceResult(final Runner runner, final List<Object> scores, final RaceInternal race) {
 
         super(race, runner);
         this.scores = scores;
@@ -60,6 +60,7 @@ class MidweekRaceResult extends SeriesRaceResult {
 
         // Consider the highest scores, since higher score is better.
         return scores.stream().
+            map(obj -> (int) obj).
             sorted(reverseOrder()).
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);

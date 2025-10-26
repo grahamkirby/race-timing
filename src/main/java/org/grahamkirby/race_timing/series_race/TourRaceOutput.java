@@ -83,7 +83,7 @@ class TourRaceOutput extends RaceOutput {
 
             writer.append(
                 result.times.stream().
-                    map(time -> renderDuration(time, "-")).
+                    map(time -> renderDuration((Duration) time, "-")).
                     collect(Collectors.joining(","))
             );
 
@@ -130,8 +130,8 @@ class TourRaceOutput extends RaceOutput {
             elements.add(runner.getCategory().getShortName());
             elements.add(runner.getClub());
 
-            for (final Duration duration : result.times)
-                elements.add(renderDuration(duration, "-"));
+            for (final Object duration : result.times)
+                elements.add(renderDuration((Duration) duration, "-"));
 
             elements.add(renderDuration(result, "-"));
 

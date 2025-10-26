@@ -24,5 +24,5 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 public interface SeriesRaceScorer {
 
     RaceResult getOverallResult(final Runner runner);
-    int calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner);
+    Object calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner);
 }

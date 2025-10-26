@@ -85,6 +85,7 @@ class GrandPrixRaceOutput extends RaceOutput {
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> calculator.scorer.calculateRaceScore(individual_race, runner)).
+                    map(obj -> (int) obj).
                     map(OverallResultPrinterCSV::renderScore).
                     collect(Collectors.joining(","))
             );
@@ -147,7 +148,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final int score = calculator.scorer.calculateRaceScore(individual_race, (Runner) result.getParticipant());
+                    final int score = (int) calculator.scorer.calculateRaceScore(individual_race, (Runner) result.getParticipant());
                     elements.add(renderScore(score));
                 }
 

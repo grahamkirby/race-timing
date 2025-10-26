@@ -72,7 +72,7 @@ class MidweekRaceOutput extends RaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             final MidweekRaceResult result = ((MidweekRaceResult) r);
-            final MidweekRaceResultsCalculator calculator = (MidweekRaceResultsCalculator) race.getResultsCalculator();
+            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
 
             writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).getClub()) + "," + result.getParticipant().getCategory().getShortName() + ",");
 
@@ -81,7 +81,7 @@ class MidweekRaceOutput extends RaceOutput {
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> calculator.calculateRaceScore(individual_race, (Runner) result.getParticipant())).
+                    map(individual_race -> calculator.scorer.calculateRaceScore(individual_race, (Runner) result.getParticipant())).
                     map(String::valueOf).
                     collect(Collectors.joining(","))
             );
@@ -121,7 +121,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             final List<String> elements = new ArrayList<>();
 
-            final MidweekRaceResultsCalculator calculator = (MidweekRaceResultsCalculator) race.getResultsCalculator();
+            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
             final MidweekRaceResult result = (MidweekRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
 
@@ -133,7 +133,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final int score = calculator.calculateRaceScore(individual_race, runner);
+                    final int score = (int) calculator.scorer.calculateRaceScore(individual_race, runner);
                     elements.add(String.valueOf(score));
                 }
 
