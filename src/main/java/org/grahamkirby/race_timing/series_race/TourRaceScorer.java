@@ -44,7 +44,7 @@ public class TourRaceScorer implements SeriesRaceScorer {
     public RaceResult getOverallResult(final Runner runner) {
 
         final List<Object> times = ((SeriesRace) race).getRaces().stream().
-            filter(Objects::nonNull).
+            filter(Objects::nonNull).  // TODO rationalise with other series race types.
             map(individual_race -> calculateRaceScore(individual_race, runner)).
             toList();
 

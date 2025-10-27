@@ -56,15 +56,17 @@ public class GrandPrixRaceScorer implements SeriesRaceScorer {
 
         final Duration runner_time = get_runner_time.apply(individual_race, runner);
 
-        return runner_time != null ? calculateRaceScore(individual_race, runner_time) : 0;
-    }
+        // Runner may not have competed in this race.
+        if (runner_time != null) {
 
-    int calculateRaceScore(final SingleRaceInternal individual_race, final Duration runner_time) {
+            final Duration median_time = ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime();
+            final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
 
-        final Duration median_time = ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime();
-        final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
+            // Lower score is better.
+            return (int) Math.round(time_ratio * score_for_median_position);
 
-        // Lower score is better.
-        return (int) Math.round(time_ratio * score_for_median_position);
+        } else {
+            return null;
+        }
     }
 }

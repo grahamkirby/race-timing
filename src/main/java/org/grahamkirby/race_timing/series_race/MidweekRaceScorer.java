@@ -26,6 +26,7 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
@@ -55,7 +56,8 @@ public class MidweekRaceScorer implements SeriesRaceScorer {
 
     public Object calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
 
-        if (individual_race == null) return 0;
+        // TODO rationalise with other series race types.
+        if (individual_race == null) return -1;
 
         // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
 
@@ -69,6 +71,7 @@ public class MidweekRaceScorer implements SeriesRaceScorer {
             takeWhile(result -> !result.getParticipant().equals(runner)).
             count() + 1;
 
+        // Higher score is better.
         return gender_position <= gender_results.size() ? Math.max(score_for_first_place - gender_position + 1, 0) : 0;
     }
 }

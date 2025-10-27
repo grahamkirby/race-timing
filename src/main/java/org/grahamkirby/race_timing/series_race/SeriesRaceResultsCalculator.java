@@ -50,7 +50,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         checkCategoryConsistencyOverSeries();
     }
 
-//    abstract RaceResult getOverallResult(final Runner runner);
     RaceResult getOverallResult(final Runner runner) {
 
         return scorer.getOverallResult(runner);

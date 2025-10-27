@@ -85,8 +85,7 @@ class GrandPrixRaceOutput extends RaceOutput {
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> calculator.scorer.calculateRaceScore(individual_race, runner)).
-                    map(obj -> (int) obj).
-                    map(OverallResultPrinterCSV::renderScore).
+                    map(GrandPrixRaceOutput::renderScore).
                     collect(Collectors.joining(","))
             );
 
@@ -99,11 +98,6 @@ class GrandPrixRaceOutput extends RaceOutput {
             );
 
             writer.append(LINE_SEPARATOR);
-        }
-
-        private static String renderScore(final int score) {
-
-            return score != 0 ? String.valueOf(score) : "-";
         }
     }
 
@@ -118,7 +112,7 @@ class GrandPrixRaceOutput extends RaceOutput {
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
             final List<String> headers = new ArrayList<>(common_headers);
 
-            // This traverses races in order of listing in config, sorted first by race type and then date.
+            // This traverses races in order of listing in config.
             final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
 
             for (final SingleRaceInternal individual_race : races)
@@ -148,7 +142,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final int score = (int) calculator.scorer.calculateRaceScore(individual_race, (Runner) result.getParticipant());
+                    final Object score = calculator.scorer.calculateRaceScore(individual_race, (Runner) result.getParticipant());
                     elements.add(renderScore(score));
                 }
 
@@ -159,11 +153,6 @@ class GrandPrixRaceOutput extends RaceOutput {
                 elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;
-        }
-
-        private static String renderScore(final int score) {
-
-            return score != 0 ? String.valueOf(score) : "-";
         }
     }
 
@@ -182,5 +171,10 @@ class GrandPrixRaceOutput extends RaceOutput {
         protected String renderPerformance(final RaceResult result) {
             return String.valueOf(((GrandPrixRaceResult) result).totalScore());
         }
+    }
+
+    private static String renderScore(final Object score) {
+
+        return score != null ? String.valueOf(score) : "-";
     }
 }

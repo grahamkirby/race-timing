@@ -85,8 +85,9 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         // Consider the lowest non-zero scores, since lower score is better.
         return scores.stream().
+            filter(Objects::nonNull).
             map(obj -> (int) obj).
-            filter(score -> score > 0).
+//            filter(score -> score > 0).
             sorted().
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
@@ -102,7 +103,8 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     private boolean hasCompletedRace(final int race_number) {
 
-        return race_number <= scores.size() && ((int) scores.get(race_number - 1)) > 0;
+//        return race_number <= scores.size() && ((int) scores.get(race_number - 1)) > 0;
+        return race_number <= scores.size() && scores.get(race_number - 1) != null;
     }
 
     private boolean canCompleteRaceCategory(final SeriesRaceCategory category) {
