@@ -19,6 +19,8 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.*;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
@@ -47,6 +49,17 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
         final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
         return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
+    }
+
+    @Override
+    public List<Comparator<RaceResult>> getComparators() {
+
+        return List.of(
+            CommonRaceResult::comparePossibleCompletion,
+            SeriesRaceResult::compareNumberOfRacesCompleted,
+            CommonRaceResult::comparePerformance,
+            CommonRaceResult::compareRunnerLastName,
+            CommonRaceResult::compareRunnerFirstName);
     }
 
     public boolean hasCompletedSeries() {

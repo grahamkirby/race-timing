@@ -16,10 +16,10 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 15,Katie Duff,Strathkinness Primary School,FU9,00:13:34,00:17:57,00:10:41,00:19:51,00:09:16,01:11:19
 16,Joe Suttie,Unatt.,MU9,00:20:09,00:18:43,00:10:55,00:15:39,00:11:43,01:17:09
 17,Beatrice Yates,Unatt.,FU9,00:13:30,00:18:03,00:12:19,00:21:59,00:12:34,01:18:25
--,Isla Glasse-Davies,Unatt.,FU9,00:07:43,-,-,-,-,-
+-,Ruairi Seeley,East Fife Triathlon Club,MU9,00:09:02,-,00:07:54,00:11:02,-,-
 -,Arwen McKelvie,East Fife Triathlon Club,FU9,00:10:19,-,-,00:11:58,-,-
 -,Alfie Naughton,St Columbas Primary School,MU9,-,-,00:22:41,-,00:17:45,-
--,Ruairi Seeley,East Fife Triathlon Club,MU9,00:09:02,-,00:07:54,00:11:02,-,-
+-,Isla Glasse-Davies,Unatt.,FU9,00:07:43,-,-,-,-,-
 
 Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 1,Angus Logan,Unatt.,MU11,00:06:44,00:08:48,00:05:58,00:08:11,00:05:41,00:35:22
@@ -40,14 +40,14 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 16,Eilidh Christie,Unatt.,FU11,00:09:36,00:13:09,00:08:27,00:11:15,00:08:16,00:50:43
 17,Amelie Wild,East Fife Triathlon Club,FU11,00:09:18,00:13:10,00:08:11,00:12:20,00:07:50,00:50:49
 18,Penny Coulston,Unatt.,FU11,00:09:32,00:13:31,00:08:35,00:11:36,00:08:18,00:51:32
--,Eden Hall,Unatt.,FU11,-,-,00:07:37,00:10:24,00:06:57,-
--,Iona Hislop,Lawhead Primary School,FU11,00:08:25,-,00:07:39,-,-,-
--,Lewis McKelvie,Fife AC,MU11,00:17:36,-,-,00:12:45,-,-
 -,Amaya McLean,Unatt.,FU11,00:09:45,00:13:21,00:09:43,00:10:51,-,-
+-,Eden Hall,Unatt.,FU11,-,-,00:07:37,00:10:24,00:06:57,-
 -,Alice Sophie Metayer,Strathkinness Primary School,FU11,-,-,00:07:23,00:11:13,00:06:59,-
 -,Anna Purves,Fife AC,FU11,00:08:18,00:12:08,-,-,00:06:58,-
--,"John Smith, Sr",Unatt.,MU11,00:27:19,-,-,-,-,-
+-,Iona Hislop,Lawhead Primary School,FU11,00:08:25,-,00:07:39,-,-,-
+-,Lewis McKelvie,Fife AC,MU11,00:17:36,-,-,00:12:45,-,-
 -,Yining Ye,Canongate Primary School,FU11,00:11:00,-,-,-,00:07:30,-
+-,"John Smith, Sr",Unatt.,MU11,00:27:19,-,-,-,-,-
 
 Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 1,Bertran Penacchio Torres,Fife AC,MU13,00:14:49,00:20:19,00:12:34,00:08:56,00:19:17,01:15:55
@@ -61,14 +61,14 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 9,Fergus Broadhurst,Unatt.,MU13,00:18:03,00:29:16,00:16:06,00:11:30,00:25:25,01:40:20
 10,Meredith Yates,Unatt.,FU13,00:20:38,00:28:05,00:17:32,00:11:46,00:25:59,01:44:00
 11,Fin Torkington,Unatt.,MU13,00:25:11,00:33:08,00:18:32,00:12:23,00:28:24,01:57:38
--,Owen Cutler,Fife AC,MU13,00:16:11,00:25:31,-,-,-,-
 -,Jenna Graham,Unatt.,FU13,-,00:24:29,00:12:52,00:09:08,00:20:47,-
--,Lyle McKelvie,East Fife Triathlon Club,MU13,00:15:28,-,-,-,-,-
--,Peter Naughton,St Columbas Primary School,MU13,-,-,00:18:44,00:12:39,00:20:41,-
 -,Eddie Niven,Unatt.,MU13,00:14:13,-,00:12:00,00:08:31,00:18:44,-
 -,Freddie Oxley,Unatt.,MU13,00:25:20,00:33:10,00:19:04,00:12:33,-,-
 -,Holly Riach,Unatt.,FU13,00:20:39,-,00:17:27,00:11:47,00:26:52,-
 -,Cameron Seeley,East Fife Triathlon Club,MU13,00:15:17,-,00:12:50,00:09:14,00:21:08,-
+-,Peter Naughton,St Columbas Primary School,MU13,-,-,00:18:44,00:12:39,00:20:41,-
+-,Owen Cutler,Fife AC,MU13,00:16:11,00:25:31,-,-,-,-
+-,Lyle McKelvie,East Fife Triathlon Club,MU13,00:15:28,-,-,-,-,-
 
 Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 1,Luca Anderson,Anster Haddies,MU15,00:17:56,00:18:17,00:15:35,00:07:12,00:15:41,01:14:41
@@ -82,8 +82,8 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 9,Theo Milne-Akermo,Fife AC,MU15,00:27:02,00:27:18,00:21:05,00:09:29,00:21:23,01:46:17
 10,Sophie Robertson,East Fife Triathlon Club,FU15,00:26:03,00:27:43,00:21:42,00:10:07,00:22:12,01:47:47
 -,Adam Harvie,Unatt.,MU15,00:28:17,00:28:41,00:23:06,00:10:16,-,-
--,Ben Paterson,East Fife Triathlon Club,MU15,00:22:09,-,-,00:08:23,00:18:35,-
 -,Lewis Whittingham,Fife AC,MU15,00:22:25,00:21:00,-,00:09:04,00:19:03,-
+-,Ben Paterson,East Fife Triathlon Club,MU15,00:22:09,-,-,00:08:23,00:18:35,-
 
 Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 1,Orla Gage,Anster Haddies,FU18,00:23:14,00:23:53,00:19:27,00:09:15,00:19:17,01:35:06

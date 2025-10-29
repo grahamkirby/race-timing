@@ -42,6 +42,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
+        // Sort lowest combined times first since lower combined time is better.
         final Duration other_duration = ((TourRaceResult) other).duration();
 
         return duration().compareTo(other_duration);
@@ -53,6 +54,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
         return "(" + ((Runner) getParticipant()).getClub() + ") " + renderDuration(duration());
     }
 
+    @Override
     public Duration duration() {
 
         if (!canComplete()) return VERY_LONG_DURATION;
@@ -61,14 +63,5 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
             filter(Objects::nonNull).
             map(obj -> (Duration) obj).
             reduce(Duration.ZERO, Duration::plus);
-    }
-
-    public List<Comparator<RaceResult>> getComparators() {
-
-        return List.of(
-            CommonRaceResult::comparePossibleCompletion,
-            CommonRaceResult::comparePerformance,
-            CommonRaceResult::compareRunnerLastName,
-            CommonRaceResult::compareRunnerFirstName);
     }
 }

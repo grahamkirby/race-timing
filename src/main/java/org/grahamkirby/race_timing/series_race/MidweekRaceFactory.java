@@ -33,7 +33,7 @@ public class MidweekRaceFactory implements SpecialisedRaceFactory {
     public Race makeRace(final Path config_file_path) throws IOException {
 
         final SeriesRace race = new SeriesRace(makeConfig(config_file_path));
-        final SeriesRaceScorer scorer = new MidweekRaceScorer(race, SeriesRaceResultsCalculator::getRunnerTime);
+        final SeriesRaceScorer scorer = new MidweekRaceScorer(race);
 
         race.setResultsCalculator(new SeriesRaceResultsCalculator(race, scorer));
         race.setResultsOutput(new MidweekRaceOutput(race));

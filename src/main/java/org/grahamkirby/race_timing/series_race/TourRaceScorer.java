@@ -20,15 +20,11 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
-
-import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 
 public class TourRaceScorer implements SeriesRaceScorer {
 
@@ -41,17 +37,16 @@ public class TourRaceScorer implements SeriesRaceScorer {
         this.get_runner_time = get_runner_time;
     }
 
-    public RaceResult getOverallResult(final Runner runner) {
+    @Override
+    public RaceResult makeOverallResult(final Runner runner, final List<Object> scores) {
 
-        final List<Object> times = ((SeriesRace) race).getRaces().stream().
-            filter(Objects::nonNull).  // TODO rationalise with other series race types.
-            map(individual_race -> calculateRaceScore(individual_race, runner)).
-            toList();
-
-        return new TourRaceResult(runner, times, race);
+        return new TourRaceResult(runner, scores, race);
     }
 
-    public Object calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
+    @Override
+    public Object calculateRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
+
+        if (individual_race == null) return null;
 
         return get_runner_time.apply(individual_race, runner);
     }

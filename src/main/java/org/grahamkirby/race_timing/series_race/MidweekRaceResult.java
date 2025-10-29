@@ -18,13 +18,13 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Comparator.reverseOrder;
 
@@ -41,7 +41,7 @@ class MidweekRaceResult extends SeriesRaceResult {
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
-        // Sort highest scores first.
+        // Sort highest scores first since higher score is better.
         final Comparator<Integer> comparator = reverseOrder();
         final int other_score = ((MidweekRaceResult) other).totalScore();
 
@@ -54,25 +54,18 @@ class MidweekRaceResult extends SeriesRaceResult {
         return "(" + ((Runner) getParticipant()).getClub() + ") " + totalScore();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     int totalScore() {
 
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted());
 
         // Consider the highest scores, since higher score is better.
         return scores.stream().
+            filter(Objects::nonNull).
             map(obj -> (int) obj).
             sorted(reverseOrder()).
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
-    }
-
-    public List<Comparator<RaceResult>> getComparators() {
-
-        return List.of(
-            CommonRaceResult::comparePossibleCompletion,
-            SeriesRaceResult::compareNumberOfRacesCompleted,
-            CommonRaceResult::comparePerformance,
-            CommonRaceResult::compareRunnerLastName,
-            CommonRaceResult::compareRunnerFirstName);
     }
 }

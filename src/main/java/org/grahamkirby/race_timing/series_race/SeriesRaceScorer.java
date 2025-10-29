@@ -21,8 +21,10 @@ import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.util.List;
+
 public interface SeriesRaceScorer {
 
-    RaceResult getOverallResult(final Runner runner);
-    Object calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner);
+    RaceResult makeOverallResult(final Runner runner, List<Object> scores);
+    Object calculateRaceScore(final Runner runner, final SingleRaceInternal individual_race);
 }

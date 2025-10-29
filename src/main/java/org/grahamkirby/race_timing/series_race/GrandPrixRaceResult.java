@@ -18,13 +18,11 @@
 package org.grahamkirby.race_timing.series_race;
 
 
-import org.grahamkirby.race_timing.common.CommonRaceResult;
 import org.grahamkirby.race_timing.common.RaceInternal;
-import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
+import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,6 +34,21 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
         super(race, runner);
         this.scores = scores;
+    }
+
+    @Override
+    public int comparePerformanceTo(final RaceResult other) {
+
+        // Sort lowest scores first since lower score is better.
+        final int other_score = ((GrandPrixRaceResult) other).totalScore();
+
+        return Integer.compare(totalScore(), other_score);
+    }
+
+    @Override
+    public String getPrizeDetail() {
+
+        return "(" + ((Runner) getParticipant()).getClub() + ") " + totalScore();
     }
 
     @Override
@@ -53,41 +66,16 @@ class GrandPrixRaceResult extends SeriesRaceResult {
             ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
     }
 
-    @Override
-    public int comparePerformanceTo(final RaceResult other) {
-
-        // Sort lowest scores first since lower score is better.
-        return Integer.compare(totalScore(), ((GrandPrixRaceResult) other).totalScore());
-    }
-
-    @Override
-    public String getPrizeDetail() {
-
-        return "(" + ((Runner) getParticipant()).getClub() + ") " + totalScore();
-    }
-
-    public List<Comparator<RaceResult>> getComparators() {
-
-        return List.of(
-            CommonRaceResult::comparePossibleCompletion,
-            SeriesRaceResult::compareNumberOfRacesCompleted,
-            CommonRaceResult::comparePerformance,
-            CommonRaceResult::compareRunnerLastName,
-            CommonRaceResult::compareRunnerFirstName
-        );
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     int totalScore() {
 
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted());
 
-        // Consider the lowest non-zero scores, since lower score is better.
+        // Consider the lowest scores, since lower score is better.
         return scores.stream().
             filter(Objects::nonNull).
             map(obj -> (int) obj).
-//            filter(score -> score > 0).
             sorted().
             limit(number_of_counting_scores).
             reduce(0, Integer::sum);
@@ -103,7 +91,6 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     private boolean hasCompletedRace(final int race_number) {
 
-//        return race_number <= scores.size() && ((int) scores.get(race_number - 1)) > 0;
         return race_number <= scores.size() && scores.get(race_number - 1) != null;
     }
 

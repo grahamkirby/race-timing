@@ -21,43 +21,33 @@ import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.BiFunction;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
-import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POSITION;
 
 public class MidweekRaceScorer implements SeriesRaceScorer {
 
     private final int score_for_first_place;
     private final RaceInternal race;
-    final BiFunction<SingleRaceInternal, Runner, Duration> get_runner_time;
 
-    public MidweekRaceScorer(final RaceInternal race, final BiFunction<SingleRaceInternal, Runner, Duration> get_runner_time) {
+    public MidweekRaceScorer(final RaceInternal race) {
 
         this.race = race;
         score_for_first_place = (int) race.getConfig().get(KEY_SCORE_FOR_FIRST_PLACE);
-        this.get_runner_time = get_runner_time;
     }
 
-    public RaceResult getOverallResult(final Runner runner) {
-
-        final List<Object> scores = ((SeriesRace) race).getRaces().stream().
-            map(individual_race -> calculateRaceScore(individual_race, runner)).
-            toList();
+    @Override
+    public RaceResult makeOverallResult(final Runner runner, final List<Object> scores) {
 
         return new MidweekRaceResult(runner, scores, race);
     }
 
-    public Object calculateRaceScore(final SingleRaceInternal individual_race, final Runner runner) {
+    @Override
+    public Object calculateRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
 
-        // TODO rationalise with other series race types.
-        if (individual_race == null) return -1;
+        if (individual_race == null) return null;
 
         // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
 

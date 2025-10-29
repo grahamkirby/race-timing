@@ -52,7 +52,11 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     RaceResult getOverallResult(final Runner runner) {
 
-        return scorer.getOverallResult(runner);
+        final List<Object> scores = ((SeriesRace) race).getRaces().stream().
+            map(individual_race -> scorer.calculateRaceScore(runner, individual_race)).
+            toList();
+
+        return scorer.makeOverallResult(runner, scores);
     }
 
     @Override

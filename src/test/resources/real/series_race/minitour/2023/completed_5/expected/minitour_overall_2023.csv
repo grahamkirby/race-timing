@@ -6,12 +6,12 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 5,Noah Stone,Unatt.,MU9,00:12:47,00:18:06,00:07:53,00:10:58,00:07:55,00:57:39
 6,Lola Rowan Bowditch,Strathkinness Primary School,FU9,00:18:38,00:16:44,00:09:02,00:12:45,00:08:52,01:06:01
 7,Arwen McKelvie,East Fife Triathlon Club,FU9,00:12:04,00:25:07,00:09:25,00:13:53,00:09:20,01:09:49
--,Iona Hislop,Unatt.,FU9,-,00:16:58,00:07:52,-,-,-
 -,Nico Kitching,Letham Primary School,MU9,-,00:15:59,00:07:28,00:10:51,00:07:37,-
 -,Leonie Helena Metayer,Unatt.,FU9,00:11:35,-,00:09:02,00:11:54,00:08:07,-
+-,Iona Hislop,Unatt.,FU9,-,00:16:58,00:07:52,-,-,-
+-,Ruairi Seeley,East Fife Triathlon Club,MU9,00:12:59,-,00:08:52,-,-,-
 -,Cameron Milne,Unatt.,MU9,-,-,-,00:14:21,-,-
 -,Isaac Pates,Unatt.,MU9,-,-,-,-,00:08:48,-
--,Ruairi Seeley,East Fife Triathlon Club,MU9,00:12:59,-,00:08:52,-,-,-
 
 Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 1,William Mifsud,East Fife Triathlon Club,MU11,00:07:20,00:11:22,00:06:00,00:08:37,00:05:58,00:39:17
@@ -54,14 +54,14 @@ Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 13,Adam Harvie,Bell Baxter School,MU13,00:15:02,00:31:57,00:15:10,00:11:13,00:24:22,01:37:44
 14,Hannah Graham,Unatt.,FU13,00:19:46,00:34:21,00:15:26,00:11:38,00:24:43,01:45:54
 15,Finlay Torkington,Fife AC,MU13,00:24:15,00:35:35,00:17:02,00:12:40,00:29:18,01:58:50
+-,Jasper Torkington,Fife AC,MU13,00:16:29,00:25:10,-,00:09:12,00:19:28,-
 -,Robbie Bunch,Unatt.,MU13,00:20:53,00:31:30,-,00:10:23,-,-
 -,Eden Hislop,Unatt.,MU13,00:17:24,00:27:54,00:12:47,-,-,-
--,Fearne Jarrett,Dundee Hawkhill Harriers,FU13,-,-,-,00:08:22,00:18:01,-
--,Lyle McKelvie,East Fife Triathlon Club,MU13,-,-,-,-,00:23:16,-
--,Rowan O’Hare,Letham Primary School,MU13,-,-,00:14:10,00:10:50,-,-
 -,Joey Smith,Unatt.,MU13,00:14:48,-,-,00:08:37,00:22:08,-
+-,Fearne Jarrett,Dundee Hawkhill Harriers,FU13,-,-,-,00:08:22,00:18:01,-
+-,Rowan O’Hare,Letham Primary School,MU13,-,-,00:14:10,00:10:50,-,-
 -,Cillian Sweeney,Unatt.,MU13,00:14:52,00:24:21,-,-,-,-
--,Jasper Torkington,Fife AC,MU13,00:16:29,00:25:10,-,00:09:12,00:19:28,-
+-,Lyle McKelvie,East Fife Triathlon Club,MU13,-,-,-,-,00:23:16,-
 
 Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
 1,Logan Graham,Fife AC,MU15,00:22:38,00:22:30,00:16:29,00:08:10,00:17:51,01:27:38
