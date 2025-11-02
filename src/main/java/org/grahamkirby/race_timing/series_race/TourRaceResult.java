@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,12 +30,9 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration {
 
-    public final List<Object> times;
+    TourRaceResult(final Runner runner, final List<Object> performances, final RaceInternal race) {
 
-    TourRaceResult(final Runner runner, final List<Object> times, final RaceInternal race) {
-
-        super(race, runner);
-        this.times = times;
+        super(race, runner, performances);
     }
 
     @Override
@@ -59,7 +55,7 @@ class TourRaceResult extends SeriesRaceResult implements RaceResultWithDuration 
 
         if (!canComplete()) return VERY_LONG_DURATION;
 
-        return times.stream().
+        return performances.stream().
             filter(Objects::nonNull).
             map(obj -> (Duration) obj).
             reduce(Duration.ZERO, Duration::plus);

@@ -50,16 +50,6 @@ public abstract class RaceResultsCalculator {
         return overall_results;
     }
 
-    public boolean arePrizesInThisOrLaterCategory(final PrizeCategory category) {
-
-        for (final PrizeCategory other_category : race.getCategoriesProcessor().getPrizeCategories().reversed()) {
-
-            if (!getPrizeWinners(other_category).isEmpty()) return true;
-            if (category.equals(other_category) && !arePrizesInOtherCategorySameAge(category)) return false;
-        }
-        return false;
-    }
-
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
@@ -68,6 +58,16 @@ public abstract class RaceResultsCalculator {
 
         setPositionStrings(results, areEqualPositionsAllowed());
         return results;
+    }
+
+    public boolean arePrizesInThisOrLaterCategory(final PrizeCategory category) {
+
+        for (final PrizeCategory other_category : race.getCategoriesProcessor().getPrizeCategories().reversed()) {
+
+            if (!getPrizeWinners(other_category).isEmpty()) return true;
+            if (category.equals(other_category) && !arePrizesInOtherCategorySameAge(category)) return false;
+        }
+        return false;
     }
 
     /** Returns prize winners in given category. */

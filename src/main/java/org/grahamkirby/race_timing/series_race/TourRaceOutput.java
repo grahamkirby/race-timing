@@ -82,7 +82,7 @@ class TourRaceOutput extends RaceOutput {
                 append(runner.getCategory().getShortName()).append(",");
 
             writer.append(
-                result.times.stream().
+                result.performances.stream().
                     map(time -> renderDuration((Duration) time, "-")).
                     limit(((SeriesRace) race).getNumberOfRacesTakenPlace()).
                     collect(Collectors.joining(","))
@@ -132,7 +132,7 @@ class TourRaceOutput extends RaceOutput {
             elements.add(runner.getClub());
 
             elements.addAll(
-                result.times.stream().
+                result.performances.stream().
                     map(time -> renderDuration((Duration) time, "-")).
                     limit(((SeriesRace) race).getNumberOfRacesTakenPlace()).
                     toList()

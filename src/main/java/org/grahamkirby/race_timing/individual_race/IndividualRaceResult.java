@@ -50,4 +50,13 @@ public class IndividualRaceResult extends SingleRaceResult {
 
         return "(" + ((Runner) getParticipant()).getClub() + ") " + renderDuration(this, DNF_STRING);
     }
+
+    private static Comparator<RaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super RaceResult> base_comparator) {
+
+        return (r1, r2) -> {
+
+            if (!r1.canComplete() || !r2.canComplete()) return 0;
+            else return base_comparator.compare(r1, r2);
+        };
+    }
 }

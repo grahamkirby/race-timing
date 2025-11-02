@@ -24,8 +24,8 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
 
     // TODO add start time.
     protected Duration finish_time;
-    protected boolean dnf;
-    protected int bib_number;
+    private boolean dnf;
+    private final int bib_number;
 
     public SingleRaceResult(final RaceInternal race, final RaceEntry entry, final Duration finish_time) {
 

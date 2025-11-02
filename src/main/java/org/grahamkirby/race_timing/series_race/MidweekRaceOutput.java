@@ -81,7 +81,7 @@ class MidweekRaceOutput extends RaceOutput {
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> calculator.scorer.calculateRaceScore((Runner) result.getParticipant(), individual_race)).
+                    map(individual_race -> calculator.getScorer().calculateRaceScore((Runner) result.getParticipant(), individual_race)).
                     map(GrandPrixRaceOutput::renderScore).
                     collect(Collectors.joining(","))
             );
@@ -133,9 +133,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-//                    final int score = (int) calculator.scorer.calculateRaceScore(individual_race, runner);
-//                    elements.add(String.valueOf(score));
-                    final Object score = calculator.scorer.calculateRaceScore(runner, individual_race);
+                    final Object score = calculator.getScorer().calculateRaceScore(runner, individual_race);
                     elements.add(GrandPrixRaceOutput.renderScore(score));
                 }
 

@@ -35,7 +35,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private List<SeriesRaceCategory> race_categories;
     private List<Integer> race_temporal_positions;
     private List<String> qualifying_clubs;
-    public SeriesRaceScorer scorer;
+    private final SeriesRaceScorer scorer;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,15 +48,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         loadRaceTemporalPositions();
         configureClubs();
         checkCategoryConsistencyOverSeries();
-    }
-
-    RaceResult getOverallResult(final Runner runner) {
-
-        final List<Object> scores = ((SeriesRace) race).getRaces().stream().
-            map(individual_race -> scorer.calculateRaceScore(runner, individual_race)).
-            toList();
-
-        return scorer.makeOverallResult(runner, scores);
     }
 
     @Override
@@ -77,17 +68,35 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         return race_categories;
     }
 
+    public SeriesRaceScorer getScorer() {
+        return scorer;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void loadRaceCategories() throws IOException {
+    static Duration getTimeInIndividualRace(final SingleRaceInternal individual_race, final Runner runner) {
 
-        race_categories = race.getConfig().containsKey(KEY_RACE_CATEGORIES_PATH) ?
-            Files.readAllLines(race.getConfig().getPathConfig(KEY_RACE_CATEGORIES_PATH)).stream().
-                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-                map(SeriesRaceResultsCalculator::makeRaceCategory).
-                toList() :
+        if (individual_race == null) return null;
 
-            makeDefaultRaceCategories();
+        for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
+
+            final SingleRaceResult individual_result = (SingleRaceResult) result;
+            if (individual_result.getParticipant().equals(runner))
+                return individual_result.duration();
+        }
+
+        return null;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static List<String> getDefinedClubs(final Collection<String> clubs) {
+
+        return clubs.stream().filter(SeriesRaceResultsCalculator::isClubDefined).toList();
+    }
+
+    private static boolean isClubDefined(final String club) {
+        return !club.equals("?");
     }
 
     private static SeriesRaceCategory makeRaceCategory(final String line) {
@@ -100,6 +109,59 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         final List<Integer> race_numbers = Arrays.stream(elements).skip(2).map(Integer::parseInt).toList();
 
         return new SeriesRaceCategory(category_name, minimum_number, race_numbers);
+    }
+
+    private static void checkForChangeToYoungerAgeCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
+
+        if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
+            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
+    }
+
+    private static void checkForChangeToTooMuchOlderAgeCategory(final SingleRaceResult result, final EntryCategory earliest_category, final EntryCategory last_category) {
+
+        if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
+            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
+    }
+
+    private static void checkForChangeToDifferentGenderCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
+
+        if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
+            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void initialiseResults() {
+
+        overall_results = new ArrayList<>(
+            getRacesInTemporalOrder().stream().
+                filter(Objects::nonNull).
+                flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
+                filter(getResultInclusionPredicate()).
+                map(result -> (Runner) result.getParticipant()).
+                distinct().
+                map(this::getOverallResult).
+                toList());
+    }
+
+    private RaceResult getOverallResult(final Runner runner) {
+
+        final List<Object> scores = ((SeriesRace) race).getRaces().stream().
+            map(individual_race -> scorer.calculateRaceScore(runner, individual_race)).
+            toList();
+
+        return scorer.makeOverallResult(runner, scores);
+    }
+
+    private void loadRaceCategories() throws IOException {
+
+        race_categories = race.getConfig().containsKey(KEY_RACE_CATEGORIES_PATH) ?
+            Files.readAllLines(race.getConfig().getPathConfig(KEY_RACE_CATEGORIES_PATH)).stream().
+                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+                map(SeriesRaceResultsCalculator::makeRaceCategory).
+                toList() :
+
+            makeDefaultRaceCategories();
     }
 
     private List<SeriesRaceCategory> makeDefaultRaceCategories() {
@@ -126,20 +188,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private Predicate<RaceResult> getResultInclusionPredicate() {
 
         return result -> qualifying_clubs.isEmpty() || qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
-    }
-
-    static Duration getRunnerTime(final SingleRaceInternal individual_race, final Runner runner) {
-
-        if (individual_race == null) return null;
-
-        for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
-
-            final SingleRaceResult individual_result = (SingleRaceResult) result;
-            if (individual_result.getParticipant().equals(runner))
-                return individual_result.duration();
-        }
-
-        return null;
     }
 
     private void configureClubs() {
@@ -171,18 +219,9 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             processMultipleClubsForRunner(runner_name, defined_clubs);
     }
 
-    protected void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
+    private void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
 
         race.getNotes().appendToNotes("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
-    }
-
-    private static List<String> getDefinedClubs(final Collection<String> clubs) {
-
-        return clubs.stream().filter(SeriesRaceResultsCalculator::isClubDefined).toList();
-    }
-
-    private static boolean isClubDefined(final String club) {
-        return !club.equals("?");
     }
 
     private List<String> getRunnerClubs(final String runner_name) {
@@ -199,7 +238,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             toList();
     }
 
-    protected void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
+    private void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
 
         ((SeriesRace)race).getRaces().stream().
             filter(Objects::nonNull).
@@ -221,7 +260,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             toList();
     }
 
-    protected void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
+    private void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
 
         if (qualifying_clubs.isEmpty())
             noteMultipleClubsForRunnerName(runner_name, defined_clubs);
@@ -235,20 +274,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
                     break;
                 }
             }
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void initialiseResults() {
-
-        overall_results = new ArrayList<>(
-            getRacesInTemporalOrder().stream().
-                filter(Objects::nonNull).
-                flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-                filter(getResultInclusionPredicate()).
-                map(result -> (Runner) result.getParticipant()).
-                distinct().
-                map(this::getOverallResult).
-                toList());
     }
 
     private List<List<SingleRaceResult>> getResultsByRunner() {
@@ -276,12 +301,12 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
         // TODO write as permutation.
         for (int i = 0; i < races.size(); i++)
-            races_in_order.add(races.get(getRaceNumberInTemporalPosition(i)));
+            races_in_order.add(races.get(getIndexOfRaceInTemporalPosition(i)));
 
         return races_in_order;
     }
 
-    private int getRaceNumberInTemporalPosition(final int position) {
+    private int getIndexOfRaceInTemporalPosition(final int position) {
         return race_temporal_positions.get(position) - 1;
     }
 
@@ -294,7 +319,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
         EntryCategory earliest_category = null;
         EntryCategory previous_category = null;
-        EntryCategory last_category = null;
+        EntryCategory latest_category = null;
 
         for (final SingleRaceResult result : runner_results) {
 
@@ -305,7 +330,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
                 if (earliest_category == null)
                     earliest_category = current_category;
 
-                last_category = current_category;
+                latest_category = current_category;
 
                 if (previous_category != null && !previous_category.equals(current_category)) {
 
@@ -321,27 +346,11 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             }
         }
 
-        checkForChangeToTooMuchOlderAgeCategory(runner_results.getFirst(), earliest_category, last_category);
+        // It's enough to check just the earliest and latest categories, since if the category changes to too much older part-way through
+        // the series, and then back again, this will be caught by the check for change to a younger category.
+        checkForChangeToTooMuchOlderAgeCategory(runner_results.getFirst(), earliest_category, latest_category);
 
         for (final SingleRaceResult result : runner_results)
             result.getParticipant().setCategory(earliest_category);
-    }
-
-    private static void checkForChangeToYoungerAgeCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
-
-        if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
-            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
-    }
-
-    private static void checkForChangeToDifferentGenderCategory(final SingleRaceResult result, final EntryCategory previous_category, final EntryCategory current_category, final String race_name) {
-
-        if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
-            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
-    }
-
-    private static void checkForChangeToTooMuchOlderAgeCategory(final SingleRaceResult result, final EntryCategory earliest_category, final EntryCategory last_category) {
-
-        if (earliest_category != null && last_category != null && last_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
-            throw new RuntimeException("invalid category change: runner '" + result.getParticipantName() + "' changed from " + earliest_category.getShortName() + " to " + last_category.getShortName() + " during series");
     }
 }

@@ -70,6 +70,19 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         return true;
     }
 
+    @Override
+    protected void allocatePrizes() {
+
+        // Allocate first prize in each category first, in decreasing order of category breadth.
+        // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
+        // prize in open category.
+
+        final List<PrizeCategory> categories_sorted_by_decreasing_generality = sortByDecreasingGenerality(race.getCategoriesProcessor().getPrizeCategories());
+
+        allocateFirstPrizes(categories_sorted_by_decreasing_generality);
+        allocateMinorPrizes(categories_sorted_by_decreasing_generality);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected void recordDNF(final String dnf_specification) {
@@ -257,18 +270,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             raw_results.get(number_of_electronically_recorded_results - 1).appendComment("Remaining times from paper recording sheet only.");
     }
 
-    protected void allocatePrizes() {
-
-        // Allocate first prize in each category first, in decreasing order of category breadth.
-        // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
-        // prize in open category.
-
-        final List<PrizeCategory> categories_sorted_by_decreasing_generality = sortByDecreasingGenerality(race.getCategoriesProcessor().getPrizeCategories());
-
-        allocateFirstPrizes(categories_sorted_by_decreasing_generality);
-        allocateMinorPrizes(categories_sorted_by_decreasing_generality);
-    }
-
     private static List<PrizeCategory> sortByDecreasingGenerality(final List<PrizeCategory> prize_categories) {
 
         final List<PrizeCategory> sorted_categories = new ArrayList<>(prize_categories);
@@ -309,7 +310,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             }
         }
     }
-
 
     private RaceResult makeRaceResult(final RawResult raw_result) {
 

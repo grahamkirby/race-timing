@@ -28,13 +28,17 @@ import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_S
 
 public abstract class SeriesRaceResult extends CommonRaceResult {
 
+    protected final List<Object> performances;
+
     protected final int minimum_number_of_races;
     protected final int number_of_races_in_series;
     protected final int number_of_races_taken_place;
 
-    public SeriesRaceResult(final RaceInternal race, final Participant participant) {
+    public SeriesRaceResult(final RaceInternal race, final Participant participant, final List<Object> performances) {
 
         super(race, participant);
+
+        this.performances = performances;
 
         minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);

@@ -69,6 +69,15 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return false;
     }
 
+    @Override
+    protected void recordDNF(final String dnf_specification) {
+
+        final int bib_number = Integer.parseInt(dnf_specification);
+        final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
+
+        result.setDnf(true);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Gets the median finish time for the race. */
@@ -170,14 +179,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         }
     }
 
-    protected void recordDNF(final String dnf_specification) {
-
-        final int bib_number = Integer.parseInt(dnf_specification);
-        final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
-
-        result.setDnf(true);
-    }
-
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
         final List<RaceEntry> entries = ((SingleRaceInternal) race).getEntries();
@@ -196,8 +197,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             findFirst().
             orElseThrow();
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void adjustTimes() {
 

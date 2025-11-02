@@ -100,34 +100,25 @@ public abstract class CommonRaceResult implements RaceResult {
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,
      *  or a score. Gives a negative result if the first result has a better performance than the second. */
-    public static int comparePerformance(final RaceResult r1, final RaceResult r2) {
+    protected static int comparePerformance(final RaceResult r1, final RaceResult r2) {
 
         return r1.comparePerformanceTo(r2);
     }
 
     /** Compares two results based on alphabetical ordering of the runners' first names. */
-    public static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
+    protected static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
         return getFirstNameOfFirstRunner(r1.getParticipantName()).compareTo(getFirstNameOfFirstRunner(r2.getParticipantName()));
     }
 
     /** Compares two results based on alphabetical ordering of the runners' last names. */
-    public static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
+    protected static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
         return getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(getLastNameOfFirstRunner(r2.getParticipantName()));
     }
 
-    public static Comparator<RaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super RaceResult> base_comparator) {
-
-        return (r1, r2) -> {
-
-            if (!r1.canComplete() || !r2.canComplete()) return 0;
-            else return base_comparator.compare(r1, r2);
-        };
-    }
-
     /** Combines multiple comparators into a single comparator. */
-    public static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
+    private static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
 
         return comparators.stream().
             reduce((_, _) -> 0, Comparator::thenComparing);

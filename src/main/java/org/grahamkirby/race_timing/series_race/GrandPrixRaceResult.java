@@ -28,12 +28,9 @@ import java.util.Objects;
 
 class GrandPrixRaceResult extends SeriesRaceResult {
 
-    private final List<Object> scores;
+    GrandPrixRaceResult(final Runner runner, final List<Object> performances, final RaceInternal race) {
 
-    GrandPrixRaceResult(final Runner runner, final List<Object> scores, final RaceInternal race) {
-
-        super(race, runner);
-        this.scores = scores;
+        super(race, runner,  performances);
     }
 
     @Override
@@ -73,7 +70,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted());
 
         // Consider the lowest scores, since lower score is better.
-        return scores.stream().
+        return performances.stream().
             filter(Objects::nonNull).
             map(obj -> (int) obj).
             sorted().
@@ -91,7 +88,7 @@ class GrandPrixRaceResult extends SeriesRaceResult {
 
     private boolean hasCompletedRace(final int race_number) {
 
-        return race_number <= scores.size() && scores.get(race_number - 1) != null;
+        return race_number <= performances.size() && performances.get(race_number - 1) != null;
     }
 
     private boolean canCompleteRaceCategory(final SeriesRaceCategory category) {
