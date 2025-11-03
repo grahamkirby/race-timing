@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -27,7 +26,7 @@ import java.util.Objects;
 
 public class GrandPrixRaceScorer extends SeriesRaceScorer {
 
-    public GrandPrixRaceScorer(final RaceInternal race) {
+    public GrandPrixRaceScorer(final SeriesRace race) {
 
         super(race);
     }
@@ -35,40 +34,31 @@ public class GrandPrixRaceScorer extends SeriesRaceScorer {
     // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
 
     @Override
-    public Object calculateIndividualRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
+    public Performance getIndividualRacePerformance(final Runner runner, final SingleRaceInternal individual_race) {
 
-        final Duration runner_time = getTimeInIndividualRace(individual_race, runner);
+        final Duration runner_time = getIndividualRaceTime(individual_race, runner);
 
         // Runner may not have competed in this race.
-        if (runner_time != null) {
+        if (runner_time == null) return null;
 
-            final Duration median_time = ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime();
-            final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
+        final Duration median_time = ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime();
+        final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
 
-            // Lower score is better.
-            return (int) Math.round(time_ratio * score_for_median_position);
-
-        } else {
-            return null;
-        }
+        // Lower score is better.
+        return new Performance((int) Math.round(time_ratio * score_for_median_position));
     }
 
     @Override
-    public String getPrizeDetail(final Object performance) {
-        return performance.toString();
-    }
-
-    @Override
-    public Object getSeriesPerformance(final SeriesRaceResult series_result) {
+    public Performance getSeriesPerformance(final SeriesRaceResult series_result) {
 
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         // Consider the lowest scores, since lower score is better.
-        return series_result.performances.stream().
+        return new Performance(series_result.performances.stream().
             filter(Objects::nonNull).
-            map(obj -> (int) obj).
+            map(obj -> (int) obj.getValue()).
             sorted().
             limit(number_of_counting_scores).
-            reduce(0, Integer::sum);
+            reduce(0, Integer::sum));
     }
 }

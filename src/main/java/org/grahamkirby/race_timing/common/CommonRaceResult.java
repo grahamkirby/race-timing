@@ -21,13 +21,7 @@ package org.grahamkirby.race_timing.common;
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-
-import static org.grahamkirby.race_timing.common.Normalisation.getFirstNameOfFirstRunner;
-import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfFirstRunner;
+import java.util.*;
 
 public abstract class CommonRaceResult implements RaceResult {
 
@@ -115,6 +109,20 @@ public abstract class CommonRaceResult implements RaceResult {
     protected static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
         return getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(getLastNameOfFirstRunner(r2.getParticipantName()));
+    }
+
+    /** Gets the first name of the given runner, or of the first runner if it's a pair. */
+    private static String getFirstNameOfFirstRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return runner.split(" ")[0];
+    }
+
+    /** Gets the last name of the given runner, or of the first runner if it's a pair. */
+    private static String getLastNameOfFirstRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return Arrays.stream(runner.split(" ")).toList().getLast();
     }
 
     /** Combines multiple comparators into a single comparator. */

@@ -35,6 +35,8 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 class TourRaceOutput extends RaceOutput {
 
+    private final SeriesRaceScorer scorer;
+
     @Override
     protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
         return OverallResultPrinterCSV::new;
@@ -53,10 +55,12 @@ class TourRaceOutput extends RaceOutput {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public TourRaceOutput(final RaceInternal race) {
+
         super(race);
+        scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
     }
 
-    private static final class OverallResultPrinterCSV extends ResultPrinter {
+    private final class OverallResultPrinterCSV extends ResultPrinter {
 
         private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -65,9 +69,10 @@ class TourRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String race_names = getConcatenatedRaceNames(((SeriesRace) race).getRaces());
-
-            writer.append("Pos,Runner,Club,Category," + race_names + ",Total" + LINE_SEPARATOR);
+            writer.append("Pos,Runner,Club,Category,").
+                append(((SeriesRace) race).getConcatenatedRaceNames()).
+                append(",Total").
+                append(LINE_SEPARATOR);
         }
 
         @Override
@@ -83,18 +88,18 @@ class TourRaceOutput extends RaceOutput {
 
             writer.append(
                 result.performances.stream().
-                    map(time -> renderDuration((Duration) time, "-")).
+                    map(time -> renderDuration((Duration) time.getValue(), "-")).
                     limit(((SeriesRace) race).getNumberOfRacesTakenPlace()).
                     collect(Collectors.joining(","))
             );
 
-            Object series_performance = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().getSeriesPerformance(result);
-
-            writer.append("," + renderDuration(((Duration) series_performance), "-") + LINE_SEPARATOR);
+            writer.append(",").
+                append(renderDuration(scorer.getSeriesPerformance(result), "-")).
+                append(LINE_SEPARATOR);
         }
     }
 
-    private static final class TourRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
+    private final class TourRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
         private TourRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -135,21 +140,18 @@ class TourRaceOutput extends RaceOutput {
 
             elements.addAll(
                 result.performances.stream().
-                    map(time -> renderDuration((Duration) time, "-")).
+                    map(time -> renderDuration(time, "-")).
                     limit(((SeriesRace) race).getNumberOfRacesTakenPlace()).
                     toList()
             );
 
-            Object series_performance = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().getSeriesPerformance(result);
-
-            elements.add(renderDuration(((Duration) series_performance), "-"));
-//            elements.add(renderDuration(result, "-"));
+            elements.add(renderDuration(scorer.getSeriesPerformance(result), "-"));
 
             return elements;
         }
     }
 
-    private static final class TourRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
+    private final class TourRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
         public TourRacePrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
@@ -163,10 +165,7 @@ class TourRaceOutput extends RaceOutput {
         @Override
         protected String renderPerformance(final RaceResult result) {
 
-
-            Object series_performance = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().getSeriesPerformance((SeriesRaceResult) result);
-
-            return renderDuration((Duration) series_performance, "-");
+            return renderDuration(scorer.getSeriesPerformance((SeriesRaceResult) result), "-");
         }
     }
 }

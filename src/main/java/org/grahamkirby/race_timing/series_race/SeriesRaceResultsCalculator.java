@@ -23,7 +23,6 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -130,8 +129,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     private RaceResult getOverallResult(final Runner runner) {
 
-        final List<Object> scores = ((SeriesRace) race).getRaces().stream().
-            map(individual_race -> scorer.calculateIndividualRaceScore(runner, individual_race)).
+        final List<Performance> scores = ((SeriesRace) race).getRaces().stream().
+            map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
             toList();
 
         return new SeriesRaceResult(race, runner, scores);
@@ -252,12 +251,11 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         if (new HashSet<>(qualifying_clubs).containsAll(defined_clubs))
             recordDefinedClubForRunnerName(runner_name, qualifying_clubs.getFirst());
         else
-            for (final String qualifying_club : qualifying_clubs) {
+            for (final String qualifying_club : qualifying_clubs)
                 if (defined_clubs.contains(qualifying_club)) {
                     noteMultipleClubsForRunnerName(runner_name, defined_clubs);
                     break;
                 }
-            }
     }
 
     private List<List<SingleRaceResult>> getResultsByRunner() {
@@ -291,6 +289,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     }
 
     private int getIndexOfRaceInTemporalPosition(final int position) {
+
         return race_temporal_positions.get(position) - 1;
     }
 

@@ -58,44 +58,55 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
+        final SeriesRaceResultsCalculator calculator;
+
         private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
+
             super(race, writer);
+            calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String race_names = getConcatenatedRaceNames(((SeriesRace) race).getRaces());
+            final String race_names = ((SeriesRace) race).getConcatenatedRaceNames();
 
-            final String race_categories_header = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().
+            final String race_categories_header = calculator.getRaceCategories().stream().
                 map(SeriesRaceCategory::category_title).
                 collect(Collectors.joining("?,")) + "?";
 
-            writer.append("Pos,Runner,Category," + race_names + ",Total,Completed," + race_categories_header + LINE_SEPARATOR);
+            writer.append("Pos,Runner,Category,").
+                append(race_names).
+                append(",Total,Completed,").
+                append(race_categories_header).
+                append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final SeriesRaceResult result = (SeriesRaceResult) r;
-            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
             final Runner runner = (Runner) result.getParticipant();
+            final SeriesRaceScorer scorer = calculator.getScorer();
 
-            writer.append(result.getPositionString() + "," + encode(runner.getName()) + "," + runner.getCategory().getShortName() + ",");
+            writer.append(result.getPositionString()).append(",").
+                append(encode(runner.getName())).append(",").
+                append(runner.getCategory().getShortName()).append(",");
 
-            SeriesRaceScorer scorer = calculator.getScorer();
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> scorer.calculateIndividualRaceScore(runner, individual_race)).
+                    map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
                     map(GrandPrixRaceOutput::renderScore).
                     collect(Collectors.joining(","))
             );
 
-            writer.append("," + scorer.getSeriesPerformance(result) + "," + (result.hasCompletedSeries() ? "Y" : "N") + ",");
+            writer.append("," ).
+                append(String.valueOf(scorer.getSeriesPerformance(result))).append(",").
+                append(result.hasCompletedSeries() ? "Y" : "N").append(",");
 
             writer.append(
-                ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().
+                calculator.getRaceCategories().stream().
                     map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
                     collect(Collectors.joining(","))
             );
@@ -137,8 +148,8 @@ class GrandPrixRaceOutput extends RaceOutput {
             final List<String> elements = new ArrayList<>();
 
             final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+            final SeriesRaceScorer scorer = calculator.getScorer();
             final SeriesRaceResult result = (SeriesRaceResult) r;
-            SeriesRaceScorer scorer = calculator.getScorer();
 
             elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
@@ -146,15 +157,14 @@ class GrandPrixRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final Object score = scorer.calculateIndividualRaceScore((Runner) result.getParticipant(), individual_race);
+                    final Object score = scorer.getIndividualRacePerformance((Runner) result.getParticipant(), individual_race);
                     elements.add(renderScore(score));
                 }
 
-//            elements.add(String.valueOf(result.totalScore()));
             elements.add(String.valueOf(scorer.getSeriesPerformance(result)));
             elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
-            for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
+            for (final SeriesRaceCategory category : calculator.getRaceCategories())
                 elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;
@@ -175,12 +185,10 @@ class GrandPrixRaceOutput extends RaceOutput {
         @Override
         protected String renderPerformance(final RaceResult r) {
 
-            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
             final SeriesRaceResult result = (SeriesRaceResult) r;
-            SeriesRaceScorer scorer = calculator.getScorer();
+            final SeriesRaceScorer scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
 
             return String.valueOf(scorer.getSeriesPerformance(result));
-//            return String.valueOf(((GrandPrixRaceResult) result).totalScore());
         }
     }
 

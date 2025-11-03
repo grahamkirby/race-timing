@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
-import static org.grahamkirby.race_timing.common.Config.KEY_RACES;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 public class SeriesRace implements RaceInternal {
 
@@ -107,6 +107,13 @@ public class SeriesRace implements RaceInternal {
 
     public List<SingleRaceInternal> getRaces() {
         return races;
+    }
+
+    public String getConcatenatedRaceNames() {
+
+        return races.stream().
+            filter(Objects::nonNull).
+            map(individual_race -> individual_race.getConfig().getStringConfig(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
     }
 
     public int getNumberOfRacesTakenPlace() {

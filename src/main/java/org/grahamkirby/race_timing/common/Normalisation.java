@@ -17,6 +17,8 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import org.grahamkirby.race_timing.series_race.Performance;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -153,11 +155,9 @@ public class Normalisation {
         }
     }
 
-    /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
-    public static String renderDuration(final Duration duration) {
+    public static String renderDuration(final Performance performance, final String alternative) {
 
-        if (duration == null) return DNF_STRING;
-        return formatWholePart(duration) + formatFractionalPart(duration);
+        return performance != null && performance.getValue() != null ? renderDuration((Duration) performance.getValue()) : alternative;
     }
 
     public static String renderDuration(final Duration duration, final String alternative) {
@@ -186,7 +186,7 @@ public class Normalisation {
 
             non_title_case_words = new HashSet<>();
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -267,21 +267,11 @@ public class Normalisation {
             collect(Collectors.joining(" "));
     }
 
-    /** Gets the first name of the given runner, or of the first runner if it's a pair. */
-    public static String getFirstNameOfFirstRunner(final String s) {
+    /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
+    private static String renderDuration(final Duration duration) {
 
-        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
-        return runner.split(" ")[0];
+        return formatWholePart(duration) + formatFractionalPart(duration);
     }
-
-    /** Gets the last name of the given runner, or of the first runner if it's a pair. */
-    public static String getLastNameOfFirstRunner(final String s) {
-
-        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
-        return Arrays.stream(runner.split(" ")).toList().getLast();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Converts the given string to title case, ignoring any words present in the stop word file. */
     private String toTitleCase(final String input) {

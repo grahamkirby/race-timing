@@ -17,35 +17,39 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.SingleRaceInternal;
-import org.grahamkirby.race_timing.individual_race.Runner;
-
 import java.time.Duration;
-import java.util.Objects;
 
-public class TourRaceScorer extends SeriesRaceScorer {
+import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
-    public TourRaceScorer(final SeriesRace race) {
+public class Performance implements Comparable<Performance> {
 
-        super(race);
+    private final Object value;
+
+    public Performance(final Integer value) {
+        this.value = value;
+    }
+
+    public Performance(final Duration value) {
+        this.value = value;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public int compareTo(final Performance other) {
+
+        return ((Comparable<Object>) value).compareTo(other.value);
     }
 
     @Override
-    public Performance getIndividualRacePerformance(final Runner runner, final SingleRaceInternal individual_race) {
+    public String toString() {
 
-        if (individual_race == null) return null;
-
-        return new Performance(getIndividualRaceTime(individual_race, runner));
+        return value instanceof Integer ?
+            value.toString() :
+            renderDuration(this, DNF_STRING);
     }
 
-    @Override
-    public Performance getSeriesPerformance(final SeriesRaceResult series_result) {
-
-        if (!series_result.canComplete()) return null;
-
-        return new Performance(series_result.performances.stream().
-            filter(Objects::nonNull).
-            map(obj -> (Duration) obj.getValue()).
-            reduce(Duration.ZERO, Duration::plus));
+    public Object getValue() {
+        return value;
     }
 }

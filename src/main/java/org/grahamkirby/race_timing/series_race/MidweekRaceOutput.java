@@ -63,32 +63,37 @@ class MidweekRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String race_names = getConcatenatedRaceNames(((SeriesRace) race).getRaces());
-
-            writer.append("Pos,Runner,Club,Category," + race_names + ",Total,Completed" + LINE_SEPARATOR);
+            writer.append("Pos,Runner,Club,Category,").
+                append(((SeriesRace) race).getConcatenatedRaceNames()).
+                append(",Total,Completed").
+                append(LINE_SEPARATOR);
         }
 
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
             final SeriesRaceResult result = ((SeriesRaceResult) r);
-            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+            final SeriesRaceScorer scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
 
-            writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).getClub()) + "," + result.getParticipant().getCategory().getShortName() + ",");
+            writer.append(result.getPositionString()).append(",").
+                append(encode(result.getParticipantName())).append(",").
+                append(encode(((Runner) result.getParticipant()).getClub())).append(",").
+                append(result.getParticipant().getCategory().getShortName()).append(",");
 
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
             // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
-            SeriesRaceScorer scorer = calculator.getScorer();
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> scorer.calculateIndividualRaceScore((Runner) result.getParticipant(), individual_race)).
+                    map(individual_race -> scorer.getIndividualRacePerformance((Runner) result.getParticipant(), individual_race)).
                     map(GrandPrixRaceOutput::renderScore).
                     collect(Collectors.joining(","))
             );
 
-//            writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + LINE_SEPARATOR);
-            writer.append("," + scorer.getSeriesPerformance(result) + "," + (result.hasCompletedSeries() ? "Y" : "N") + LINE_SEPARATOR);
+            writer.append(",").
+                append(String.valueOf(scorer.getSeriesPerformance(result))).
+                append(",").
+                append(result.hasCompletedSeries() ? "Y" : "N").append(LINE_SEPARATOR);
         }
     }
 
@@ -123,10 +128,9 @@ class MidweekRaceOutput extends RaceOutput {
 
             final List<String> elements = new ArrayList<>();
 
-            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
             final SeriesRaceResult result = (SeriesRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
-            SeriesRaceScorer scorer = calculator.getScorer();
+            final SeriesRaceScorer scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
 
             elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(runner.getName()));
@@ -136,7 +140,7 @@ class MidweekRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final Object score = scorer.calculateIndividualRaceScore(runner, individual_race);
+                    final Object score = scorer.getIndividualRacePerformance(runner, individual_race);
                     // TODO move.
                     elements.add(GrandPrixRaceOutput.renderScore(score));
                 }
@@ -161,11 +165,10 @@ class MidweekRaceOutput extends RaceOutput {
 
         @Override
         protected String renderPerformance(final RaceResult r) {
-            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+
             final SeriesRaceResult result = (SeriesRaceResult) r;
-            final Runner runner = (Runner) result.getParticipant();
-            SeriesRaceScorer scorer = calculator.getScorer();
-//            return String.valueOf(((MidweekRaceResult) result).totalScore());
+            final SeriesRaceScorer scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
+
             return String.valueOf(scorer.getSeriesPerformance(result));
         }
     }

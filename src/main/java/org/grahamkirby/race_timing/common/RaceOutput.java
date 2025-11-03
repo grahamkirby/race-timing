@@ -109,13 +109,6 @@ public abstract class RaceOutput {
     protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
     protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
 
-    protected static String getConcatenatedRaceNames(final List<SingleRaceInternal> races) {
-
-        return races.stream().
-            filter(Objects::nonNull).
-            map(race -> race.getConfig().getStringConfig(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
-    }
-
     protected static PdfFont getFont(final String font_name) throws IOException {
 
         return PdfFontFactory.createFont(font_name);

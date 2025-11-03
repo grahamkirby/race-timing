@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -30,13 +29,13 @@ import static java.util.Comparator.reverseOrder;
 
 public class MidweekRaceScorer extends SeriesRaceScorer {
 
-    public MidweekRaceScorer(final RaceInternal race) {
+    public MidweekRaceScorer(final SeriesRace race) {
 
         super(race);
     }
 
     @Override
-    public Object calculateIndividualRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
+    public Performance getIndividualRacePerformance(final Runner runner, final SingleRaceInternal individual_race) {
 
         if (individual_race == null) return null;
 
@@ -53,34 +52,30 @@ public class MidweekRaceScorer extends SeriesRaceScorer {
             count() + 1;
 
         // Higher score is better.
-        return gender_position <= gender_results.size() ? Math.max(score_for_first_place - gender_position + 1, 0) : 0;
+        return gender_position <= gender_results.size() ?
+            new Performance(Math.max(score_for_first_place - gender_position + 1, 0)) :
+            new Performance(0);
     }
 
     @Override
-    public int compareSeriesPerformance(final SeriesRaceResult series_result1, final SeriesRaceResult series_result2) {
-
-        final Comparator<SeriesRaceResult> comparator = super::compareSeriesPerformance;
-
-        return comparator.reversed().compare(series_result1, series_result2);
-    }
-
-    @Override
-    public String getPrizeDetail(final Object performance) {
-
-        return performance.toString();
-    }
-
-    @Override
-    public Object getSeriesPerformance(final SeriesRaceResult series_result) {
+    public Performance getSeriesPerformance(final SeriesRaceResult series_result) {
 
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         // Consider the highest scores, since higher score is better.
-        return series_result.performances.stream().
+        return new Performance(series_result.performances.stream().
             filter(Objects::nonNull).
-            map(obj -> (int) obj).
+            map(obj -> (int) obj.getValue()).
             sorted(reverseOrder()).
             limit(number_of_counting_scores).
-            reduce(0, Integer::sum);
+            reduce(0, Integer::sum));
+    }
+
+    @Override
+    public int compareSeriesPerformance(final Performance series_result1, final Performance series_result2) {
+
+        final Comparator<Performance> comparator = ((Comparator<Performance>) super::compareSeriesPerformance).reversed();
+
+        return comparator.compare(series_result1, series_result2);
     }
 }

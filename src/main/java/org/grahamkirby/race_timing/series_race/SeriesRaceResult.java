@@ -26,21 +26,23 @@ import java.util.Objects;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
 import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class SeriesRaceResult extends CommonRaceResult {
 
-    protected final List<Object> performances;
+    protected final List<Performance> performances;
 
     protected final int minimum_number_of_races;
     protected final int number_of_races_in_series;
     protected final int number_of_races_taken_place;
 
-    public SeriesRaceResult(final RaceInternal race, final Participant participant, final List<Object> performances) {
+    private final SeriesRaceScorer scorer;
+
+    public SeriesRaceResult(final RaceInternal race, final Participant participant, final List<Performance> performances) {
 
         super(race, participant);
 
         this.performances = performances;
+        scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
 
         minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
@@ -50,32 +52,75 @@ public class SeriesRaceResult extends CommonRaceResult {
     @Override
     public String getPrizeDetail() {
 
-        SeriesRaceScorer scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
-
-        return "(" + ((Runner) getParticipant()).getClub() + ") " + scorer.getPrizeDetail(scorer.getSeriesPerformance(this));
-
+        return "(" + ((Runner) getParticipant()).getClub() + ") " + scorer.getSeriesPerformance(this);
     }
 
     @Override
-    public int comparePerformanceTo(RaceResult other) {
+    public int comparePerformanceTo(final RaceResult other) {
 
-        return ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().compareSeriesPerformance(this, (SeriesRaceResult)other);
+        return scorer.compareSeriesPerformance(scorer.getSeriesPerformance(this),
+            scorer.getSeriesPerformance((SeriesRaceResult)other));
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public boolean canComplete() {
 
         final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
-        boolean has_completed_all_race_categories =
+        final boolean has_completed_all_race_categories =
             ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
 
         return has_completed_all_race_categories && numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
+    }
 
+    @Override
+    public List<Comparator<RaceResult>> getComparators() {
+
+        return List.of(
+            CommonRaceResult::comparePossibleCompletion,
+            SeriesRaceResult::compareNumberOfRacesCompleted,
+            CommonRaceResult::comparePerformance,
+            CommonRaceResult::compareRunnerLastName,
+            CommonRaceResult::compareRunnerFirstName);
+    }
+
+    public boolean hasCompletedSeries() {
+
+        return numberOfRacesCompleted() >= minimum_number_of_races &&
+            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
 
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    boolean hasCompletedRaceCategory(final SeriesRaceCategory category) {
+
+        return category.race_numbers().stream().
+            anyMatch(this::hasCompletedRace);
+    }
+
+    int numberOfRacesCompleted() {
+
+        return (int) ((SeriesRace) race).getRaces().stream().
+            filter(Objects::nonNull).
+            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
+            map(result -> (SingleRaceResult) result).
+            filter(result -> result.getParticipant().equals(participant)).
+            filter(SingleRaceResult::canComplete).
+            count();
+    }
+
+    static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
+
+        final int minimum_number_of_races = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+
+        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_number_of_races);
+        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_number_of_races);
+
+        return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private boolean canCompleteRaceCategory(final SeriesRaceCategory category) {
 
@@ -107,50 +152,5 @@ public class SeriesRaceResult extends CommonRaceResult {
             map(race_number -> races.get(race_number - 1)).
             filter(Objects::isNull).
             count();
-    }
-
-    @Override
-    public List<Comparator<RaceResult>> getComparators() {
-
-        return List.of(
-            CommonRaceResult::comparePossibleCompletion,
-            SeriesRaceResult::compareNumberOfRacesCompleted,
-            CommonRaceResult::comparePerformance,
-            CommonRaceResult::compareRunnerLastName,
-            CommonRaceResult::compareRunnerFirstName);
-    }
-
-    public boolean hasCompletedSeries() {
-
-        return numberOfRacesCompleted() >= minimum_number_of_races &&
-            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
-
-    }
-
-    boolean hasCompletedRaceCategory(final SeriesRaceCategory category) {
-
-        return category.race_numbers().stream().
-            anyMatch(this::hasCompletedRace);
-    }
-
-    protected int numberOfRacesCompleted() {
-
-        return (int) ((SeriesRace) race).getRaces().stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-            map(result -> (SingleRaceResult) result).
-            filter(result -> result.getParticipant().equals(participant)).
-            filter(SingleRaceResult::canComplete).
-            count();
-    }
-
-    protected static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
-
-        final int minimum_number_of_races = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
-
-        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_number_of_races);
-        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_number_of_races);
-
-        return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
     }
 }

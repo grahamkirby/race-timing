@@ -197,8 +197,6 @@ public class RelayRaceOutput extends RaceOutput {
             anyMatch(RelayRaceLegResult::isInMassStart);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void printResults(final OutputStreamWriter writer, final Map<Integer, Integer> legs_finished_per_team) throws IOException {
 
         for (final RawResult result : ((SingleRaceInternal) race).getRawResults()) {
@@ -258,7 +256,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : "?").
             append("\t").
-            append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime()) : "?");
+            append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime(), DNF_STRING) : "?");
     }
 
     private void printLegNumber(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
@@ -315,7 +313,7 @@ public class RelayRaceOutput extends RaceOutput {
 
             race.getNotes().appendToNotes(
                 times_with_missing_bib_numbers.stream().
-                    map(Normalisation::renderDuration).
+                    map(duration -> renderDuration(duration, DNF_STRING)).
                     collect(Collectors.joining(LINE_SEPARATOR)));
         }
     }
