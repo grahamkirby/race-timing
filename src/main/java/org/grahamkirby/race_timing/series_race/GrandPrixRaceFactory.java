@@ -34,7 +34,7 @@ public class GrandPrixRaceFactory implements SpecialisedRaceFactory {
 
         final SeriesRace race = new SeriesRace(makeConfig(config_file_path));
 
-        final SeriesRaceScorer scorer = new GrandPrixRaceScorer(race, SeriesRaceResultsCalculator::getTimeInIndividualRace);
+        final SeriesRaceScorer scorer = new GrandPrixRaceScorer(race);
 
         race.setResultsCalculator(new SeriesRaceResultsCalculator(race, scorer));
         race.setResultsOutput(new GrandPrixRaceOutput(race));

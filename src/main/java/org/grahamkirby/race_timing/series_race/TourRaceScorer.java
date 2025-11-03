@@ -18,36 +18,43 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.RaceInternal;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.function.BiFunction;
+import java.util.Objects;
 
-public class TourRaceScorer implements SeriesRaceScorer {
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
-    private final RaceInternal race;
-    final BiFunction<SingleRaceInternal, Runner, Duration> get_runner_time;
+public class TourRaceScorer extends SeriesRaceScorer {
 
-    public TourRaceScorer(final RaceInternal race, final BiFunction<SingleRaceInternal, Runner, Duration> get_runner_time) {
+    public TourRaceScorer(final RaceInternal race) {
 
-        this.race = race;
-        this.get_runner_time = get_runner_time;
+        super(race);
     }
 
     @Override
-    public RaceResult makeOverallResult(final Runner runner, final List<Object> scores) {
-
-        return new TourRaceResult(runner, scores, race);
-    }
-
-    @Override
-    public Object calculateRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
+    public Object calculateIndividualRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
 
         if (individual_race == null) return null;
 
-        return get_runner_time.apply(individual_race, runner);
+        return getTimeInIndividualRace(individual_race, runner);
+    }
+
+    @Override
+    public String getPrizeDetail(final Object performance) {
+
+        return renderDuration(((Duration) performance));
+    }
+
+    @Override
+    public Object getSeriesPerformance(final SeriesRaceResult series_result) {
+
+        if (!series_result.canComplete()) return null;
+
+        return series_result.performances.stream().
+            filter(Objects::nonNull).
+            map(obj -> (Duration) obj).
+            reduce(Duration.ZERO, Duration::plus);
     }
 }

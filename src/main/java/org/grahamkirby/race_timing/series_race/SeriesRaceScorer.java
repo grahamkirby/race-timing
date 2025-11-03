@@ -17,14 +17,68 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.RaceInternal;
 import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
+import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
-import java.util.List;
+import java.time.Duration;
+import java.util.Comparator;
+import java.util.Objects;
 
-public interface SeriesRaceScorer {
+import static org.grahamkirby.race_timing.common.Config.*;
 
-    RaceResult makeOverallResult(final Runner runner, List<Object> scores);
-    Object calculateRaceScore(final Runner runner, final SingleRaceInternal individual_race);
+public abstract class SeriesRaceScorer {
+
+    protected final RaceInternal race;
+
+    protected final int minimum_number_of_races;
+    protected int score_for_first_place;
+    protected int score_for_median_position;
+
+    protected SeriesRaceScorer(final RaceInternal race) {
+
+        this.race = race;
+
+        minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+
+        if (race.getConfig().containsKey(KEY_SCORE_FOR_FIRST_PLACE))
+            score_for_first_place = (int) race.getConfig().get(KEY_SCORE_FOR_FIRST_PLACE);
+        if (race.getConfig().containsKey(KEY_SCORE_FOR_MEDIAN_POSITION))
+            score_for_median_position = (int) race.getConfig().get(KEY_SCORE_FOR_MEDIAN_POSITION);
+    }
+
+    protected int numberOfRacesCompleted(final SeriesRaceResult series_result) {
+
+        return (int) series_result.performances.stream().filter(Objects::nonNull).count();
+    }
+
+    public int compareSeriesPerformance(final SeriesRaceResult series_result1, final SeriesRaceResult series_result2) {
+
+        // Sort lowest scores first since lower score is better.
+        final Object series_performance1 = getSeriesPerformance(series_result1);
+        final Object series_performance2 = getSeriesPerformance(series_result2);
+
+        final Comparator<Object> comparator = (p1, p2) -> ((Comparable<Object>) p1).compareTo(p2);
+        return Comparator.nullsLast(comparator).compare(series_performance1, series_performance2);
+    }
+
+    protected Duration getTimeInIndividualRace(final SingleRaceInternal individual_race, final Runner runner) {
+
+        if (individual_race == null) return null;
+
+        for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
+
+            final SingleRaceResult individual_result = (SingleRaceResult) result;
+            if (individual_result.getParticipant().equals(runner))
+                return individual_result.duration();
+        }
+
+        return null;
+    }
+
+    abstract Object calculateIndividualRaceScore(Runner runner, SingleRaceInternal individual_race);
+    abstract String getPrizeDetail(Object performance);
+    abstract Object getSeriesPerformance(SeriesRaceResult series_result);
 }

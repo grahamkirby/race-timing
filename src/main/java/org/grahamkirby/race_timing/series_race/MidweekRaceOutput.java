@@ -71,22 +71,24 @@ class MidweekRaceOutput extends RaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final MidweekRaceResult result = ((MidweekRaceResult) r);
+            final SeriesRaceResult result = ((SeriesRaceResult) r);
             final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
 
             writer.append(result.getPositionString() + "," + encode(result.getParticipantName()) + "," + encode(((Runner) result.getParticipant()).getClub()) + "," + result.getParticipant().getCategory().getShortName() + ",");
 
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
             // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
+            SeriesRaceScorer scorer = calculator.getScorer();
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> calculator.getScorer().calculateRaceScore((Runner) result.getParticipant(), individual_race)).
+                    map(individual_race -> scorer.calculateIndividualRaceScore((Runner) result.getParticipant(), individual_race)).
                     map(GrandPrixRaceOutput::renderScore).
                     collect(Collectors.joining(","))
             );
 
-            writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + LINE_SEPARATOR);
+//            writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + LINE_SEPARATOR);
+            writer.append("," + scorer.getSeriesPerformance(result) + "," + (result.hasCompletedSeries() ? "Y" : "N") + LINE_SEPARATOR);
         }
     }
 
@@ -122,8 +124,9 @@ class MidweekRaceOutput extends RaceOutput {
             final List<String> elements = new ArrayList<>();
 
             final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
-            final MidweekRaceResult result = (MidweekRaceResult) r;
+            final SeriesRaceResult result = (SeriesRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
+            SeriesRaceScorer scorer = calculator.getScorer();
 
             elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(runner.getName()));
@@ -133,11 +136,12 @@ class MidweekRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final Object score = calculator.getScorer().calculateRaceScore(runner, individual_race);
+                    final Object score = scorer.calculateIndividualRaceScore(runner, individual_race);
+                    // TODO move.
                     elements.add(GrandPrixRaceOutput.renderScore(score));
                 }
 
-            elements.add(String.valueOf(result.totalScore()));
+            elements.add(String.valueOf(scorer.getSeriesPerformance(result)));
             elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
             return elements;
@@ -156,8 +160,13 @@ class MidweekRaceOutput extends RaceOutput {
         }
 
         @Override
-        protected String renderPerformance(final RaceResult result) {
-            return String.valueOf(((MidweekRaceResult) result).totalScore());
+        protected String renderPerformance(final RaceResult r) {
+            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+            final SeriesRaceResult result = (SeriesRaceResult) r;
+            final Runner runner = (Runner) result.getParticipant();
+            SeriesRaceScorer scorer = calculator.getScorer();
+//            return String.valueOf(((MidweekRaceResult) result).totalScore());
+            return String.valueOf(scorer.getSeriesPerformance(result));
         }
     }
 }

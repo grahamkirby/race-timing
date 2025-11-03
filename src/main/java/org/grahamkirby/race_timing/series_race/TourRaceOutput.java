@@ -73,7 +73,7 @@ class TourRaceOutput extends RaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final TourRaceResult result = (TourRaceResult) r;
+            final SeriesRaceResult result = (SeriesRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
 
             writer.append(result.getPositionString()).append(",").
@@ -88,7 +88,9 @@ class TourRaceOutput extends RaceOutput {
                     collect(Collectors.joining(","))
             );
 
-            writer.append("," + renderDuration(result, "-") + LINE_SEPARATOR);
+            Object series_performance = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().getSeriesPerformance(result);
+
+            writer.append("," + renderDuration(((Duration) series_performance), "-") + LINE_SEPARATOR);
         }
     }
 
@@ -122,7 +124,7 @@ class TourRaceOutput extends RaceOutput {
 
             final List<String> elements = new ArrayList<>();
 
-            final TourRaceResult result = (TourRaceResult) r;
+            final SeriesRaceResult result = (SeriesRaceResult) r;
 
             final Runner runner = (Runner) result.getParticipant();
 
@@ -138,7 +140,10 @@ class TourRaceOutput extends RaceOutput {
                     toList()
             );
 
-            elements.add(renderDuration(result, "-"));
+            Object series_performance = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().getSeriesPerformance(result);
+
+            elements.add(renderDuration(((Duration) series_performance), "-"));
+//            elements.add(renderDuration(result, "-"));
 
             return elements;
         }
@@ -157,7 +162,11 @@ class TourRaceOutput extends RaceOutput {
 
         @Override
         protected String renderPerformance(final RaceResult result) {
-            return renderDuration((RaceResultWithDuration) result, "-");
+
+
+            Object series_performance = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().getSeriesPerformance((SeriesRaceResult) result);
+
+            return renderDuration((Duration) series_performance, "-");
         }
     }
 }

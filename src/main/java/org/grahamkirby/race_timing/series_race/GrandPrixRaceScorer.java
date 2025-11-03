@@ -18,41 +18,26 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.RaceInternal;
-import org.grahamkirby.race_timing.common.RaceResult;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.function.BiFunction;
+import java.util.Objects;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_MEDIAN_POSITION;
+public class GrandPrixRaceScorer extends SeriesRaceScorer {
 
-public class GrandPrixRaceScorer implements SeriesRaceScorer {
+    public GrandPrixRaceScorer(final RaceInternal race) {
 
-    private final int score_for_median_position;
-    private final RaceInternal race;
-    final BiFunction<SingleRaceInternal, Runner, Duration> get_runner_time;
-
-    public GrandPrixRaceScorer(final RaceInternal race, final BiFunction<SingleRaceInternal, Runner, Duration> get_runner_time) {
-
-        this.race = race;
-        score_for_median_position = (int) race.getConfig().get(KEY_SCORE_FOR_MEDIAN_POSITION);
-        this.get_runner_time = get_runner_time;
+        super(race);
     }
 
     // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
-    @Override
-    public RaceResult makeOverallResult(final Runner runner, final List<Object> scores) {
-
-        return new GrandPrixRaceResult(runner, scores, race);
-    }
 
     @Override
-    public Object calculateRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
+    public Object calculateIndividualRaceScore(final Runner runner, final SingleRaceInternal individual_race) {
 
-        final Duration runner_time = get_runner_time.apply(individual_race, runner);
+        final Duration runner_time = getTimeInIndividualRace(individual_race, runner);
 
         // Runner may not have competed in this race.
         if (runner_time != null) {
@@ -66,5 +51,24 @@ public class GrandPrixRaceScorer implements SeriesRaceScorer {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public String getPrizeDetail(final Object performance) {
+        return performance.toString();
+    }
+
+    @Override
+    public Object getSeriesPerformance(final SeriesRaceResult series_result) {
+
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
+
+        // Consider the lowest scores, since lower score is better.
+        return series_result.performances.stream().
+            filter(Objects::nonNull).
+            map(obj -> (int) obj).
+            sorted().
+            limit(number_of_counting_scores).
+            reduce(0, Integer::sum);
     }
 }

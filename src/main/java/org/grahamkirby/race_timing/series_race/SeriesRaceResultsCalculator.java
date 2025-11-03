@@ -74,22 +74,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static Duration getTimeInIndividualRace(final SingleRaceInternal individual_race, final Runner runner) {
-
-        if (individual_race == null) return null;
-
-        for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
-
-            final SingleRaceResult individual_result = (SingleRaceResult) result;
-            if (individual_result.getParticipant().equals(runner))
-                return individual_result.duration();
-        }
-
-        return null;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private static List<String> getDefinedClubs(final Collection<String> clubs) {
 
         return clubs.stream().filter(SeriesRaceResultsCalculator::isClubDefined).toList();
@@ -147,10 +131,10 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private RaceResult getOverallResult(final Runner runner) {
 
         final List<Object> scores = ((SeriesRace) race).getRaces().stream().
-            map(individual_race -> scorer.calculateRaceScore(runner, individual_race)).
+            map(individual_race -> scorer.calculateIndividualRaceScore(runner, individual_race)).
             toList();
 
-        return scorer.makeOverallResult(runner, scores);
+        return new SeriesRaceResult(race, runner, scores);
     }
 
     private void loadRaceCategories() throws IOException {

@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
 import java.util.List;
@@ -25,8 +26,9 @@ import java.util.Objects;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
 import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
-public abstract class SeriesRaceResult extends CommonRaceResult {
+public class SeriesRaceResult extends CommonRaceResult {
 
     protected final List<Object> performances;
 
@@ -45,6 +47,21 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
         number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
     }
 
+    @Override
+    public String getPrizeDetail() {
+
+        SeriesRaceScorer scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
+
+        return "(" + ((Runner) getParticipant()).getClub() + ") " + scorer.getPrizeDetail(scorer.getSeriesPerformance(this));
+
+    }
+
+    @Override
+    public int comparePerformanceTo(RaceResult other) {
+
+        return ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer().compareSeriesPerformance(this, (SeriesRaceResult)other);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -52,7 +69,44 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
 
         final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
-        return numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
+        boolean has_completed_all_race_categories =
+            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
+
+        return has_completed_all_race_categories && numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
+
+
+    }
+
+    private boolean canCompleteRaceCategory(final SeriesRaceCategory category) {
+
+        final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
+
+        final int number_of_races_required_in_category = category.minimum_number_to_be_completed();
+        final int number_of_races_completed_in_category = numberOfRacesCompletedInCategory(category);
+        final int number_of_races_remaining_in_category = numberOfRacesRemainingInCategory(races, category);
+
+        return number_of_races_completed_in_category + number_of_races_remaining_in_category >= number_of_races_required_in_category;
+    }
+
+    private int numberOfRacesCompletedInCategory(final SeriesRaceCategory category) {
+
+        return (int) category.race_numbers().stream().
+            filter(this::hasCompletedRace).
+            count();
+    }
+
+    private boolean hasCompletedRace(final int race_number) {
+
+        return race_number <= performances.size() && performances.get(race_number - 1) != null;
+    }
+
+    private int numberOfRacesRemainingInCategory(final List<SingleRaceInternal> races, final SeriesRaceCategory category) {
+
+        // TODO tests pass when filter is for non null.
+        return (int) category.race_numbers().stream().
+            map(race_number -> races.get(race_number - 1)).
+            filter(Objects::isNull).
+            count();
     }
 
     @Override
@@ -68,7 +122,15 @@ public abstract class SeriesRaceResult extends CommonRaceResult {
 
     public boolean hasCompletedSeries() {
 
-        return numberOfRacesCompleted() >= minimum_number_of_races;
+        return numberOfRacesCompleted() >= minimum_number_of_races &&
+            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
+
+    }
+
+    boolean hasCompletedRaceCategory(final SeriesRaceCategory category) {
+
+        return category.race_numbers().stream().
+            anyMatch(this::hasCompletedRace);
     }
 
     protected int numberOfRacesCompleted() {

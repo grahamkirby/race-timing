@@ -54,6 +54,8 @@ class GrandPrixRaceOutput extends RaceOutput {
         super(race);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
         private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
@@ -75,21 +77,22 @@ class GrandPrixRaceOutput extends RaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
-            final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
+            final SeriesRaceResult result = (SeriesRaceResult) r;
             final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
             final Runner runner = (Runner) result.getParticipant();
 
             writer.append(result.getPositionString() + "," + encode(runner.getName()) + "," + runner.getCategory().getShortName() + ",");
 
+            SeriesRaceScorer scorer = calculator.getScorer();
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
-                    map(individual_race -> calculator.getScorer().calculateRaceScore(runner, individual_race)).
+                    map(individual_race -> scorer.calculateIndividualRaceScore(runner, individual_race)).
                     map(GrandPrixRaceOutput::renderScore).
                     collect(Collectors.joining(","))
             );
 
-            writer.append("," + result.totalScore() + "," + (result.hasCompletedSeries() ? "Y" : "N") + ",");
+            writer.append("," + scorer.getSeriesPerformance(result) + "," + (result.hasCompletedSeries() ? "Y" : "N") + ",");
 
             writer.append(
                 ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().
@@ -134,7 +137,8 @@ class GrandPrixRaceOutput extends RaceOutput {
             final List<String> elements = new ArrayList<>();
 
             final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
-            final GrandPrixRaceResult result = (GrandPrixRaceResult) r;
+            final SeriesRaceResult result = (SeriesRaceResult) r;
+            SeriesRaceScorer scorer = calculator.getScorer();
 
             elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
@@ -142,11 +146,12 @@ class GrandPrixRaceOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final Object score = calculator.getScorer().calculateRaceScore((Runner) result.getParticipant(), individual_race);
+                    final Object score = scorer.calculateIndividualRaceScore((Runner) result.getParticipant(), individual_race);
                     elements.add(renderScore(score));
                 }
 
-            elements.add(String.valueOf(result.totalScore()));
+//            elements.add(String.valueOf(result.totalScore()));
+            elements.add(String.valueOf(scorer.getSeriesPerformance(result)));
             elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
             for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
@@ -168,8 +173,14 @@ class GrandPrixRaceOutput extends RaceOutput {
         }
 
         @Override
-        protected String renderPerformance(final RaceResult result) {
-            return String.valueOf(((GrandPrixRaceResult) result).totalScore());
+        protected String renderPerformance(final RaceResult r) {
+
+            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+            final SeriesRaceResult result = (SeriesRaceResult) r;
+            SeriesRaceScorer scorer = calculator.getScorer();
+
+            return String.valueOf(scorer.getSeriesPerformance(result));
+//            return String.valueOf(((GrandPrixRaceResult) result).totalScore());
         }
     }
 
