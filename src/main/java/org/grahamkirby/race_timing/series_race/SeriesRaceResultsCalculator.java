@@ -38,7 +38,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public SeriesRaceResultsCalculator(final RaceInternal race, final SeriesRaceScorer scorer) throws IOException {
+    public SeriesRaceResultsCalculator(final SeriesRaceScorer scorer, final RaceInternal race) throws IOException {
 
         super(race);
         this.scorer = scorer;
@@ -114,6 +114,9 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    private Map<Runner, SeriesRaceResult> runner_result_map = new HashMap<>();
+
     private void initialiseResults() {
 
         overall_results = new ArrayList<>(
@@ -123,17 +126,24 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
                 filter(getResultInclusionPredicate()).
                 map(result -> (Runner) result.getParticipant()).
                 distinct().
-                map(this::getOverallResult).
+                map(this::makeOverallResult).
                 toList());
     }
 
-    private RaceResult getOverallResult(final Runner runner) {
+    protected SeriesRaceResult getOverallResult(final Runner runner) {
+
+        return runner_result_map.get(runner);
+    }
+
+    private RaceResult makeOverallResult(final Runner runner) {
 
         final List<Performance> scores = ((SeriesRace) race).getRaces().stream().
             map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
             toList();
 
-        return new SeriesRaceResult(race, runner, scores);
+        final SeriesRaceResult result = new SeriesRaceResult(race, runner, scores);
+        runner_result_map.put(runner, result);
+        return result;
     }
 
     private void loadRaceCategories() throws IOException {

@@ -35,11 +35,13 @@ public class TourRaceScorer extends SeriesRaceScorer {
 
         if (individual_race == null) return null;
 
-        return new Performance(getIndividualRaceTime(individual_race, runner));
+        return new Performance(getIndividualRaceTime(runner, individual_race));
     }
 
     @Override
-    public Performance getSeriesPerformance(final SeriesRaceResult series_result) {
+    public Performance getSeriesPerformance(final Runner runner) {
+
+        final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
 
         if (!series_result.canComplete()) return null;
 

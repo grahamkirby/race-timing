@@ -19,25 +19,21 @@ package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.individual_race.IndividualRaceFactory;
 import org.grahamkirby.race_timing.relay_race.RelayRaceFactory;
-import org.grahamkirby.race_timing.series_race.GrandPrixRaceFactory;
-import org.grahamkirby.race_timing.series_race.MidweekRaceFactory;
-import org.grahamkirby.race_timing.series_race.TourRaceFactory;
+import org.grahamkirby.race_timing.series_race.SeriesRaceFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.loadProperties;
 
 public class RaceFactory {
 
     private final List<SpecialisedRaceFactory> specialised_factories = List.of(
         new IndividualRaceFactory(),
         new RelayRaceFactory(),
-        new GrandPrixRaceFactory(),
-        new MidweekRaceFactory(),
-        new TourRaceFactory()
+        new SeriesRaceFactory()
     );
 
     public static void main(final String[] args) {

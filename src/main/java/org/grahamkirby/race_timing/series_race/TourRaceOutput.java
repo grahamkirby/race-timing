@@ -94,7 +94,7 @@ class TourRaceOutput extends RaceOutput {
             );
 
             writer.append(",").
-                append(renderDuration(scorer.getSeriesPerformance(result), "-")).
+                append(renderDuration(scorer.getSeriesPerformance(runner), "-")).
                 append(LINE_SEPARATOR);
         }
     }
@@ -145,7 +145,7 @@ class TourRaceOutput extends RaceOutput {
                     toList()
             );
 
-            elements.add(renderDuration(scorer.getSeriesPerformance(result), "-"));
+            elements.add(renderDuration(scorer.getSeriesPerformance(runner), "-"));
 
             return elements;
         }
@@ -165,7 +165,9 @@ class TourRaceOutput extends RaceOutput {
         @Override
         protected String renderPerformance(final RaceResult result) {
 
-            return renderDuration(scorer.getSeriesPerformance((SeriesRaceResult) result), "-");
+            final Runner runner = (Runner) result.getParticipant();
+
+            return renderDuration(scorer.getSeriesPerformance(runner), "-");
         }
     }
 }

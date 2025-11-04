@@ -36,7 +36,7 @@ public class GrandPrixRaceScorer extends SeriesRaceScorer {
     @Override
     public Performance getIndividualRacePerformance(final Runner runner, final SingleRaceInternal individual_race) {
 
-        final Duration runner_time = getIndividualRaceTime(individual_race, runner);
+        final Duration runner_time = getIndividualRaceTime(runner, individual_race);
 
         // Runner may not have competed in this race.
         if (runner_time == null) return null;
@@ -49,8 +49,9 @@ public class GrandPrixRaceScorer extends SeriesRaceScorer {
     }
 
     @Override
-    public Performance getSeriesPerformance(final SeriesRaceResult series_result) {
+    public Performance getSeriesPerformance(final Runner runner) {
 
+        final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         // Consider the lowest scores, since lower score is better.

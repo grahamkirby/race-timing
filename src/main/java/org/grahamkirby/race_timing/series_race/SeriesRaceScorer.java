@@ -31,6 +31,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 public abstract class SeriesRaceScorer {
 
     protected final SeriesRace race;
+    private SeriesRaceResultsCalculator calculator = null;
 
     protected final int minimum_number_of_races;
     protected int score_for_first_place;
@@ -66,7 +67,7 @@ public abstract class SeriesRaceScorer {
         return (int) series_result.performances.stream().filter(Objects::nonNull).count();
     }
 
-     protected Duration getIndividualRaceTime(final SingleRaceInternal individual_race, final Runner runner) {
+     protected Duration getIndividualRaceTime(final Runner runner, final SingleRaceInternal individual_race) {
 
         if (individual_race == null) return null;
 
@@ -83,5 +84,5 @@ public abstract class SeriesRaceScorer {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     abstract Performance getIndividualRacePerformance(Runner runner, SingleRaceInternal individual_race);
-    abstract Performance getSeriesPerformance(SeriesRaceResult series_result);
+    abstract Performance getSeriesPerformance(Runner runner);
 }

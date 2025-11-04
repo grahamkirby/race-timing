@@ -58,8 +58,9 @@ public class MidweekRaceScorer extends SeriesRaceScorer {
     }
 
     @Override
-    public Performance getSeriesPerformance(final SeriesRaceResult series_result) {
+    public Performance getSeriesPerformance(final Runner runner) {
 
+        final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         // Consider the highest scores, since higher score is better.

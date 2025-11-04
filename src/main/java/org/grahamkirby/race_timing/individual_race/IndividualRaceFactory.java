@@ -17,19 +17,17 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
-import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_RACES;
 import static org.grahamkirby.race_timing.relay_race.RelayRaceFactory.KEY_INDICATIVE_OF_RELAY_RACE;
+import static org.grahamkirby.race_timing.series_race.SeriesRaceFactory.KEY_INDICATIVE_OF_SERIES_RACE;
 
 public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
-    public static final String KEY_INDICATIVE_OF_SERIES_RACE = KEY_RACES;
 
     public SingleRaceInternal makeRace(final Path config_file_path) throws IOException {
 
@@ -53,8 +51,10 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
         config.addConfigProcessor(new RaceConfigAdjuster());
         config.addConfigProcessor(new IndividualRaceConfigAdjuster());
+
         config.addConfigProcessor(new RaceConfigValidator());
         config.addConfigProcessor(new IndividualRaceConfigValidator());
+
         config.processConfig();
 
         return config;
