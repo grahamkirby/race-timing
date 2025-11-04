@@ -19,8 +19,9 @@ package org.grahamkirby.race_timing.common;
 
 
 import java.time.Duration;
+import java.util.Comparator;
 
-public abstract class SingleRaceResult extends CommonRaceResult implements RaceResultWithDuration {
+public abstract class SingleRaceResult extends CommonRaceResult {
 
     // TODO add start time.
     protected Duration finish_time;
@@ -35,8 +36,8 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
         this.finish_time = finish_time;
     }
 
-    public Duration duration() {
-        return finish_time;
+    public Performance getPerformance() {
+        return new Performance(finish_time);
     }
 
     public Duration getFinishTime() {
@@ -62,10 +63,30 @@ public abstract class SingleRaceResult extends CommonRaceResult implements RaceR
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
-        final Duration duration = duration();
-        final Duration other_duration = ((SingleRaceResult) other).duration();
+        final Comparator<Performance> comparator = Comparator.nullsLast(Performance::compareTo);
+//        final Comparator<RaceResult> comparator2 = new Comparator<RaceResult>() {
+//            @Override
+//            public int compare(RaceResult o1, RaceResult o2) {
+//
+//                return comparator.compare(
+//                    scorer.getSeriesPerformance((Runner) o1.getParticipant()),
+//                    scorer.getSeriesPerformance((Runner) o2.getParticipant()));
+//
+////                return scorer.compareSeriesPerformance(
+////                    scorer.getSeriesPerformance((Runner) o1.getParticipant()),
+////                    scorer.getSeriesPerformance((Runner) o2.getParticipant()));
+//            }
+//        };
 
-        return duration.compareTo(other_duration);
+
+
+
+        final Performance duration = getPerformance();
+        final Performance other_duration = ((SingleRaceResult) other).getPerformance();
+
+        return comparator.compare(duration, other_duration);
+
+//        return duration.compareTo(other_duration);
     }
 
     @Override

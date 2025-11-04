@@ -62,13 +62,13 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
 
         if (config.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE)) {
 
-            config.addConfigProcessor(new GrandPrixRaceConfigAdjuster());
-            config.addConfigProcessor(new GrandPrixRaceConfigValidator());
+            config.addConfigProcessor(new IndividualTimesConfigAdjuster());
+            config.addConfigProcessor(new IndividualTimesConfigValidator());
         }
 
         if (config.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE)) {
 
-            config.addConfigProcessor(new MidweekRaceConfigAdjuster());
+            config.addConfigProcessor(new IndividualPositionsConfigAdjuster());
         }
 
         config.processConfig();
@@ -79,22 +79,22 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
     private RaceOutput getRaceOutput(final Config config, final SeriesRace race) {
 
         if (config.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE))
-            return new GrandPrixRaceOutput(race);
+            return new IndividualTimesOutput(race);
 
         if (config.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE))
-            return new MidweekRaceOutput(race);
+            return new IndividualPositionsOutput(race);
 
-        return new TourRaceOutput(race);
+        return new AggregateTimesOutput(race);
     }
 
     private SeriesRaceScorer getRaceScorer(final Config config, final SeriesRace race) {
 
         if (config.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE))
-            return new GrandPrixRaceScorer(race);
+            return new IndividualTimesScorer(race);
 
         if (config.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE))
-            return new MidweekRaceScorer(race);
+            return new IndividualPositionsScorer(race);
 
-        return new TourRaceScorer(race);
+        return new AggregateTimesScorer(race);
     }
 }

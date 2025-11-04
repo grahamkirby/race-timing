@@ -17,8 +17,6 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import org.grahamkirby.race_timing.series_race.Performance;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -165,9 +163,9 @@ public class Normalisation {
         return duration != null ? renderDuration(duration) : alternative;
     }
 
-    public static String renderDuration(final RaceResultWithDuration result, final String alternative) {
+    public static String renderDuration(final RaceResult result, final String alternative) {
 
-        return result.canComplete() ? renderDuration(result.duration()) : alternative;
+        return result.canComplete() ? renderDuration((Duration) result.getPerformance().getValue()) : alternative;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -20,13 +20,14 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
+import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
 
-public class MidweekRaceConfigAdjuster implements ConfigProcessor {
+public class IndividualTimesConfigValidator implements ConfigProcessor {
 
-    @Override
     public void processConfig(final Config config) {
 
-        config.replaceIfPresent(KEY_SCORE_FOR_FIRST_PLACE, Integer::parseInt);
+        validateKeyPresent(KEY_RACE_CATEGORIES_PATH, config);
+        validateFileExists(KEY_RACE_CATEGORIES_PATH, config);
     }
 }

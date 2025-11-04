@@ -17,6 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Performance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -27,9 +28,9 @@ import java.util.Objects;
 
 import static java.util.Comparator.reverseOrder;
 
-public class MidweekRaceScorer extends SeriesRaceScorer {
+public class IndividualPositionsScorer extends SeriesRaceScorer {
 
-    public MidweekRaceScorer(final SeriesRace race) {
+    public IndividualPositionsScorer(final SeriesRace race) {
 
         super(race);
     }
@@ -75,8 +76,8 @@ public class MidweekRaceScorer extends SeriesRaceScorer {
     @Override
     public int compareSeriesPerformance(final Performance series_result1, final Performance series_result2) {
 
-        final Comparator<Performance> comparator = ((Comparator<Performance>) super::compareSeriesPerformance).reversed();
+        final Comparator<Performance> reverse_comparator = ((Comparator<Performance>) super::compareSeriesPerformance).reversed();
 
-        return comparator.compare(series_result1, series_result2);
+        return reverse_comparator.compare(series_result1, series_result2);
     }
 }

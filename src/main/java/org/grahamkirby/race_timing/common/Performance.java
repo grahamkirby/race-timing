@@ -19,7 +19,37 @@ package org.grahamkirby.race_timing.common;
 
 import java.time.Duration;
 
-public interface RaceResultWithDuration extends RaceResult {
+import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
-    Duration duration();
+public class Performance implements Comparable<Performance> {
+
+    private final Object value;
+
+    public Performance(final Integer value) {
+        this.value = value;
+    }
+
+    public Performance(final Duration value) {
+        this.value = value;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public int compareTo(final Performance other) {
+
+        return ((Comparable<Object>) value).compareTo(other.value);
+    }
+
+    @Override
+    public String toString() {
+
+        return value instanceof Integer ?
+            value.toString() :
+            renderDuration(this, DNF_STRING);
+    }
+
+    public Object getValue() {
+        return value;
+    }
 }

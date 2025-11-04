@@ -535,7 +535,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         @Override
         protected String renderPerformance(final RaceResult result) {
-            return renderDuration((RaceResultWithDuration) result, DNF_STRING);
+            return renderDuration(result, DNF_STRING);
         }
     }
 }

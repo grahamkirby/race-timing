@@ -52,17 +52,19 @@ public class SeriesRaceResult extends CommonRaceResult {
     @Override
     public String getPrizeDetail() {
 
-        final Runner runner = (Runner) getParticipant();
-        return "(" + runner.getClub() + ") " + scorer.getSeriesPerformance(runner);
+        return "(" + ((Runner) getParticipant()).getClub() + ") " + getPerformance();
+    }
+
+    @Override
+    public Performance getPerformance() {
+
+        return scorer.getSeriesPerformance((Runner) getParticipant());
     }
 
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
-        final Runner runner = (Runner) getParticipant();
-
-        return scorer.compareSeriesPerformance(scorer.getSeriesPerformance(runner),
-            scorer.getSeriesPerformance((Runner) other.getParticipant()));
+        return scorer.compareSeriesPerformance(getPerformance(), other.getPerformance());
     }
 
     @Override

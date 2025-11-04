@@ -27,6 +27,7 @@ public interface RaceResult extends Comparable<RaceResult> {
     RaceInternal getRace();
 
     Participant getParticipant();
+    Performance getPerformance();
 
     String getParticipantName();
 

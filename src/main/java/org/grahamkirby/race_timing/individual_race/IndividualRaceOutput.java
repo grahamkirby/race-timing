@@ -207,7 +207,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
         @Override
         protected String renderPerformance(final RaceResult result) {
-            return renderDuration((RaceResultWithDuration) result, DNF_STRING);
+            return renderDuration(result, DNF_STRING);
         }
     }
 
@@ -234,7 +234,7 @@ public class IndividualRaceOutput extends RaceOutput {
                 append(encode(participant.getName())).append(",").
                 append(encode(((Runner) participant).getClub())).append(",").
                 append(participant.getCategory().getShortName()).append(",").
-                append(renderDuration(((RaceResultWithDuration) result), DNF_STRING)).
+                append(renderDuration(result, DNF_STRING)).
                 append(LINE_SEPARATOR);
         }
     }

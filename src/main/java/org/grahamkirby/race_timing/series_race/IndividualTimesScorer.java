@@ -17,37 +17,51 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Performance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
 import java.util.Objects;
 
-public class TourRaceScorer extends SeriesRaceScorer {
+public class IndividualTimesScorer extends SeriesRaceScorer {
 
-    public TourRaceScorer(final SeriesRace race) {
+    public IndividualTimesScorer(final SeriesRace race) {
 
         super(race);
     }
 
+    // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
+
     @Override
     public Performance getIndividualRacePerformance(final Runner runner, final SingleRaceInternal individual_race) {
 
-        if (individual_race == null) return null;
+        final Performance performance = getIndividualRaceTime(runner, individual_race);
 
-        return new Performance(getIndividualRaceTime(runner, individual_race));
+        // Runner may not have competed in this race.
+        if (performance == null) return null;
+
+        final Duration runner_time = (Duration) performance.getValue();
+        final Duration median_time = ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime();
+        final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
+
+        // Lower score is better.
+        return new Performance((int) Math.round(time_ratio * score_for_median_position));
     }
 
     @Override
     public Performance getSeriesPerformance(final Runner runner) {
 
         final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
-        if (!series_result.canComplete()) return null;
-
+        // Consider the lowest scores, since lower score is better.
         return new Performance(series_result.performances.stream().
             filter(Objects::nonNull).
-            map(obj -> (Duration) obj.getValue()).
-            reduce(Duration.ZERO, Duration::plus));
+            map(obj -> (int) obj.getValue()).
+            sorted().
+            limit(number_of_counting_scores).
+            reduce(0, Integer::sum));
     }
 }

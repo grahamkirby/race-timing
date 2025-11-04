@@ -17,49 +17,36 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.Performance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
 import java.util.Objects;
 
-public class GrandPrixRaceScorer extends SeriesRaceScorer {
+public class AggregateTimesScorer extends SeriesRaceScorer {
 
-    public GrandPrixRaceScorer(final SeriesRace race) {
+    public AggregateTimesScorer(final SeriesRace race) {
 
         super(race);
     }
 
-    // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
-
     @Override
     public Performance getIndividualRacePerformance(final Runner runner, final SingleRaceInternal individual_race) {
 
-        final Duration runner_time = getIndividualRaceTime(runner, individual_race);
-
-        // Runner may not have competed in this race.
-        if (runner_time == null) return null;
-
-        final Duration median_time = ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime();
-        final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
-
-        // Lower score is better.
-        return new Performance((int) Math.round(time_ratio * score_for_median_position));
+        return getIndividualRaceTime(runner, individual_race);
     }
 
     @Override
     public Performance getSeriesPerformance(final Runner runner) {
 
         final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
-        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
-        // Consider the lowest scores, since lower score is better.
+        if (!series_result.canComplete()) return null;
+
         return new Performance(series_result.performances.stream().
             filter(Objects::nonNull).
-            map(obj -> (int) obj.getValue()).
-            sorted().
-            limit(number_of_counting_scores).
-            reduce(0, Integer::sum));
+            map(obj -> (Duration) obj.getValue()).
+            reduce(Duration.ZERO, Duration::plus));
     }
 }

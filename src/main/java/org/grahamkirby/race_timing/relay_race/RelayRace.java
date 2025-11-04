@@ -510,7 +510,7 @@ public class RelayRace implements SingleRaceInternal {
 
         return leg_results.stream().
             limit(leg_number).
-            map(RelayRaceLegResult::duration).
+            map(leg_result -> (Duration) leg_result.getPerformance().getValue()).
             reduce(Duration.ZERO, Duration::plus);
     }
 
@@ -573,16 +573,13 @@ public class RelayRace implements SingleRaceInternal {
         final Duration mass_start_time = parseTime(split[1]);
 
         start_times_for_mass_starts.set(leg_number - 1, mass_start_time);
-        mass_start_legs.set(leg_number - 1, !mass_start_time.equals(VERY_LONG_DURATION));
+        mass_start_legs.set(leg_number - 1, true);
     }
 
     private void setEmptyMassStartTimes() {
 
         // For legs 2 and above, if there is no mass start time configured, use the next actual mass start time.
         // This covers the case where an early leg runner finishes after a mass start.
-
-        if (start_times_for_mass_starts.get(getNumberOfLegs() - 1) == null)
-            start_times_for_mass_starts.set(getNumberOfLegs() - 1, VERY_LONG_DURATION);
 
         for (int leg_index = getNumberOfLegs() - 2; leg_index > 0; leg_index--)
 

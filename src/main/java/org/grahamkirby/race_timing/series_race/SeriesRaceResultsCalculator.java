@@ -35,6 +35,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private List<Integer> race_temporal_positions;
     private List<String> qualifying_clubs;
     private final SeriesRaceScorer scorer;
+    private final Map<Runner, SeriesRaceResult> runner_result_map = new HashMap<>();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -114,8 +115,12 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    protected SeriesRaceResult getOverallResult(final Runner runner) {
 
-    private Map<Runner, SeriesRaceResult> runner_result_map = new HashMap<>();
+        return runner_result_map.get(runner);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initialiseResults() {
 
@@ -128,11 +133,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
                 distinct().
                 map(this::makeOverallResult).
                 toList());
-    }
-
-    protected SeriesRaceResult getOverallResult(final Runner runner) {
-
-        return runner_result_map.get(runner);
     }
 
     private RaceResult makeOverallResult(final Runner runner) {

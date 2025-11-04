@@ -95,11 +95,14 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             final SingleRaceResult median_result1 = (SingleRaceResult) results.get(results.size() / 2 - 1);
             final SingleRaceResult median_result2 = (SingleRaceResult) results.get(results.size() / 2);
 
-            return median_result1.duration().plus(median_result2.duration()).dividedBy(2);
+            final Duration duration1 = (Duration) median_result1.getPerformance().getValue();
+            final Duration duration2 = (Duration) median_result2.getPerformance().getValue();
+
+            return duration1.plus(duration2).dividedBy(2);
 
         } else {
             final SingleRaceResult median_result = (SingleRaceResult) results.get(results.size() / 2);
-            return median_result.duration();
+            return (Duration) median_result.getPerformance().getValue();
         }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////

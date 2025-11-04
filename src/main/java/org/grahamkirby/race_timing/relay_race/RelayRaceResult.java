@@ -19,6 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Performance;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Config.VERY_LONG_DURATION;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceResult extends SingleRaceResult {
@@ -54,12 +54,11 @@ public class RelayRaceResult extends SingleRaceResult {
     }
 
     @Override
-    public Duration duration() {
+    public Performance getPerformance() {
 
-        return !canComplete() ? VERY_LONG_DURATION :
-            leg_results.stream().
-                map(RelayRaceLegResult::duration).
-                reduce(Duration.ZERO, Duration::plus);
+        return canComplete() ? new Performance(leg_results.stream().
+                map(leg_result -> (Duration) leg_result.getPerformance().getValue()).
+                reduce(Duration.ZERO, Duration::plus)) : null;
     }
 
     @Override

@@ -17,39 +17,16 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import java.time.Duration;
+import org.grahamkirby.race_timing.common.Config;
+import org.grahamkirby.race_timing.common.ConfigProcessor;
 
-import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.Config.KEY_SCORE_FOR_FIRST_PLACE;
 
-public class Performance implements Comparable<Performance> {
-
-    private final Object value;
-
-    public Performance(final Integer value) {
-        this.value = value;
-    }
-
-    public Performance(final Duration value) {
-        this.value = value;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public int compareTo(final Performance other) {
-
-        return ((Comparable<Object>) value).compareTo(other.value);
-    }
+public class IndividualPositionsConfigAdjuster implements ConfigProcessor {
 
     @Override
-    public String toString() {
+    public void processConfig(final Config config) {
 
-        return value instanceof Integer ?
-            value.toString() :
-            renderDuration(this, DNF_STRING);
-    }
-
-    public Object getValue() {
-        return value;
+        config.replaceIfPresent(KEY_SCORE_FOR_FIRST_PLACE, Integer::parseInt);
     }
 }

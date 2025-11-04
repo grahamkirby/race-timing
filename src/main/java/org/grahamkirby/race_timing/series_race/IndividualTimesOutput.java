@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-class GrandPrixRaceOutput extends RaceOutput {
+class IndividualTimesOutput extends RaceOutput {
 
     @Override
     protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
@@ -50,7 +50,7 @@ class GrandPrixRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public GrandPrixRaceOutput(final RaceInternal race) {
+    public IndividualTimesOutput(final RaceInternal race) {
         super(race);
     }
 
@@ -97,7 +97,7 @@ class GrandPrixRaceOutput extends RaceOutput {
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
-                    map(GrandPrixRaceOutput::renderScore).
+                    map(IndividualTimesOutput::renderScore).
                     collect(Collectors.joining(","))
             );
 

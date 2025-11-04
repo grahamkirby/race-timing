@@ -230,7 +230,8 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         if (previous_team_member_finish_time == null) return null;
 
         // Use the earlier of the mass start time, if present, and the previous runner's finish time.
-        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+        return mass_start_time != null && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+//        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
@@ -242,7 +243,8 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         if (previous_runner_finish_time == null) return ((RelayRace) race).getMassStartLegs().get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
+//        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
+        return mass_start_time != null && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 
     private static int findIndexOfNextUnfilledLegResult(final List<? extends RelayRaceLegResult> leg_results) {
