@@ -40,13 +40,18 @@ public class AggregateTimesScorer extends SeriesRaceScorer {
     @Override
     public Performance getSeriesPerformance(final Runner runner) {
 
-        final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
+        final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+
+        final SeriesRaceResult series_result = calculator.getOverallResult(runner);
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         if (!series_result.canComplete()) return null;
 
         return new Performance(series_result.performances.stream().
             filter(Objects::nonNull).
             map(obj -> (Duration) obj.getValue()).
+            sorted().                                 // Sort  not actually necessary but included to keep logic same as other series race scorers.
+            limit(number_of_counting_scores).         // Limit not actually necessary but included to keep logic same as other series race scorers.
             reduce(Duration.ZERO, Duration::plus));
     }
 }

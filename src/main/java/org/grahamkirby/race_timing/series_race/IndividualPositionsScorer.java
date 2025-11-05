@@ -24,9 +24,6 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-
-import static java.util.Comparator.reverseOrder;
 
 public class IndividualPositionsScorer extends SeriesRaceScorer {
 
@@ -61,16 +58,8 @@ public class IndividualPositionsScorer extends SeriesRaceScorer {
     @Override
     public Performance getSeriesPerformance(final Runner runner) {
 
-        final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
-        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
-
-        // Consider the highest scores, since higher score is better.
-        return new Performance(series_result.performances.stream().
-            filter(Objects::nonNull).
-            map(obj -> (int) obj.getValue()).
-            sorted(reverseOrder()).
-            limit(number_of_counting_scores).
-            reduce(0, Integer::sum));
+        // Sort the scores with highest first before selecting, since higher score is better.
+        return getSeriesPerformance(runner, Comparator.reverseOrder());
     }
 
     @Override

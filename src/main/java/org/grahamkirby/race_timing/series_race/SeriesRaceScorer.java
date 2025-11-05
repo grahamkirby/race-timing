@@ -17,10 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.Performance;
-import org.grahamkirby.race_timing.common.RaceResult;
-import org.grahamkirby.race_timing.common.SingleRaceInternal;
-import org.grahamkirby.race_timing.common.SingleRaceResult;
+import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
@@ -78,6 +75,22 @@ public abstract class SeriesRaceScorer {
         }
 
         return null;
+    }
+
+    protected Performance getSeriesPerformance(final Runner runner, final Comparator<Integer> comparator) {
+
+        final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+
+        final SeriesRaceResult series_result = calculator.getOverallResult(runner);
+        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
+
+        // Sort the scores before selecting, depending on whether lower or higher score is better.
+        return new Performance(series_result.performances.stream().
+            filter(Objects::nonNull).
+            map(obj -> (int) obj.getValue()).
+            sorted(comparator).
+            limit(number_of_counting_scores).
+            reduce(0, Integer::sum));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

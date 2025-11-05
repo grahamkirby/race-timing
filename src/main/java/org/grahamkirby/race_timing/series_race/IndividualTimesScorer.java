@@ -23,7 +23,7 @@ import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculat
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
-import java.util.Objects;
+import java.util.Comparator;
 
 public class IndividualTimesScorer extends SeriesRaceScorer {
 
@@ -42,8 +42,10 @@ public class IndividualTimesScorer extends SeriesRaceScorer {
         // Runner may not have competed in this race.
         if (performance == null) return null;
 
+        final IndividualRaceResultsCalculator individual_race_calculator = (IndividualRaceResultsCalculator) individual_race.getResultsCalculator();
+
         final Duration runner_time = (Duration) performance.getValue();
-        final Duration median_time = ((IndividualRaceResultsCalculator) individual_race.getResultsCalculator()).getMedianTime();
+        final Duration median_time = individual_race_calculator.getMedianTime();
         final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
 
         // Lower score is better.
@@ -53,15 +55,7 @@ public class IndividualTimesScorer extends SeriesRaceScorer {
     @Override
     public Performance getSeriesPerformance(final Runner runner) {
 
-        final SeriesRaceResult series_result = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getOverallResult(runner);
-        final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
-
-        // Consider the lowest scores, since lower score is better.
-        return new Performance(series_result.performances.stream().
-            filter(Objects::nonNull).
-            map(obj -> (int) obj.getValue()).
-            sorted().
-            limit(number_of_counting_scores).
-            reduce(0, Integer::sum));
+        // Sort the scores with lowest first before selecting, since lower score is better.
+        return getSeriesPerformance(runner, Comparator.naturalOrder());
     }
 }
