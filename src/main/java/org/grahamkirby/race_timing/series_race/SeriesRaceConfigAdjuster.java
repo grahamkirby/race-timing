@@ -20,19 +20,14 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 
-import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
+import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
+import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
 
 @SuppressWarnings("preview")
 public class SeriesRaceConfigAdjuster implements ConfigProcessor {
 
-    private static final int DEFAULT_NUMBER_OF_COLUMNS = 4;
-
     @Override
     public void processConfig(final Config config) {
-
-        // Default entry map with elements (bib number, team name, category, plus one per leg), and no column combining or re-ordering.
-        config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));
 
         config.replaceIfPresent(KEY_NUMBER_OF_RACES_IN_SERIES, Integer::parseInt);
         config.replaceIfPresent(KEY_MINIMUM_NUMBER_OF_RACES, Integer::parseInt);

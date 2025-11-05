@@ -166,6 +166,34 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static final class IndividualRaceOverallResultPrinterCSV extends ResultPrinter {
+
+        private IndividualRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append(OVERALL_RESULTS_HEADER);
+        }
+
+        @Override
+        public void printResult(final RaceResult r) throws IOException {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+            final Participant participant = result.getParticipant();
+
+            writer.append(result.getPositionString()).append(",").
+                append(String.valueOf(result.getBibNumber())).append(",").
+                append(encode(participant.getName())).append(",").
+                append(encode(((Runner) participant).getClub())).append(",").
+                append(participant.getCategory().getShortName()).append(",").
+                append(renderDuration(result, DNF_STRING)).
+                append(LINE_SEPARATOR);
+        }
+    }
+
     private static final class IndividualRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
         private IndividualRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
@@ -208,34 +236,6 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         protected String renderPerformance(final RaceResult result) {
             return renderDuration(result, DNF_STRING);
-        }
-    }
-
-    private static final class IndividualRaceOverallResultPrinterCSV extends ResultPrinter {
-
-        private IndividualRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        public void printResultsHeader() throws IOException {
-
-            writer.append(OVERALL_RESULTS_HEADER);
-        }
-
-        @Override
-        public void printResult(final RaceResult r) throws IOException {
-
-            final SingleRaceResult result = (SingleRaceResult) r;
-            final Participant participant = result.getParticipant();
-
-            writer.append(result.getPositionString()).append(",").
-                append(String.valueOf(result.getBibNumber())).append(",").
-                append(encode(participant.getName())).append(",").
-                append(encode(((Runner) participant).getClub())).append(",").
-                append(participant.getCategory().getShortName()).append(",").
-                append(renderDuration(result, DNF_STRING)).
-                append(LINE_SEPARATOR);
         }
     }
 }

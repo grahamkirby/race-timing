@@ -24,12 +24,14 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateFileExists;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
 public class SeriesRaceFactory implements SpecialisedRaceFactory {
 
     public static final String KEY_INDICATIVE_OF_SERIES_RACE = KEY_RACES;
-    public static final String KEY_INDICATIVE_OF_GRAND_PRIX_RACE = KEY_SCORE_FOR_MEDIAN_POSITION;
-    public static final String KEY_INDICATIVE_OF_MIDWEEK_RACE = KEY_SCORE_FOR_FIRST_PLACE;
+    private static final String KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES = KEY_SCORE_FOR_MEDIAN_POSITION;
+    private static final String KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS = KEY_SCORE_FOR_FIRST_PLACE;
 
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
@@ -37,8 +39,9 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
         final Config config = makeConfig(config_file_path);
         final SeriesRace race = new SeriesRace(config);
         final SeriesRaceScorer scorer = getRaceScorer(config, race);
+        final RaceResultsCalculator calculator = new SeriesRaceResultsCalculator(scorer, race);
 
-        race.setResultsCalculator(new SeriesRaceResultsCalculator(scorer, race));
+        race.setResultsCalculator(calculator);
         race.setResultsOutput(new SeriesRaceOutput(race));
 
         return race;
@@ -54,23 +57,7 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
 
         final Config config = new Config(config_file_path);
 
-        config.addConfigProcessor(new RaceConfigAdjuster());
-        config.addConfigProcessor(new SeriesRaceConfigAdjuster());
-
-        config.addConfigProcessor(new RaceConfigValidator());
-        config.addConfigProcessor(new SeriesRaceConfigValidator());
-
-        if (config.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE)) {
-
-            config.addConfigProcessor(new IndividualTimesConfigAdjuster());
-            config.addConfigProcessor(new IndividualTimesConfigValidator());
-        }
-
-        if (config.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE)) {
-
-            config.addConfigProcessor(new IndividualPositionsConfigAdjuster());
-        }
-
+        addProcessors(config);
         config.processConfig();
 
         return config;
@@ -78,12 +65,59 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
 
     private SeriesRaceScorer getRaceScorer(final Config config, final SeriesRace race) {
 
-        if (config.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE))
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES))
             return new IndividualTimesScorer(race);
 
-        if (config.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE))
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS))
             return new IndividualPositionsScorer(race);
 
         return new AggregateTimesScorer(race);
+    }
+
+    private void addProcessors(final Config config) {
+
+        config.addConfigProcessor(new RaceConfigAdjuster());
+        config.addConfigProcessor(new RaceConfigValidator());
+        config.addConfigProcessor(new SeriesRaceConfigAdjuster());
+        config.addConfigProcessor(new SeriesRaceConfigValidator());
+
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES)) {
+
+            config.addConfigProcessor(new IndividualTimesConfigAdjuster());
+            config.addConfigProcessor(new IndividualTimesConfigValidator());
+        }
+
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS)) {
+
+            config.addConfigProcessor(new IndividualPositionsConfigAdjuster());
+        }
+    }
+
+    private static class IndividualPositionsConfigAdjuster implements ConfigProcessor {
+
+        @Override
+        public void processConfig(final Config config) {
+
+            config.replace(KEY_SCORE_FOR_FIRST_PLACE, Integer::parseInt);
+        }
+    }
+
+    private static class IndividualTimesConfigAdjuster implements ConfigProcessor {
+
+        @Override
+        public void processConfig(final Config config) {
+
+            config.replace(KEY_RACE_CATEGORIES_PATH, s -> config.interpretPath(Path.of(s)));
+            config.replace(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
+        }
+    }
+
+    private static class IndividualTimesConfigValidator implements ConfigProcessor {
+
+        public void processConfig(final Config config) {
+
+            validateKeyPresent(KEY_RACE_CATEGORIES_PATH, config);
+            validateFileExists(KEY_RACE_CATEGORIES_PATH, config);
+        }
     }
 }
