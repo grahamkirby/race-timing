@@ -1,5 +1,5 @@
 YEAR = 2024
-RACE_NAME_FOR_RESULTS = Dunnikier 2 Bridges
+RACE_NAME_FOR_RESULTS = Dunnikier
 RACE_NAME_FOR_FILENAMES = dunnikier
 
 # Relative to directory containing configuration file.

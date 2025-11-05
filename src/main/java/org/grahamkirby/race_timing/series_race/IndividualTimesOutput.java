@@ -68,12 +68,18 @@ class IndividualTimesOutput extends RaceOutput {
 
         final SeriesRaceResultsCalculator calculator;
         final boolean multiple_clubs;
+        final boolean multiple_race_categories;
+        final boolean multiple_races_taken_place;
+        final boolean possible_to_have_completed;
 
         private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
 
             super(race, writer);
             calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
             multiple_clubs = countClubs(calculator.getOverallResults()) > 1;
+            multiple_race_categories = calculator.getRaceCategories().size() > 1;
+            multiple_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace() > 1;
+            possible_to_have_completed = ((SeriesRace) race).getNumberOfRacesTakenPlace() >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         }
 
         @Override
@@ -86,12 +92,17 @@ class IndividualTimesOutput extends RaceOutput {
                 collect(Collectors.joining("?,")) + "?";
 
             writer.append("Pos,Runner,");
-            if (multiple_clubs) writer.append("Club,");
+            if (multiple_clubs)
+                writer.append("Club,");
             writer.append("Category,").
-                append(race_names).
-                append(",Total,Completed,").
-                append(race_categories_header).
-                append(LINE_SEPARATOR);
+                append(race_names);
+            if (multiple_races_taken_place)
+                writer.append(",Total");
+            if (possible_to_have_completed)
+                writer.append(",Completed");
+            if (multiple_race_categories)
+                writer.append(",").append(race_categories_header);
+            writer.append(LINE_SEPARATOR);
         }
 
         @Override
@@ -115,15 +126,17 @@ class IndividualTimesOutput extends RaceOutput {
                     collect(Collectors.joining(","))
             );
 
-            writer.append("," ).
-                append(String.valueOf(scorer.getSeriesPerformance(runner))).append(",").
-                append(result.hasCompletedSeries() ? "Y" : "N").append(",");
+            if (multiple_races_taken_place)
+                writer.append("," ).append(String.valueOf(scorer.getSeriesPerformance(runner)));
+            if (possible_to_have_completed)
+                writer.append(",").append(result.hasCompletedSeries() ? "Y" : "N");
 
-            writer.append(
-                calculator.getRaceCategories().stream().
-                    map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
-                    collect(Collectors.joining(","))
-            );
+            if (multiple_race_categories)
+                writer.append(",").append(
+                    calculator.getRaceCategories().stream().
+                        map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
+                        collect(Collectors.joining(","))
+                );
 
             writer.append(LINE_SEPARATOR);
         }
@@ -132,10 +145,19 @@ class IndividualTimesOutput extends RaceOutput {
     private static final class GrandPrixOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
         final boolean multiple_clubs;
+        final boolean multiple_race_categories;
+        final boolean multiple_races_taken_place;
+        final boolean possible_to_have_completed;
 
         private GrandPrixOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+
             super(race, writer);
-            multiple_clubs = countClubs(race.getResultsCalculator().getOverallResults()) > 1;
+
+            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+            multiple_clubs = countClubs(calculator.getOverallResults()) > 1;
+            multiple_race_categories = calculator.getRaceCategories().size() > 1;
+            multiple_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace() > 1;
+            possible_to_have_completed = ((SeriesRace) race).getNumberOfRacesTakenPlace() >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         }
 
         protected List<String> getResultsColumnHeaders() {
@@ -154,11 +176,14 @@ class IndividualTimesOutput extends RaceOutput {
                 if (individual_race != null)
                     headers.add((String) individual_race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS));
 
-            headers.add("Total");
-            headers.add("Completed?");
+            if (multiple_races_taken_place)
+                headers.add("Total");
+            if (possible_to_have_completed)
+                headers.add("Completed?");
 
-            for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
-                headers.add(category.category_title() + "?");
+            if (multiple_race_categories)
+                for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
+                    headers.add(category.category_title() + "?");
 
             return headers;
         }
@@ -184,11 +209,14 @@ class IndividualTimesOutput extends RaceOutput {
                     elements.add(renderScore(score));
                  }
 
-            elements.add(String.valueOf(scorer.getSeriesPerformance(runner)));
-            elements.add(result.hasCompletedSeries() ? "Y" : "N");
+            if (multiple_races_taken_place)
+                elements.add(String.valueOf(scorer.getSeriesPerformance(runner)));
+            if (possible_to_have_completed)
+                elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
-            for (final SeriesRaceCategory category : calculator.getRaceCategories())
-                elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
+            if (multiple_race_categories)
+                for (final SeriesRaceCategory category : calculator.getRaceCategories())
+                    elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;
         }

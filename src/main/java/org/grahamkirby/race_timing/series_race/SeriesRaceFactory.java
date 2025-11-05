@@ -82,7 +82,8 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
             return new IndividualTimesOutput(race);
 
         if (config.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE))
-            return new IndividualPositionsOutput(race);
+            return new IndividualTimesOutput(race);
+//        return new IndividualPositionsOutput(race);
 
         return new AggregateTimesOutput(race);
     }
