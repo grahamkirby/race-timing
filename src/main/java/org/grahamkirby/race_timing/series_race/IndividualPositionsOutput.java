@@ -141,7 +141,7 @@ class IndividualPositionsOutput extends RaceOutput {
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final Object score = scorer.getIndividualRacePerformance(runner, individual_race);
+                    final Performance score = scorer.getIndividualRacePerformance(runner, individual_race);
                     // TODO move.
                     elements.add(IndividualTimesOutput.renderScore(score));
                 }

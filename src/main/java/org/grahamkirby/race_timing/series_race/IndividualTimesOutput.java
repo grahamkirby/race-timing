@@ -56,14 +56,24 @@ class IndividualTimesOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static int countClubs(final List<RaceResult> results) {
+
+        return (int) results.stream().
+            map(result -> ((Runner) result.getParticipant()).getClub()).
+            distinct().
+            count();
+    }
+
     private static final class OverallResultPrinterCSV extends ResultPrinter {
 
         final SeriesRaceResultsCalculator calculator;
+        final boolean multiple_clubs;
 
         private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
 
             super(race, writer);
             calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+            multiple_clubs = countClubs(calculator.getOverallResults()) > 1;
         }
 
         @Override
@@ -75,7 +85,9 @@ class IndividualTimesOutput extends RaceOutput {
                 map(SeriesRaceCategory::category_title).
                 collect(Collectors.joining("?,")) + "?";
 
-            writer.append("Pos,Runner,Category,").
+            writer.append("Pos,Runner,");
+            if (multiple_clubs) writer.append("Club,");
+            writer.append("Category,").
                 append(race_names).
                 append(",Total,Completed,").
                 append(race_categories_header).
@@ -90,8 +102,10 @@ class IndividualTimesOutput extends RaceOutput {
             final SeriesRaceScorer scorer = calculator.getScorer();
 
             writer.append(result.getPositionString()).append(",").
-                append(encode(runner.getName())).append(",").
-                append(runner.getCategory().getShortName()).append(",");
+                append(encode(runner.getName())).append(",");
+            if (multiple_clubs)
+                writer.append(encode((runner).getClub())).append(",");
+            writer.append(runner.getCategory().getShortName()).append(",");
 
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
@@ -117,14 +131,20 @@ class IndividualTimesOutput extends RaceOutput {
 
     private static final class GrandPrixOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
+        final boolean multiple_clubs;
+
         private GrandPrixOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
+            multiple_clubs = countClubs(race.getResultsCalculator().getOverallResults()) > 1;
         }
 
         protected List<String> getResultsColumnHeaders() {
 
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
             final List<String> headers = new ArrayList<>(common_headers);
+
+            if (multiple_clubs)
+                headers.add("Club");
 
             // This traverses races in order of listing in config.
             final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
@@ -155,12 +175,14 @@ class IndividualTimesOutput extends RaceOutput {
             elements.add(result.getPositionString());
             elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getShortName());
+            if (multiple_clubs)
+                elements.add(runner.getClub());
 
             for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
                 if (individual_race != null) {
-                    final Object score = scorer.getIndividualRacePerformance((Runner) result.getParticipant(), individual_race);
+                    final Performance score = scorer.getIndividualRacePerformance((Runner) result.getParticipant(), individual_race);
                     elements.add(renderScore(score));
-                }
+                 }
 
             elements.add(String.valueOf(scorer.getSeriesPerformance(runner)));
             elements.add(result.hasCompletedSeries() ? "Y" : "N");
@@ -194,7 +216,7 @@ class IndividualTimesOutput extends RaceOutput {
         }
     }
 
-    public static String renderScore(final Object score) {
+    public static String renderScore(final Performance score) {
 
         return score != null ? String.valueOf(score) : "-";
     }

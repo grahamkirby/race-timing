@@ -55,7 +55,7 @@ public class IndividualPositionsScorer extends SeriesRaceScorer {
         // Higher score is better.
         return gender_position <= gender_results.size() ?
             new Performance(Math.max(score_for_first_place - gender_position + 1, 0)) :
-            new Performance(0);
+            null;
     }
 
     @Override
