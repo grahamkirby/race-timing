@@ -31,26 +31,26 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-class IndividualTimesOutput extends RaceOutput {
+class SeriesRaceOutput extends RaceOutput {
 
     @Override
     protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
-        return OverallResultPrinterCSV::new;
+        return SeriesRaceOverallResultPrinterCSV::new;
     }
 
     @Override
     protected ResultPrinterGenerator getOverallResultHTMLPrinterGenerator() {
-        return GrandPrixOverallResultPrinterHTML::new;
+        return SeriesRaceOverallResultPrinterHTML::new;
     }
 
     @Override
     protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
-        return GrandPrixPrizeResultPrinterHTML::new;
+        return SeriesRacePrizeResultPrinterHTML::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IndividualTimesOutput(final RaceInternal race) {
+    public SeriesRaceOutput(final RaceInternal race) {
         super(race);
     }
 
@@ -64,7 +64,7 @@ class IndividualTimesOutput extends RaceOutput {
             count();
     }
 
-    private static final class OverallResultPrinterCSV extends ResultPrinter {
+    private static final class SeriesRaceOverallResultPrinterCSV extends ResultPrinter {
 
         final SeriesRaceResultsCalculator calculator;
         final boolean multiple_clubs;
@@ -72,7 +72,7 @@ class IndividualTimesOutput extends RaceOutput {
         final boolean multiple_races_taken_place;
         final boolean possible_to_have_completed;
 
-        private OverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
+        private SeriesRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
 
             super(race, writer);
             calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
@@ -89,7 +89,7 @@ class IndividualTimesOutput extends RaceOutput {
 
             final String race_categories_header = calculator.getRaceCategories().stream().
                 map(SeriesRaceCategory::category_title).
-                collect(Collectors.joining("?,")) + "?";
+                collect(Collectors.joining(","));
 
             writer.append("Pos,Runner,");
             if (multiple_clubs)
@@ -118,16 +118,19 @@ class IndividualTimesOutput extends RaceOutput {
                 writer.append(encode((runner).getClub())).append(",");
             writer.append(runner.getCategory().getShortName()).append(",");
 
+            // TODO check whether comment below still holds.
+            // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
+            // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
                     map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
-                    map(IndividualTimesOutput::renderScore).
+                    map(SeriesRaceOutput::renderScore).
                     collect(Collectors.joining(","))
             );
 
             if (multiple_races_taken_place)
-                writer.append("," ).append(String.valueOf(scorer.getSeriesPerformance(runner)));
+                writer.append("," ).append(renderScore(scorer.getSeriesPerformance(runner)));
             if (possible_to_have_completed)
                 writer.append(",").append(result.hasCompletedSeries() ? "Y" : "N");
 
@@ -142,14 +145,14 @@ class IndividualTimesOutput extends RaceOutput {
         }
     }
 
-    private static final class GrandPrixOverallResultPrinterHTML extends OverallResultPrinterHTML {
+    private static final class SeriesRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
         final boolean multiple_clubs;
         final boolean multiple_race_categories;
         final boolean multiple_races_taken_place;
         final boolean possible_to_have_completed;
 
-        private GrandPrixOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+        private SeriesRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
 
             super(race, writer);
 
@@ -179,11 +182,11 @@ class IndividualTimesOutput extends RaceOutput {
             if (multiple_races_taken_place)
                 headers.add("Total");
             if (possible_to_have_completed)
-                headers.add("Completed?");
+                headers.add("Completed");
 
             if (multiple_race_categories)
                 for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
-                    headers.add(category.category_title() + "?");
+                    headers.add(category.category_title());
 
             return headers;
         }
@@ -210,7 +213,7 @@ class IndividualTimesOutput extends RaceOutput {
                  }
 
             if (multiple_races_taken_place)
-                elements.add(String.valueOf(scorer.getSeriesPerformance(runner)));
+                elements.add(renderScore(scorer.getSeriesPerformance(runner)));
             if (possible_to_have_completed)
                 elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
@@ -222,9 +225,9 @@ class IndividualTimesOutput extends RaceOutput {
         }
     }
 
-    private static final class GrandPrixPrizeResultPrinterHTML extends PrizeResultPrinterHTML {
+    private static final class SeriesRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public GrandPrixPrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+        public SeriesRacePrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

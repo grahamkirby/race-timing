@@ -1,127 +1,127 @@
-Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
-1,Henrik Scanlon,East Fife Triathlon Club,MU9,00:07:15,00:10:46,00:06:31,00:09:18,00:06:02,00:39:52
-2,Mac Strang,Unatt.,MU9,00:07:17,00:10:40,00:06:31,00:09:15,00:06:10,00:39:53
-3,Euan Robertson,Ceres Primary School,MU9,00:07:41,00:11:21,00:06:40,00:09:52,00:06:20,00:41:54
-4,Struan Ferguson,Fife AC,MU9,00:07:57,00:12:09,00:06:54,00:09:23,00:06:07,00:42:30
-5,James Logan,Unatt.,MU9,00:08:04,00:12:22,00:06:30,00:09:51,00:06:06,00:42:53
-6,Ruaridh Ferguson,Fife AC,MU9,00:08:20,00:12:12,00:06:59,00:09:31,00:06:20,00:43:22
-7,Sam Rainey,Anster Haddies,MU9,00:08:15,00:12:06,00:07:00,00:09:51,00:06:18,00:43:30
-8,James Redfern,Canongate Primary School,MU9,00:07:45,00:12:00,00:07:31,00:09:54,00:06:46,00:43:56
-9,Zander Douglas,Unatt.,MU9,00:08:05,00:13:31,00:07:15,00:09:48,00:06:14,00:44:53
-10,Hugo Strachan,Unatt.,MU9,00:08:46,00:12:39,00:07:22,00:09:58,00:06:30,00:45:15
-11,Bea Burns,Unatt.,FU9,00:08:13,00:13:15,00:07:33,00:10:03,00:06:35,00:45:39
-12,Aaron Smith,Howe Rugby,MU9,00:08:20,00:12:41,00:07:47,00:10:18,00:06:52,00:45:58
-13,Alexander Donald,Unatt.,MU9,00:08:31,00:13:36,00:07:30,00:10:18,00:06:52,00:46:47
-14,Peter Stojanovic-Weaver,Unatt.,MU9,00:08:38,00:13:16,00:07:32,00:10:42,00:06:47,00:46:55
-15,Harvey Farquhar,East Fife Triathlon Club,MU9,00:08:36,00:13:55,00:07:36,00:11:13,00:07:19,00:48:39
-16,Thomas Jakeman,Unatt.,MU9,00:09:07,00:13:50,00:08:06,00:11:13,00:07:43,00:49:59
-17,Bea Niven,East Fife Triathlon Club,FU9,00:09:43,00:14:26,00:07:52,00:11:11,00:07:16,00:50:28
-18,Frederick Sproson,Unatt.,MU9,00:09:32,00:14:29,00:08:29,00:11:13,00:07:26,00:51:09
-19,Jamie Milne,Unatt.,MU9,00:09:35,00:14:23,00:08:03,00:11:26,00:07:48,00:51:15
-20,Erik Baird,Unatt.,MU9,00:09:38,00:17:03,00:08:58,00:10:43,00:07:38,00:54:00
-21,Reuben Edwards,Unatt.,MU9,00:09:43,00:16:32,00:08:32,00:11:57,00:07:44,00:54:28
-22,Jude Deegan,Lawhead Primary School,MU9,00:09:52,00:15:19,00:09:00,00:12:27,00:08:33,00:55:11
-23,Skye Querns,Unatt.,FU9,00:10:08,00:18:18,00:08:12,00:11:50,00:07:42,00:56:10
-24,Hamish Broom,East Fife Triathlon Club,MU9,00:09:40,00:17:43,00:08:39,00:13:11,00:08:44,00:57:57
-25,Alice Steven,Lawhead Primary School,FU9,00:10:38,00:17:16,00:09:17,00:13:26,00:07:55,00:58:32
-26,Harper Querns,Unatt.,FU9,00:13:31,00:19:33,00:08:53,00:11:54,00:07:57,01:01:48
-27,Neave Beere,Unatt.,FU9,00:12:22,00:18:20,00:11:14,00:13:45,00:09:41,01:05:22
-28,Lydia Rees Jones,Canongate Primary School,FU9,00:12:28,00:18:40,00:10:09,00:17:47,00:12:36,01:11:40
-29,Orla Gibb,Unatt.,FU9,00:12:30,00:21:05,00:12:42,00:14:53,00:12:44,01:13:54
--,Joe Suttie,Greyfriars RC Primary,MU9,00:09:46,00:20:20,00:08:52,-,00:09:38,-
--,Arlo Ennis,East Fife Triathlon Club,MU9,00:09:07,00:13:12,00:07:18,-,-,-
--,Eva Lebl,East Fife Triathlon Club,FU9,-,00:16:28,00:07:52,-,00:07:15,-
--,Charlotte Waugh,Unatt.,FU9,-,-,00:08:10,00:11:37,00:07:31,-
--,Kerr Seeley,East Fife Triathlon Club,MU9,00:10:34,-,-,-,00:08:23,-
+Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total,Completed
+1,Henrik Scanlon,East Fife Triathlon Club,MU9,00:07:15,00:10:46,00:06:31,00:09:18,00:06:02,00:39:52,Y
+2,Mac Strang,Unatt.,MU9,00:07:17,00:10:40,00:06:31,00:09:15,00:06:10,00:39:53,Y
+3,Euan Robertson,Ceres Primary School,MU9,00:07:41,00:11:21,00:06:40,00:09:52,00:06:20,00:41:54,Y
+4,Struan Ferguson,Fife AC,MU9,00:07:57,00:12:09,00:06:54,00:09:23,00:06:07,00:42:30,Y
+5,James Logan,Unatt.,MU9,00:08:04,00:12:22,00:06:30,00:09:51,00:06:06,00:42:53,Y
+6,Ruaridh Ferguson,Fife AC,MU9,00:08:20,00:12:12,00:06:59,00:09:31,00:06:20,00:43:22,Y
+7,Sam Rainey,Anster Haddies,MU9,00:08:15,00:12:06,00:07:00,00:09:51,00:06:18,00:43:30,Y
+8,James Redfern,Canongate Primary School,MU9,00:07:45,00:12:00,00:07:31,00:09:54,00:06:46,00:43:56,Y
+9,Zander Douglas,Unatt.,MU9,00:08:05,00:13:31,00:07:15,00:09:48,00:06:14,00:44:53,Y
+10,Hugo Strachan,Unatt.,MU9,00:08:46,00:12:39,00:07:22,00:09:58,00:06:30,00:45:15,Y
+11,Bea Burns,Unatt.,FU9,00:08:13,00:13:15,00:07:33,00:10:03,00:06:35,00:45:39,Y
+12,Aaron Smith,Howe Rugby,MU9,00:08:20,00:12:41,00:07:47,00:10:18,00:06:52,00:45:58,Y
+13,Alexander Donald,Unatt.,MU9,00:08:31,00:13:36,00:07:30,00:10:18,00:06:52,00:46:47,Y
+14,Peter Stojanovic-Weaver,Unatt.,MU9,00:08:38,00:13:16,00:07:32,00:10:42,00:06:47,00:46:55,Y
+15,Harvey Farquhar,East Fife Triathlon Club,MU9,00:08:36,00:13:55,00:07:36,00:11:13,00:07:19,00:48:39,Y
+16,Thomas Jakeman,Unatt.,MU9,00:09:07,00:13:50,00:08:06,00:11:13,00:07:43,00:49:59,Y
+17,Bea Niven,East Fife Triathlon Club,FU9,00:09:43,00:14:26,00:07:52,00:11:11,00:07:16,00:50:28,Y
+18,Frederick Sproson,Unatt.,MU9,00:09:32,00:14:29,00:08:29,00:11:13,00:07:26,00:51:09,Y
+19,Jamie Milne,Unatt.,MU9,00:09:35,00:14:23,00:08:03,00:11:26,00:07:48,00:51:15,Y
+20,Erik Baird,Unatt.,MU9,00:09:38,00:17:03,00:08:58,00:10:43,00:07:38,00:54:00,Y
+21,Reuben Edwards,Unatt.,MU9,00:09:43,00:16:32,00:08:32,00:11:57,00:07:44,00:54:28,Y
+22,Jude Deegan,Lawhead Primary School,MU9,00:09:52,00:15:19,00:09:00,00:12:27,00:08:33,00:55:11,Y
+23,Skye Querns,Unatt.,FU9,00:10:08,00:18:18,00:08:12,00:11:50,00:07:42,00:56:10,Y
+24,Hamish Broom,East Fife Triathlon Club,MU9,00:09:40,00:17:43,00:08:39,00:13:11,00:08:44,00:57:57,Y
+25,Alice Steven,Lawhead Primary School,FU9,00:10:38,00:17:16,00:09:17,00:13:26,00:07:55,00:58:32,Y
+26,Harper Querns,Unatt.,FU9,00:13:31,00:19:33,00:08:53,00:11:54,00:07:57,01:01:48,Y
+27,Neave Beere,Unatt.,FU9,00:12:22,00:18:20,00:11:14,00:13:45,00:09:41,01:05:22,Y
+28,Lydia Rees Jones,Canongate Primary School,FU9,00:12:28,00:18:40,00:10:09,00:17:47,00:12:36,01:11:40,Y
+29,Orla Gibb,Unatt.,FU9,00:12:30,00:21:05,00:12:42,00:14:53,00:12:44,01:13:54,Y
+-,Joe Suttie,Greyfriars RC Primary,MU9,00:09:46,00:20:20,00:08:52,-,00:09:38,-,N
+-,Arlo Ennis,East Fife Triathlon Club,MU9,00:09:07,00:13:12,00:07:18,-,-,-,N
+-,Eva Lebl,East Fife Triathlon Club,FU9,-,00:16:28,00:07:52,-,00:07:15,-,N
+-,Charlotte Waugh,Unatt.,FU9,-,-,00:08:10,00:11:37,00:07:31,-,N
+-,Kerr Seeley,East Fife Triathlon Club,MU9,00:10:34,-,-,-,00:08:23,-,N
 
-Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
-1,Angus Logan,Fife AC,MU11,00:06:30,00:09:48,00:05:48,00:08:19,00:05:29,00:35:54
-2,Reuben Seymour,East Fife Triathlon Club,MU11,00:06:59,00:10:15,00:06:14,00:08:49,00:05:44,00:38:01
-3,Phoebe Scanlon,East Fife Triathlon Club,FU11,00:06:57,00:10:34,00:06:12,00:08:41,00:05:41,00:38:05
-4,Isla Glasse-Davies,Fife AC,FU11,00:07:01,00:10:58,00:06:15,00:08:52,00:05:45,00:38:51
-5,Oliver Steven,Lawhead Primary School,MU11,00:07:15,00:11:19,00:06:19,00:09:16,00:06:05,00:40:14
-6,Nico Kitching,Letham Primary School,MU11,00:07:29,00:11:41,00:06:17,00:09:51,00:06:25,00:41:43
-7,Katie Stojanovic-Weaver,Unatt.,FU11,00:07:20,00:12:11,00:06:26,00:09:38,00:06:14,00:41:49
-8,Noah Stone,East Fife Triathlon Club,MU11,00:07:58,00:12:03,00:07:00,00:10:11,00:06:30,00:43:42
-9,Heather Graham,Ceres Primary School,FU11,00:07:54,00:12:35,00:07:00,00:10:21,00:06:14,00:44:04
-10,Lucy Redfern,Canongate Primary School,FU11,00:07:43,00:12:27,00:07:00,00:09:58,00:07:08,00:44:16
-11,Eden Hall,Fife AC,FU11,00:07:47,00:13:27,00:07:07,00:09:42,00:06:27,00:44:30
-12,Theodore Sproson,Unatt.,MU11,00:08:23,00:12:44,00:07:38,00:10:10,00:06:36,00:45:31
-13,Oliver Barrable,Greyfriars RC Primary,MU11,00:08:10,00:13:18,00:07:02,00:10:32,00:06:50,00:45:52
-14,Aster Pacholek,Fife AC,FU11,00:08:16,00:13:33,00:07:20,00:10:16,00:06:56,00:46:21
-15,Arthur Broadhurst,Unatt.,MU11,00:08:30,00:12:38,00:07:05,00:11:10,00:07:22,00:46:45
-16,Lola Rowan Bowditch,Unatt.,FU11,00:08:21,00:13:22,00:07:10,00:10:53,00:07:23,00:47:09
-17,Susannah Corbett,Unatt.,FU11,00:08:21,00:13:24,00:07:11,00:10:51,00:07:23,00:47:10
-18,Amelia Rees Jones,Canongate Primary School,FU11,00:08:35,00:15:23,00:07:59,00:11:06,00:07:22,00:50:25
-19,Archie Drummond,Ceres Primary School,MU11,00:09:26,00:14:12,00:07:35,00:11:15,00:07:59,00:50:27
-20=,Ingrid Beaton,East Fife Triathlon Club,FU11,00:09:08,00:15:57,00:07:42,00:11:21,00:07:10,00:51:18
-20=,Rowan Deegan,Lawhead Primary School,FU11,00:08:57,00:15:01,00:08:25,00:11:26,00:07:29,00:51:18
-22,Amelie Wild,East Fife Triathlon Club,FU11,00:08:59,00:14:17,00:08:09,00:11:59,00:07:55,00:51:19
-23,Leonie Helena Metayer,Strathkinness Primary School,FU11,00:09:30,00:15:44,00:07:42,00:11:17,00:07:24,00:51:37
-24,Eilidh Christie,Unatt.,FU11,00:09:57,00:15:02,00:08:04,00:11:55,00:08:02,00:53:00
-25,Isla Beere,Unatt.,FU11,00:10:57,00:17:00,00:09:10,00:12:49,00:08:13,00:58:09
-26,Arwen McKelvie,East Fife Triathlon Club,FU11,00:10:44,00:18:55,00:09:54,00:12:21,00:08:19,01:00:13
-27,Fiona Nylk,Lawhead Primary School,FU11,00:11:04,00:21:37,00:09:51,00:14:35,00:09:32,01:06:39
-28,Zoe Tello,Canongate Primary School,FU11,00:12:12,00:18:43,00:10:11,00:15:40,00:10:51,01:07:37
--,Ruairi Seeley,East Fife Triathlon Club,MU11,00:08:07,-,-,00:10:26,00:06:54,-
--,Anna Draine,Unatt.,FU11,-,-,-,00:11:40,00:07:46,-
--,Ajay Stewart,Unatt.,MU11,00:08:35,-,-,-,00:07:44,-
--,Katie Duff,Unatt.,FU11,00:10:53,-,-,-,-,-
--,Iona Hislop,Fife AC,FU11,-,00:13:17,-,-,-,-
--,Mitchell Thom,Perth Strathtay Harriers,MU11,00:07:34,-,-,-,-,-
+Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total,Completed
+1,Angus Logan,Fife AC,MU11,00:06:30,00:09:48,00:05:48,00:08:19,00:05:29,00:35:54,Y
+2,Reuben Seymour,East Fife Triathlon Club,MU11,00:06:59,00:10:15,00:06:14,00:08:49,00:05:44,00:38:01,Y
+3,Phoebe Scanlon,East Fife Triathlon Club,FU11,00:06:57,00:10:34,00:06:12,00:08:41,00:05:41,00:38:05,Y
+4,Isla Glasse-Davies,Fife AC,FU11,00:07:01,00:10:58,00:06:15,00:08:52,00:05:45,00:38:51,Y
+5,Oliver Steven,Lawhead Primary School,MU11,00:07:15,00:11:19,00:06:19,00:09:16,00:06:05,00:40:14,Y
+6,Nico Kitching,Letham Primary School,MU11,00:07:29,00:11:41,00:06:17,00:09:51,00:06:25,00:41:43,Y
+7,Katie Stojanovic-Weaver,Unatt.,FU11,00:07:20,00:12:11,00:06:26,00:09:38,00:06:14,00:41:49,Y
+8,Noah Stone,East Fife Triathlon Club,MU11,00:07:58,00:12:03,00:07:00,00:10:11,00:06:30,00:43:42,Y
+9,Heather Graham,Ceres Primary School,FU11,00:07:54,00:12:35,00:07:00,00:10:21,00:06:14,00:44:04,Y
+10,Lucy Redfern,Canongate Primary School,FU11,00:07:43,00:12:27,00:07:00,00:09:58,00:07:08,00:44:16,Y
+11,Eden Hall,Fife AC,FU11,00:07:47,00:13:27,00:07:07,00:09:42,00:06:27,00:44:30,Y
+12,Theodore Sproson,Unatt.,MU11,00:08:23,00:12:44,00:07:38,00:10:10,00:06:36,00:45:31,Y
+13,Oliver Barrable,Greyfriars RC Primary,MU11,00:08:10,00:13:18,00:07:02,00:10:32,00:06:50,00:45:52,Y
+14,Aster Pacholek,Fife AC,FU11,00:08:16,00:13:33,00:07:20,00:10:16,00:06:56,00:46:21,Y
+15,Arthur Broadhurst,Unatt.,MU11,00:08:30,00:12:38,00:07:05,00:11:10,00:07:22,00:46:45,Y
+16,Lola Rowan Bowditch,Unatt.,FU11,00:08:21,00:13:22,00:07:10,00:10:53,00:07:23,00:47:09,Y
+17,Susannah Corbett,Unatt.,FU11,00:08:21,00:13:24,00:07:11,00:10:51,00:07:23,00:47:10,Y
+18,Amelia Rees Jones,Canongate Primary School,FU11,00:08:35,00:15:23,00:07:59,00:11:06,00:07:22,00:50:25,Y
+19,Archie Drummond,Ceres Primary School,MU11,00:09:26,00:14:12,00:07:35,00:11:15,00:07:59,00:50:27,Y
+20=,Ingrid Beaton,East Fife Triathlon Club,FU11,00:09:08,00:15:57,00:07:42,00:11:21,00:07:10,00:51:18,Y
+20=,Rowan Deegan,Lawhead Primary School,FU11,00:08:57,00:15:01,00:08:25,00:11:26,00:07:29,00:51:18,Y
+22,Amelie Wild,East Fife Triathlon Club,FU11,00:08:59,00:14:17,00:08:09,00:11:59,00:07:55,00:51:19,Y
+23,Leonie Helena Metayer,Strathkinness Primary School,FU11,00:09:30,00:15:44,00:07:42,00:11:17,00:07:24,00:51:37,Y
+24,Eilidh Christie,Unatt.,FU11,00:09:57,00:15:02,00:08:04,00:11:55,00:08:02,00:53:00,Y
+25,Isla Beere,Unatt.,FU11,00:10:57,00:17:00,00:09:10,00:12:49,00:08:13,00:58:09,Y
+26,Arwen McKelvie,East Fife Triathlon Club,FU11,00:10:44,00:18:55,00:09:54,00:12:21,00:08:19,01:00:13,Y
+27,Fiona Nylk,Lawhead Primary School,FU11,00:11:04,00:21:37,00:09:51,00:14:35,00:09:32,01:06:39,Y
+28,Zoe Tello,Canongate Primary School,FU11,00:12:12,00:18:43,00:10:11,00:15:40,00:10:51,01:07:37,Y
+-,Ruairi Seeley,East Fife Triathlon Club,MU11,00:08:07,-,-,00:10:26,00:06:54,-,N
+-,Anna Draine,Unatt.,FU11,-,-,-,00:11:40,00:07:46,-,N
+-,Ajay Stewart,Unatt.,MU11,00:08:35,-,-,-,00:07:44,-,N
+-,Katie Duff,Unatt.,FU11,00:10:53,-,-,-,-,-,N
+-,Iona Hislop,Fife AC,FU11,-,00:13:17,-,-,-,-,N
+-,Mitchell Thom,Perth Strathtay Harriers,MU11,00:07:34,-,-,-,-,-,N
 
-Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
-1,Cole Gray,Unatt.,MU13,00:12:37,00:20:02,00:10:35,00:07:34,00:16:31,01:07:19
-2,Felix Watters,Unatt.,MU13,00:14:08,00:19:09,00:12:05,00:08:52,00:18:34,01:12:48
-3,Alfie Edwards,East Fife Triathlon Club,MU13,00:14:23,00:21:17,00:12:05,00:08:10,00:17:58,01:13:53
-4,Francesca Jarrett,Dundee Hawkhill Harriers,FU13,00:14:00,00:22:15,00:11:38,00:08:13,00:17:59,01:14:05
-5,Amelia Stephen,Fife AC,FU13,00:14:40,00:22:58,00:12:48,00:08:46,00:19:50,01:19:02
-6,Murray Kinnaird,Fife AC,MU13,00:15:14,00:22:24,00:12:38,00:09:14,00:20:16,01:19:46
-7,Fraser Whittingham,St Columbas Primary School,MU13,00:15:26,00:23:03,00:13:17,00:09:31,00:20:49,01:22:06
-8,Abbie Waite,Bell Baxter School,FU13,00:14:39,00:25:45,00:13:25,00:08:51,00:19:41,01:22:21
-9,Benjamin Corbett,Unatt.,MU13,00:17:29,00:24:20,00:14:15,00:10:23,00:24:34,01:31:01
-10,Jack Bradwell,Unatt.,MU13,00:16:42,00:24:32,00:14:38,00:10:22,00:24:56,01:31:10
-11,Alice Sophie Metayer,Strathkinness Primary School,FU13,00:19:23,00:25:52,00:14:05,00:10:43,00:23:52,01:33:55
-12,Joe Barrable,Greyfriars RC Primary,MU13,00:18:43,00:27:22,00:14:39,00:11:01,00:24:56,01:36:41
-13,Vienna Kitching,Unatt.,FU13,00:18:17,00:28:13,00:15:26,00:11:11,00:24:03,01:37:10
-14,Ruaridh Stone,East Fife Triathlon Club,MU13,00:18:33,00:28:44,00:15:47,00:11:13,00:24:18,01:38:35
-15,Lewis McKelvie,Fife AC,MU13,00:23:19,00:33:37,00:16:52,00:11:30,00:25:19,01:50:37
-16,Isabelle Tello,Canongate Primary School,FU13,00:21:27,00:36:16,00:17:43,00:13:18,00:30:06,01:58:50
-17,Logan Smith,Unatt.,MU13,00:23:37,00:37:43,00:19:20,00:13:52,00:30:35,02:05:07
--,Henry Green,Unatt.,MU13,00:15:38,00:23:50,00:13:04,-,00:20:49,-
--,Anna Roberts,Unatt.,FU13,00:21:35,00:33:30,-,00:11:57,00:25:48,-
--,Orla Ennis,East Fife Triathlon Club,FU13,00:17:28,00:27:07,00:14:35,-,-,-
--,Gabriella Jarrett,Dundee Hawkhill Harriers,FU13,-,00:26:13,00:14:18,-,-,-
--,Hannah Lebl,East Fife Triathlon Club,FU13,-,-,-,-,00:24:43,-
--,Eddie Niven,East Fife Triathlon Club,MU13,00:13:38,-,-,-,-,-
--,Cameron Seeley,East Fife Triathlon Club,MU13,00:14:33,-,-,-,-,-
+Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total,Completed
+1,Cole Gray,Unatt.,MU13,00:12:37,00:20:02,00:10:35,00:07:34,00:16:31,01:07:19,Y
+2,Felix Watters,Unatt.,MU13,00:14:08,00:19:09,00:12:05,00:08:52,00:18:34,01:12:48,Y
+3,Alfie Edwards,East Fife Triathlon Club,MU13,00:14:23,00:21:17,00:12:05,00:08:10,00:17:58,01:13:53,Y
+4,Francesca Jarrett,Dundee Hawkhill Harriers,FU13,00:14:00,00:22:15,00:11:38,00:08:13,00:17:59,01:14:05,Y
+5,Amelia Stephen,Fife AC,FU13,00:14:40,00:22:58,00:12:48,00:08:46,00:19:50,01:19:02,Y
+6,Murray Kinnaird,Fife AC,MU13,00:15:14,00:22:24,00:12:38,00:09:14,00:20:16,01:19:46,Y
+7,Fraser Whittingham,St Columbas Primary School,MU13,00:15:26,00:23:03,00:13:17,00:09:31,00:20:49,01:22:06,Y
+8,Abbie Waite,Bell Baxter School,FU13,00:14:39,00:25:45,00:13:25,00:08:51,00:19:41,01:22:21,Y
+9,Benjamin Corbett,Unatt.,MU13,00:17:29,00:24:20,00:14:15,00:10:23,00:24:34,01:31:01,Y
+10,Jack Bradwell,Unatt.,MU13,00:16:42,00:24:32,00:14:38,00:10:22,00:24:56,01:31:10,Y
+11,Alice Sophie Metayer,Strathkinness Primary School,FU13,00:19:23,00:25:52,00:14:05,00:10:43,00:23:52,01:33:55,Y
+12,Joe Barrable,Greyfriars RC Primary,MU13,00:18:43,00:27:22,00:14:39,00:11:01,00:24:56,01:36:41,Y
+13,Vienna Kitching,Unatt.,FU13,00:18:17,00:28:13,00:15:26,00:11:11,00:24:03,01:37:10,Y
+14,Ruaridh Stone,East Fife Triathlon Club,MU13,00:18:33,00:28:44,00:15:47,00:11:13,00:24:18,01:38:35,Y
+15,Lewis McKelvie,Fife AC,MU13,00:23:19,00:33:37,00:16:52,00:11:30,00:25:19,01:50:37,Y
+16,Isabelle Tello,Canongate Primary School,FU13,00:21:27,00:36:16,00:17:43,00:13:18,00:30:06,01:58:50,Y
+17,Logan Smith,Unatt.,MU13,00:23:37,00:37:43,00:19:20,00:13:52,00:30:35,02:05:07,Y
+-,Henry Green,Unatt.,MU13,00:15:38,00:23:50,00:13:04,-,00:20:49,-,N
+-,Anna Roberts,Unatt.,FU13,00:21:35,00:33:30,-,00:11:57,00:25:48,-,N
+-,Orla Ennis,East Fife Triathlon Club,FU13,00:17:28,00:27:07,00:14:35,-,-,-,N
+-,Gabriella Jarrett,Dundee Hawkhill Harriers,FU13,-,00:26:13,00:14:18,-,-,-,N
+-,Hannah Lebl,East Fife Triathlon Club,FU13,-,-,-,-,00:24:43,-,N
+-,Eddie Niven,East Fife Triathlon Club,MU13,00:13:38,-,-,-,-,-,N
+-,Cameron Seeley,East Fife Triathlon Club,MU13,00:14:33,-,-,-,-,-,N
 
-Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
-1,Joey Smith,Unatt.,MU15,00:19:05,00:18:14,00:15:29,00:07:28,00:16:15,01:16:31
-2,Lewis Laws,Unatt.,MU15,00:21:20,00:21:01,00:16:50,00:07:51,00:16:27,01:23:29
-3,Bertran Penacchio Torres,Fife AC,MU15,00:21:26,00:19:28,00:17:11,00:08:30,00:17:52,01:24:27
-4,Euan Patrick,Fife AC,MU15,00:22:56,00:20:36,00:17:49,00:08:28,00:18:27,01:28:16
-5,Isla Kinnaird,Fife AC,FU15,00:22:54,00:20:59,00:18:40,00:09:09,00:19:43,01:31:25
-6,Hal Arita,Unatt.,MU15,00:22:49,00:22:02,00:18:53,00:09:03,00:20:26,01:33:13
-7,Sebastian Corbett,Unatt.,MU15,00:23:11,00:21:19,00:18:56,00:09:18,00:21:29,01:34:13
-8,Danny Suttie,East Fife Triathlon Club,MU15,00:23:03,00:24:04,00:19:20,00:09:48,00:20:52,01:37:07
-9,Jenna Graham,Unatt.,FU15,00:25:08,00:22:47,00:20:14,00:09:24,00:21:35,01:39:08
-10,Anna Torrance,Unatt.,FU15,00:25:10,00:26:10,00:20:50,00:10:01,00:22:16,01:44:27
-11,Lexi Graham,Unatt.,FU15,00:27:35,00:25:38,00:21:41,00:10:19,00:23:32,01:48:45
-12,Samantha Cunningham,Fife AC,FU15,00:27:12,00:27:35,00:21:58,00:10:01,00:22:06,01:48:52
--,Adam Harvie,Unatt.,MU15,00:28:42,00:28:01,00:22:03,00:09:45,-,-
--,Sophie Robertson,East Fife Triathlon Club,FU15,00:24:43,00:25:01,-,00:09:37,00:21:21,-
--,Cillian Sweeney,East Fife Triathlon Club,MU15,00:25:06,-,00:19:08,00:09:21,00:20:41,-
--,Magnus Niven,Fife AC,MU15,-,-,-,00:08:57,00:21:00,-
--,Luca Anderson,Anster Haddies,MU15,00:17:47,-,-,-,-,-
+Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total,Completed
+1,Joey Smith,Unatt.,MU15,00:19:05,00:18:14,00:15:29,00:07:28,00:16:15,01:16:31,Y
+2,Lewis Laws,Unatt.,MU15,00:21:20,00:21:01,00:16:50,00:07:51,00:16:27,01:23:29,Y
+3,Bertran Penacchio Torres,Fife AC,MU15,00:21:26,00:19:28,00:17:11,00:08:30,00:17:52,01:24:27,Y
+4,Euan Patrick,Fife AC,MU15,00:22:56,00:20:36,00:17:49,00:08:28,00:18:27,01:28:16,Y
+5,Isla Kinnaird,Fife AC,FU15,00:22:54,00:20:59,00:18:40,00:09:09,00:19:43,01:31:25,Y
+6,Hal Arita,Unatt.,MU15,00:22:49,00:22:02,00:18:53,00:09:03,00:20:26,01:33:13,Y
+7,Sebastian Corbett,Unatt.,MU15,00:23:11,00:21:19,00:18:56,00:09:18,00:21:29,01:34:13,Y
+8,Danny Suttie,East Fife Triathlon Club,MU15,00:23:03,00:24:04,00:19:20,00:09:48,00:20:52,01:37:07,Y
+9,Jenna Graham,Unatt.,FU15,00:25:08,00:22:47,00:20:14,00:09:24,00:21:35,01:39:08,Y
+10,Anna Torrance,Unatt.,FU15,00:25:10,00:26:10,00:20:50,00:10:01,00:22:16,01:44:27,Y
+11,Lexi Graham,Unatt.,FU15,00:27:35,00:25:38,00:21:41,00:10:19,00:23:32,01:48:45,Y
+12,Samantha Cunningham,Fife AC,FU15,00:27:12,00:27:35,00:21:58,00:10:01,00:22:06,01:48:52,Y
+-,Adam Harvie,Unatt.,MU15,00:28:42,00:28:01,00:22:03,00:09:45,-,-,N
+-,Sophie Robertson,East Fife Triathlon Club,FU15,00:24:43,00:25:01,-,00:09:37,00:21:21,-,N
+-,Cillian Sweeney,East Fife Triathlon Club,MU15,00:25:06,-,00:19:08,00:09:21,00:20:41,-,N
+-,Magnus Niven,Fife AC,MU15,-,-,-,00:08:57,00:21:00,-,N
+-,Luca Anderson,Anster Haddies,MU15,00:17:47,-,-,-,-,-,N
 
-Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total
-1,Logan Reilly,Anster Haddies,MU18,00:19:10,00:19:41,00:15:50,00:07:31,00:16:32,01:18:44
-2,Eliza Konig,Fife AC,FU18,00:19:36,00:18:40,00:16:18,00:08:18,00:17:10,01:20:02
-3,Logan Graham,Fife AC,MU18,00:19:53,00:20:26,00:16:16,00:07:33,00:16:35,01:20:43
-4,Lewis Whittingham,Fife AC,MU18,00:20:01,00:19:37,00:16:20,00:08:00,00:16:47,01:20:45
-5,Steven Laws,Unatt.,MU18,00:21:55,00:21:37,00:18:10,00:08:01,00:17:48,01:27:31
-6,Orla Gage,Anster Haddies,FU18,00:22:35,00:24:37,00:18:32,00:08:54,00:19:07,01:33:45
-7,Daniel Armstrong,Unatt.,MU18,00:23:12,00:23:30,00:19:03,00:09:26,00:20:37,01:35:48
-8,Katie Gourley,Fife AC,FU18,00:23:22,00:24:37,00:19:22,00:09:11,00:20:04,01:36:36
--,Nellie Luxford,Fife AC,FU18,00:20:32,-,-,-,-,-
+Pos,Runner,Club,Category,Race 1,Race 2,Race 3,Race 4,Race 5,Total,Completed
+1,Logan Reilly,Anster Haddies,MU18,00:19:10,00:19:41,00:15:50,00:07:31,00:16:32,01:18:44,Y
+2,Eliza Konig,Fife AC,FU18,00:19:36,00:18:40,00:16:18,00:08:18,00:17:10,01:20:02,Y
+3,Logan Graham,Fife AC,MU18,00:19:53,00:20:26,00:16:16,00:07:33,00:16:35,01:20:43,Y
+4,Lewis Whittingham,Fife AC,MU18,00:20:01,00:19:37,00:16:20,00:08:00,00:16:47,01:20:45,Y
+5,Steven Laws,Unatt.,MU18,00:21:55,00:21:37,00:18:10,00:08:01,00:17:48,01:27:31,Y
+6,Orla Gage,Anster Haddies,FU18,00:22:35,00:24:37,00:18:32,00:08:54,00:19:07,01:33:45,Y
+7,Daniel Armstrong,Unatt.,MU18,00:23:12,00:23:30,00:19:03,00:09:26,00:20:37,01:35:48,Y
+8,Katie Gourley,Fife AC,FU18,00:23:22,00:24:37,00:19:22,00:09:11,00:20:04,01:36:36,Y
+-,Nellie Luxford,Fife AC,FU18,00:20:32,-,-,-,-,-,N

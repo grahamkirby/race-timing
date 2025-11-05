@@ -39,7 +39,7 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
         final SeriesRaceScorer scorer = getRaceScorer(config, race);
 
         race.setResultsCalculator(new SeriesRaceResultsCalculator(scorer, race));
-        race.setResultsOutput(getRaceOutput(config, race));
+        race.setResultsOutput(new SeriesRaceOutput(race));
 
         return race;
     }
@@ -74,18 +74,6 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
         config.processConfig();
 
         return config;
-    }
-
-    private RaceOutput getRaceOutput(final Config config, final SeriesRace race) {
-
-        if (config.containsKey(KEY_INDICATIVE_OF_GRAND_PRIX_RACE))
-            return new IndividualTimesOutput(race);
-
-        if (config.containsKey(KEY_INDICATIVE_OF_MIDWEEK_RACE))
-            return new IndividualTimesOutput(race);
-//        return new IndividualPositionsOutput(race);
-
-        return new AggregateTimesOutput(race);
     }
 
     private SeriesRaceScorer getRaceScorer(final Config config, final SeriesRace race) {
