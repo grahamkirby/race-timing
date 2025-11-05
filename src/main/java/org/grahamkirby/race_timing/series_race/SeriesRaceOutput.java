@@ -67,6 +67,7 @@ class SeriesRaceOutput extends RaceOutput {
     private static final class SeriesRaceOverallResultPrinterCSV extends ResultPrinter {
 
         final SeriesRaceResultsCalculator calculator;
+
         final boolean multiple_clubs;
         final boolean multiple_race_categories;
         final boolean multiple_races_taken_place;
@@ -75,6 +76,7 @@ class SeriesRaceOutput extends RaceOutput {
         private SeriesRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
 
             super(race, writer);
+
             calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
             multiple_clubs = countClubs(calculator.getOverallResults()) > 1;
             multiple_race_categories = calculator.getRaceCategories().size() > 1;
@@ -109,8 +111,8 @@ class SeriesRaceOutput extends RaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             final SeriesRaceResult result = (SeriesRaceResult) r;
-            final Runner runner = (Runner) result.getParticipant();
             final SeriesRaceScorer scorer = calculator.getScorer();
+            final Runner runner = (Runner) result.getParticipant();
 
             writer.append(result.getPositionString()).append(",").
                 append(encode(runner.getName())).append(",");
@@ -118,9 +120,7 @@ class SeriesRaceOutput extends RaceOutput {
                 writer.append(encode((runner).getClub())).append(",");
             writer.append(runner.getCategory().getShortName()).append(",");
 
-            // TODO check whether comment below still holds.
             // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
-            // A zero score could be due to a runner completing a long way down a large race, rather than the race not having happened.
             writer.append(
                 ((SeriesRace) race).getRaces().stream().
                     filter(Objects::nonNull).
@@ -157,6 +157,7 @@ class SeriesRaceOutput extends RaceOutput {
             super(race, writer);
 
             final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+
             multiple_clubs = countClubs(calculator.getOverallResults()) > 1;
             multiple_race_categories = calculator.getRaceCategories().size() > 1;
             multiple_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace() > 1;

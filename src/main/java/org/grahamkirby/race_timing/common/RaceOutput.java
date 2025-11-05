@@ -34,10 +34,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
@@ -59,6 +57,54 @@ public abstract class RaceOutput {
         printCombined();
         finaliseNotes();
         printNotes();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected abstract ResultPrinterGenerator getOverallResultCSVPrinterGenerator();
+    protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
+    protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
+
+    protected static PdfFont getFont(final String font_name) throws IOException {
+
+        return PdfFontFactory.createFont(font_name);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected Path getOutputStreamPath(final String output_type, final String file_suffix) {
+
+        final Config config = race.getConfig();
+
+        final String race_name = config.getStringConfig(KEY_RACE_NAME_FOR_FILENAMES);
+        final String year = config.getStringConfig(KEY_YEAR);
+
+        return config.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
+    }
+
+    protected OutputStream getOutputStream(final String output_type, final String file_suffix) throws IOException {
+
+        return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
+    }
+
+    protected void printResultsWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_overall_result_printer) throws IOException {
+
+        writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+
+        printResults(writer, make_overall_result_printer.apply(race, writer), this::getResultsSubHeaderHTML);
+        writer.append(SOFTWARE_CREDIT_LINK_TEXT);
+    }
+
+    protected String getResultsSubHeaderHTML(final String s) {
+
+        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static String underline(final String header, final String character) {
+
+        return character.repeat(header.length());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,55 +151,9 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected abstract ResultPrinterGenerator getOverallResultCSVPrinterGenerator();
-    protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
-    protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
-
-    protected static PdfFont getFont(final String font_name) throws IOException {
-
-        return PdfFontFactory.createFont(font_name);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected Path getOutputStreamPath(final String output_type, final String file_suffix) {
-
-        final Config config = race.getConfig();
-
-        final String race_name = config.getStringConfig(KEY_RACE_NAME_FOR_FILENAMES);
-        final String year = config.getStringConfig(KEY_YEAR);
-
-        return config.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
-    }
-
-    protected OutputStream getOutputStream(final String output_type, final String file_suffix) throws IOException {
-
-        return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
-    }
-
-    protected String getResultsSubHeaderHTML(final String s) {
-
-        return "<p></p>" + LINE_SEPARATOR + "<h4>" + s + "</h4>" + LINE_SEPARATOR;
-    }
-
-    private static String underline(final String header, final String character) {
-
-        return character.repeat(header.length());
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void printResultsHTML() throws IOException {
 
         printResults(getOverallResultHTMLPrinterGenerator(), this::getResultsSubHeaderHTML, HTML_FILE_SUFFIX);
-    }
-
-    protected void printResultsWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_overall_result_printer) throws IOException {
-
-        writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
-
-        printResults(writer, make_overall_result_printer.apply(race, writer), this::getResultsSubHeaderHTML);
-        writer.append(SOFTWARE_CREDIT_LINK_TEXT);
     }
 
     private void printResultsCSV() throws IOException {

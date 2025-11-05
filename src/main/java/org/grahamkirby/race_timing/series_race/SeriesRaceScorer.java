@@ -49,6 +49,11 @@ public abstract class SeriesRaceScorer {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    abstract Performance getIndividualRacePerformance(Runner runner, SingleRaceInternal individual_race);
+    abstract Performance getSeriesPerformance(Runner runner);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public int compareSeriesPerformance(final Performance series_performance1, final Performance series_performance2) {
 
         final Comparator<Performance> comparator = Comparator.nullsLast(Performance::compareTo);
@@ -92,9 +97,4 @@ public abstract class SeriesRaceScorer {
             limit(number_of_counting_scores).
             reduce(0, Integer::sum));
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    abstract Performance getIndividualRacePerformance(Runner runner, SingleRaceInternal individual_race);
-    abstract Performance getSeriesPerformance(Runner runner);
 }
