@@ -143,10 +143,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final int leg_index = findIndexOfNextUnfilledLegResult(result.getLegResults());
         final RelayRaceLegResult leg_result = result.getLegResult(leg_index + 1);
 
-        final Duration recorded_finish_time = raw_result.getRecordedFinishTime();
-        final Duration start_offset = ((RelayRace) race).getStartOffset();
-
-        leg_result.setFinishTime(recorded_finish_time.plus(start_offset));
+        leg_result.setFinishTime(raw_result.getRecordedFinishTime());
 
         // Leg number will be zero in most cases, unless explicitly recorded in raw results.
         leg_result.setLegNumber(((RelayRace) race).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
@@ -201,7 +198,16 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final Duration leg_mass_start_time = ((RelayRace) race).getStartTimesForMassStarts().get(leg_index);
         final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results.get(leg_index - 1).getFinishTime() : null;
 
-        leg_result.start_time = getLegStartTime(leg_index, individual_start_time, leg_mass_start_time, previous_team_member_finish_time);
+        // Offset between actual race start time, and the time at which timing started.
+        // Usually this is zero. A positive value indicates that the race started after timing started.
+        final Duration race_start_time = (Duration) race.getConfig().get(KEY_RACE_START_TIME);
+
+        Duration start_time = getLegStartTime(leg_index, individual_start_time, leg_mass_start_time, previous_team_member_finish_time);
+
+        if (start_time != null) {
+            if (leg_index == 0) start_time = start_time.plus(race_start_time);
+            leg_result.setStartTime(start_time);
+        }
 
         // Record whether the runner started in a mass start.
         leg_result.setInMassStart(isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index));
@@ -231,7 +237,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         // Use the earlier of the mass start time, if present, and the previous runner's finish time.
         return mass_start_time != null && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
-//        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
     }
 
     private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
@@ -243,7 +248,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         if (previous_runner_finish_time == null) return ((RelayRace) race).getMassStartLegs().get(leg_index);
 
         // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-//        return !mass_start_time.equals(VERY_LONG_DURATION) && mass_start_time.compareTo(previous_runner_finish_time) < 0;
         return mass_start_time != null && mass_start_time.compareTo(previous_runner_finish_time) < 0;
     }
 

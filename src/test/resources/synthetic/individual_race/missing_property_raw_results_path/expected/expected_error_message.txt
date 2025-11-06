@@ -1,1 +1,1 @@
-no entry for either of keys 'RAW_RESULTS_PATH' or 'RESULTS_PATH' in file 'config.txt'
+should have exactly one key from {RAW_RESULTS_PATH, RESULTS_PATH} in file 'config.txt'

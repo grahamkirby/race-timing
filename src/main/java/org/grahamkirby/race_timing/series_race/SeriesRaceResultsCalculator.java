@@ -149,7 +149,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private void loadRaceCategories() throws IOException {
 
         race_categories = race.getConfig().containsKey(KEY_RACE_CATEGORIES_PATH) ?
-            Files.readAllLines(race.getConfig().getPathConfig(KEY_RACE_CATEGORIES_PATH)).stream().
+            Files.readAllLines(race.getConfig().getPath(KEY_RACE_CATEGORIES_PATH)).stream().
                 filter(line -> !line.startsWith(COMMENT_SYMBOL)).
                 map(SeriesRaceResultsCalculator::makeRaceCategory).
                 toList() :
@@ -167,7 +167,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private void loadRaceTemporalPositions() {
 
         race_temporal_positions = race.getConfig().containsKey(KEY_RACE_TEMPORAL_ORDER) ?
-            Arrays.stream(race.getConfig().getStringConfig(KEY_RACE_TEMPORAL_ORDER).split(",")).
+            Arrays.stream(race.getConfig().getString(KEY_RACE_TEMPORAL_ORDER).split(",")).
                 map(Integer::parseInt).toList() :
 
             makeDefaultRaceTemporalPositions();
@@ -186,7 +186,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private void configureClubs() {
 
         qualifying_clubs = race.getConfig().containsKey(KEY_QUALIFYING_CLUBS) ?
-            Arrays.asList(race.getConfig().getStringConfig(KEY_QUALIFYING_CLUBS).split(",")) :
+            Arrays.asList(race.getConfig().getString(KEY_QUALIFYING_CLUBS).split(",")) :
             new ArrayList<>();
 
         getRunnerNames().forEach(this::normaliseClubsForRunner);

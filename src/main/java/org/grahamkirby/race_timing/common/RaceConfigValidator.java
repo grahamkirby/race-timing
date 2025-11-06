@@ -44,7 +44,7 @@ public class RaceConfigValidator implements ConfigProcessor {
 
     public static void validateFileExists(final String key, final Config config) {
 
-        final Path path = config.getPathConfig(key);
+        final Path path = config.getPath(key);
 
         if (!Files.exists(path))
             throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");

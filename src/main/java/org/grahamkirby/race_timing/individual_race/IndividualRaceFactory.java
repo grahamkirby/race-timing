@@ -28,7 +28,6 @@ import static org.grahamkirby.race_timing.series_race.SeriesRaceFactory.KEY_INDI
 
 public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
-
     public SingleRaceInternal makeRace(final Path config_file_path) throws IOException {
 
         final IndividualRace race = new IndividualRace(makeIndividualRaceConfig(config_file_path));

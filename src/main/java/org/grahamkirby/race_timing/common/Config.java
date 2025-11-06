@@ -49,9 +49,9 @@ public class Config {
     public static String KEY_ENTRY_CATEGORIES_PATH = "ENTRY_CATEGORIES_PATH";
     public static String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
     public static String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
-    public static String KEY_INDIVIDUAL_EARLY_STARTS = "INDIVIDUAL_EARLY_STARTS";
     public static String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
-    public static String KEY_MASS_START_ELAPSED_TIMES = "MASS_START_ELAPSED_TIMES";
+    public static String KEY_INDIVIDUAL_START_TIMES = "INDIVIDUAL_START_TIMES";
+    public static String KEY_MASS_START_TIMES = "MASS_START_TIMES";
     public static String KEY_MEDIAN_TIME = "MEDIAN_TIME";
     public static String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
     public static String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
@@ -67,16 +67,15 @@ public class Config {
     public static String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
     public static String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
     public static String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
+    public static String KEY_RACE_START_TIME = "RACE_START_TIME";
     public static String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
     public static String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
     public static String KEY_RESULTS_PATH = "RESULTS_PATH";
     public static String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
     public static String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
     public static String KEY_SEPARATELY_RECORDED_RESULTS = "SEPARATELY_RECORDED_RESULTS";
-    public static String KEY_START_OFFSET = "START_OFFSET";
     public static String KEY_TIME_TRIAL_INTER_WAVE_INTERVAL = "TIME_TRIAL_INTER_WAVE_INTERVAL";
     public static String KEY_TIME_TRIAL_RUNNERS_PER_WAVE = "TIME_TRIAL_RUNNERS_PER_WAVE";
-    public static String KEY_TIME_TRIAL_STARTS = "TIME_TRIAL_STARTS";
     public static String KEY_YEAR = "YEAR";
 
     /** Displayed in results for runners that did not complete the course. */
@@ -107,6 +106,8 @@ public class Config {
     public static String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     private final Map<String, Object> config_map;
+    private final List<String> unused_keys;
+
     private final Path config_path;
 
     public Config(final Path config_file_path) throws IOException {
@@ -117,6 +118,7 @@ public class Config {
         final Properties properties = loadProperties(config_file_path);
 
         properties.forEach((key, value) -> config_map.put((String) key, value));
+        unused_keys = new ArrayList<>(config_map.keySet());
     }
 
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
@@ -137,8 +139,30 @@ public class Config {
         }
     }
 
+    public void outputUnusedProperties() {
+
+        if (!unused_keys.isEmpty()) {
+
+            System.out.println("\nUnused keys: " + config_path);
+            unused_keys.forEach(System.out::println);
+            throw new RuntimeException("Unused keys in: " + config_path);
+        }
+    }
+
     public Object get(final String key) {
+
+        unused_keys.remove(key);
         return config_map.get(key);
+    }
+
+    public String getString(final String key) {
+
+        return (String) get(key);
+    }
+
+    public Path getPath(final String key) {
+
+        return (Path) get(key);
     }
 
     public boolean containsKey(final String key) {
@@ -157,7 +181,7 @@ public class Config {
     public void processConfigIfPresent(final String key, final Consumer<Object> processor) {
 
         if (config_map.containsKey(key))
-            processor.accept(config_map.get(key));
+            processor.accept(get(key));
     }
 
     public void replace(final String key, final Function<String, Object> make_new_value) {
@@ -188,16 +212,6 @@ public class Config {
 
         for (final ConfigProcessor processor : config_processors)
             processor.processConfig(this);
-    }
-
-    public String getStringConfig(final String key) {
-
-        return (String) config_map.get(key);
-    }
-
-    public Path getPathConfig(final String key) {
-
-        return (Path) config_map.get(key);
     }
 
     /**

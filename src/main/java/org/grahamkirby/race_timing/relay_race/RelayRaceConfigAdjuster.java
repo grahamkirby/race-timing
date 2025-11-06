@@ -34,12 +34,12 @@ public class RelayRaceConfigAdjuster implements ConfigProcessor {
     @Override
     public void processConfig(final Config config) {
 
-        config.addIfAbsent(KEY_START_OFFSET, "00:00:00");
+        config.addIfAbsent(KEY_RACE_START_TIME, "00:00:00");
 
         config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
 
         config.replaceIfPresent(KEY_NUMBER_OF_LEGS, Integer::parseInt);
-        config.replaceIfPresent(KEY_START_OFFSET, Normalisation::parseTime);
+        config.replaceIfPresent(KEY_RACE_START_TIME, Normalisation::parseTime);
 
         // Default entry map with elements (bib number, team name, category, plus one per leg), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap((int) config.get(KEY_NUMBER_OF_LEGS) + 3));

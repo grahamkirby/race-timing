@@ -15,7 +15,7 @@ GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibili
 
 # Elapsed duration from start of leg 1 to mass start time for each leg.
 # 00:00:00 indicates no mass start.
-MASS_START_ELAPSED_TIMES = 3/03:16:00,4/04:14:00
+MASS_START_TIMES = 3/03:16:00,4/04:14:00
 
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
 # recorded but the runners DNF'd the leg.

@@ -357,6 +357,13 @@ public class Normalisation {
 
         time = time.strip();
 
+        boolean negative = false;
+
+        if (time.startsWith("-")) {
+            negative = true;
+            time = time.substring(1);
+        }
+
         // Deal with missing hours or seconds component.
         if (time.startsWith(separator)) time = "0" + time;
         if (time.endsWith(separator)) time = time + "0";
@@ -365,7 +372,9 @@ public class Normalisation {
             final String[] parts = time.split(separator);
 
             // Construct ISO-8601 duration format.
-            return Duration.parse("PT" + hours(parts) + minutes(parts) + seconds(parts));
+            Duration duration = Duration.parse("PT" + hours(parts) + minutes(parts) + seconds(parts));
+            if (negative) duration = duration.negated();
+            return duration;
 
         } catch (final RuntimeException _) {
             throw new DateTimeParseException(time, time, 0);

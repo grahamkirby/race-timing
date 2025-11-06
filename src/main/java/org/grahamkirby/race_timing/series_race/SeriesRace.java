@@ -62,6 +62,7 @@ public class SeriesRace implements RaceInternal {
     @Override
     public void outputResults() throws IOException {
         results_output.outputResults();
+        config.outputUnusedProperties();
     }
 
     @Override
@@ -113,7 +114,7 @@ public class SeriesRace implements RaceInternal {
 
         return races.stream().
             filter(Objects::nonNull).
-            map(individual_race -> individual_race.getConfig().getStringConfig(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
+            map(individual_race -> individual_race.getConfig().getString(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
     }
 
     public int getNumberOfRacesTakenPlace() {
@@ -127,7 +128,7 @@ public class SeriesRace implements RaceInternal {
 
         races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
-        final List<String> race_config_paths = Arrays.asList(config.getStringConfig(KEY_RACES).split(",", -1));
+        final List<String> race_config_paths = Arrays.asList(config.getString(KEY_RACES).split(",", -1));
 
         final int number_of_race_in_series = (int) config.get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (number_of_race_in_series != race_config_paths.size())

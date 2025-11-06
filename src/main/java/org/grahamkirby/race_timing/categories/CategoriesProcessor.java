@@ -39,8 +39,8 @@ public class CategoriesProcessor  {
 
     public CategoriesProcessor(final Config config) throws IOException {
 
-        final Path results_path = config.getPathConfig(KEY_ENTRY_CATEGORIES_PATH);
-        final Path categories_prize_path = config.getPathConfig(KEY_PRIZE_CATEGORIES_PATH);
+        final Path results_path = config.getPath(KEY_ENTRY_CATEGORIES_PATH);
+        final Path categories_prize_path = config.getPath(KEY_PRIZE_CATEGORIES_PATH);
 
         prize_category_groups = new ArrayList<>();
         entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();

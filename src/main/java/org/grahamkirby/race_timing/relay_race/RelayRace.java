@@ -125,6 +125,7 @@ public class RelayRace implements SingleRaceInternal {
     @Override
     public void outputResults() throws IOException {
         results_output.outputResults();
+        config.outputUnusedProperties();
     }
 
     @Override
@@ -255,24 +256,13 @@ public class RelayRace implements SingleRaceInternal {
         return times_with_missing_bib_numbers;
     }
 
-    /**
-     * Offset between actual race start time, and the time at which timing started.
-     * Usually this is zero. A positive value indicates that the race started before timing started.
-     */
-    Duration getStartOffset() {
-
-        // TODO add to individual race.
-
-        return (Duration) getConfig().get(KEY_START_OFFSET);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void loadRaceData() {
 
-        final Path entries_path = config.getPathConfig(KEY_ENTRIES_PATH);
-        final Path electronic_results_path = config.getPathConfig(KEY_RAW_RESULTS_PATH);
-        final Path paper_results_path = config.getPathConfig(KEY_PAPER_RESULTS_PATH);
+        final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
+        final Path electronic_results_path = config.getPath(KEY_RAW_RESULTS_PATH);
+        final Path paper_results_path = config.getPath(KEY_PAPER_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, electronic_results_path, paper_results_path);
@@ -310,7 +300,7 @@ public class RelayRace implements SingleRaceInternal {
 
     private void validateDataFiles(final Path entries_path, final Path electronic_results_path, final Path paper_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, getNumberOfLegs() + 3, config.getStringConfig(KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, getNumberOfLegs() + 3, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
 
@@ -523,7 +513,7 @@ public class RelayRace implements SingleRaceInternal {
 
     private void configurePairedLegs() {
 
-        final String paired_legs_string = config.getStringConfig(KEY_PAIRED_LEGS);
+        final String paired_legs_string = config.getString(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
         paired_legs = Stream.generate(() -> false)
@@ -555,14 +545,14 @@ public class RelayRace implements SingleRaceInternal {
 
         final Consumer<Object> process_mass_start_times = mass_start_string -> {
 
-            // Example: MASS_START_ELAPSED_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
+            // Example: MASS_START_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
             final String[] mass_start_elapsed_times_strings = ((String) mass_start_string).split(",");
 
             for (final String bib_time_as_string : mass_start_elapsed_times_strings)
                 setMassStartTime(bib_time_as_string);
         };
 
-        config.processConfigIfPresent(KEY_MASS_START_ELAPSED_TIMES, process_mass_start_times);
+        config.processConfigIfPresent(KEY_MASS_START_TIMES, process_mass_start_times);
     }
 
     private void setMassStartTime(final String bib_time_as_string) {
@@ -589,7 +579,7 @@ public class RelayRace implements SingleRaceInternal {
 
     private void configureIndividualLegStarts() {
 
-        final String individual_leg_starts_string = config.getStringConfig(KEY_INDIVIDUAL_LEG_STARTS);
+        final String individual_leg_starts_string = config.getString(KEY_INDIVIDUAL_LEG_STARTS);
 
         // bib number / leg number / start time
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20

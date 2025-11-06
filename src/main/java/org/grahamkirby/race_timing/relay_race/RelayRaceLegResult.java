@@ -19,9 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 
 
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.common.Performance;
 
-import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,9 +27,6 @@ public class RelayRaceLegResult extends SingleRaceResult {
 
     private int leg_number;
     private boolean in_mass_start;
-
-    // TODO move to SingleRaceResult, integrate with early starts.
-    Duration start_time;  // Relative to start of leg 1.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,12 +39,6 @@ public class RelayRaceLegResult extends SingleRaceResult {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public Performance getPerformance() {
-
-        return canComplete() ?  new Performance(finish_time.minus(start_time)) : null;
-    }
 
     @Override
     public String getParticipantName() {
@@ -75,7 +64,7 @@ public class RelayRaceLegResult extends SingleRaceResult {
     @Override
     public String getPrizeDetail() {
 
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public boolean isInMassStart() {

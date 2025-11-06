@@ -23,8 +23,9 @@ import java.util.Comparator;
 
 public abstract class SingleRaceResult extends CommonRaceResult {
 
-    // TODO add start time.
+    protected Duration start_time;
     protected Duration finish_time;
+
     private boolean dnf;
     private final int bib_number;
 
@@ -34,10 +35,20 @@ public abstract class SingleRaceResult extends CommonRaceResult {
 
         bib_number = entry.bib_number;
         this.finish_time = finish_time;
+        start_time = Duration.ZERO;
     }
 
     public Performance getPerformance() {
-        return new Performance(finish_time);
+
+        return canComplete() ?  new Performance(finish_time.minus(start_time)) : null;
+    }
+
+    public Duration getStartTime() {
+        return start_time;
+    }
+
+    public void setStartTime(final Duration start_time) {
+        this.start_time = start_time;
     }
 
     public Duration getFinishTime() {
@@ -64,29 +75,11 @@ public abstract class SingleRaceResult extends CommonRaceResult {
     public int comparePerformanceTo(final RaceResult other) {
 
         final Comparator<Performance> comparator = Comparator.nullsLast(Performance::compareTo);
-//        final Comparator<RaceResult> comparator2 = new Comparator<RaceResult>() {
-//            @Override
-//            public int compare(RaceResult o1, RaceResult o2) {
-//
-//                return comparator.compare(
-//                    scorer.getSeriesPerformance((Runner) o1.getParticipant()),
-//                    scorer.getSeriesPerformance((Runner) o2.getParticipant()));
-//
-////                return scorer.compareSeriesPerformance(
-////                    scorer.getSeriesPerformance((Runner) o1.getParticipant()),
-////                    scorer.getSeriesPerformance((Runner) o2.getParticipant()));
-//            }
-//        };
-
-
-
 
         final Performance duration = getPerformance();
-        final Performance other_duration = ((SingleRaceResult) other).getPerformance();
+        final Performance other_duration = other.getPerformance();
 
         return comparator.compare(duration, other_duration);
-
-//        return duration.compareTo(other_duration);
     }
 
     @Override

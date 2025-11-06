@@ -255,12 +255,19 @@ public class RaceTest {
 
     private void runWithExpectedCompletion(final String[] args) throws IOException {
 
-        RaceFactory.main(args);
+        runTest(args, "", "Unexpected error message");
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
     }
 
     private static void runWithExpectedError(final String[] args, final Path expected_error_message_file) throws IOException {
+
+        final String expected_error_message = String.join(LINE_SEPARATOR, Files.readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
+
+        runTest(args, expected_error_message, "Expected error message was not generated");
+    }
+
+    private static void runTest(final String[] args, final String expected_error_message, final String test_message) throws IOException {
 
         final String error_output;
         try {
@@ -275,8 +282,7 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        final String expected_error_message = String.join(LINE_SEPARATOR, Files.readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
-        assertEquals(expected_error_message, error_output, "Expected error message was not generated");
+        assertEquals(expected_error_message, error_output, test_message);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

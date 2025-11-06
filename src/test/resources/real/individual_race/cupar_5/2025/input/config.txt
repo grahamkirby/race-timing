@@ -15,6 +15,6 @@ ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_indiv
 # Column 2 is last name, column 3 is first name.
 ENTRY_COLUMN_MAP = 1,2-3,4,5
 
-# Comma-separated sequence of bib-number/time-difference for all runner that
-# started before the main start time.
-INDIVIDUAL_EARLY_STARTS = 156/0:08:00
+# Comma-separated sequence of bib-number/start-time for all runners that
+# started before or after the main start time. Negative means early start.
+INDIVIDUAL_START_TIMES = 156/-0:08:00

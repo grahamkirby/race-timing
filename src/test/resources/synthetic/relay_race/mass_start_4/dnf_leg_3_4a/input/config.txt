@@ -15,4 +15,4 @@ GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibili
 
 # Elapsed duration from start of leg 1 to mass start time for each leg.
 # 00:00:00 indicates no mass start.
-MASS_START_ELAPSED_TIMES = 4/2:36:00
+MASS_START_TIMES = 4/2:36:00

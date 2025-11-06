@@ -14,5 +14,5 @@ PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_relay
 GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibility_relay.csv
 
 # Offset applied to all recorded times.
-# Positive value means recording began after the actual start.
-START_OFFSET = 0:01:00
+# Positive value means the actual start took place after recording began.
+RACE_START_TIME = -00:01:00

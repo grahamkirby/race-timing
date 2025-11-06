@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
-import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
@@ -37,18 +36,8 @@ import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
 
 public class IndividualRace implements SingleRaceInternal {
 
-    // Components:
-    //
-    // Config
-    // Results calculator
-    // Categories processor
-    // Output handling
-
     private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
 
-    Map<EntryCategory, Duration> category_start_offsets;
-    Map<Integer, Duration> individual_start_offsets;
-    Map<Integer, Duration> time_trial_start_offsets;
     Map<Integer, Duration> separately_recorded_finish_times;
 
     private final Config config;
@@ -89,8 +78,8 @@ public class IndividualRace implements SingleRaceInternal {
 
     private void loadRaceData() {
 
-        final Path entries_path = config.getPathConfig(KEY_ENTRIES_PATH);
-        final Path raw_results_path = config.getPathConfig(KEY_RAW_RESULTS_PATH);
+        final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
+        final Path raw_results_path = config.getPath(KEY_RAW_RESULTS_PATH);
 
         try {
             validateDataFiles(entries_path, raw_results_path);
@@ -122,7 +111,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getStringConfig(KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbersUnique(entries_path);
         validateRawResults(raw_results_path);
@@ -202,13 +191,11 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public void outputResults() throws IOException {
         results_output.outputResults();
+        config.outputUnusedProperties();
     }
 
     private void completeConfiguration() {
 
-        category_start_offsets = readCategoryStartOffsets();
-        individual_start_offsets = loadIndividualStartOffsets();
-        time_trial_start_offsets = loadTimeTrialStarts();
         separately_recorded_finish_times = readSeparatelyRecordedResults();
     }
 
@@ -229,27 +216,6 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public Notes getNotes() {
         return notes;
-    }
-
-    private Map<EntryCategory, Duration> readCategoryStartOffsets() {
-
-        final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
-
-        final Consumer<Object> process_category_start_offsets = value -> {
-
-            // e.g. FU9/00:01:00,MU9/00:01:00,FU11/00:01:00,MU11/00:01:00
-            final String[] offset_strings = ((String) value).split(",", -1);
-
-            for (final String offset_string : offset_strings) {
-
-                final String[] split = offset_string.split("/");
-                category_offsets.put(categories_processor.lookupEntryCategory(split[0]), parseTime(split[1]));
-            }
-        };
-
-        config.processConfigIfPresent(KEY_CATEGORY_START_OFFSETS, process_category_start_offsets);
-
-        return category_offsets;
     }
 
     private Map<Integer, Duration> readSeparatelyRecordedResults() {
@@ -275,71 +241,6 @@ public class IndividualRace implements SingleRaceInternal {
         config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
 
         return results;
-    }
-
-    private Map<Integer, Duration> loadTimeTrialStarts() {
-
-        final Map<Integer, Duration> starts = new HashMap<>();
-
-        // The first option applies when time-trial runners are assigned to waves in order of bib number,
-        // with incomplete waves if there are any gaps in bib numbers.
-        // The second option applies when start order is manually determined (e.g. to start current leaders first or last).
-
-        final Consumer<Object> process_runners_per_wave = value -> {
-
-            final int time_trial_runners_per_wave = (int) value;
-            final Duration time_trial_inter_wave_interval = (Duration) getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
-
-            for (final RawResult raw_result : raw_results) {
-
-                final int wave_number = (raw_result.getBibNumber() - 1) / time_trial_runners_per_wave;
-                final Duration start_offset = time_trial_inter_wave_interval.multipliedBy(wave_number);
-
-                starts.put(raw_result.getBibNumber(), start_offset);
-            }
-        };
-
-        final Consumer<Object> process_explicit_starts = value -> {
-
-            for (final String part : ((String) value).split(",", -1)) {
-
-                final String[] split = part.split("/");
-                starts.put(Integer.parseInt(split[0]), parseTime(split[1]));
-            }
-        };
-
-        config.processConfigIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, process_runners_per_wave);
-        config.processConfigIfPresent(KEY_TIME_TRIAL_STARTS, process_explicit_starts);
-
-        return starts;
-    }
-
-    private Map<Integer, Duration> loadIndividualStartOffsets() {
-
-        final Map<Integer, Duration> starts = new HashMap<>();
-
-        // bib number / start time difference
-        // Example: INDIVIDUAL_EARLY_STARTS = 2/0:10:00,26/0:20:00
-
-        final Consumer<Object> process_early_starts = value -> {
-
-            for (final String individual_early_start : ((String) value).split(",")) {
-
-                final String[] split = individual_early_start.split("/");
-
-                final int bib_number = Integer.parseInt(split[0]);
-                final Duration offset = parseTime(split[1]);
-
-                // Offset will be subtracted from recorded time,
-                // so negate since a positive time corresponds to an early start.
-
-                starts.put(bib_number, offset.negated());
-            }
-        };
-
-        config.processConfigIfPresent(KEY_INDIVIDUAL_EARLY_STARTS, process_early_starts);
-
-        return starts;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

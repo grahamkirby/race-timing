@@ -1,1 +1,1 @@
-invalid mass start time for key 'MASS_START_ELAPSED_TIMES' in file 'config.txt'
+invalid mass start time for key 'MASS_START_TIMES' in file 'config.txt'
