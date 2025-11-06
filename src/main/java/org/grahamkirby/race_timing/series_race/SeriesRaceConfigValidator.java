@@ -20,15 +20,34 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 
+import java.util.List;
+
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
-public class SeriesRaceConfigValidator implements ConfigProcessor {
+public class SeriesRaceConfigValidator extends ConfigProcessor {
 
-    public void processConfig(final Config config) {
+    public SeriesRaceConfigValidator(final Config config) {
 
-        validateKeyPresent(KEY_RACES, config);
-        validateKeyPresent(KEY_NUMBER_OF_RACES_IN_SERIES, config);
-        validateKeyPresent(KEY_MINIMUM_NUMBER_OF_RACES, config);
+        super(config);
+    }
+
+    public void processConfig() {
+
+        checkAllPresent(List.of(
+            KEY_MINIMUM_NUMBER_OF_RACES,
+            KEY_NUMBER_OF_RACES_IN_SERIES,
+            KEY_RACES));
+
+        checkNonePresent(List.of(
+            KEY_INDIVIDUAL_LEG_STARTS,
+            KEY_MASS_START_TIMES,
+            KEY_MEDIAN_TIME,
+            KEY_NUMBER_OF_LEGS,
+            KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE,
+            KEY_PAIRED_LEGS,
+            KEY_PAPER_RESULTS_PATH,
+            KEY_RESULTS_PATH,
+            KEY_TIME_TRIAL_INTER_WAVE_INTERVAL,
+            KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
     }
 }

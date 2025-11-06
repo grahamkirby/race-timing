@@ -26,13 +26,18 @@ import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
 
 @SuppressWarnings("preview")
-public class RelayRaceConfigAdjuster implements ConfigProcessor {
+public class RelayRaceConfigAdjuster extends ConfigProcessor {
 
     private static final List<String> PATH_PROPERTY_KEYS =
         List.of(KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
 
+    public RelayRaceConfigAdjuster(final Config config) {
+
+        super(config);
+    }
+
     @Override
-    public void processConfig(final Config config) {
+    public void processConfig() {
 
         config.addIfAbsent(KEY_RACE_START_TIME, "00:00:00");
 

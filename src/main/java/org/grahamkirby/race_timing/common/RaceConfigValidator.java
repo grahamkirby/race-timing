@@ -17,42 +17,28 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class RaceConfigValidator implements ConfigProcessor {
+public class RaceConfigValidator extends ConfigProcessor {
 
-    public void processConfig(final Config config) {
+    public RaceConfigValidator(final Config config) {
 
-        validateKeyPresent(KEY_YEAR, config);
-        validateKeyPresent(KEY_RACE_NAME_FOR_FILENAMES, config);
-        validateKeyPresent(KEY_RACE_NAME_FOR_RESULTS, config);
-        validateKeyPresent(KEY_ENTRY_CATEGORIES_PATH, config);
-        validateKeyPresent(KEY_PRIZE_CATEGORIES_PATH, config);
-
-        validateFileExists(KEY_ENTRY_CATEGORIES_PATH, config);
-        validateFileExists(KEY_PRIZE_CATEGORIES_PATH, config);
+        super(config);
     }
 
-    public static void validateKeyPresent(final String key, final Config config) {
+    public void processConfig() {
 
-        if (!config.containsKey(key))
-            throw new RuntimeException("no entry for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
-    }
+        checkAllPresent(List.of(
+            KEY_YEAR,
+            KEY_RACE_NAME_FOR_FILENAMES,
+            KEY_RACE_NAME_FOR_RESULTS,
+            KEY_ENTRY_CATEGORIES_PATH,
+            KEY_PRIZE_CATEGORIES_PATH));
 
-    public static void validateFileExists(final String key, final Config config) {
-
-        final Path path = config.getPath(key);
-
-        if (!Files.exists(path))
-            throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
-    }
-
-    public static void validateFileExistsIfKeyPresent(final String key, final Config config) {
-
-        if (config.containsKey(key))
-            validateFileExists(key, config);
+        checkAllFilesExist(List.of(
+            KEY_ENTRY_CATEGORIES_PATH,
+            KEY_PRIZE_CATEGORIES_PATH));
     }
 }

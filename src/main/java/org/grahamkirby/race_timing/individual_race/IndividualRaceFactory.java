@@ -48,11 +48,11 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
 
         final Config config = new Config(config_file_path);
 
-        config.addConfigProcessor(new RaceConfigAdjuster());
-        config.addConfigProcessor(new IndividualRaceConfigAdjuster());
+        config.addConfigProcessor(RaceConfigAdjuster::new);
+        config.addConfigProcessor(IndividualRaceConfigAdjuster::new);
 
-        config.addConfigProcessor(new RaceConfigValidator());
-        config.addConfigProcessor(new IndividualRaceConfigValidator());
+        config.addConfigProcessor(RaceConfigValidator::new);
+        config.addConfigProcessor(IndividualRaceConfigValidator::new);
 
         config.processConfig();
 

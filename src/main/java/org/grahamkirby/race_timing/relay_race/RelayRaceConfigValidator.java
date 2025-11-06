@@ -17,27 +17,48 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Config;
+import org.grahamkirby.race_timing.common.ConfigProcessor;
+import org.grahamkirby.race_timing.common.Normalisation;
 
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateFileExists;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.validateKeyPresent;
 
-public class RelayRaceConfigValidator implements ConfigProcessor {
+public class RelayRaceConfigValidator extends ConfigProcessor {
 
-    public void processConfig(final Config config) {
+    public RelayRaceConfigValidator(final Config config) {
 
-        validateKeyPresent(KEY_RAW_RESULTS_PATH, config);
-        validateKeyPresent(KEY_ENTRIES_PATH, config);
-        validateKeyPresent(KEY_NUMBER_OF_LEGS, config);
-        validateKeyPresent(KEY_PAIRED_LEGS, config);
+        super(config);
+    }
 
-        validateFileExists(KEY_RAW_RESULTS_PATH, config);
-        validateFileExists(KEY_ENTRIES_PATH, config);
+    public void processConfig() {
+
+        checkAllPresent(List.of(
+            KEY_RAW_RESULTS_PATH,
+            KEY_ENTRIES_PATH,
+            KEY_NUMBER_OF_LEGS,
+            KEY_PAIRED_LEGS));
+
+        checkNonePresent(List.of(
+            KEY_RACES,
+            KEY_MEDIAN_TIME,
+            KEY_MINIMUM_NUMBER_OF_RACES,
+            KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE,
+            KEY_QUALIFYING_CLUBS,
+            KEY_RACE_CATEGORIES_PATH,
+            KEY_RESULTS_PATH,
+            KEY_SCORE_FOR_FIRST_PLACE,
+            KEY_SCORE_FOR_MEDIAN_POSITION,
+            KEY_TIME_TRIAL_INTER_WAVE_INTERVAL,
+            KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
+
+        checkAllFilesExist(List.of(
+            KEY_RAW_RESULTS_PATH,
+            KEY_ENTRIES_PATH));
 
         // Each DNF string contains single bib number.
         validateDNFRecords(config.getString(KEY_DNF_FINISHERS), config.getConfigPath());

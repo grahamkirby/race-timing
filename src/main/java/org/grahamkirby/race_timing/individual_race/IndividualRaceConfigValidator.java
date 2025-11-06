@@ -25,13 +25,20 @@ import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class IndividualRaceConfigValidator implements ConfigProcessor {
+public class IndividualRaceConfigValidator extends ConfigProcessor {
 
-    public void processConfig(final Config config) {
+    public IndividualRaceConfigValidator(final Config config) {
 
-        checkExactlyOnePresent(config, List.of(KEY_RAW_RESULTS_PATH, KEY_RESULTS_PATH));
+        super(config);
+    }
 
-        checkNonePresent(config, List.of(
+    public void processConfig() {
+
+        checkExactlyOnePresent(List.of(
+            KEY_RAW_RESULTS_PATH,
+            KEY_RESULTS_PATH));
+
+        checkNonePresent(List.of(
             KEY_RACES,
             KEY_INDIVIDUAL_LEG_STARTS,
             KEY_MASS_START_TIMES,
@@ -42,15 +49,22 @@ public class IndividualRaceConfigValidator implements ConfigProcessor {
             KEY_PAPER_RESULTS_PATH,
             KEY_RACE_TEMPORAL_ORDER));
 
-        checkAllOrNonePresent(config, List.of(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, KEY_TIME_TRIAL_INTER_WAVE_INTERVAL));
+        checkAllOrNonePresent(List.of(
+            KEY_TIME_TRIAL_RUNNERS_PER_WAVE,
+            KEY_TIME_TRIAL_INTER_WAVE_INTERVAL));
 
-        checkAtMostOnePresent(config, List.of(KEY_CATEGORY_START_OFFSETS, KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
-        checkAtMostOnePresent(config, List.of(KEY_CATEGORY_START_OFFSETS, KEY_TIME_TRIAL_INTER_WAVE_INTERVAL));
+        checkAtMostOnePresent(List.of(
+            KEY_CATEGORY_START_OFFSETS,
+            KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
 
-        validateDNFRecords((String) config.get(KEY_DNF_FINISHERS), config.getConfigPath());
+        checkAtMostOnePresent(List.of(
+            KEY_CATEGORY_START_OFFSETS,
+            KEY_TIME_TRIAL_INTER_WAVE_INTERVAL));
+
+        validateDNFRecords((String) config.get(KEY_DNF_FINISHERS));
     }
 
-    public static void validateDNFRecords(final String dnf_string, final Path config_file_path) {
+    public void validateDNFRecords(final String dnf_string) {
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))
@@ -59,38 +73,7 @@ public class IndividualRaceConfigValidator implements ConfigProcessor {
                     Integer.parseInt(individual_dnf_string);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException("invalid entry '" + dnf_string +"' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_path.getFileName() + "'", e);
+                    throw new RuntimeException("invalid entry '" + dnf_string +"' for key '" + KEY_DNF_FINISHERS + "' in file '" + config.getConfigPath().getFileName() + "'", e);
                 }
-    }
-
-    private void checkExactlyOnePresent(final Config config, final List<String> keys) {
-
-        if (countKeysPresent(config, keys) != 1)
-            throw new RuntimeException("should have exactly one key from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
-    }
-
-    private void checkNonePresent(final Config config, final List<String> keys) {
-
-        if (countKeysPresent(config, keys) > 0)
-            throw new RuntimeException("should have no keys from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
-    }
-
-    private void checkAllOrNonePresent(final Config config, final List<String> keys) {
-
-        final int count = countKeysPresent(config, keys);
-
-        if (count > 0 && count < keys.size())
-            throw new RuntimeException("should have no or all keys from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
-    }
-
-    private void checkAtMostOnePresent(final Config config, final List<String> keys) {
-
-        if (countKeysPresent(config, keys) > 1)
-            throw new RuntimeException("should have no more than one key from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
-    }
-
-    private int countKeysPresent(final Config config, final List<String> keys) {
-
-        return (int) keys.stream().filter(config::containsKey).count();
     }
 }

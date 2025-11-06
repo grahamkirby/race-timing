@@ -23,12 +23,17 @@ import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
 
 @SuppressWarnings("preview")
-public class IndividualRaceConfigAdjuster implements ConfigProcessor {
+public class IndividualRaceConfigAdjuster extends ConfigProcessor {
 
     public static final int DEFAULT_NUMBER_OF_COLUMNS = 4;
 
+    public IndividualRaceConfigAdjuster(final Config config) {
+
+        super(config);
+    }
+
     @Override
-    public void processConfig(final Config config) {
+    public void processConfig() {
 
         // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));

@@ -24,10 +24,15 @@ import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RA
 import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
 
 @SuppressWarnings("preview")
-public class SeriesRaceConfigAdjuster implements ConfigProcessor {
+public class SeriesRaceConfigAdjuster extends ConfigProcessor {
+
+    public SeriesRaceConfigAdjuster(final Config config) {
+
+        super(config);
+    }
 
     @Override
-    public void processConfig(final Config config) {
+    public void processConfig() {
 
         config.replaceIfPresent(KEY_NUMBER_OF_RACES_IN_SERIES, Integer::parseInt);
         config.replaceIfPresent(KEY_MINIMUM_NUMBER_OF_RACES, Integer::parseInt);

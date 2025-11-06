@@ -17,7 +17,66 @@
  */
 package org.grahamkirby.race_timing.common;
 
-public interface ConfigProcessor {
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
-    void processConfig(Config config);
+public abstract class ConfigProcessor {
+
+    protected final Config config;
+
+    public ConfigProcessor(final Config config) {
+        this.config = config;
+    }
+
+    public abstract void processConfig();
+
+    protected void checkAllPresent(final List<String> keys) {
+
+        for (final String key : keys) {
+            if (!config.containsKey(key))
+                throw new RuntimeException("no entry for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
+        }
+    }
+
+    protected void checkAllFilesExist(final List<String> keys) {
+
+        for (final String key : keys) {
+            final Path path = config.getPath(key);
+
+            if (!Files.exists(path))
+                throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
+        }
+    }
+
+    protected void checkExactlyOnePresent(final List<String> keys) {
+
+        if (countKeysPresent(keys) != 1)
+            throw new RuntimeException("should have exactly one key from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
+    }
+
+    protected void checkNonePresent(final List<String> keys) {
+
+        if (countKeysPresent(keys) > 0)
+            throw new RuntimeException("should have no keys from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
+    }
+
+    protected void checkAllOrNonePresent(final List<String> keys) {
+
+        final int count = countKeysPresent(keys);
+
+        if (count > 0 && count < keys.size())
+            throw new RuntimeException("should have no or all keys from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
+    }
+
+    protected void checkAtMostOnePresent(final List<String> keys) {
+
+        if (countKeysPresent(keys) > 1)
+            throw new RuntimeException("should have no more than one key from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
+    }
+
+    private int countKeysPresent(final List<String> keys) {
+
+        return (int) keys.stream().filter(config::containsKey).count();
+    }
 }

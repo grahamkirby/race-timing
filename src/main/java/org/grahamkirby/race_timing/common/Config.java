@@ -26,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -97,8 +96,6 @@ public class Config {
 
     /** Used when a result is recorded without a bib number. */
     public static int UNKNOWN_BIB_NUMBER = 0;
-
-    public static final Duration VERY_LONG_DURATION = Duration.ofDays(Integer.MAX_VALUE);
 
     public static OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
@@ -203,15 +200,15 @@ public class Config {
 
     private final List<ConfigProcessor> config_processors = new ArrayList<>();
 
-    public void addConfigProcessor(final ConfigProcessor processor) {
+    public void addConfigProcessor(final Function<Config, ConfigProcessor> make_processor) {
 
-        config_processors.add(processor);
+        config_processors.add(make_processor.apply(this));
     }
 
     public void processConfig() throws IOException {
 
         for (final ConfigProcessor processor : config_processors)
-            processor.processConfig(this);
+            processor.processConfig();
     }
 
     /**
