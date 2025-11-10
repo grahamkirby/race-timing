@@ -15,10 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.relay_race;
 
-import java.io.OutputStreamWriter;
-import java.util.function.BiFunction;
+import org.grahamkirby.race_timing.common.RaceResults;
+import org.grahamkirby.race_timing.common.RawResult;
 
-public interface ResultPrinterGenerator extends BiFunction<RaceResults, OutputStreamWriter, ResultPrinter> {
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+
+public interface RelayRaceResults extends RaceResults {
+
+    List<? extends RawResult> getRawResults();
+    int getNumberOfLegs();
+
+    List<Boolean> getPairedLegs();
+    List<RelayRaceLegResult> getLegResults(int leg);
+    List<String> getLegDetails(RelayRaceResult result);
+
+    Map<Integer, Integer> countLegsFinishedPerTeam();
+    Map<RawResult, Integer> getExplicitlyRecordedLegNumbers();
+
+    List<Integer> getBibNumbersWithMissingTimes(Map<Integer, Integer> legsFinishedPerTeam);
+    List<Duration> getTimesWithMissingBibNumbers();
 }

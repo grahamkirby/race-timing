@@ -26,7 +26,7 @@ import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 /** Base class for printing results to HTML files. */
 public abstract class PrizeResultPrinterHTML extends ResultPrinter {
 
-    protected PrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+    protected PrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 
@@ -44,7 +44,7 @@ public abstract class PrizeResultPrinterHTML extends ResultPrinter {
         writer.append(
             "    <li>" +
             result.getPositionString() + " " +
-            race.getNormalisation().htmlEncode(result.getParticipantName()) + " " +
+            race_results.getNormalisation().htmlEncode(result.getParticipantName()) + " " +
             "(" + renderDetail(result) + ") " +
             renderPerformance(result) +
             "</li>" +

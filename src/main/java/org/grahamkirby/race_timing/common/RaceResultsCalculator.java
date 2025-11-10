@@ -35,7 +35,7 @@ public abstract class RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract void calculateResults() throws IOException;
+    public abstract RaceResults calculateResults() throws IOException;
     protected abstract boolean areEqualPositionsAllowed();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,9 @@ public abstract class RaceResultsCalculator {
     /** Gets all the results eligible for the given prize categories. */
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
-        final Predicate<RaceResult> prize_category_filter = result -> race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
+        final Predicate<RaceResult> prize_category_filter = result ->
+            race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
+
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
 
         setPositionStrings(results, areEqualPositionsAllowed());

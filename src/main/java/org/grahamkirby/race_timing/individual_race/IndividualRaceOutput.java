@@ -39,10 +39,6 @@ public class IndividualRaceOutput extends RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IndividualRaceOutput(final RaceInternal race) {
-        super(race);
-    }
-
     @Override
     protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
         return IndividualRaceOverallResultPrinterCSV::new;
@@ -68,7 +64,7 @@ public class IndividualRaceOutput extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             writer.append(getPrizesHeaderHTML());
-            printPrizesHTML(writer, getPrizeHTMLPrinterGenerator().apply(race, writer));
+            printPrizesHTML(writer, getPrizeHTMLPrinterGenerator().apply(race_results, writer));
             printTeamPrizesHTML(writer);
         }
     }
@@ -94,7 +90,7 @@ public class IndividualRaceOutput extends RaceOutput {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
             printPrizesHeaderText(writer);
-            printPrizesText(writer, new PrizeResultPrinterText(race, writer));
+            printPrizesText(writer, new PrizeResultPrinterText(race_results, writer));
             printTeamPrizesText(writer);
         }
     }
@@ -103,7 +99,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesHTML(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRace) race).getTeamPrizes();
+        final List<String> team_prizes = race_results.getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
@@ -119,7 +115,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesPDF(final Document document) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRace) race).getTeamPrizes();
+        final List<String> team_prizes = race_results.getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
             document.add(new Paragraph("Team Prizes").
@@ -134,7 +130,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = ((IndividualRace) race).getTeamPrizes();
+        final List<String> team_prizes = race_results.getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
@@ -168,7 +164,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRaceOverallResultPrinterCSV extends ResultPrinter {
 
-        private IndividualRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterCSV(final RaceResults race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -196,7 +192,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        private IndividualRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+        private IndividualRaceOverallResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -214,7 +210,7 @@ public class IndividualRaceOutput extends RaceOutput {
             return List.of(
                 result.getPositionString(),
                 String.valueOf(result.getBibNumber()),
-                race.getNormalisation().htmlEncode(result.getParticipant().getName()),
+                race_results.getNormalisation().htmlEncode(result.getParticipant().getName()),
                 ((Runner) result.getParticipant()).getClub(),
                 result.getParticipant().getCategory().getShortName(),
                 renderDuration(result, DNF_STRING)
@@ -224,7 +220,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private static final class IndividualRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        private IndividualRacePrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+        private IndividualRacePrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 

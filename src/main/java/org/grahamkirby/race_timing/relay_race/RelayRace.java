@@ -38,6 +38,10 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRace implements SingleRaceInternal {
 
+    /** Packages details of an individually recorded leg start (unusual). */
+    record IndividualStart(int bib_number, int leg_number, Duration start_time) {
+    }
+
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int TEAM_NAME_INDEX = 1;
     private static final int CATEGORY_INDEX = 2;
@@ -115,16 +119,18 @@ public class RelayRace implements SingleRaceInternal {
     }
 
     @Override
-    public void processResults() throws IOException {
+    public RaceResults processResults() throws IOException {
 
         loadRaceData();
         completeConfiguration();
-        results_calculator.calculateResults();
+
+        return results_calculator.calculateResults();
     }
 
     @Override
-    public void outputResults() throws IOException {
-        results_output.outputResults();
+    public void outputResults(final RaceResults results) throws IOException {
+
+        results_output.outputResults(results);
         config.outputUnusedProperties();
     }
 
@@ -149,10 +155,6 @@ public class RelayRace implements SingleRaceInternal {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /** Packages details of an individually recorded leg start (unusual). */
-    record IndividualStart(int bib_number, int leg_number, Duration start_time) {
-    }
 
     /**
      * The number of legs in the relay race.
@@ -204,7 +206,9 @@ public class RelayRace implements SingleRaceInternal {
             final String leg_runner_names = ((Team)leg_result.getParticipant()).getRunnerNames().get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
             final String leg_time = renderDuration(leg_result, DNF_STRING);
-            final String split_time = completed && all_previous_legs_completed ? renderDuration(sumDurationsUpToLeg(result.getLegResults(), leg), DNF_STRING) : DNF_STRING;
+            final String split_time = completed && all_previous_legs_completed ?
+                renderDuration(sumDurationsUpToLeg(result.getLegResults(), leg), DNF_STRING) :
+                DNF_STRING;
 
             leg_details.add(leg_runner_names + leg_mass_start_annotation);
             leg_details.add(leg_time);

@@ -17,8 +17,28 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import java.io.OutputStreamWriter;
-import java.util.function.BiFunction;
+import org.grahamkirby.race_timing.categories.PrizeCategory;
+import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 
-public interface ResultPrinterGenerator extends BiFunction<RaceResults, OutputStreamWriter, ResultPrinter> {
+import java.util.List;
+
+public interface RaceResults {
+
+    List<? extends RaceResult> getOverallResults();
+
+    List<? extends RaceResult> getOverallResults(List<PrizeCategory> categories);
+
+    List<? extends RaceResult> getPrizeWinners(PrizeCategory category);
+
+    List<String> getTeamPrizes();
+
+    List<PrizeCategoryGroup> getPrizeCategoryGroups();
+
+    boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
+
+    Normalisation getNormalisation();
+
+    Config getConfig();
+
+    Notes getNotes();
 }

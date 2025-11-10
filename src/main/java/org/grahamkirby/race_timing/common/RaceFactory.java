@@ -46,8 +46,8 @@ public class RaceFactory {
         try {
             final Race race = makeRace(Path.of(args[0]));
 
-            race.processResults();
-            race.outputResults();
+            final RaceResults results = race.processResults();
+            race.outputResults(results);
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());

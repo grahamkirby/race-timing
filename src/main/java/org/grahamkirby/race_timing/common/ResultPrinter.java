@@ -26,14 +26,14 @@ import java.util.List;
 @SuppressWarnings("IncorrectFormatting")
 public abstract class ResultPrinter {
 
-    protected final RaceInternal race;
+    protected final RaceResults race_results;
     protected final OutputStreamWriter writer;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected ResultPrinter(final RaceInternal race, final OutputStreamWriter writer) {
+    protected ResultPrinter(final RaceResults race_results, final OutputStreamWriter writer) {
 
-        this.race = race;
+        this.race_results = race_results;
         this.writer = writer;
     }
 

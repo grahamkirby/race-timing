@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+import static org.grahamkirby.race_timing.common.Config.KEY_RACES;
 
 public class SeriesRace implements RaceInternal {
 
@@ -54,14 +54,15 @@ public class SeriesRace implements RaceInternal {
     }
 
     @Override
-    public void processResults() throws IOException {
+    public RaceResults processResults() throws IOException {
 
-        results_calculator.calculateResults();
+        return results_calculator.calculateResults();
     }
 
     @Override
-    public void outputResults() throws IOException {
-        results_output.outputResults();
+    public void outputResults(final RaceResults results) throws IOException {
+
+        results_output.outputResults(results);
         config.outputUnusedProperties();
     }
 
@@ -110,13 +111,6 @@ public class SeriesRace implements RaceInternal {
         return races;
     }
 
-    public String getConcatenatedRaceNames() {
-
-        return races.stream().
-            filter(Objects::nonNull).
-            map(individual_race -> individual_race.getConfig().getString(KEY_RACE_NAME_FOR_RESULTS)).collect(Collectors.joining(","));
-    }
-
     public int getNumberOfRacesTakenPlace() {
 
         return (int) races.stream().filter(Objects::nonNull).count();
@@ -127,6 +121,7 @@ public class SeriesRace implements RaceInternal {
     private void loadRaces() throws IOException {
 
         races = new ArrayList<>();
+
         final List<String> config_paths_seen = new ArrayList<>();
         final List<String> race_config_paths = Arrays.asList(config.getString(KEY_RACES).split(",", -1));
 

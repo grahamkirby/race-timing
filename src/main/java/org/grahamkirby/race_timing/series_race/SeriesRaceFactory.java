@@ -41,7 +41,7 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
         final RaceResultsCalculator calculator = new SeriesRaceResultsCalculator(scorer, race);
 
         race.setResultsCalculator(calculator);
-        race.setResultsOutput(new SeriesRaceOutput(race));
+        race.setResultsOutput(new SeriesRaceOutput());
 
         return race;
     }

@@ -18,12 +18,14 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
+import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.*;
 
-import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.KEY_RACE_START_TIME;
+import static org.grahamkirby.race_timing.common.Config.UNKNOWN_BIB_NUMBER;
 
 public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
@@ -47,7 +49,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void calculateResults() {
+    public RaceResults calculateResults() {
 
         initialiseResults();
         guessMissingData();
@@ -60,6 +62,104 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         allocatePrizes();
 
         addPaperRecordingComments();
+
+        return makeRaceResults();
+    }
+
+    private RaceResults makeRaceResults() {
+
+        return new RelayRaceResults() {
+
+            @Override
+            public int getNumberOfLegs() {
+                return ((RelayRace) race).getNumberOfLegs();
+            }
+
+            @Override
+            public List<RelayRaceLegResult> getLegResults(final int leg) {
+                return ((RelayRace) race).getLegResults(leg);
+            }
+
+            @Override
+            public Map<Integer, Integer> countLegsFinishedPerTeam() {
+                return ((RelayRace) race).countLegsFinishedPerTeam();
+            }
+
+            @Override
+            public List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
+                return ((RelayRace) race).getBibNumbersWithMissingTimes(leg_finished_count);
+            }
+
+            @Override
+            public List<Duration> getTimesWithMissingBibNumbers() {
+                return ((RelayRace) race).getTimesWithMissingBibNumbers();
+            }
+
+            @Override
+            public Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
+                return ((RelayRace) race).explicitly_recorded_leg_numbers;
+            }
+
+            @Override
+            public List<String> getLegDetails(final RelayRaceResult result) {
+                return ((RelayRace) race).getLegDetails(result);
+            }
+
+            @Override
+            public List<Boolean> getPairedLegs() {
+                return ((RelayRace) race).getPairedLegs();
+            }
+
+            @Override
+            public List<? extends RawResult> getRawResults() {
+                return ((RelayRace) race).getRawResults();
+            }
+
+            @Override
+            public Normalisation getNormalisation() {
+                return race.getNormalisation();
+            }
+
+            @Override
+            public Config getConfig() {
+                return race.getConfig();
+            }
+
+            @Override
+            public Notes getNotes() {
+                return race.getNotes();
+            }
+
+            @Override
+            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+                return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
+                return race.getResultsCalculator().getPrizeWinners(category);
+            }
+
+            @Override
+            public List<String> getTeamPrizes() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults() {
+                return race.getResultsCalculator().getOverallResults();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
+                return race.getResultsCalculator().getOverallResults(categories);
+            }
+
+            @Override
+            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
+                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
+            }
+        };
     }
 
     @Override

@@ -15,10 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.series_race;
 
-import java.io.OutputStreamWriter;
-import java.util.function.BiFunction;
+import org.grahamkirby.race_timing.common.RaceResults;
 
-public interface ResultPrinterGenerator extends BiFunction<RaceResults, OutputStreamWriter, ResultPrinter> {
+import java.util.List;
+
+public interface SeriesRaceResults extends RaceResults {
+
+    boolean multipleClubs();
+    boolean multipleRaceCategories();
+    boolean possibleToHaveCompleted();
+
+    List<SeriesRaceCategory> getRaceCategories();
+    List<String> getRaceNames();
+
+    int getNumberOfRacesTakenPlace();
 }

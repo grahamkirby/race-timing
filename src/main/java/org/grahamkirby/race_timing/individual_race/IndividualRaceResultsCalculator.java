@@ -18,6 +18,8 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
+import org.grahamkirby.race_timing.categories.PrizeCategory;
+import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
@@ -49,7 +51,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void calculateResults() {
+    public RaceResults calculateResults() {
 
         initialiseResults();
         adjustTimes();
@@ -57,6 +59,61 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         recordDNFs();
         sortResults();
         allocatePrizes();
+
+        getPrizeWinners(null);
+
+        return makeRaceResults();
+    }
+
+    private RaceResults makeRaceResults() {
+
+        return new RaceResults() {
+
+            @Override
+            public Normalisation getNormalisation() {
+                return race.getNormalisation();
+            }
+
+            @Override
+            public Config getConfig() {
+                return race.getConfig();
+            }
+
+            @Override
+            public Notes getNotes() {
+                return race.getNotes();
+            }
+
+            @Override
+            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+                return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
+                return race.getResultsCalculator().getPrizeWinners(category);
+            }
+
+            @Override
+            public List<String> getTeamPrizes() {
+                return ((IndividualRace) race).getTeamPrizes();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults() {
+                return race.getResultsCalculator().getOverallResults();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
+                return race.getResultsCalculator().getOverallResults(categories);
+            }
+
+            @Override
+            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
+                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
+            }
+        };
     }
 
     @Override

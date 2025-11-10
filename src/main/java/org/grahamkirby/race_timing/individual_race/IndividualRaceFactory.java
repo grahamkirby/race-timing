@@ -33,7 +33,7 @@ public class IndividualRaceFactory implements SpecialisedRaceFactory {
         final IndividualRace race = new IndividualRace(makeIndividualRaceConfig(config_file_path));
 
         race.setResultsCalculator(new IndividualRaceResultsCalculator(race));
-        race.setResultsOutput(new IndividualRaceOutput(race));
+        race.setResultsOutput(new IndividualRaceOutput());
 
         return race;
     }

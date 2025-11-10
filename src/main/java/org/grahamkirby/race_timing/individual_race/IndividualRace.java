@@ -181,22 +181,18 @@ public class IndividualRace implements SingleRaceInternal {
     }
 
     @Override
-    public void processResults() throws IOException {
+    public RaceResults processResults() throws IOException {
 
         loadRaceData();
         completeConfiguration();
-        results_calculator.calculateResults();
+        return results_calculator.calculateResults();
     }
 
     @Override
-    public void outputResults() throws IOException {
-        results_output.outputResults();
+    public void outputResults(final RaceResults results) throws IOException {
+
+        results_output.outputResults(results);
         config.outputUnusedProperties();
-    }
-
-    private void completeConfiguration() {
-
-        separately_recorded_finish_times = readSeparatelyRecordedResults();
     }
 
     @Override
@@ -218,9 +214,9 @@ public class IndividualRace implements SingleRaceInternal {
         return notes;
     }
 
-    private Map<Integer, Duration> readSeparatelyRecordedResults() {
+    private void completeConfiguration() {
 
-        final Map<Integer, Duration> results = new HashMap<>();
+        separately_recorded_finish_times = new HashMap<>();
 
         final Consumer<Object> process_separately_recorded_results = value -> {
 
@@ -234,13 +230,11 @@ public class IndividualRace implements SingleRaceInternal {
                 final int bib_number = Integer.parseInt(split[0]);
                 final Duration finish_time = parseTime(split[1]);
 
-                results.put(bib_number, finish_time);
+                separately_recorded_finish_times.put(bib_number, finish_time);
             }
         };
 
         config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
-
-        return results;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

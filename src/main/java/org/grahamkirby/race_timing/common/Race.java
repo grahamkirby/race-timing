@@ -47,6 +47,6 @@ public interface Race {
     // TODO suppress prize output in individual tour races.
     // TODO control category order in prize list output.
 
-    void processResults() throws IOException;
-    void outputResults() throws IOException;
+    RaceResults processResults() throws IOException;
+    void outputResults(RaceResults results) throws IOException;
 }

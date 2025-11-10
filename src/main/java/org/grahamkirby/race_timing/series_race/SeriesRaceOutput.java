@@ -48,61 +48,41 @@ class SeriesRaceOutput extends RaceOutput {
         return SeriesRacePrizeResultPrinterHTML::new;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    private static String renderScore(final Performance score) {
 
-    public SeriesRaceOutput(final RaceInternal race) {
-        super(race);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static int countClubs(final List<RaceResult> results) {
-
-        return (int) results.stream().
-            map(result -> ((Runner) result.getParticipant()).getClub()).
-            distinct().
-            count();
+        return score != null ? String.valueOf(score) : "-";
     }
 
     private static final class SeriesRaceOverallResultPrinterCSV extends ResultPrinter {
 
-        final SeriesRaceResultsCalculator calculator;
-
-        final boolean multiple_clubs;
-        final boolean multiple_race_categories;
-        final boolean multiple_races_taken_place;
-        final boolean possible_to_have_completed;
-
-        private SeriesRaceOverallResultPrinterCSV(final RaceInternal race, final OutputStreamWriter writer) {
+        private SeriesRaceOverallResultPrinterCSV(final RaceResults race, final OutputStreamWriter writer) {
 
             super(race, writer);
-
-            calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
-            multiple_clubs = countClubs(calculator.getOverallResults()) > 1;
-            multiple_race_categories = calculator.getRaceCategories().size() > 1;
-            multiple_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace() > 1;
-            possible_to_have_completed = ((SeriesRace) race).getNumberOfRacesTakenPlace() >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         }
 
         @Override
         public void printResultsHeader() throws IOException {
 
-            final String race_names = ((SeriesRace) race).getConcatenatedRaceNames();
+            final SeriesRaceResults results = (SeriesRaceResults) race_results;
 
-            final String race_categories_header = calculator.getRaceCategories().stream().
+            final String race_names = results.getRaceNames().stream().
+                filter(Objects::nonNull).
+                collect(Collectors.joining(","));
+
+            final String race_categories_header = results.getRaceCategories().stream().
                 map(SeriesRaceCategory::category_title).
                 collect(Collectors.joining(","));
 
             writer.append("Pos,Runner,");
-            if (multiple_clubs)
+            if (results.multipleClubs())
                 writer.append("Club,");
             writer.append("Category,").
                 append(race_names);
-            if (multiple_races_taken_place)
+            if (results.getNumberOfRacesTakenPlace() > 1)
                 writer.append(",Total");
-            if (possible_to_have_completed)
+            if (results.possibleToHaveCompleted())
                 writer.append(",Completed");
-            if (multiple_race_categories)
+            if (results.multipleRaceCategories())
                 writer.append(",").append(race_categories_header);
             writer.append(LINE_SEPARATOR);
         }
@@ -110,33 +90,29 @@ class SeriesRaceOutput extends RaceOutput {
         @Override
         public void printResult(final RaceResult r) throws IOException {
 
+            final SeriesRaceResults results = (SeriesRaceResults) race_results;
+
             final SeriesRaceResult result = (SeriesRaceResult) r;
-            final SeriesRaceScorer scorer = calculator.getScorer();
             final Runner runner = (Runner) result.getParticipant();
 
             writer.append(result.getPositionString()).append(",").
                 append(encode(runner.getName())).append(",");
-            if (multiple_clubs)
+            if (results.multipleClubs())
                 writer.append(encode((runner).getClub())).append(",");
             writer.append(runner.getCategory().getShortName()).append(",");
 
-            // Iterate over the races rather than the scores within the result, so that future races can be filtered out.
-            writer.append(
-                ((SeriesRace) race).getRaces().stream().
-                    filter(Objects::nonNull).
-                    map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
-                    map(SeriesRaceOutput::renderScore).
-                    collect(Collectors.joining(","))
-            );
+            writer.append(result.getPerformances().stream().
+                map(SeriesRaceOutput::renderScore).
+                collect(Collectors.joining(",")));
 
-            if (multiple_races_taken_place)
-                writer.append("," ).append(renderScore(scorer.getSeriesPerformance(runner)));
-            if (possible_to_have_completed)
+            if (results.getNumberOfRacesTakenPlace() > 1)
+                writer.append("," ).append(renderScore(result.getPerformance()));
+            if (results.possibleToHaveCompleted())
                 writer.append(",").append(result.hasCompletedSeries() ? "Y" : "N");
 
-            if (multiple_race_categories)
+            if (results.multipleRaceCategories())
                 writer.append(",").append(
-                    calculator.getRaceCategories().stream().
+                    results.getRaceCategories().stream().
                         map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
                         collect(Collectors.joining(","))
                 );
@@ -147,46 +123,33 @@ class SeriesRaceOutput extends RaceOutput {
 
     private static final class SeriesRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
 
-        final boolean multiple_clubs;
-        final boolean multiple_race_categories;
-        final boolean multiple_races_taken_place;
-        final boolean possible_to_have_completed;
-
-        private SeriesRaceOverallResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+        private SeriesRaceOverallResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
 
             super(race, writer);
-
-            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
-
-            multiple_clubs = countClubs(calculator.getOverallResults()) > 1;
-            multiple_race_categories = calculator.getRaceCategories().size() > 1;
-            multiple_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace() > 1;
-            possible_to_have_completed = ((SeriesRace) race).getNumberOfRacesTakenPlace() >= (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         }
 
         protected List<String> getResultsColumnHeaders() {
 
+            final SeriesRaceResults results = (SeriesRaceResults) race_results;
+
             final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
             final List<String> headers = new ArrayList<>(common_headers);
 
-            if (multiple_clubs)
+            if (results.multipleClubs())
                 headers.add("Club");
 
-            // This traverses races in order of listing in config.
-            final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
+            // This traverses race names in order of listing in config.
+            results.getRaceNames().stream().
+                filter(Objects::nonNull).
+                forEach(headers::add);
 
-            for (final SingleRaceInternal individual_race : races)
-                // Check whether race has taken place at this point.
-                if (individual_race != null)
-                    headers.add((String) individual_race.getConfig().get(KEY_RACE_NAME_FOR_RESULTS));
-
-            if (multiple_races_taken_place)
+            if (results.getNumberOfRacesTakenPlace() > 1)
                 headers.add("Total");
-            if (possible_to_have_completed)
+            if (results.possibleToHaveCompleted())
                 headers.add("Completed");
 
-            if (multiple_race_categories)
-                for (final SeriesRaceCategory category : ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories())
+            if (results.multipleRaceCategories())
+                for (final SeriesRaceCategory category : results.getRaceCategories())
                     headers.add(category.category_title());
 
             return headers;
@@ -196,30 +159,27 @@ class SeriesRaceOutput extends RaceOutput {
 
             final List<String> elements = new ArrayList<>();
 
-            final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
-            final SeriesRaceScorer scorer = calculator.getScorer();
+            final SeriesRaceResults results = (SeriesRaceResults) race_results;
             final SeriesRaceResult result = (SeriesRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
 
             elements.add(result.getPositionString());
-            elements.add(race.getNormalisation().htmlEncode(result.getParticipantName()));
+            elements.add(race_results.getNormalisation().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getShortName());
-            if (multiple_clubs)
+
+            if (results.multipleClubs())
                 elements.add(runner.getClub());
 
-            for (final SingleRaceInternal individual_race : ((SeriesRace) race).getRaces())
-                if (individual_race != null) {
-                    final Performance score = scorer.getIndividualRacePerformance((Runner) result.getParticipant(), individual_race);
-                    elements.add(renderScore(score));
-                 }
+            result.getPerformances().forEach(
+                performance -> elements.add(renderScore(performance)));
 
-            if (multiple_races_taken_place)
-                elements.add(renderScore(scorer.getSeriesPerformance(runner)));
-            if (possible_to_have_completed)
+            if (results.getNumberOfRacesTakenPlace() > 1)
+                elements.add(renderScore(result.getPerformance()));
+            if (results.possibleToHaveCompleted())
                 elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
-            if (multiple_race_categories)
-                for (final SeriesRaceCategory category : calculator.getRaceCategories())
+            if (results.multipleRaceCategories())
+                for (final SeriesRaceCategory category : results.getRaceCategories())
                     elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;
@@ -228,7 +188,7 @@ class SeriesRaceOutput extends RaceOutput {
 
     private static final class SeriesRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
 
-        public SeriesRacePrizeResultPrinterHTML(final RaceInternal race, final OutputStreamWriter writer) {
+        public SeriesRacePrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
             super(race, writer);
         }
 
@@ -240,16 +200,7 @@ class SeriesRaceOutput extends RaceOutput {
         @Override
         protected String renderPerformance(final RaceResult r) {
 
-            final SeriesRaceResult result = (SeriesRaceResult) r;
-            final Runner runner = (Runner) result.getParticipant();
-            final SeriesRaceScorer scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
-
-            return String.valueOf(scorer.getSeriesPerformance(runner));
+            return renderScore(r.getPerformance());
         }
-    }
-
-    public static String renderScore(final Performance score) {
-
-        return score != null ? String.valueOf(score) : "-";
     }
 }

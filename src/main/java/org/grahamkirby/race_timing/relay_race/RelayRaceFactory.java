@@ -35,7 +35,7 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
         final RelayRace race = new RelayRace(makeRelayRaceConfig(config_file_path));
 
         race.setResultsCalculator(new RelayRaceResultsCalculator(race));
-        race.setResultsOutput(new RelayRaceOutput(race));
+        race.setResultsOutput(new RelayRaceOutput());
 
         return race;
     }

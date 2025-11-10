@@ -47,7 +47,7 @@ public class AggregateTimesScorer extends SeriesRaceScorer {
 
         if (!series_result.canComplete()) return null;
 
-        return new Performance(series_result.performances.stream().
+        return new Performance(series_result.getPerformances().stream().
             filter(Objects::nonNull).
             map(obj -> (Duration) obj.getValue()).
             sorted().                                 // Sort  not actually necessary but included to keep logic same as other series race scorers.

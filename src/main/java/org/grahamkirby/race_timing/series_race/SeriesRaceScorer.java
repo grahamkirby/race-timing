@@ -57,7 +57,6 @@ public abstract class SeriesRaceScorer {
     public int compareSeriesPerformance(final Performance series_performance1, final Performance series_performance2) {
 
         final Comparator<Performance> comparator = Comparator.nullsLast(Performance::compareTo);
-
         return comparator.compare(series_performance1, series_performance2);
     }
 
@@ -65,7 +64,7 @@ public abstract class SeriesRaceScorer {
 
     protected int numberOfRacesCompleted(final SeriesRaceResult series_result) {
 
-        return (int) series_result.performances.stream().filter(Objects::nonNull).count();
+        return (int) series_result.getPerformances().stream().filter(Objects::nonNull).count();
     }
 
     protected Performance getIndividualRaceTime(final Runner runner, final SingleRaceInternal individual_race) {
@@ -90,7 +89,7 @@ public abstract class SeriesRaceScorer {
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         // Sort the scores before selecting, depending on whether lower or higher score is better.
-        return new Performance(series_result.performances.stream().
+        return new Performance(series_result.getPerformances().stream().
             filter(Objects::nonNull).
             map(obj -> (int) obj.getValue()).
             sorted(comparator).

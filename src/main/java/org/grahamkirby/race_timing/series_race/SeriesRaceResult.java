@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -29,13 +30,15 @@ import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_S
 
 public class SeriesRaceResult extends CommonRaceResult {
 
-    protected final List<Performance> performances;
-
     protected final int minimum_number_of_races;
     protected final int number_of_races_in_series;
     protected final int number_of_races_taken_place;
 
     private final SeriesRaceScorer scorer;
+
+    // List of performances in races that have occurred, in results listing order.
+    // Contains null entries where runner did not compete.
+    private final List<Performance> performances;
 
     public SeriesRaceResult(final RaceInternal race, final Participant participant, final List<Performance> performances) {
 
@@ -47,6 +50,10 @@ public class SeriesRaceResult extends CommonRaceResult {
         minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
         number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
+    }
+
+    public List<Performance> getPerformances() {
+        return performances;
     }
 
     @Override
@@ -104,7 +111,7 @@ public class SeriesRaceResult extends CommonRaceResult {
             anyMatch(this::hasCompletedRace);
     }
 
-    int numberOfRacesCompleted() {
+    private int numberOfRacesCompleted() {
 
         return (int) ((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).
@@ -115,7 +122,7 @@ public class SeriesRaceResult extends CommonRaceResult {
             count();
     }
 
-    static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
+    private static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
 
         final int minimum_number_of_races = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
 
@@ -145,9 +152,34 @@ public class SeriesRaceResult extends CommonRaceResult {
             count();
     }
 
+    /**
+     * @param race_number the race number in results listing order, starting from 1
+     * @return true if the runner has completed that race
+     */
     private boolean hasCompletedRace(final int race_number) {
 
-        return race_number <= performances.size() && performances.get(race_number - 1) != null;
+        final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
+
+        // Example: race_number = 5
+
+        final int number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
+        // Example: number_of_races_taken_place = 6
+
+        final List<Integer> race_numbers_in_temporal_order = calculator.getRaceTemporalOrder();
+        // Example: race_numbers_in_temporal_order = 1,5,2,9,3,10,4,11,12,6,7,8
+
+        final List<Integer> completed_race_numbers_in_temporal_order = race_numbers_in_temporal_order.subList(0, number_of_races_taken_place);
+        // Example: completed_race_numbers_in_temporal_order = 1,5,2,9,3,10
+
+        // Performances are held in listing order.
+        final List<Integer> completed_race_numbers_in_performance_list_order = completed_race_numbers_in_temporal_order.stream().sorted().toList();
+        // Example: sorted = 1,2,3,5,9,10
+
+        final int position_of_race_in_performances = completed_race_numbers_in_performance_list_order.indexOf(race_number);
+        // Example: for race_number = 5, position_of_race_in_performances = 3
+
+        // Position will be -1 for a race that hasn't yet occurred.
+        return position_of_race_in_performances >= 0 && performances.get(position_of_race_in_performances) != null;
     }
 
     private int numberOfRacesRemainingInCategory(final List<SingleRaceInternal> races, final SeriesRaceCategory category) {
