@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -165,7 +164,7 @@ public class SeriesRaceResult extends CommonRaceResult {
         final int number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
         // Example: number_of_races_taken_place = 6
 
-        final List<Integer> race_numbers_in_temporal_order = calculator.getRaceTemporalOrder();
+        final List<Integer> race_numbers_in_temporal_order = calculator.getRaceTemporalPermutation().getOrdering();
         // Example: race_numbers_in_temporal_order = 1,5,2,9,3,10,4,11,12,6,7,8
 
         final List<Integer> completed_race_numbers_in_temporal_order = race_numbers_in_temporal_order.subList(0, number_of_races_taken_place);
@@ -175,11 +174,11 @@ public class SeriesRaceResult extends CommonRaceResult {
         final List<Integer> completed_race_numbers_in_performance_list_order = completed_race_numbers_in_temporal_order.stream().sorted().toList();
         // Example: sorted = 1,2,3,5,9,10
 
-        final int position_of_race_in_performances = completed_race_numbers_in_performance_list_order.indexOf(race_number);
-        // Example: for race_number = 5, position_of_race_in_performances = 3
+        final int index_of_race_in_performances = completed_race_numbers_in_performance_list_order.indexOf(race_number);
+        // Example: for race_number = 5, index_of_race_in_performances = 3
 
         // Position will be -1 for a race that hasn't yet occurred.
-        return position_of_race_in_performances >= 0 && performances.get(position_of_race_in_performances) != null;
+        return index_of_race_in_performances >= 0 && performances.get(index_of_race_in_performances) != null;
     }
 
     private int numberOfRacesRemainingInCategory(final List<SingleRaceInternal> races, final SeriesRaceCategory category) {

@@ -32,75 +32,79 @@ import java.util.function.Function;
 
 public class Config {
 
-    public static String CSV_FILE_SUFFIX = "csv";
-    public static String HTML_FILE_SUFFIX = "html";
-    public static String PDF_FILE_SUFFIX = "pdf";
-    public static String TEXT_FILE_SUFFIX = "txt";
+    public static final String CSV_FILE_SUFFIX = "csv";
+    public static final String HTML_FILE_SUFFIX = "html";
+    public static final String PDF_FILE_SUFFIX = "pdf";
+    public static final String TEXT_FILE_SUFFIX = "txt";
 
-    public static Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
+    public static final Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
 
-    public static String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
-    public static String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
-    public static String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
-    public static String KEY_CATEGORY_START_OFFSETS = "CATEGORY_START_OFFSETS";
-    public static String KEY_DNF_FINISHERS = "DNF_FINISHERS";
-    public static String KEY_ENTRIES_PATH = "ENTRIES_PATH";
-    public static String KEY_ENTRY_CATEGORIES_PATH = "ENTRY_CATEGORIES_PATH";
-    public static String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
-    public static String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
-    public static String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
-    public static String KEY_INDIVIDUAL_START_TIMES = "INDIVIDUAL_START_TIMES";
-    public static String KEY_MASS_START_TIMES = "MASS_START_TIMES";
-    public static String KEY_MEDIAN_TIME = "MEDIAN_TIME";
-    public static String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
-    public static String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
-    public static String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
-    public static String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
-    public static String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
-    public static String KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE = "NUMBER_TO_COUNT_FOR_TEAM_PRIZE";
-    public static String KEY_PAIRED_LEGS = "PAIRED_LEGS";
-    public static String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
-    public static String KEY_PRIZE_CATEGORIES_PATH = "PRIZE_CATEGORIES_PATH";
-    public static String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
-    public static String KEY_RACES = "RACES";
-    public static String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
-    public static String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
-    public static String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
-    public static String KEY_RACE_START_TIME = "RACE_START_TIME";
-    public static String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
-    public static String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
-    public static String KEY_RESULTS_PATH = "RESULTS_PATH";
-    public static String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
-    public static String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
-    public static String KEY_SEPARATELY_RECORDED_RESULTS = "SEPARATELY_RECORDED_RESULTS";
-    public static String KEY_TIME_TRIAL_INTER_WAVE_INTERVAL = "TIME_TRIAL_INTER_WAVE_INTERVAL";
-    public static String KEY_TIME_TRIAL_RUNNERS_PER_WAVE = "TIME_TRIAL_RUNNERS_PER_WAVE";
-    public static String KEY_YEAR = "YEAR";
+    public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
+    public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
+    public static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
+    public static final String KEY_CATEGORY_START_OFFSETS = "CATEGORY_START_OFFSETS";
+    public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
+    public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
+    public static final String KEY_ENTRY_CATEGORIES_PATH = "ENTRY_CATEGORIES_PATH";
+    public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
+    public static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
+    public static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
+    public static final String KEY_INDIVIDUAL_START_TIMES = "INDIVIDUAL_START_TIMES";
+    public static final String KEY_MASS_START_TIMES = "MASS_START_TIMES";
+    public static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
+    public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
+    public static final String KEY_NORMALISED_CLUB_NAMES_PATH = "NORMALISED_CLUB_NAMES_PATH";
+    public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
+    public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
+    public static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
+    public static final String KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE = "NUMBER_TO_COUNT_FOR_TEAM_PRIZE";
+    public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
+    public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
+    public static final String KEY_PRIZE_CATEGORIES_PATH = "PRIZE_CATEGORIES_PATH";
+    public static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
+    public static final String KEY_RACES = "RACES";
+    public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
+    public static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
+    public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
+    public static final String KEY_RACE_START_TIME = "RACE_START_TIME";
+    public static final String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
+    public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
+    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
+    public static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
+    public static final String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
+    public static final String KEY_SEPARATELY_RECORDED_RESULTS = "SEPARATELY_RECORDED_RESULTS";
+    public static final String KEY_TIME_TRIAL_INTER_WAVE_INTERVAL = "TIME_TRIAL_INTER_WAVE_INTERVAL";
+    public static final String KEY_TIME_TRIAL_RUNNERS_PER_WAVE = "TIME_TRIAL_RUNNERS_PER_WAVE";
+    public static final String KEY_YEAR = "YEAR";
 
     /** Displayed in results for runners that did not complete the course. */
-    public static String DNF_STRING = "DNF";
+    public static final String DNF_STRING = "DNF";
 
     /** Comment symbol used within configuration files. */
-    public static String COMMENT_SYMBOL = "#";
+    public static final String COMMENT_SYMBOL = "#";
 
-    public static String PDF_PRIZE_FONT_NAME = StandardFonts.HELVETICA;
-    public static String PDF_PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
-    public static String PDF_PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
-    public static int PDF_PRIZE_FONT_SIZE = 24;
+    public static final String PDF_PRIZE_FONT_NAME = StandardFonts.HELVETICA;
+    public static final String PDF_PRIZE_FONT_BOLD_NAME = StandardFonts.HELVETICA_BOLD;
+    public static final String PDF_PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
+    public static final int PDF_PRIZE_FONT_SIZE = 24;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Platform-specific line separator used in creating output files. */
-    public static String LINE_SEPARATOR = System.lineSeparator();
-    public static String PATH_SEPARATOR = File.separator;
+    public static final String LINE_SEPARATOR = System.lineSeparator();
+    public static final String PATH_SEPARATOR = File.separator;
 
     /** Used when a result is recorded without a bib number. */
-    public static int UNKNOWN_BIB_NUMBER = 0;
+    public static final String UNKNOWN_BIB_NUMBER_INDICATOR = "?";
+    public static final int UNKNOWN_BIB_NUMBER = 0;
 
-    public static OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+    public static final String UNKNOWN_TIME_INDICATOR = "?";
+    public static final String UNKNOWN_CLUB_INDICATOR = "?";
+
+    public static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     /** Web link to application on GitHub. */
-    public static String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
+    public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
     private final Map<String, Object> config_map;
     private final List<String> unused_keys;

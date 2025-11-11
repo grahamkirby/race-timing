@@ -251,9 +251,9 @@ public class RelayRaceOutput extends RaceOutput {
 
         final int bib_number = raw_result.getBibNumber();
 
-        writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : "?").
+        writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : UNKNOWN_BIB_NUMBER_INDICATOR).
             append("\t").
-            append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime(), DNF_STRING) : "?");
+            append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime(), DNF_STRING) : UNKNOWN_TIME_INDICATOR);
     }
 
     private void printLegNumber(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {

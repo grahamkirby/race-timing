@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static org.grahamkirby.race_timing.common.Config.UNKNOWN_TIME_INDICATOR;
+
 public class CommonDataProcessor {
 
     public static void validateRawResults(final Path raw_results_path) throws IOException {
@@ -96,7 +98,7 @@ public class CommonDataProcessor {
             if (!result_string.isBlank()) {
 
                 final String time_as_string = result_string.split("\t")[1];
-                final Duration finish_time = time_as_string.equals("?") ? null : Normalisation.parseTime(time_as_string);
+                final Duration finish_time = time_as_string.equals(UNKNOWN_TIME_INDICATOR) ? null : Normalisation.parseTime(time_as_string);
 
                 if (finish_time != null && previous_time != null && previous_time.compareTo(finish_time) > 0)
                     throw new RuntimeException("result out of order at line " + i + " in file '" + raw_results_path.getFileName() + "'");

@@ -407,7 +407,7 @@ public class RelayRace implements SingleRaceInternal {
                 if (!line.startsWith(COMMENT_SYMBOL) && !line.isBlank()) {
 
                     final String bib_number = line.split("\t")[0];
-                    if (!bib_number.equals("?"))
+                    if (!bib_number.equals(UNKNOWN_BIB_NUMBER_INDICATOR))
                         bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1);
                 }
     }
@@ -436,10 +436,10 @@ public class RelayRace implements SingleRaceInternal {
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);
 
-        if (elements[2].equals("?")) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
+        if (elements[2].equals(UNKNOWN_BIB_NUMBER_INDICATOR)) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
-        if (elements[3].equals("?")) raw_result.setRecordedFinishTime(null);
+        if (elements[3].equals(UNKNOWN_TIME_INDICATOR)) raw_result.setRecordedFinishTime(null);
         else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(Normalisation.parseTime(elements[3]));
 
         if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
