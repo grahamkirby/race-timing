@@ -34,11 +34,16 @@ import static org.grahamkirby.race_timing.common.Config.*;
 public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     public static final String UNDEFINED_CLUB = "?";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private List<SeriesRaceCategory> race_categories;
     private List<Integer> race_temporal_order;
     private List<String> qualifying_clubs;
     private final SeriesRaceScorer scorer;
-    private final Map<Runner, SeriesRaceResult> runner_result_map = new HashMap<>();
+    private final Map<Runner, SeriesRaceResult> overall_results_by_runner;
+    private final List<SingleRaceInternal> races;
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,18 +51,21 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
         super(race);
         this.scorer = scorer;
+        overall_results_by_runner = new HashMap<>();
+        races = ((SeriesRace) race).getRaces();
 
-        loadRaceTemporalPositions();
         loadRaceCategories();
-        configureClubs();
-        checkCategoryConsistencyOverSeries();
+        loadRaceTemporalPositions();
+        loadQualifyingClubs();
     }
 
     @Override
     public RaceResults calculateResults() throws IOException {
 
-        initialiseResults();
-        sortResults();
+        normaliseRunnerClubs();
+        checkCategoryConsistencyOverSeries();
+        calculateOverallResults();
+        sortOverallResults();
         allocatePrizes();
 
         return makeRaceResults();
@@ -66,6 +74,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     @Override
     public boolean areEqualPositionsAllowed() {
 
+        // Since overall performances are derived from multiple races, there's no way to distinguish two
+        // runners with the same overall performance.
         return true;
     }
 
@@ -83,7 +93,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     protected SeriesRaceResult getOverallResult(final Runner runner) {
 
-        return runner_result_map.get(runner);
+        return overall_results_by_runner.get(runner);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +127,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             @Override
             public List<String> getRaceNames() {
 
-                return ((SeriesRace) race).getRaces().stream().
+                return races.stream().
                     map(individual_race -> individual_race == null ? null : individual_race.getConfig().getString(KEY_RACE_NAME_FOR_RESULTS)).
                     toList();
             }
@@ -179,6 +189,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         };
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private static int numberOfClubs(final SeriesRace race) {
 
         return (int) race.getResultsCalculator().getOverallResults().stream().
@@ -187,9 +199,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             count();
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static List<String> getDefinedClubs(final Collection<String> clubs) {
+    private static List<String> getDefinedClubs(final List<String> clubs) {
 
         return clubs.stream().
             filter(club -> !club.equals(UNDEFINED_CLUB)).
@@ -232,31 +242,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void initialiseResults() {
-
-        overall_results = new ArrayList<>(
-            getRacesInTemporalOrder().stream().
-                filter(Objects::nonNull).
-                flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-                filter(getResultInclusionPredicate()).
-                map(result -> (Runner) result.getParticipant()).
-                distinct().
-                map(this::makeOverallResult).
-                toList());
-    }
-
-    private RaceResult makeOverallResult(final Runner runner) {
-
-        final List<Performance> scores = ((SeriesRace) race).getRaces().stream().
-            filter(Objects::nonNull).
-            map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
-            toList();
-
-        final SeriesRaceResult result = new SeriesRaceResult(race, runner, scores);
-        runner_result_map.put(runner, result);
-        return result;
-    }
-
     private void loadRaceCategories() throws IOException {
 
         race_categories = race.getConfig().containsKey(KEY_RACE_CATEGORIES_PATH) ?
@@ -268,13 +253,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             makeDefaultRaceCategories();
     }
 
-    private List<SeriesRaceCategory> makeDefaultRaceCategories() {
-
-        final List<Integer> race_numbers = IntStream.rangeClosed(1, ((SeriesRace)race).getRaces().size()).boxed().toList();
-        final SeriesRaceCategory general_race_category = new SeriesRaceCategory("General", 0, race_numbers);
-        return List.of(general_race_category);
-    }
-
     private void loadRaceTemporalPositions() {
 
         race_temporal_order = race.getConfig().containsKey(KEY_RACE_TEMPORAL_ORDER) ?
@@ -284,9 +262,66 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             makeDefaultRaceTemporalPositions();
     }
 
+    private void loadQualifyingClubs() {
+
+        qualifying_clubs = race.getConfig().containsKey(KEY_QUALIFYING_CLUBS) ?
+            Arrays.asList(race.getConfig().getString(KEY_QUALIFYING_CLUBS).split(",")) :
+            new ArrayList<>();
+    }
+
+    private void calculateOverallResults() {
+
+        overall_results = new ArrayList<>(        // List needs to be mutable to allow sorting.
+            getRacesInTemporalOrder().stream().
+                filter(Objects::nonNull).
+                flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
+                filter(getResultInclusionPredicate()).
+                map(result -> (Runner) result.getParticipant()).
+                distinct().
+                map(this::makeOverallResult).
+                toList());
+    }
+
+    private List<SingleRaceInternal> getRacesInTemporalOrder() {
+
+        final List<SingleRaceInternal> races_in_order = new ArrayList<>();
+
+        // Example: RACE_TEMPORAL_ORDER = 1,5,2,9,3,10,4,11,12,6,7,8
+        // First race in listing occurs first; fifth race in listing occurs second etc.
+
+        // TODO write as permutation.
+        for (int i = 0; i < races.size(); i++)
+            races_in_order.add(races.get(race_temporal_order.get(i) - 1));
+
+        return races_in_order;
+    }
+
+    private RaceResult makeOverallResult(final Runner runner) {
+
+        final List<Performance> performances = races.stream().
+            filter(Objects::nonNull).
+            map(individual_race -> scorer.getIndividualRacePerformance(runner, individual_race)).
+            toList();
+
+        final SeriesRaceResult result = new SeriesRaceResult(race, runner, performances);
+
+        // Cache the result so it can be retrieved without scanning the overall results list.
+        // The result needs to be accessed frequently during sorting of results.
+        overall_results_by_runner.put(runner, result);
+        return result;
+    }
+
+    private List<SeriesRaceCategory> makeDefaultRaceCategories() {
+
+        final List<Integer> race_numbers = IntStream.rangeClosed(1, races.size()).boxed().toList();
+        final SeriesRaceCategory general_race_category = new SeriesRaceCategory("General", 0, race_numbers);
+
+        return List.of(general_race_category);
+    }
+
     private List<Integer> makeDefaultRaceTemporalPositions() {
 
-        return IntStream.rangeClosed(1, ((SeriesRace)race).getRaces().size()).boxed().toList();
+        return IntStream.rangeClosed(1, races.size()).boxed().toList();
     }
 
     private Predicate<RaceResult> getResultInclusionPredicate() {
@@ -294,43 +329,47 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         return result -> qualifying_clubs.isEmpty() || qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
     }
 
-    private void configureClubs() {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        qualifying_clubs = race.getConfig().containsKey(KEY_QUALIFYING_CLUBS) ?
-            Arrays.asList(race.getConfig().getString(KEY_QUALIFYING_CLUBS).split(",")) :
-            new ArrayList<>();
+    private void normaliseRunnerClubs() {
 
-        getRunnerNames().forEach(this::normaliseClubsForRunner);
+        getRunnerNames().forEach(this::normaliseClubsForRunnerName);
     }
 
-    private void normaliseClubsForRunner(final String runner_name) {
+    private List<String> getRunnerNames() {
+
+        return races.stream().
+            filter(Objects::nonNull).
+            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
+            map(result -> (SingleRaceResult) result).
+            map(CommonRaceResult::getParticipantName).
+            distinct().
+            toList();
+    }
+
+    private void normaliseClubsForRunnerName(final String runner_name) {
 
         // Where a runner name is associated with a single entry with a defined club
         // plus some other entries with no club defined, add the club to those entries.
 
         // Where a runner name is associated with multiple clubs, leave as is, under
         // assumption that they are separate runner_names.
-        final List<String> clubs_for_runner = getRunnerClubs(runner_name);
-        final List<String> defined_clubs = getDefinedClubs(clubs_for_runner);
+        final List<String> clubs_for_runner_name = getRunnerClubs(runner_name);
+        final List<String> defined_clubs = getDefinedClubs(clubs_for_runner_name);
 
         final int number_of_defined_clubs = defined_clubs.size();
-        final int number_of_undefined_clubs = clubs_for_runner.size() - number_of_defined_clubs;
+        final int number_of_undefined_clubs = clubs_for_runner_name.size() - number_of_defined_clubs;
 
         if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
             recordDefinedClubForRunnerName(runner_name, defined_clubs.getFirst());
 
         if (number_of_defined_clubs > 1)
-            processMultipleClubsForRunner(runner_name, defined_clubs);
-    }
-
-    private void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
-
-        race.getNotes().appendToNotes("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
+            processMultipleClubsForRunnerName(runner_name, defined_clubs);
     }
 
     private List<String> getRunnerClubs(final String runner_name) {
 
-        return ((SeriesRace)race).getRaces().stream().
+        return races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
@@ -344,39 +383,36 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     private void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
 
-        ((SeriesRace)race).getRaces().stream().
+        races.stream().
             filter(Objects::nonNull).
             flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
             map(CommonRaceResult::getParticipant).
             filter(participant -> participant.getName().equals(runner_name)).
-            forEachOrdered(participant -> ((Runner)participant).setClub(defined_club));
+            forEachOrdered(participant -> ((Runner) participant).setClub(defined_club));
     }
 
-    private List<String> getRunnerNames() {
+    @SuppressWarnings("SlowListContainsAll")
+    private void processMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
 
-        return ((SeriesRace)race).getRaces().stream().
-            filter(Objects::nonNull).
-            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
-            map(result -> (SingleRaceResult) result).
-            map(CommonRaceResult::getParticipantName).
-            distinct().
-            toList();
-    }
-
-    private void processMultipleClubsForRunner(final String runner_name, final List<String> defined_clubs) {
-
-        if (qualifying_clubs.isEmpty())
-            noteMultipleClubsForRunnerName(runner_name, defined_clubs);
-        else
-        if (new HashSet<>(qualifying_clubs).containsAll(defined_clubs))
+        // TODO clarify distinction between recorded and defined club.
+        if (qualifying_clubs.containsAll(defined_clubs))
             recordDefinedClubForRunnerName(runner_name, qualifying_clubs.getFirst());
         else
-            for (final String qualifying_club : qualifying_clubs)
-                if (defined_clubs.contains(qualifying_club)) {
-                    noteMultipleClubsForRunnerName(runner_name, defined_clubs);
-                    break;
-                }
+            if (qualifying_clubs.isEmpty() || qualifying_clubs.stream().anyMatch(defined_clubs::contains))
+                noteMultipleClubsForRunnerName(runner_name, defined_clubs);
+    }
+
+    private void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
+
+        race.getNotes().appendToNotes("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void checkCategoryConsistencyOverSeries() {
+
+        getResultsByRunner().forEach(this::checkCategoryConsistencyOverSeries);
     }
 
     private List<List<SingleRaceResult>> getResultsByRunner() {
@@ -395,26 +431,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             });
 
         return new ArrayList<>(map.values());
-    }
-
-    private List<SingleRaceInternal> getRacesInTemporalOrder() {
-
-        final List<SingleRaceInternal> races = ((SeriesRace) race).getRaces();
-        final List<SingleRaceInternal> races_in_order = new ArrayList<>();
-
-        // Example: RACE_TEMPORAL_ORDER = 1,5,2,9,3,10,4,11,12,6,7,8
-        // First race in listing occurs first; fifth race in listing occurs second etc.
-
-        // TODO write as permutation.
-        for (int i = 0; i < races.size(); i++)
-            races_in_order.add(races.get(race_temporal_order.get(i) - 1));
-
-        return races_in_order;
-    }
-
-    private void checkCategoryConsistencyOverSeries() {
-
-        getResultsByRunner().forEach(this::checkCategoryConsistencyOverSeries);
     }
 
     private void checkCategoryConsistencyOverSeries(final List<SingleRaceResult> runner_results) {

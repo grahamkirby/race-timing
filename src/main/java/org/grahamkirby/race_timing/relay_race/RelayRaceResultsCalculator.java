@@ -58,7 +58,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         recordStartTimes();
         recordDNFs();
 
-        sortResults();
+        sortOverallResults();
         allocatePrizes();
 
         addPaperRecordingComments();

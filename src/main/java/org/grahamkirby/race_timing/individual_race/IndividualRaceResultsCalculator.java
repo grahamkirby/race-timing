@@ -57,7 +57,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         adjustTimes();
         addSeparatelyRecordedTimes();
         recordDNFs();
-        sortResults();
+        sortOverallResults();
         allocatePrizes();
 
         getPrizeWinners(null);

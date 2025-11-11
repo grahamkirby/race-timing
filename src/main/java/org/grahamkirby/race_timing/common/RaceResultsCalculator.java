@@ -128,7 +128,7 @@ public abstract class RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Sorts all results by relevant comparators. */
-    protected void sortResults() {
+    protected void sortOverallResults() {
 
         overall_results.sort(null);
     }
