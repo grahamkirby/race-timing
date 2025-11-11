@@ -35,11 +35,11 @@ import static org.grahamkirby.race_timing.common.Config.KEY_RACES;
 public class SeriesRace implements RaceInternal {
 
     private List<SingleRaceInternal> races;
-    private RaceResultsCalculator results_calculator;
-    private RaceOutput results_output;
     private final Config config;
     private final CategoriesProcessor categories_processor;
-    private Normalisation normalisation;
+    private RaceResultsCalculator results_calculator;
+    private RaceOutput results_output;
+    private final Normalisation normalisation;
     private final Notes notes;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ public class SeriesRace implements RaceInternal {
 
         this.config = config;
         categories_processor = new CategoriesProcessor(config);
+        normalisation = new Normalisation(config);
         notes = new Notes();
 
         loadRaces();
@@ -92,10 +93,7 @@ public class SeriesRace implements RaceInternal {
     }
 
     @Override
-    public synchronized Normalisation getNormalisation() {
-
-        if (normalisation == null)
-            normalisation = new Normalisation(this);
+    public Normalisation getNormalisation() {
 
         return normalisation;
     }
@@ -120,33 +118,41 @@ public class SeriesRace implements RaceInternal {
 
     private void loadRaces() throws IOException {
 
-        races = new ArrayList<>();
+        final String races_string = config.getString(KEY_RACES);
+        final List<String> race_config_paths = Arrays.asList(races_string.split(",", -1));
 
-        final List<String> config_paths_seen = new ArrayList<>();
-        final List<String> race_config_paths = Arrays.asList(config.getString(KEY_RACES).split(",", -1));
-
-        final int number_of_race_in_series = (int) config.get(KEY_NUMBER_OF_RACES_IN_SERIES);
-        if (number_of_race_in_series != race_config_paths.size())
+        final int number_of_races_in_series = (int) config.get(KEY_NUMBER_OF_RACES_IN_SERIES);
+        if (race_config_paths.size() != number_of_races_in_series)
             throw new RuntimeException("invalid number of races specified in file '" + config.getConfigPath().getFileName() + "'");
 
-        for (int i = 0; i < number_of_race_in_series; i++) {
+        loadRaces(race_config_paths);
+    }
+
+    private void loadRaces(final List<String> race_config_paths) throws IOException {
+
+        races = new ArrayList<>();
+        final List<String> config_paths_seen = new ArrayList<>();
+
+        for (int i = 0; i < race_config_paths.size(); i++) {
 
             final String race_config_path = race_config_paths.get(i);
 
             if (race_config_path.isBlank())
+                // Race has not yet taken place.
                 races.add(null);
             else {
                 if (config_paths_seen.contains(race_config_path))
                     throw new RuntimeException("duplicate races specified in file '" + config.getConfigPath().getFileName() + "'");
+
                 config_paths_seen.add(race_config_path);
                 races.add(getIndividualRace(race_config_path, i + 1));
             }
         }
     }
 
-    private SingleRaceInternal getIndividualRace(final String race_config_path, final int race_number) throws IOException {
+    private SingleRaceInternal getIndividualRace(final String individual_race_config_path, final int race_number) throws IOException {
 
-        final Path config_path = config.interpretPath(Path.of(race_config_path));
+        final Path config_path = config.interpretPath(Path.of(individual_race_config_path));
 
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");

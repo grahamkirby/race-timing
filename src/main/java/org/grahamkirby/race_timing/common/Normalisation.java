@@ -67,11 +67,13 @@ public class Normalisation {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final RaceInternal race;
+//    private final RaceInternal race;
+    private final Config config;
 
-    public Normalisation(final RaceInternal race) {
+    public Normalisation(final Config config) {
 
-        this.race = race;
+//        this.race = race;
+        this.config = config;
         configure();
     }
 
@@ -179,7 +181,7 @@ public class Normalisation {
             normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
             normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
 
-            final Path capitalisation_stop_words_path = (Path) race.getConfig().get(KEY_CAPITALISATION_STOP_WORDS_PATH);
+            final Path capitalisation_stop_words_path = config.getPath(KEY_CAPITALISATION_STOP_WORDS_PATH);
             capitalisation_stop_words = new HashSet<>(Files.readAllLines(capitalisation_stop_words_path));
 
             non_title_case_words = new HashSet<>();
@@ -193,7 +195,7 @@ public class Normalisation {
 
         final Map<String, List<String>> map = new HashMap<>();
 
-        final Path gender_eligibility_map_path = (Path) race.getConfig().get(KEY_GENDER_ELIGIBILITY_MAP_PATH);
+        final Path gender_eligibility_map_path = config.getPath(KEY_GENDER_ELIGIBILITY_MAP_PATH);
 
         Files.readAllLines(gender_eligibility_map_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
@@ -212,7 +214,7 @@ public class Normalisation {
         // space character, by grouping column numbers with a dash.
         // E.g. 1,3-2,4,5 would combine the second and third columns, reversing the order and concatenating with a space character.
 
-        final String entry_column_map_string = (String) race.getConfig().get(KEY_ENTRY_COLUMN_MAP);
+        final String entry_column_map_string = config.getString(KEY_ENTRY_COLUMN_MAP);
 
         // Column mapping not used for relay races, so may not be set.
         if (entry_column_map_string == null) return Collections.emptyList();
@@ -224,7 +226,7 @@ public class Normalisation {
 
         final Map<String, String> map = new HashMap<>();
 
-        final Path category_map_path = (Path) race.getConfig().get(KEY_CATEGORY_MAP_PATH);
+        final Path category_map_path = config.getPath(KEY_CATEGORY_MAP_PATH);
         if (category_map_path != null) {
 
             Files.readAllLines(category_map_path).stream().
@@ -242,7 +244,7 @@ public class Normalisation {
     private Map<String, String> loadNormalisationMap(final String path_key, final boolean key_case_sensitive) throws IOException {
 
         final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        final Path path = (Path) race.getConfig().get(path_key);
+        final Path path = config.getPath(path_key);
 
         Files.readAllLines(path).forEach(line -> {
 

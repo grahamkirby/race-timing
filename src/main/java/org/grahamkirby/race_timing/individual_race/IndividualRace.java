@@ -54,6 +54,7 @@ public class IndividualRace implements SingleRaceInternal {
         this.config = config;
         notes = new Notes();
         categories_processor = new CategoriesProcessor(config);
+        normalisation = new Normalisation(config);
     }
 
     @Override
@@ -201,10 +202,7 @@ public class IndividualRace implements SingleRaceInternal {
     }
 
     @Override
-    public synchronized Normalisation getNormalisation() {
-
-        if (normalisation == null)
-            normalisation = new Normalisation(this);
+    public Normalisation getNormalisation() {
 
         return normalisation;
     }
