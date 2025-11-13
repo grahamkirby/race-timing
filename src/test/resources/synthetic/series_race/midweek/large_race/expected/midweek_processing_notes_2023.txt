@@ -1,6 +1,6 @@
-Runner Kim Dickson recorded for multiple clubs: Fife AC, Recreational Runners
-Runner David Dunleavey recorded for multiple clubs: Stratheden Buttercups, Unatt.
-Runner Bethan McRobbie recorded for multiple clubs: STAART, Unatt.
+Runner name Kim Dickson recorded for multiple clubs: Fife AC, Recreational Runners; assuming there are multiple runners with this name
+Runner name David Dunleavey recorded for multiple clubs: Stratheden Buttercups, Unatt.; assuming there are multiple runners with this name
+Runner name Bethan McRobbie recorded for multiple clubs: STAART, Unatt.; assuming there are multiple runners with this name
 Runner Jude Alcock changed category from F60 to F70 at Balmullo
 Runner Barbara Brown changed category from F60 to F70 at Balmullo
 Runner Paul Reed changed category from M40 to M50 at Hill of Tarvit

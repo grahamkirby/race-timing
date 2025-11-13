@@ -1,1 +1,1 @@
-no entry for key 'QUALIFYING_CLUBS' in file 'config.txt'
+no entry for key 'ELIGIBLE_CLUBS' in file 'config.txt'

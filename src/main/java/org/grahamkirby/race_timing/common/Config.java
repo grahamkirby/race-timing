@@ -63,7 +63,7 @@ public class Config {
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
     public static final String KEY_PRIZE_CATEGORIES_PATH = "PRIZE_CATEGORIES_PATH";
-    public static final String KEY_QUALIFYING_CLUBS = "QUALIFYING_CLUBS";
+    public static final String KEY_ELIGIBLE_CLUBS = "ELIGIBLE_CLUBS";
     public static final String KEY_RACES = "RACES";
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
     public static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";

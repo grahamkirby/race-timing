@@ -6,7 +6,7 @@ RACES = ,,,,,,,,black_rock/input/config.txt,,,
 RACE_TEMPORAL_ORDER = 1,5,2,9,3,10,4,11,12,6,7,8
 NUMBER_OF_RACES_IN_SERIES = 12
 MINIMUM_NUMBER_OF_RACES = 6
-QUALIFYING_CLUBS = Fife AC,Kirkcaldy Wizards
+ELIGIBLE_CLUBS = Fife AC,Kirkcaldy Wizards
 SCORE_FOR_MEDIAN_POSITION = 1000
 
 PRIZE_CATEGORIES_PATH = categories_prize_individual_senior.csv

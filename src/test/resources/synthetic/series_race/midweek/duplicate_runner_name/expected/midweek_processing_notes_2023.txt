@@ -1,4 +1,4 @@
-Runner Fiona Callaghan recorded for multiple clubs: Dundee Road Runners, Unatt.
-Runner Hilary Ritchie recorded for multiple clubs: Fife AC, Unatt.
-Runner Kim Dickson recorded for multiple clubs: Fife AC, Recreational Runners
+Runner name Fiona Callaghan recorded for multiple clubs: Dundee Road Runners, Unatt.; assuming there are multiple runners with this name
+Runner name Hilary Ritchie recorded for multiple clubs: Fife AC, Unatt.; assuming there are multiple runners with this name
+Runner name Kim Dickson recorded for multiple clubs: Fife AC, Recreational Runners; assuming there are multiple runners with this name
 Runner Paul Reed changed category from M40 to M50 at Hill of Tarvit
