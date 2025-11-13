@@ -40,7 +40,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     private List<SeriesRaceCategory> race_categories;
     private Permutation<SingleRaceInternal> race_temporal_permutation;
-    private List<String> qualifying_clubs;
+    private List<String> eligible_clubs;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -198,13 +198,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             count();
     }
 
-    private static List<String> getDefinedClubs(final List<String> clubs) {
-
-        return clubs.stream().
-            filter(club -> !club.equals(UNKNOWN_CLUB_INDICATOR)).
-            toList();
-    }
-
     private static SeriesRaceCategory makeRaceCategory(final String line) {
 
         final String[] elements = line.split(",");
@@ -271,7 +264,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
         final String qualifying_clubs_string = race.getConfig().getString(KEY_QUALIFYING_CLUBS);
 
-        qualifying_clubs = qualifying_clubs_string != null ?
+        eligible_clubs = qualifying_clubs_string != null ?
             List.of(qualifying_clubs_string.split(",")) :
             List.of();
     }
@@ -301,12 +294,12 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     private boolean eligibleForSeries(final SingleRaceResult result) {
 
-        return qualifying_clubs.isEmpty() || qualifying_clubs.contains(((Runner) result.getParticipant()).getClub());
+        return eligible_clubs.isEmpty() || eligible_clubs.contains(((Runner) result.getParticipant()).getClub());
     }
 
     private void normaliseRunnerClubs() {
 
-        getRunnerNames().forEach(this::normaliseClubsForRunnerName);
+        getRunnerNames().forEach(this::processRunnerNamesWithMultipleRecordedClubs);
     }
 
     private void calculateOverallResults() {
@@ -328,16 +321,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             toList();
     }
 
-    private List<String> getRunnerClubs(final String runner_name) {
-
-        return getParticipantsWithName(runner_name).
-            map(participant -> ((Runner) participant).getClub()).
-            distinct().
-            sorted().
-            toList();
-    }
-
-    private void recordDefinedClubForRunnerName(final String runner_name, final String defined_club) {
+    private void updateUnknownClubResultsForRunnerName(final String runner_name, final String defined_club) {
 
         getParticipantsWithName(runner_name).
             map(participant -> (Runner) participant).
@@ -383,38 +367,65 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             filter(participant -> participant.getName().equals(runner_name));
     }
 
-    private void normaliseClubsForRunnerName(final String runner_name) {
+    private void processRunnerNamesWithMultipleRecordedClubs(final String runner_name) {
 
-        // Where a runner name is associated with a single entry with a defined club
-        // plus some other entries with no club defined, add the club to those entries.
+        // Where a runner name is associated with a single entry with a known club plus some other entries with unknown
+        // club, add the club to those entries.
 
-        // Where a runner name is associated with multiple clubs, leave as is, under
-        // assumption that they are separate runner_names.
+        // Where a runner name is associated with multiple clubs, leave as is, under assumption that there are multiple
+        // distinct runners with the same name.
+
+        // An unknown club is different from no club being recorded in the original entries for an individual race. The
+        // former represents the case where a runner does have a club but it's unknown, arising only when externally
+        // produced overall results that don't specify clubs are imported directly. The latter represents the case of an
+        // unattached runner, where a blank entry for club in the entries is transformed to 'Unatt.' via the process for
+        // normalising club name variants.
+
         final List<String> clubs_for_runner_name = getRunnerClubs(runner_name);
-        final List<String> defined_clubs = getDefinedClubs(clubs_for_runner_name);
+        final List<String> known_clubs_for_runner_name = getKnownClubs(runner_name);
 
-        final int number_of_defined_clubs = defined_clubs.size();
-        final int number_of_undefined_clubs = clubs_for_runner_name.size() - number_of_defined_clubs;
+        final int number_of_known_clubs = known_clubs_for_runner_name.size();
+        final int number_of_unknown_clubs = clubs_for_runner_name.size() - number_of_known_clubs;
 
-        if (number_of_defined_clubs == 1 && number_of_undefined_clubs > 0)
-            recordDefinedClubForRunnerName(runner_name, defined_clubs.getFirst());
+        final boolean only_one_known_club = number_of_known_clubs == 1;
+        final boolean multiple_known_clubs = number_of_known_clubs > 1;
+        final boolean some_unknown_clubs = number_of_unknown_clubs > 0;
 
-        if (number_of_defined_clubs > 1)
-            processMultipleClubsForRunnerName(runner_name, defined_clubs);
+        if ((only_one_known_club && some_unknown_clubs))
+            updateUnknownClubResultsForRunnerName(runner_name, known_clubs_for_runner_name.getFirst());
+
+        if (multiple_known_clubs)
+            noteRunnerNameRepresentsMultipleRunners(runner_name, known_clubs_for_runner_name);
+    }
+
+    private List<String> getRunnerClubs(final String runner_name) {
+
+        return getParticipantsWithName(runner_name).
+            map(participant -> ((Runner) participant).getClub()).
+            distinct().
+            sorted().
+            toList();
+    }
+
+    private List<String> getKnownClubs(final String runner_name) {
+
+        return getRunnerClubs(runner_name).stream().
+            filter(club -> !club.equals(UNKNOWN_CLUB_INDICATOR)).
+            toList();
     }
 
     @SuppressWarnings("SlowListContainsAll")
-    private void processMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
+    private void processMultipleKnownClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
 
         // TODO clarify distinction between recorded and defined club.
-        if (qualifying_clubs.containsAll(defined_clubs))
-            recordDefinedClubForRunnerName(runner_name, qualifying_clubs.getFirst());
+        if (eligible_clubs.containsAll(defined_clubs))
+            updateUnknownClubResultsForRunnerName(runner_name, eligible_clubs.getFirst());
         else
-            if (qualifying_clubs.isEmpty() || qualifying_clubs.stream().anyMatch(defined_clubs::contains))
-                noteMultipleClubsForRunnerName(runner_name, defined_clubs);
+            if (eligible_clubs.isEmpty() || eligible_clubs.stream().anyMatch(defined_clubs::contains))
+                noteRunnerNameRepresentsMultipleRunners(runner_name, defined_clubs);
     }
 
-    private void noteMultipleClubsForRunnerName(final String runner_name, final List<String> defined_clubs) {
+    private void noteRunnerNameRepresentsMultipleRunners(final String runner_name, final List<String> defined_clubs) {
 
         race.getNotes().appendToNotes("Runner " + runner_name + " recorded for multiple clubs: " + String.join(", ", defined_clubs) + LINE_SEPARATOR);
     }

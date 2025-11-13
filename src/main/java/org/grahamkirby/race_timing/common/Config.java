@@ -32,6 +32,8 @@ import java.util.function.Function;
 
 public class Config {
 
+    // TODO add strict checking that all files in input directory are used.
+
     public static final String CSV_FILE_SUFFIX = "csv";
     public static final String HTML_FILE_SUFFIX = "html";
     public static final String PDF_FILE_SUFFIX = "pdf";
