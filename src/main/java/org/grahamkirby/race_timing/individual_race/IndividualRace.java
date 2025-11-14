@@ -38,16 +38,17 @@ public class IndividualRace implements SingleRaceInternal {
 
     private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
 
-    Map<Integer, Duration> separately_recorded_finish_times;
+    private Map<Integer, Duration> separately_recorded_finish_times;
+    private List<RawResult> raw_results;
+    private List<RaceEntry> entries;
 
     private final Config config;
     private final CategoriesProcessor categories_processor;
+    private final Normalisation normalisation;
+    private final Notes notes;
+
     private RaceResultsCalculator results_calculator;
     private RaceOutput results_output;
-    private Normalisation normalisation;
-    private final Notes notes;
-    private List<RawResult> raw_results;
-    private List<RaceEntry> entries;
 
     public IndividualRace(final Config config) throws IOException {
 
@@ -75,6 +76,10 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public void setResultsOutput(final RaceOutput results_output) {
         this.results_output = results_output;
+    }
+
+    protected Map<Integer, Duration> getSeparatelyRecordedFinishTimes() {
+        return separately_recorded_finish_times;
     }
 
     private void loadRaceData() {

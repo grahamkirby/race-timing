@@ -98,14 +98,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static int numberOfClubs(final SeriesRace race) {
-
-        return (int) race.getResultsCalculator().getOverallResults().stream().
-            map(result -> ((Runner) result.getParticipant()).getClub()).
-            distinct().
-            count();
-    }
-
     private static SeriesRaceCategory makeRaceCategory(final String line) {
 
         final String[] elements = line.split(",");
@@ -219,6 +211,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     private void recordResult(final IndividualRaceResult result, final Map<Runner, List<IndividualRaceResult>> map) {
 
         final Runner runner = (Runner) result.getParticipant();
+
         map.putIfAbsent(runner, new ArrayList<>());
         map.get(runner).add(result);
     }
@@ -264,8 +257,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         // unattached runner, where a blank entry for club in the entries is transformed to 'Unatt.' via the process for
         // normalising club name variants.
 
-        final List<String> clubs_for_runner_name = getRunnerClubs(runner_name);
-        final List<String> known_clubs_for_runner_name = getKnownClubs(runner_name);
+        final List<String> clubs_for_runner_name = getClubsForRunnerName(runner_name);
+        final List<String> known_clubs_for_runner_name = getKnownClubsForRunnerName(runner_name);
 
         final int number_of_known_clubs = known_clubs_for_runner_name.size();
         final int number_of_unknown_clubs = clubs_for_runner_name.size() - number_of_known_clubs;
@@ -281,7 +274,15 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             noteRunnerNameRepresentsMultipleRunners(runner_name, known_clubs_for_runner_name);
     }
 
-    private List<String> getRunnerClubs(final String runner_name) {
+    private List<String> getClubs() {
+
+        return overall_results.stream().
+            map(result -> ((Runner) result.getParticipant()).getClub()).
+            distinct().
+            toList();
+    }
+
+    private List<String> getClubsForRunnerName(final String runner_name) {
 
         return getParticipantsWithName(runner_name).
             map(participant -> ((Runner) participant).getClub()).
@@ -290,9 +291,9 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             toList();
     }
 
-    private List<String> getKnownClubs(final String runner_name) {
+    private List<String> getKnownClubsForRunnerName(final String runner_name) {
 
-        return getRunnerClubs(runner_name).stream().
+        return getClubsForRunnerName(runner_name).stream().
             filter(club -> !club.equals(UNKNOWN_CLUB_INDICATOR)).
             toList();
     }
@@ -400,11 +401,58 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         final int number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
         final int minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
 
-        final boolean multiple_clubs = numberOfClubs((SeriesRace) race) > 1;
+        final boolean multiple_clubs = getClubs().size() > 1;
         final boolean multiple_race_categories = race_categories.size() > 1;
         final boolean possible_to_have_completed = number_of_races_taken_place >= minimum_number_of_races;
 
         return new SeriesRaceResults() {
+
+            @Override
+            public Config getConfig() {
+                return race.getConfig();
+            }
+
+            @Override
+            public Normalisation getNormalisation() {
+                return race.getNormalisation();
+            }
+
+            @Override
+            public Notes getNotes() {
+                return race.getNotes();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults() {
+                return race.getResultsCalculator().getOverallResults();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
+                return race.getResultsCalculator().getOverallResults(categories);
+            }
+
+            @Override
+            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
+                return SeriesRaceResultsCalculator.this.getPrizeWinners(category);
+            }
+
+            @Override
+            public List<String> getTeamPrizes() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+                return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
+                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////
 
             @Override
             public boolean multipleClubs() {
@@ -422,6 +470,11 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             }
 
             @Override
+            public List<SeriesRaceCategory> getRaceCategories() {
+                return SeriesRaceResultsCalculator.this.race_categories;
+            }
+
+            @Override
             public List<String> getRaceNames() {
 
                 return races.stream().
@@ -432,56 +485,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             @Override
             public int getNumberOfRacesTakenPlace() {
                 return number_of_races_taken_place;
-            }
-
-            @Override
-            public List<SeriesRaceCategory> getRaceCategories() {
-                return SeriesRaceResultsCalculator.this.race_categories;
-            }
-
-            @Override
-            public Normalisation getNormalisation() {
-                return race.getNormalisation();
-            }
-
-            @Override
-            public Config getConfig() {
-                return race.getConfig();
-            }
-
-            @Override
-            public Notes getNotes() {
-                return race.getNotes();
-            }
-
-            @Override
-            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
-                return race.getCategoriesProcessor().getPrizeCategoryGroups();
-            }
-
-            @Override
-            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
-                return SeriesRaceResultsCalculator.this.getPrizeWinners(category);
-            }
-
-            @Override
-            public List<String> getTeamPrizes() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults() {
-                return race.getResultsCalculator().getOverallResults();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
-                return race.getResultsCalculator().getOverallResults(categories);
-            }
-
-            @Override
-            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
-                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
             }
         };
     }

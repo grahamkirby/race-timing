@@ -27,12 +27,11 @@ import java.util.Map;
 public interface RelayRaceResults extends RaceResults {
 
     List<? extends RawResult> getRawResults();
-    int getNumberOfLegs();
 
-    List<Boolean> getPairedLegs();
+    int getNumberOfLegs();
     List<RelayRaceLegResult> getLegResults(int leg);
     List<String> getLegDetails(RelayRaceResult result);
-
+    List<Boolean> getPairedLegs();
     Map<Integer, Integer> countLegsFinishedPerTeam();
     Map<RawResult, Integer> getExplicitlyRecordedLegNumbers();
 

@@ -55,7 +55,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         guessMissingData();
 
         recordFinishTimes();
-        recordStartTimes();
+        fillLegResultDetails();
         recordDNFs();
 
         sortOverallResults();
@@ -64,102 +64,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         addPaperRecordingComments();
 
         return makeRaceResults();
-    }
-
-    private RaceResults makeRaceResults() {
-
-        return new RelayRaceResults() {
-
-            @Override
-            public int getNumberOfLegs() {
-                return ((RelayRace) race).getNumberOfLegs();
-            }
-
-            @Override
-            public List<RelayRaceLegResult> getLegResults(final int leg) {
-                return ((RelayRace) race).getLegResults(leg);
-            }
-
-            @Override
-            public Map<Integer, Integer> countLegsFinishedPerTeam() {
-                return ((RelayRace) race).countLegsFinishedPerTeam();
-            }
-
-            @Override
-            public List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
-                return ((RelayRace) race).getBibNumbersWithMissingTimes(leg_finished_count);
-            }
-
-            @Override
-            public List<Duration> getTimesWithMissingBibNumbers() {
-                return ((RelayRace) race).getTimesWithMissingBibNumbers();
-            }
-
-            @Override
-            public Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
-                return ((RelayRace) race).explicitly_recorded_leg_numbers;
-            }
-
-            @Override
-            public List<String> getLegDetails(final RelayRaceResult result) {
-                return ((RelayRace) race).getLegDetails(result);
-            }
-
-            @Override
-            public List<Boolean> getPairedLegs() {
-                return ((RelayRace) race).getPairedLegs();
-            }
-
-            @Override
-            public List<? extends RawResult> getRawResults() {
-                return ((RelayRace) race).getRawResults();
-            }
-
-            @Override
-            public Normalisation getNormalisation() {
-                return race.getNormalisation();
-            }
-
-            @Override
-            public Config getConfig() {
-                return race.getConfig();
-            }
-
-            @Override
-            public Notes getNotes() {
-                return race.getNotes();
-            }
-
-            @Override
-            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
-                return race.getCategoriesProcessor().getPrizeCategoryGroups();
-            }
-
-            @Override
-            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
-                return race.getResultsCalculator().getPrizeWinners(category);
-            }
-
-            @Override
-            public List<String> getTeamPrizes() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults() {
-                return race.getResultsCalculator().getOverallResults();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
-                return race.getResultsCalculator().getOverallResults(categories);
-            }
-
-            @Override
-            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
-                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
-            }
-        };
     }
 
     @Override
@@ -185,6 +89,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @Override
     protected void recordDNF(final String dnf_specification) {
 
         try {
@@ -245,20 +150,20 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         leg_result.setFinishTime(raw_result.getRecordedFinishTime());
 
-        // Leg number will be zero in most cases, unless explicitly recorded in raw results.
-        leg_result.setLegNumber(((RelayRace) race).explicitly_recorded_leg_numbers.getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
+        // Leg number will be unknown in most cases, unless explicitly recorded in raw results.
+        leg_result.setLegNumber(((RelayRace) race).getExplicitlyRecordedLegNumbers().getOrDefault(raw_result, UNKNOWN_LEG_NUMBER));
 
         // Provisionally this leg is not DNF since a finish time was recorded.
-        // However, it might still be set to DNF in recordDNFs() if the runner missed a checkpoint.
+        // However, it might still be set to DNF in recordDNF() if the runner missed a checkpoint.
         leg_result.setDnf(false);
     }
 
     private void sortLegResults() {
 
-        overall_results.forEach(RelayRaceResultsCalculator::sortLegResults);
+        overall_results.forEach(this::sortLegResults);
     }
 
-    private static void sortLegResults(final RaceResult result) {
+    private void sortLegResults(final RaceResult result) {
 
         final List<RelayRaceLegResult> leg_results = ((RelayRaceResult) result).getLegResults();
 
@@ -277,7 +182,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         return result.getLegResult(leg_number);
     }
 
-    private void recordStartTimes() {
+    private void fillLegResultDetails() {
 
         overall_results.forEach(this::fillLegResultDetails);
     }
@@ -298,19 +203,11 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final Duration leg_mass_start_time = ((RelayRace) race).getStartTimesForMassStarts().get(leg_index);
         final Duration previous_team_member_finish_time = leg_index > 0 ? leg_results.get(leg_index - 1).getFinishTime() : null;
 
-        // Offset between actual race start time, and the time at which timing started.
-        // Usually this is zero. A positive value indicates that the race started after timing started.
-        final Duration race_start_time = (Duration) race.getConfig().get(KEY_RACE_START_TIME);
+        final Duration start_time = getLegStartTime(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
+        final boolean in_mass_start = isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index);
 
-        Duration start_time = getLegStartTime(leg_index, individual_start_time, leg_mass_start_time, previous_team_member_finish_time);
-
-        if (start_time != null) {
-            if (leg_index == 0) start_time = start_time.plus(race_start_time);
-            leg_result.setStartTime(start_time);
-        }
-
-        // Record whether the runner started in a mass start.
-        leg_result.setInMassStart(isInMassStart(individual_start_time, leg_mass_start_time, previous_team_member_finish_time, leg_index));
+        leg_result.setStartTime(start_time);
+        leg_result.setInMassStart(in_mass_start);
     }
 
     private Duration getIndividualStartTime(final RelayRaceLegResult leg_result, final int leg_index) {
@@ -323,32 +220,50 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             orElse(null);
     }
 
-    private static Duration getLegStartTime(final int leg_index, final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time) {
+    private Duration getLegStartTime(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_team_member_finish_time, final int leg_index) {
+
+        Duration start_time;
 
         // Check whether individual leg start time is recorded for this runner.
-        if (individual_start_time != null) return individual_start_time;
+        if (individual_start_time != null) start_time = individual_start_time;
 
-        // If there's no individual leg start time recorded (previous check), and this is a Leg 1 runner, start at time zero.
-        if (leg_index == 0) return Duration.ZERO;
+        // If there's no individual leg start time recorded (previous check), and this is a first runner, start at time zero.
+        else if (leg_index == 0) start_time = Duration.ZERO;
 
-        // This is later leg runner. If there's no finish time recorded for previous runner, we can't deduce a start time for this one.
+        // This is a later leg runner. If there's no finish time recorded for previous runner, we can't deduce a start time for this one.
         // This leg result will be set to DNF by default.
-        if (previous_team_member_finish_time == null) return null;
+        else if (previous_team_member_finish_time == null) start_time =  null;
 
         // Use the earlier of the mass start time, if present, and the previous runner's finish time.
-        return mass_start_time != null && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ? mass_start_time : previous_team_member_finish_time;
+        else start_time = mass_start_time != null && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ?
+            mass_start_time :
+            previous_team_member_finish_time;
+
+        // Adjust start time for first leg runner if timing didn't start at zero.
+        if (leg_index == 0) {
+
+            // Get offset between actual race start time, and the time at which timing started.
+            // Usually this is zero. A positive value indicates that the race started after timing started.
+            final Duration race_start_time = (Duration) race.getConfig().get(KEY_RACE_START_TIME);
+
+            start_time = start_time.plus(race_start_time);
+        }
+
+        return start_time;
     }
 
     private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
 
-        // Not in mass start if there is an individually recorded time, or it's the first leg.
-        if (individual_start_time != null || leg_index == 0) return false;
+        // In mass start if it's not the first leg,  there is no individually recorded start time, and the previous runner did not finish by the time of the mass start.
 
-        // No previously recorded leg time, so record this runner as starting in mass start if it's a mass start leg.
-        if (previous_runner_finish_time == null) return ((RelayRace) race).getMassStartLegs().get(leg_index);
+        final boolean individual_start_time_is_set = individual_start_time != null;
+        final boolean mass_start_time_is_set = mass_start_time != null;
+        final boolean previous_runner_finish_time_is_set = previous_runner_finish_time != null;
 
-        // Record this runner as starting in mass start if the previous runner finished after the relevant mass start.
-        return mass_start_time != null && mass_start_time.compareTo(previous_runner_finish_time) < 0;
+        final boolean previous_runner_not_finished_by_mass_start = mass_start_time_is_set && (!previous_runner_finish_time_is_set || mass_start_time.compareTo(previous_runner_finish_time) < 0);
+        final boolean first_leg = leg_index == 0;
+
+        return !first_leg && !individual_start_time_is_set && previous_runner_not_finished_by_mass_start;
     }
 
     private static int findIndexOfNextUnfilledLegResult(final List<? extends RelayRaceLegResult> leg_results) {
@@ -369,7 +284,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     private void addPaperRecordingComments() {
 
         final List<RawResult> raw_results = ((SingleRaceInternal) race).getRawResults();
-        final int number_of_electronically_recorded_results = ((RelayRace) race).number_of_electronically_recorded_raw_results;
+        final int number_of_electronically_recorded_results = ((RelayRace) race).getNumberOfElectronicallyRecordedRawResults();
 
         // TODO add check for zero.
         if (number_of_electronically_recorded_results < raw_results.size())
@@ -429,5 +344,105 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private RaceResults makeRaceResults() {
+
+        return new RelayRaceResults() {
+
+            @Override
+            public Config getConfig() {
+                return race.getConfig();
+            }
+
+            @Override
+            public Normalisation getNormalisation() {
+                return race.getNormalisation();
+            }
+
+            @Override
+            public Notes getNotes() {
+                return race.getNotes();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults() {
+                return race.getResultsCalculator().getOverallResults();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
+                return race.getResultsCalculator().getOverallResults(categories);
+            }
+
+            @Override
+            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
+                return race.getResultsCalculator().getPrizeWinners(category);
+            }
+
+            @Override
+            public List<String> getTeamPrizes() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+                return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
+                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+
+            @Override
+            public List<? extends RawResult> getRawResults() {
+                return ((RelayRace) race).getRawResults();
+            }
+
+            @Override
+            public int getNumberOfLegs() {
+                return ((RelayRace) race).getNumberOfLegs();
+            }
+
+            @Override
+            public List<RelayRaceLegResult> getLegResults(final int leg) {
+                return ((RelayRace) race).getLegResults(leg);
+            }
+
+            @Override
+            public List<String> getLegDetails(final RelayRaceResult result) {
+                return ((RelayRace) race).getLegDetails(result);
+            }
+
+            @Override
+            public List<Boolean> getPairedLegs() {
+                return ((RelayRace) race).getPairedLegs();
+            }
+
+            @Override
+            public Map<Integer, Integer> countLegsFinishedPerTeam() {
+                return ((RelayRace) race).countLegsFinishedPerTeam();
+            }
+
+            @Override
+            public Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
+                return ((RelayRace) race).getExplicitlyRecordedLegNumbers();
+            }
+
+            @Override
+            public List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
+                return ((RelayRace) race).getBibNumbersWithMissingTimes(leg_finished_count);
+            }
+
+            @Override
+            public List<Duration> getTimesWithMissingBibNumbers() {
+                return ((RelayRace) race).getTimesWithMissingBibNumbers();
+            }
+        };
     }
 }

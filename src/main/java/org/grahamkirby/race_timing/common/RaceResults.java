@@ -22,23 +22,20 @@ import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 
 import java.util.List;
 
+/**
+ * Defines aspects of results needed to generate output files.
+ */
 public interface RaceResults {
 
+    Config getConfig();
+    Normalisation getNormalisation();
+    Notes getNotes();
+
     List<? extends RaceResult> getOverallResults();
-
     List<? extends RaceResult> getOverallResults(List<PrizeCategory> categories);
-
     List<? extends RaceResult> getPrizeWinners(PrizeCategory category);
 
     List<String> getTeamPrizes();
-
     List<PrizeCategoryGroup> getPrizeCategoryGroups();
-
     boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
-
-    Normalisation getNormalisation();
-
-    Config getConfig();
-
-    Notes getNotes();
 }

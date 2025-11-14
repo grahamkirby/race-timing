@@ -47,8 +47,8 @@ public class RelayRace implements SingleRaceInternal {
     private static final int CATEGORY_INDEX = 2;
     private static final int FIRST_RUNNER_NAME_INDEX = 3;
 
-    final Map<RawResult, Integer> explicitly_recorded_leg_numbers = new HashMap<>();
-    int number_of_electronically_recorded_raw_results;
+    private final Map<RawResult, Integer> explicitly_recorded_leg_numbers = new HashMap<>();
+    private int number_of_electronically_recorded_raw_results;
 
     /**
      * For each leg, records whether there was a mass start.
@@ -153,6 +153,14 @@ public class RelayRace implements SingleRaceInternal {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
+        return explicitly_recorded_leg_numbers;
+    }
+
+    public int getNumberOfElectronicallyRecordedRawResults() {
+        return number_of_electronically_recorded_raw_results;
+    }
 
     /**
      * The number of legs in the relay race.

@@ -23,7 +23,6 @@ import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
@@ -65,57 +64,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return makeRaceResults();
     }
 
-    private RaceResults makeRaceResults() {
-
-        return new RaceResults() {
-
-            @Override
-            public Normalisation getNormalisation() {
-                return race.getNormalisation();
-            }
-
-            @Override
-            public Config getConfig() {
-                return race.getConfig();
-            }
-
-            @Override
-            public Notes getNotes() {
-                return race.getNotes();
-            }
-
-            @Override
-            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
-                return race.getCategoriesProcessor().getPrizeCategoryGroups();
-            }
-
-            @Override
-            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
-                return race.getResultsCalculator().getPrizeWinners(category);
-            }
-
-            @Override
-            public List<String> getTeamPrizes() {
-                return ((IndividualRace) race).getTeamPrizes();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults() {
-                return race.getResultsCalculator().getOverallResults();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
-                return race.getResultsCalculator().getOverallResults(categories);
-            }
-
-            @Override
-            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
-                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
-            }
-        };
-    }
-
     @Override
     public boolean areEqualPositionsAllowed() {
 
@@ -138,27 +86,14 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
     public Duration getMedianTime() {
 
         // The median time may be recorded explicitly if not all results are recorded.
-        final String median_time_string = (String) race.getConfig().get(KEY_MEDIAN_TIME);
+        final String median_time_string = race.getConfig().getString(KEY_MEDIAN_TIME);
         if (median_time_string != null) return parseTime(median_time_string);
 
-        // Calculate median time.
-        final List<RaceResult> results = getOverallResults();
-
-        if (results.size() % 2 == 0) {
-
-            final SingleRaceResult median_result1 = (SingleRaceResult) results.get(results.size() / 2 - 1);
-            final SingleRaceResult median_result2 = (SingleRaceResult) results.get(results.size() / 2);
-
-            final Duration duration1 = (Duration) median_result1.getPerformance().getValue();
-            final Duration duration2 = (Duration) median_result2.getPerformance().getValue();
-
-            return duration1.plus(duration2).dividedBy(2);
-
-        } else {
-            final SingleRaceResult median_result = (SingleRaceResult) results.get(results.size() / 2);
-            return (Duration) median_result.getPerformance().getValue();
-        }
+        return getOverallResults().size() % 2 == 0 ?
+            getMedianTimeForEvenNumberOfResults() :
+            getMedianTimeForOddNumberOfResults();
     }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initialiseResults() {
@@ -185,7 +120,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private List<RaceResult> loadOverallResults() throws IOException {
 
-        return readAllLines((Path) race.getConfig().get(KEY_RESULTS_PATH)).stream().
+        return readAllLines(race.getConfig().getPath(KEY_RESULTS_PATH)).stream().
             map(Normalisation::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
             map(this::makeRaceResult).
@@ -198,10 +133,10 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
         elements.addFirst(String.valueOf(next_fake_bib_number++));
 
-        final RaceEntry entry = makeRaceEntry(elements, race);
+        final RaceEntry entry = makeRaceEntry(elements);
         final Duration finish_time = parseTime(elements.getLast());
 
-        return new IndividualRaceResult(race, entry, finish_time);
+        return new IndividualRaceResult(entry, finish_time, race);
     }
 
     private RaceResult makeRaceResult(final RawResult raw_result) {
@@ -209,13 +144,12 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         final int bib_number = raw_result.getBibNumber();
         final Duration finish_time = raw_result.getRecordedFinishTime();
 
-        return new IndividualRaceResult(race, getEntryWithBibNumber(bib_number), finish_time);
+        return new IndividualRaceResult(getEntryWithBibNumber(bib_number), finish_time, race);
     }
 
-    private RaceEntry makeRaceEntry(final List<String> elements, final RaceInternal race) {
+    private RaceEntry makeRaceEntry(final List<String> elements) {
 
         final Normalisation normalisation = race.getNormalisation();
-
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
@@ -238,9 +172,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
-        final List<RaceEntry> entries = ((SingleRaceInternal) race).getEntries();
-
-        return entries.stream().
+        return ((SingleRaceInternal) race).getEntries().stream().
             filter(entry -> entry.bib_number == bib_number).
             findFirst().
             orElseThrow();
@@ -264,7 +196,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private void addSeparatelyRecordedTimes() {
 
-        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race).separately_recorded_finish_times;
+        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race).getSeparatelyRecordedFinishTimes();
 
         for (final Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet())
             overall_results.add(makeRaceResult(new RawResult(entry.getKey(), entry.getValue())));
@@ -350,5 +282,79 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         };
 
         race.getConfig().processConfigIfPresent(KEY_INDIVIDUAL_START_TIMES, process_individual_start_times);
+    }
+
+    private Duration getMedianTimeForOddNumberOfResults() {
+
+        final List<RaceResult> results = getOverallResults();
+
+        final SingleRaceResult median_result = (SingleRaceResult) results.get(results.size() / 2);
+        return (Duration) median_result.getPerformance().getValue();
+    }
+
+    private Duration getMedianTimeForEvenNumberOfResults() {
+
+        final List<RaceResult> results = getOverallResults();
+
+        final SingleRaceResult median_result1 = (SingleRaceResult) results.get(results.size() / 2 - 1);
+        final SingleRaceResult median_result2 = (SingleRaceResult) results.get(results.size() / 2);
+
+        final Duration duration1 = (Duration) median_result1.getPerformance().getValue();
+        final Duration duration2 = (Duration) median_result2.getPerformance().getValue();
+
+        return duration1.plus(duration2).dividedBy(2);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private RaceResults makeRaceResults() {
+
+        return new RaceResults() {
+
+            @Override
+            public Config getConfig() {
+                return race.getConfig();
+            }
+
+            @Override
+            public Normalisation getNormalisation() {
+                return race.getNormalisation();
+            }
+
+            @Override
+            public Notes getNotes() {
+                return race.getNotes();
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults() {
+                return IndividualRaceResultsCalculator.this.overall_results;
+            }
+
+            @Override
+            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
+                return IndividualRaceResultsCalculator.this.getOverallResults(categories);
+            }
+
+            @Override
+            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
+                return IndividualRaceResultsCalculator.this.getPrizeWinners(category);
+            }
+
+            @Override
+            public List<String> getTeamPrizes() {
+                return ((IndividualRace) race).getTeamPrizes();
+            }
+
+            @Override
+            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+                return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
+                return IndividualRaceResultsCalculator.this.arePrizesInThisOrLaterCategory(prizeCategory);
+            }
+        };
     }
 }

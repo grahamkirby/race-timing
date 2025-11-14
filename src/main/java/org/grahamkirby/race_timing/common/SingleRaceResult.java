@@ -43,10 +43,6 @@ public abstract class SingleRaceResult extends CommonRaceResult {
         return canComplete() ?  new Performance(finish_time.minus(start_time)) : null;
     }
 
-    public Duration getStartTime() {
-        return start_time;
-    }
-
     public void setStartTime(final Duration start_time) {
         this.start_time = start_time;
     }

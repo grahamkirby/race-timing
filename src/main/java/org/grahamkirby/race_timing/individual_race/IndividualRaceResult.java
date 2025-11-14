@@ -29,7 +29,7 @@ import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class IndividualRaceResult extends SingleRaceResult {
 
-    public IndividualRaceResult(final RaceInternal race, final RaceEntry entry, final Duration finish_time) {
+    public IndividualRaceResult(final RaceEntry entry, final Duration finish_time, final RaceInternal race) {
 
         super(race, entry, finish_time);
     }
