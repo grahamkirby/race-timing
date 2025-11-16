@@ -113,7 +113,7 @@ public abstract class RaceOutput {
         printResultsHTML();
     }
 
-    private void printPrizes() throws IOException {
+    protected void printPrizes() throws IOException {
 
         printPrizesPDF();
         printPrizesHTML();

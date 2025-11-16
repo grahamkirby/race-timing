@@ -126,7 +126,7 @@ public abstract class CommonRaceResult implements RaceResult {
     }
 
     /** Combines multiple comparators into a single comparator. */
-    private static Comparator<RaceResult> combineComparators(final Collection<Comparator<RaceResult>> comparators) {
+    public static <T extends Comparable<T>> Comparator<T> combineComparators(final Collection<Comparator<T>> comparators) {
 
         return comparators.stream().
             reduce((_, _) -> 0, Comparator::thenComparing);

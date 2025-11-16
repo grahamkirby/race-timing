@@ -23,6 +23,14 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RaceConfigValidator extends ConfigProcessor {
 
+    public static final List<String> REQUIRED_CONFIG_KEYS = List.of(
+
+        Config.KEY_YEAR,
+        Config.KEY_RACE_NAME_FOR_FILENAMES,
+        Config.KEY_RACE_NAME_FOR_RESULTS,
+        Config.KEY_ENTRY_CATEGORIES_PATH,
+        Config.KEY_PRIZE_CATEGORIES_PATH);
+
     public RaceConfigValidator(final Config config) {
 
         super(config);
@@ -30,12 +38,7 @@ public class RaceConfigValidator extends ConfigProcessor {
 
     public void processConfig() {
 
-        checkAllPresent(List.of(
-            KEY_YEAR,
-            KEY_RACE_NAME_FOR_FILENAMES,
-            KEY_RACE_NAME_FOR_RESULTS,
-            KEY_ENTRY_CATEGORIES_PATH,
-            KEY_PRIZE_CATEGORIES_PATH));
+        checkAllPresent(REQUIRED_CONFIG_KEYS);
 
         checkAllFilesExist(List.of(
             KEY_ENTRY_CATEGORIES_PATH,

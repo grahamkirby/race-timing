@@ -363,7 +363,7 @@ public class RelayRace implements SingleRaceInternal {
     private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path electronic_results_path, final Path paper_results_path) {
 
         final Set<Integer> entry_bib_numbers = entries.stream().
-            map(entry -> entry.bib_number).
+            map(RaceEntry::getBibNumber).
             collect(Collectors.toSet());
 
         int line = 0;
@@ -383,7 +383,7 @@ public class RelayRace implements SingleRaceInternal {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
-                if (entry1.participant != entry2.participant && entry1.participant.equals(entry2.participant))
+                if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
                     throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
     }
 
@@ -410,30 +410,25 @@ public class RelayRace implements SingleRaceInternal {
     private void countLegResults(final Map<String, Integer> bib_counts, final Path results_path) throws IOException {
 
         if (results_path != null)
-            for (final String line : Files.readAllLines(results_path))
-                // TODO rationalise with other comment handling. Use stripComment.
-                if (!line.startsWith(COMMENT_SYMBOL) && !line.isBlank()) {
 
-                    final String bib_number = line.split("\t")[0];
-                    if (!bib_number.equals(UNKNOWN_BIB_NUMBER_INDICATOR))
-                        bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1);
-                }
+            Files.readAllLines(results_path).stream().
+                map(Normalisation::stripComment).
+                filter(Predicate.not(String::isBlank)).
+                map(line -> line.split("\t")[0]).
+                filter(bib_number -> !bib_number.equals(UNKNOWN_BIB_NUMBER_INDICATOR)).
+                forEachOrdered(bib_number -> bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1));
     }
 
     private void processAnnotations(final Object path) {
 
         try {
-            final List<String> lines = Files.readAllLines((Path) path);
-
-            // Skip header line.
-            for (int line_index = 1; line_index < lines.size(); line_index++) {
-
-                final String[] elements = lines.get(line_index).split("\t");
-
-                // May add insertion option later.
-                if (elements[0].equals("Update"))
-                    updateResult(raw_results, elements);
-            }
+            Files.readAllLines((Path) path).stream().
+                skip(1).                                      // Skip header line.
+                map(line -> line.split("\t")).
+                forEach(elements -> {
+                    if (elements[0].equals("Update"))            // May add insertion option later.
+                        updateResult(raw_results, elements);
+                });
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

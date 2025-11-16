@@ -30,8 +30,8 @@ public class RaceEntry {
     private static final int CLUB_INDEX = 2;
     public static final int CATEGORY_INDEX = 3;
 
-    public final Participant participant;
-    public final int bib_number;
+    protected final Participant participant;
+    protected final int bib_number;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,6 +65,14 @@ public class RaceEntry {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public int getBibNumber() {
+        return bib_number;
+    }
+
+    public Participant getParticipant() {
+        return participant;
+    }
 
     @Override
     public boolean equals(final Object obj) {

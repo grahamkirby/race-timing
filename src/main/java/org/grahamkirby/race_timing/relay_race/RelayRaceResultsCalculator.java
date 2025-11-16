@@ -29,21 +29,51 @@ import static org.grahamkirby.race_timing.common.Config.UNKNOWN_BIB_NUMBER;
 
 public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
+    /*
+       Calculations specific to a relay race with individual and paired legs. Features/assumptions:
+
+     * There are various team categories.
+     * Each leg is run by either one or two runners.
+     * Some result times may be missing, in which case they are interpolated where possible.
+     * Some result bib numbers may be missing, in which case they are guessed where possible.
+     * Additional results can be imported from paper records.
+     * Additional annotations can be imported.
+       * Overriding bib numbers or times for particular positions.
+     * A leg after the first leg may have a mass start, at which all remaining runners on that leg start together.
+     * There can be dead heats in overall results, and in legs after the first.
+       * Although an overall ordering is imposed at the finish, this can't be relied on due to mass starts.
+
+     */
+
+    private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
+                                         Duration previous_finish, Duration next_finish) {
+    }
+
+    private record ContiguousSequence(int start_index, int end_index) {
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final int HALF_A_SECOND_IN_NANOSECONDS = 500_000_000;
     private static final int UNKNOWN_LEG_NUMBER = 0;
 
     // TODO tidy treatment of category configuration files.
     // TODO integrate with category configuration files.
     private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
 
-    /** Provides functionality for inferring missing bib number or timing data in the results. */
-    private final RelayRaceMissingData missing_data;
+    private static final List<Comparator<TeamSummaryAtPosition>> team_summary_comparators = List.of(
+
+        Comparator.comparingInt(o -> o.finishes_before),
+        Comparator.comparingInt(o -> o.finishes_after),
+        Comparator.comparing(o -> o.next_finish),
+        Comparator.comparing(o -> o.previous_finish)
+    );
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RelayRaceResultsCalculator(final RaceInternal race) {
 
         super(race);
-        missing_data = new RelayRaceMissingData((RelayRace) race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,8 +117,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         allocateMinorPrizes(categories_sorted_by_decreasing_generality);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     @Override
     protected void recordDNF(final String dnf_specification) {
 
@@ -123,8 +151,8 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     private void guessMissingData() {
 
-        missing_data.interpolateMissingTimes();
-        missing_data.guessMissingBibNumbers();
+        interpolateMissingTimes();
+        guessMissingBibNumbers();
     }
 
     private void recordFinishTimes() {
@@ -286,8 +314,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         final List<RawResult> raw_results = ((SingleRaceInternal) race).getRawResults();
         final int number_of_electronically_recorded_results = ((RelayRace) race).getNumberOfElectronicallyRecordedRawResults();
 
-        // TODO add check for zero.
-        if (number_of_electronically_recorded_results < raw_results.size())
+        if (number_of_electronically_recorded_results > 0 && number_of_electronically_recorded_results < raw_results.size())
             raw_results.get(number_of_electronically_recorded_results - 1).appendComment("Remaining times from paper recording sheet only.");
     }
 
@@ -341,14 +368,290 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
         return ((SingleRaceInternal) race).getEntries().stream().
-            filter(entry -> entry.bib_number == bib_number).
+            filter(entry -> entry.getBibNumber() == bib_number).
             findFirst().
             orElseThrow();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private RaceResults makeRaceResults() {
+    private void interpolateMissingTimes() {
+
+        final int index_of_first_result_with_recorded_time = getIndexOfFirstResultWithRecordedTime();
+
+        // Before the first recorded time, all results get the first recorded time.
+        setTimesForResultsBeforeFirstRecordedTime(index_of_first_result_with_recorded_time);
+
+        setTimesForResultsAfterFirstRecordedTime(index_of_first_result_with_recorded_time);
+    }
+
+    private void guessMissingBibNumbers() {
+
+        // Missing bib numbers are only guessed if a full set of finish times has been recorded,
+        // i.e. all runner_names have finished.
+
+        if (areTimesRecordedForAllRunners())
+            guessMissingBibNumbersWithAllTimesRecorded();
+        else
+            recordCommentsForNonGuessedResults();
+    }
+
+    private boolean areTimesRecordedForAllRunners() {
+
+        final int number_of_times_recorded = ((RelayRace) race).getRawResults().size();
+
+        return number_of_times_recorded == ((RelayRace) race).getUniqueBibNumbersRecorded().size() * ((RelayRace) race).getNumberOfLegs();
+    }
+
+    private int getIndexOfFirstResultWithRecordedTime() {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+
+        int raw_result_index = 0;
+        while (raw_result_index < results.size() && results.get(raw_result_index).getRecordedFinishTime() == null)
+            raw_result_index++;
+
+        return raw_result_index;
+    }
+
+    private void setTimesForResultsBeforeFirstRecordedTime(final int index_of_first_result_with_recorded_time) {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+        final Duration first_recorded_time = results.get(index_of_first_result_with_recorded_time).getRecordedFinishTime();
+
+        for (int i = 0; i < index_of_first_result_with_recorded_time; i++) {
+
+            final RawResult result = results.get(i);
+
+            result.setRecordedFinishTime(first_recorded_time);
+            result.appendComment("Time not recorded. No basis for interpolation so set to first recorded time.");
+        }
+    }
+
+    private void setTimesForResultsAfterFirstRecordedTime(final int index_of_first_result_with_recorded_time) {
+
+        final int number_of_results = ((RelayRace) race).getRawResults().size();
+
+        int i = index_of_first_result_with_recorded_time;
+
+        while (i < number_of_results) {
+
+            final ContiguousSequence sequence = getNextContiguousSequenceWithMissingTimes(i);
+            interpolateTimesForContiguousSequence(sequence);
+
+            i = sequence.end_index + 1;
+        }
+    }
+
+    private ContiguousSequence getNextContiguousSequenceWithMissingTimes(final int search_start_index) {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+        final int number_of_results = results.size();
+
+        int i = search_start_index;
+
+        while (i < number_of_results && results.get(i).getRecordedFinishTime() != null) i++;
+        final int missing_times_start_index = i;
+
+        while (i < number_of_results && results.get(i).getRecordedFinishTime() == null) i++;
+        final int missing_times_end_index = i - 1;
+
+        return new ContiguousSequence(missing_times_start_index, missing_times_end_index);
+    }
+
+    private void interpolateTimesForContiguousSequence(final ContiguousSequence sequence) {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+
+        // For results after the last recorded time, use the last recorded time.
+        if (isLastResult(sequence.end_index)) {
+            setTimesForResultsAfterLastRecordedTime(sequence.start_index);
+
+        } else {
+
+            final Duration start_time = results.get(sequence.start_index - 1).getRecordedFinishTime();
+            final Duration end_time = results.get(sequence.end_index + 1).getRecordedFinishTime();
+
+            final int number_of_steps = sequence.end_index - sequence.start_index + 2;
+            final Duration time_step = end_time.minus(start_time).dividedBy(number_of_steps);
+
+            interpolateTimes(sequence, time_step);
+        }
+    }
+
+    private boolean isLastResult(final int end_index) {
+
+        return end_index == ((RelayRace) race).getRawResults().size() - 1;
+    }
+
+    private void interpolateTimes(final ContiguousSequence sequence, final Duration time_step) {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+        final Duration finish_time_before_missing_sequence = results.get(sequence.start_index - 1).getRecordedFinishTime();
+
+        for (int i = 0; i <= sequence.end_index - sequence.start_index; i++) {
+
+            final Duration interpolated_finish_time = finish_time_before_missing_sequence.plus(time_step.multipliedBy(i + 1));
+            final Duration rounded_interpolated_finish_time = roundToIntegerSeconds(interpolated_finish_time);
+
+            final RawResult interpolated_result = results.get(sequence.start_index + i);
+
+            interpolated_result.setRecordedFinishTime(rounded_interpolated_finish_time);
+            interpolated_result.appendComment("Time not recorded. Time interpolated.");
+        }
+    }
+
+    private static Duration roundToIntegerSeconds(final Duration duration) {
+
+        long seconds = duration.getSeconds();
+        if (duration.getNano() > HALF_A_SECOND_IN_NANOSECONDS) seconds++;
+        return Duration.ofSeconds(seconds);
+    }
+
+    private void setTimesForResultsAfterLastRecordedTime(final int missing_times_start_index) {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+        final Duration last_recorded_time = results.get(missing_times_start_index - 1).getRecordedFinishTime();
+
+        for (int i = missing_times_start_index; i < results.size(); i++) {
+
+            final RawResult missing_result = results.get(i);
+
+            missing_result.setRecordedFinishTime(last_recorded_time);
+            missing_result.appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
+        }
+    }
+
+    private void recordCommentsForNonGuessedResults() {
+
+        for (final RawResult result : ((RelayRace) race).getRawResults())
+            if (result.getBibNumber() == UNKNOWN_BIB_NUMBER)
+                result.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.");
+    }
+
+    private void guessMissingBibNumbersWithAllTimesRecorded() {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+
+        int position_of_missing_bib_number = getPositionOfNextMissingBibNumber();
+        while (position_of_missing_bib_number > 0) {
+
+            final RawResult result_with_missing_number = results.get(position_of_missing_bib_number - 1);
+            final int guessed_number = guessTeamNumber(position_of_missing_bib_number);
+
+            result_with_missing_number.setBibNumber(guessed_number);
+            result_with_missing_number.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.");
+
+            position_of_missing_bib_number = getPositionOfNextMissingBibNumber();
+        }
+    }
+
+    private int getPositionOfNextMissingBibNumber() {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+
+        for (int i = 0; i < results.size(); i++)
+            if (results.get(i).getBibNumber() == UNKNOWN_BIB_NUMBER) return i + 1;
+
+        return 0;
+    }
+
+    private int guessTeamNumber(final int position) {
+
+        // The general assumption here is that most teams have roughly similar performance,
+        // so if one team has fewer finishes than the others at this point, we guess
+        // that it's the one finishing now.
+
+        // Get summary of each team's state at the point of this position being recorded,
+        // in terms of how many of the team's runner_names finished before and after this position,
+        // and the team's previous and next finish times.
+        final List<TeamSummaryAtPosition> summaries = summarise(position);
+
+        // Sort the summaries by: number of previous finishes, then number of subsequent
+        // finishes, then time of subsequent finish, then time of previous finish.
+        sort(summaries);
+
+        // Guess the team with the fewest previous finishes, using the other attributes
+        // described above as tie-breaks.
+        return summaries.getFirst().team_number;
+    }
+
+    private List<TeamSummaryAtPosition> summarise(final int position) {
+
+        return makeMutableCopy(
+            ((RelayRace) race).getUniqueBibNumbersRecorded().stream().
+                map(bib_number -> summarise(position, bib_number)).
+                toList());
+    }
+
+    private TeamSummaryAtPosition summarise(final int position, final int bib_number) {
+
+        final int finishes_before = getNumberOfTeamFinishesBetween(0, position - 1, bib_number);
+        final int finishes_after = getNumberOfTeamFinishesBetween(position, ((RelayRace) race).getRawResults().size(), bib_number);
+
+        final Duration previous_finish_time = getPreviousTeamFinishTime(position, bib_number);
+        final Duration next_finish_time = getNextTeamFinishTime(position, bib_number);
+
+        return new TeamSummaryAtPosition(bib_number, finishes_before, finishes_after, previous_finish_time, next_finish_time);
+    }
+
+    private int getNumberOfTeamFinishesBetween(final int position1, final int position2, final int bib_number) {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+
+        int count = 0;
+        for (int i = position1; i < position2; i++)
+            if (results.get(i).getBibNumber() == bib_number) count++;
+
+        return count;
+    }
+
+    private Duration getPreviousTeamFinishTime(final int position, final int bib_number) {
+
+        for (int i = position - 1; i > 0; i--) {
+
+            final Duration finish_time = getFinishTimeIfBibNumberMatches(bib_number, i);
+            if (finish_time != null) return finish_time;
+        }
+
+        return Duration.ZERO;
+    }
+
+    private Duration getNextTeamFinishTime(final int position, final int bib_number) {
+
+        final List<RawResult> results = ((RelayRace) race).getRawResults();
+
+        for (int i = position + 1; i <= results.size(); i++) {
+
+            final Duration finish_time = getFinishTimeIfBibNumberMatches(bib_number, i);
+            if (finish_time != null) return finish_time;
+        }
+
+        return Duration.ZERO;
+    }
+
+    private Duration getFinishTimeIfBibNumberMatches(final int bib_number, final int position) {
+
+        final RawResult result = ((RelayRace) race).getRawResults().get(position - 1);
+
+        return result.getBibNumber() == bib_number ? result.getRecordedFinishTime() : null;
+    }
+
+    private static void sort(final List<TeamSummaryAtPosition> summaries) {
+
+        summaries.sort(combineComparators(team_summary_comparators));
+    }
+
+    private static Comparator<? super TeamSummaryAtPosition> combineComparators(List<Comparator<TeamSummaryAtPosition>> comparing) {
+
+        return comparing.stream().
+            reduce((_, _) -> 0, Comparator::thenComparing);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected RaceResults makeRaceResults() {
 
         return new RelayRaceResults() {
 

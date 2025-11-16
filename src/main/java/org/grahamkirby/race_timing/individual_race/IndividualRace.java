@@ -143,17 +143,17 @@ public class IndividualRace implements SingleRaceInternal {
     private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path raw_results_path) {
 
         final Set<Integer> entry_bib_numbers = entries.stream().
-            map(entry -> entry.bib_number).
+            map(RaceEntry::getBibNumber).
             collect(Collectors.toSet());
 
-        final AtomicInteger line = new AtomicInteger(0);
+        final AtomicInteger line_number = new AtomicInteger(0);
 
         raw_results.forEach(raw_result -> {
-            line.incrementAndGet();
+            line_number.incrementAndGet();
             final int result_bib_number = raw_result.getBibNumber();
 
             if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
-                throw new RuntimeException("unregistered bib number '" + result_bib_number + "' at line " + line.get() + " in file '" + raw_results_path.getFileName() + "'");
+                throw new RuntimeException("unregistered bib number '" + result_bib_number + "' at line " + line_number.get() + " in file '" + raw_results_path.getFileName() + "'");
         });
     }
 
@@ -161,7 +161,7 @@ public class IndividualRace implements SingleRaceInternal {
 
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
-                if (entry1.participant != entry2.participant && entry1.participant.equals(entry2.participant))
+                if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
                     throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
     }
 

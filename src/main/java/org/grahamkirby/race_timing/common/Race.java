@@ -22,17 +22,12 @@ import java.io.IOException;
 public interface Race {
 
     // TODO rationalise Female/Women gender categories.
-    // TODO consolidate input validation.
-    // TODO output runner list and duplicate runners in series to processing notes.
-    // TODO allow negative early starts.
+    // TODO output club rationalisations to series processing notes.
     // TODO add junior hill races.
     // TODO add individual names to team prize results.
     // TODO allow explicitly recorded dead heat in single race.
     // TODO allow overall dead heat in relay race only where at least one team in a mass start.
     // TODO use tree structured set of result comparators.
-    // TODO tests - check existence of required config fields.
-    // TODO tests - validate required config fields.
-    // TODO tests - validate optional config fields.
     // TODO test for illegal bib number in raw times.
     // TODO mutation tests.
     // TODO fuzz tests.
@@ -43,8 +38,7 @@ public interface Race {
     // TODO individual race with no results - generate output with dummy times to check runner/bib duplicates.
     // TODO individual race with no results -  generate racer list for PocketTimer.
     // TODO series race with separate entries - output sorted runner names to notes.
-    // TODO individual race with team prizes - output sorted club names to notes
-    // TODO suppress prize output in individual tour races.
+    // TODO individual race with team prizes - output club team scores to notes
     // TODO control category order in prize list output.
 
     RaceResults processResults() throws IOException;

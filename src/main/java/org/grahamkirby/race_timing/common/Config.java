@@ -121,7 +121,9 @@ public class Config {
         final Properties properties = loadProperties(config_file_path);
 
         properties.forEach((key, value) -> config_map.put((String) key, value));
+
         unused_keys = new ArrayList<>(config_map.keySet());
+        unused_keys.removeAll(RaceConfigValidator.REQUIRED_CONFIG_KEYS);
     }
 
     /** Encodes a single value by surrounding with quotes if it contains a comma. */

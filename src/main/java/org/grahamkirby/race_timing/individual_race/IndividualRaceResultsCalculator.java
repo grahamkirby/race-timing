@@ -34,12 +34,37 @@ import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 
 public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
+    /*
+       Calculations specific to a single individual race. Features/assumptions:
+
+     * Each runner is optionally associated with a club.
+     * Runners without a club will be listed as 'Unatt.' (unattached) in results.
+     * Club names are normalised in results via a stored list of common alternatives.
+     * Runner names are unique within a club but not across clubs.
+     * Runner names are unique among unattached runners.
+     * Results timing may start at a different time from the actual race start.
+     * There are no dead heats in results, since an ordering is imposed at the finish even where recorded times are the same.
+     * Input data includes either a file containing entry details plus a file containing recorded times and bib numbers,
+       or a file containing combined entry details and results.
+     * Start times for particular runners may be provided separately, supporting individual early starts and late starts.
+     * Start times for particular runner categories may be provided separately.
+       * Used in Minitour races to allow older categories
+         to start slightly before younger categories, to reduce congestion.
+     * Start times may be calculated based on bib number.
+       * Used in Minitour and Tour races for time trials starting in waves.
+     * Separately recorded finish times for particular runners may be provided.
+     * Runners that start but do not finish will not be recorded in results.
+
+     */
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int NAME_INDEX = 1;
     private static final int CLUB_INDEX = 2;
     private static final int CATEGORY_INDEX = 3;
 
-    private int next_fake_bib_number = 1;
+    public static final int DUMMY_BIB_NUMBER = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,38 +125,39 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
         final List<RawResult> raw_results = ((SingleRaceInternal) race).getRawResults();
 
-        if (raw_results.isEmpty()) {
-            try {
-                overall_results = loadOverallResults();
-            }
-            catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else {
-
-            overall_results = raw_results.stream().
-                map(this::makeRaceResult).
-                toList();
-        }
+        overall_results = raw_results.isEmpty() ?
+            loadOverallResults() :
+            getRaceResults(raw_results);
 
         overall_results = makeMutableCopy(overall_results);
     }
 
-    private List<RaceResult> loadOverallResults() throws IOException {
+    private List<RaceResult> getRaceResults(final List<RawResult> raw_results) {
 
-        return readAllLines(race.getConfig().getPath(KEY_RESULTS_PATH)).stream().
-            map(Normalisation::stripEntryComment).
-            filter(Predicate.not(String::isBlank)).
+        return raw_results.stream().
             map(this::makeRaceResult).
             toList();
     }
 
+    private List<RaceResult> loadOverallResults() {
+
+        try {
+            return readAllLines(race.getConfig().getPath(KEY_RESULTS_PATH)).stream().
+                map(Normalisation::stripEntryComment).
+                filter(Predicate.not(String::isBlank)).
+                map(this::makeRaceResult).
+                toList();
+        }
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private RaceResult makeRaceResult(final String line) {
 
-        final List<String> elements = new ArrayList<>(Arrays.stream(line.split("\t")).toList());
+        final List<String> elements = makeMutableCopy(Arrays.stream(line.split("\t")).toList());
 
-        elements.addFirst(String.valueOf(next_fake_bib_number++));
+        elements.addFirst(String.valueOf(DUMMY_BIB_NUMBER));
 
         final RaceEntry entry = makeRaceEntry(elements);
         final Duration finish_time = parseTime(elements.getLast());
@@ -173,7 +199,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
 
         return ((SingleRaceInternal) race).getEntries().stream().
-            filter(entry -> entry.bib_number == bib_number).
+            filter(entry -> entry.getBibNumber() == bib_number).
             findFirst().
             orElseThrow();
     }
@@ -307,7 +333,8 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private RaceResults makeRaceResults() {
+    @Override
+    protected RaceResults makeRaceResults() {
 
         return new RaceResults() {
 

@@ -48,6 +48,15 @@ class SeriesRaceOutput extends RaceOutput {
         return SeriesRacePrizeResultPrinterHTML::new;
     }
 
+    @Override
+    protected void printPrizes() throws IOException {
+
+        final SeriesRaceResults results = (SeriesRaceResults) race_results;
+
+        if (results.getNumberOfRacesTakenPlace() == results.getRaceNames().size())
+            super.printPrizes();
+    }
+
     private static String renderScore(final Performance score) {
 
         return score != null ? String.valueOf(score) : "-";

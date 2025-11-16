@@ -132,7 +132,7 @@ public class CategoriesProcessor  {
             anyMatch(entry_gender -> gender_eligibility_map.get(entry_gender).contains(prize_category.getGender()));
     }
 
-    private static boolean isResultEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
+    private boolean isResultEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
 
         // It's possible for the entry category to be null in a series race, where some of the individual
         // race results may not include entry categories.

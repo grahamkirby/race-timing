@@ -32,8 +32,6 @@ public class IndividualTimesScorer extends SeriesRaceScorer {
         super(race);
     }
 
-    // TODO check 2016 results re standings after 10 races, and senior categories shouldn't include vet.
-
     @Override
     public Performance getIndividualRacePerformance(final Runner runner, final SingleRaceInternal individual_race) {
 

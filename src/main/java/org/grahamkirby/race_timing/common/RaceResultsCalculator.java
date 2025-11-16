@@ -23,12 +23,22 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_DNF_FINISHERS;
 
 public abstract class RaceResultsCalculator {
+
+    /*
+       Calculations generic to all race types. Features/assumptions:
+
+     * Bib numbers are unique within a given race.
+     * Times are recorded with 1 second resolution.
+     * Runners that finish may still be separately recorded as DNF (did not finish) if reported.
+
+     */
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected RaceInternal race;
     protected List<RaceResult> overall_results;
@@ -37,6 +47,11 @@ public abstract class RaceResultsCalculator {
 
     public abstract RaceResults calculateResults() throws IOException;
     protected abstract boolean areEqualPositionsAllowed();
+
+    /**
+     * Returns a view over the results used to output results.
+     */
+    protected abstract RaceResults makeRaceResults();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +82,7 @@ public abstract class RaceResultsCalculator {
         for (final PrizeCategory other_category : race.getCategoriesProcessor().getPrizeCategories().reversed()) {
 
             if (!getPrizeWinners(other_category).isEmpty()) return true;
-            if (category.equals(other_category) && !arePrizesInOtherCategorySameAge(category)) return false;
+            if (category.equals(other_category) && !arePrizesInOtherCategoryWithSameMinimumAge(category)) return false;
         }
         return false;
     }
@@ -116,12 +131,12 @@ public abstract class RaceResultsCalculator {
                     } else
                         // The following result has a different performance, so just record current position for this one.
                         result.setPositionString(String.valueOf(result_index + 1));
-                } else {
+                } else
                     result.setPositionString(String.valueOf(result_index + 1));
-                }
-            } else {
+
+            } else
                 result.setPositionString("-");
-            }
+
         }
     }
 
@@ -141,9 +156,18 @@ public abstract class RaceResultsCalculator {
 
     protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
 
-        return result.canComplete() &&
-            isStillEligibleForPrize(result, prize_category) &&
-            race.getCategoriesProcessor().isResultEligibleForPrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getParticipant().category, prize_category);
+        if (!result.canComplete()) return false;
+
+        if (prize_category.isExclusive())
+            for (final PrizeCategory category_already_won : result.getCategoriesOfPrizesAwarded())
+                if (category_already_won.isExclusive())
+                    return false;
+
+        return race.getCategoriesProcessor().isResultEligibleForPrizeCategory(
+                getClub(result),
+                race.getNormalisation().gender_eligibility_map,
+                result.getParticipant().category,
+                prize_category);
     }
 
     protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
@@ -170,7 +194,7 @@ public abstract class RaceResultsCalculator {
     protected void recordDNF(final String dnf_specification) {
     }
 
-    protected static List<RaceResult> makeMutableCopy(final List<? extends RaceResult> results) {
+    protected static <T> List<T> makeMutableCopy(final List<T> results) {
         return new ArrayList<>(results);
     }
 
@@ -203,34 +227,19 @@ public abstract class RaceResultsCalculator {
         return highest_index_with_same_result;
     }
 
-    private static boolean isStillEligibleForPrize(final RaceResult result, final PrizeCategory new_prize_category) {
-
-        if (!new_prize_category.isExclusive()) return true;
-
-        for (final PrizeCategory category_already_won : result.getCategoriesOfPrizesAwarded())
-            if (category_already_won.isExclusive()) return false;
-
-        return true;
-    }
-
     private void setPrizeWinners(final PrizeCategory category) {
 
-        final AtomicInteger position = new AtomicInteger(1);
-
         overall_results.stream().
-            filter(_ -> position.get() <= category.numberOfPrizes()).
             filter(result -> isPrizeWinner(result, category)).
-            forEachOrdered(result -> {
-                position.getAndIncrement();
-                setPrizeWinner(result, category);
-            });
+            limit(category.numberOfPrizes()).
+            forEachOrdered(result -> setPrizeWinner(result, category));
     }
 
-    private boolean arePrizesInOtherCategorySameAge(final PrizeCategory category) {
+    private boolean arePrizesInOtherCategoryWithSameMinimumAge(final PrizeCategory category) {
 
         return race.getCategoriesProcessor().getPrizeCategories().stream().
-            filter(cat -> !cat.equals(category)).
-            filter(cat -> cat.getMinimumAge() == category.getMinimumAge()).
-            anyMatch(cat -> !getPrizeWinners(cat).isEmpty());
+            filter(other_category -> !other_category.equals(category)).
+            filter(other_category -> other_category.getMinimumAge() == category.getMinimumAge()).
+            anyMatch(other_category -> !getPrizeWinners(other_category).isEmpty());
     }
 }

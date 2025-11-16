@@ -303,6 +303,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         getParticipantsWithName(runner_name).
             map(participant -> (Runner) participant).
             forEachOrdered(runner -> runner.setClub(defined_club));
+
+        race.getNotes().appendToNotes("Club " + defined_club + " substituted for unknown clubs for runner name " + runner_name + LINE_SEPARATOR);
     }
 
     private void noteRunnerNameRepresentsMultipleRunners(final String runner_name, final List<String> known_clubs) {
@@ -396,7 +398,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private RaceResults makeRaceResults() {
+    @Override
+    protected RaceResults makeRaceResults() {
 
         final int number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
         final int minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
