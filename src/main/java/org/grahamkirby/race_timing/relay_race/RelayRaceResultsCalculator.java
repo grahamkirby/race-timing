@@ -26,8 +26,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingInt;
-import static org.grahamkirby.race_timing.common.Config.KEY_RACE_START_TIME;
-import static org.grahamkirby.race_timing.common.Config.UNKNOWN_BIB_NUMBER;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
@@ -62,7 +61,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     // TODO tidy treatment of category configuration files.
     // TODO integrate with category configuration files.
-    private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
+//    private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
 
     private static final List<Comparator<TeamSummaryAtPosition>> team_summary_comparators = List.of(
 
@@ -109,19 +108,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         // anywhere in the range (calculated +/- (number of legs)/2). This means there's no way to
         // distinguish two equal overall results.
         return true;
-    }
-
-    @Override
-    protected void allocatePrizes() {
-
-        // Allocate first prize in each category first, in decreasing order of category breadth.
-        // This is because e.g. a 40+ team should win first in 40+ category before a subsidiary
-        // prize in open category.
-
-        final List<PrizeCategory> categories_sorted_by_decreasing_generality = getPrizeCategoriesSortedByDecreasingGenerality();
-
-        allocateFirstPrizes(categories_sorted_by_decreasing_generality);
-        allocateMinorPrizes(categories_sorted_by_decreasing_generality);
     }
 
     @Override
@@ -330,43 +316,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         if (number_of_electronically_recorded_results > 0 && number_of_electronically_recorded_results < raw_results.size())
             raw_results.get(number_of_electronically_recorded_results - 1).appendComment("Remaining times from paper recording sheet only.");
-    }
-
-    private List<PrizeCategory> getPrizeCategoriesSortedByDecreasingGenerality() {
-
-        final List<PrizeCategory> prize_categories = makeMutableCopy(race.getCategoriesProcessor().getPrizeCategories());
-        prize_categories.sort(getPrizeCategoryComparator());
-
-        return prize_categories;
-    }
-
-    private void allocateFirstPrizes(final Iterable<PrizeCategory> prize_categories) {
-
-        // TODO unify with RaceResultsCalculator. Need configuration option for whether 2/3 in open age category is preferred over 1st in older category.
-        for (final PrizeCategory category : prize_categories)
-            for (final RaceResult result : getOverallResults())
-                if (isPrizeWinner(result, category)) {
-                    setPrizeWinner(result, category);
-                    break;
-                }
-    }
-
-    private void allocateMinorPrizes(final Iterable<PrizeCategory> prize_categories) {
-
-        for (final PrizeCategory category : prize_categories)
-            allocateMinorPrizes(category);
-    }
-
-    private void allocateMinorPrizes(final PrizeCategory category) {
-
-        // Don't need to skip the first matching result since the first prizes have already been
-        // allocated, so winner of the first prize won't match isPrizeWinner() here. The first
-        // match will be winner of the second prize.
-
-        getOverallResults().stream().
-            filter(result -> isPrizeWinner(result, category)).
-            limit(category.numberOfPrizes() - 1).
-            forEachOrdered(result -> setPrizeWinner(result, category));
     }
 
     private RaceResult makeRaceResult(final RawResult raw_result) {
@@ -649,11 +598,11 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             reduce((_, _) -> 0, Comparator::thenComparing);
     }
 
-    private static Comparator<PrizeCategory> getPrizeCategoryComparator() {
-
-        return comparingInt((PrizeCategory category) -> category.getMinimumAge()).
-            thenComparingInt(category -> GENDER_ORDER.indexOf(category.getGender()));
-    }
+//    private static Comparator<PrizeCategory> getPrizeCategoryComparator() {
+//
+//        return comparingInt((PrizeCategory category) -> category.getMinimumAge()).
+//            thenComparingInt(category -> GENDER_ORDER.indexOf(category.getGender()));
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

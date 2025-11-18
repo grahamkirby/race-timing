@@ -48,5 +48,7 @@ public class RelayRaceConfigAdjuster extends ConfigProcessor {
 
         // Default entry map with elements (bib number, team name, category, plus one per leg), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap((int) config.get(KEY_NUMBER_OF_LEGS) + 3));
+
+        config.replace(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, false);
     }
 }

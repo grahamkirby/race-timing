@@ -29,9 +29,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.*;
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
 import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
 
 public class IndividualRace implements SingleRaceInternal {

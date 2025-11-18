@@ -55,11 +55,14 @@ public class RaceConfigAdjuster extends ConfigProcessor {
     public void processConfig() {
 
         config.addIfAbsent(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH);
-        config.addIfAbsent(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
-        config.addIfAbsent(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
         config.addIfAbsent(KEY_GENDER_ELIGIBILITY_MAP_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
+        config.addIfAbsent(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
+        config.addIfAbsent(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
 
         config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
+        config.replaceIfPresent(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, Boolean::parseBoolean);
+
+        config.addIfAbsent(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, true);
     }
 
     public static String makeDefaultEntryColumnMap(final int number_of_columns) {

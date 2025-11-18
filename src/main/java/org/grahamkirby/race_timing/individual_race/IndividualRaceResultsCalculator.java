@@ -28,9 +28,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.readAllLines;
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 
 public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 

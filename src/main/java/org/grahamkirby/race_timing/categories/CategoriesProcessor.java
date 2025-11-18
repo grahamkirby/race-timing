@@ -22,17 +22,27 @@ import org.grahamkirby.race_timing.common.Config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static java.util.Comparator.comparingInt;
 import static org.grahamkirby.race_timing.common.Config.*;
 
 public class CategoriesProcessor  {
 
+    // TODO document constraints on category overlap and generality.
+
     /** Index of prize category group name within the relevant config file. */
     public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
+
+    public Comparator<PrizeCategory> getDecreasingGeneralityCategoryComparator() {
+
+        return comparingInt((PrizeCategory category) -> category.getMinimumAge()).
+            thenComparingInt(category -> GENDER_ORDER.indexOf(category.getGender()));
+    }
+
+    // TODO tidy treatment of category configuration files.
+    // TODO integrate with category configuration files.
+    protected static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
 
     private final List<PrizeCategoryGroup> prize_category_groups;
     private final List<EntryCategory> entry_categories;

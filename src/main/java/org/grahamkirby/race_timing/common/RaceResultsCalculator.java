@@ -17,15 +17,16 @@
  */
 package org.grahamkirby.race_timing.common;
 
+import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_DNF_FINISHERS;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceResultsCalculator {
 
@@ -134,7 +135,6 @@ public abstract class RaceResultsCalculator {
 
             } else
                 result.setPositionString("-");
-
         }
     }
 
@@ -148,29 +148,56 @@ public abstract class RaceResultsCalculator {
 
     protected void allocatePrizes() {
 
-        for (final PrizeCategory category : race.getCategoriesProcessor().getPrizeCategories())
-            setPrizeWinners(category);
+        final CategoriesProcessor categories_processor = race.getCategoriesProcessor();
+        final List<PrizeCategory> categories = makeMutableCopy(categories_processor.getPrizeCategories());
+        categories.sort(categories_processor.getDecreasingGeneralityCategoryComparator());
+
+        final boolean prefer_lower_prize = (boolean) race.getConfig().get(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY);
+
+        if (prefer_lower_prize) {
+
+            // Allocate all prizes in each category, in decreasing order of category generality.
+            // This means e.g. a V40 runner in second place overall will win second prize in open
+            // category rather than first prize in V40 category.
+            allocatePrizes(categories, number_of_prizes -> number_of_prizes);
+        }
+        else {
+            // Allocate first prize in each category first, in decreasing order of category generality.
+            // This means e.g. a 40+ relay team in second place overall will win first in 40+ category
+            // rather than second prize in open category.
+
+            // Allocate first prizes in each category.
+            allocatePrizes(categories, _ -> 1);
+
+            // Allocate remaining prizes in each category.
+            allocatePrizes(categories, number_of_prizes -> number_of_prizes - 1);
+        }
     }
 
-    protected boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
+    private void allocatePrizes(final List<PrizeCategory> prize_categories, final Function<Integer, Integer> get_number_of_prizes_to_allocate) {
 
-        if (!result.canComplete()) return false;
+        for (final PrizeCategory category : prize_categories) {
 
-        if (prize_category.isExclusive())
-            for (final PrizeCategory category_already_won : result.getCategoriesOfPrizesAwarded())
-                if (category_already_won.isExclusive())
-                    return false;
+            final int max_prizes_to_allocate = get_number_of_prizes_to_allocate.apply(category.numberOfPrizes());
+
+            overall_results.stream().
+                filter(result -> isPrizeWinner(result, category)).
+                limit(max_prizes_to_allocate).
+                forEachOrdered(result -> result.getCategoriesOfPrizesAwarded().add(category));
+        }
+    }
+
+    private boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
+
+        if (!result.canComplete() ||
+            prize_category.isExclusive() && result.getCategoriesOfPrizesAwarded().stream().anyMatch(PrizeCategory::isExclusive))
+                return false;
 
         return race.getCategoriesProcessor().isResultEligibleForPrizeCategory(
                 getClub(result),
                 race.getNormalisation().gender_eligibility_map,
                 result.getParticipant().category,
                 prize_category);
-    }
-
-    protected static void setPrizeWinner(final RaceResult result, final PrizeCategory category) {
-
-        result.getCategoriesOfPrizesAwarded().add(category);
     }
 
     protected void recordDNFs() {
@@ -190,10 +217,6 @@ public abstract class RaceResultsCalculator {
     }
 
     protected void recordDNF(final String dnf_specification) {
-    }
-
-    protected static <T> List<T> makeMutableCopy(final List<T> results) {
-        return new ArrayList<>(results);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,14 +246,6 @@ public abstract class RaceResultsCalculator {
             highest_index_with_same_result++;
 
         return highest_index_with_same_result;
-    }
-
-    private void setPrizeWinners(final PrizeCategory category) {
-
-        overall_results.stream().
-            filter(result -> isPrizeWinner(result, category)).
-            limit(category.numberOfPrizes()).
-            forEachOrdered(result -> setPrizeWinner(result, category));
     }
 
     private boolean arePrizesInOtherCategoryWithSameMinimumAge(final PrizeCategory category) {

@@ -31,10 +31,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.grahamkirby.race_timing.common.CommonDataProcessor.*;
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
 
 public class RelayRace implements SingleRaceInternal {
 
@@ -76,9 +76,9 @@ public class RelayRace implements SingleRaceInternal {
     private RaceResultsCalculator results_calculator;
     private final Config config;
     private final CategoriesProcessor categories_processor;
-    private RaceOutput results_output;
-    private Normalisation normalisation;
+    private final Normalisation normalisation;
     private final Notes notes;
+    private RaceOutput results_output;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -179,10 +179,6 @@ public class RelayRace implements SingleRaceInternal {
 
     List<Boolean> getPairedLegs() {
         return paired_legs;
-    }
-
-    List<Boolean> getMassStartLegs() {
-        return mass_start_legs;
     }
 
     List<RelayRaceLegResult> getLegResults(final int leg_number) {

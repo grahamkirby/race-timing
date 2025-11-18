@@ -62,6 +62,7 @@ public class Config {
     public static final String KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE = "NUMBER_TO_COUNT_FOR_TEAM_PRIZE";
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
+    public static final String KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY = "PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY";
     public static final String KEY_PRIZE_CATEGORIES_PATH = "PRIZE_CATEGORIES_PATH";
     public static final String KEY_ELIGIBLE_CLUBS = "ELIGIBLE_CLUBS";
     public static final String KEY_RACES = "RACES";
@@ -131,6 +132,10 @@ public class Config {
         return s.contains(",") ? "\"" + s + "\"" : s;
     }
 
+    public static <T> List<T> makeMutableCopy(final List<T> list) {
+        return new ArrayList<>(list);
+    }
+
     public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         if (!Files.exists(config_file_path))
@@ -192,6 +197,11 @@ public class Config {
     public void replace(final String key, final Function<String, Object> make_new_value) {
 
         config_map.replace(key, make_new_value.apply((String) config_map.get(key)));
+    }
+
+    public void replace(final String key, final Object new_value) {
+
+        config_map.replace(key, new_value);
     }
 
     public void replaceIfPresent(final String key, final Function<String, Object> make_new_value) {
