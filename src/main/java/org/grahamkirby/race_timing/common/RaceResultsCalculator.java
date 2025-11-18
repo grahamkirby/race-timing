@@ -29,14 +29,12 @@ import static org.grahamkirby.race_timing.common.Config.KEY_DNF_FINISHERS;
 
 public abstract class RaceResultsCalculator {
 
-    /*
-       Calculations generic to all race types. Features/assumptions:
-
-     * Bib numbers are unique within a given race.
-     * Times are recorded with 1 second resolution.
-     * Runners that finish may still be separately recorded as DNF (did not finish) if reported.
-
-     */
+    // Calculations generic to all race types. Features/assumptions:
+    //
+    //     * Bib numbers are unique within a given race.
+    //     * Times are recorded with 1 second resolution.
+    //     * Runners that finish may still be separately recorded as DNF (did not finish) if reported.
+    //     * Dead heats can be optionally accommodated.
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -72,8 +72,22 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     @Override
     public boolean areEqualPositionsAllowed() {
 
-        // Since overall performances are derived from multiple races, there's no way to distinguish two
-        // runners with the same overall performance.
+        // Dead heats are allowed in overall results, since each overall score is composed of multiple
+        // individual scores.
+
+        // Depending on the nature of the particular scorer used, each individual score may be:
+        //
+        // * an individually recorded race duration
+        // * an abstract score derived from an individually recorded race duration
+        // * an abstract score derived from the runner's position in an individual race
+        //
+        // In the first and second cases, a precise overall score does exist for every result, but
+        // we can't determine what it is, since individual durations are rounded to the nearest second
+        // at recording. Therefore, there's no way to distinguish two equal overall results.
+        //
+        // In the third case, there is intrinsically no way to distinguish two overall results with
+        // the same total score.
+
         return true;
     }
 
