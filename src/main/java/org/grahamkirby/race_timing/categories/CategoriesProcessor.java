@@ -26,10 +26,12 @@ import java.util.*;
 
 import static java.util.Comparator.comparingInt;
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 
 public class CategoriesProcessor  {
 
     // TODO document constraints on category overlap and generality.
+    // TODO validate overlapping categories.
 
     /** Index of prize category group name within the relevant config file. */
     public static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
@@ -49,19 +51,19 @@ public class CategoriesProcessor  {
 
     public CategoriesProcessor(final Config config) throws IOException {
 
-        final Path results_path = config.getPath(KEY_ENTRY_CATEGORIES_PATH);
-        final Path categories_prize_path = config.getPath(KEY_PRIZE_CATEGORIES_PATH);
+        final Path entry_categories_path = config.getPath(KEY_ENTRY_CATEGORIES_PATH);
+        final Path prize_categories_path = config.getPath(KEY_PRIZE_CATEGORIES_PATH);
 
         prize_category_groups = new ArrayList<>();
-        entry_categories = Files.readAllLines(results_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
+        entry_categories = Files.readAllLines(entry_categories_path).stream().filter(line -> !line.startsWith(COMMENT_SYMBOL)).map(EntryCategory::new).toList();
 
-        loadPrizeCategoryGroups(categories_prize_path);
+        loadPrizeCategoryGroups(prize_categories_path);
     }
 
     /** Loads prize category groups from the given file. */
     private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
 
-        Files.readAllLines(prize_categories_path).stream().
+        readAllLines(prize_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             forEachOrdered(this::recordGroup);
     }
