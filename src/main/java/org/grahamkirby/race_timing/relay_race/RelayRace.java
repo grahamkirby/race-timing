@@ -297,7 +297,7 @@ public class RelayRace implements SingleRaceInternal {
 
         try {
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            categories_processor.lookupEntryCategory(category_name);
+            categories_processor.getEntryCategory(category_name);
 
         } catch (final RuntimeException _) {
             throw new RuntimeException(String.join(" ", elements));
@@ -464,7 +464,7 @@ public class RelayRace implements SingleRaceInternal {
             final int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
 
             final String name = elements.get(TEAM_NAME_INDEX);
-            final EntryCategory category = categories_processor.lookupEntryCategory(elements.get(CATEGORY_INDEX));
+            final EntryCategory category = categories_processor.getEntryCategory(elements.get(CATEGORY_INDEX));
             final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> getNormalisation().cleanRunnerName(s)).toList();
 
             final Participant participant = new Team(name, category, runners);

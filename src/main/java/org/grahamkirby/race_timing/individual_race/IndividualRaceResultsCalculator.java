@@ -185,7 +185,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().lookupEntryCategory(category_name);
+            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().getEntryCategory(category_name);
 
             final Participant participant = new Runner(name, club, category);
 
@@ -240,7 +240,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             for (final String offset_string : ((String) category_start_offsets).split(",", -1)) {
 
                 final String[] split = offset_string.split("/");
-                category_offsets.put(race.getCategoriesProcessor().lookupEntryCategory(split[0]), parseTime(split[1]));
+                category_offsets.put(race.getCategoriesProcessor().getEntryCategory(split[0]), parseTime(split[1]));
             }
 
             for (final RaceResult r : overall_results) {

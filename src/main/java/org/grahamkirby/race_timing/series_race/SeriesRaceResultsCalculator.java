@@ -400,13 +400,13 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
     private static void checkAgeCategoriesInSuccessiveRaces(final EntryCategory previous_category, final EntryCategory current_category, final String runner_name, final String race_name) {
 
-        if (previous_category != null && current_category != null && current_category.getMinimumAge() < previous_category.getMinimumAge())
+        if (previous_category != null && current_category != null && current_category.getAgeRange().getMinimumAge() < previous_category.getAgeRange().getMinimumAge())
             throw new RuntimeException("invalid category change: runner '" + runner_name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     private static void checkAgeCategoryRangeOverSeries(final String runner_name, final EntryCategory earliest_category, final EntryCategory latest_category) {
 
-        if (earliest_category != null && latest_category != null && latest_category.getMinimumAge() > earliest_category.getMaximumAge() + 1)
+        if (earliest_category != null && latest_category != null && latest_category.getAgeRange().getMinimumAge() > earliest_category.getAgeRange().getMaximumAge() + 1)
             throw new RuntimeException("invalid category change: runner '" + runner_name + "' changed from " + earliest_category.getShortName() + " to " + latest_category.getShortName() + " during series");
     }
 

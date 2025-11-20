@@ -38,6 +38,9 @@ public final class PrizeCategory extends Category {
     private final Set<String> eligible_clubs;
     private final boolean exclusive;
 
+    // TODO document exact meaning of exclusive, maybe rename.
+    // TODO NL can win Fife prize and any other prize.
+
     /**
      * Creates an instance from a comma-separated string containing:
      * long name, short name, gender, minimum age, maximum age, number of prizes.

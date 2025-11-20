@@ -108,7 +108,7 @@ public class IndividualRace implements SingleRaceInternal {
 
         try {
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            getCategoriesProcessor().lookupEntryCategory(category_name);
+            getCategoriesProcessor().getEntryCategory(category_name);
 
         } catch (final RuntimeException e) {
             throw new RuntimeException(String.join(" ", elements));
@@ -190,7 +190,7 @@ public class IndividualRace implements SingleRaceInternal {
     public RaceResults processResults() throws IOException {
 
         loadRaceData();
-        completeConfiguration();
+        loadSeparatelyRecordedResults();
         return results_calculator.calculateResults();
     }
 
@@ -217,7 +217,7 @@ public class IndividualRace implements SingleRaceInternal {
         return notes;
     }
 
-    private void completeConfiguration() {
+    private void loadSeparatelyRecordedResults() {
 
         separately_recorded_finish_times = new HashMap<>();
 

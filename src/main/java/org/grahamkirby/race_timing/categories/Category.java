@@ -36,8 +36,9 @@ public abstract class Category {
     private final String gender;
 
     // Both ages are inclusive.
-    private final int minimum_age;
-    private final int maximum_age;
+    private final AgeRange age_range;
+//    private final int minimum_age;
+//    private final int maximum_age;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,8 +49,7 @@ public abstract class Category {
         long_name = parts[0];
         short_name = parts[1];
         gender = parts[2];
-        minimum_age = Integer.parseInt(parts[3]);
-        maximum_age = Integer.parseInt(parts[4]);
+        age_range = new AgeRange(Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,13 +66,17 @@ public abstract class Category {
         return gender;
     }
 
-    public int getMinimumAge() {
-        return minimum_age;
+    public AgeRange getAgeRange() {
+        return age_range;
     }
 
-    public int getMaximumAge() {
-        return maximum_age;
-    }
+//    public int getMinimumAge() {
+//        return minimum_age;
+//    }
+//
+//    public int getMaximumAge() {
+//        return maximum_age;
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,7 +85,7 @@ public abstract class Category {
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof final Category other && gender.equals(other.gender) && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
+        return obj instanceof final Category other && gender.equals(other.gender) && age_range.equals(other.age_range);
     }
 
     /**
@@ -89,6 +93,6 @@ public abstract class Category {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(gender, minimum_age, maximum_age);
+        return Objects.hash(gender, age_range);
     }
 }

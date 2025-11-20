@@ -49,7 +49,7 @@ public class RaceEntry {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = race.getCategoriesProcessor().lookupEntryCategory(category_name);
+            final EntryCategory category = race.getCategoriesProcessor().getEntryCategory(category_name);
 
             participant = new Runner(name, club, category);
 

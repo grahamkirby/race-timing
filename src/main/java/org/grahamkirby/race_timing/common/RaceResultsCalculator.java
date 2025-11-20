@@ -68,7 +68,7 @@ public abstract class RaceResultsCalculator {
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
         final Predicate<RaceResult> prize_category_filter = result ->
-            race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(getClub(result), race.getNormalisation().gender_eligibility_map, result.getCategory(), prize_categories);
+            race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(getClub(result), result.getCategory(), prize_categories, race.getNormalisation().gender_eligibility_map);
 
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
 
@@ -149,8 +149,7 @@ public abstract class RaceResultsCalculator {
     protected void allocatePrizes() {
 
         final CategoriesProcessor categories_processor = race.getCategoriesProcessor();
-        final List<PrizeCategory> categories = makeMutableCopy(categories_processor.getPrizeCategories());
-        categories.sort(categories_processor.getDecreasingGeneralityCategoryComparator());
+        final List<PrizeCategory> categories = categories_processor.getPrizeCategoriesInDecreasingGeneralityOrder();
 
         final boolean prefer_lower_prize = (boolean) race.getConfig().get(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY);
 
@@ -252,7 +251,7 @@ public abstract class RaceResultsCalculator {
 
         return race.getCategoriesProcessor().getPrizeCategories().stream().
             filter(other_category -> !other_category.equals(category)).
-            filter(other_category -> other_category.getMinimumAge() == category.getMinimumAge()).
+            filter(other_category -> other_category.getAgeRange().getMinimumAge() == category.getAgeRange().getMinimumAge()).
             anyMatch(other_category -> !getPrizeWinners(other_category).isEmpty());
     }
 }
