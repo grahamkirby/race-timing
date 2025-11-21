@@ -1,19 +1,19 @@
 # Long Category Name,Short Category Name,Gender,Minimum Age,Maximum Age,Number of Prizes,Category Group,Optional Eligible Clubs,Exclusive (Y/N)
-Men Fife AC,MF,Men,13,99,1,Overall,Fife AC/Kirkcaldy Wizards,N
-Women Fife AC,FF,Women,13,99,1,Overall,Fife AC/Kirkcaldy Wizards,N
-Women Overall,FO,Women,13,99,3,Overall
-Men Overall,MO,Men,13,99,3,Overall
-Women Junior,FU20,Women,13,19,3,Overall
-Men Junior,MU20,Men,13,19,3,Overall
-Women 40-49,F40,Women,40,49,3,Overall
-Men 40-49,M40,Men,40,49,3,Overall
-Women 50-59,F50,Women,50,59,3,Overall
-Men 50-59,M50,Men,50,59,3,Overall
-Women 60-69,F60,Women,60,69,3,Overall
-Men 60-69,M60,Men,60,69,3,Overall
-Women 70-79,F70,Women,70,79,3,Overall
-Men 70-79,M70,Men,70,79,3,Overall
-Women 80-89,F80,Women,80,89,3,Overall
-Men 80-89,M80,Men,80,89,3,Overall
-Women 90-99,F90,Women,90,99,3,Overall
-Men 90-99,M90,Men,90,99,3,Overall
+Men Fife AC,MF,Male,13,99,1,Overall,Fife AC/Kirkcaldy Wizards,N
+Women Fife AC,FF,Female,13,99,1,Overall,Fife AC/Kirkcaldy Wizards,N
+Women Overall,FO,Female,13,99,3,Overall
+Men Overall,MO,Male,13,99,3,Overall
+Women Junior,FU20,Female,13,19,3,Overall
+Men Junior,MU20,Male,13,19,3,Overall
+Women 40-49,F40,Female,40,49,3,Overall
+Men 40-49,M40,Male,40,49,3,Overall
+Women 50-59,F50,Female,50,59,3,Overall
+Men 50-59,M50,Male,50,59,3,Overall
+Women 60-69,F60,Female,60,69,3,Overall
+Men 60-69,M60,Male,60,69,3,Overall
+Women 70-79,F70,Female,70,79,3,Overall
+Men 70-79,M70,Male,70,79,3,Overall
+Women 80-89,F80,Female,80,89,3,Overall
+Men 80-89,M80,Male,80,89,3,Overall
+Women 90-99,F90,Female,90,99,3,Overall
+Men 90-99,M90,Male,90,99,3,Overall

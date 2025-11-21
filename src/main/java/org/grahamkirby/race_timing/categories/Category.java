@@ -18,8 +18,6 @@
 package org.grahamkirby.race_timing.categories;
 
 
-import java.util.Objects;
-
 /**
  * Parent class for entry category and prize category,
  * each including a gender and age range.
@@ -32,13 +30,8 @@ public abstract class Category {
     // E.g. "MS", "M40".
     private final String short_name;
 
-    // e.g "Women", "Female", "Mixed", "Open".
-    private final String gender;
-
     // Both ages are inclusive.
-    private final AgeRange age_range;
-//    private final int minimum_age;
-//    private final int maximum_age;
+    protected final AgeRange age_range;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +41,6 @@ public abstract class Category {
 
         long_name = parts[0];
         short_name = parts[1];
-        gender = parts[2];
         age_range = new AgeRange(Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
     }
 
@@ -62,37 +54,7 @@ public abstract class Category {
         return short_name;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
     public AgeRange getAgeRange() {
         return age_range;
-    }
-
-//    public int getMinimumAge() {
-//        return minimum_age;
-//    }
-//
-//    public int getMaximumAge() {
-//        return maximum_age;
-//    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Equality defined in terms of gender and age range.
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof final Category other && gender.equals(other.gender) && age_range.equals(other.age_range);
-    }
-
-    /**
-     * Hash code defined in terms of gender and age range.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(gender, age_range);
     }
 }

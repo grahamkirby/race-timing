@@ -30,7 +30,6 @@ public class RaceConfigAdjuster extends ConfigProcessor {
     public static String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = DEFAULT_CONFIG_ROOT_PATH + "/capitalisation_stop_words." + CSV_FILE_SUFFIX;
     public static String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/html_entities." + CSV_FILE_SUFFIX;
     public static String DEFAULT_NORMALISED_CLUB_NAMES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/club_names." + CSV_FILE_SUFFIX;
-    public static String DEFAULT_GENDER_ELIGIBILITY_MAP_PATH = DEFAULT_CONFIG_ROOT_PATH + "/gender_eligibility_default." + CSV_FILE_SUFFIX;
 
     public RaceConfigAdjuster(final Config config) {
 
@@ -43,7 +42,6 @@ public class RaceConfigAdjuster extends ConfigProcessor {
             KEY_CATEGORY_MAP_PATH,
             KEY_ENTRIES_PATH,
             KEY_ENTRY_CATEGORIES_PATH,
-            KEY_GENDER_ELIGIBILITY_MAP_PATH,
             KEY_NORMALISED_CLUB_NAMES_PATH,
             KEY_NORMALISED_HTML_ENTITIES_PATH,
             KEY_PRIZE_CATEGORIES_PATH,
@@ -55,7 +53,6 @@ public class RaceConfigAdjuster extends ConfigProcessor {
     public void processConfig() {
 
         config.addIfAbsent(KEY_CAPITALISATION_STOP_WORDS_PATH, DEFAULT_CAPITALISATION_STOP_WORDS_PATH);
-        config.addIfAbsent(KEY_GENDER_ELIGIBILITY_MAP_PATH, DEFAULT_GENDER_ELIGIBILITY_MAP_PATH);
         config.addIfAbsent(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
         config.addIfAbsent(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
 

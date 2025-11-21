@@ -63,7 +63,7 @@ public class Normalisation {
      * Map from entry gender to eligible prize genders.
      * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
      */
-    public Map<String, List<String>> gender_eligibility_map;
+//    public Map<String, List<String>> gender_eligibility_map;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -177,7 +177,7 @@ public class Normalisation {
         try {
             entry_column_mappings = loadEntryColumnMapping();
             category_map = loadCategoryMap();
-            gender_eligibility_map = loadGenderEligibilityMap();
+//            gender_eligibility_map = loadGenderEligibilityMap();
             normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
             normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
 
@@ -191,22 +191,22 @@ public class Normalisation {
         }
     }
 
-    private Map<String, List<String>> loadGenderEligibilityMap() throws IOException {
-
-        final Map<String, List<String>> map = new HashMap<>();
-
-        final Path gender_eligibility_map_path = config.getPath(KEY_GENDER_ELIGIBILITY_MAP_PATH);
-
-        Files.readAllLines(gender_eligibility_map_path).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(line -> {
-                final String[] elements = line.split(",");
-                map.putIfAbsent(elements[0], new ArrayList<>());
-                map.get(elements[0]).add(elements[1]);
-            });
-
-        return map;
-    }
+//    private Map<String, List<String>> loadGenderEligibilityMap() throws IOException {
+//
+//        final Map<String, List<String>> map = new HashMap<>();
+//
+//        final Path gender_eligibility_map_path = config.getPath(KEY_GENDER_ELIGIBILITY_MAP_PATH);
+//
+//        Files.readAllLines(gender_eligibility_map_path).stream().
+//            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+//            forEachOrdered(line -> {
+//                final String[] elements = line.split(",");
+//                map.putIfAbsent(elements[0], new ArrayList<>());
+//                map.get(elements[0]).add(elements[1]);
+//            });
+//
+//        return map;
+//    }
 
     private List<String> loadEntryColumnMapping() {
 

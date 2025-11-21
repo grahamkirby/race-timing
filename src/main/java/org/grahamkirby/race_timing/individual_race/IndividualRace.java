@@ -251,8 +251,9 @@ public class IndividualRace implements SingleRaceInternal {
 
         for (final String club : getClubs()) {
 
-            final int male_team_total = getTeamTotal(club, "Men");
-            final int female_team_total = getTeamTotal(club, "Women");
+            // TODO read genders from CategoriesProcessor.
+            final int male_team_total = getTeamTotal(club, "Male");
+            final int female_team_total = getTeamTotal(club, "Female");
 
             if (male_team_total < best_male_team_total) {
                 best_male_team = club;

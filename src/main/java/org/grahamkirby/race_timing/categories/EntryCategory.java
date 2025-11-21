@@ -18,6 +18,8 @@
 package org.grahamkirby.race_timing.categories;
 
 
+import java.util.Objects;
+
 /**
  * Category specific to a particular runner or team entry.
  * <br />
@@ -25,6 +27,9 @@ package org.grahamkirby.race_timing.categories;
  * {@link /src/main/resources/configuration/categories_entry_individual_junior.csv}.
  */
 public final class EntryCategory extends Category {
+
+    // e.g "Women", "Female", "Mixed", "Non-Binary".
+    private final String gender;
 
     /**
      * Creates an instance from a comma-separated string containing:
@@ -34,5 +39,29 @@ public final class EntryCategory extends Category {
     public EntryCategory(final String components) {
 
         super(components);
+
+        final String[] parts = components.split(",");
+
+        gender = parts[2];
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * Equality defined in terms of gender and age range.
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        return obj instanceof final EntryCategory other && gender.equals(other.gender) && age_range.equals(other.age_range);
+    }
+
+    /**
+     * Hash code defined in terms of gender and age range.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(gender, age_range);
     }
 }

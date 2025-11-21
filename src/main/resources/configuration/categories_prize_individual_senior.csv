@@ -1,18 +1,18 @@
 # Default prize categories for senior races
-# Long name, Short name, Gender, Minimum age, Maximum age, Number of prizes, Category group
-Women Open,FO,Women,13,99,3,Overall
-Men Open,MO,Men,13,99,3,Overall
-Women Junior,FU20,Women,13,19,1,Overall
-Men Junior,MU20,Men,13,19,1,Overall
-Women 40-49,F40,Women,40,49,1,Overall
-Men 40-49,M40,Men,40,49,1,Overall
-Women 50-59,F50,Women,50,59,1,Overall
-Men 50-59,M50,Men,50,59,1,Overall
-Women 60-69,F60,Women,60,69,1,Overall
-Men 60-69,M60,Men,60,69,1,Overall
-Women 70-79,F70,Women,70,79,1,Overall
-Men 70-79,M70,Men,70,79,1,Overall
-Women 80-89,F80,Women,80,89,1,Overall
-Men 80-89,M80,Men,80,89,1,Overall
-Women 90-99,F90,Women,90,99,1,Overall
-Men 90-99,M90,Men,90,99,1,Overall
+# Long name, Short name, Minimum age, Maximum age, Number of prizes, Category group, Gender
+Women Open,FO,Female,13,99,3,Overall
+Men Open,MO,Male,13,99,3,Overall
+Women Junior,FU20,Female,13,19,1,Overall
+Men Junior,MU20,Male,13,19,1,Overall
+Women 40-49,F40,Female,40,49,1,Overall
+Men 40-49,M40,Male,40,49,1,Overall
+Women 50-59,F50,Female,50,59,1,Overall
+Men 50-59,M50,Male,50,59,1,Overall
+Women 60-69,F60,Female,60,69,1,Overall
+Men 60-69,M60,Male,60,69,1,Overall
+Women 70-79,F70,Female,70,79,1,Overall
+Men 70-79,M70,Male,70,79,1,Overall
+Women 80-89,F80,Female,80,89,1,Overall
+Men 80-89,M80,Male,80,89,1,Overall
+Women 90-99,F90,Female,90,99,1,Overall
+Men 90-99,M90,Male,90,99,1,Overall

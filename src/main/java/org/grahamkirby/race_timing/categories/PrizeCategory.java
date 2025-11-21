@@ -36,10 +36,10 @@ public final class PrizeCategory extends Category {
 
     private final int number_of_prizes;
     private final Set<String> eligible_clubs;
+    private final Set<String> eligible_genders;
     private final boolean exclusive;
 
     // TODO document exact meaning of exclusive, maybe rename.
-    // TODO NL can win Fife prize and any other prize.
 
     /**
      * Creates an instance from a comma-separated string containing:
@@ -49,7 +49,12 @@ public final class PrizeCategory extends Category {
     public PrizeCategory(final String components) {
 
         super(components);
+
         final String[] elements = components.split(",");
+
+        final String[] split = elements[2].split("/", -1);
+        eligible_genders = new HashSet<>(Arrays.asList(split));
+
         number_of_prizes = Integer.parseInt(elements[5]);
 
         eligible_clubs = new HashSet<>();
@@ -68,6 +73,10 @@ public final class PrizeCategory extends Category {
 
     public Set<String> getEligibleClubs() {
         return eligible_clubs;
+    }
+
+    public Set<String> getEligibleGenders() {
+        return eligible_genders;
     }
 
     public boolean isExclusive() {

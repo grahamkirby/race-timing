@@ -11,4 +11,3 @@ PRIZE_CATEGORIES_PATH = categories_prize_relay.csv
 
 # Relative to project root directory.
 ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
-GENDER_ELIGIBILITY_MAP_PATH = /src/main/resources/configuration/gender_eligibility_relay.csv
