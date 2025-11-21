@@ -31,11 +31,8 @@ public class CategoriesProcessor  {
 
     // TODO document constraints on category overlap and generality.
 
-    /** Index of prize category group name within the relevant config file. */
-    private static final int PRIZE_CATEGORY_GROUP_NAME_INDEX = 6;
-
-    private List<PrizeCategoryGroup> prize_category_groups;
     private final List<EntryCategory> entry_categories;
+    private final List<PrizeCategoryGroup> prize_category_groups;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,13 +41,18 @@ public class CategoriesProcessor  {
         final Path entry_categories_path = config.getPath(KEY_ENTRY_CATEGORIES_PATH);
         final Path prize_categories_path = config.getPath(KEY_PRIZE_CATEGORIES_PATH);
 
-        entry_categories = readAllLines(entry_categories_path).stream().
+        entry_categories = loadEntryCategories(entry_categories_path);
+        prize_category_groups = loadPrizeCategoryGroups(prize_categories_path);
+
+        validatePrizeCategoryGroups();
+    }
+
+    private List<EntryCategory> loadEntryCategories(final Path entry_categories_path) throws IOException {
+
+        return readAllLines(entry_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             map(EntryCategory::new).
             toList();
-
-        loadPrizeCategoryGroups(prize_categories_path);
-        validatePrizeCategoryGroups();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,46 +193,45 @@ public class CategoriesProcessor  {
     private List<String> getPrizeGenderLists() {
 
         return getPrizeCategories().stream().
-            map(CategoriesProcessor::getEligibleGenderList).
+            map(this::getEligibleGenderList).
             distinct().
             toList();
     }
 
-    private static String getEligibleGenderList(final PrizeCategory category) {
+    private String getEligibleGenderList(final PrizeCategory category) {
 
         return String.join("/", category.getEligibleGenders());
     }
 
     /** Loads prize category groups from the given file. */
-    private void loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
+    private List<PrizeCategoryGroup> loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
 
-        prize_category_groups = new ArrayList<>();
+        final List<PrizeCategoryGroup> groups = new ArrayList<>();
 
         readAllLines(prize_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            forEachOrdered(this::recordGroup);
+            map(PrizeCategory::new).
+            forEachOrdered(category -> addCategoryToGroup(category, groups));
+
+        return groups;
     }
 
-    private void recordGroup(final String line) {
+    private void addCategoryToGroup(final PrizeCategory category, final List<PrizeCategoryGroup> groups) {
 
-        final String group_name = line.split(",")[PRIZE_CATEGORY_GROUP_NAME_INDEX];
-        final PrizeCategoryGroup group = getGroupByName(group_name);
+        final String group_name = category.getGroup();
 
-        group.categories().add(new PrizeCategory(line));
-    }
-
-    private PrizeCategoryGroup getGroupByName(final String group_name) {
-
-        return prize_category_groups.stream().
-            filter(g -> g.group_title().equals(group_name)).
+        final PrizeCategoryGroup group = groups.stream().
+            filter(group1 -> group1.group_title().equals(group_name)).
             findFirst().
-            orElseGet(() -> newGroup(group_name));
+            orElseGet(() -> addGroupToGroups(group_name, groups));
+
+        group.categories().add(category);
     }
 
-    private PrizeCategoryGroup newGroup(final String group_name) {
+    private PrizeCategoryGroup addGroupToGroups(final String group_name, final List<PrizeCategoryGroup> groups) {
 
         final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
-        prize_category_groups.add(group);
+        groups.add(group);
         return group;
     }
 

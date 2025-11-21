@@ -34,9 +34,10 @@ import java.util.Set;
  */
 public final class PrizeCategory extends Category {
 
-    private final int number_of_prizes;
-    private final Set<String> eligible_clubs;
     private final Set<String> eligible_genders;
+    private final int number_of_prizes;
+    private final String group;
+    private final Set<String> eligible_clubs;
     private final boolean exclusive;
 
     // TODO document exact meaning of exclusive, maybe rename.
@@ -55,20 +56,25 @@ public final class PrizeCategory extends Category {
         final String[] split = elements[2].split("/", -1);
         eligible_genders = new HashSet<>(Arrays.asList(split));
 
-        number_of_prizes = Integer.parseInt(elements[5]);
+        number_of_prizes = Integer.parseInt(elements[PRIZES_INDEX]);
+        group = elements[GROUP_INDEX];
 
         eligible_clubs = new HashSet<>();
-        if (elements.length >= 8) {
-            final String club_string = elements[7];
+        if (elements.length >= CLUBS_INDEX + 1) {
+            final String club_string = elements[CLUBS_INDEX];
             if (!club_string.isEmpty())
                 eligible_clubs.addAll(Arrays.stream(club_string.split("/")).toList());
         }
 
-        exclusive = elements.length < 9 || elements[8].equals("Y");
+        exclusive = elements.length <= EXCLUSIVE_INDEX || elements[EXCLUSIVE_INDEX].equals("Y");
     }
 
     public int numberOfPrizes() {
         return number_of_prizes;
+    }
+
+    public String getGroup() {
+        return group;
     }
 
     public Set<String> getEligibleClubs() {

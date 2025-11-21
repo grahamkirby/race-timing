@@ -19,10 +19,24 @@ package org.grahamkirby.race_timing.categories;
 
 
 /**
- * Parent class for entry category and prize category,
- * each including a gender and age range.
+ * Parent class for entry category and prize category.
  */
 public abstract class Category {
+
+    // Header in prize category definition file below. Entry category definition file uses columns up to maximum age.
+    //
+    // # Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, Eligible Clubs, Exclusive (Y/N)
+
+    protected static final int LONG_NAME_INDEX = 0;
+    protected static final int SHORT_NAME_INDEX = 1;
+    protected static final int GENDER_INDEX = 2;
+    protected static final int MINIMUM_AGE_INDEX = 3;
+    protected static final int MAXIMUM_AGE_INDEX = 4;
+    protected static final int PRIZES_INDEX = 5;
+    protected static final int GROUP_INDEX = 6;
+    protected static final int CLUBS_INDEX = 7;
+    protected static final int EXCLUSIVE_INDEX = 8;
+
 
     // E.g. "Men Senior", "Men 40-49".
     private final String long_name;
@@ -39,9 +53,9 @@ public abstract class Category {
 
         final String[] parts = components.split(",");
 
-        long_name = parts[0];
-        short_name = parts[1];
-        age_range = new AgeRange(Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
+        long_name = parts[LONG_NAME_INDEX];
+        short_name = parts[SHORT_NAME_INDEX];
+        age_range = new AgeRange(Integer.parseInt(parts[MINIMUM_AGE_INDEX]), Integer.parseInt(parts[MAXIMUM_AGE_INDEX]));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

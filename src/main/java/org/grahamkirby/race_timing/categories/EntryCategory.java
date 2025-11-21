@@ -40,9 +40,7 @@ public final class EntryCategory extends Category {
 
         super(components);
 
-        final String[] parts = components.split(",");
-
-        gender = parts[2];
+        gender = components.split(",")[GENDER_INDEX];
     }
 
     public String getGender() {
