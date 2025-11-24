@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Category defining eligibility for a particular prize.
@@ -40,33 +41,49 @@ public final class PrizeCategory extends Category {
     private final Set<String> eligible_clubs;
     private final boolean exclusive;
 
-    // TODO document exact meaning of exclusive, maybe rename.
-
     /**
      * Creates an instance from a comma-separated string containing:
-     * long name, short name, gender, minimum age, maximum age, number of prizes.
-     * Minimum and maximum ages are inclusive.
+     * long name, short name, gender, minimum age (inclusive), maximum age (inclusive), number of prizes,
+     * category group, eligible clubs, whether exclusive.
      */
     public PrizeCategory(final String components) {
+
+        // Category definition headers (last two optional):
+        //
+        // Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, [Eligible Clubs], [Exclusive (Y/N)]
 
         super(components);
 
         final String[] elements = components.split(",");
 
-        final String[] split = elements[2].split("/", -1);
-        eligible_genders = new HashSet<>(Arrays.asList(split));
-
+        eligible_genders = getGenders(elements);
         number_of_prizes = Integer.parseInt(elements[PRIZES_INDEX]);
         group = elements[GROUP_INDEX];
+        eligible_clubs = getEligibleClubs(elements);
+        exclusive = getExclusive(elements);
+    }
 
-        eligible_clubs = new HashSet<>();
+    private Set<String> getGenders(final String[] elements) {
+
+        final String[] split = elements[GENDER_INDEX].split("/");
+        return Arrays.stream(split).map(String::trim).collect(Collectors.toSet());
+    }
+
+    private Set<String> getEligibleClubs(final String[] elements) {
+
         if (elements.length >= CLUBS_INDEX + 1) {
             final String club_string = elements[CLUBS_INDEX];
             if (!club_string.isEmpty())
-                eligible_clubs.addAll(Arrays.stream(club_string.split("/")).toList());
+                return Arrays.stream(club_string.split("/")).collect(Collectors.toSet());
         }
 
-        exclusive = elements.length <= EXCLUSIVE_INDEX || elements[EXCLUSIVE_INDEX].equals("Y");
+        return new HashSet<>();
+    }
+
+    private boolean getExclusive(final String[] elements) {
+
+        // Default is TRUE if not defined.
+        return elements.length <= EXCLUSIVE_INDEX || elements[EXCLUSIVE_INDEX].equals("Y");
     }
 
     public int numberOfPrizes() {
@@ -103,5 +120,11 @@ public final class PrizeCategory extends Category {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), number_of_prizes, eligible_clubs, exclusive);
+    }
+
+    @Override
+    public String toString() {
+
+        return getShortName() + " (" + getAgeRange().getMinimumAge() + "," + getAgeRange().getMaximumAge() + ")";
     }
 }

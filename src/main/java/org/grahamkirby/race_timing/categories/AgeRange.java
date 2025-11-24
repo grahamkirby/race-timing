@@ -37,19 +37,21 @@ public class AgeRange {
         return maximum_age;
     }
 
-    public boolean intersectsWith(AgeRange other) {
+    public boolean disjoint(final AgeRange other) {
 
-        if (this == other) return false;
+        return maximum_age < other.minimum_age || minimum_age > other.maximum_age;
+    }
 
+    public boolean intersectsWith(final AgeRange other) {
 
+        final boolean oneContainsOther = contains(other) || other.contains(this);
 
-        int min1 = minimum_age;
-        int min2 = other.minimum_age;
-        int max1 = maximum_age;
-        int max2 = other.maximum_age;
+        return equals(other) || !disjoint(other) && !oneContainsOther;
+    }
 
-        return min1 < min2 && max1 >= min2 && max1 < max2 ||
-            min1 == min2 && max1 == max2;
+    public boolean contains(final AgeRange other) {
+
+        return minimum_age <= other.minimum_age && maximum_age >= other.maximum_age;
     }
 
     @Override

@@ -23,9 +23,13 @@ package org.grahamkirby.race_timing.categories;
  */
 public abstract class Category {
 
-    // Header in prize category definition file below. Entry category definition file uses columns up to maximum age.
+    // Entry category definition file headers:
     //
-    // # Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, Eligible Clubs, Exclusive (Y/N)
+    // Long Category Name, Short Category Name, Gender, Minimum Age, Maximum Age
+    //
+    // Prize category definition file headers (last two optional):
+    //
+    // Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, [Eligible Clubs], [Exclusive (Y/N)]
 
     protected static final int LONG_NAME_INDEX = 0;
     protected static final int SHORT_NAME_INDEX = 1;
@@ -36,7 +40,6 @@ public abstract class Category {
     protected static final int GROUP_INDEX = 6;
     protected static final int CLUBS_INDEX = 7;
     protected static final int EXCLUSIVE_INDEX = 8;
-
 
     // E.g. "Men Senior", "Men 40-49".
     private final String long_name;

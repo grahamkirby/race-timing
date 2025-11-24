@@ -30,6 +30,27 @@ import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLine
 public class CategoriesProcessor  {
 
     // TODO document constraints on category overlap and generality.
+    // TODO document exact meaning of exclusive, maybe rename.
+
+    // TODO test non-binary winning male prize.
+
+    // Each participant (individual or team) is assigned a single entry category.
+    // An entry category has an age range and a gender. Age range bounds are
+    // inclusive. For example, ranges for consecutive categories might be 40-49 and 50-59.
+    // Genders are represented as strings, so can be configured per-race.
+    //
+    // A prize category has an age range and a set of eligible genders. For example
+    // an open prize category might be available to Female, Male and Non-Binary entry
+    // category genders.
+
+
+
+
+
+    // The gender eligibility ordering assumes that categories with a greater number of eligible
+    // genders are more general. This works when every category that is available to more than one gender
+    // is available to all genders, e.g. 'Open' categories. It might not work with a more complex
+    // gender eligibility structure.
 
     private final List<EntryCategory> entry_categories;
     private final List<PrizeCategoryGroup> prize_category_groups;
@@ -45,14 +66,6 @@ public class CategoriesProcessor  {
         prize_category_groups = loadPrizeCategoryGroups(prize_categories_path);
 
         validatePrizeCategoryGroups();
-    }
-
-    private List<EntryCategory> loadEntryCategories(final Path entry_categories_path) throws IOException {
-
-        return readAllLines(entry_categories_path).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            map(EntryCategory::new).
-            toList();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,12 +99,8 @@ public class CategoriesProcessor  {
 
     public List<PrizeCategory> getPrizeCategoriesInDecreasingGeneralityOrder() {
 
-        final Comparator<PrizeCategory> comparator = comparingInt((PrizeCategory category) -> category.getAgeRange().getMinimumAge()).
-            thenComparing(comparingInt((PrizeCategory category) -> category.getEligibleGenders().size()).reversed());
-
         final List<PrizeCategory> categories = makeMutableCopy(getPrizeCategories());
-        categories.sort(comparator);
-
+        categories.sort(prize_category_comparator);
         return categories;
     }
 
@@ -113,16 +122,138 @@ public class CategoriesProcessor  {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private List<String> getPrizeGenderLists() {
+
+        return getPrizeCategories().stream().
+            map(this::getEligibleGenderList).
+            distinct().
+            toList();
+    }
+
+    private String getEligibleGenderList(final PrizeCategory category) {
+
+        return String.join("/", category.getEligibleGenders());
+    }
+
+    private List<EntryCategory> loadEntryCategories(final Path entry_categories_path) throws IOException {
+
+        return readAllLines(entry_categories_path).stream().
+            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+            map(EntryCategory::new).
+            toList();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Loads prize category groups from the given file. */
+    private List<PrizeCategoryGroup> loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
+
+        final List<PrizeCategoryGroup> groups = new ArrayList<>();
+
+        readAllLines(prize_categories_path).stream().
+            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+            map(PrizeCategory::new).
+            forEachOrdered(category -> addCategoryToGroup(category, groups));
+
+        return groups;
+    }
+
+    private void addCategoryToGroup(final PrizeCategory category, final List<PrizeCategoryGroup> groups) {
+
+        final String group_name = category.getGroup();
+
+        final PrizeCategoryGroup group = groups.stream().
+            filter(group1 -> group1.group_title().equals(group_name)).
+            findFirst().
+            orElseGet(() -> addNewGroupToGroups(group_name, groups));
+
+        group.categories().add(category);
+    }
+
+    private PrizeCategoryGroup addNewGroupToGroups(final String group_name, final List<PrizeCategoryGroup> groups) {
+
+        final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
+        groups.add(group);
+        return group;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean isResultEligibleForPrizeCategoryByClub(final PrizeCategory prize_category, final String club) {
+
+        final Set<String> eligible_clubs = prize_category.getEligibleClubs();
+
+        return club == null || eligible_clubs.isEmpty() || eligible_clubs.contains(club);
+    }
+
+    private boolean isResultEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
+
+        return entry_category != null && prize_category.getEligibleGenders().contains(entry_category.getGender());
+    }
+
+    private boolean isResultEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
+
+        // It's possible for the entry category to be null in a series race, where some of the individual
+        // race results may not include entry categories.
+
+        return entry_category != null &&
+            entry_category.getAgeRange().getMinimumAge() >= prize_category.getAgeRange().getMinimumAge() &&
+            entry_category.getAgeRange().getMaximumAge() <= prize_category.getAgeRange().getMaximumAge();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Gender eligibility ordering based only on the number of eligible genders.
+    final Comparator<PrizeCategory> compare_increasing_gender_category_generality = comparingInt(category -> category.getEligibleGenders().size());
+    final Comparator<PrizeCategory> compare_decreasing_gender_category_generality = compare_increasing_gender_category_generality.reversed();
+
+    final Comparator<PrizeCategory> compare_decreasing_age_category_generality = (category1, category2) -> {
+
+        final AgeRange range1 = category1.getAgeRange();
+        final AgeRange range2 = category2.getAgeRange();
+
+        if (range1.equals(range2)) return 0;
+        if (range1.contains(range2)) return -1;   // range1 is more general.
+        if (range2.contains(range1)) return 1;    // range1 is less general.
+
+        // Equal generality. The ranges must be disjoint since there's no containment, and intersecting
+        // ranges are rejected during category validation.
+        return 0;
+    };
+
+    final Comparator<PrizeCategory> prize_category_comparator = (category1, category2) -> {
+
+        final int age_comparison = compare_decreasing_age_category_generality.compare(category1, category2);
+        final int gender_comparison = compare_decreasing_gender_category_generality.compare(category1, category2);
+
+        // This assumes that both comparators return the same negative or positive numbers.
+        final boolean comparison_same_for_both_aspects = age_comparison == gender_comparison;
+        final boolean age_comparison_equal = age_comparison == 0;
+        final boolean age_comparison_has_priority = !comparison_same_for_both_aspects && !age_comparison_equal;
+
+        return age_comparison_has_priority ? age_comparison : gender_comparison;
+    };
+
     private void checkAgeRangeIntersection(final String gender) {
 
-        final List<PrizeCategory> categories_for_gender = getPrizeCategories2(gender);
+        final List<PrizeCategory> categories_for_gender = getPrizeCategories(gender);
 
         for (final PrizeCategory category1 : categories_for_gender)
             for (final PrizeCategory category2 : categories_for_gender)
-                if (category1.getAgeRange().intersectsWith(category2.getAgeRange()) && category1.isExclusive() && category2.isExclusive())
-                    throw new RuntimeException("invalid intersecting age ranges: " +
-                        category1.getShortName() + " (" + category1.getAgeRange().getMinimumAge() + "," + category1.getAgeRange().getMaximumAge() + "), " +
-                        category2.getShortName() + " (" + category2.getAgeRange().getMinimumAge() + "," + category2.getAgeRange().getMaximumAge() + ")");
+                if (category1 != category2 && category1.getAgeRange().intersectsWith(category2.getAgeRange()) && category1.isExclusive() && category2.isExclusive())
+                    throw new RuntimeException("invalid intersecting age ranges: " + category1 + ", " + category2);
+    }
+
+    private List<PrizeCategory> getPrizeCategories(final String gender_list) {
+
+        return getPrizeCategories().stream().
+            filter(category -> getEligibleGenderList(category).equals(gender_list)).
+            toList();
     }
 
     private void checkAgeRangeCoverage(final String gender) {
@@ -137,7 +268,7 @@ public class CategoriesProcessor  {
     private List<AgeRange> getAmalgamatedAgeRanges(final String gender) {
 
         final List<AgeRange> ranges = makeMutableCopy(
-            getPrizeCategories2(gender).stream().
+            getPrizeCategories(gender).stream().
                 map(Category::getAgeRange).
                 toList());
 
@@ -173,7 +304,7 @@ public class CategoriesProcessor  {
 
         return range1 != range2 &&
             (range1.getMaximumAge() + 1 == range2.getMinimumAge() ||
-             range2.getMinimumAge() >= range1.getMinimumAge() && range2.getMaximumAge() <= range1.getMaximumAge());
+                range2.getMinimumAge() >= range1.getMinimumAge() && range2.getMaximumAge() <= range1.getMaximumAge());
     }
 
     private AgeRange amalgamate(final AgeRange range1, final AgeRange range2) {
@@ -181,82 +312,5 @@ public class CategoriesProcessor  {
         return new AgeRange(
             Math.min(range1.getMinimumAge(), range2.getMinimumAge()),
             Math.max(range1.getMaximumAge(), range2.getMaximumAge()));
-    }
-
-    private List<PrizeCategory> getPrizeCategories2(final String gender_list) {
-
-        return getPrizeCategories().stream().
-            filter(category -> getEligibleGenderList(category).equals(gender_list)).
-            toList();
-    }
-
-    private List<String> getPrizeGenderLists() {
-
-        return getPrizeCategories().stream().
-            map(this::getEligibleGenderList).
-            distinct().
-            toList();
-    }
-
-    private String getEligibleGenderList(final PrizeCategory category) {
-
-        return String.join("/", category.getEligibleGenders());
-    }
-
-    /** Loads prize category groups from the given file. */
-    private List<PrizeCategoryGroup> loadPrizeCategoryGroups(final Path prize_categories_path) throws IOException {
-
-        final List<PrizeCategoryGroup> groups = new ArrayList<>();
-
-        readAllLines(prize_categories_path).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-            map(PrizeCategory::new).
-            forEachOrdered(category -> addCategoryToGroup(category, groups));
-
-        return groups;
-    }
-
-    private void addCategoryToGroup(final PrizeCategory category, final List<PrizeCategoryGroup> groups) {
-
-        final String group_name = category.getGroup();
-
-        final PrizeCategoryGroup group = groups.stream().
-            filter(group1 -> group1.group_title().equals(group_name)).
-            findFirst().
-            orElseGet(() -> addGroupToGroups(group_name, groups));
-
-        group.categories().add(category);
-    }
-
-    private PrizeCategoryGroup addGroupToGroups(final String group_name, final List<PrizeCategoryGroup> groups) {
-
-        final PrizeCategoryGroup group = new PrizeCategoryGroup(group_name, new ArrayList<>());
-        groups.add(group);
-        return group;
-    }
-
-    private boolean isResultEligibleForPrizeCategoryByClub(final PrizeCategory prize_category, final String club) {
-
-        final Set<String> eligible_clubs = prize_category.getEligibleClubs();
-
-        return club == null || eligible_clubs.isEmpty() || eligible_clubs.contains(club);
-    }
-
-    private boolean isResultEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
-
-        // It's possible for the entry category to be null in a series race, where some of the individual
-        // race results may not include entry categories.
-
-        return entry_category != null && prize_category.getEligibleGenders().contains(entry_category.getGender());
-    }
-
-    private boolean isResultEligibleForPrizeCategoryByAge(final EntryCategory entry_category, final PrizeCategory prize_category) {
-
-        // It's possible for the entry category to be null in a series race, where some of the individual
-        // race results may not include entry categories.
-
-        return entry_category != null &&
-            entry_category.getAgeRange().getMinimumAge() >= prize_category.getAgeRange().getMinimumAge() &&
-            entry_category.getAgeRange().getMaximumAge() <= prize_category.getAgeRange().getMaximumAge();
     }
 }

@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 public final class EntryCategory extends Category {
 
-    // e.g "Women", "Female", "Mixed", "Non-Binary".
+    // e.g "Female", "Mixed", "Non-Binary".
     private final String gender;
 
     /**
@@ -37,6 +37,10 @@ public final class EntryCategory extends Category {
      * Minimum and maximum ages are inclusive.
      */
     public EntryCategory(final String components) {
+
+        // Category definition headers:
+        //
+        // Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age
 
         super(components);
 
