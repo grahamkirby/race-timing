@@ -217,29 +217,6 @@ public class IndividualRace implements SingleRaceInternal {
         return notes;
     }
 
-    private void loadSeparatelyRecordedResults() {
-
-        separately_recorded_finish_times = new HashMap<>();
-
-        final Consumer<Object> process_separately_recorded_results = value -> {
-
-            final String[] self_timed_strings = ((String) value).split(",", -1);
-
-            // SEPARATELY_RECORDED_RESULTS = 126/8:09
-
-            for (final String s : self_timed_strings) {
-
-                final String[] split = s.split("/", -1);
-                final int bib_number = Integer.parseInt(split[0]);
-                final Duration finish_time = parseTime(split[1]);
-
-                separately_recorded_finish_times.put(bib_number, finish_time);
-            }
-        };
-
-        config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings("RedundantCollectionOperation")
@@ -257,6 +234,8 @@ public class IndividualRace implements SingleRaceInternal {
 
         return team_prize_strings;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private List<String> getTeamPrizeStrings(final List<String> team_prize_gender_categories) {
 
@@ -286,29 +265,37 @@ public class IndividualRace implements SingleRaceInternal {
         return prizes;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private int getTeamTotal(final String club, final String gender) {
 
         final int number_to_count_for_team_prize = (int) getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
 
-        int result_position = 0;
-        int team_count = 0;
-        int total = 0;
+        return countEligibleRunners(club, gender) >= number_to_count_for_team_prize ?
+            getTeamTotal(club, gender, number_to_count_for_team_prize) :
+            Integer.MAX_VALUE;
+    }
 
-        for (final RaceResult result : getResultsCalculator().getOverallResults()) {
+    private int countEligibleRunners(final String club, final String gender) {
 
-            result_position++;
+        return (int) getResultsCalculator().getOverallResults().stream().
+            map(result -> (Runner) result.getParticipant()).
+            filter(runner -> runner.getClub().equals(club)).
+            filter(runner -> runner.getCategory().getGender().equals(gender)).
+            count();
+    }
 
-            final Runner runner = (Runner) result.getParticipant();
+    private Integer getTeamTotal(final String club, final String gender, final int number_to_count_for_team_prize) {
 
-            if (team_count < number_to_count_for_team_prize && runner.getClub().equals(club) && runner.getCategory().getGender().equals(gender)) {
-                team_count++;
-                total += result_position;
-            }
-        }
+        final AtomicInteger position = new AtomicInteger(0);
 
-        return team_count >= number_to_count_for_team_prize ? total : Integer.MAX_VALUE;
+        return getResultsCalculator().getOverallResults().stream().
+            map(result -> (Runner) result.getParticipant()).
+            peek(_ -> position.incrementAndGet()).
+            filter(runner -> runner.getClub().equals(club)).
+            filter(runner -> runner.getCategory().getGender().equals(gender)).
+            limit(number_to_count_for_team_prize).
+            map(_ -> position.get()).
+            reduce(Integer::sum).
+            orElseThrow();
     }
 
     private Set<String> getClubs() {
@@ -317,5 +304,28 @@ public class IndividualRace implements SingleRaceInternal {
             map(result -> ((Runner) result.getParticipant()).getClub()).
             filter(club -> !club.equals("Unatt.")).
             collect(Collectors.toSet());
+    }
+
+    private void loadSeparatelyRecordedResults() {
+
+        separately_recorded_finish_times = new HashMap<>();
+
+        final Consumer<Object> process_separately_recorded_results = value -> {
+
+            final String[] self_timed_strings = ((String) value).split(",", -1);
+
+            // SEPARATELY_RECORDED_RESULTS = 126/8:09
+
+            for (final String s : self_timed_strings) {
+
+                final String[] split = s.split("/", -1);
+                final int bib_number = Integer.parseInt(split[0]);
+                final Duration finish_time = parseTime(split[1]);
+
+                separately_recorded_finish_times.put(bib_number, finish_time);
+            }
+        };
+
+        config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
     }
 }
