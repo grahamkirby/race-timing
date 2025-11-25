@@ -370,7 +370,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
             @Override
             public List<String> getTeamPrizes() {
-                return ((IndividualRace) race).getTeamPrizes();
+                return ((IndividualRace) race).getTeamPrizeStrings();
             }
 
             @Override

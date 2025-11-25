@@ -47,7 +47,7 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
             KEY_RACES,
             KEY_MEDIAN_TIME,
             KEY_MINIMUM_NUMBER_OF_RACES,
-            KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE,
+            KEY_TEAM_PRIZE_NUMBER_TO_COUNT,
             KEY_ELIGIBLE_CLUBS,
             KEY_RACE_CATEGORIES_PATH,
             KEY_RESULTS_PATH,

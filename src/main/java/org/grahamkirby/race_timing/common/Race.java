@@ -21,7 +21,6 @@ import java.io.IOException;
 
 public interface Race {
 
-    // TODO rationalise Female/Women gender categories.
     // TODO output club rationalisations to series processing notes.
     // TODO add junior hill races.
     // TODO add individual names to team prize results.
@@ -39,7 +38,6 @@ public interface Race {
     // TODO individual race with no results -  generate racer list for PocketTimer.
     // TODO series race with separate entries - output sorted runner names to notes.
     // TODO individual race with team prizes - output club team scores to notes
-    // TODO control category order in prize list output.
 
     RaceResults processResults() throws IOException;
     void outputResults(RaceResults results) throws IOException;

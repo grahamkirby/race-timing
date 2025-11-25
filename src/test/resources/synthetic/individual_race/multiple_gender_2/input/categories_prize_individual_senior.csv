@@ -1,0 +1,15 @@
+# Long Name, Short Name, Gender, Minimum Age, Maximum Age, Number of Prizes, Category Group
+# Default prize categories for senior races
+# Long name, Short name, Minimum age, Maximum age, Number of prizes, Category group, Gender
+Women Open,FO,Female,13,99,3,Overall
+Men Open,MO,Male/Non-Binary,13,99,3,Overall
+Women Junior,FU20,Female,13,19,1,Overall
+Men Junior,MU20,Male/Non-Binary,13,19,1,Overall
+Women 40-49,F40,Female,40,49,1,Overall
+Men 40-49,M40,Male/Non-Binary,40,49,1,Overall
+Women 50-59,F50,Female,50,59,1,Overall
+Men 50-59,M50,Male/Non-Binary,50,59,1,Overall
+Women 60-69,F60,Female,60,69,1,Overall
+Men 60-69,M60,Male/Non-Binary,60,69,1,Overall
+Women 70-79,F70,Female,70,79,1,Overall
+Men 70-79,M70,Male/Non-Binary,70,79,1,Overall

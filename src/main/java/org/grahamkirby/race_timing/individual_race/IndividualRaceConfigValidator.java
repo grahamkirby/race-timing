@@ -50,6 +50,10 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
             KEY_RACE_TEMPORAL_ORDER));
 
         checkAllOrNonePresent(List.of(
+            KEY_TEAM_PRIZE_GENDER_CATEGORIES,
+            KEY_TEAM_PRIZE_NUMBER_TO_COUNT));
+
+        checkAllOrNonePresent(List.of(
             KEY_TIME_TRIAL_RUNNERS_PER_WAVE,
             KEY_TIME_TRIAL_INTER_WAVE_INTERVAL));
 

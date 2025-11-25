@@ -38,9 +38,7 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
         // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));
 
-        config.addIfAbsent(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE, String.valueOf(Integer.MAX_VALUE));
-
-        config.replaceIfPresent(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE, Integer::parseInt);
+        config.replaceIfPresent(KEY_TEAM_PRIZE_NUMBER_TO_COUNT, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL, Normalisation::parseTime);
     }

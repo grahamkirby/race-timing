@@ -59,10 +59,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     private static final int HALF_A_SECOND_IN_NANOSECONDS = 500_000_000;
     private static final int UNKNOWN_LEG_NUMBER = 0;
 
-    // TODO tidy treatment of category configuration files.
-    // TODO integrate with category configuration files.
-//    private static final List<String> GENDER_ORDER = Arrays.asList("Open", "Women", "Mixed");
-
     private static final List<Comparator<TeamSummaryAtPosition>> team_summary_comparators = List.of(
 
         comparingInt(o -> o.finishes_before),

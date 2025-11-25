@@ -43,7 +43,7 @@ public class SeriesRaceConfigValidator extends ConfigProcessor {
             KEY_MASS_START_TIMES,
             KEY_MEDIAN_TIME,
             KEY_NUMBER_OF_LEGS,
-            KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE,
+            KEY_TEAM_PRIZE_NUMBER_TO_COUNT,
             KEY_PAIRED_LEGS,
             KEY_PAPER_RESULTS_PATH,
             KEY_RESULTS_PATH,

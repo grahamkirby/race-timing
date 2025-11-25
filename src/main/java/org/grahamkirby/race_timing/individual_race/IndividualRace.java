@@ -242,37 +242,46 @@ public class IndividualRace implements SingleRaceInternal {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public List<String> getTeamPrizes() {
+    @SuppressWarnings("RedundantCollectionOperation")
+    public List<String> getTeamPrizeStrings() {
 
-        int best_male_team_total = Integer.MAX_VALUE;
-        int best_female_team_total = Integer.MAX_VALUE;
-        String best_male_team = "";
-        String best_female_team = "";
+        final List<String> team_prize_strings = new ArrayList<>();
 
-        for (final String club : getClubs()) {
+        final Consumer<Object> process_team_prizes = value -> {
 
-            // TODO read genders from CategoriesProcessor.
-            final int male_team_total = getTeamTotal(club, "Male");
-            final int female_team_total = getTeamTotal(club, "Female");
+            final List<String> team_prize_gender_categories = Arrays.asList(((String) value).split("/"));
+            team_prize_strings.addAll(getTeamPrizeStrings(team_prize_gender_categories));
+        };
 
-            if (male_team_total < best_male_team_total) {
-                best_male_team = club;
-                best_male_team_total = male_team_total;
-            }
+        config.processConfigIfPresent(KEY_TEAM_PRIZE_GENDER_CATEGORIES, process_team_prizes);
 
-            if (female_team_total < best_female_team_total) {
-                best_female_team = club;
-                best_female_team_total = female_team_total;
-            }
-        }
+        return team_prize_strings;
+    }
+
+    private List<String> getTeamPrizeStrings(final List<String> team_prize_gender_categories) {
 
         final List<String> prizes = new ArrayList<>();
+        final Map<String, Integer> best_team_total_map = new HashMap<>();
+        final Map<String, String> best_team_map = new HashMap<>();
 
-        if (best_male_team_total < Integer.MAX_VALUE)
-            prizes.add("First male team: " + best_male_team + " (" + best_male_team_total + ")");
+        for (final String team_prize_gender_category : team_prize_gender_categories) {
 
-        if (best_female_team_total < Integer.MAX_VALUE)
-            prizes.add("First female team: " + best_female_team + " (" + best_female_team_total + ")");
+            for (final String club : getClubs()) {
+
+                final int best_team_total = best_team_total_map.getOrDefault(team_prize_gender_category, Integer.MAX_VALUE);
+                final int team_total = getTeamTotal(club, team_prize_gender_category);
+
+                if (team_total < best_team_total) {
+
+                    best_team_map.put(team_prize_gender_category, club);
+                    best_team_total_map.put(team_prize_gender_category, team_total);
+                }
+            }
+
+            final int best_team_total = best_team_total_map.getOrDefault(team_prize_gender_category, Integer.MAX_VALUE);
+            if (best_team_total < Integer.MAX_VALUE)
+                prizes.add("First " + team_prize_gender_category.toLowerCase() + " team: " + best_team_map.get(team_prize_gender_category) + " (" + best_team_total + ")");
+        }
 
         return prizes;
     }
@@ -281,13 +290,13 @@ public class IndividualRace implements SingleRaceInternal {
 
     private int getTeamTotal(final String club, final String gender) {
 
-        final int number_to_count_for_team_prize = (int) getConfig().get(KEY_NUMBER_TO_COUNT_FOR_TEAM_PRIZE);
+        final int number_to_count_for_team_prize = (int) getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
 
         int result_position = 0;
         int team_count = 0;
         int total = 0;
 
-            for (final RaceResult result : getResultsCalculator().getOverallResults()) {
+        for (final RaceResult result : getResultsCalculator().getOverallResults()) {
 
             result_position++;
 
@@ -306,6 +315,7 @@ public class IndividualRace implements SingleRaceInternal {
 
         return getResultsCalculator().getOverallResults().stream().
             map(result -> ((Runner) result.getParticipant()).getClub()).
+            filter(club -> !club.equals("Unatt.")).
             collect(Collectors.toSet());
     }
 }

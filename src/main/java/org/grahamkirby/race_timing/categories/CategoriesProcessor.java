@@ -32,8 +32,6 @@ public class CategoriesProcessor  {
     // TODO document constraints on category overlap and generality.
     // TODO document exact meaning of exclusive, maybe rename.
 
-    // TODO test non-binary winning male prize.
-
     // Each participant (individual or team) is assigned a single entry category.
     // An entry category has an age range and a gender. Age range bounds are
     // inclusive. For example, ranges for consecutive categories might be 40-49 and 50-59.
