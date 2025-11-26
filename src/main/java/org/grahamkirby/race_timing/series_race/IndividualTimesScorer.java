@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Performance;
+import org.grahamkirby.race_timing.common.ScorePerformance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -47,7 +48,7 @@ public class IndividualTimesScorer extends SeriesRaceScorer {
         final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
 
         // Lower score is better.
-        return new Performance((int) Math.round(time_ratio * score_for_median_position));
+        return new ScorePerformance((int) Math.round(time_ratio * score_for_median_position));
     }
 
     @Override

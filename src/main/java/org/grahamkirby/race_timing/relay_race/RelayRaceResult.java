@@ -57,7 +57,7 @@ public class RelayRaceResult extends SingleRaceResult {
     public Performance getPerformance() {
 
         return canComplete() ?
-            new Performance(leg_results.stream().
+            new DurationPerformance(leg_results.stream().
                 map(leg_result -> (Duration) leg_result.getPerformance().getValue()).
                 reduce(Duration.ZERO, Duration::plus)) :
             null;

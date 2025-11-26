@@ -17,7 +17,7 @@
  */
 package org.grahamkirby.race_timing.common;
 
-public abstract class Performance implements Comparable<Performance> {
+import java.util.function.BiFunction;
 
-    public abstract Object getValue();
+public interface ComparatorPredicate<T> extends BiFunction<T, T, Boolean> {
 }

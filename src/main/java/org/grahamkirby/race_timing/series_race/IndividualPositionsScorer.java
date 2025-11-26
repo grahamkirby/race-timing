@@ -18,6 +18,7 @@
 package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.common.Performance;
+import org.grahamkirby.race_timing.common.ScorePerformance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -51,7 +52,7 @@ public class IndividualPositionsScorer extends SeriesRaceScorer {
 
         // Higher score is better.
         return gender_position <= gender_results.size() ?
-            new Performance(Math.max(score_for_first_place - gender_position + 1, 0)) :
+            new ScorePerformance(Math.max(score_for_first_place - gender_position + 1, 0)) :
             null;
     }
 
@@ -65,8 +66,7 @@ public class IndividualPositionsScorer extends SeriesRaceScorer {
     @Override
     public int compareSeriesPerformance(final Performance series_result1, final Performance series_result2) {
 
-        final Comparator<Performance> reverse_comparator = ((Comparator<Performance>) super::compareSeriesPerformance).reversed();
-
-        return reverse_comparator.compare(series_result1, series_result2);
+        // Reverse order since higher score is better.
+        return -super.compareSeriesPerformance(series_result1, series_result2);
     }
 }

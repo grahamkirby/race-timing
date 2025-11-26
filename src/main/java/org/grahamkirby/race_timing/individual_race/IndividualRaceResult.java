@@ -63,6 +63,6 @@ public class IndividualRaceResult extends SingleRaceResult {
         return "(" + ((Runner) getParticipant()).getClub() + ") " + renderDuration(this, DNF_STRING);
     }
 
-    final RaceResultComparatorPredicate<RaceResult> either_is_DNF =
+    final ComparatorPredicate<RaceResult> either_is_DNF =
         (RaceResult result1, RaceResult result2) -> !result1.canComplete() || !result2.canComplete();
 }

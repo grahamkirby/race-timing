@@ -17,7 +17,28 @@
  */
 package org.grahamkirby.race_timing.common;
 
-public abstract class Performance implements Comparable<Performance> {
+public class ScorePerformance extends Performance{
 
-    public abstract Object getValue();
+    private final int performance;
+
+    public ScorePerformance(final int performance) {
+        this.performance = performance;
+    }
+
+    @Override
+    public Object getValue() {
+        return performance;
+    }
+
+    @Override
+    public String toString() {
+
+        return String.valueOf(performance);
+    }
+
+    @Override
+    public int compareTo(final Performance o) {
+
+        return o instanceof final ScorePerformance score ? Integer.compare(performance, score.performance) : 0;
+    }
 }

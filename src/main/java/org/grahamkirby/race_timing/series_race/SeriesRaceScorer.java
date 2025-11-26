@@ -56,8 +56,7 @@ public abstract class SeriesRaceScorer {
 
     public int compareSeriesPerformance(final Performance series_performance1, final Performance series_performance2) {
 
-        final Comparator<Performance> comparator = Comparator.nullsLast(Performance::compareTo);
-        return comparator.compare(series_performance1, series_performance2);
+        return Comparator.nullsLast(Performance::compareTo).compare(series_performance1, series_performance2);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +88,7 @@ public abstract class SeriesRaceScorer {
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         // Sort the scores before selecting, depending on whether lower or higher score is better.
-        return new Performance(series_result.getPerformances().stream().
+        return new ScorePerformance(series_result.getPerformances().stream().
             filter(Objects::nonNull).
             map(obj -> (int) obj.getValue()).
             sorted(comparator).

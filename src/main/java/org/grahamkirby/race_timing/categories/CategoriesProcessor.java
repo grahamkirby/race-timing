@@ -22,6 +22,7 @@ import org.grahamkirby.race_timing.common.Config;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.ToIntFunction;
 
 import static java.util.Comparator.comparingInt;
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -98,7 +99,7 @@ public class CategoriesProcessor  {
     public List<PrizeCategory> getPrizeCategoriesInDecreasingGeneralityOrder() {
 
         final List<PrizeCategory> categories = makeMutableCopy(getPrizeCategories());
-        categories.sort(prize_category_comparator);
+        categories.sort(CategoriesProcessor::comparePrizeCategory);
         return categories;
     }
 
@@ -207,10 +208,19 @@ public class CategoriesProcessor  {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Gender eligibility ordering based only on the number of eligible genders.
-    final Comparator<PrizeCategory> compare_increasing_gender_category_generality = comparingInt(category -> category.getEligibleGenders().size());
-    final Comparator<PrizeCategory> compare_decreasing_gender_category_generality = compare_increasing_gender_category_generality.reversed();
+    private static int compareByIncreasingGenderCategoryGenerality(final PrizeCategory category1, final PrizeCategory category2) {
 
-    final Comparator<PrizeCategory> compare_decreasing_age_category_generality = (category1, category2) -> {
+        final ToIntFunction<PrizeCategory> get_number_of_genders = category -> category.getEligibleGenders().size();
+
+        return comparingInt(get_number_of_genders).compare(category1, category2);
+    }
+
+    private static int compareByDecreasingGenderCategoryGenerality(final PrizeCategory category1, final PrizeCategory category2) {
+
+        return -compareByIncreasingGenderCategoryGenerality(category1, category2);
+    }
+
+    private static int compareByDecreasingAgeCategoryGenerality(final PrizeCategory category1, final PrizeCategory category2) {
 
         final AgeRange range1 = category1.getAgeRange();
         final AgeRange range2 = category2.getAgeRange();
@@ -224,10 +234,10 @@ public class CategoriesProcessor  {
         return 0;
     };
 
-    final Comparator<PrizeCategory> prize_category_comparator = (category1, category2) -> {
+    private static int comparePrizeCategory(final PrizeCategory category1, final PrizeCategory category2) {
 
-        final int age_comparison = compare_decreasing_age_category_generality.compare(category1, category2);
-        final int gender_comparison = compare_decreasing_gender_category_generality.compare(category1, category2);
+        final int age_comparison = compareByDecreasingAgeCategoryGenerality(category1, category2);
+        final int gender_comparison = compareByDecreasingGenderCategoryGenerality(category1, category2);
 
         // This assumes that both comparators return the same negative or positive numbers.
         final boolean comparison_same_for_both_aspects = age_comparison == gender_comparison;

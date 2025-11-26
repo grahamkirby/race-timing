@@ -17,6 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.grahamkirby.race_timing.common.DurationPerformance;
 import org.grahamkirby.race_timing.common.Performance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -47,7 +48,7 @@ public class AggregateTimesScorer extends SeriesRaceScorer {
 
         if (!series_result.canComplete()) return null;
 
-        return new Performance(series_result.getPerformances().stream().
+        return new DurationPerformance(series_result.getPerformances().stream().
             filter(Objects::nonNull).
             map(obj -> (Duration) obj.getValue()).
             sorted().                                 // Sort  not actually necessary but included to keep logic same as other series race scorers.

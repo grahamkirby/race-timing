@@ -95,7 +95,7 @@ public abstract class CommonRaceResult implements RaceResult {
             reduce((_, _) -> 0, Comparator::thenComparing);
     }
 
-    protected static <T extends Comparable<T>> Comparator<T> conditionalComparator(final RaceResultComparatorPredicate<T> predicate, final Comparator<T> comparator_to_use_if_true, final Comparator<T> comparator_to_use_if_false) {
+    protected static <T extends Comparable<T>> Comparator<T> conditionalComparator(final ComparatorPredicate<T> predicate, final Comparator<T> comparator_to_use_if_true, final Comparator<T> comparator_to_use_if_false) {
 
         return (result1, result2) -> predicate.apply(result1, result2) ? comparator_to_use_if_true.compare(result1, result2) : comparator_to_use_if_false.compare(result1, result2);
     }

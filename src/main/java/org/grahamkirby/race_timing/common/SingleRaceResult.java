@@ -40,7 +40,7 @@ public abstract class SingleRaceResult extends CommonRaceResult {
 
     public Performance getPerformance() {
 
-        return canComplete() ?  new Performance(finish_time.minus(start_time)) : null;
+        return canComplete() ?  new DurationPerformance(finish_time.minus(start_time)) : null;
     }
 
     public void setStartTime(final Duration start_time) {
@@ -70,12 +70,10 @@ public abstract class SingleRaceResult extends CommonRaceResult {
     @Override
     public int comparePerformanceTo(final RaceResult other) {
 
-        final Comparator<Performance> comparator = Comparator.nullsLast(Performance::compareTo);
-
         final Performance duration = getPerformance();
         final Performance other_duration = other.getPerformance();
 
-        return comparator.compare(duration, other_duration);
+        return Comparator.nullsLast(Performance::compareTo).compare(duration, other_duration);
     }
 
     @Override

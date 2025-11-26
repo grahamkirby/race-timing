@@ -17,7 +17,32 @@
  */
 package org.grahamkirby.race_timing.common;
 
-import java.util.function.BiFunction;
+import java.time.Duration;
 
-public interface RaceResultComparatorPredicate<T> extends BiFunction<T, T, Boolean> {
+import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
+import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+
+public class DurationPerformance extends Performance{
+
+    private final Duration performance;
+
+    public DurationPerformance(final Duration performance) {
+        this.performance = performance;
+    }
+
+    public Object getValue() {
+        return performance;
+    }
+
+    @Override
+    public String toString() {
+
+        return renderDuration(performance, DNF_STRING);
+    }
+
+    @Override
+    public int compareTo(final Performance d) {
+
+        return d instanceof final DurationPerformance duration ? performance.compareTo(duration.performance) : 0;
+    }
 }

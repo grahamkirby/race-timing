@@ -48,7 +48,7 @@ public class RelayRaceLegResult extends SingleRaceResult {
     @Override
     public Comparator<RaceResult> getComparator() {
 
-        final RaceResultComparatorPredicate<RaceResult> first_leg =
+        final ComparatorPredicate<RaceResult> first_leg =
             (RaceResult _, RaceResult _) -> leg_number == 1;
 
         return conditionalComparator(
