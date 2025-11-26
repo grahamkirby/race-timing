@@ -84,20 +84,20 @@ public abstract class SingleRaceResult extends CommonRaceResult {
     }
 
     /** Compares the given results on the basis of their finish positions. */
-    protected int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
+    protected static int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
         if (r1.getRace() != r2.getRace())
             throw new RuntimeException("results compared from two different races");
 
-        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) r1).bib_number);
-        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) r2).bib_number);
+        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) r1).bib_number, (SingleRaceInternal) r1.getRace());
+        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) r2).bib_number, (SingleRaceInternal) r1.getRace());
 
         return Integer.compare(recorded_position1, recorded_position2);
     }
 
-    private int getRecordedPosition(final int bib_number) {
+    private static int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
 
-        return (int) ((SingleRaceInternal) race).getRawResults().stream().
+        return (int) race.getRawResults().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
             count() + 1;
     }

@@ -85,9 +85,9 @@ public class SeriesRaceResult extends CommonRaceResult {
     }
 
     @Override
-    public List<Comparator<RaceResult>> getComparators() {
+    public Comparator<RaceResult> getComparator() {
 
-        return List.of(
+        return consecutiveComparator(
             CommonRaceResult::comparePossibleCompletion,
             SeriesRaceResult::compareNumberOfRacesCompleted,
             CommonRaceResult::comparePerformance,
@@ -99,7 +99,6 @@ public class SeriesRaceResult extends CommonRaceResult {
 
         return numberOfRacesCompleted() >= minimum_number_of_races &&
             ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
-
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

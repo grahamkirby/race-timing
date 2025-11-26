@@ -21,7 +21,6 @@ package org.grahamkirby.race_timing.relay_race;
 import org.grahamkirby.race_timing.common.*;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class RelayRaceLegResult extends SingleRaceResult {
 
@@ -47,18 +46,25 @@ public class RelayRaceLegResult extends SingleRaceResult {
     }
 
     @Override
-    public List<Comparator<RaceResult>> getComparators() {
+    public Comparator<RaceResult> getComparator() {
 
-        return leg_number == 1 ?
-            List.of(
+        final RaceResultComparatorPredicate<RaceResult> first_leg =
+            (RaceResult _, RaceResult _) -> leg_number == 1;
+
+        return conditionalComparator(
+            first_leg,
+
+            consecutiveComparator(
                 CommonRaceResult::comparePossibleCompletion,
                 CommonRaceResult::comparePerformance,
-                this::compareRecordedPosition) :
-            List.of(
+                SingleRaceResult::compareRecordedPosition),
+
+            consecutiveComparator(
                 CommonRaceResult::comparePossibleCompletion,
                 CommonRaceResult::comparePerformance,
                 CommonRaceResult::compareRunnerLastName,
-                CommonRaceResult::compareRunnerFirstName);
+                CommonRaceResult::compareRunnerFirstName)
+        );
     }
 
     @Override

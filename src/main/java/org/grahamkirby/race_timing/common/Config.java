@@ -49,7 +49,6 @@ public class Config {
     public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
     public static final String KEY_ENTRY_CATEGORIES_PATH = "ENTRY_CATEGORIES_PATH";
     public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
-//    public static final String KEY_GENDER_ELIGIBILITY_MAP_PATH = "GENDER_ELIGIBILITY_MAP_PATH";
     public static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
     public static final String KEY_INDIVIDUAL_START_TIMES = "INDIVIDUAL_START_TIMES";
     public static final String KEY_MASS_START_TIMES = "MASS_START_TIMES";

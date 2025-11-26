@@ -56,15 +56,17 @@ public class RelayRaceResult extends SingleRaceResult {
     @Override
     public Performance getPerformance() {
 
-        return canComplete() ? new Performance(leg_results.stream().
+        return canComplete() ?
+            new Performance(leg_results.stream().
                 map(leg_result -> (Duration) leg_result.getPerformance().getValue()).
-                reduce(Duration.ZERO, Duration::plus)) : null;
+                reduce(Duration.ZERO, Duration::plus)) :
+            null;
     }
 
     @Override
-    public List<Comparator<RaceResult>> getComparators() {
+    public Comparator<RaceResult> getComparator() {
 
-        return List.of(
+        return consecutiveComparator(
             CommonRaceResult::comparePossibleCompletion,
             CommonRaceResult::comparePerformance,
             RelayRaceResult::compareTeamName);

@@ -26,7 +26,6 @@ public interface Race {
     // TODO add individual names to team prize results.
     // TODO allow explicitly recorded dead heat in single race.
     // TODO allow overall dead heat in relay race only where at least one team in a mass start.
-    // TODO use tree structured set of result comparators.
     // TODO test for illegal bib number in raw times.
     // TODO mutation tests.
     // TODO fuzz tests.

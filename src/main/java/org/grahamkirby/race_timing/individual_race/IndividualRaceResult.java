@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.Comparator;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
@@ -35,14 +34,27 @@ public class IndividualRaceResult extends SingleRaceResult {
     }
 
     @Override
-    public List<Comparator<RaceResult>> getComparators() {
+    public Comparator<RaceResult> getComparator() {
 
-        return List.of(
+        return consecutiveComparator(
             CommonRaceResult::comparePossibleCompletion,
-            ignoreIfEitherResultIsDNF(CommonRaceResult::comparePerformance),
-            ignoreIfEitherResultIsDNF(this::compareRecordedPosition),
-            CommonRaceResult::compareRunnerLastName,
-            CommonRaceResult::compareRunnerFirstName);
+
+            conditionalComparator(
+                either_is_DNF,
+
+                consecutiveComparator(
+                    CommonRaceResult::compareRunnerLastName,
+                    CommonRaceResult::compareRunnerFirstName
+                ),
+
+                consecutiveComparator(
+                    CommonRaceResult::comparePerformance,
+                    SingleRaceResult::compareRecordedPosition,
+                    CommonRaceResult::compareRunnerLastName,
+                    CommonRaceResult::compareRunnerFirstName
+                )
+            )
+        );
     }
 
     @Override
@@ -51,12 +63,6 @@ public class IndividualRaceResult extends SingleRaceResult {
         return "(" + ((Runner) getParticipant()).getClub() + ") " + renderDuration(this, DNF_STRING);
     }
 
-    private static Comparator<RaceResult> ignoreIfEitherResultIsDNF(final Comparator<? super RaceResult> base_comparator) {
-
-        return (r1, r2) -> {
-
-            if (!r1.canComplete() || !r2.canComplete()) return 0;
-            else return base_comparator.compare(r1, r2);
-        };
-    }
+    final RaceResultComparatorPredicate<RaceResult> either_is_DNF =
+        (RaceResult result1, RaceResult result2) -> !result1.canComplete() || !result2.canComplete();
 }

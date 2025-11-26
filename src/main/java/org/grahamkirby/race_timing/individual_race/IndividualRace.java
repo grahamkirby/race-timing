@@ -78,104 +78,6 @@ public class IndividualRace implements SingleRaceInternal {
         this.results_output = results_output;
     }
 
-    protected Map<Integer, Duration> getSeparatelyRecordedFinishTimes() {
-        return separately_recorded_finish_times;
-    }
-
-    private void loadRaceData() {
-
-        final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
-        final Path raw_results_path = config.getPath(KEY_RAW_RESULTS_PATH);
-
-        try {
-            validateDataFiles(entries_path, raw_results_path);
-
-            entries = loadEntries(entries_path);
-            raw_results = loadRawResults(raw_results_path);
-
-            validateData(entries, raw_results, entries_path, raw_results_path);
-
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void validateEntryCategory(final String line) {
-
-        final List<String> elements = Arrays.stream(line.split("\t")).toList();
-        final Normalisation normalisation = getNormalisation();
-        final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
-
-        try {
-            final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            getCategoriesProcessor().getEntryCategory(category_name);
-
-        } catch (final RuntimeException e) {
-            throw new RuntimeException(String.join(" ", elements));
-        }
-    }
-
-    private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
-
-        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
-        validateEntryCategories(entries_path, this::validateEntryCategory);
-        validateBibNumbersUnique(entries_path);
-        validateRawResults(raw_results_path);
-        validateBibNumbersUnique(raw_results_path);
-        validateRawResultsOrdering(raw_results_path);
-    }
-
-    private void validateData(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path entries_path, final Path raw_results_path) {
-
-        validateEntriesUnique(entries, entries_path);
-        validateRecordedBibNumbersAreRegistered(entries, raw_results, raw_results_path);
-    }
-
-    private List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
-
-        return readAllLines(raw_results_path).stream().
-            map(Normalisation::stripComment).
-            filter(Predicate.not(String::isBlank)).
-            map(RawResult::new).
-            toList();
-    }
-
-    private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path raw_results_path) {
-
-        final Set<Integer> entry_bib_numbers = entries.stream().
-            map(RaceEntry::getBibNumber).
-            collect(Collectors.toSet());
-
-        final AtomicInteger line_number = new AtomicInteger(0);
-
-        raw_results.forEach(raw_result -> {
-            line_number.incrementAndGet();
-            final int result_bib_number = raw_result.getBibNumber();
-
-            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
-                throw new RuntimeException("unregistered bib number '" + result_bib_number + "' at line " + line_number.get() + " in file '" + raw_results_path.getFileName() + "'");
-        });
-    }
-
-    private void validateEntriesUnique(final List<RaceEntry> entries, final Path entries_path) {
-
-        for (final RaceEntry entry1 : entries)
-            for (final RaceEntry entry2 : entries)
-                if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
-                    throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
-    }
-
-    private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
-
-        return readAllLines(entries_path).stream().
-            map(Normalisation::stripEntryComment).
-            filter(Predicate.not(String::isBlank)).
-            map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), this)).
-            toList();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     @Override
     public List<RawResult> getRawResults() {
         return raw_results;
@@ -233,6 +135,131 @@ public class IndividualRace implements SingleRaceInternal {
         config.processConfigIfPresent(KEY_TEAM_PRIZE_GENDER_CATEGORIES, process_team_prizes);
 
         return team_prize_strings;
+    }
+
+    protected Map<Integer, Duration> getSeparatelyRecordedFinishTimes() {
+        return separately_recorded_finish_times;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void loadRaceData() {
+
+        final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
+        final Path raw_results_path = config.getPath(KEY_RAW_RESULTS_PATH);
+
+        try {
+            validateDataFiles(entries_path, raw_results_path);
+
+            entries = loadEntries(entries_path);
+            raw_results = loadRawResults(raw_results_path);
+
+            validateData(entries, raw_results, entries_path, raw_results_path);
+
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
+
+        return readAllLines(entries_path).stream().
+            map(Normalisation::stripEntryComment).
+            filter(Predicate.not(String::isBlank)).
+            map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), this)).
+            toList();
+    }
+
+    private List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
+
+        return readAllLines(raw_results_path).stream().
+            map(Normalisation::stripComment).
+            filter(Predicate.not(String::isBlank)).
+            map(RawResult::new).
+            toList();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void validateEntryCategory(final String line) {
+
+        final List<String> elements = Arrays.stream(line.split("\t")).toList();
+        final Normalisation normalisation = getNormalisation();
+        final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
+
+        try {
+            final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
+            getCategoriesProcessor().getEntryCategory(category_name);
+
+        } catch (final RuntimeException e) {
+            throw new RuntimeException(String.join(" ", elements));
+        }
+    }
+
+    private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
+
+        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
+        validateEntryCategories(entries_path, this::validateEntryCategory);
+        validateBibNumbersUnique(entries_path);
+        validateRawResults(raw_results_path);
+        validateBibNumbersUnique(raw_results_path);
+        validateRawResultsOrdering(raw_results_path);
+    }
+
+    private void validateData(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path entries_path, final Path raw_results_path) {
+
+        validateEntriesUnique(entries, entries_path);
+        validateRecordedBibNumbersAreRegistered(entries, raw_results, raw_results_path);
+    }
+
+    private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path raw_results_path) {
+
+        final Set<Integer> entry_bib_numbers = entries.stream().
+            map(RaceEntry::getBibNumber).
+            collect(Collectors.toSet());
+
+        final AtomicInteger line_number = new AtomicInteger(0);
+
+        raw_results.forEach(raw_result -> {
+            line_number.incrementAndGet();
+            final int result_bib_number = raw_result.getBibNumber();
+
+            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
+                throw new RuntimeException("unregistered bib number '" + result_bib_number + "' at line " + line_number.get() + " in file '" + raw_results_path.getFileName() + "'");
+        });
+    }
+
+    private void validateEntriesUnique(final List<RaceEntry> entries, final Path entries_path) {
+
+        for (final RaceEntry entry1 : entries)
+            for (final RaceEntry entry2 : entries)
+                if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
+                    throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void loadSeparatelyRecordedResults() {
+
+        separately_recorded_finish_times = new HashMap<>();
+
+        final Consumer<Object> process_separately_recorded_results = value -> {
+
+            final String[] self_timed_strings = ((String) value).split(",", -1);
+
+            // Example: SEPARATELY_RECORDED_RESULTS = 126/8:09
+
+            for (final String s : self_timed_strings) {
+
+                final String[] split = s.split("/", -1);
+                final int bib_number = Integer.parseInt(split[0]);
+                final Duration finish_time = parseTime(split[1]);
+
+                separately_recorded_finish_times.put(bib_number, finish_time);
+            }
+        };
+
+        config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,28 +331,5 @@ public class IndividualRace implements SingleRaceInternal {
             map(result -> ((Runner) result.getParticipant()).getClub()).
             filter(club -> !club.equals("Unatt.")).
             collect(Collectors.toSet());
-    }
-
-    private void loadSeparatelyRecordedResults() {
-
-        separately_recorded_finish_times = new HashMap<>();
-
-        final Consumer<Object> process_separately_recorded_results = value -> {
-
-            final String[] self_timed_strings = ((String) value).split(",", -1);
-
-            // SEPARATELY_RECORDED_RESULTS = 126/8:09
-
-            for (final String s : self_timed_strings) {
-
-                final String[] split = s.split("/", -1);
-                final int bib_number = Integer.parseInt(split[0]);
-                final Duration finish_time = parseTime(split[1]);
-
-                separately_recorded_finish_times.put(bib_number, finish_time);
-            }
-        };
-
-        config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
     }
 }

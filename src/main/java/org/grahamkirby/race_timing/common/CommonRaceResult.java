@@ -40,7 +40,7 @@ public abstract class CommonRaceResult implements RaceResult {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract List<Comparator<RaceResult>> getComparators();
+    public abstract Comparator<RaceResult> getComparator();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -82,10 +82,23 @@ public abstract class CommonRaceResult implements RaceResult {
     @Override
     public int compareTo(final RaceResult other) {
 
-        return combineComparators(getComparators()).compare(this, other);
+        return getComparator().compare(this, other);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Combines multiple comparators into a single comparator. */
+    @SafeVarargs
+    protected static <T extends Comparable<T>> Comparator<T> consecutiveComparator(final Comparator<T>... comparators) {
+
+        return Arrays.stream(comparators).
+            reduce((_, _) -> 0, Comparator::thenComparing);
+    }
+
+    protected static <T extends Comparable<T>> Comparator<T> conditionalComparator(final RaceResultComparatorPredicate<T> predicate, final Comparator<T> comparator_to_use_if_true, final Comparator<T> comparator_to_use_if_false) {
+
+        return (result1, result2) -> predicate.apply(result1, result2) ? comparator_to_use_if_true.compare(result1, result2) : comparator_to_use_if_false.compare(result1, result2);
+    }
 
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
@@ -123,12 +136,5 @@ public abstract class CommonRaceResult implements RaceResult {
 
         final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
         return Arrays.stream(runner.split(" ")).toList().getLast();
-    }
-
-    /** Combines multiple comparators into a single comparator. */
-    public static <T extends Comparable<T>> Comparator<T> combineComparators(final Collection<Comparator<T>> comparators) {
-
-        return comparators.stream().
-            reduce((_, _) -> 0, Comparator::thenComparing);
     }
 }
