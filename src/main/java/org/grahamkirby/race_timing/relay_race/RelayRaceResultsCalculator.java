@@ -594,12 +594,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             reduce((_, _) -> 0, Comparator::thenComparing);
     }
 
-//    private static Comparator<PrizeCategory> getPrizeCategoryComparator() {
-//
-//        return comparingInt((PrizeCategory category) -> category.getMinimumAge()).
-//            thenComparingInt(category -> GENDER_ORDER.indexOf(category.getGender()));
-//    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -635,11 +629,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             @Override
             public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
                 return race.getResultsCalculator().getPrizeWinners(category);
-            }
-
-            @Override
-            public List<String> getTeamPrizes() {
-                throw new UnsupportedOperationException();
             }
 
             @Override

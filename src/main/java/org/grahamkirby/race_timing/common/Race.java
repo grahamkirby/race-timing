@@ -21,9 +21,7 @@ import java.io.IOException;
 
 public interface Race {
 
-    // TODO output club rationalisations to series processing notes.
     // TODO add junior hill races.
-    // TODO add individual names to team prize results.
     // TODO allow explicitly recorded dead heat in single race.
     // TODO allow overall dead heat in relay race only where at least one team in a mass start.
     // TODO test for illegal bib number in raw times.
@@ -36,6 +34,7 @@ public interface Race {
     // TODO individual race with no results - generate output with dummy times to check runner/bib duplicates.
     // TODO individual race with no results -  generate racer list for PocketTimer.
     // TODO series race with separate entries - output sorted runner names to notes.
+    // TODO series race - output club rationalisations to notes.
     // TODO individual race with team prizes - output club team scores to notes
 
     RaceResults processResults() throws IOException;

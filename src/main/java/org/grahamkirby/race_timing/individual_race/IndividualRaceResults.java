@@ -15,26 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.grahamkirby.race_timing.common;
+package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
+import org.grahamkirby.race_timing.common.*;
 
 import java.util.List;
 
 /**
  * Defines aspects of results needed to generate output files.
  */
-public interface RaceResults {
+public interface IndividualRaceResults extends RaceResults {
 
-    Config getConfig();
-    Normalisation getNormalisation();
-    Notes getNotes();
+    record TeamPerformance(String club, String gender, List<RunnerPerformance> runner_performances) {}
+    record RunnerPerformance(String name, int position) {}
 
-    List<? extends RaceResult> getOverallResults();
-    List<? extends RaceResult> getOverallResults(List<PrizeCategory> categories);
-    List<? extends RaceResult> getPrizeWinners(PrizeCategory category);
-
-    List<PrizeCategoryGroup> getPrizeCategoryGroups();
-    boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
+    List<TeamPerformance> getTeamPrizes();
 }

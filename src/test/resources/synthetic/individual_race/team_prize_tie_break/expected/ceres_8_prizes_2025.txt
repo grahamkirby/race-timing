@@ -12,9 +12,9 @@ Category: Women Open
 Category: Men Open
 ------------------
 
-1: Lewis Rodgers (Fife AC) 00:42:26
-2: Nick Bennett (Dundee Road Runners) 00:44:08
-3: David Webster (Dundee Road Runners) 00:44:15
+1: Mark McLean (PH Racing) 00:40:24
+2: Lewis Rodgers (Fife AC) 00:42:26
+3: Nick Bennett (Dundee Road Runners) 00:44:08
 
 
 Category: Women Junior
@@ -39,8 +39,8 @@ Category: Women Senior
 Category: Men Senior
 --------------------
 
-1: Jamie Lessels (Fife AC) 00:44:48
-2: Ewan Duthie (Dundee Road Runners) 00:44:58
+1: David Webster (Dundee Road Runners) 00:44:15
+2: Daniel Monaghan (PH Racing) 00:44:48
 
 
 Category: Women 40-49
@@ -102,8 +102,8 @@ Category: Men 70-79
 Team Prizes
 -----------
 
-First male team: Dundee Road Runners (10):
-   Nick Bennett (2), David Webster (3), Ewan Duthie (5)
+First male team: Fife AC (15):
+   Lewis Rodgers (2), Ruan Van Rensburg (6), Jamie Lessels (7)
 
 First female team: Dundee Road Runners (15):
    Mairi Littleson (1), Alison McNeilly (2), Laura Darling-Brackenridge (12)

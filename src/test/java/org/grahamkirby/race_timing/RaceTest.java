@@ -46,6 +46,7 @@ import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("preview")
@@ -262,7 +263,7 @@ public class RaceTest {
 
     private static void runWithExpectedError(final String[] args, final Path expected_error_message_file) throws IOException {
 
-        final String expected_error_message = String.join(LINE_SEPARATOR, Files.readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
+        final String expected_error_message = String.join(LINE_SEPARATOR, readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
 
         runTest(args, expected_error_message, "Expected error message was not generated");
     }
@@ -397,7 +398,7 @@ public class RaceTest {
 
                     return contents;
                 }
-            } else return Files.readAllLines(path);
+            } else return readAllLines(path);
 
         } catch (final IOException e) {
             fail("Error reading expected output file " + path + ": " + e);
@@ -408,7 +409,7 @@ public class RaceTest {
     private static List<String> loadIgnoredFileNames() {
 
         try {
-            return Files.readAllLines(Path.of(IGNORED_FILE_NAMES_PATH)).stream().toList();
+            return readAllLines(Path.of(IGNORED_FILE_NAMES_PATH)).stream().toList();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

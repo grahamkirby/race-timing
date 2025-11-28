@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
@@ -177,12 +178,11 @@ public class Normalisation {
         try {
             entry_column_mappings = loadEntryColumnMapping();
             category_map = loadCategoryMap();
-//            gender_eligibility_map = loadGenderEligibilityMap();
             normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
             normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
 
             final Path capitalisation_stop_words_path = config.getPath(KEY_CAPITALISATION_STOP_WORDS_PATH);
-            capitalisation_stop_words = new HashSet<>(Files.readAllLines(capitalisation_stop_words_path));
+            capitalisation_stop_words = new HashSet<>(readAllLines(capitalisation_stop_words_path));
 
             non_title_case_words = new HashSet<>();
         }
@@ -190,23 +190,6 @@ public class Normalisation {
             throw new RuntimeException(e);
         }
     }
-
-//    private Map<String, List<String>> loadGenderEligibilityMap() throws IOException {
-//
-//        final Map<String, List<String>> map = new HashMap<>();
-//
-//        final Path gender_eligibility_map_path = config.getPath(KEY_GENDER_ELIGIBILITY_MAP_PATH);
-//
-//        Files.readAllLines(gender_eligibility_map_path).stream().
-//            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-//            forEachOrdered(line -> {
-//                final String[] elements = line.split(",");
-//                map.putIfAbsent(elements[0], new ArrayList<>());
-//                map.get(elements[0]).add(elements[1]);
-//            });
-//
-//        return map;
-//    }
 
     private List<String> loadEntryColumnMapping() {
 
@@ -229,7 +212,7 @@ public class Normalisation {
         final Path category_map_path = config.getPath(KEY_CATEGORY_MAP_PATH);
         if (category_map_path != null) {
 
-            Files.readAllLines(category_map_path).stream().
+            readAllLines(category_map_path).stream().
                 filter(line -> !line.isEmpty()).
                 filter(line -> !line.startsWith(COMMENT_SYMBOL)).
                 forEachOrdered(line -> {
@@ -246,7 +229,7 @@ public class Normalisation {
         final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         final Path path = config.getPath(path_key);
 
-        Files.readAllLines(path).forEach(line -> {
+        readAllLines(path).forEach(line -> {
 
             final String[] parts = line.split(",");
             map.put(parts[0], parts[1]);

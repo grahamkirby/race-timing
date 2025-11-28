@@ -17,10 +17,12 @@
  */
 package org.grahamkirby.race_timing.individual_race;
 
+import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
@@ -28,9 +30,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator.getAggregatePosition;
 
 @SuppressWarnings("preview")
 public class IndividualRaceOutput extends RaceOutput {
@@ -99,15 +104,34 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesHTML(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = race_results.getTeamPrizes();
+        final List<TeamPerformance> team_prizes = ((IndividualRaceResults) race_results).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
             writer.append("<h4>Team Prizes</h4>").append(LINE_SEPARATOR);
             writer.append("<ul>").append(LINE_SEPARATOR);
 
-            for (final String team_prize : team_prizes)
-                writer.append("<li>").append(team_prize).append("</li>").append(LINE_SEPARATOR);
+            for (final TeamPerformance team_performance : team_prizes) {
+
+                final int best_team_total = getAggregatePosition(team_performance);
+
+                writer.append("    <li>").
+                    append("First <strong>").
+                    append(team_performance.gender().toLowerCase()).
+                    append(" team</strong>: ").
+                    append(team_performance.club()).
+                    append(" (").append(String.valueOf(best_team_total)).append("):").append(LINE_SEPARATOR).
+                    append("        <ul>").append(LINE_SEPARATOR).
+                    append("            <li>").
+                    append(
+                        team_performance.runner_performances().stream().
+                            map(runnerPerformance -> runnerPerformance.name() + " (" + runnerPerformance.position() + ")").
+                            collect(Collectors.joining(", "))).
+                    append("</li>").append(LINE_SEPARATOR).
+                    append("        </ul>").append(LINE_SEPARATOR).
+                    append("    </li>").append(LINE_SEPARATOR).
+                    append("    <br />").append(LINE_SEPARATOR);
+            }
 
             writer.append("</ul>").append(LINE_SEPARATOR);
         }
@@ -115,31 +139,55 @@ public class IndividualRaceOutput extends RaceOutput {
 
     private void printTeamPrizesPDF(final Document document) throws IOException {
 
-        final List<String> team_prizes = race_results.getTeamPrizes();
+        final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
+
+        final List<TeamPerformance> team_prizes = ((IndividualRaceResults) race_results).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
+
             document.add(new Paragraph("Team Prizes").
                 setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
                 setPaddingTop(PDF_PRIZE_FONT_SIZE));
 
-            for (final String team_prize : team_prizes)
-                document.add(new Paragraph(team_prize));
+            for (final TeamPerformance team_performance : team_prizes) {
+
+                final int best_team_total = getAggregatePosition(team_performance);
+
+                final Paragraph paragraph1 = new Paragraph();
+                paragraph1.add(new Text("First "));
+                paragraph1.add(new Text(team_performance.gender().toLowerCase() + " team").setFont(bold_font));
+                paragraph1.add(new Text(": " + team_performance.club() + " (" + best_team_total + "):"));
+
+                final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(24);
+                paragraph2.add(new Text(team_performance.runner_performances().stream().
+                    map(performance -> performance.name() + " (" + performance.position() + ")").
+                    collect(Collectors.joining(", "))));
+
+                document.add(paragraph1);
+                document.add(paragraph2);
+            }
         }
     }
 
     private void printTeamPrizesText(final OutputStreamWriter writer) throws IOException {
 
-        final List<String> team_prizes = race_results.getTeamPrizes();
+        final List<TeamPerformance> team_prizes = ((IndividualRaceResults) race_results).getTeamPrizes();
 
         if (!team_prizes.isEmpty()) {
 
             writer.append("Team Prizes\n");
             writer.append("-----------\n\n");
 
-            for (final String team_prize : team_prizes) {
-                writer.append(team_prize);
-                writer.append(LINE_SEPARATOR);
+            for (final TeamPerformance team_performance : team_prizes) {
+
+                final int best_team_total = getAggregatePosition(team_performance);
+
+                writer.append("First " + team_performance.gender().toLowerCase() + " team: " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
+                    team_performance.runner_performances().stream().
+                        map(runnerPerformance -> runnerPerformance.name() + " (" + runnerPerformance.position() + ")").
+                        collect(Collectors.joining(", ")));
+                writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
             }
         }
     }

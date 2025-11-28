@@ -27,10 +27,12 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.*;
 
 public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
@@ -117,6 +119,36 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         return getOverallResults().size() % 2 == 0 ?
             getMedianTimeForEvenNumberOfResults() :
             getMedianTimeForOddNumberOfResults();
+    }
+
+    public List<TeamPerformance> getTeamPrizes() {
+
+        return race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
+
+            Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
+                map(this::getFirstTeamInGenderCategory).
+                filter(Optional::isPresent).
+                map(Optional::get).
+                toList() :
+
+            List.of();
+    }
+
+    public int getGenderPosition(final String runner_name, final String club, final String gender) {
+
+        return (int) getGenderResults(gender).stream().
+            map(result -> (Runner) result.getParticipant()).
+            takeWhile(runner -> !(runner.getName().equals(runner_name) && runner.getClub().equals(club))).
+            count() + 1;
+    }
+
+    public List<SingleRaceResult> getGenderResults(final String gender) {
+
+        return getOverallResults().stream().
+            map(result -> (SingleRaceResult) result).
+            filter(SingleRaceResult::canComplete).
+            filter(result -> result.getCategory().getGender().equals(gender)).
+            toList();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,10 +365,57 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    static int getAggregatePosition(final TeamPerformance performance) {
+
+        return performance.runner_performances().stream().
+            map(IndividualRaceResults.RunnerPerformance::position).
+            reduce(0, Integer::sum);
+    }
+
+    private TeamPerformance getTeamPerformance(final String club, final String gender) {
+
+        final int number_to_count_for_team_prize = (int) race.getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
+
+        final List<RunnerPerformance> runner_names = getOverallResults().stream().
+            map(result -> (Runner) result.getParticipant()).
+            filter(runner -> runner.getClub().equals(club)).
+            filter(runner -> runner.getCategory().getGender().equals(gender)).
+            limit(number_to_count_for_team_prize).
+            map(runner -> new RunnerPerformance(runner.getName(), getGenderPosition(runner.getName(), club, gender))).
+            toList();
+
+        return new TeamPerformance(club, gender, runner_names);
+    }
+
+    private Optional<TeamPerformance> getFirstTeamInGenderCategory(final String team_prize_gender_category) {
+
+        final int number_to_count_for_team_prize = (int) race.getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
+
+        // If aggregate positions are the same, use the first position as tie break.
+        final Comparator<TeamPerformance> sort_by_aggregate_position = Comparator.comparingInt(IndividualRaceResultsCalculator::getAggregatePosition);
+        final Comparator<TeamPerformance> sort_by_first_position = Comparator.comparingInt(p -> p.runner_performances().getFirst().position());
+
+        // Not necessary to sort clubs, but this makes it easier to reason about testing tie break.
+        return getClubs().stream().sorted().
+            map(club -> getTeamPerformance(club, team_prize_gender_category)).
+            filter(performance -> performance.runner_performances().size() >= number_to_count_for_team_prize).
+            min(sort_by_aggregate_position.thenComparing(sort_by_first_position));
+    }
+
+    private Set<String> getClubs() {
+
+        return getOverallResults().stream().
+            map(result -> ((Runner) result.getParticipant()).getClub()).
+            filter(Predicate.not(club -> club.equals("Unatt."))).
+            collect(Collectors.toSet());
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected RaceResults makeRaceResults() {
 
-        return new RaceResults() {
+        return new IndividualRaceResults() {
 
             @Override
             public Config getConfig() {
@@ -369,8 +448,8 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             }
 
             @Override
-            public List<String> getTeamPrizes() {
-                return ((IndividualRace) race).getTeamPrizeStrings();
+            public List<TeamPerformance> getTeamPrizes() {
+                return IndividualRaceResultsCalculator.this.getTeamPrizes();
             }
 
             @Override

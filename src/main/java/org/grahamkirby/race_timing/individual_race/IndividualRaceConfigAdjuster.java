@@ -35,7 +35,7 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
     @Override
     public void processConfig() {
 
-        // Default entry map with 4 elements (bib number, full name, club, category), and no column combining or re-ordering.
+        // Default entry map with 4 elements (bib number, full club, club, category), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));
 
         config.replaceIfPresent(KEY_TEAM_PRIZE_NUMBER_TO_COUNT, Integer::parseInt);

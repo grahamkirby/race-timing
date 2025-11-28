@@ -78,10 +78,10 @@ public class SeriesRaceResult extends CommonRaceResult {
 
         final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
-        final boolean has_completed_all_race_categories =
+        final boolean can_complete_all_race_categories =
             ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
 
-        return has_completed_all_race_categories && numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
+        return can_complete_all_race_categories && numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
     }
 
     @Override
@@ -182,7 +182,6 @@ public class SeriesRaceResult extends CommonRaceResult {
 
     private int numberOfRacesRemainingInCategory(final List<SingleRaceInternal> races, final SeriesRaceCategory category) {
 
-        // TODO tests pass when filter is for non null.
         return (int) category.race_numbers().stream().
             map(race_number -> races.get(race_number - 1)).
             filter(Objects::isNull).

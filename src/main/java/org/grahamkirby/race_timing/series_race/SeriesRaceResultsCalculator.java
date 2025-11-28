@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
@@ -32,6 +33,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 
 public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
@@ -135,7 +137,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         final Path race_categories_path = race.getConfig().getPath(KEY_RACE_CATEGORIES_PATH);
 
         race_categories = race_categories_path != null ?
-            Files.readAllLines(race_categories_path).stream().
+            readAllLines(race_categories_path).stream().
                 filter(line -> !line.startsWith(COMMENT_SYMBOL)).
                 map(SeriesRaceResultsCalculator::makeRaceCategory).
                 toList() :
@@ -452,11 +454,6 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             @Override
             public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
                 return SeriesRaceResultsCalculator.this.getPrizeWinners(category);
-            }
-
-            @Override
-            public List<String> getTeamPrizes() {
-                throw new UnsupportedOperationException();
             }
 
             @Override

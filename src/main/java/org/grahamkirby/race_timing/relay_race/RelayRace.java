@@ -405,20 +405,18 @@ public class RelayRace implements SingleRaceInternal {
 
     private void countLegResults(final Map<String, Integer> bib_counts, final Path results_path) throws IOException {
 
-        if (results_path != null)
-
-            Files.readAllLines(results_path).stream().
-                map(Normalisation::stripComment).
-                filter(Predicate.not(String::isBlank)).
-                map(line -> line.split("\t")[0]).
-                filter(bib_number -> !bib_number.equals(UNKNOWN_BIB_NUMBER_INDICATOR)).
-                forEachOrdered(bib_number -> bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1));
+        readAllLines(results_path).stream().
+            map(Normalisation::stripComment).
+            filter(Predicate.not(String::isBlank)).
+            map(line -> line.split("\t")[0]).
+            filter(bib_number -> !bib_number.equals(UNKNOWN_BIB_NUMBER_INDICATOR)).
+            forEachOrdered(bib_number -> bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1));
     }
 
     private void processAnnotations(final Object path) {
 
         try {
-            Files.readAllLines((Path) path).stream().
+            readAllLines((Path) path).stream().
                 skip(1).                                      // Skip header line.
                 map(line -> line.split("\t")).
                 forEach(elements -> {
@@ -446,7 +444,7 @@ public class RelayRace implements SingleRaceInternal {
 
     private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
-        return Files.readAllLines(entries_path).stream().
+        return readAllLines(entries_path).stream().
             map(Normalisation::stripEntryComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList())).
