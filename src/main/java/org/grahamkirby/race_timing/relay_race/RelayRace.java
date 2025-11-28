@@ -22,7 +22,6 @@ import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
@@ -308,7 +307,7 @@ public class RelayRace implements SingleRaceInternal {
 
         validateEntriesNumberOfElements(entries_path, getNumberOfLegs() + 3, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
-        validateBibNumbersUnique(entries_path);
+        validateBibNumbers(entries_path);
 
         validateRawResults(electronic_results_path);
         validateRawResults(paper_results_path);
@@ -445,7 +444,7 @@ public class RelayRace implements SingleRaceInternal {
     private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
         return readAllLines(entries_path).stream().
-            map(Normalisation::stripEntryComment).
+            map(Normalisation::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList())).
             toList();

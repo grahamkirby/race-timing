@@ -1,0 +1,1 @@
+invalid entry 'XX	Paul Reed	Dundee Road Runners	M40' at line 78 in file 'entries.txt'

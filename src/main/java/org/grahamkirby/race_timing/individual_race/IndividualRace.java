@@ -148,7 +148,7 @@ public class IndividualRace implements SingleRaceInternal {
     private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
         return readAllLines(entries_path).stream().
-            map(Normalisation::stripEntryComment).
+            map(Normalisation::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), this)).
             toList();
@@ -184,34 +184,16 @@ public class IndividualRace implements SingleRaceInternal {
 
         validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
-        validateBibNumbersUnique(entries_path);
+        validateBibNumbers(entries_path);
         validateRawResults(raw_results_path);
-        validateBibNumbersUnique(raw_results_path);
+        validateBibNumbers(raw_results_path);
         validateRawResultsOrdering(raw_results_path);
     }
 
-    private void validateData(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path entries_path, final Path raw_results_path) {
+    private void validateData(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path entries_path, final Path raw_results_path) throws IOException {
 
         validateEntriesUnique(entries, entries_path);
-        validateRecordedBibNumbersAreRegistered(entries, raw_results, raw_results_path);
-    }
-
-    private void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path raw_results_path) {
-
-        final Set<Integer> entry_bib_numbers = entries.stream().
-            map(RaceEntry::getBibNumber).
-            collect(Collectors.toSet());
-
-        final AtomicInteger line_number = new AtomicInteger(0);
-
-        raw_results.forEach(raw_result -> {
-
-            line_number.incrementAndGet();
-            final int result_bib_number = raw_result.getBibNumber();
-
-            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number))
-                throw new RuntimeException("unregistered bib number '" + result_bib_number + "' at line " + line_number.get() + " in file '" + raw_results_path.getFileName() + "'");
-        });
+        validateRecordedBibNumbersAreRegistered(entries, raw_results_path);
     }
 
     private void validateEntriesUnique(final List<RaceEntry> entries, final Path entries_path) {

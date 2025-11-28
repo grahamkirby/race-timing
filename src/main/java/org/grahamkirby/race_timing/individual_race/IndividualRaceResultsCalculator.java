@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.*;
 
 public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
@@ -175,7 +174,7 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
         try {
             return readAllLines(race.getConfig().getPath(KEY_RESULTS_PATH)).stream().
-                map(Normalisation::stripEntryComment).
+                map(Normalisation::stripComment).
                 filter(Predicate.not(String::isBlank)).
                 map(this::makeRaceResult).
                 toList();

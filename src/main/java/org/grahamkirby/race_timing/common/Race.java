@@ -24,7 +24,6 @@ public interface Race {
     // TODO add junior hill races.
     // TODO allow explicitly recorded dead heat in single race.
     // TODO allow overall dead heat in relay race only where at least one team in a mass start.
-    // TODO test for illegal bib number in raw times.
     // TODO mutation tests.
     // TODO fuzz tests.
     // TODO test missing output directory.
@@ -35,7 +34,8 @@ public interface Race {
     // TODO individual race with no results -  generate racer list for PocketTimer.
     // TODO series race with separate entries - output sorted runner names to notes.
     // TODO series race - output club rationalisations to notes.
-    // TODO individual race with team prizes - output club team scores to notes
+    // TODO individual race with team prizes - output all club team scores to notes
+    // TODO improve error messages for # symbol used inappropriately in input files - entries, raw times, results
 
     RaceResults processResults() throws IOException;
     void outputResults(RaceResults results) throws IOException;

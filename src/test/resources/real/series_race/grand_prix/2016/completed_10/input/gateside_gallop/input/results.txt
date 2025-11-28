@@ -5,7 +5,7 @@ David Scott	Kinross RR	MS	26.48
 Brian Cruickshank	Falkland Trail Runners	MV50	26.57
 David Downey	Dunblane Runners	MV50	27.08
 Willie Rennie	Carnegie Harriers	MV40	27.21
-Paul Foster	#teamfozzy	MS	27.53
+Paul Foster	teamfozzy	MS	27.53
 Daniel Newman	Fife AC	MV40	28.01
 Kevin Davie	Carnegie Harriers	MS	28.17
 Ross Wyse	Fife AC	MJ	28.19

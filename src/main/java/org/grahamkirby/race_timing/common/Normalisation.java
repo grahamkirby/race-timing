@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.common;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
@@ -26,7 +25,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
@@ -60,32 +58,19 @@ public class Normalisation {
     /** Map from accented strings to corresponding entities. */
     private Map<String, String> normalised_html_entities;
 
-    /**
-     * Map from entry gender to eligible prize genders.
-     * Value is read from configuration file using key KEY_GENDER_ELIGIBILITY_MAP_PATH.
-     */
-//    public Map<String, List<String>> gender_eligibility_map;
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    private final RaceInternal race;
     private final Config config;
 
     public Normalisation(final Config config) {
 
-//        this.race = race;
         this.config = config;
         configure();
     }
 
     public static String stripComment(final String line) {
 
-        return line.split(COMMENT_SYMBOL)[0];
-    }
-
-    public static String stripEntryComment(final String line) {
-
-        return line.startsWith(COMMENT_SYMBOL) ? "" : line;
+        return line.startsWith(COMMENT_SYMBOL) ? "" : line.split(COMMENT_SYMBOL)[0];
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

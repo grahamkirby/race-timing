@@ -21,19 +21,16 @@ import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRace;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 
 public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 

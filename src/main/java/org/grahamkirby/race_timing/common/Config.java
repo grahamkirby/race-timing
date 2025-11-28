@@ -136,6 +136,11 @@ public class Config {
         return new ArrayList<>(list);
     }
 
+    public static List<String> readAllLines(final Path path) throws IOException {
+
+        return path == null ? List.of() : Files.readAllLines(path);
+    }
+
     public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         if (!Files.exists(config_file_path))

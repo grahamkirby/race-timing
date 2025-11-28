@@ -26,7 +26,6 @@ import java.util.function.ToIntFunction;
 
 import static java.util.Comparator.comparingInt;
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 
 public class CategoriesProcessor  {
 

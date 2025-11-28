@@ -46,7 +46,6 @@ import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.RaceConfigValidator.readAllLines;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("preview")
