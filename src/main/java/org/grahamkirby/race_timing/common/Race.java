@@ -30,12 +30,11 @@ public interface Race {
     // TODO test input directory with different name.
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
-    // TODO individual race with no results - generate output with dummy times to check runner/bib duplicates.
+    // TODO individual race with no results - validate entry data.
     // TODO individual race with no results -  generate racer list for PocketTimer.
     // TODO series race with separate entries - output sorted runner names to notes.
     // TODO series race - output club rationalisations to notes.
-    // TODO individual race with team prizes - output all club team scores to notes
-    // TODO improve error messages for # symbol used inappropriately in input files - entries, raw times, results
+    // TODO individual race with team prizes - output all club team scores to notes.
 
     RaceResults processResults() throws IOException;
     void outputResults(RaceResults results) throws IOException;

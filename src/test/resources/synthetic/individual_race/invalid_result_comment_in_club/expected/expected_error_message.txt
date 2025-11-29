@@ -1,0 +1,1 @@
+invalid entry 'David Dunleavey	#Dundee Road Runners	M	01:04:37' at line 29 in file 'results.txt' - possible invalid use of # comment symbol

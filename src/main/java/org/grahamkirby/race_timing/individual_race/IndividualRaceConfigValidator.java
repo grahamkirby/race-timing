@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -36,7 +35,7 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
 
         checkExactlyOnePresent(List.of(
             KEY_RAW_RESULTS_PATH,
-            KEY_RESULTS_PATH));
+            KEY_OVERALL_RESULTS_PATH));
 
         checkNonePresent(List.of(
             KEY_RACES,

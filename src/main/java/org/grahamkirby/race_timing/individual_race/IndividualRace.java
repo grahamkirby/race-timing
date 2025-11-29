@@ -23,24 +23,28 @@ import org.grahamkirby.race_timing.common.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
-import static org.grahamkirby.race_timing.common.RaceEntry.CATEGORY_INDEX;
+import static org.grahamkirby.race_timing.common.RaceEntry.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator.DUMMY_BIB_NUMBER;
 
 public class IndividualRace implements SingleRaceInternal {
 
     private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
 
-    private Map<Integer, Duration> separately_recorded_finish_times;
-    private List<RawResult> raw_results;
     private List<RaceEntry> entries;
+    private List<RawResult> raw_results;
+    private List<RaceResult> overall_results;
+
+    private Map<Integer, Duration> separately_recorded_finish_times;
 
     private final Config config;
     private final CategoriesProcessor categories_processor;
@@ -89,6 +93,11 @@ public class IndividualRace implements SingleRaceInternal {
     }
 
     @Override
+    public List<RaceResult> getOverallResults() {
+        return overall_results;
+    }
+
+    @Override
     public RaceResults processResults() throws IOException {
 
         loadRaceData();
@@ -131,12 +140,14 @@ public class IndividualRace implements SingleRaceInternal {
 
         final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
         final Path raw_results_path = config.getPath(KEY_RAW_RESULTS_PATH);
+        final Path overall_results_path = config.getPath(KEY_OVERALL_RESULTS_PATH);
 
         try {
-            validateDataFiles(entries_path, raw_results_path);
+            validateDataFiles(entries_path, raw_results_path, overall_results_path);
 
             entries = loadEntries(entries_path);
             raw_results = loadRawResults(raw_results_path);
+            overall_results = loadOverallResults(overall_results_path);
 
             validateData(entries, raw_results, entries_path, raw_results_path);
 
@@ -163,6 +174,32 @@ public class IndividualRace implements SingleRaceInternal {
             toList();
     }
 
+    private List<RaceResult> loadOverallResults(final Path overall_results_path) {
+
+        try {
+            return readAllLines(overall_results_path).stream().
+                map(Normalisation::stripComment).
+                filter(Predicate.not(String::isBlank)).
+                map(this::makeRaceResult).
+                toList();
+        }
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private RaceResult makeRaceResult(final String line) {
+
+        final List<String> elements = makeMutableCopy(Arrays.stream(line.split("\t")).toList());
+
+        elements.addFirst(String.valueOf(DUMMY_BIB_NUMBER));
+
+        final RaceEntry entry = new RaceEntry(elements, this);
+        final Duration finish_time = parseTime(elements.getLast());
+
+        return new IndividualRaceResult(entry, finish_time, this);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void validateEntryCategory(final String line) {
@@ -180,7 +217,7 @@ public class IndividualRace implements SingleRaceInternal {
         }
     }
 
-    private void validateDataFiles(final Path entries_path, final Path raw_results_path) throws IOException {
+    private void validateDataFiles(final Path entries_path, final Path raw_results_path, final Path overall_results_path) throws IOException {
 
         validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
@@ -188,6 +225,9 @@ public class IndividualRace implements SingleRaceInternal {
         validateRawResults(raw_results_path);
         validateBibNumbers(raw_results_path);
         validateRawResultsOrdering(raw_results_path);
+
+        // Number of columns in directly recorded results is same as for entries file: no bib number, but does have finish time.
+        validateEntriesNumberOfElements(overall_results_path, NUMBER_OF_ENTRY_COLUMNS, null);
     }
 
     private void validateData(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path entries_path, final Path raw_results_path) throws IOException {

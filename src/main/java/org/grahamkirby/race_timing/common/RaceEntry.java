@@ -25,9 +25,9 @@ import java.util.List;
 public class RaceEntry {
 
     // Expected input format: "1", "John Smith", "Fife AC", "MS".
-    private static final int BIB_NUMBER_INDEX = 0;
-    private static final int NAME_INDEX = 1;
-    private static final int CLUB_INDEX = 2;
+    public static final int BIB_NUMBER_INDEX = 0;
+    public static final int NAME_INDEX = 1;
+    public static final int CLUB_INDEX = 2;
     public static final int CATEGORY_INDEX = 3;
 
     protected final Participant participant;
@@ -49,7 +49,7 @@ public class RaceEntry {
             final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
             final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = race.getCategoriesProcessor().getEntryCategory(category_name);
+            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().getEntryCategory(category_name);
 
             participant = new Runner(name, club, category);
 

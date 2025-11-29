@@ -1,0 +1,1 @@
+invalid entry '17	Regan #Millar	FTR	M50' at line 17 in file 'entries.txt' - possible invalid use of # comment symbol

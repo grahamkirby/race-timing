@@ -50,7 +50,7 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
             KEY_TEAM_PRIZE_NUMBER_TO_COUNT,
             KEY_ELIGIBLE_CLUBS,
             KEY_RACE_CATEGORIES_PATH,
-            KEY_RESULTS_PATH,
+            KEY_OVERALL_RESULTS_PATH,
             KEY_SCORE_FOR_FIRST_PLACE,
             KEY_SCORE_FOR_MEDIAN_POSITION,
             KEY_TIME_TRIAL_INTER_WAVE_INTERVAL,

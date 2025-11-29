@@ -142,13 +142,18 @@ public class RelayRace implements SingleRaceInternal {
     }
 
     @Override
+    public List<RaceEntry> getEntries() {
+        return entries;
+    }
+
+    @Override
     public List<RawResult> getRawResults() {
         return raw_results;
     }
 
     @Override
-    public List<RaceEntry> getEntries() {
-        return entries;
+    public List<RaceResult> getOverallResults() {
+        throw new UnsupportedOperationException();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

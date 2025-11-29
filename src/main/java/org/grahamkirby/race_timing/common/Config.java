@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 public class Config {
 
-    // TODO add strict checking that all files in input directory are used.
+    // TODO add optional strict check that all files in input directory are used.
 
     public static final String CSV_FILE_SUFFIX = "csv";
     public static final String HTML_FILE_SUFFIX = "html";
@@ -58,6 +58,7 @@ public class Config {
     public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
     public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     public static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
+    public static final String KEY_OVERALL_RESULTS_PATH = "RESULTS_PATH";
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
     public static final String KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY = "PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY";
@@ -70,7 +71,6 @@ public class Config {
     public static final String KEY_RACE_START_TIME = "RACE_START_TIME";
     public static final String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
     public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
-    public static final String KEY_RESULTS_PATH = "RESULTS_PATH";
     public static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
     public static final String KEY_SCORE_FOR_MEDIAN_POSITION = "SCORE_FOR_MEDIAN_POSITION";
     public static final String KEY_SEPARATELY_RECORDED_RESULTS = "SEPARATELY_RECORDED_RESULTS";
@@ -91,8 +91,6 @@ public class Config {
     public static final String PDF_PRIZE_FONT_ITALIC_NAME = StandardFonts.HELVETICA_OBLIQUE;
     public static final int PDF_PRIZE_FONT_SIZE = 24;
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     /** Platform-specific line separator used in creating output files. */
     public static final String LINE_SEPARATOR = System.lineSeparator();
     public static final String PATH_SEPARATOR = File.separator;
@@ -109,10 +107,15 @@ public class Config {
     /** Web link to application on GitHub. */
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private final Map<String, Object> config_map;
     private final List<String> unused_keys;
 
     private final Path config_path;
+    private final List<ConfigProcessor> config_processors = new ArrayList<>();
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Config(final Path config_file_path) throws IOException {
 
@@ -126,6 +129,8 @@ public class Config {
         unused_keys = new ArrayList<>(config_map.keySet());
         unused_keys.removeAll(RaceConfigValidator.REQUIRED_CONFIG_KEYS);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
     public static String encode(final String s) {
@@ -153,6 +158,8 @@ public class Config {
             return properties;
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void outputUnusedProperties() {
 
@@ -221,8 +228,6 @@ public class Config {
             replaceIfPresent(key, make_new_value);
     }
 
-    private final List<ConfigProcessor> config_processors = new ArrayList<>();
-
     public void addConfigProcessor(final Function<Config, ConfigProcessor> make_processor) {
 
         config_processors.add(make_processor.apply(this));
@@ -255,6 +260,8 @@ public class Config {
 
         return getPathRelativeToRaceConfigFile(path);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Path makeRelativeToProjectRoot(final Path path) {
 

@@ -62,19 +62,22 @@ public class RaceConfigValidator extends ConfigProcessor {
 
     public static void validateRawResults(final Path raw_results_path) throws IOException {
 
+        final BoxedLine line = new BoxedLine();
         final BoxedLineNumber line_number = new BoxedLineNumber();
 
-        getCleanedLines(raw_results_path, line_number).
-            forEach(line -> validateRawResultLine(line, raw_results_path, line_number));
+        getCleanedLines(raw_results_path, line, line_number).
+            forEach(cleaned_line -> validateRawResultLine(cleaned_line, line.line, raw_results_path, line_number.line));
     }
 
     public static void validateEntriesNumberOfElements(final Path entries_path, final int number_of_entry_columns, final String entry_column_map_string) throws IOException {
 
         final int number_of_columns = entry_column_map_string == null ? number_of_entry_columns : entry_column_map_string.split("[,\\-]").length;
+
+        final BoxedLine line = new BoxedLine();
         final BoxedLineNumber line_number = new BoxedLineNumber();
 
-        getCleanedLines(entries_path, line_number).
-            forEach(line -> validateEntryNumberOfElements(line, number_of_columns, entries_path, line_number));
+        getCleanedLines(entries_path, line, line_number).
+            forEach(cleaned_line -> validateEntryNumberOfElements(cleaned_line, line.line, number_of_columns, entries_path, line_number.line));
     }
 
     public static void validateEntryCategories(final Path entries_path, final Consumer<String> check_category_in_line) throws IOException {
@@ -133,6 +136,10 @@ public class RaceConfigValidator extends ConfigProcessor {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static class BoxedLine {
+        String line;
+    }
+
     private static class BoxedLineNumber {
         int line = 0;
     }
@@ -141,20 +148,27 @@ public class RaceConfigValidator extends ConfigProcessor {
         Duration duration;
     }
 
-    private static void validateRawResultLine(final String line, final Path raw_results_path, final BoxedLineNumber line_number) {
+    private static void validateRawResultLine(final String cleaned_line, final String original_line, final Path raw_results_path, final int line_number) {
 
         try {
-            new RawResult(line);
+            new RawResult(cleaned_line);
 
         } catch (final Exception _) {
-            throw new RuntimeException("invalid record '" + line + "' at line " + line_number.line + " in file '" + raw_results_path.getFileName() + "'");
+            String message = "invalid record '" + original_line + "' at line " + line_number + " in file '" + raw_results_path.getFileName() + "'";
+            if (original_line.contains(COMMENT_SYMBOL))
+                message += " - possible invalid use of # comment symbol";
+            throw new RuntimeException(message);
         }
     }
 
-    private static void validateEntryNumberOfElements(final String line, final int number_of_columns, final Path entries_path, final BoxedLineNumber line_number) {
+    private static void validateEntryNumberOfElements(final String cleaned_line, final String original_line, final int number_of_columns, final Path entries_path, final int line_number) {
 
-        if (line.split("\t").length < number_of_columns)
-            throw new RuntimeException("invalid entry '" + line + "' at line " + line_number.line + " in file '" + entries_path.getFileName() + "'");
+        if (cleaned_line.split("\t").length < number_of_columns) {
+            String message = "invalid entry '" + original_line + "' at line " + line_number + " in file '" + entries_path.getFileName() + "'";
+            if (original_line.contains(COMMENT_SYMBOL))
+                message += " - possible invalid use of # comment symbol";
+            throw new RuntimeException(message);
+        }
     }
 
     private static void validateEntryCategory(final String line, final Consumer<String> check_category_in_line, final Path entries_path, final BoxedLineNumber line_number) {
@@ -183,8 +197,14 @@ public class RaceConfigValidator extends ConfigProcessor {
 
     private static Stream<String> getCleanedLines(final Path file_path, final BoxedLineNumber line_number) throws IOException {
 
+        return getCleanedLines(file_path, new BoxedLine(), line_number);
+    }
+
+    private static Stream<String> getCleanedLines(final Path file_path, final BoxedLine line, final BoxedLineNumber line_number) throws IOException {
+
         return readAllLines(file_path).stream().
             peek(_ -> line_number.line++).
+            peek(l -> line.line = l).
             map(Normalisation::stripComment).
             filter(Predicate.not(String::isBlank));
     }

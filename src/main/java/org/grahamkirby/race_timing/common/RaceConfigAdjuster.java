@@ -46,7 +46,7 @@ public class RaceConfigAdjuster extends ConfigProcessor {
             KEY_NORMALISED_HTML_ENTITIES_PATH,
             KEY_PRIZE_CATEGORIES_PATH,
             KEY_RAW_RESULTS_PATH,
-            KEY_RESULTS_PATH
+            KEY_OVERALL_RESULTS_PATH
         );
 
     @Override

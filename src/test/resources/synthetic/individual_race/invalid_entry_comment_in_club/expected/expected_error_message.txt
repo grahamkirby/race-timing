@@ -1,0 +1,1 @@
+invalid entry '20	Amelia Muir	#Strathearn Harriers	FS' at line 20 in file 'entries.txt' - possible invalid use of # comment symbol

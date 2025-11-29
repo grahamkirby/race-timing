@@ -21,6 +21,7 @@ import java.util.List;
 
 public interface SingleRaceInternal extends RaceInternal {
 
-    List<RawResult> getRawResults();
     List<RaceEntry> getEntries();
+    List<RawResult> getRawResults();
+    List<RaceResult> getOverallResults();
 }

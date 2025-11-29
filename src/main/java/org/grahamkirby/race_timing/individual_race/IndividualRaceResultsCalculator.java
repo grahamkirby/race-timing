@@ -60,11 +60,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final int BIB_NUMBER_INDEX = 0;
-    private static final int NAME_INDEX = 1;
-    private static final int CLUB_INDEX = 2;
-    private static final int CATEGORY_INDEX = 3;
-
     public static final int DUMMY_BIB_NUMBER = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,13 +149,11 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     private void initialiseResults() {
 
+        final List<RaceResult> directly_recorded_results = ((SingleRaceInternal) race).getOverallResults();
         final List<RawResult> raw_results = ((SingleRaceInternal) race).getRawResults();
 
-        overall_results = raw_results.isEmpty() ?
-            loadOverallResults() :
-            getRaceResults(raw_results);
-
-        overall_results = makeMutableCopy(overall_results);
+        overall_results = makeMutableCopy(
+            !directly_recorded_results.isEmpty() ? directly_recorded_results : getRaceResults(raw_results));
     }
 
     private List<RaceResult> getRaceResults(final List<RawResult> raw_results) {
@@ -170,61 +163,12 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             toList();
     }
 
-    private List<RaceResult> loadOverallResults() {
-
-        try {
-            return readAllLines(race.getConfig().getPath(KEY_RESULTS_PATH)).stream().
-                map(Normalisation::stripComment).
-                filter(Predicate.not(String::isBlank)).
-                map(this::makeRaceResult).
-                toList();
-        }
-        catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private RaceResult makeRaceResult(final String line) {
-
-        final List<String> elements = makeMutableCopy(Arrays.stream(line.split("\t")).toList());
-
-        elements.addFirst(String.valueOf(DUMMY_BIB_NUMBER));
-
-        final RaceEntry entry = makeRaceEntry(elements);
-        final Duration finish_time = parseTime(elements.getLast());
-
-        return new IndividualRaceResult(entry, finish_time, race);
-    }
-
     private RaceResult makeRaceResult(final RawResult raw_result) {
 
         final int bib_number = raw_result.getBibNumber();
         final Duration finish_time = raw_result.getRecordedFinishTime();
 
         return new IndividualRaceResult(getEntryWithBibNumber(bib_number), finish_time, race);
-    }
-
-    private RaceEntry makeRaceEntry(final List<String> elements) {
-
-        final Normalisation normalisation = race.getNormalisation();
-        final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
-
-        try {
-            final int bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
-
-            final String name = normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
-            final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
-
-            final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().getEntryCategory(category_name);
-
-            final Participant participant = new Runner(name, club, category);
-
-            return new RaceEntry(participant, bib_number);
-
-        } catch (final RuntimeException _) {
-            throw new RuntimeException(String.join(" ", elements));
-        }
     }
 
     private RaceEntry getEntryWithBibNumber(final int bib_number) {
