@@ -29,22 +29,26 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Config {
-
-    // TODO add optional strict check that all files in input directory are used.
 
     public static final String CSV_FILE_SUFFIX = "csv";
     public static final String HTML_FILE_SUFFIX = "html";
     public static final String PDF_FILE_SUFFIX = "pdf";
     public static final String TEXT_FILE_SUFFIX = "txt";
 
-    public static final Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
+    // Treated differently from other configurable paths, because it needs to be accessed
+    // from test code independently of a particular race.
+    public static final Path IGNORED_FILE_NAMES_PATH = Path.of("src/main/resources/configuration/ignored_file_names." + CSV_FILE_SUFFIX);
 
     public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
     public static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
     public static final String KEY_CATEGORY_START_OFFSETS = "CATEGORY_START_OFFSETS";
+    public static final String KEY_CHECK_INPUT_FILES_USED = "CHECK_INPUT_FILES_USED";
     public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
     public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
     public static final String KEY_ENTRY_CATEGORIES_PATH = "ENTRY_CATEGORIES_PATH";
@@ -107,10 +111,14 @@ public class Config {
     /** Web link to application on GitHub. */
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
 
+    public static boolean override_check_input_files_used = false;
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Map<String, Object> config_map;
     private final List<String> unused_keys;
+    private final List<Path> unused_files;
+    private final List<Path> used_files;
 
     private final Path config_path;
     private final List<ConfigProcessor> config_processors = new ArrayList<>();
@@ -128,16 +136,25 @@ public class Config {
 
         unused_keys = new ArrayList<>(config_map.keySet());
         unused_keys.removeAll(RaceConfigValidator.REQUIRED_CONFIG_KEYS);
+
+        unused_files = makeMutableCopy(getInputFiles());
+        unused_files.remove(config_path);
+
+        used_files = new ArrayList<>();
+    }
+
+    public static List<String> getIgnoredFileNames() throws IOException {
+
+        return readAllLines(IGNORED_FILE_NAMES_PATH).stream().
+            map(Normalisation::stripComment).
+            filter(Predicate.not(String::isBlank)).
+            toList();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Encodes a single value by surrounding with quotes if it contains a comma. */
-    public static String encode(final String s) {
-        return s.contains(",") ? "\"" + s + "\"" : s;
-    }
-
     public static <T> List<T> makeMutableCopy(final List<T> list) {
+
         return new ArrayList<>(list);
     }
 
@@ -161,14 +178,36 @@ public class Config {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void outputUnusedProperties() {
+    public void checkUnusedProperties() {
 
-        if (!unused_keys.isEmpty()) {
+        if (!unused_keys.isEmpty())
+            throw new RuntimeException("unused keys: " + String.join(", ", unused_keys));
+    }
 
-            System.out.println("\nUnused keys: " + config_path);
-            unused_keys.forEach(System.out::println);
-            throw new RuntimeException("Unused keys in: " + config_path);
+    public void checkUnusedInputFiles() throws IOException {
+
+        checkUnusedInputFiles(List.of());
+    }
+
+    public void checkUnusedInputFiles(final List<Path> files_actually_used) throws IOException {
+
+        getIgnoredFileNames().forEach(ignored_file_name -> unused_files.remove(config_path.getParent().resolve(ignored_file_name)));
+        unused_files.removeAll(files_actually_used);
+
+        if (!unused_files.isEmpty() && ((Boolean) get(KEY_CHECK_INPUT_FILES_USED) || override_check_input_files_used)) {
+
+            final String message = "unused input files: " +
+                unused_files.stream().
+                    map(path -> path.getFileName().toString()).
+                    collect(Collectors.joining(", "));
+
+            throw new RuntimeException(message);
         }
+    }
+
+    public List<Path> getUsedInputFiles() {
+
+        return used_files;
     }
 
     public Object get(final String key) {
@@ -184,7 +223,15 @@ public class Config {
 
     public Path getPath(final String key) {
 
-        return (Path) get(key);
+        Path path = (Path) get(key);
+
+        if (path != null) {
+            path = path.normalize();
+            unused_files.remove(path);
+            used_files.add(path);
+        }
+
+        return path;
     }
 
     public boolean containsKey(final String key) {
@@ -261,6 +308,13 @@ public class Config {
         return getPathRelativeToRaceConfigFile(path);
     }
 
+    public Path getOutputDirectoryPath() {
+
+        // This assumes that the config file is in the "input" directory
+        // which is at the same level as the "output" directory.
+        return config_path.getParent().resolveSibling("output");
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Path makeRelativeToProjectRoot(final Path path) {
@@ -274,11 +328,13 @@ public class Config {
         return config_path.resolveSibling(path);
     }
 
-    public Path getOutputDirectoryPath() {
+    private List<Path> getInputFiles() throws IOException {
 
-        // This assumes that the config file is in the "input" directory
-        // which is at the same level as the "output" directory.
-        return config_path.getParent().resolveSibling("output");
+        final Path input_directory = config_path.getParent();
+
+        try (final Stream<Path> paths = Files.list(input_directory)) {
+            return paths.filter(Files::isRegularFile).toList();
+        }
     }
 }
 

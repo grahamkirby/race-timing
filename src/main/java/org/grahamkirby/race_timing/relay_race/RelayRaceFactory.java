@@ -52,8 +52,10 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
 
         config.addConfigProcessor(RaceConfigAdjuster::new);
         config.addConfigProcessor(RelayRaceConfigAdjuster::new);
+
         config.addConfigProcessor(RaceConfigValidator::new);
         config.addConfigProcessor(RelayRaceConfigValidator::new);
+
         config.processConfig();
 
         return config;

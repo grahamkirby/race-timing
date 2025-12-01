@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.csvEncode;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.*;
 import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator.getAggregatePosition;
@@ -230,8 +231,8 @@ public class IndividualRaceOutput extends RaceOutput {
 
             writer.append(result.getPositionString()).append(",").
                 append(String.valueOf(result.getBibNumber())).append(",").
-                append(encode(participant.getName())).append(",").
-                append(encode(((Runner) participant).getClub())).append(",").
+                append(csvEncode(participant.getName())).append(",").
+                append(csvEncode(((Runner) participant).getClub())).append(",").
                 append(participant.getCategory().getShortName()).append(",").
                 append(renderDuration(result, DNF_STRING)).
                 append(LINE_SEPARATOR);

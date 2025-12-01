@@ -131,6 +131,12 @@ public class Normalisation {
         return replaceAllMapEntries(s, normalised_html_entities);
     }
 
+    /** Encodes a single value by surrounding with quotes if it contains a comma. */
+    public static String csvEncode(final String s) {
+
+        return s.contains(",") ? "\"" + s + "\"" : s;
+    }
+
     /** Parses the given time string, trying both colon and full stop as separators. */
     public static Duration parseTime(final String time) {
 
@@ -141,19 +147,25 @@ public class Normalisation {
         }
     }
 
-    public static String renderDuration(final Performance performance, final String alternative) {
-
-        return performance != null && performance.getValue() != null ? renderDuration((Duration) performance.getValue()) : alternative;
-    }
-
     public static String renderDuration(final Duration duration, final String alternative) {
 
         return duration != null ? renderDuration(duration) : alternative;
     }
 
+    public static String renderDuration(final Performance performance, final String alternative) {
+
+        return performance != null && performance.getValue() != null ? renderDuration((Duration) performance.getValue()) : alternative;
+    }
+
     public static String renderDuration(final RaceResult result, final String alternative) {
 
         return result.canComplete() ? renderDuration((Duration) result.getPerformance().getValue()) : alternative;
+    }
+
+    /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
+    private static String renderDuration(final Duration duration) {
+
+        return formatWholePart(duration) + formatFractionalPart(duration);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,12 +245,6 @@ public class Normalisation {
         return Arrays.stream(element_combination_map.split("-")).
             map(column_number_as_string -> elements.get(Integer.parseInt(column_number_as_string) - 1)).
             collect(Collectors.joining(" "));
-    }
-
-    /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */
-    private static String renderDuration(final Duration duration) {
-
-        return formatWholePart(duration) + formatFractionalPart(duration);
     }
 
     /** Converts the given string to title case, ignoring any words present in the stop word file. */
@@ -325,6 +331,9 @@ public class Normalisation {
     /** Parses the given time in format hours/minutes/seconds or minutes/seconds, using the given separator. */
     private static Duration parseTime(String time, final String separator) {
 
+        // TODO expand commenting.
+        // Example time: 01:42:19.423
+
         time = time.strip();
 
         boolean negative = false;
@@ -335,6 +344,7 @@ public class Normalisation {
         }
 
         // Deal with missing hours or seconds component.
+        // TODO used?
         if (time.startsWith(separator)) time = "0" + time;
         if (time.endsWith(separator)) time = time + "0";
 

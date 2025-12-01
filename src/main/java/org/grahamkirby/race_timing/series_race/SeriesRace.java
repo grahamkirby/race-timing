@@ -42,6 +42,8 @@ public class SeriesRace implements RaceInternal {
     private final Normalisation normalisation;
     private final Notes notes;
 
+    private final List<Path> input_files_used_by_individual_races =  new ArrayList<>();
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public SeriesRace(final Config config) throws IOException {
@@ -63,8 +65,10 @@ public class SeriesRace implements RaceInternal {
     @Override
     public void outputResults(final RaceResults results) throws IOException {
 
+        config.checkUnusedInputFiles(input_files_used_by_individual_races);
+        config.checkUnusedProperties();
+
         results_output.outputResults(results);
-        config.outputUnusedProperties();
     }
 
     @Override
@@ -145,7 +149,12 @@ public class SeriesRace implements RaceInternal {
                     throw new RuntimeException("duplicate races specified in file '" + config.getConfigPath().getFileName() + "'");
 
                 config_paths_seen.add(race_config_path);
-                races.add(getIndividualRace(race_config_path, i + 1));
+
+                final SingleRaceInternal individual_race = getIndividualRace(race_config_path, i + 1);
+                races.add(individual_race);
+
+                individual_race.getConfig().checkUnusedInputFiles();
+                input_files_used_by_individual_races.addAll(individual_race.getConfig().getUsedInputFiles());
             }
         }
     }

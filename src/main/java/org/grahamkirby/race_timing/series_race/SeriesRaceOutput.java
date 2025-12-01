@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.csvEncode;
 
 class SeriesRaceOutput extends RaceOutput {
 
@@ -105,9 +106,9 @@ class SeriesRaceOutput extends RaceOutput {
             final Runner runner = (Runner) result.getParticipant();
 
             writer.append(result.getPositionString()).append(",").
-                append(encode(runner.getName())).append(",");
+                append(csvEncode(runner.getName())).append(",");
             if (results.multipleClubs())
-                writer.append(encode((runner).getClub())).append(",");
+                writer.append(csvEncode((runner).getClub())).append(",");
             writer.append(runner.getCategory().getShortName()).append(",");
 
             writer.append(result.getPerformances().stream().

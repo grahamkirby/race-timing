@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.csvEncode;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 
 public class RelayRaceOutput extends RaceOutput {
@@ -336,7 +337,7 @@ public class RelayRaceOutput extends RaceOutput {
 
             writer.append(result.getPositionString()).append(",").
                 append(String.valueOf(result.getBibNumber())).append(",").
-                append(encode(result.getParticipantName())).append(",").
+                append(csvEncode(result.getParticipantName())).append(",").
                 append(result.getParticipant().getCategory().getShortName()).append(",").
                 append(renderDuration(result, DNF_STRING)).
                 append(LINE_SEPARATOR);
@@ -399,11 +400,11 @@ public class RelayRaceOutput extends RaceOutput {
 
             writer.append(result.getPositionString()).append(",").
                 append(String.valueOf(result.getBibNumber())).append(",").
-                append(encode(result.getParticipantName())).append(",").
+                append(csvEncode(result.getParticipantName())).append(",").
                 append(result.getParticipant().getCategory().getLongName()).append(",");
 
             final String leg_details = ((RelayRaceResults) race_results).getLegDetails(result).stream().
-                map(Config::encode).
+                map(Normalisation::csvEncode).
                 collect(Collectors.joining(","));
 
             writer.append(leg_details);
@@ -474,7 +475,7 @@ public class RelayRaceOutput extends RaceOutput {
         public void printResult(final RaceResult r) throws IOException {
 
             final RelayRaceLegResult result = (RelayRaceLegResult) r;
-            final String runner_names = encode(((Team) result.getParticipant()).getRunnerNames().get(result.getLegNumber() - 1));
+            final String runner_names = csvEncode(((Team) result.getParticipant()).getRunnerNames().get(result.getLegNumber() - 1));
 
             writer.append(result.getPositionString()).append(",").
                 append(runner_names).append(",").

@@ -32,6 +32,20 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RaceConfigValidator extends ConfigProcessor {
 
+    private static class BoxedLine {
+        String line;
+    }
+
+    public static class BoxedLineNumber {
+        public int line = 0;
+    }
+
+    private static class BoxedDuration {
+        Duration duration;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public static final List<String> REQUIRED_CONFIG_KEYS = List.of(
 
         Config.KEY_YEAR,
@@ -122,11 +136,11 @@ public class RaceConfigValidator extends ConfigProcessor {
 
     public static void validateRecordedBibNumbersAreRegistered(final List<RaceEntry> entries, final Path raw_results_path) throws IOException {
 
+        final BoxedLineNumber line_number = new BoxedLineNumber();
+
         final Set<Integer> entry_bib_numbers = entries.stream().
             map(RaceEntry::getBibNumber).
             collect(Collectors.toSet());
-
-        final BoxedLineNumber line_number = new BoxedLineNumber();
 
         getCleanedLines(raw_results_path, line_number).
             map(RawResult::new).
@@ -135,18 +149,6 @@ public class RaceConfigValidator extends ConfigProcessor {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static class BoxedLine {
-        String line;
-    }
-
-    private static class BoxedLineNumber {
-        int line = 0;
-    }
-
-    private static class BoxedDuration {
-        Duration duration;
-    }
 
     private static void validateRawResultLine(final String cleaned_line, final String original_line, final Path raw_results_path, final int line_number) {
 

@@ -27,6 +27,8 @@ import static org.grahamkirby.race_timing.common.Config.*;
 @SuppressWarnings("preview")
 public class RaceConfigAdjuster extends ConfigProcessor {
 
+    public static final Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");
+
     public static String DEFAULT_CAPITALISATION_STOP_WORDS_PATH = DEFAULT_CONFIG_ROOT_PATH + "/capitalisation_stop_words." + CSV_FILE_SUFFIX;
     public static String DEFAULT_NORMALISED_HTML_ENTITIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/html_entities." + CSV_FILE_SUFFIX;
     public static String DEFAULT_NORMALISED_CLUB_NAMES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/club_names." + CSV_FILE_SUFFIX;
@@ -57,8 +59,10 @@ public class RaceConfigAdjuster extends ConfigProcessor {
         config.addIfAbsent(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
 
         config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
+        config.replaceIfPresent(KEY_CHECK_INPUT_FILES_USED, Boolean::parseBoolean);
         config.replaceIfPresent(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, Boolean::parseBoolean);
 
+        config.addIfAbsent(KEY_CHECK_INPUT_FILES_USED, false);
         config.addIfAbsent(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, true);
     }
 

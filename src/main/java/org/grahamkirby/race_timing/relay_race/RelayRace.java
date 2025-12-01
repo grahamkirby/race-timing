@@ -34,12 +34,12 @@ import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
+import static org.grahamkirby.race_timing.common.RaceResultsCalculator.setPositionStrings;
 
 public class RelayRace implements SingleRaceInternal {
 
     /** Packages details of an individually recorded leg start (unusual). */
-    record IndividualStart(int bib_number, int leg_number, Duration start_time) {
-    }
+    record IndividualStart(int bib_number, int leg_number, Duration start_time) { }
 
     private static final int BIB_NUMBER_INDEX = 0;
     private static final int TEAM_NAME_INDEX = 1;
@@ -128,7 +128,6 @@ public class RelayRace implements SingleRaceInternal {
     public void outputResults(final RaceResults results) throws IOException {
 
         results_output.outputResults(results);
-        config.outputUnusedProperties();
     }
 
     @Override
@@ -194,7 +193,7 @@ public class RelayRace implements SingleRaceInternal {
             toList();
 
         // Deal with dead heats in legs after the first.
-        RaceResultsCalculator.setPositionStrings(results, leg_number > 1);
+        setPositionStrings(results, leg_number > 1);
 
         return results;
     }
@@ -268,29 +267,25 @@ public class RelayRace implements SingleRaceInternal {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void loadRaceData() {
+    private void loadRaceData() throws IOException {
 
         final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
         final Path electronic_results_path = config.getPath(KEY_RAW_RESULTS_PATH);
+        final Path annotations_path = config.getPath(KEY_ANNOTATIONS_PATH);
         final Path paper_results_path = config.getPath(KEY_PAPER_RESULTS_PATH);
 
-        try {
-            validateDataFiles(entries_path, electronic_results_path, paper_results_path);
+        validateDataFiles(entries_path, electronic_results_path, paper_results_path);
 
-            entries = loadEntries(entries_path);
+        entries = loadEntries(entries_path);
 
-            final List<RawResult> electronically_recorded_raw_results = loadRawResults(electronic_results_path);
-            final List<RawResult> paper_recorded_raw_results = loadRawResults(paper_results_path);
+        final List<RawResult> electronically_recorded_raw_results = loadRawResults(electronic_results_path);
+        final List<RawResult> paper_recorded_raw_results = loadRawResults(paper_results_path);
 
-            number_of_electronically_recorded_raw_results = electronically_recorded_raw_results.size();
-            raw_results = append(electronically_recorded_raw_results, paper_recorded_raw_results);
+        number_of_electronically_recorded_raw_results = electronically_recorded_raw_results.size();
+        raw_results = append(electronically_recorded_raw_results, paper_recorded_raw_results);
 
-            config.processConfigIfPresent(KEY_ANNOTATIONS_PATH, this::processAnnotations);
-            validateData(entries, entries_path, raw_results, electronic_results_path, paper_results_path);
-
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        if (annotations_path != null) processAnnotations(annotations_path);
+        validateData(entries, entries_path, raw_results, electronic_results_path, paper_results_path);
     }
 
     private void validateEntryCategory(final String line) {
@@ -366,17 +361,17 @@ public class RelayRace implements SingleRaceInternal {
             map(RaceEntry::getBibNumber).
             collect(Collectors.toSet());
 
-        int line = 0;
-        for (final RawResult raw_result : raw_results) {
+        final BoxedLineNumber line = new BoxedLineNumber();
 
-            line++;
-            final int result_bib_number = raw_result.getBibNumber();
-            if (result_bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(result_bib_number)) {
-                String message = "unregistered bib number '" + result_bib_number + "' at line " + line + " in file '" + electronic_results_path.getFileName() + "'";
+        raw_results.stream().
+            peek(_ -> line.line++).
+            map(RawResult::getBibNumber).
+            filter(bib_number -> bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(bib_number)).
+            forEachOrdered(bib_number -> {
+                String message = "unregistered bib number '" + bib_number + "' at line " + line.line + " in file '" + electronic_results_path.getFileName() + "'";
                 if (paper_results_path != null) message += " or '" + paper_results_path.getFileName() + "'";
                 throw new RuntimeException(message);
-            }
-        }
+            });
     }
 
     private void validateEntriesUnique(final List<RaceEntry> entries, final Path entries_path) {
@@ -387,24 +382,20 @@ public class RelayRace implements SingleRaceInternal {
                     throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
     }
 
-    private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) {
+    private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) throws IOException {
 
-        try {
-            final Map<String, Integer> bib_counts = new HashMap<>();
+        final Map<String, Integer> bib_counts = new HashMap<>();
 
-            countLegResults(bib_counts, raw_results_path);
-            countLegResults(bib_counts, paper_results_path);
+        countLegResults(bib_counts, raw_results_path);
+        countLegResults(bib_counts, paper_results_path);
 
-            for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
-                if (entry.getValue() > getNumberOfLegs()) {
-                    String message = "surplus result for team '" + entry.getKey() + "' in file '" + raw_results_path.getFileName() + "'";
-                    if (paper_results_path != null)
-                        message += " or '" + paper_results_path.getFileName() + "'";
-                    throw new RuntimeException(message);
-                }
-        } catch (final IOException e) {
-            throw new RuntimeException("unexpected IO exception", e);
-        }
+        for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
+            if (entry.getValue() > getNumberOfLegs()) {
+                String message = "surplus result for team '" + entry.getKey() + "' in file '" + raw_results_path.getFileName() + "'";
+                if (paper_results_path != null)
+                    message += " or '" + paper_results_path.getFileName() + "'";
+                throw new RuntimeException(message);
+            }
     }
 
     private void countLegResults(final Map<String, Integer> bib_counts, final Path results_path) throws IOException {
@@ -417,19 +408,15 @@ public class RelayRace implements SingleRaceInternal {
             forEachOrdered(bib_number -> bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1));
     }
 
-    private void processAnnotations(final Object path) {
+    private void processAnnotations(final Path path) throws IOException {
 
-        try {
-            readAllLines((Path) path).stream().
-                skip(1).                                      // Skip header line.
-                map(line -> line.split("\t")).
-                forEach(elements -> {
-                    if (elements[0].equals("Update"))            // May add insertion option later.
-                        updateResult(raw_results, elements);
-                });
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        readAllLines(path).stream().
+            skip(1).                                      // Skip header line.
+            map(line -> line.split("\t")).
+            forEach(elements -> {
+                if (elements[0].equals("Update"))            // May add insertion option later.
+                    updateResult(raw_results, elements);
+            });
     }
 
     private static void updateResult(final List<? extends RawResult> raw_results, final String[] elements) {

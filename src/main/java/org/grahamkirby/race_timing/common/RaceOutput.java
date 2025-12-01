@@ -55,6 +55,9 @@ public abstract class RaceOutput {
         printCombined();
         finaliseNotes();
         printNotes();
+
+        results.getConfig().checkUnusedInputFiles();
+        results.getConfig().checkUnusedProperties();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

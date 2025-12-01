@@ -109,7 +109,6 @@ public class IndividualRace implements SingleRaceInternal {
     public void outputResults(final RaceResults results) throws IOException {
 
         results_output.outputResults(results);
-        config.outputUnusedProperties();
     }
 
     @Override
@@ -188,6 +187,8 @@ public class IndividualRace implements SingleRaceInternal {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private RaceResult makeRaceResult(final String line) {
 
         final List<String> elements = makeMutableCopy(Arrays.stream(line.split("\t")).toList());
@@ -199,8 +200,6 @@ public class IndividualRace implements SingleRaceInternal {
 
         return new IndividualRaceResult(entry, finish_time, this);
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void validateEntryCategory(final String line) {
 
