@@ -298,7 +298,7 @@ public class RaceTest {
     private Path getTempDirectory() throws IOException {
 
         if (debug) {
-            final Path temp_dir_path = Paths.get(user_test_directory_path_string);
+            final Path temp_dir_path = Path.of(user_test_directory_path_string);
             if (!Files.exists(temp_dir_path))
                 Files.createDirectory(temp_dir_path);
             return temp_dir_path;

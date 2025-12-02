@@ -40,6 +40,9 @@ public class Normalisation {
     /** Used when replacing double spaces with single space. */
     private static final Map<String, String> DOUBLE_SPACE_REMOVAL_MAP = Map.of("  ", " ");
 
+    /** As defined by Duration.parse(). */
+    private static final int MAX_LENGTH_SECONDS_FRACTIONAL_PART = 9;
+
     /** Strings that should not be converted to title case. */
     private Set<String> capitalisation_stop_words;
 
@@ -331,8 +334,23 @@ public class Normalisation {
     /** Parses the given time in format hours/minutes/seconds or minutes/seconds, using the given separator. */
     private static Duration parseTime(String time, final String separator) {
 
-        // TODO expand commenting.
-        // Example time: 01:42:19.423
+        // Example valid time representations, in ascending order of duration:
+        //
+        //    -0:08:00                                  Denotes early start.
+        //     0:58                   00:00:58
+        //     :59                    00:00:59
+        //     45:01                  00:45:01
+        //     0:45:37.6543324594234  00:45:37.654
+        //     0:49:58
+        //     0:51:25.23             00:51:25.230
+        //     0:54:19.2              00:54:19.200
+        //     0:58:                  00:58:00
+        //     1:00:07                01:00:07
+        //     65:55                  01:05:55
+        //     :67:22                 01:07:22
+        //     68:49.32               01:08:49.320
+        //     0:70:16                01:10:16
+        //     1.11.43                01:11:43          Different separator.
 
         time = time.strip();
 
@@ -344,7 +362,6 @@ public class Normalisation {
         }
 
         // Deal with missing hours or seconds component.
-        // TODO used?
         if (time.startsWith(separator)) time = "0" + time;
         if (time.endsWith(separator)) time = time + "0";
 
@@ -352,9 +369,9 @@ public class Normalisation {
             final String[] parts = time.split(separator);
 
             // Construct ISO-8601 duration format.
-            Duration duration = Duration.parse("PT" + hours(parts) + minutes(parts) + seconds(parts));
-            if (negative) duration = duration.negated();
-            return duration;
+            final Duration duration = Duration.parse("PT" + hours(parts) + minutes(parts) + seconds(parts));
+
+            return negative ? duration.negated() : duration;
 
         } catch (final RuntimeException _) {
             throw new DateTimeParseException(time, time, 0);
@@ -395,6 +412,14 @@ public class Normalisation {
     }
 
     private static String seconds(final String[] parts) {
-        return (parts.length > 2 ? parts[2] : parts[1]) + "S";
+
+        String s = parts.length > 2 ? parts[2] : parts[1];
+
+        final String[] second_parts = s.split("\\.");
+
+        if (second_parts.length > 1 && second_parts[1].length() > MAX_LENGTH_SECONDS_FRACTIONAL_PART)
+            s = second_parts[0] + "." + second_parts[1].substring(0, MAX_LENGTH_SECONDS_FRACTIONAL_PART);
+
+        return s + "S";
     }
 }
