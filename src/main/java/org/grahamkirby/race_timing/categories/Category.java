@@ -63,6 +63,11 @@ public abstract class Category {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public boolean intersectsWith(final Category other) {
+
+        return age_range.intersectsWith(other.age_range);
+    }
+
     public String getLongName() {
         return long_name;
     }
@@ -73,5 +78,11 @@ public abstract class Category {
 
     public AgeRange getAgeRange() {
         return age_range;
+    }
+
+    @Override
+    public String toString() {
+
+        return getShortName() + " (" + getAgeRange().getMinimumAge() + "," + getAgeRange().getMaximumAge() + ")";
     }
 }

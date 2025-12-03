@@ -19,10 +19,8 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
@@ -31,7 +29,8 @@ import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.*;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.RunnerPerformance;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.TeamPerformance;
 
 public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
@@ -115,19 +114,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             getMedianTimeForOddNumberOfResults();
     }
 
-    public List<TeamPerformance> getTeamPrizes() {
-
-        return race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
-
-            Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
-                map(this::getFirstTeamInGenderCategory).
-                filter(Optional::isPresent).
-                map(Optional::get).
-                toList() :
-
-            List.of();
-    }
-
     public int getGenderPosition(final String runner_name, final String club, final String gender) {
 
         return (int) getGenderResults(gender).stream().
@@ -146,6 +132,19 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private List<TeamPerformance> getTeamPrizes() {
+
+        return race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
+
+            Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
+                map(this::getFirstTeamInGenderCategory).
+                filter(Optional::isPresent).
+                map(Optional::get).
+                toList() :
+
+            List.of();
+    }
 
     private void initialiseResults() {
 
@@ -396,8 +395,13 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             }
 
             @Override
-            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+            public List<String> getPrizeCategoryGroups() {
                 return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public List<PrizeCategory> getPrizeCategoriesByGroup(final String group) {
+                return race.getCategoriesProcessor().getPrizeCategoriesByGroup(group);
             }
 
             @Override

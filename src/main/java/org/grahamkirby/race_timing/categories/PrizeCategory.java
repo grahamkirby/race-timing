@@ -106,6 +106,12 @@ public final class PrizeCategory extends Category {
         return exclusive;
     }
 
+    @Override
+    public boolean intersectsWith(final Category o) {
+
+        return o instanceof final PrizeCategory other && super.intersectsWith(other) && exclusive && other.exclusive;
+    }
+
     /**
      * Equality defined in terms of gender and age range.
      */
@@ -120,11 +126,5 @@ public final class PrizeCategory extends Category {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), number_of_prizes, eligible_clubs, exclusive);
-    }
-
-    @Override
-    public String toString() {
-
-        return getShortName() + " (" + getAgeRange().getMinimumAge() + "," + getAgeRange().getMaximumAge() + ")";
     }
 }

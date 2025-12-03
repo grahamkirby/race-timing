@@ -19,7 +19,6 @@ package org.grahamkirby.race_timing.series_race;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.individual_race.IndividualRaceResult;
 import org.grahamkirby.race_timing.individual_race.Runner;
@@ -454,8 +453,13 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
             }
 
             @Override
-            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+            public List<String> getPrizeCategoryGroups() {
                 return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public List<PrizeCategory> getPrizeCategoriesByGroup(final String group) {
+                return race.getCategoriesProcessor().getPrizeCategoriesByGroup(group);
             }
 
             @Override

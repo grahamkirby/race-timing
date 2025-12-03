@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 
 import java.util.List;
 
@@ -35,6 +34,7 @@ public interface RaceResults {
     List<? extends RaceResult> getOverallResults(List<PrizeCategory> categories);
     List<? extends RaceResult> getPrizeWinners(PrizeCategory category);
 
-    List<PrizeCategoryGroup> getPrizeCategoryGroups();
+    List<String> getPrizeCategoryGroups();
+    List<PrizeCategory> getPrizeCategoriesByGroup(String group);
     boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
 }

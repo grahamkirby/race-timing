@@ -89,7 +89,7 @@ public abstract class CommonRaceResult implements RaceResult {
 
     /** Combines multiple comparators into a single comparator. */
     @SafeVarargs
-    protected static <T extends Comparable<T>> Comparator<T> consecutiveComparator(final Comparator<T>... comparators) {
+    public static <T extends Comparable<T>> Comparator<T> consecutiveComparator(final Comparator<T>... comparators) {
 
         return Arrays.stream(comparators).
             reduce((_, _) -> 0, Comparator::thenComparing);

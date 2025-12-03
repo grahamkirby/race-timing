@@ -85,7 +85,9 @@ public class RaceConfigValidator extends ConfigProcessor {
 
     public static void validateEntriesNumberOfElements(final Path entries_path, final int number_of_entry_columns, final String entry_column_map_string) throws IOException {
 
-        final int number_of_columns = entry_column_map_string == null ? number_of_entry_columns : entry_column_map_string.split("[,\\-]").length;
+        final int number_of_columns = entry_column_map_string == null ?
+            number_of_entry_columns :
+            entry_column_map_string.split("[,\\-]").length;
 
         final BoxedLine line = new BoxedLine();
         final BoxedLineNumber line_number = new BoxedLineNumber();

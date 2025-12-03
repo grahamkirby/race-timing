@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategoryGroup;
 import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
@@ -632,8 +631,13 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             }
 
             @Override
-            public List<PrizeCategoryGroup> getPrizeCategoryGroups() {
+            public List<String> getPrizeCategoryGroups() {
                 return race.getCategoriesProcessor().getPrizeCategoryGroups();
+            }
+
+            @Override
+            public List<PrizeCategory> getPrizeCategoriesByGroup(final String group) {
+                return race.getCategoriesProcessor().getPrizeCategoriesByGroup(group);
             }
 
             @Override
