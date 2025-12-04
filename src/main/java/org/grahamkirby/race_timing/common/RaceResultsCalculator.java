@@ -68,7 +68,7 @@ public abstract class RaceResultsCalculator {
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
         final Predicate<RaceResult> prize_category_filter = result ->
-            race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(getClub(result), result.getCategory(), prize_categories);
+            race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(result.getCategory(), getClub(result), prize_categories);
 
         final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
 
@@ -193,7 +193,7 @@ public abstract class RaceResultsCalculator {
                 return false;
 
         return race.getCategoriesProcessor().isResultEligibleForPrizeCategory(
-            result.getParticipant().category, prize_category, getClub(result));
+            result.getParticipant().category, getClub(result), prize_category);
     }
 
     protected void recordDNFs() {

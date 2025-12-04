@@ -2,8 +2,8 @@
 
 # Add to .git/hooks/pre-commit in project directory.
 
-if git diff --cached | grep -q 'private static final boolean DEBUG = true;'; then
-    echo "Commit blocked: DEBUG flag is set."
+if git diff --cached | grep -q '^USER_TEST_DIRECTORY_PATH ='; then
+    echo "Commit blocked: debug mode is enabled."
     exit 1
 fi
 

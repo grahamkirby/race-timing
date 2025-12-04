@@ -50,7 +50,7 @@ public final class PrizeCategory extends Category {
 
         // Category definition headers (last two optional):
         //
-        // Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, [Eligible Clubs], [Exclusive (Y/N)]
+        // Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, [Eligible Clubs, default all], [Exclusive (Y/N), default Y]
 
         super(components);
 
