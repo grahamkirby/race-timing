@@ -20,12 +20,14 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.*;
 
+import java.time.Duration;
 import java.util.Comparator;
 
 public class RelayRaceLegResult extends SingleRaceResult {
 
     private int leg_number;
     private boolean in_mass_start;
+    private boolean finish_time_unknown;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,6 +37,7 @@ public class RelayRaceLegResult extends SingleRaceResult {
 
         setDnf(true);
         in_mass_start = false;
+        finish_time_unknown = true;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +76,17 @@ public class RelayRaceLegResult extends SingleRaceResult {
         throw new UnsupportedOperationException();
     }
 
+    public void setFinishTime(final Duration finish_time) {
+
+        if (finish_time != null) {
+            this.finish_time = finish_time;
+            finish_time_unknown = false;
+        }
+        else {
+            this.finish_time = ((RelayRaceResultsCalculator) race.getResultsCalculator()).getLastRecordedFinishTime().plus(Duration.ofSeconds(1));
+        }
+    }
+
     public boolean isInMassStart() {
         return in_mass_start;
     }
@@ -87,5 +101,9 @@ public class RelayRaceLegResult extends SingleRaceResult {
 
     public void setLegNumber(final int leg_number) {
         this.leg_number = leg_number;
+    }
+
+    public boolean isFinishTimeUnknown() {
+        return finish_time_unknown;
     }
 }

@@ -85,10 +85,10 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
     }
 
     @Override
-    public boolean areEqualPositionsAllowed() {
+    public boolean canDistinguishFromOtherEqualPerformances(final RaceResult result) {
 
         // No dead heats for overall results, since an ordering is imposed at the finish.
-        return false;
+        return true;
     }
 
     @Override

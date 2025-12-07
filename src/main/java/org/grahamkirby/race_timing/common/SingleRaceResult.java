@@ -51,10 +51,6 @@ public abstract class SingleRaceResult extends CommonRaceResult {
         return finish_time;
     }
 
-    public void setFinishTime(final Duration finish_time) {
-        this.finish_time = finish_time;
-    }
-
     public int getBibNumber() {
         return bib_number;
     }
@@ -84,16 +80,43 @@ public abstract class SingleRaceResult extends CommonRaceResult {
     /** Compares the given results on the basis of their finish positions. */
     protected static int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
-        if (r1.getRace() != r2.getRace())
+//        int bib1 = ((SingleRaceResult) r1).bib_number;
+//        int bib2 = ((SingleRaceResult) r2).bib_number;
+//
+//        if (r1.getRace() != r2.getRace())
+//            throw new RuntimeException("results compared from two different races");
+//
+//        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) r1).bib_number, (SingleRaceInternal) r1.getRace());
+//        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) r2).bib_number, (SingleRaceInternal) r1.getRace());
+//
+//        if (bib1==58 && bib2==94 || bib1==94 && bib2==58) {
+//            int x = 3;
+//        }
+//
+//        return Integer.compare(recorded_position1, recorded_position2);
+
+        return ((SingleRaceResult)r1).compareRecordedPositionTo(r2);
+    }
+
+    protected int compareRecordedPositionTo(final RaceResult other) {
+
+        int bib1 = ((SingleRaceResult) this).bib_number;
+        int bib2 = ((SingleRaceResult) other).bib_number;
+
+        if (this.getRace() != other.getRace())
             throw new RuntimeException("results compared from two different races");
 
-        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) r1).bib_number, (SingleRaceInternal) r1.getRace());
-        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) r2).bib_number, (SingleRaceInternal) r1.getRace());
+        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) this).bib_number, (SingleRaceInternal) this.getRace());
+        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) other).bib_number, (SingleRaceInternal) this.getRace());
+
+        if (bib1==58 && bib2==94 || bib1==94 && bib2==58) {
+            int x = 3;
+        }
 
         return Integer.compare(recorded_position1, recorded_position2);
     }
 
-    private static int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
+    protected int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
 
         return (int) race.getRawResults().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).

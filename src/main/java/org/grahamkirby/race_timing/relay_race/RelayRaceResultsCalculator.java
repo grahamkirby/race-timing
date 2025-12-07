@@ -29,22 +29,26 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
-    // Calculations specific to a relay race with individual and paired legs. Features/assumptions:
-    //
-    //     * There are various team categories.
-    //     * Each leg is run by either one or two runners.
-    //     * Some result times may be missing, in which case they are interpolated where possible.
-    //     * Some result bib numbers may be missing, in which case they are guessed where possible.
-    //     * Additional results can be imported from paper records.
-    //     * Additional annotations can be imported:
-    //        * Overriding bib numbers or times for particular positions.
-    //     * A leg after the first leg may have a mass start, at which all remaining runners on that leg start together.
-    //     * There can be dead heats in overall results, and in legs after the first.
-    //     * Team gender category can be all women, mixed (half women, half men) or open (no restrictions).
-    //     * Any team can win a prize in an open category.
-    //     * Team age categories can overlap, so that for example a 50+ team can win a prize in a 40+ category.
-    //     * First place in an older category is awarded in preference to a lower prize in a lower category.
-    //     * Separate results are calculated for each leg.
+    // TODO move interpolation to SingleRace.
+
+    /*
+       Calculations specific to a relay race with individual and paired legs. Features/assumptions:
+
+         * There are various team categories.
+         * Each leg is run by either one or two runners.
+         * Some result times may be missing, in which case they are interpolated where possible.
+         * Some result bib numbers may be missing, in which case they are guessed where possible.
+         * Additional results can be imported from paper records.
+         * Additional annotations can be imported:
+            * Overriding bib numbers or times for particular positions.
+         * A leg after the first leg may have a mass start, at which all remaining runners on that leg start together.
+         * There can be dead heats in overall results, and in legs after the first.
+         * Team gender category can be all women, mixed (half women, half men) or open (no restrictions).
+         * Any team can win a prize in an open category.
+         * Team age categories can overlap, so that for example a 50+ team can win a prize in a 40+ category.
+         * First place in an older category is awarded in preference to a lower prize in a lower category.
+         * Separate results are calculated for each leg.
+    */
 
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
                                          Duration previous_finish, Duration next_finish) {
@@ -94,7 +98,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     }
 
     @Override
-    public boolean areEqualPositionsAllowed() {
+    public boolean canDistinguishFromOtherEqualPerformances(final RaceResult result) {
 
         // Dead heats are allowed in overall results, since each overall duration is composed of multiple
         // leg durations.
@@ -102,7 +106,11 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         // Each leg duration is rounded to the nearest second, so the actual overall duration could be
         // anywhere in the range (calculated +/- (number of legs)/2). This means there's no way to
         // distinguish two equal overall results.
-        return true;
+
+        // Can't be distinguished if any leg result was in mass start, or if last leg finish was after last recorded
+        // finish, so time can't be properly interpolated.
+        return ((RelayRaceResult) result).getLegResults().stream().
+            noneMatch(r -> r.isInMassStart() || r.isFinishTimeUnknown());
     }
 
     @Override
@@ -416,11 +424,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         final List<RawResult> results = ((RelayRace) race).getRawResults();
 
-        // If there are no recorded times after this sequence, use the last recorded time.
-        if (!furtherResultsAfterSequence(sequence)) {
-            setTimesForResultsAfterLastRecordedTime(sequence.start_index);
-
-        } else {
+        if (furtherResultsAfterSequence(sequence)) {
 
             final Duration start_time = results.get(sequence.start_index - 1).getRecordedFinishTime();
             final Duration end_time = results.get(sequence.end_index + 1).getRecordedFinishTime();
@@ -429,7 +433,9 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
             final Duration time_step = end_time.minus(start_time).dividedBy(number_of_steps);
 
             interpolateTimes(sequence, time_step);
-        }
+
+        } else
+            recordNoteForResultsAfterLastRecordedTime(sequence.start_index);
     }
 
     private boolean furtherResultsAfterSequence(final ContiguousSequence sequence) {
@@ -463,16 +469,20 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         return Duration.ofSeconds(seconds);
     }
 
-    private void setTimesForResultsAfterLastRecordedTime(final int missing_times_start_index) {
-
-        final Duration last_recorded_time = ((RelayRace) race).getRawResults().get(missing_times_start_index - 1).getRecordedFinishTime();
+    private void recordNoteForResultsAfterLastRecordedTime(final int missing_times_start_index) {
 
         ((RelayRace) race).getRawResults().stream().
             skip(missing_times_start_index).
-            forEachOrdered(result -> {
-                result.setRecordedFinishTime(last_recorded_time);
-                result.appendComment("Time not recorded. No basis for interpolation so set to last recorded time.");
-            });
+            forEachOrdered(result -> result.appendComment("Time not recorded. No basis for interpolation so set to last recorded time + 1s."));
+    }
+
+    public Duration getLastRecordedFinishTime() {
+
+        return ((RelayRace) race).getRawResults().reversed().stream().
+            map(RawResult::getRecordedFinishTime).
+            filter(Objects::nonNull).
+            findFirst().
+            orElseThrow();
     }
 
     private void recordCommentsForNonGuessedResults() {

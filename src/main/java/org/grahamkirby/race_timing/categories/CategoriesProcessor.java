@@ -60,6 +60,9 @@ public class CategoriesProcessor  {
     // general. This works when every category that is available to more than one gender is available to all genders,
     // e.g. 'Open' categories. It might not work with a more complex gender eligibility structure.
 
+    // If generality of age category conflicts with generality of gender, the former takes priority. For example, if a
+    // participant is eligible for prizes in both categories 20-99/Female and 40-49/Female/Male, they receive the former.
+
     // The default of awarding no more than one prize to a participant can also be overridden by setting the 'exclusive'
     // field of a prize category to false. This then means that a participant can win in that category and any other.
     // Common use cases are for an additional prize category only open to the organising club or to local runners, or

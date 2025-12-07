@@ -12,3 +12,9 @@ if [ $? -ne 0 ]; then
     echo "Commit blocked: licence headers invalid."
     exit 1
 fi
+
+mvn modernizer:modernizer
+if [ $? -ne 0 ]; then
+    echo "Commit blocked: obsolete API."
+    exit 1
+fi

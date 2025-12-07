@@ -43,6 +43,7 @@ public class RelayRaceOutput extends RaceOutput {
     public void outputResults(final RaceResults results) throws IOException {
 
         race_results = results;
+
         printDetailedResults();
         printLegResults();
         printCollatedTimes();

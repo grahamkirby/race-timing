@@ -45,4 +45,10 @@ public class DurationPerformance extends Performance{
 
         return d instanceof final DurationPerformance duration ? performance.compareTo(duration.performance) : 0;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+
+        return o instanceof final DurationPerformance other && performance.equals(other.performance);
+    }
 }

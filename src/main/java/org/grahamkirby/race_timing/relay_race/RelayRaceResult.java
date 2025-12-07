@@ -69,7 +69,13 @@ public class RelayRaceResult extends SingleRaceResult {
         return consecutiveComparator(
             CommonRaceResult::comparePossibleCompletion,
             CommonRaceResult::comparePerformance,
-            RelayRaceResult::compareTeamName);
+
+            conditionalComparator(
+                RelayRaceResult::canDistinguishEqualPerformances,
+                RelayRaceResult::compareRecordedPosition,
+                RelayRaceResult::compareTeamName
+            )
+        );
     }
 
     @Override
@@ -89,8 +95,26 @@ public class RelayRaceResult extends SingleRaceResult {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares two results based on alphabetical ordering of the team name. */
-    static int compareTeamName(final RaceResult r1, final RaceResult r2) {
+    private static int compareTeamName(final RaceResult r1, final RaceResult r2) {
 
         return r1.getParticipantName().compareToIgnoreCase(r2.getParticipantName());
+    }
+
+    private static boolean canDistinguishEqualPerformances(final RaceResult result1, final RaceResult result2) {
+
+        final boolean dead_heat1 = result1.getPositionString() != null && result1.getPositionString().endsWith("=");
+        final boolean dead_heat2 = result2.getPositionString() != null && result2.getPositionString().endsWith("=");
+
+        final boolean dnf1 = !result1.canComplete();
+        final boolean dnf2 = !result2.canComplete();
+
+        return !(dead_heat1 || dead_heat2 || dnf1 || dnf2);
+    }
+
+    protected int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
+
+        return race.getRawResults().size() - (int) race.getRawResults().reversed().stream().
+            takeWhile(result -> result.getBibNumber() != bib_number).
+            count() + 1;
     }
 }

@@ -34,7 +34,6 @@ import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
 import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
-import static org.grahamkirby.race_timing.common.RaceResultsCalculator.setPositionStrings;
 
 public class RelayRace implements SingleRaceInternal {
 
@@ -186,14 +185,14 @@ public class RelayRace implements SingleRaceInternal {
 
     List<RelayRaceLegResult> getLegResults(final int leg_number) {
 
-        final List<RelayRaceLegResult> results = results_calculator.getOverallResults().stream().
+        final List<RelayRaceLegResult> results = makeMutableCopy(results_calculator.getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
             map(result -> result.getLegResult(leg_number)).
             sorted().
-            toList();
+            toList());
 
         // Deal with dead heats in legs after the first.
-        setPositionStrings(results, leg_number > 1);
+        results_calculator.setPositionStrings(results, (result1) -> !(leg_number > 1));
 
         return results;
     }
@@ -506,9 +505,9 @@ public class RelayRace implements SingleRaceInternal {
         final String paired_legs_string = config.getString(KEY_PAIRED_LEGS);
 
         // Example: PAIRED_LEGS = 2,3
-        paired_legs = Stream.generate(() -> false)
-            .limit(getNumberOfLegs())
-            .collect(Collectors.toCollection(ArrayList::new));
+        paired_legs = Stream.generate(() -> false).
+            limit(getNumberOfLegs()).
+            collect(Collectors.toCollection(ArrayList::new));
 
         for (final String leg_number_as_string : paired_legs_string.split(","))
             paired_legs.set(Integer.parseInt(leg_number_as_string) - 1, true);

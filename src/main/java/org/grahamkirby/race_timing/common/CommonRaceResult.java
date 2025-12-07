@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
+import org.grahamkirby.race_timing.relay_race.RelayRaceResult;
 
 import java.util.*;
 

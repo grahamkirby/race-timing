@@ -17,7 +17,9 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.common.Config;
+import org.grahamkirby.race_timing.common.ConfigProcessor;
+import org.grahamkirby.race_timing.common.Normalisation;
 
 import java.nio.file.Path;
 import java.util.List;

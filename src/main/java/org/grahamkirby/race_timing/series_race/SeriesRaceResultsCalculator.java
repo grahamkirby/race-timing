@@ -68,7 +68,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     }
 
     @Override
-    public boolean areEqualPositionsAllowed() {
+    public boolean canDistinguishFromOtherEqualPerformances(final RaceResult result) {
 
         // Dead heats are allowed in overall results, since each overall score is composed of multiple
         // individual scores.
@@ -86,7 +86,7 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
         // In the third case, there is intrinsically no way to distinguish two overall results with
         // the same total score.
 
-        return true;
+        return false;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

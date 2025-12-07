@@ -45,7 +45,7 @@ public abstract class RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract RaceResults calculateResults() throws IOException;
-    protected abstract boolean areEqualPositionsAllowed();
+    protected abstract boolean canDistinguishFromOtherEqualPerformances(RaceResult result);
 
     /**
      * Returns a view over the results used to output results.
@@ -70,9 +70,9 @@ public abstract class RaceResultsCalculator {
         final Predicate<RaceResult> prize_category_filter = result ->
             race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(result.getCategory(), getClub(result), prize_categories);
 
-        final List<RaceResult> results = overall_results.stream().filter(prize_category_filter).toList();
+        final List<RaceResult> results = makeMutableCopy(overall_results.stream().filter(prize_category_filter).toList());
 
-        setPositionStrings(results, areEqualPositionsAllowed());
+        setPositionStrings(results);
         return results;
     }
 
@@ -89,24 +89,31 @@ public abstract class RaceResultsCalculator {
     /** Returns prize winners in given category. */
     public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
-        final List<RaceResult> prize_results = overall_results.stream().
+        final List<RaceResult> prize_results = makeMutableCopy(overall_results.stream().
             filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
-            toList();
+            toList());
 
-        setPositionStrings(prize_results, areEqualPositionsAllowed());
-
+        setPositionStrings(prize_results);
         return prize_results;
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the second parameter. */
-    public static void setPositionStrings(final List<? extends RaceResult> results, final boolean allow_equal_positions) {
+    public void setPositionStrings(final List<? extends RaceResult> results) {
 
-        // Sets position strings for dead heats, if allowed by the allow_equal_positions flag.
+        setPositionStrings(results, this::canDistinguishFromOtherEqualPerformances);
+    }
+
+    /** Sets the position string for each result. These are recorded as strings rather than ints so
+     *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
+     *  is determined by the second parameter. */
+    public void setPositionStrings(final List<? extends RaceResult> results, final Function<RaceResult, Boolean> can_distinguish_equal_performances) {
+
+        // Sets position strings for dead heats, if allowed by the can_distinguish_equal_performances predicate.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
 
-        // The flag is passed in rather than using race.allowEqualPositions() since that applies to the race overall.
+        // The predicate is passed in rather than using canDistinguishEqualPerformances() since that applies to the race overall.
         // In a series race the individual races don't allow equal positions, but the race overall does.
         // Conversely in a relay race the legs after the first leg do allow equal positions.
 
@@ -115,27 +122,40 @@ public abstract class RaceResultsCalculator {
             final RaceResult result = results.get(result_index);
 
             if (result.canComplete()) {
-                if (allow_equal_positions) {
 
-                    // Skip over any following results with the same performance.
-                    // Defined in terms of performance rather than duration, since in some races ranking is determined
-                    // by scores rather than times.
-                    final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
+                // Skip over any following results with the same performance.
+                // Defined in terms of performance rather than duration, since in some races ranking is determined
+                // by scores rather than times.
+                final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
 
-                    if (highest_index_with_same_performance > result_index) {
+                if (highest_index_with_same_performance > result_index) {
 
-                        // There are results following this one with the same performance.
+                    // Check whether any result in the sequence allows equal positions, if so, all should be set to equal.
+                    boolean found_result_allowing_equal_positions = false;
+                    
+                    for (int i = result_index; i <= highest_index_with_same_performance; i++)
+                        if (!can_distinguish_equal_performances.apply(results.get(i)))
+                            found_result_allowing_equal_positions = true;
+
+                    if (found_result_allowing_equal_positions) {
+
+                        // There are results following this one that should have equal positions.
                         recordEqualPositions(results, result_index, highest_index_with_same_performance);
                         result_index = highest_index_with_same_performance;
                     } else
-                        // The following result has a different performance, so just record current position for this one.
+                        // None of those results allow equal positions, so just record current position for this one.
                         result.setPositionString(String.valueOf(result_index + 1));
                 } else
+                    // The following result has a different performance, so just record current position for this one.
                     result.setPositionString(String.valueOf(result_index + 1));
 
             } else
                 result.setPositionString("-");
         }
+
+        // Sort results again, since setting equal positions may have altered the sort order,
+        // e.g. equal positions may be listed in alphabetical order of runner or team name.
+        results.sort(null);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
