@@ -50,9 +50,7 @@ public class RaceConfigValidator extends ConfigProcessor {
 
         Config.KEY_YEAR,
         Config.KEY_RACE_NAME_FOR_FILENAMES,
-        Config.KEY_RACE_NAME_FOR_RESULTS,
-        Config.KEY_ENTRY_CATEGORIES_PATH,
-        Config.KEY_PRIZE_CATEGORIES_PATH);
+        Config.KEY_RACE_NAME_FOR_RESULTS);
 
     private static final int RAW_RESULT_TIME_INDEX = 1;
 
@@ -66,10 +64,6 @@ public class RaceConfigValidator extends ConfigProcessor {
     public void processConfig() {
 
         checkAllPresent(REQUIRED_CONFIG_KEYS);
-
-        checkAllFilesExist(List.of(
-            KEY_ENTRY_CATEGORIES_PATH,
-            KEY_PRIZE_CATEGORIES_PATH));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -197,23 +197,31 @@ public abstract class RaceResultsCalculator {
 
         for (final PrizeCategory category : prize_categories) {
 
-            final int max_prizes_to_allocate = get_number_of_prizes_to_allocate.apply(category.numberOfPrizes());
+            // May allocate more prizes than this if there are further places tied with a prize winner.
+            final int prizes_to_allocate = get_number_of_prizes_to_allocate.apply(category.numberOfPrizes());
 
-            overall_results.stream().
-                filter(result -> isPrizeWinner(result, category)).
-                limit(max_prizes_to_allocate).
-                forEachOrdered(result -> result.getCategoriesOfPrizesAwarded().add(category));
+            int prizes_allocated = 0;
+            boolean previous_was_dead_heat = true;
+            Performance previous_performance = null;
+
+            for (final RaceResult result : overall_results)
+                if (isEligibleInCategory(result, category))
+                    if (prizes_allocated < prizes_to_allocate || result.getPerformance().equals(previous_performance) && previous_was_dead_heat) {
+
+                        result.getCategoriesOfPrizesAwarded().add(category);
+                        prizes_allocated++;
+                        previous_was_dead_heat = !canDistinguishFromOtherEqualPerformances(result);
+                        previous_performance = result.getPerformance();
+                    }
         }
     }
 
-    private boolean isPrizeWinner(final RaceResult result, final PrizeCategory prize_category) {
+    private boolean isEligibleInCategory(final RaceResult result, final PrizeCategory prize_category) {
 
-        if (!result.canComplete() ||
-            prize_category.isExclusive() && result.getCategoriesOfPrizesAwarded().stream().anyMatch(PrizeCategory::isExclusive))
-                return false;
+        if (!result.canComplete()) return false;
+        if (prize_category.isExclusive() && result.getCategoriesOfPrizesAwarded().stream().anyMatch(PrizeCategory::isExclusive)) return false;
 
-        return race.getCategoriesProcessor().isResultEligibleForPrizeCategory(
-            result.getParticipant().category, getClub(result), prize_category);
+        return race.getCategoriesProcessor().isResultEligibleForPrizeCategory(result.getParticipant().category, getClub(result), prize_category);
     }
 
     protected void recordDNFs() {

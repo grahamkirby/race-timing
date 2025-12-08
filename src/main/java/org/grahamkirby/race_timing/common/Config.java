@@ -49,6 +49,7 @@ public class Config {
     public static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
     public static final String KEY_CATEGORY_START_OFFSETS = "CATEGORY_START_OFFSETS";
     public static final String KEY_CHECK_INPUT_FILES_USED = "CHECK_INPUT_FILES_USED";
+    public static final String KEY_DEAD_HEATS = "DEAD_HEATS";
     public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
     public static final String KEY_ENTRIES_PATH = "ENTRIES_PATH";
     public static final String KEY_ENTRY_CATEGORIES_PATH = "ENTRY_CATEGORIES_PATH";
@@ -261,6 +262,12 @@ public class Config {
     public void replace(final String key, final Object new_value) {
 
         config_map.replace(key, new_value);
+    }
+
+    public void replaceIfPresent(final String key, final Object value) {
+
+        if (config_map.containsKey(key))
+            config_map.replace(key, value);
     }
 
     public void replaceIfPresent(final String key, final Function<String, Object> make_new_value) {

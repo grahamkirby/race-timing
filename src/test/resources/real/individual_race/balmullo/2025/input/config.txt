@@ -6,10 +6,6 @@ RACE_NAME_FOR_FILENAMES = balmullo
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv
-
 # Comma-separated sequence of bib-number/start-time for all runners that
 # started before or after the main start time. Negative means early start.
 INDIVIDUAL_START_TIMES = 61/0:10:00

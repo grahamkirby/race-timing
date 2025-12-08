@@ -19,13 +19,20 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.*;
 
+import java.nio.file.Path;
+import java.util.List;
+
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.DEFAULT_CONFIG_ROOT_PATH;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
 
 @SuppressWarnings("preview")
 public class IndividualRaceConfigAdjuster extends ConfigProcessor {
 
     public static final int DEFAULT_NUMBER_OF_COLUMNS = 4;
+
+    public static String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_entry_individual_senior." + CSV_FILE_SUFFIX;
+    public static String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_prize_individual_senior." + CSV_FILE_SUFFIX;
 
     public IndividualRaceConfigAdjuster(final Config config) {
 
@@ -38,8 +45,13 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
         // Default entry map with 4 elements (bib number, full club, club, category), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));
 
+        config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_ENTRY_CATEGORIES_PATH)));
+        config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_PRIZE_CATEGORIES_PATH)));
+
         config.replaceIfPresent(KEY_TEAM_PRIZE_NUMBER_TO_COUNT, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL, Normalisation::parseTime);
+
+        checkAllFilesExist(List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH));
     }
 }

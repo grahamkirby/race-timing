@@ -1,0 +1,9 @@
+YEAR = 2024
+RACE_NAME_FOR_RESULTS = Balmullo Trail Race
+RACE_NAME_FOR_FILENAMES = balmullo
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+DEAD_HEATS = 10/29/4/1

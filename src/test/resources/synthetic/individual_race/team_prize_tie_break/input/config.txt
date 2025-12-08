@@ -8,8 +8,6 @@ RAW_RESULTS_PATH = rawtimes.txt
 CATEGORY_MAP_PATH = category_map.csv
 PRIZE_CATEGORIES_PATH = categories_prize_individual_senior.csv
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
 
 # Entry column map for data received from EntryCentral.
 # Column 2 is last name, column 3 is first name.

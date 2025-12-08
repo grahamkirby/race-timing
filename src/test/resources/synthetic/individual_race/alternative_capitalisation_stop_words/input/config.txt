@@ -6,7 +6,3 @@ RACE_NAME_FOR_FILENAMES = balmullo
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 CAPITALISATION_STOP_WORDS_PATH = capitalisation_stop_words.csv
-
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv

@@ -23,12 +23,10 @@ import org.grahamkirby.race_timing.common.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
@@ -45,6 +43,10 @@ public class IndividualRace implements SingleRaceInternal {
     private List<RaceResult> overall_results;
 
     private Map<Integer, Duration> separately_recorded_finish_times;
+
+    // Even if there is more than one dead heat, all the bib numbers involved are loaded into one set,
+    // since they can be distinguished by finish time.
+    private Set<Integer> dead_heats;
 
     private final Config config;
     private final CategoriesProcessor categories_processor;
@@ -102,6 +104,7 @@ public class IndividualRace implements SingleRaceInternal {
 
         loadRaceData();
         loadSeparatelyRecordedResults();
+        loadDeadHeats();
         return results_calculator.calculateResults();
     }
 
@@ -131,6 +134,10 @@ public class IndividualRace implements SingleRaceInternal {
 
     protected Map<Integer, Duration> getSeparatelyRecordedFinishTimes() {
         return separately_recorded_finish_times;
+    }
+
+    protected Set<Integer> getDeadHeats() {
+        return dead_heats;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,11 +258,9 @@ public class IndividualRace implements SingleRaceInternal {
 
         final Consumer<Object> process_separately_recorded_results = value -> {
 
-            final String[] self_timed_strings = ((String) value).split(",", -1);
+            for (final String s : ((String) value).split(",", -1)) {
 
-            // Example: SEPARATELY_RECORDED_RESULTS = 126/8:09
-
-            for (final String s : self_timed_strings) {
+                // Example: SEPARATELY_RECORDED_RESULTS = 126/8:09
 
                 final String[] split = s.split("/", -1);
                 final int bib_number = Integer.parseInt(split[0]);
@@ -266,5 +271,18 @@ public class IndividualRace implements SingleRaceInternal {
         };
 
         config.processConfigIfPresent(KEY_SEPARATELY_RECORDED_RESULTS, process_separately_recorded_results);
+    }
+
+    private void loadDeadHeats() {
+
+        dead_heats = new HashSet<>();
+
+        final Consumer<Object> process_dead_heats = value -> {
+
+            // Example: DEAD_HEATS = 10/29/4
+            dead_heats = Arrays.stream(((String) value).split("/", -1)).map(Integer::parseInt).collect(Collectors.toSet());
+        };
+
+        config.processConfigIfPresent(KEY_DEAD_HEATS, process_dead_heats);
     }
 }

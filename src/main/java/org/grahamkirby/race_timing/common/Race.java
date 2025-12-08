@@ -22,8 +22,6 @@ import java.io.IOException;
 public interface Race {
 
     // TODO add junior hill races.
-    // TODO allow explicitly recorded dead heat in single race.
-    // TODO allow overall dead heat in relay race only where at least one team in a mass start.
     // TODO mutation tests.
     // TODO fuzz tests.
     // TODO test missing output directory.

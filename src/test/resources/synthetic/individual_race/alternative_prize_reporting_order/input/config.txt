@@ -8,5 +8,3 @@ RAW_RESULTS_PATH = rawtimes.txt
 NORMALISED_CLUB_NAMES_PATH = club_names.csv
 PRIZE_CATEGORIES_PATH = categories_prize_individual_senior.csv
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv

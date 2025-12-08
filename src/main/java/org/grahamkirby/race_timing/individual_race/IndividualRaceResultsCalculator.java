@@ -87,8 +87,9 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
     @Override
     public boolean canDistinguishFromOtherEqualPerformances(final RaceResult result) {
 
-        // No dead heats for overall results, since an ordering is imposed at the finish.
-        return true;
+        // Normally results with same recorded time are not treated as dead heats, since an ordering is imposed at the
+        // finish, but a dead heat can be recorded explicitly.
+        return !((IndividualRace) race).getDeadHeats().contains(((IndividualRaceResult) result).getBibNumber());
     }
 
     @Override

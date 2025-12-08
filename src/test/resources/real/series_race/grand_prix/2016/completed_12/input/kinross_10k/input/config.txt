@@ -4,7 +4,3 @@ RACE_NAME_FOR_FILENAMES = kinross
 
 # Relative to directory containing configuration file.
 RESULTS_PATH = results.txt
-
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv

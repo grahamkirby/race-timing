@@ -5,7 +5,3 @@ RACE_NAME_FOR_FILENAMES = giffordtown
 # Relative to directory containing configuration file.
 RESULTS_PATH = results.txt
 CATEGORY_MAP_PATH = category_map.csv
-
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_senior.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_senior.csv
