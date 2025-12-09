@@ -134,17 +134,25 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private List<TeamPerformance> getTeamPrizes() {
+    // These are cached to avoid details being repeatedly written to notes for each output format.
+    private List<TeamPerformance> team_prizes = null;
 
-        return race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
+    private synchronized List<TeamPerformance> getTeamPrizes() {
 
-            Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
-                map(this::getFirstTeamInGenderCategory).
-                filter(Optional::isPresent).
-                map(Optional::get).
-                toList() :
+        if (team_prizes == null) {
 
-            List.of();
+            team_prizes = race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
+
+                Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
+                    map(this::getFirstTeamInGenderCategory).
+                    filter(Optional::isPresent).
+                    map(Optional::get).
+                    toList() :
+
+                List.of();
+        }
+
+        return team_prizes;
     }
 
     private void initialiseResults() {
@@ -338,11 +346,39 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         final Comparator<TeamPerformance> sort_by_aggregate_position = Comparator.comparingInt(IndividualRaceResultsCalculator::getAggregatePosition);
         final Comparator<TeamPerformance> sort_by_first_position = Comparator.comparingInt(p -> p.runner_performances().getFirst().position());
 
+//        // Not necessary to sort clubs, but this makes it easier to reason about testing tie break.
+//        return getClubs().stream().sorted().
+//            map(club -> getTeamPerformance(club, team_prize_gender_category)).
+//            filter(performance -> performance.runner_performances().size() >= number_to_count_for_team_prize).
+//            min(sort_by_aggregate_position.thenComparing(sort_by_first_position));
+
+
         // Not necessary to sort clubs, but this makes it easier to reason about testing tie break.
-        return getClubs().stream().sorted().
+        List<TeamPerformance> list = getClubs().stream().sorted().
             map(club -> getTeamPerformance(club, team_prize_gender_category)).
             filter(performance -> performance.runner_performances().size() >= number_to_count_for_team_prize).
-            min(sort_by_aggregate_position.thenComparing(sort_by_first_position));
+            sorted(sort_by_aggregate_position.thenComparing(sort_by_first_position)).toList();
+
+        Notes notes = race.getNotes();
+        notes.appendToNotes("Team scores: " + team_prize_gender_category + LINE_SEPARATOR + LINE_SEPARATOR);
+
+        for (int i = 0; i < list.size(); i++) {
+            TeamPerformance performance = list.get(i);
+            notes.appendToNotes(i + 1 + " ");
+            notes.appendToNotes(performance.club());
+
+            int team_score = performance.runner_performances().stream().mapToInt(run -> run.position()).sum();
+
+            notes.appendToNotes(" " + team_score + " (");
+
+            String individual_scores = performance.runner_performances().stream().map(run -> String.valueOf(run.position())).collect(Collectors.joining(", "));
+            notes.appendToNotes(individual_scores + ")" + LINE_SEPARATOR);
+
+        }
+
+        notes.appendToNotes(LINE_SEPARATOR);
+
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
 
     private Set<String> getClubs() {

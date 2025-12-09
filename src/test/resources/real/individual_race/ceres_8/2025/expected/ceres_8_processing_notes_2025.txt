@@ -1,1 +1,20 @@
+Team scores: Male
+
+1 Dundee Road Runners 10 (2, 3, 5)
+2 Fife AC 12 (1, 4, 7)
+3 PH Racing 28 (6, 10, 12)
+4 Carnegie Harriers 95 (30, 32, 33)
+5 Anster Haddies 115 (23, 36, 56)
+6 Pitreavie AAC 131 (24, 53, 54)
+7 Perth Road Runners 179 (13, 77, 89)
+
+Team scores: Female
+
+1 Dundee Road Runners 15 (1, 2, 12)
+2 Carnegie Harriers 24 (7, 8, 9)
+3 PH Racing 29 (3, 5, 21)
+4 Anster Haddies 42 (10, 15, 17)
+5 Pitreavie AAC 78 (16, 23, 39)
+6 Wee County Harriers 107 (34, 36, 37)
+
 Converted to title case: BORGEAL, COOPER, ROMAIN, collins, elliot, gibson, ingledew, malvern, running, stephen

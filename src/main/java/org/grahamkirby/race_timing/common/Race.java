@@ -21,7 +21,6 @@ import java.io.IOException;
 
 public interface Race {
 
-    // TODO add junior hill races.
     // TODO mutation tests.
     // TODO fuzz tests.
     // TODO test missing output directory.
@@ -32,7 +31,6 @@ public interface Race {
     // TODO individual race with no results -  generate racer list for PocketTimer.
     // TODO series race with separate entries - output sorted runner names to notes.
     // TODO series race - output club rationalisations to notes.
-    // TODO individual race with team prizes - output all club team scores to notes.
 
     RaceResults processResults() throws IOException;
     void outputResults(RaceResults results) throws IOException;
