@@ -20,9 +20,11 @@ package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
-import org.grahamkirby.race_timing.relay_race.RelayRaceResult;
 
 import java.util.*;
+
+import static org.grahamkirby.race_timing.common.Normalisation.getFirstNameOfRunner;
+import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfRunner;
 
 public abstract class CommonRaceResult implements RaceResult {
 
@@ -116,26 +118,12 @@ public abstract class CommonRaceResult implements RaceResult {
     /** Compares two results based on alphabetical ordering of the runners' first names. */
     protected static int compareRunnerFirstName(final RaceResult r1, final RaceResult r2) {
 
-        return getFirstNameOfFirstRunner(r1.getParticipantName()).compareTo(getFirstNameOfFirstRunner(r2.getParticipantName()));
+        return getFirstNameOfRunner(r1.getParticipantName()).compareTo(getFirstNameOfRunner(r2.getParticipantName()));
     }
 
     /** Compares two results based on alphabetical ordering of the runners' last names. */
     protected static int compareRunnerLastName(final RaceResult r1, final RaceResult r2) {
 
-        return getLastNameOfFirstRunner(r1.getParticipantName()).compareTo(getLastNameOfFirstRunner(r2.getParticipantName()));
-    }
-
-    /** Gets the first name of the given runner, or of the first runner if it's a pair. */
-    private static String getFirstNameOfFirstRunner(final String s) {
-
-        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
-        return runner.split(" ")[0];
-    }
-
-    /** Gets the last name of the given runner, or of the first runner if it's a pair. */
-    private static String getLastNameOfFirstRunner(final String s) {
-
-        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
-        return Arrays.stream(runner.split(" ")).toList().getLast();
+        return getLastNameOfRunner(r1.getParticipantName()).compareTo(getLastNameOfRunner(r2.getParticipantName()));
     }
 }

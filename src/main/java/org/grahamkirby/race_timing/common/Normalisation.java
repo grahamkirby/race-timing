@@ -129,6 +129,20 @@ public class Normalisation {
         return toTitleCase(step2);
     }
 
+    /** Gets the first name of the given runner, or of the first runner if it's a pair. */
+    public static String getFirstNameOfRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return runner.split(" ")[0];
+    }
+
+    /** Gets the last name of the given runner, or of the first runner if it's a pair. */
+    public static String getLastNameOfRunner(final String s) {
+
+        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        return Arrays.stream(runner.split(" ")).toList().getLast();
+    }
+
     /** Replaces any accented characters with HTML entity codes. */
     public String htmlEncode(final String s) {
         return replaceAllMapEntries(s, normalised_html_entities);

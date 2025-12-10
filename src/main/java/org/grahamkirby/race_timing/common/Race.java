@@ -29,8 +29,6 @@ public interface Race {
     // TODO update README (https://www.makeareadme.com).
     // TODO individual race with no results - validate entry data.
     // TODO individual race with no results -  generate racer list for PocketTimer.
-    // TODO series race with separate entries - output sorted runner names to notes.
-    // TODO series race - output club rationalisations to notes.
 
     RaceResults processResults() throws IOException;
     void outputResults(RaceResults results) throws IOException;

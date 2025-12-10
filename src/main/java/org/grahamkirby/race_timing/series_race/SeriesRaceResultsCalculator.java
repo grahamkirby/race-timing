@@ -26,10 +26,13 @@ import org.grahamkirby.race_timing.individual_race.Runner;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Normalisation.getFirstNameOfRunner;
+import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfRunner;
 
 public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
 
@@ -200,6 +203,28 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
                 distinct().
                 map(this::makeOverallResult).
                 toList());
+
+        recordRunnersInNotes();
+    }
+
+    private void recordRunnersInNotes() {
+
+        race.getNotes().appendToNotes(LINE_SEPARATOR + "Runners in Series" + LINE_SEPARATOR + "-----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
+
+        overall_results.stream().
+            map(result -> ((SeriesRaceResult) result)).
+            map(result -> (Runner) result.getParticipant()).
+            sorted(SeriesRaceResultsCalculator::compareRunner).
+            forEachOrdered(runner -> race.getNotes().appendToNotes(runner.getName() + " (" + runner.getClub() + ")" + LINE_SEPARATOR));
+
+        race.getNotes().appendToNotes(LINE_SEPARATOR);
+    }
+
+    private static int compareRunner(final Runner r1, final Runner r2) {
+
+        return Comparator.comparing((Function<Runner, String>) runner -> getLastNameOfRunner(runner.getName())).
+            thenComparing(runner -> getFirstNameOfRunner(runner.getName())).
+            thenComparing(Runner::getClub).compare(r1, r2);
     }
 
     private List<String> getRunnerNames() {
@@ -251,6 +276,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     }
 
     private void processClubsForRunnerNames() {
+
+        race.getNotes().appendToNotes("Club Substitutions" + LINE_SEPARATOR +"------------------" + LINE_SEPARATOR + LINE_SEPARATOR);
 
         getRunnerNames().forEach(this::processClubsForRunnerName);
     }
@@ -327,6 +354,8 @@ public class SeriesRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void ensureRunnerCategoryConsistencyOverSeries() {
+
+        race.getNotes().appendToNotes(LINE_SEPARATOR + "Category Changes" + LINE_SEPARATOR + "----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
 
         getResultsByEligibleRunner().forEach(results_for_runner -> {
 

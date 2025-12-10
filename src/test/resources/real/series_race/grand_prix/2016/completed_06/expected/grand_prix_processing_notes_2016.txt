@@ -5,7 +5,7 @@ Club Substitutions
 Category Changes
 ----------------
 
-Runner Fictional Runner1 changed category from M40 to M50 at Largo
+Runner Sue Whisler changed category from F50 to F60 at Sandy Slither
 
 Runners in Series
 -----------------
@@ -24,6 +24,7 @@ Innes Bracegirdle (Fife AC)
 Nick Brian (Fife AC)
 Pete Caulton (Fife AC)
 David Cowan (Fife AC)
+John Craig (Fife AC)
 Ailsa Cruickshanks (Fife AC)
 Jennifer Cruickshanks (Fife AC)
 Mike Cumming (Fife AC)
@@ -63,7 +64,6 @@ Halina Rees (Fife AC)
 Logan Rees (Fife AC)
 Clive Roberts (Fife AC)
 Alistair Robertson (Fife AC)
-Fictional Runner1 (Fife AC)
 Eddie Sanders (Fife AC)
 Jocelyn Scott (Fife AC)
 Tom Scott (Fife AC)
@@ -76,3 +76,5 @@ Stuart Tite (Fife AC)
 Daniel Urquhart (Fife AC)
 Sue Whisler (Fife AC)
 Anne Whiteford (Fife AC)
+
+Runner Katy Aitken unknown category so omitted from overall results
