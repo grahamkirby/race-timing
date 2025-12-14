@@ -28,7 +28,7 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 /** Support for normalisation of runner and club names, and entry categories, also standardised
  * formatting for times and HTML entities. */
-public class Normalisation {
+public class NormalisationProcessor {
 
     private static final int SECONDS_PER_HOUR = 3600;
     private static final int SECONDS_PER_MINUTE = 60;
@@ -65,7 +65,7 @@ public class Normalisation {
 
     private final Config config;
 
-    public Normalisation(final Config config) {
+    public NormalisationProcessor(final Config config) {
 
         this.config = config;
         configure();
@@ -176,7 +176,7 @@ public class Normalisation {
 
     public static String renderDuration(final RaceResult result, final String alternative) {
 
-        return result.canComplete() ? renderDuration((Duration) result.getPerformance().getValue()) : alternative;
+        return result.canOrHasCompleted() ? renderDuration((Duration) result.getPerformance().getValue()) : alternative;
     }
 
     /** Formats the given duration into a string in HH:MM:SS.SSS format, omitting fractional trailing zeros. */

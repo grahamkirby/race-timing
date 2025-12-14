@@ -30,9 +30,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.csvEncode;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.csvEncode;
 
 class SeriesRaceOutput extends RaceOutput {
+
+    public SeriesRaceOutput(final Config config) {
+        super(config);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected ResultPrinterGenerator getOverallResultCSVPrinterGenerator() {
@@ -49,6 +55,8 @@ class SeriesRaceOutput extends RaceOutput {
         return SeriesRacePrizeResultPrinterHTML::new;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected void printPrizes() throws IOException {
 
@@ -57,6 +65,8 @@ class SeriesRaceOutput extends RaceOutput {
         if (results.getNumberOfRacesTakenPlace() == results.getRaceNames().size())
             super.printPrizes();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static String renderScore(final Performance score) {
 
@@ -174,7 +184,7 @@ class SeriesRaceOutput extends RaceOutput {
             final Runner runner = (Runner) result.getParticipant();
 
             elements.add(result.getPositionString());
-            elements.add(race_results.getNormalisation().htmlEncode(result.getParticipantName()));
+            elements.add(race_results.getNormalisationProcessor().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getShortName());
 
             if (results.multipleClubs())

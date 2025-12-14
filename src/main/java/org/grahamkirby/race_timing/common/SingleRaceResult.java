@@ -29,6 +29,8 @@ public abstract class SingleRaceResult extends CommonRaceResult {
     private boolean dnf;
     private final int bib_number;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public SingleRaceResult(final RaceInternal race, final RaceEntry entry, final Duration finish_time) {
 
         super(race, entry.participant);
@@ -38,9 +40,26 @@ public abstract class SingleRaceResult extends CommonRaceResult {
         start_time = Duration.ZERO;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
     public Performance getPerformance() {
 
-        return canComplete() ?  new DurationPerformance(finish_time.minus(start_time)) : null;
+        return canOrHasCompleted() ?  new DurationPerformance(finish_time.minus(start_time)) : null;
+    }
+
+    @Override
+    public int comparePerformanceTo(final RaceResult other) {
+
+        final Performance duration = getPerformance();
+        final Performance other_duration = other.getPerformance();
+
+        return Comparator.nullsLast(Performance::compareTo).compare(duration, other_duration);
+    }
+
+    @Override
+    public boolean canOrHasCompleted() {
+        return !dnf;
     }
 
     public void setStartTime(final Duration start_time) {
@@ -63,55 +82,21 @@ public abstract class SingleRaceResult extends CommonRaceResult {
         this.dnf = dnf;
     }
 
-    @Override
-    public int comparePerformanceTo(final RaceResult other) {
-
-        final Performance duration = getPerformance();
-        final Performance other_duration = other.getPerformance();
-
-        return Comparator.nullsLast(Performance::compareTo).compare(duration, other_duration);
-    }
-
-    @Override
-    public boolean canComplete() {
-        return !dnf;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Compares the given results on the basis of their finish positions. */
     protected static int compareRecordedPosition(final RaceResult r1, final RaceResult r2) {
 
-//        int bib1 = ((SingleRaceResult) r1).bib_number;
-//        int bib2 = ((SingleRaceResult) r2).bib_number;
-//
-//        if (r1.getRace() != r2.getRace())
-//            throw new RuntimeException("results compared from two different races");
-//
-//        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) r1).bib_number, (SingleRaceInternal) r1.getRace());
-//        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) r2).bib_number, (SingleRaceInternal) r1.getRace());
-//
-//        if (bib1==58 && bib2==94 || bib1==94 && bib2==58) {
-//            int x = 3;
-//        }
-//
-//        return Integer.compare(recorded_position1, recorded_position2);
-
-        return ((SingleRaceResult)r1).compareRecordedPositionTo(r2);
+        return ((SingleRaceResult) r1).compareRecordedPositionTo(r2);
     }
 
     protected int compareRecordedPositionTo(final RaceResult other) {
 
-        int bib1 = ((SingleRaceResult) this).bib_number;
-        int bib2 = ((SingleRaceResult) other).bib_number;
-
-        if (this.getRace() != other.getRace())
+        if (race != other.getRace())
             throw new RuntimeException("results compared from two different races");
 
-        final int recorded_position1 = getRecordedPosition(((SingleRaceResult) this).bib_number, (SingleRaceInternal) this.getRace());
-        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) other).bib_number, (SingleRaceInternal) this.getRace());
-
-        if (bib1==58 && bib2==94 || bib1==94 && bib2==58) {
-            int x = 3;
-        }
+        final int recorded_position1 = getRecordedPosition(bib_number, (SingleRaceInternal) race);
+        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) other).bib_number, (SingleRaceInternal) race);
 
         return Integer.compare(recorded_position1, recorded_position2);
     }

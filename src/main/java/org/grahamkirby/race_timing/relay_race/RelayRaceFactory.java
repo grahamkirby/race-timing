@@ -24,18 +24,30 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_LEGS;
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
-public class RelayRaceFactory implements SpecialisedRaceFactory {
+public class RelayRaceFactory extends RaceFactory {
 
     public static final String KEY_INDICATIVE_OF_RELAY_RACE = KEY_NUMBER_OF_LEGS;
 
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        final RelayRace race = new RelayRace(makeRelayRaceConfig(config_file_path));
+        final Config config = makeRelayRaceConfig(config_file_path);
 
-        race.setResultsCalculator(new RelayRaceResultsCalculator(race));
-        race.setResultsOutput(new RelayRaceOutput());
+        final RelayRace race = new RelayRace(config);
+
+        try {
+            config.processConfigAdjusters();
+            config.processConfigValidators();
+            race.initialise();
+        }
+        catch (final Exception e) {
+
+            // Reset output in case config validation failed, before output initialisation.
+            race.setOutput(new RelayRaceOutput(config));
+            race.getNotesProcessor().appendToNotes(e.getMessage() + LINE_SEPARATOR);
+        }
 
         return race;
     }
@@ -50,13 +62,11 @@ public class RelayRaceFactory implements SpecialisedRaceFactory {
 
         final Config config = new Config(config_file_path);
 
-        config.addConfigProcessor(RaceConfigAdjuster::new);
-        config.addConfigProcessor(RelayRaceConfigAdjuster::new);
+        config.addConfigAdjuster(RaceConfigAdjuster::new);
+        config.addConfigAdjuster(RelayRaceConfigAdjuster::new);
 
-        config.addConfigProcessor(RaceConfigValidator::new);
-        config.addConfigProcessor(RelayRaceConfigValidator::new);
-
-        config.processConfig();
+        config.addConfigValidator(RaceConfigValidator::new);
+        config.addConfigValidator(RelayRaceConfigValidator::new);
 
         return config;
     }

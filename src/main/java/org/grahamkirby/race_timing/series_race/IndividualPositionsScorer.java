@@ -21,7 +21,7 @@ import org.grahamkirby.race_timing.common.Performance;
 import org.grahamkirby.race_timing.common.ScorePerformance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
 import org.grahamkirby.race_timing.common.SingleRaceResult;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsProcessor;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.util.Comparator;
@@ -41,10 +41,10 @@ public class IndividualPositionsScorer extends SeriesRaceScorer {
 
         // The first finisher of each gender gets the maximum score, the next finisher one less, and so on.
 
-        final IndividualRaceResultsCalculator calculator = (IndividualRaceResultsCalculator) individual_race.getResultsCalculator();
+        final IndividualRaceResultsProcessor processor = (IndividualRaceResultsProcessor) individual_race.getResultsProcessor();
 
-        final int gender_position = calculator.getGenderPosition(runner.getName(), runner.getClub(), runner.getCategory().getGender());
-        final List<SingleRaceResult> gender_results = calculator.getGenderResults(runner.getCategory().getGender());
+        final int gender_position = processor.getGenderPosition(runner.getName(), runner.getClub(), runner.getCategory().getGender());
+        final List<SingleRaceResult> gender_results = processor.getGenderResults(runner.getCategory().getGender());
 
         // Gender position is greater than number of gender results if the runner did not complete the race.
         return gender_position <= gender_results.size() ?

@@ -19,17 +19,46 @@ package org.grahamkirby.race_timing.common;
 
 import java.io.IOException;
 
+/**
+ * The most general race interface.
+ */
 public interface Race {
 
     // TODO mutation tests.
     // TODO fuzz tests.
-    // TODO test missing output directory.
-    // TODO test input directory with different name.
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
-    // TODO individual race with no results - validate entry data.
-    // TODO individual race with no results -  generate racer list for PocketTimer.
+    // TODO default categories for relay race.
+    // TODO move interpolation from RelayRace to SingleRace.
 
-    RaceResults processResults() throws IOException;
+    /**
+     * Processes the race data and generates results.
+     * @return a view on the results
+     */
+    RaceResults processResults();
+
+    /**
+     * Outputs the results in various forms to files.
+     * @param results the results
+     * @throws IOException if the results cannot be written to the appropriate files
+     */
     void outputResults(RaceResults results) throws IOException;
+
+    /**
+     * Outputs processing notes to file.
+     * @throws IOException if the notes cannot be written to file
+     */
+    void outputNotes() throws IOException;
+
+    /**
+     * Outputs a racer list from the entry details, for import into race recording software.
+     * @throws IOException if the list cannot be written to file
+     */
+    void outputRacerList() throws IOException;
+
+    /**
+     * Tests whether the configuration file is valid. If not, there is no purpose in further processing.
+     * @return true if the configuration file is valid
+     */
+    boolean configIsValid();
 }

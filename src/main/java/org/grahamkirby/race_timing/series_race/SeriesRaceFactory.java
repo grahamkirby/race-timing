@@ -26,7 +26,7 @@ import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class SeriesRaceFactory implements SpecialisedRaceFactory {
+public class SeriesRaceFactory extends RaceFactory {
 
     public static final String KEY_INDICATIVE_OF_SERIES_RACE = KEY_RACES;
     private static final String KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES = KEY_SCORE_FOR_MEDIAN_POSITION;
@@ -35,13 +35,20 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
     @Override
     public Race makeRace(final Path config_file_path) throws IOException {
 
-        final Config config = makeConfig(config_file_path);
+        final Config config = makeSeriesRaceConfig(config_file_path);
         final SeriesRace race = new SeriesRace(config);
-        final SeriesRaceScorer scorer = getRaceScorer(config, race);
-        final RaceResultsCalculator calculator = new SeriesRaceResultsCalculator(scorer, race);
 
-        race.setResultsCalculator(calculator);
-        race.setResultsOutput(new SeriesRaceOutput());
+        try {
+            config.processConfigAdjusters();
+            config.processConfigValidators();
+            race.initialise();
+        }
+        catch (final Exception e) {
+
+            // Reset output in case config validation failed, before output initialisation.
+            race.setOutput(new SeriesRaceOutput(config));
+            race.getNotesProcessor().appendToNotes(e.getMessage() + LINE_SEPARATOR);
+        }
 
         return race;
     }
@@ -52,44 +59,28 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
         return properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE);
     }
 
-    private Config makeConfig(final Path config_file_path) throws IOException {
+    private Config makeSeriesRaceConfig(final Path config_file_path) throws IOException {
 
         final Config config = new Config(config_file_path);
 
-        addProcessors(config);
-        config.processConfig();
+        config.addConfigAdjuster(RaceConfigAdjuster::new);
+        config.addConfigAdjuster(SeriesRaceConfigAdjuster::new);
 
-        return config;
-    }
-
-    private SeriesRaceScorer getRaceScorer(final Config config, final SeriesRace race) {
-
-        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES))
-            return new IndividualTimesScorer(race);
-
-        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS))
-            return new IndividualPositionsScorer(race);
-
-        return new AggregateTimesScorer(race);
-    }
-
-    private void addProcessors(final Config config) {
-
-        config.addConfigProcessor(RaceConfigAdjuster::new);
-        config.addConfigProcessor(RaceConfigValidator::new);
-        config.addConfigProcessor(SeriesRaceConfigAdjuster::new);
-        config.addConfigProcessor(SeriesRaceConfigValidator::new);
+        config.addConfigValidator(RaceConfigValidator::new);
+        config.addConfigValidator(SeriesRaceConfigValidator::new);
 
         if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES)) {
 
-            config.addConfigProcessor(IndividualTimesConfigAdjuster::new);
-            config.addConfigProcessor(IndividualTimesConfigValidator::new);
+            config.addConfigAdjuster(IndividualTimesConfigAdjuster::new);
+            config.addConfigValidator(IndividualTimesConfigValidator::new);
         }
 
         if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS)) {
 
-            config.addConfigProcessor(IndividualPositionsConfigAdjuster::new);
+            config.addConfigAdjuster(IndividualPositionsConfigAdjuster::new);
         }
+
+        return config;
     }
 
     private static class IndividualPositionsConfigAdjuster extends ConfigProcessor {
@@ -116,8 +107,8 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
         @Override
         public void processConfig() {
 
-            config.replace(KEY_RACE_CATEGORIES_PATH, s -> config.interpretPath(Path.of(s)));
-            config.replace(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
+            config.replaceIfPresent(KEY_RACE_CATEGORIES_PATH, s -> config.interpretPath(Path.of(s)));
+            config.replaceIfPresent(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
         }
     }
 
@@ -130,7 +121,7 @@ public class SeriesRaceFactory implements SpecialisedRaceFactory {
 
         public void processConfig() {
 
-            checkAllPresent(List.of(KEY_RACE_CATEGORIES_PATH));
+            checkAllPresent(List.of(KEY_RACE_CATEGORIES_PATH, KEY_SCORE_FOR_MEDIAN_POSITION));
             checkAllFilesExist(List.of(KEY_RACE_CATEGORIES_PATH));
         }
     }

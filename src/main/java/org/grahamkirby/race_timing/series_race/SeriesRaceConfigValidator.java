@@ -49,5 +49,12 @@ public class SeriesRaceConfigValidator extends ConfigProcessor {
             KEY_OVERALL_RESULTS_PATH,
             KEY_TIME_TRIAL_INTER_WAVE_INTERVAL,
             KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
+
+        // For the case of an intended race based on individual times (tour) that is missing the score for
+        // median position, which is otherwise used to identify that race type.
+        checkAllOrNonePresent(List.of(
+            KEY_SCORE_FOR_MEDIAN_POSITION,
+            KEY_RACE_CATEGORIES_PATH
+        ));
     }
 }

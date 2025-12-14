@@ -22,25 +22,73 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 
 import java.util.List;
 
+/**
+ * Abstraction over types of race result.
+ */
 public interface RaceResult extends Comparable<RaceResult> {
 
+    /**
+     * Gets the race in which this is a result.
+     * @return the race
+     */
     RaceInternal getRace();
 
+    /**
+     * Gets the participant for the result.
+     * @return the participant
+     */
     Participant getParticipant();
-    Performance getPerformance();
 
+    /**
+     * Gets the name of the participant.
+     * @return the participant name
+     */
     String getParticipantName();
 
-    EntryCategory getCategory();
+    /**
+     * Gets the entry category for the participant.
+     * @return the entry category
+     */
+    EntryCategory getEntryCategory();
 
+    /**
+     * Gets the performance for the result.
+     * @return the performance
+     */
+    Performance getPerformance();
+
+    /**
+     * Gets a string denoting the position in the race. This is a string rather than an integer
+     * to allow equal positions such as "3=".
+     * @return the position
+     */
     String getPositionString();
 
+    /**
+     * Sets the position string for the result.
+     * @param position_string the position string
+     */
     void setPositionString(final String position_string);
 
+    /**
+     * Gets the categories of prize to be awarded to this participant. They may receive
+     * multiple prizes if categories are non-exclusive.
+     * @return a list containing the prize categories
+     */
     List<PrizeCategory> getCategoriesOfPrizesAwarded();
 
-    String getPrizeDetail();
-
+    /**
+     * Compares the performance of this result to that of another result.
+     * @param other the other result
+     * @return a negative number if the performance of this result is better than that of the other,
+     * zero if they are the same, and a positive number if the performance of this result is worse
+     */
     int comparePerformanceTo(RaceResult other);
-    boolean canComplete();
+
+    /**
+     * Tests whether this participant has completed the race (single races) or whether it is possible
+     * to complete the race (series races).
+     * @return true if the race has been, or can be, completed
+     */
+    boolean canOrHasCompleted();
 }

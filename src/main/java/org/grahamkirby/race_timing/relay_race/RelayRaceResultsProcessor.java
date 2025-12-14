@@ -17,7 +17,6 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
-import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
@@ -27,28 +26,28 @@ import java.util.stream.Stream;
 import static java.util.Comparator.comparingInt;
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class RelayRaceResultsCalculator extends RaceResultsCalculator {
+public class RelayRaceResultsProcessor extends RaceResultsProcessor implements RelayRaceResults {
 
-    // TODO move interpolation to SingleRace.
-
-    /*
-       Calculations specific to a relay race with individual and paired legs. Features/assumptions:
-
-         * There are various team categories.
-         * Each leg is run by either one or two runners.
-         * Some result times may be missing, in which case they are interpolated where possible.
-         * Some result bib numbers may be missing, in which case they are guessed where possible.
-         * Additional results can be imported from paper records.
-         * Additional annotations can be imported:
-            * Overriding bib numbers or times for particular positions.
-         * A leg after the first leg may have a mass start, at which all remaining runners on that leg start together.
-         * There can be dead heats in overall results, and in legs after the first.
-         * Team gender category can be all women, mixed (half women, half men) or open (no restrictions).
-         * Any team can win a prize in an open category.
-         * Team age categories can overlap, so that for example a 50+ team can win a prize in a 40+ category.
-         * First place in an older category is awarded in preference to a lower prize in a lower category.
-         * Separate results are calculated for each leg.
-    */
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Calculations specific to a relay race with individual and paired legs. Features/assumptions:
+    //
+    //     * There are various team categories.
+    //     * Each leg is run by either one or two runners.
+    //     * Some result times may be missing, in which case they are interpolated where possible.
+    //     * Some result bib numbers may be missing, in which case they are guessed where possible.
+    //     * Additional results can be imported from paper records.
+    //     * Additional annotations can be imported:
+    //         * Overriding bib numbers or times for particular positions.
+    //     * A leg after the first leg may have a mass start, at which all remaining runners on that leg start together.
+    //     * There can be dead heats in overall results, and in legs after the first.
+    //     * Team gender category can be all women, mixed (half women, half men) or open (no restrictions).
+    //     * Any team can win a prize in an open category.
+    //     * Team age categories can overlap, so that for example a 50+ team can win a prize in a 40+ category.
+    //     * First place in an older category is awarded in preference to a lower prize in a lower category.
+    //     * Separate results are calculated for each leg.
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
                                          Duration previous_finish, Duration next_finish) {
@@ -72,7 +71,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public RelayRaceResultsCalculator(final RaceInternal race) {
+    public RelayRaceResultsProcessor(final RaceInternal race) {
 
         super(race);
     }
@@ -80,7 +79,7 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public RaceResults calculateResults() {
+    public void calculateResults() {
 
         initialiseResults();
         guessMissingData();
@@ -93,8 +92,6 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         allocatePrizes();
 
         addPaperRecordingComments();
-
-        return makeRaceResults();
     }
 
     @Override
@@ -128,6 +125,51 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
         } catch (final NumberFormatException e) {
             throw new RuntimeException(dnf_specification, e);
         }
+    }
+
+    @Override
+    public List<? extends RawResult> getRawResults() {
+        return ((RelayRace) race).getRawResults();
+    }
+
+    @Override
+    public int getNumberOfLegs() {
+        return ((RelayRace) race).getNumberOfLegs();
+    }
+
+    @Override
+    public List<RelayRaceLegResult> getLegResults(final int leg) {
+        return ((RelayRace) race).getLegResults(leg);
+    }
+
+    @Override
+    public List<String> getLegDetails(final RelayRaceResult result) {
+        return ((RelayRace) race).getLegDetails(result);
+    }
+
+    @Override
+    public List<Boolean> getPairedLegs() {
+        return ((RelayRace) race).getPairedLegs();
+    }
+
+    @Override
+    public Map<Integer, Integer> countLegsFinishedPerTeam() {
+        return ((RelayRace) race).countLegsFinishedPerTeam();
+    }
+
+    @Override
+    public Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
+        return ((RelayRace) race).getExplicitlyRecordedLegNumbers();
+    }
+
+    @Override
+    public List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
+        return ((RelayRace) race).getBibNumbersWithMissingTimes(leg_finished_count);
+    }
+
+    @Override
+    public List<Duration> getTimesWithMissingBibNumbers() {
+        return ((RelayRace) race).getTimesWithMissingBibNumbers();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,106 +643,5 @@ public class RelayRaceResultsCalculator extends RaceResultsCalculator {
 
         return team_summary_comparators.stream().
             reduce((_, _) -> 0, Comparator::thenComparing);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    protected RaceResults makeRaceResults() {
-
-        return new RelayRaceResults() {
-
-            @Override
-            public Config getConfig() {
-                return race.getConfig();
-            }
-
-            @Override
-            public Normalisation getNormalisation() {
-                return race.getNormalisation();
-            }
-
-            @Override
-            public Notes getNotes() {
-                return race.getNotes();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults() {
-                return race.getResultsCalculator().getOverallResults();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
-                return race.getResultsCalculator().getOverallResults(categories);
-            }
-
-            @Override
-            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
-                return race.getResultsCalculator().getPrizeWinners(category);
-            }
-
-            @Override
-            public List<String> getPrizeCategoryGroups() {
-                return race.getCategoriesProcessor().getPrizeCategoryGroups();
-            }
-
-            @Override
-            public List<PrizeCategory> getPrizeCategoriesByGroup(final String group) {
-                return race.getCategoriesProcessor().getPrizeCategoriesByGroup(group);
-            }
-
-            @Override
-            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
-                return race.getResultsCalculator().arePrizesInThisOrLaterCategory(prizeCategory);
-            }
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////
-
-            @Override
-            public List<? extends RawResult> getRawResults() {
-                return ((RelayRace) race).getRawResults();
-            }
-
-            @Override
-            public int getNumberOfLegs() {
-                return ((RelayRace) race).getNumberOfLegs();
-            }
-
-            @Override
-            public List<RelayRaceLegResult> getLegResults(final int leg) {
-                return ((RelayRace) race).getLegResults(leg);
-            }
-
-            @Override
-            public List<String> getLegDetails(final RelayRaceResult result) {
-                return ((RelayRace) race).getLegDetails(result);
-            }
-
-            @Override
-            public List<Boolean> getPairedLegs() {
-                return ((RelayRace) race).getPairedLegs();
-            }
-
-            @Override
-            public Map<Integer, Integer> countLegsFinishedPerTeam() {
-                return ((RelayRace) race).countLegsFinishedPerTeam();
-            }
-
-            @Override
-            public Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
-                return ((RelayRace) race).getExplicitlyRecordedLegNumbers();
-            }
-
-            @Override
-            public List<Integer> getBibNumbersWithMissingTimes(final Map<Integer, Integer> leg_finished_count) {
-                return ((RelayRace) race).getBibNumbersWithMissingTimes(leg_finished_count);
-            }
-
-            @Override
-            public List<Duration> getTimesWithMissingBibNumbers() {
-                return ((RelayRace) race).getTimesWithMissingBibNumbers();
-            }
-        };
     }
 }

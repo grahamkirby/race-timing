@@ -25,15 +25,16 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 import static org.grahamkirby.race_timing.common.Config.loadProperties;
 
 public class RaceFactory {
 
-    private final List<SpecialisedRaceFactory> specialised_factories = List.of(
-        new IndividualRaceFactory(),
-        new RelayRaceFactory(),
-        new SeriesRaceFactory()
+    private final List<Supplier<RaceFactory>> specialised_factories = List.of(
+        IndividualRaceFactory::new,
+        RelayRaceFactory::new,
+        SeriesRaceFactory::new
     );
 
     public static void main(final String[] args) {
@@ -46,8 +47,21 @@ public class RaceFactory {
         try {
             final Race race = makeRace(Path.of(args[0]));
 
-            final RaceResults results = race.processResults();
-            race.outputResults(results);
+            if (race.configIsValid()) {
+
+                final RaceResults results = race.processResults();
+
+                // If results is null then an error has occurred during processing. Details will have been recorded
+                // in the notes.
+                if (results != null) {
+                    if (results.getOverallResults().isEmpty())
+                        race.outputRacerList();
+                    else
+                        race.outputResults(results);
+                }
+            }
+
+            race.outputNotes();
 
         } catch (final Exception e) {
             System.err.println(e.getMessage());
@@ -58,10 +72,17 @@ public class RaceFactory {
 
         final Properties properties = loadProperties(config_file_path);
 
-        for (final SpecialisedRaceFactory specialised_factory : specialised_factories)
-            if (specialised_factory.isValidFor(properties))
-                return specialised_factory.makeRace(config_file_path);
+        for (final Supplier<RaceFactory> specialised_factory : specialised_factories) {
+
+            final RaceFactory factory = specialised_factory.get();
+            if (factory.isValidFor(properties)) return factory.makeRace(config_file_path);
+        }
 
         throw new RuntimeException("No applicable race type for config file " + config_file_path);
+    }
+
+    // Only used in subclasses.
+    public boolean isValidFor(final Properties properties) {
+        return true;
     }
 }

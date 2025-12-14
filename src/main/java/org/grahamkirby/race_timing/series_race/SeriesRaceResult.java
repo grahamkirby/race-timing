@@ -39,27 +39,21 @@ public class SeriesRaceResult extends CommonRaceResult {
     // Contains null entries where runner did not compete.
     private final List<Performance> performances;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     public SeriesRaceResult(final RaceInternal race, final Participant participant, final List<Performance> performances) {
 
         super(race, participant);
 
         this.performances = performances;
-        scorer = ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getScorer();
+        scorer = ((SeriesRaceResultsProcessor) race.getResultsProcessor()).getScorer();
 
         minimum_number_of_races = (int) race.getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
         number_of_races_in_series = (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
         number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
     }
 
-    public List<Performance> getPerformances() {
-        return performances;
-    }
-
-    @Override
-    public String getPrizeDetail() {
-
-        return "(" + ((Runner) getParticipant()).getClub() + ") " + getPerformance();
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public Performance getPerformance() {
@@ -74,12 +68,12 @@ public class SeriesRaceResult extends CommonRaceResult {
     }
 
     @Override
-    public boolean canComplete() {
+    public boolean canOrHasCompleted() {
 
         final int number_of_races_remaining = number_of_races_in_series - number_of_races_taken_place;
 
         final boolean can_complete_all_race_categories =
-            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
+            ((SeriesRaceResultsProcessor) race.getResultsProcessor()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
 
         return can_complete_all_race_categories && numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
     }
@@ -95,13 +89,23 @@ public class SeriesRaceResult extends CommonRaceResult {
             CommonRaceResult::compareRunnerFirstName);
     }
 
-    public boolean hasCompletedSeries() {
+    @Override
+    public String toString() {
 
-        return numberOfRacesCompleted() >= minimum_number_of_races &&
-            ((SeriesRaceResultsCalculator) race.getResultsCalculator()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
+        return "(" + ((Runner) getParticipant()).getClub() + ") " + getPerformance();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    boolean hasCompletedSeries() {
+
+        return numberOfRacesCompleted() >= minimum_number_of_races &&
+            ((SeriesRaceResultsProcessor) race.getResultsProcessor()).getRaceCategories().stream().allMatch(this::hasCompletedRaceCategory);
+    }
+
+    List<Performance> getPerformances() {
+        return performances;
+    }
 
     boolean hasCompletedRaceCategory(final SeriesRaceCategory category) {
 
@@ -109,25 +113,17 @@ public class SeriesRaceResult extends CommonRaceResult {
             anyMatch(this::hasCompletedRace);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private int numberOfRacesCompleted() {
 
         return (int) ((SeriesRace) race).getRaces().stream().
             filter(Objects::nonNull).
-            flatMap(race -> race.getResultsCalculator().getOverallResults().stream()).
+            flatMap(race -> race.getResultsProcessor().getOverallResults().stream()).
             map(result -> (SingleRaceResult) result).
             filter(result -> result.getParticipant().equals(participant)).
-            filter(SingleRaceResult::canComplete).
+            filter(SingleRaceResult::canOrHasCompleted).
             count();
-    }
-
-    private static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
-
-        final int minimum_number_of_races = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
-
-        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_number_of_races);
-        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_number_of_races);
-
-        return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,17 +152,9 @@ public class SeriesRaceResult extends CommonRaceResult {
      */
     private boolean hasCompletedRace(final int race_number) {
 
-        final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
-
         // Example: race_number = 5
 
-        final int number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
-        // Example: number_of_races_taken_place = 6
-
-        final List<Integer> race_numbers_in_temporal_order = calculator.getRaceTemporalPermutation().getOrdering();
-        // Example: race_numbers_in_temporal_order = 1,5,2,9,3,10,4,11,12,6,7,8
-
-        final List<Integer> completed_race_numbers_in_temporal_order = race_numbers_in_temporal_order.subList(0, number_of_races_taken_place);
+        final List<Integer> completed_race_numbers_in_temporal_order = getCompletedRaceNumbersInTemporalOrder();
         // Example: completed_race_numbers_in_temporal_order = 1,5,2,9,3,10
 
         // Performances are held in listing order.
@@ -180,11 +168,34 @@ public class SeriesRaceResult extends CommonRaceResult {
         return index_of_race_in_performances >= 0 && performances.get(index_of_race_in_performances) != null;
     }
 
+    private List<Integer> getCompletedRaceNumbersInTemporalOrder() {
+
+        final int number_of_races_taken_place = ((SeriesRace) race).getNumberOfRacesTakenPlace();
+        // Example: number_of_races_taken_place = 6
+
+        final List<Integer> race_numbers_in_temporal_order = ((SeriesRaceResultsProcessor) race.getResultsProcessor()).getRaceTemporalPermutation().getOrdering();
+        // Example: race_numbers_in_temporal_order = 1,5,2,9,3,10,4,11,12,6,7,8
+
+        return race_numbers_in_temporal_order.subList(0, number_of_races_taken_place);
+    }
+
     private int numberOfRacesRemainingInCategory(final List<SingleRaceInternal> races, final SeriesRaceCategory category) {
 
         return (int) category.race_numbers().stream().
             map(race_number -> races.get(race_number - 1)).
             filter(Objects::isNull).
             count();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static int compareNumberOfRacesCompleted(final RaceResult r1, final RaceResult r2) {
+
+        final int minimum_number_of_races = (int) r1.getRace().getConfig().get(KEY_MINIMUM_NUMBER_OF_RACES);
+
+        final int relevant_number_of_races_r1 = Math.min(((SeriesRaceResult) r1).numberOfRacesCompleted(), minimum_number_of_races);
+        final int relevant_number_of_races_r2 = Math.min(((SeriesRaceResult) r2).numberOfRacesCompleted(), minimum_number_of_races);
+
+        return -Integer.compare(relevant_number_of_races_r1, relevant_number_of_races_r2);
     }
 }

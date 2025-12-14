@@ -1,1 +1,0 @@
-no entry for key 'ELIGIBLE_CLUBS' in file 'config.txt'

@@ -29,61 +29,94 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
-import static org.grahamkirby.race_timing.common.Config.KEY_RACES;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 public class SeriesRace implements RaceInternal {
 
+    private static final String KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES = KEY_SCORE_FOR_MEDIAN_POSITION;
+    private static final String KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS = KEY_SCORE_FOR_FIRST_PLACE;
+
     private List<SingleRaceInternal> races;
-    private final Config config;
-    private final CategoriesProcessor categories_processor;
-    private RaceResultsCalculator results_calculator;
+    private CategoriesProcessor categories_processor;
+    private RaceResultsProcessor results_processor;
     private RaceOutput results_output;
-    private final Normalisation normalisation;
-    private final Notes notes;
+    private NormalisationProcessor normalisation;
+    private final Config config;
+    private final NotesProcessor notes;
 
     private final List<Path> input_files_used_by_individual_races =  new ArrayList<>();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public SeriesRace(final Config config) throws IOException {
+    public SeriesRace(final Config config) {
 
         this.config = config;
-        categories_processor = new CategoriesProcessor(config);
-        normalisation = new Normalisation(config);
-        notes = new Notes();
-
-        loadRaces();
+        notes = new NotesProcessor();
     }
 
-    @Override
-    public RaceResults processResults() throws IOException {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return results_calculator.calculateResults();
+    @Override
+    public RaceResults processResults() {
+
+        try {
+            loadRaces();
+
+            results_processor.calculateResults();
+            return results_processor;
+        }
+        catch (final Exception e) {
+            notes.appendToNotes(e.getMessage());
+            return null;
+        }
     }
 
     @Override
     public void outputResults(final RaceResults results) throws IOException {
 
-        config.checkUnusedInputFiles(input_files_used_by_individual_races);
-        config.checkUnusedProperties();
+        try {
+            config.checkUnusedInputFiles(input_files_used_by_individual_races);
+            config.checkUnusedProperties();
+        }
+        catch (Exception e) {
+            results_output.getNotes().appendToNotes(e.getMessage() + LINE_SEPARATOR);
+        }
 
         results_output.outputResults(results);
     }
 
     @Override
-    public RaceResultsCalculator getResultsCalculator() {
-        return results_calculator;
+    public void outputNotes() throws IOException {
+
+        results_output.printNotes(notes);
     }
 
     @Override
-    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
-        this.results_calculator = results_calculator;
+    public void outputRacerList() throws IOException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setResultsOutput(final RaceOutput results_output) {
-        this.results_output = results_output;
+    public boolean configIsValid() {
+        return results_processor != null;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void initialise() throws IOException {
+
+        categories_processor = new CategoriesProcessor(config);
+        normalisation = new NormalisationProcessor(config);
+        results_output = new SeriesRaceOutput(config);
+
+        final SeriesRaceScorer scorer = getRaceScorer(config);
+        results_processor = new SeriesRaceResultsProcessor(scorer, this);
+    }
+
+    @Override
+    public void setOutput(final RaceOutput output) {
+        this.results_output = output;
     }
 
     @Override
@@ -97,13 +130,18 @@ public class SeriesRace implements RaceInternal {
     }
 
     @Override
-    public Normalisation getNormalisation() {
+    public RaceResultsProcessor getResultsProcessor() {
+        return results_processor;
+    }
+
+    @Override
+    public NormalisationProcessor getNormalisationProcessor() {
 
         return normalisation;
     }
 
     @Override
-    public Notes getNotes() {
+    public NotesProcessor getNotesProcessor() {
         return notes;
     }
 
@@ -119,6 +157,17 @@ public class SeriesRace implements RaceInternal {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private SeriesRaceScorer getRaceScorer(final Config config) {
+
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES))
+            return new IndividualTimesScorer(this);
+
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS))
+            return new IndividualPositionsScorer(this);
+
+        return new AggregateTimesScorer(this);
+    }
 
     private void loadRaces() throws IOException {
 
@@ -166,7 +215,7 @@ public class SeriesRace implements RaceInternal {
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");
 
-        final SingleRaceInternal individual_race = new IndividualRaceFactory().makeRace(config_path);
+        final SingleRaceInternal individual_race = (SingleRaceInternal) new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();
 
         return individual_race;

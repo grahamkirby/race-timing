@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
-import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.NormalisationProcessor;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -27,11 +27,14 @@ import java.util.List;
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
 
-@SuppressWarnings("preview")
 public class RelayRaceConfigAdjuster extends ConfigProcessor {
 
     private static final List<String> PATH_PROPERTY_KEYS =
         List.of(KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
+
+    private static final String DEFAULT_START_TIME = "00:00:00";
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RelayRaceConfigAdjuster(final Config config) {
 
@@ -41,12 +44,12 @@ public class RelayRaceConfigAdjuster extends ConfigProcessor {
     @Override
     public void processConfig() {
 
-        config.addIfAbsent(KEY_RACE_START_TIME, "00:00:00");
+        config.addIfAbsent(KEY_RACE_START_TIME, DEFAULT_START_TIME);
 
         config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
 
         config.replaceIfPresent(KEY_NUMBER_OF_LEGS, Integer::parseInt);
-        config.replaceIfPresent(KEY_RACE_START_TIME, Normalisation::parseTime);
+        config.replaceIfPresent(KEY_RACE_START_TIME, NormalisationProcessor::parseTime);
 
         // Default entry map with elements (bib number, team name, category, plus one per leg), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap((int) config.get(KEY_NUMBER_OF_LEGS) + 3));

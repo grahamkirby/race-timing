@@ -4,4 +4,3 @@ RACE_NAME_FOR_FILENAMES = balmullo
 
 # Relative to directory containing configuration file.
 ENTRIES_PATH = entries.txt
-

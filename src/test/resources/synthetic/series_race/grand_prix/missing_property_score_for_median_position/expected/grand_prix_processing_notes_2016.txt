@@ -1,0 +1,1 @@
+should have no or all keys from {SCORE_FOR_MEDIAN_POSITION, RACE_CATEGORIES_PATH} in file 'config.txt'

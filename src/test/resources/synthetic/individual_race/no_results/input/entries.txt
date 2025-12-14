@@ -1,7 +1,7 @@
 1	John Smith	Fife AC	MS
 2	Bartosz Thomson	Dundee RR	M50
 3	JackBruce	Dundee Road Runners	MS
-4	Sofia O'Connor	Dummy, Club Name	F50
+4	Sofia O'Connor	Fife Athletic Club	F50
 5	Clark O' Connor		MS
 6	Hailey Dickson:)	Unatt.	FU20
 7	John Smith	None	MU20
@@ -14,12 +14,12 @@
 14	Lena K. Maclean	DHH	F40
 15	Cayla Duncan	Dundee Hawkhill Harriers	F70
 16	Amé MacDonald	Unattached	FU20
-17	Regan Millar	FTR	M50
+17	Regan MILLAR	FTR	M50
 18	Hubert Gray	Falkland Trail Runners	M50
 19	Martha Gibson	Strathearn	FS
 20	Amelia Muir	Strathearn Harriers	FS
 21	Alix Crawford	STAART	FS
-22	Zuzanna Miller-Ford, Jr	Leven Las Vegas	FS
+22	Zuzanna Miller-Ford	Leven Las Vegas	FS
 23	Leland Donaldson	Leven Las Vegas RC	M40
 24	Hasan Robertson	Haddies	M40
 25	Hope Christie	Anster Haddies	M40

@@ -27,11 +27,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
 public class RelayRaceResult extends SingleRaceResult {
 
     private final List<RelayRaceLegResult> leg_results;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     RelayRaceResult(final RaceInternal race, final RaceEntry entry, final Duration finish_time) {
 
@@ -39,24 +41,22 @@ public class RelayRaceResult extends SingleRaceResult {
 
         leg_results = new ArrayList<>();
 
-        final int number_of_legs = ((RelayRace) race).getNumberOfLegs();
-
-        for (int i = 0; i < number_of_legs; i++)
+        for (int i = 0; i < ((RelayRace) race).getNumberOfLegs(); i++)
             leg_results.add(new RelayRaceLegResult(race, entry));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean canComplete() {
+    public boolean canOrHasCompleted() {
 
-        return leg_results.stream().allMatch(RelayRaceLegResult::canComplete);
+        return leg_results.stream().allMatch(RelayRaceLegResult::canOrHasCompleted);
     }
 
     @Override
     public Performance getPerformance() {
 
-        return canComplete() ?
+        return canOrHasCompleted() ?
             new DurationPerformance(leg_results.stream().
                 map(leg_result -> (Duration) leg_result.getPerformance().getValue()).
                 reduce(Duration.ZERO, Duration::plus)) :
@@ -79,10 +79,12 @@ public class RelayRaceResult extends SingleRaceResult {
     }
 
     @Override
-    public String getPrizeDetail() {
+    public String toString() {
 
         return "(" + getParticipant().getCategory().getLongName() + ") " + renderDuration(this, DNF_STRING);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<RelayRaceLegResult> getLegResults() {
         return leg_results;
@@ -93,6 +95,13 @@ public class RelayRaceResult extends SingleRaceResult {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
+
+        return race.getRawResults().size() - (int) race.getRawResults().reversed().stream().
+            takeWhile(result -> result.getBibNumber() != bib_number).
+            count() + 1;
+    }
 
     /** Compares two results based on alphabetical ordering of the team name. */
     private static int compareTeamName(final RaceResult r1, final RaceResult r2) {
@@ -105,16 +114,9 @@ public class RelayRaceResult extends SingleRaceResult {
         final boolean dead_heat1 = result1.getPositionString() != null && result1.getPositionString().endsWith("=");
         final boolean dead_heat2 = result2.getPositionString() != null && result2.getPositionString().endsWith("=");
 
-        final boolean dnf1 = !result1.canComplete();
-        final boolean dnf2 = !result2.canComplete();
+        final boolean dnf1 = !result1.canOrHasCompleted();
+        final boolean dnf2 = !result2.canOrHasCompleted();
 
         return !(dead_heat1 || dead_heat2 || dnf1 || dnf2);
-    }
-
-    protected int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
-
-        return race.getRawResults().size() - (int) race.getRawResults().reversed().stream().
-            takeWhile(result -> result.getBibNumber() != bib_number).
-            count() + 1;
     }
 }

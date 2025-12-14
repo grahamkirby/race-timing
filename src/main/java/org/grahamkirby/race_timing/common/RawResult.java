@@ -21,13 +21,13 @@ package org.grahamkirby.race_timing.common;
 import java.time.Duration;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.parseTime;
 
 public class RawResult {
 
     private int bib_number;
     private String comment = "";
-    public Duration recorded_finish_time;
+    private Duration recorded_finish_time;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -28,15 +28,17 @@ import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public abstract class RaceResultsCalculator {
+public abstract class RaceResultsProcessor implements RaceResults {
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // Calculations generic to all race types. Features/assumptions:
     //
     //     * Bib numbers are unique within a given race.
     //     * Times are recorded with 1 second resolution.
     //     * Runners that finish may still be separately recorded as DNF (did not finish) if reported.
     //     * Dead heats can be optionally accommodated.
-
+    //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected RaceInternal race;
@@ -44,31 +46,27 @@ public abstract class RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public abstract RaceResults calculateResults() throws IOException;
+    public abstract void calculateResults() throws IOException;
     protected abstract boolean canDistinguishFromOtherEqualPerformances(RaceResult result);
-
-    /**
-     * Returns a view over the results used to output results.
-     */
-    protected abstract RaceResults makeRaceResults();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public RaceResultsCalculator(final RaceInternal race) {
+    public RaceResultsProcessor(final RaceInternal race) {
         this.race = race;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @Override
     public List<RaceResult> getOverallResults() {
         return overall_results;
     }
 
-    /** Gets all the results eligible for the given prize categories. */
+    @Override
     public List<RaceResult> getOverallResults(final List<PrizeCategory> prize_categories) {
 
         final Predicate<RaceResult> prize_category_filter = result ->
-            race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(result.getCategory(), getClub(result), prize_categories);
+            race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(result.getEntryCategory(), getClub(result), prize_categories);
 
         final List<RaceResult> results = makeMutableCopy(overall_results.stream().filter(prize_category_filter).toList());
 
@@ -76,6 +74,28 @@ public abstract class RaceResultsCalculator {
         return results;
     }
 
+    @Override
+    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
+
+        final List<RaceResult> prize_results = makeMutableCopy(overall_results.stream().
+            filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
+            toList());
+
+        setPositionStrings(prize_results);
+        return prize_results;
+    }
+
+    @Override
+    public List<String> getPrizeCategoryGroups() {
+        return race.getCategoriesProcessor().getPrizeCategoryGroups();
+    }
+
+    @Override
+    public List<PrizeCategory> getPrizeCategoriesByGroup(final String group) {
+        return race.getCategoriesProcessor().getPrizeCategoriesByGroup(group);
+    }
+
+    @Override
     public boolean arePrizesInThisOrLaterCategory(final PrizeCategory category) {
 
         for (final PrizeCategory other_category : race.getCategoriesProcessor().getPrizeCategories().reversed()) {
@@ -86,16 +106,22 @@ public abstract class RaceResultsCalculator {
         return false;
     }
 
-    /** Returns prize winners in given category. */
-    public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
-
-        final List<RaceResult> prize_results = makeMutableCopy(overall_results.stream().
-            filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
-            toList());
-
-        setPositionStrings(prize_results);
-        return prize_results;
+    @Override
+    public Config getConfig() {
+        return race.getConfig();
     }
+
+    @Override
+    public NormalisationProcessor getNormalisationProcessor() {
+        return race.getNormalisationProcessor();
+    }
+
+    @Override
+    public NotesProcessor getNotesProcessor() {
+        return race.getNotesProcessor();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
@@ -121,7 +147,7 @@ public abstract class RaceResultsCalculator {
 
             final RaceResult result = results.get(result_index);
 
-            if (result.canComplete()) {
+            if (result.canOrHasCompleted()) {
 
                 // Skip over any following results with the same performance.
                 // Defined in terms of performance rather than duration, since in some races ranking is determined
@@ -193,6 +219,27 @@ public abstract class RaceResultsCalculator {
         }
     }
 
+    protected void recordDNFs() {
+
+        // This fills in the DNF results that were specified explicitly in the config
+        // file, corresponding to cases where the runners reported not completing the
+        // course.
+
+        // Cases where there is no recorded result are captured by the
+        // default completion status being DNS.
+
+        final String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
+
+        if (dnf_string != null && !dnf_string.isBlank())
+            for (final String individual_dnf_string : dnf_string.split(","))
+                recordDNF(individual_dnf_string);
+    }
+
+    protected void recordDNF(final String dnf_specification) {
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private void allocatePrizes(final List<PrizeCategory> prize_categories, final Function<Integer, Integer> get_number_of_prizes_to_allocate) {
 
         for (final PrizeCategory category : prize_categories) {
@@ -218,32 +265,11 @@ public abstract class RaceResultsCalculator {
 
     private boolean isEligibleInCategory(final RaceResult result, final PrizeCategory prize_category) {
 
-        if (!result.canComplete()) return false;
+        if (!result.canOrHasCompleted()) return false;
         if (prize_category.isExclusive() && result.getCategoriesOfPrizesAwarded().stream().anyMatch(PrizeCategory::isExclusive)) return false;
 
         return race.getCategoriesProcessor().isResultEligibleForPrizeCategory(result.getParticipant().category, getClub(result), prize_category);
     }
-
-    protected void recordDNFs() {
-
-        // This fills in the DNF results that were specified explicitly in the config
-        // file, corresponding to cases where the runners reported not completing the
-        // course.
-
-        // Cases where there is no recorded result are captured by the
-        // default completion status being DNS.
-
-        final String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
-
-        if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(","))
-                recordDNF(individual_dnf_string);
-    }
-
-    protected void recordDNF(final String dnf_specification) {
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private String getClub(final RaceResult result) {
 

@@ -35,12 +35,18 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceOutput {
 
     protected RaceResults race_results;
+    protected Config config;
+
+    public RaceOutput(final Config config) {
+        this.config = config;
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -53,10 +59,20 @@ public abstract class RaceOutput {
         printPrizes();
         printCombined();
         finaliseNotes();
-        printNotes();
 
-        results.getConfig().checkUnusedInputFiles();
-        results.getConfig().checkUnusedProperties();
+        try {
+            results.getConfig().checkUnusedInputFiles();
+            results.getConfig().checkUnusedProperties();
+        }
+        catch (final Exception e) {
+
+            getNotes().clear();
+            getNotes().appendToNotes(e.getMessage() + LINE_SEPARATOR);
+        }
+    }
+
+    public NotesProcessor getNotes() {
+        return race_results.getNotesProcessor();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,9 +88,7 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected Path getOutputStreamPath(final String output_type, final String file_suffix) {
-
-        final Config config = race_results.getConfig();
+    protected Path getOutputStreamPath(final String output_type, final String file_suffix) throws IOException {
 
         final String race_name = config.getString(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = config.getString(KEY_YEAR);
@@ -82,7 +96,7 @@ public abstract class RaceOutput {
         return config.getOutputDirectoryPath().resolve(race_name + "_" + output_type + "_" + year + "." + file_suffix);
     }
 
-    protected OutputStream getOutputStream(final String output_type, final String file_suffix) throws IOException {
+    public OutputStream getOutputStream(final String output_type, final String file_suffix) throws IOException {
 
         return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
     }
@@ -130,22 +144,22 @@ public abstract class RaceOutput {
     private void finaliseNotes() {
 
         for (final RaceResult result : race_results.getOverallResults())
-            if (result.getCategory() == null)
-                race_results.getNotes().appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
+            if (result.getEntryCategory() == null)
+                race_results.getNotesProcessor().appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
 
-        final String converted_words = race_results.getNormalisation().getNonTitleCaseWords();
+        final String converted_words = race_results.getNormalisationProcessor().getNonTitleCaseWords();
 
         if (!converted_words.isEmpty())
-            race_results.getNotes().appendToNotes("Converted to title case: " + converted_words);
+            race_results.getNotesProcessor().appendToNotes("Converted to title case: " + converted_words);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
-    private void printNotes() throws IOException {
+    public void printNotes(final NotesProcessor notes) throws IOException {
 
         final OutputStream stream = getOutputStream("processing_notes", TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-            writer.append(race_results.getNotes().getCombinedNotes());
+            writer.append(notes.getCombinedNotes());
         }
     }
 
@@ -359,7 +373,7 @@ public abstract class RaceOutput {
         @Override
         public void printResult(final RaceResult result) throws IOException {
 
-            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result.getPrizeDetail() + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result + LINE_SEPARATOR);
         }
 
         @Override
@@ -394,7 +408,7 @@ public abstract class RaceOutput {
 
             paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
             paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
-            paragraph.add(new Text(" " + result.getPrizeDetail()).setFont(font));
+            paragraph.add(new Text(" " + result).setFont(font));
 
             document.add(paragraph);
         }

@@ -26,15 +26,62 @@ import java.util.List;
  */
 public interface RaceResults {
 
-    Config getConfig();
-    Normalisation getNormalisation();
-    Notes getNotes();
-
+    /**
+     * Gets the overall results.
+     * @return a list containing the overall results, in rank order
+     */
     List<? extends RaceResult> getOverallResults();
+
+    /**
+     * Gets the results for the participants eligible for at least one of the given prize categories.
+     * @param categories a list of prize categories
+     * @return a list containing all results for the given categories, in rank order
+     */
     List<? extends RaceResult> getOverallResults(List<PrizeCategory> categories);
+
+    /**
+     * Gets the prize winners in the given prize category.
+     * @param category the category
+     * @return a list containing the results eligible for prizes in the cateogry, with highest prize first
+     */
     List<? extends RaceResult> getPrizeWinners(PrizeCategory category);
 
+    /**
+     * Gets the names of the prize category groups.
+     * @return a list containing the group names
+     */
     List<String> getPrizeCategoryGroups();
+
+    /**
+     * Gets the prize categories in the given group.
+     * @param group the group
+     * @return the prize categories in that group
+     */
     List<PrizeCategory> getPrizeCategoriesByGroup(String group);
-    boolean arePrizesInThisOrLaterCategory(PrizeCategory prizeCategory);
+
+    /**
+     * Tests whether prizes have been awarded in the given category or another category later in the prize
+     * list order.
+     * @param category the category
+     * @return true if prizes have been awarded in this or a later category
+     */
+    boolean arePrizesInThisOrLaterCategory(PrizeCategory category);
+
+    /**
+     * Gets the race configuration.
+     * @return the configuration
+     */
+    Config getConfig();
+
+    /**
+     * Gets the processor for normalising names, clubs etc.
+     * @return the normalisation processor
+     */
+    NormalisationProcessor getNormalisationProcessor();
+
+    /**
+     * Gets the processor for notes.
+     * @return the notes processor
+     */
+    NotesProcessor getNotesProcessor();
 }

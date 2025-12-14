@@ -33,15 +33,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.csvEncode;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.csvEncode;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.*;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator.getAggregatePosition;
+import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsProcessor.getAggregatePosition;
 
-@SuppressWarnings("preview")
 public class IndividualRaceOutput extends RaceOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time" + LINE_SEPARATOR;
+
+    public IndividualRaceOutput(final Config config) {
+        super(config);
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -259,7 +262,7 @@ public class IndividualRaceOutput extends RaceOutput {
             return List.of(
                 result.getPositionString(),
                 String.valueOf(result.getBibNumber()),
-                race_results.getNormalisation().htmlEncode(result.getParticipant().getName()),
+                race_results.getNormalisationProcessor().htmlEncode(result.getParticipant().getName()),
                 ((Runner) result.getParticipant()).getClub(),
                 result.getParticipant().getCategory().getShortName(),
                 renderDuration(result, DNF_STRING)

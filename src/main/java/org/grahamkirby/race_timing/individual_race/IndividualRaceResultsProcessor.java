@@ -28,49 +28,47 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.RunnerPerformance;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.TeamPerformance;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.parseTime;
 
-public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
+public class IndividualRaceResultsProcessor extends RaceResultsProcessor implements IndividualRaceResults {
 
-    /*
-       Calculations specific to a single individual race. Features/assumptions:
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Calculations specific to a single individual race. Features/assumptions:
+    //
+    //     * Each runner is optionally associated with a club.
+    //     * Runners without a club will be listed as 'Unatt.' (unattached) in results.
+    //     * Club names are normalised in results via a stored list of common alternatives.
+    //     * Runner names are unique within a club but not across clubs.
+    //     * Runner names are unique among unattached runners.
+    //     * Results timing may start at a different time from the actual race start.
+    //     * There are no dead heats in results, since an ordering is imposed at the finish even where recorded times are the same.
+    //     * Input data includes either a file containing entry details plus a file containing recorded times and bib
+    //       numbers, or a file containing combined entry details and results.
+    //     * Start times for particular runners may be provided separately, supporting individual early starts and late starts.
+    //     * Start times for particular runner categories may be provided separately.
+    //         * Used in Minitour races to allow older categories
+    //           to start slightly before younger categories, to reduce congestion.
+    //     * Start times may be calculated based on bib number.
+    //         * Used in Minitour and Tour races for time trials starting in waves.
+    //     * Separately recorded finish times for particular runners may be provided.
+    //     * Runners that start but do not finish will not be recorded in results.
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
-     * Each runner is optionally associated with a club.
-     * Runners without a club will be listed as 'Unatt.' (unattached) in results.
-     * Club names are normalised in results via a stored list of common alternatives.
-     * Runner names are unique within a club but not across clubs.
-     * Runner names are unique among unattached runners.
-     * Results timing may start at a different time from the actual race start.
-     * There are no dead heats in results, since an ordering is imposed at the finish even where recorded times are the same.
-     * Input data includes either a file containing entry details plus a file containing recorded times and bib numbers,
-       or a file containing combined entry details and results.
-     * Start times for particular runners may be provided separately, supporting individual early starts and late starts.
-     * Start times for particular runner categories may be provided separately.
-       * Used in Minitour races to allow older categories
-         to start slightly before younger categories, to reduce congestion.
-     * Start times may be calculated based on bib number.
-       * Used in Minitour and Tour races for time trials starting in waves.
-     * Separately recorded finish times for particular runners may be provided.
-     * Runners that start but do not finish will not be recorded in results.
-
-     */
+    // Team prize results are cached to avoid details being repeatedly written to notes for each output format.
+    private List<TeamPerformance> team_prizes = null;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final int DUMMY_BIB_NUMBER = 0;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public IndividualRaceResultsCalculator(final RaceInternal race) {
+    public IndividualRaceResultsProcessor(final RaceInternal race) {
         super(race);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public RaceResults calculateResults() {
+    public void calculateResults() {
 
         initialiseResults();
         adjustTimes();
@@ -80,8 +78,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         allocatePrizes();
 
         getPrizeWinners(null);
-
-        return makeRaceResults();
     }
 
     @Override
@@ -99,6 +95,25 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
 
         result.setDnf(true);
+    }
+
+    @Override
+    public synchronized List<TeamPerformance> getTeamPrizes() {
+
+        if (team_prizes == null) {
+
+            team_prizes = race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
+
+                Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
+                    map(this::getFirstTeamInGenderCategory).
+                    filter(Optional::isPresent).
+                    map(Optional::get).
+                    toList() :
+
+                List.of();
+        }
+
+        return team_prizes;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,33 +142,21 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
         return getOverallResults().stream().
             map(result -> (SingleRaceResult) result).
-            filter(SingleRaceResult::canComplete).
-            filter(result -> result.getCategory().getGender().equals(gender)).
+            filter(SingleRaceResult::canOrHasCompleted).
+            filter(result -> result.getEntryCategory().getGender().equals(gender)).
             toList();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // These are cached to avoid details being repeatedly written to notes for each output format.
-    private List<TeamPerformance> team_prizes = null;
+    static int getAggregatePosition(final TeamPerformance performance) {
 
-    private synchronized List<TeamPerformance> getTeamPrizes() {
-
-        if (team_prizes == null) {
-
-            team_prizes = race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
-
-                Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
-                    map(this::getFirstTeamInGenderCategory).
-                    filter(Optional::isPresent).
-                    map(Optional::get).
-                    toList() :
-
-                List.of();
-        }
-
-        return team_prizes;
+        return performance.runner_performances().stream().
+            map(IndividualRaceResults.RunnerPerformance::position).
+            reduce(0, Integer::sum);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initialiseResults() {
 
@@ -316,13 +319,6 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static int getAggregatePosition(final TeamPerformance performance) {
-
-        return performance.runner_performances().stream().
-            map(IndividualRaceResults.RunnerPerformance::position).
-            reduce(0, Integer::sum);
-    }
-
     private TeamPerformance getTeamPerformance(final String club, final String gender) {
 
         final int number_to_count_for_team_prize = (int) race.getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
@@ -343,42 +339,33 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
         final int number_to_count_for_team_prize = (int) race.getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
 
         // If aggregate positions are the same, use the first position as tie break.
-        final Comparator<TeamPerformance> sort_by_aggregate_position = Comparator.comparingInt(IndividualRaceResultsCalculator::getAggregatePosition);
+        final Comparator<TeamPerformance> sort_by_aggregate_position = Comparator.comparingInt(IndividualRaceResultsProcessor::getAggregatePosition);
         final Comparator<TeamPerformance> sort_by_first_position = Comparator.comparingInt(p -> p.runner_performances().getFirst().position());
 
-//        // Not necessary to sort clubs, but this makes it easier to reason about testing tie break.
-//        return getClubs().stream().sorted().
-//            map(club -> getTeamPerformance(club, team_prize_gender_category)).
-//            filter(performance -> performance.runner_performances().size() >= number_to_count_for_team_prize).
-//            min(sort_by_aggregate_position.thenComparing(sort_by_first_position));
-
-
         // Not necessary to sort clubs, but this makes it easier to reason about testing tie break.
-        List<TeamPerformance> list = getClubs().stream().sorted().
+        final List<TeamPerformance> list = getClubs().stream().sorted().
             map(club -> getTeamPerformance(club, team_prize_gender_category)).
             filter(performance -> performance.runner_performances().size() >= number_to_count_for_team_prize).
             sorted(sort_by_aggregate_position.thenComparing(sort_by_first_position)).toList();
 
-        Notes notes = race.getNotes();
+        final NotesProcessor notes = race.getNotesProcessor();
         notes.appendToNotes("Team scores: " + team_prize_gender_category + LINE_SEPARATOR + LINE_SEPARATOR);
 
         for (int i = 0; i < list.size(); i++) {
-            TeamPerformance performance = list.get(i);
-            notes.appendToNotes(i + 1 + " ");
-            notes.appendToNotes(performance.club());
 
-            int team_score = performance.runner_performances().stream().mapToInt(run -> run.position()).sum();
+            final TeamPerformance performance = list.get(i);
+            notes.appendToNotes(i + 1 + " " + performance.club());
 
+            final int team_score = performance.runner_performances().stream().mapToInt(RunnerPerformance::position).sum();
             notes.appendToNotes(" " + team_score + " (");
 
-            String individual_scores = performance.runner_performances().stream().map(run -> String.valueOf(run.position())).collect(Collectors.joining(", "));
+            final String individual_scores = performance.runner_performances().stream().map(run -> String.valueOf(run.position())).collect(Collectors.joining(", "));
             notes.appendToNotes(individual_scores + ")" + LINE_SEPARATOR);
-
         }
 
         notes.appendToNotes(LINE_SEPARATOR);
 
-        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
     }
 
     private Set<String> getClubs() {
@@ -387,64 +374,5 @@ public class IndividualRaceResultsCalculator extends RaceResultsCalculator {
             map(result -> ((Runner) result.getParticipant()).getClub()).
             filter(Predicate.not(club -> club.equals("Unatt."))).
             collect(Collectors.toSet());
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    protected RaceResults makeRaceResults() {
-
-        return new IndividualRaceResults() {
-
-            @Override
-            public Config getConfig() {
-                return race.getConfig();
-            }
-
-            @Override
-            public Normalisation getNormalisation() {
-                return race.getNormalisation();
-            }
-
-            @Override
-            public Notes getNotes() {
-                return race.getNotes();
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults() {
-                return IndividualRaceResultsCalculator.this.overall_results;
-            }
-
-            @Override
-            public List<? extends RaceResult> getOverallResults(final List<PrizeCategory> categories) {
-                return IndividualRaceResultsCalculator.this.getOverallResults(categories);
-            }
-
-            @Override
-            public List<? extends RaceResult> getPrizeWinners(final PrizeCategory category) {
-                return IndividualRaceResultsCalculator.this.getPrizeWinners(category);
-            }
-
-            @Override
-            public List<TeamPerformance> getTeamPrizes() {
-                return IndividualRaceResultsCalculator.this.getTeamPrizes();
-            }
-
-            @Override
-            public List<String> getPrizeCategoryGroups() {
-                return race.getCategoriesProcessor().getPrizeCategoryGroups();
-            }
-
-            @Override
-            public List<PrizeCategory> getPrizeCategoriesByGroup(final String group) {
-                return race.getCategoriesProcessor().getPrizeCategoriesByGroup(group);
-            }
-
-            @Override
-            public boolean arePrizesInThisOrLaterCategory(final PrizeCategory prizeCategory) {
-                return IndividualRaceResultsCalculator.this.arePrizesInThisOrLaterCategory(prizeCategory);
-            }
-        };
     }
 }

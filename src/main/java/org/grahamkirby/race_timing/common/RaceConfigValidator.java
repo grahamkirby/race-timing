@@ -106,7 +106,7 @@ public class RaceConfigValidator extends ConfigProcessor {
         getCleanedLines(raw_results_path, line_number).
             map(line -> line.split("\t")[RAW_RESULT_TIME_INDEX]).
             filter(time_string -> !time_string.equals(UNKNOWN_TIME_INDICATOR)).
-            map(Normalisation::parseTime).
+            map(NormalisationProcessor::parseTime).
             forEachOrdered(finish_time -> validateConsecutiveRawResultsOrdering(finish_time, previous_time, raw_results_path, line_number));
     }
 
@@ -203,7 +203,7 @@ public class RaceConfigValidator extends ConfigProcessor {
         return readAllLines(file_path).stream().
             peek(_ -> line_number.line++).
             peek(l -> line.line = l).
-            map(Normalisation::stripComment).
+            map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank));
     }
 

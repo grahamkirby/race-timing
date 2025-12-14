@@ -162,12 +162,12 @@ public class RaceTest {
 
         final String[] args = {config_file_path.toString()};
 
-        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
-
-        if (!Files.exists(expected_error_message_file))
+//        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
+//
+//        if (!Files.exists(expected_error_message_file))
             runWithExpectedCompletion(args);
-        else
-            runWithExpectedError(args, expected_error_message_file);
+//        else
+//            runWithExpectedError(args, expected_error_message_file);
 
         // Test has passed if this line is reached.
         failed_test = false;

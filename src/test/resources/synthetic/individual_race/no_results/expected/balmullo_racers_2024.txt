@@ -1,0 +1,30 @@
+1	Smith	John	Fife AC	M		MS
+2	Thomson	Bartosz	Dundee Road Runners	M		M50
+3	Jackbruce	Jackbruce	Dundee Road Runners	M		MS
+4	O'Connor	Sofia	Fife AC	F		F50
+5	Connor	Clark	Unatt.	M		MS
+6	Dickson:)	Hailey	Unatt.	F		FU20
+7	Smith	John	Unatt.	M		MU20
+8	King	Martin	PH Racing	M		M40
+9	O’Donohue	Philip	Carnegie Harriers	M		M50
+10	Walker	Nina	Carnegie Harriers	F		FS
+11	Müllar	Rhys	Dundee Hawkhill Harriers	M		M70
+12	McKenzie	Leo	Dundee Hawkhill Harriers	M		M70
+13	MacDonald	Neil	Dundee Road Runners	M		M60
+14	Maclean	Lena	Dundee Hawkhill Harriers	F		F40
+15	Duncan	Cayla	Dundee Hawkhill Harriers	F		F70
+16	MacDonald	Amé	Unatt.	F		FU20
+17	Millar	Regan	Falkland Trail Runners	M		M50
+18	Gray	Hubert	Falkland Trail Runners	M		M50
+19	Gibson	Martha	Strathearn	F		FS
+20	Muir	Amelia	Strathearn Harriers	F		FS
+21	Crawford	Alix	STAART	F		FS
+22	Miller-Ford	Zuzanna	Leven Las Vegas RC	F		FS
+23	Donaldson	Leland	Leven Las Vegas RC	M		M40
+24	Robertson	Hasan	Anster Haddies	M		M40
+25	Christie	Hope	Anster Haddies	M		M40
+26	Thompson	Paige	Perth Road Runners	F		FS
+27	Muir	Henry	Perth Road Runners	F		F40
+28	Christie	Myles	Fife AC	F		F40
+29	Ritchie	Isabel	Fife AC	F		FS
+30	Kelly	Scott	Fife AC	M		MS

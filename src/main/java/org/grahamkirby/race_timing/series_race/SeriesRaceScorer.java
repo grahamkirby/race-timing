@@ -43,6 +43,7 @@ public abstract class SeriesRaceScorer {
 
         if (race.getConfig().containsKey(KEY_SCORE_FOR_FIRST_PLACE))
             score_for_first_place = (int) race.getConfig().get(KEY_SCORE_FOR_FIRST_PLACE);
+
         if (race.getConfig().containsKey(KEY_SCORE_FOR_MEDIAN_POSITION))
             score_for_median_position = (int) race.getConfig().get(KEY_SCORE_FOR_MEDIAN_POSITION);
     }
@@ -70,7 +71,7 @@ public abstract class SeriesRaceScorer {
 
         if (individual_race == null) return null;
 
-        for (final RaceResult result : individual_race.getResultsCalculator().getOverallResults()) {
+        for (final RaceResult result : individual_race.getResultsProcessor().getOverallResults()) {
 
             final SingleRaceResult individual_result = (SingleRaceResult) result;
             if (individual_result.getParticipant().equals(runner))
@@ -82,9 +83,7 @@ public abstract class SeriesRaceScorer {
 
     protected Performance getSeriesPerformance(final Runner runner, final Comparator<Integer> comparator) {
 
-        final SeriesRaceResultsCalculator calculator = (SeriesRaceResultsCalculator) race.getResultsCalculator();
-
-        final SeriesRaceResult series_result = calculator.getOverallResult(runner);
+        final SeriesRaceResult series_result = ((SeriesRaceResultsProcessor) race.getResultsProcessor()).getOverallResult(runner);
         final int number_of_counting_scores = Math.min(minimum_number_of_races, numberOfRacesCompleted(series_result));
 
         // Sort the scores before selecting, depending on whether lower or higher score is better.

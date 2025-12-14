@@ -21,6 +21,8 @@ import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
@@ -29,14 +31,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.*;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
 import static org.grahamkirby.race_timing.common.RaceEntry.*;
-import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator.DUMMY_BIB_NUMBER;
 
 public class IndividualRace implements SingleRaceInternal {
 
     private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
+    private static final int DUMMY_BIB_NUMBER = 0;
 
     private List<RaceEntry> entries;
     private List<RawResult> raw_results;
@@ -49,19 +51,83 @@ public class IndividualRace implements SingleRaceInternal {
     private Set<Integer> dead_heats;
 
     private final Config config;
-    private final CategoriesProcessor categories_processor;
-    private final Normalisation normalisation;
-    private final Notes notes;
+    private CategoriesProcessor categories_processor;
+    private NormalisationProcessor normalisation;
+    private final NotesProcessor notes;
 
-    private RaceResultsCalculator results_calculator;
+    private RaceResultsProcessor results_processor;
     private RaceOutput results_output;
 
-    public IndividualRace(final Config config) throws IOException {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public IndividualRace(final Config config) {
 
         this.config = config;
-        notes = new Notes();
+        notes = new NotesProcessor();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public RaceResults processResults() {
+
+        try {
+            loadRaceData();
+            loadSeparatelyRecordedResults();
+            loadDeadHeats();
+
+            results_processor.calculateResults();
+            return results_processor;
+        }
+        catch (final Exception e) {
+            notes.appendToNotes(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void outputResults(final RaceResults results) throws IOException {
+
+        if (!results.getOverallResults().isEmpty())
+            results_output.outputResults(results);
+    }
+
+    @Override
+    public void outputNotes() throws IOException {
+
+        results_output.printNotes(notes);
+    }
+
+    @Override
+    public void outputRacerList() throws IOException {
+
+        final OutputStream stream = results_output.getOutputStream("racers", TEXT_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+            for (final String line : makeRacerList(entries))
+                writer.append(line + LINE_SEPARATOR);
+        }
+    }
+
+    @Override
+    public boolean configIsValid() {
+        return results_processor != null && categories_processor != null && normalisation != null;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void initialise() throws IOException {
+
         categories_processor = new CategoriesProcessor(config);
-        normalisation = new Normalisation(config);
+        normalisation = new NormalisationProcessor(config);
+        results_output = new IndividualRaceOutput(config);
+        results_processor = new IndividualRaceResultsProcessor(this);
+    }
+
+    @Override
+    public void setOutput(final RaceOutput output) {
+        this.results_output = output;
     }
 
     @Override
@@ -75,13 +141,26 @@ public class IndividualRace implements SingleRaceInternal {
     }
 
     @Override
-    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
-        this.results_calculator = results_calculator;
+    public RaceResultsProcessor getResultsProcessor() {
+        return results_processor;
     }
 
     @Override
-    public void setResultsOutput(final RaceOutput results_output) {
-        this.results_output = results_output;
+    public NormalisationProcessor getNormalisationProcessor() {
+
+        return normalisation;
+    }
+
+    @Override
+    public NotesProcessor getNotesProcessor() {
+        return notes;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public List<RaceEntry> getEntries() {
+        return entries;
     }
 
     @Override
@@ -90,44 +169,8 @@ public class IndividualRace implements SingleRaceInternal {
     }
 
     @Override
-    public List<RaceEntry> getEntries() {
-        return entries;
-    }
-
-    @Override
     public List<RaceResult> getOverallResults() {
         return overall_results;
-    }
-
-    @Override
-    public RaceResults processResults() throws IOException {
-
-        loadRaceData();
-        loadSeparatelyRecordedResults();
-        loadDeadHeats();
-        return results_calculator.calculateResults();
-    }
-
-    @Override
-    public void outputResults(final RaceResults results) throws IOException {
-
-        results_output.outputResults(results);
-    }
-
-    @Override
-    public RaceResultsCalculator getResultsCalculator() {
-        return results_calculator;
-    }
-
-    @Override
-    public Normalisation getNormalisation() {
-
-        return normalisation;
-    }
-
-    @Override
-    public Notes getNotes() {
-        return notes;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +185,23 @@ public class IndividualRace implements SingleRaceInternal {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private List<String> makeRacerList(final List<RaceEntry> entries) {
+
+        return entries.stream().
+            map(this::makeRacerListEntry).
+            toList();
+    }
+
+    private String makeRacerListEntry(final RaceEntry entry) {
+
+        return entry.getBibNumber() + "\t" +
+            getLastNameOfRunner(entry.getParticipant().getName()) + "\t" +
+            getFirstNameOfRunner(entry.getParticipant().getName()) + "\t" +
+            ((Runner) entry.getParticipant()).getClub() + "\t" +
+            entry.getParticipant().getCategory().getShortName().charAt(0) + "\t\t" +
+            entry.getParticipant().getCategory().getShortName();
+    }
+
     private void loadRaceData() {
 
         final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
@@ -149,14 +209,27 @@ public class IndividualRace implements SingleRaceInternal {
         final Path overall_results_path = config.getPath(KEY_OVERALL_RESULTS_PATH);
 
         try {
-            validateDataFiles(entries_path, raw_results_path, overall_results_path);
+            validateEntryDataFiles(entries_path);
 
             entries = loadEntries(entries_path);
-            raw_results = loadRawResults(raw_results_path);
-            overall_results = loadOverallResults(overall_results_path);
+            validateEntryData(entries, entries_path);
 
-            validateData(entries, raw_results, entries_path, raw_results_path);
+            if (raw_results_path != null) {
+                validateResultsDataFiles(raw_results_path, overall_results_path);
+                raw_results = loadRawResults(raw_results_path);
+                overall_results = List.of();
 
+                validateResultsData(entries, raw_results_path);
+            }
+            else if (overall_results_path != null) {
+                validateResultsDataFiles(raw_results_path, overall_results_path);
+                raw_results = List.of();
+                overall_results = loadOverallResults(overall_results_path);
+            }
+            else {
+                raw_results = List.of();
+                overall_results = List.of();
+            }
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -165,7 +238,7 @@ public class IndividualRace implements SingleRaceInternal {
     private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
         return readAllLines(entries_path).stream().
-            map(Normalisation::stripComment).
+            map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), this)).
             toList();
@@ -174,7 +247,7 @@ public class IndividualRace implements SingleRaceInternal {
     private List<RawResult> loadRawResults(final Path raw_results_path) throws IOException {
 
         return readAllLines(raw_results_path).stream().
-            map(Normalisation::stripComment).
+            map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(RawResult::new).
             toList();
@@ -184,7 +257,7 @@ public class IndividualRace implements SingleRaceInternal {
 
         try {
             return readAllLines(overall_results_path).stream().
-                map(Normalisation::stripComment).
+                map(NormalisationProcessor::stripComment).
                 filter(Predicate.not(String::isBlank)).
                 map(this::makeRaceResult).
                 toList();
@@ -211,7 +284,7 @@ public class IndividualRace implements SingleRaceInternal {
     private void validateEntryCategory(final String line) {
 
         final List<String> elements = Arrays.stream(line.split("\t")).toList();
-        final Normalisation normalisation = getNormalisation();
+        final NormalisationProcessor normalisation = getNormalisationProcessor();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
@@ -223,11 +296,15 @@ public class IndividualRace implements SingleRaceInternal {
         }
     }
 
-    private void validateDataFiles(final Path entries_path, final Path raw_results_path, final Path overall_results_path) throws IOException {
+    private void validateEntryDataFiles(final Path entries_path) throws IOException {
 
         validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbers(entries_path);
+    }
+
+    private void validateResultsDataFiles(final Path raw_results_path, final Path overall_results_path) throws IOException {
+
         validateRawResults(raw_results_path);
         validateBibNumbers(raw_results_path);
         validateRawResultsOrdering(raw_results_path);
@@ -236,9 +313,13 @@ public class IndividualRace implements SingleRaceInternal {
         validateEntriesNumberOfElements(overall_results_path, NUMBER_OF_ENTRY_COLUMNS, null);
     }
 
-    private void validateData(final List<RaceEntry> entries, final List<RawResult> raw_results, final Path entries_path, final Path raw_results_path) throws IOException {
+    private void validateEntryData(final List<RaceEntry> entries, final Path entries_path) throws IOException {
 
         validateEntriesUnique(entries, entries_path);
+    }
+
+    private void validateResultsData(final List<RaceEntry> entries, final Path raw_results_path) throws IOException {
+
         validateRecordedBibNumbersAreRegistered(entries, raw_results_path);
     }
 

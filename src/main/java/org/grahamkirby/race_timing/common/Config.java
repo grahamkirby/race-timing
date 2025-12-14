@@ -111,6 +111,7 @@ public class Config {
 
     /** Web link to application on GitHub. */
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
+    public static final String OUTPUT_DIRECTORY_NAME = "output";
 
     public static boolean override_check_input_files_used = false;
 
@@ -122,7 +123,8 @@ public class Config {
     private final List<Path> used_files;
 
     private final Path config_path;
-    private final List<ConfigProcessor> config_processors = new ArrayList<>();
+    private final List<ConfigProcessor> config_adjusters = new ArrayList<>();
+    private final List<ConfigProcessor> config_validators = new ArrayList<>();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -147,7 +149,7 @@ public class Config {
     public static List<String> getIgnoredFileNames() throws IOException {
 
         return readAllLines(IGNORED_FILE_NAMES_PATH).stream().
-            map(Normalisation::stripComment).
+            map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             toList();
     }
@@ -264,12 +266,6 @@ public class Config {
         config_map.replace(key, new_value);
     }
 
-    public void replaceIfPresent(final String key, final Object value) {
-
-        if (config_map.containsKey(key))
-            config_map.replace(key, value);
-    }
-
     public void replaceIfPresent(final String key, final Function<String, Object> make_new_value) {
 
         if (config_map.containsKey(key))
@@ -282,14 +278,25 @@ public class Config {
             replaceIfPresent(key, make_new_value);
     }
 
-    public void addConfigProcessor(final Function<Config, ConfigProcessor> make_processor) {
+    public void addConfigAdjuster(final Function<Config, ConfigProcessor> make_processor) {
 
-        config_processors.add(make_processor.apply(this));
+        config_adjusters.add(make_processor.apply(this));
     }
 
-    public void processConfig() throws IOException {
+    public void addConfigValidator(final Function<Config, ConfigProcessor> make_processor) {
 
-        for (final ConfigProcessor processor : config_processors)
+        config_validators.add(make_processor.apply(this));
+    }
+
+    public void processConfigAdjusters() {
+
+        for (final ConfigProcessor processor : config_adjusters)
+            processor.processConfig();
+    }
+
+    public void processConfigValidators() {
+
+        for (final ConfigProcessor processor : config_validators)
             processor.processConfig();
     }
 
@@ -315,11 +322,19 @@ public class Config {
         return getPathRelativeToRaceConfigFile(path);
     }
 
-    public Path getOutputDirectoryPath() {
+    public Path getOutputDirectoryPath() throws IOException {
 
         // This assumes that the config file is in the "input" directory
         // which is at the same level as the "output" directory.
-        return config_path.getParent().resolveSibling("output");
+        final Path path = config_path.getParent().resolveSibling(OUTPUT_DIRECTORY_NAME);
+
+        if (!Files.exists(path))
+            Files.createDirectories(path);
+
+        if (!Files.isDirectory(path))
+            throw new RuntimeException("output directory does not exist and cannot be created: " + path);
+
+        return path;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,7 +24,7 @@ import java.time.Duration;
 import java.util.Comparator;
 
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
 public class IndividualRaceResult extends SingleRaceResult {
 
@@ -36,33 +36,34 @@ public class IndividualRaceResult extends SingleRaceResult {
     @Override
     public Comparator<RaceResult> getComparator() {
 
+        // In individual race results, DNF results (completion not possible) appear after completed results.
+        // Completed results are sorted by finish time, then for equal times by recorded position, and then
+        // for dead heats by runner name.
+        // DNF results are sorted by runner name.
+
         return consecutiveComparator(
             CommonRaceResult::comparePossibleCompletion,
 
             conditionalComparator(
-                either_is_DNF,
-
-                consecutiveComparator(
-                    CommonRaceResult::compareRunnerLastName,
-                    CommonRaceResult::compareRunnerFirstName
-                ),
+                both_completed,
 
                 consecutiveComparator(
                     CommonRaceResult::comparePerformance,
-                    SingleRaceResult::compareRecordedPosition,
-                    CommonRaceResult::compareRunnerLastName,
-                    CommonRaceResult::compareRunnerFirstName
+                    SingleRaceResult::compareRecordedPosition
                 )
-            )
+            ),
+
+            CommonRaceResult::compareRunnerLastName,
+            CommonRaceResult::compareRunnerFirstName
         );
     }
 
     @Override
-    public String getPrizeDetail() {
+    public String toString() {
 
         return "(" + ((Runner) getParticipant()).getClub() + ") " + renderDuration(this, DNF_STRING);
     }
 
-    final ComparatorPredicate<RaceResult> either_is_DNF =
-        (RaceResult result1, RaceResult result2) -> !result1.canComplete() || !result2.canComplete();
+    final ComparatorPredicate<RaceResult> both_completed =
+        (RaceResult result1, RaceResult result2) -> result1.canOrHasCompleted() && result2.canOrHasCompleted();
 }

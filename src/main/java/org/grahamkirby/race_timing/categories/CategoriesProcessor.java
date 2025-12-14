@@ -33,48 +33,52 @@ import static org.grahamkirby.race_timing.common.Config.*;
 
 public class CategoriesProcessor  {
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // Each participant (individual or team) is assigned a single entry category. An entry category has an age range and
     // a gender. Age range bounds are inclusive. For example, ranges for consecutive categories might be 40-49 and
     // 50-59. Genders are represented as strings, so can be configured per-race.
-
+    //
     // A prize category has an age range and a set of eligible genders. For example an open prize category might be
     // available to Female, Male and Non-Binary entry category genders.
-
+    //
     // For both entry and prize categories, the age ranges for categories for a given gender (or set of genders) must
     // not intersect, and must cover the whole range (i.e. no gaps). The exception to the above is that one prize
     // category age range can wholly contain another, e.g. an open age range may include all the narrower age ranges.
-
+    //
     // The order in which prize categories are listed in the configuration file determines (only) the order in which
     // prizes are listed in the results.
-
+    //
     // If a participant is eligible for more than one prize (e.g. 1st V40, 2nd Open) then by default they are only
     // awarded the prize in the more general age category (2nd Open in this example), on the assumption that this is
     // more prestigious. This can be overridden by setting PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY = false in the
     // race configuration file.
-
+    //
     // Generality ordering of age categories is defined in terms of range containment: age range A is more general than
     // age range B if A completely contains B.
-
+    //
     // The theme of preferring more general prize category when deciding exclusive awards also applies to gender. Gender
     // eligibility ordering by generality assumes that categories with a greater number of eligible genders are more
     // general. This works when every category that is available to more than one gender is available to all genders,
     // e.g. 'Open' categories. It might not work with a more complex gender eligibility structure.
-
+    //
     // If generality of age category conflicts with generality of gender, the former takes priority. For example, if a
     // participant is eligible for prizes in both categories 20-99/Female and 40-49/Female/Male, they receive the former.
-
+    //
     // The default of awarding no more than one prize to a participant can also be overridden by setting the 'exclusive'
     // field of a prize category to false. This then means that a participant can win in that category and any other.
     // Common use cases are for an additional prize category only open to the organising club or to local runners, or
     // where a veteran can win in their age category and in an overall open category. Less commonly the veteran age
     // categories may not be disjoint, e.g. 40+ (40-99), 50+ (50-99) rather than 40-49, 50-59 etc. In this it would be
     // possible for a 50+ participant to win in both 40+ and 50+ categories.
-
+    //
     // Each prize category is defined to belong to a particular named group. Prize category groups are used to structure
     // results output. For example, in a a junior race, runners in different age categories may complete different
     // courses, so it would be meaningless to list their results together. This can be handled by defining prize
     // categories 'Female Under 9' and 'Male Under 9' within the group 'Under 9'. Results for each group are then output
     // within a different section.
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final List<EntryCategory> entry_categories;
     private final List<PrizeCategory> prize_categories;

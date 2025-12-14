@@ -20,7 +20,7 @@ package org.grahamkirby.race_timing.series_race;
 import org.grahamkirby.race_timing.common.Performance;
 import org.grahamkirby.race_timing.common.ScorePerformance;
 import org.grahamkirby.race_timing.common.SingleRaceInternal;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsCalculator;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceResultsProcessor;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.time.Duration;
@@ -41,10 +41,10 @@ public class IndividualTimesScorer extends SeriesRaceScorer {
         // Runner may not have competed in this race.
         if (performance == null) return null;
 
-        final IndividualRaceResultsCalculator individual_race_calculator = (IndividualRaceResultsCalculator) individual_race.getResultsCalculator();
+        final IndividualRaceResultsProcessor individual_race_processor = (IndividualRaceResultsProcessor) individual_race.getResultsProcessor();
 
         final Duration runner_time = (Duration) performance.getValue();
-        final Duration median_time = individual_race_calculator.getMedianTime();
+        final Duration median_time = individual_race_processor.getMedianTime();
         final double time_ratio = runner_time.toMillis() / (double) median_time.toMillis();
 
         // Lower score is better.

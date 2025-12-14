@@ -2,7 +2,7 @@ YEAR = 2020
 NUMBER_OF_LEGS = 4
 PAIRED_LEGS = 2,3
 RACE_NAME_FOR_RESULTS = Devil's Burdens
-RACE_NAME_FOR_FILENAMES = simple
+RACE_NAME_FOR_FILENAMES = devils_burdens
 
 # Relative to directory containing configuration file.
 ENTRIES_PATH = entries.txt

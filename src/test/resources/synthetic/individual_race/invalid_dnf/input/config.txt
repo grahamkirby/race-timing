@@ -4,7 +4,5 @@ RACE_NAME_FOR_FILENAMES = st_andrews
 
 # Relative to directory containing configuration file.
 ENTRIES_PATH = entries.txt
-RAW_RESULTS_PATH = rawtimes.txt
-
 
 DNF_FINISHERS = XXX

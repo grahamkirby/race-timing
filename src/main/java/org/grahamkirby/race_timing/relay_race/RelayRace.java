@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.parseTime;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.parseTime;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
 
 public class RelayRace implements SingleRaceInternal {
@@ -71,21 +71,75 @@ public class RelayRace implements SingleRaceInternal {
     private List<IndividualStart> individual_starts;
     private List<RawResult> raw_results;
     private List<RaceEntry> entries;
-    private RaceResultsCalculator results_calculator;
+    private RaceResultsProcessor results_processor;
+    private CategoriesProcessor categories_processor;
+    private NormalisationProcessor normalisation;
     private final Config config;
-    private final CategoriesProcessor categories_processor;
-    private final Normalisation normalisation;
-    private final Notes notes;
+    private final NotesProcessor notes;
     private RaceOutput results_output;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public RelayRace(final Config config) throws IOException {
+    public RelayRace(final Config config) {
 
         this.config = config;
-        notes = new Notes();
+        notes = new NotesProcessor();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public RaceResults processResults() {
+
+        try {
+            loadRaceData();
+            completeConfiguration();
+
+            results_processor.calculateResults();
+            return results_processor;
+        }
+        catch (final Exception e) {
+            notes.appendToNotes(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void outputResults(final RaceResults results) throws IOException {
+
+        results_output.outputResults(results);
+    }
+
+    @Override
+    public void outputNotes() throws IOException {
+
+        results_output.printNotes(notes);
+    }
+
+    @Override
+    public void outputRacerList() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean configIsValid() {
+        return results_processor != null;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void initialise() throws IOException {
+
         categories_processor = new CategoriesProcessor(config);
-        normalisation = new Normalisation(config);
+        normalisation = new NormalisationProcessor(config);
+        results_output = new RelayRaceOutput(config);
+        results_processor = new RelayRaceResultsProcessor(this);
+    }
+
+    @Override
+    public void setOutput(final RaceOutput output) {
+        this.results_output = output;
     }
 
     @Override
@@ -99,45 +153,22 @@ public class RelayRace implements SingleRaceInternal {
     }
 
     @Override
-    public RaceResultsCalculator getResultsCalculator() {
-        return results_calculator;
+    public RaceResultsProcessor getResultsProcessor() {
+        return results_processor;
     }
 
     @Override
-    public Notes getNotes() {
-        return notes;
-    }
-
-    @Override
-    public Normalisation getNormalisation() {
+    public NormalisationProcessor getNormalisationProcessor() {
 
         return normalisation;
     }
 
     @Override
-    public RaceResults processResults() throws IOException {
-
-        loadRaceData();
-        completeConfiguration();
-
-        return results_calculator.calculateResults();
+    public NotesProcessor getNotesProcessor() {
+        return notes;
     }
 
-    @Override
-    public void outputResults(final RaceResults results) throws IOException {
-
-        results_output.outputResults(results);
-    }
-
-    @Override
-    public void setResultsCalculator(final RaceResultsCalculator results_calculator) {
-        this.results_calculator = results_calculator;
-    }
-
-    @Override
-    public void setResultsOutput(final RaceOutput results_output) {
-        this.results_output = results_output;
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public List<RaceEntry> getEntries() {
@@ -156,11 +187,11 @@ public class RelayRace implements SingleRaceInternal {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
+    Map<RawResult, Integer> getExplicitlyRecordedLegNumbers() {
         return explicitly_recorded_leg_numbers;
     }
 
-    public int getNumberOfElectronicallyRecordedRawResults() {
+    int getNumberOfElectronicallyRecordedRawResults() {
         return number_of_electronically_recorded_raw_results;
     }
 
@@ -185,14 +216,14 @@ public class RelayRace implements SingleRaceInternal {
 
     List<RelayRaceLegResult> getLegResults(final int leg_number) {
 
-        final List<RelayRaceLegResult> results = makeMutableCopy(results_calculator.getOverallResults().stream().
+        final List<RelayRaceLegResult> results = makeMutableCopy(results_processor.getOverallResults().stream().
             map(result -> (RelayRaceResult) result).
             map(result -> result.getLegResult(leg_number)).
             sorted().
             toList());
 
         // Deal with dead heats in legs after the first.
-        results_calculator.setPositionStrings(results, (result1) -> !(leg_number > 1));
+        results_processor.setPositionStrings(results, (result1) -> !(leg_number > 1));
 
         return results;
     }
@@ -205,7 +236,7 @@ public class RelayRace implements SingleRaceInternal {
         for (int leg = 1; leg <= getNumberOfLegs(); leg++) {
 
             final RelayRaceLegResult leg_result = result.getLegResult(leg);
-            final boolean completed = leg_result.canComplete();
+            final boolean completed = leg_result.canOrHasCompleted();
 
             final String leg_runner_names = ((Team)leg_result.getParticipant()).getRunnerNames().get(leg - 1);
             final String leg_mass_start_annotation = getMassStartAnnotation(leg_result, leg);
@@ -290,7 +321,7 @@ public class RelayRace implements SingleRaceInternal {
     private void validateEntryCategory(final String line) {
 
         final List<String> elements = Arrays.stream(line.split("\t")).toList();
-        final Normalisation normalisation = getNormalisation();
+        final NormalisationProcessor normalisation = getNormalisationProcessor();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
@@ -332,7 +363,7 @@ public class RelayRace implements SingleRaceInternal {
     private List<RawResult> loadRawResults(final Path results_path) throws IOException {
 
         return readAllLines(results_path).stream().
-            map(Normalisation::stripComment).
+            map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(this::makeRawResult).
             toList();
@@ -400,7 +431,7 @@ public class RelayRace implements SingleRaceInternal {
     private void countLegResults(final Map<String, Integer> bib_counts, final Path results_path) throws IOException {
 
         readAllLines(results_path).stream().
-            map(Normalisation::stripComment).
+            map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> line.split("\t")[0]).
             filter(bib_number -> !bib_number.equals(UNKNOWN_BIB_NUMBER_INDICATOR)).
@@ -427,7 +458,7 @@ public class RelayRace implements SingleRaceInternal {
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
         if (elements[3].equals(UNKNOWN_TIME_INDICATOR)) raw_result.setRecordedFinishTime(null);
-        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(Normalisation.parseTime(elements[3]));
+        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(NormalisationProcessor.parseTime(elements[3]));
 
         if (!elements[4].isEmpty()) raw_result.appendComment(elements[4]);
     }
@@ -435,7 +466,7 @@ public class RelayRace implements SingleRaceInternal {
     private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
 
         return readAllLines(entries_path).stream().
-            map(Normalisation::stripComment).
+            map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> makeRelayRaceEntry(Arrays.stream(line.split("\t")).toList())).
             toList();
@@ -453,7 +484,7 @@ public class RelayRace implements SingleRaceInternal {
 
             final String name = elements.get(TEAM_NAME_INDEX);
             final EntryCategory category = categories_processor.getEntryCategory(elements.get(CATEGORY_INDEX));
-            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> getNormalisation().cleanRunnerName(s)).toList();
+            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> getNormalisationProcessor().cleanRunnerName(s)).toList();
 
             final Participant participant = new Team(name, category, runners);
 

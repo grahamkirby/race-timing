@@ -1,0 +1,10 @@
+Club Substitutions
+------------------
+
+
+Category Changes
+----------------
+
+Runner Fictional Runner3 changed category from MS to M40 at Largo
+Runner Fictional Runner3 changed category from M40 to M50 at Sandy Slither
+invalid category change: runner 'Fictional Runner3' changed from MS to M50 during series

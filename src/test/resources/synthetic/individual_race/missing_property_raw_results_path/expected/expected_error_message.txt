@@ -1,1 +1,0 @@
-should have exactly one key from {RAW_RESULTS_PATH, RESULTS_PATH} in file 'config.txt'

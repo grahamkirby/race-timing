@@ -20,7 +20,7 @@ package org.grahamkirby.race_timing.common;
 import java.time.Duration;
 
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
 public class DurationPerformance extends Performance{
 

@@ -30,12 +30,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Normalisation.csvEncode;
-import static org.grahamkirby.race_timing.common.Normalisation.renderDuration;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.csvEncode;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
 public class RelayRaceOutput extends RaceOutput {
 
     private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
+
+    public RelayRaceOutput(final Config config) {
+        super(config);
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -233,7 +237,7 @@ public class RelayRaceOutput extends RaceOutput {
         final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
 
         if (discrepancies_exist)
-            race_results.getNotes().appendToNotes("""
+            race_results.getNotesProcessor().appendToNotes("""
             
             Discrepancies:
             -------------
@@ -243,7 +247,7 @@ public class RelayRaceOutput extends RaceOutput {
         recordTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
 
         if (discrepancies_exist)
-            race_results.getNotes().appendToNotes("""
+            race_results.getNotesProcessor().appendToNotes("""
             
             
             """);
@@ -289,11 +293,11 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!bib_numbers_with_missing_times.isEmpty()) {
 
-            race_results.getNotes().appendToNotes("""
+            race_results.getNotesProcessor().appendToNotes("""
                 
                 Bib numbers with missing times:\s""");
 
-            race_results.getNotes().appendToNotes(
+            race_results.getNotesProcessor().appendToNotes(
                 bib_numbers_with_missing_times.stream().
                     map(String::valueOf).
                     collect(Collectors.joining(", ")));
@@ -304,13 +308,13 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!times_with_missing_bib_numbers.isEmpty()) {
 
-            race_results.getNotes().appendToNotes("""
+            race_results.getNotesProcessor().appendToNotes("""
                 
                 Times with missing bib numbers:
                 
                 """);
 
-            race_results.getNotes().appendToNotes(
+            race_results.getNotesProcessor().appendToNotes(
                 times_with_missing_bib_numbers.stream().
                     map(duration -> renderDuration(duration, DNF_STRING)).
                     collect(Collectors.joining(LINE_SEPARATOR)));
@@ -365,7 +369,7 @@ public class RelayRaceOutput extends RaceOutput {
             return List.of(
                 result.getPositionString(),
                 String.valueOf(result.getBibNumber()),
-                race_results.getNormalisation().htmlEncode(result.getParticipant().getName()),
+                race_results.getNormalisationProcessor().htmlEncode(result.getParticipant().getName()),
                 result.getParticipant().getCategory().getLongName(),
                 renderDuration(result, DNF_STRING)
             );
@@ -405,7 +409,7 @@ public class RelayRaceOutput extends RaceOutput {
                 append(result.getParticipant().getCategory().getLongName()).append(",");
 
             final String leg_details = ((RelayRaceResults) race_results).getLegDetails(result).stream().
-                map(Normalisation::csvEncode).
+                map(NormalisationProcessor::csvEncode).
                 collect(Collectors.joining(","));
 
             writer.append(leg_details);
@@ -445,11 +449,11 @@ public class RelayRaceOutput extends RaceOutput {
 
             elements.add(result.getPositionString());
             elements.add(String.valueOf(result.getBibNumber()));
-            elements.add(race_results.getNormalisation().htmlEncode(result.getParticipantName()));
+            elements.add(race_results.getNormalisationProcessor().htmlEncode(result.getParticipantName()));
             elements.add(result.getParticipant().getCategory().getLongName());
 
             for (final String element : ((RelayRaceResults) race_results).getLegDetails(result))
-                elements.add(race_results.getNormalisation().htmlEncode(element));
+                elements.add(race_results.getNormalisationProcessor().htmlEncode(element));
 
             return elements;
         }
@@ -515,7 +519,7 @@ public class RelayRaceOutput extends RaceOutput {
 
             return List.of(
                 leg_result.getPositionString(),
-                race_results.getNormalisation().htmlEncode(runner_names),
+                race_results.getNormalisationProcessor().htmlEncode(runner_names),
                 renderDuration(leg_result, DNF_STRING)
             );
         }

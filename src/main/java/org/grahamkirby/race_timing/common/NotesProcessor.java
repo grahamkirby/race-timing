@@ -17,15 +17,19 @@
  */
 package org.grahamkirby.race_timing.common;
 
-public class Notes {
+public class NotesProcessor {
 
     protected final StringBuilder notes =  new StringBuilder();
 
-    public void appendToNotes(String s) {
+    public void appendToNotes(final String s) {
         notes.append(s);
     }
 
     public String getCombinedNotes() {
         return notes.toString();
+    }
+
+    public void clear() {
+        notes.setLength(0);
     }
 }

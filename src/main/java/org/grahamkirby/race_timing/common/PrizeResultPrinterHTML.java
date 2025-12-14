@@ -44,7 +44,7 @@ public abstract class PrizeResultPrinterHTML extends ResultPrinter {
         writer.append(
             "    <li>" +
             result.getPositionString() + " " +
-            race_results.getNormalisation().htmlEncode(result.getParticipantName()) + " " +
+            race_results.getNormalisationProcessor().htmlEncode(result.getParticipantName()) + " " +
             "(" + renderDetail(result) + ") " +
             renderPerformance(result) +
             "</li>" +

@@ -20,7 +20,6 @@ package org.grahamkirby.race_timing.individual_race;
 import org.grahamkirby.race_timing.common.*;
 
 import java.nio.file.Path;
-import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.DEFAULT_CONFIG_ROOT_PATH;
@@ -50,8 +49,6 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
 
         config.replaceIfPresent(KEY_TEAM_PRIZE_NUMBER_TO_COUNT, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, Integer::parseInt);
-        config.replaceIfPresent(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL, Normalisation::parseTime);
-
-        checkAllFilesExist(List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH));
+        config.replaceIfPresent(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL, NormalisationProcessor::parseTime);
     }
 }

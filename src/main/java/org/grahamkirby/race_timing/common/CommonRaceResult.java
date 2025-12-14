@@ -23,8 +23,8 @@ import org.grahamkirby.race_timing.categories.PrizeCategory;
 
 import java.util.*;
 
-import static org.grahamkirby.race_timing.common.Normalisation.getFirstNameOfRunner;
-import static org.grahamkirby.race_timing.common.Normalisation.getLastNameOfRunner;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.getFirstNameOfRunner;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.getLastNameOfRunner;
 
 public abstract class CommonRaceResult implements RaceResult {
 
@@ -63,7 +63,7 @@ public abstract class CommonRaceResult implements RaceResult {
     }
 
     @Override
-    public EntryCategory getCategory() {
+    public EntryCategory getEntryCategory() {
         return participant.category;
     }
 
@@ -98,6 +98,11 @@ public abstract class CommonRaceResult implements RaceResult {
             reduce((_, _) -> 0, Comparator::thenComparing);
     }
 
+    protected static <T extends Comparable<T>> Comparator<T> conditionalComparator(final ComparatorPredicate<T> predicate, final Comparator<T> comparator_to_use_if_true) {
+
+        return (result1, result2) -> predicate.apply(result1, result2) ? comparator_to_use_if_true.compare(result1, result2) : 0;
+    }
+
     protected static <T extends Comparable<T>> Comparator<T> conditionalComparator(final ComparatorPredicate<T> predicate, final Comparator<T> comparator_to_use_if_true, final Comparator<T> comparator_to_use_if_false) {
 
         return (result1, result2) -> predicate.apply(result1, result2) ? comparator_to_use_if_true.compare(result1, result2) : comparator_to_use_if_false.compare(result1, result2);
@@ -105,7 +110,7 @@ public abstract class CommonRaceResult implements RaceResult {
 
     protected static int comparePossibleCompletion(final RaceResult r1, final RaceResult r2) {
 
-        return Boolean.compare(r2.canComplete(), r1.canComplete());
+        return Boolean.compare(r2.canOrHasCompleted(), r1.canOrHasCompleted());
     }
 
     /** Compares two results based on their performances, which may be based on a single or aggregate time,

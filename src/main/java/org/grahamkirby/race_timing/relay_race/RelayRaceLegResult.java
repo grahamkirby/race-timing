@@ -51,30 +51,26 @@ public class RelayRaceLegResult extends SingleRaceResult {
     @Override
     public Comparator<RaceResult> getComparator() {
 
-        final ComparatorPredicate<RaceResult> first_leg =
-            (RaceResult _, RaceResult _) -> leg_number == 1;
+        final ComparatorPredicate<RaceResult> first_leg = (RaceResult _, RaceResult _) -> leg_number == 1;
 
-        return conditionalComparator(
-            first_leg,
+        return consecutiveComparator(
+            CommonRaceResult::comparePossibleCompletion,
+            CommonRaceResult::comparePerformance,
 
-            consecutiveComparator(
-                CommonRaceResult::comparePossibleCompletion,
-                CommonRaceResult::comparePerformance,
-                SingleRaceResult::compareRecordedPosition),
+            conditionalComparator(
+                first_leg,
 
-            consecutiveComparator(
-                CommonRaceResult::comparePossibleCompletion,
-                CommonRaceResult::comparePerformance,
-                CommonRaceResult::compareRunnerLastName,
-                CommonRaceResult::compareRunnerFirstName)
+                consecutiveComparator(
+                    SingleRaceResult::compareRecordedPosition),
+
+                consecutiveComparator(
+                    CommonRaceResult::compareRunnerLastName,
+                    CommonRaceResult::compareRunnerFirstName)
+            )
         );
     }
 
-    @Override
-    public String getPrizeDetail() {
-
-        throw new UnsupportedOperationException();
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void setFinishTime(final Duration finish_time) {
 
@@ -83,7 +79,7 @@ public class RelayRaceLegResult extends SingleRaceResult {
             finish_time_unknown = false;
         }
         else {
-            this.finish_time = ((RelayRaceResultsCalculator) race.getResultsCalculator()).getLastRecordedFinishTime().plus(Duration.ofSeconds(1));
+            this.finish_time = ((RelayRaceResultsProcessor) race.getResultsProcessor()).getLastRecordedFinishTime().plus(Duration.ofSeconds(1));
         }
     }
 

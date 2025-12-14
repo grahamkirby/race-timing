@@ -33,9 +33,7 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
 
     public void processConfig() {
 
-        checkExactlyOnePresent(List.of(
-            KEY_RAW_RESULTS_PATH,
-            KEY_OVERALL_RESULTS_PATH));
+        checkAllFilesExist(List.of(KEY_ENTRY_CATEGORIES_PATH, KEY_PRIZE_CATEGORIES_PATH));
 
         checkNonePresent(List.of(
             KEY_RACES,
@@ -67,7 +65,7 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
         validateDNFRecords((String) config.get(KEY_DNF_FINISHERS));
     }
 
-    public void validateDNFRecords(final String dnf_string) {
+    private void validateDNFRecords(final String dnf_string) {
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(","))

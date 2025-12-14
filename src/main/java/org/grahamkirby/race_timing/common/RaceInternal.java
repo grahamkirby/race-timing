@@ -19,13 +19,52 @@ package org.grahamkirby.race_timing.common;
 
 import org.grahamkirby.race_timing.categories.CategoriesProcessor;
 
+import java.io.IOException;
+
+/**
+ * View of race exposing internal details, used in calculating results.
+ */
 public interface RaceInternal extends Race {
 
+    /**
+     * Initialises race internal state.
+     * @throws IOException if some race data cannot be read
+     */
+    void initialise() throws IOException;
+
+    /**
+     * Sets the output details for the race.
+     * @param output the output
+     */
+    void setOutput(RaceOutput output);
+
+    /**
+     * Gets the race configuration.
+     * @return the configuration
+     */
     Config getConfig();
+
+    /**
+     * Gets the processor for entry and prize categories.
+     * @return the categories processor
+     */
     CategoriesProcessor getCategoriesProcessor();
-    RaceResultsCalculator getResultsCalculator();
-    void setResultsCalculator(RaceResultsCalculator results_calculator);
-    void setResultsOutput(RaceOutput results_output);
-    Normalisation getNormalisation();
-    Notes getNotes();
+
+    /**
+     * Gets the processor for results.
+     * @return the results processor
+     */
+    RaceResultsProcessor getResultsProcessor();
+
+    /**
+     * Gets the processor for normalising names, clubs etc.
+     * @return the normalisation processor
+     */
+    NormalisationProcessor getNormalisationProcessor();
+
+    /**
+     * Gets the processor for notes.
+     * @return the notes processor
+     */
+    NotesProcessor getNotesProcessor();
 }

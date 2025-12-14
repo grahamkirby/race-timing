@@ -19,7 +19,7 @@ package org.grahamkirby.race_timing.relay_race;
 
 import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
-import org.grahamkirby.race_timing.common.Normalisation;
+import org.grahamkirby.race_timing.common.NormalisationProcessor;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -38,7 +38,6 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
     public void processConfig() {
 
         checkAllPresent(List.of(
-            KEY_RAW_RESULTS_PATH,
             KEY_ENTRIES_PATH,
             KEY_NUMBER_OF_LEGS,
             KEY_PAIRED_LEGS));
@@ -57,7 +56,6 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
             KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
 
         checkAllFilesExist(List.of(
-            KEY_RAW_RESULTS_PATH,
             KEY_ENTRIES_PATH));
 
         // Each DNF string contains single bib number.
@@ -65,7 +63,7 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
         validateMassStartTimes(config.getString(KEY_MASS_START_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), config.getConfigPath());
     }
 
-    public static void validateDNFRecords(final String dnf_string, final Path config_file_path) {
+    private static void validateDNFRecords(final String dnf_string, final Path config_file_path) {
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(",")) {
@@ -95,7 +93,7 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
                         throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_path.getFileName() + "'");
 
                     final String time_string = split[1];
-                    mass_start_time = Normalisation.parseTime(time_string);
+                    mass_start_time = NormalisationProcessor.parseTime(time_string);
 
                 } catch (final DateTimeParseException _) {
                     throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_path.getFileName() + "'");
