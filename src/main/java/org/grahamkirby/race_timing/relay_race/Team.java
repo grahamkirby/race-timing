@@ -47,7 +47,7 @@ public class Team extends Participant {
 
     @Override
     public String toString() {
-        return name;
+        return name + " (" + category.getLongName() + ")";
     }
 
     public List<String> getRunnerNames() {

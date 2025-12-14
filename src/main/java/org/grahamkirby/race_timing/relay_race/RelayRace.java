@@ -409,7 +409,7 @@ public class RelayRace implements SingleRaceInternal {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
-                    throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
+                    throw new RuntimeException("duplicate entry '" + entry1.getParticipant().getName() + "' in file '" + entries_path.getFileName() + "'");
     }
 
     private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) throws IOException {

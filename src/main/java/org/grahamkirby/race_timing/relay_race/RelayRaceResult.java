@@ -81,7 +81,7 @@ public class RelayRaceResult extends SingleRaceResult {
     @Override
     public String toString() {
 
-        return "(" + getParticipant().getCategory().getLongName() + ") " + renderDuration(this, DNF_STRING);
+        return getParticipant() + " " + renderDuration(this, DNF_STRING);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

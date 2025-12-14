@@ -1,1 +1,1 @@
-duplicate entry 'John Smith, Fife AC' in file 'entries.txt'
+duplicate entry 'John Smith (Fife AC)' in file 'entries.txt'

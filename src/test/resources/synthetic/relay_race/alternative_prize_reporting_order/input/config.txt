@@ -8,6 +8,3 @@ RACE_NAME_FOR_FILENAMES = simple
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 PRIZE_CATEGORIES_PATH = categories_prize_relay.csv
-
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv

@@ -52,7 +52,7 @@ class SeriesRaceOutput extends RaceOutput {
 
     @Override
     protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
-        return SeriesRacePrizeResultPrinterHTML::new;
+        return PrizeResultPrinterHTML::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,24 +203,6 @@ class SeriesRaceOutput extends RaceOutput {
                     elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;
-        }
-    }
-
-    private static final class SeriesRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
-
-        public SeriesRacePrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        protected String renderDetail(final RaceResult result) {
-            return ((Runner) result.getParticipant()).getClub();
-        }
-
-        @Override
-        protected String renderPerformance(final RaceResult r) {
-
-            return renderScore(r.getPerformance());
         }
     }
 }

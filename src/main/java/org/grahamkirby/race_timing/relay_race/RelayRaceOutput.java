@@ -531,14 +531,5 @@ public class RelayRaceOutput extends RaceOutput {
             super(race, writer);
         }
 
-        @Override
-        protected String renderDetail(final RaceResult result) {
-            return result.getParticipant().getCategory().getLongName();
-        }
-
-        @Override
-        protected String renderPerformance(final RaceResult result) {
-            return renderDuration(result, DNF_STRING);
-        }
     }
 }

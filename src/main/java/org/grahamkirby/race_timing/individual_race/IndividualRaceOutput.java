@@ -60,7 +60,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
     @Override
     protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
-        return IndividualRacePrizeResultPrinterHTML::new;
+        return PrizeResultPrinterHTML::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            printPrizesWithHeaderHTML(writer, IndividualRacePrizeResultPrinterHTML::new);
+            printPrizesWithHeaderHTML(writer, PrizeResultPrinterHTML::new);
             printTeamPrizesHTML(writer);
             printResultsWithHeaderHTML(writer, IndividualRaceOverallResultPrinterHTML::new);
         }
@@ -267,23 +267,6 @@ public class IndividualRaceOutput extends RaceOutput {
                 result.getParticipant().getCategory().getShortName(),
                 renderDuration(result, DNF_STRING)
             );
-        }
-    }
-
-    private static final class IndividualRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
-
-        private IndividualRacePrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
-            super(race, writer);
-        }
-
-        @Override
-        protected String renderDetail(final RaceResult result) {
-            return ((Runner) result.getParticipant()).getClub();
-        }
-
-        @Override
-        protected String renderPerformance(final RaceResult result) {
-            return renderDuration(result, DNF_STRING);
         }
     }
 }

@@ -8,6 +8,3 @@ RACE_NAME_FOR_FILENAMES = devils_burdens
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_relay.csv

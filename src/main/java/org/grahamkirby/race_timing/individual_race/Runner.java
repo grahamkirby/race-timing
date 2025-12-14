@@ -63,6 +63,6 @@ public class Runner extends Participant {
 
     @Override
     public String toString() {
-        return getName() + ", " + club;
+        return getName() + " (" + club + ")";
     }
 }

@@ -243,7 +243,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
             map(result -> ((SeriesRaceResult) result)).
             map(result -> (Runner) result.getParticipant()).
             sorted(SeriesRaceResultsProcessor::compareRunner).
-            forEachOrdered(runner -> race.getNotesProcessor().appendToNotes(runner.getName() + " (" + runner.getClub() + ")" + LINE_SEPARATOR));
+            forEachOrdered(runner -> race.getNotesProcessor().appendToNotes(runner + LINE_SEPARATOR));
 
         race.getNotesProcessor().appendToNotes(LINE_SEPARATOR);
     }

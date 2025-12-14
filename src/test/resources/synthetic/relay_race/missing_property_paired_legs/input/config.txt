@@ -6,6 +6,3 @@ RACE_NAME_FOR_FILENAMES = devils_burdens
 # Relative to directory containing configuration file.
 ENTRIES_PATH = entries.txt
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_relay.csv

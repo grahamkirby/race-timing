@@ -2,7 +2,7 @@
 
 # If defined, debug mode is enabled, with output files being
 # generated in the specified directory.
-USER_TEST_DIRECTORY_PATH = /Users/gnck/Desktop/tests
+# USER_TEST_DIRECTORY_PATH = /Users/gnck/Desktop/tests
 
 # Specifies whether the files generated in the first test should be retained.
 RETAIN_FIRST_OUTPUT = false

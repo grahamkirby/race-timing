@@ -24,8 +24,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import static org.grahamkirby.race_timing.common.Config.KEY_MINIMUM_NUMBER_OF_RACES;
-import static org.grahamkirby.race_timing.common.Config.KEY_NUMBER_OF_RACES_IN_SERIES;
+import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
 public class SeriesRaceResult extends CommonRaceResult {
 
@@ -92,7 +92,7 @@ public class SeriesRaceResult extends CommonRaceResult {
     @Override
     public String toString() {
 
-        return "(" + ((Runner) getParticipant()).getClub() + ") " + getPerformance();
+        return getParticipant() + " " + getPerformance();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

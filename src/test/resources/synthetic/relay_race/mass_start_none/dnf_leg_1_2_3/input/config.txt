@@ -8,10 +8,6 @@ RACE_NAME_FOR_FILENAMES = simple
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_relay.csv
-
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
 # recorded but the runners DNF'd the leg.
 DNF_FINISHERS = 1/1,1/2,1/3

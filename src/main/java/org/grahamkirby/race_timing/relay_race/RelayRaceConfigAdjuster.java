@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.DEFAULT_CONFIG_ROOT_PATH;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
 
 public class RelayRaceConfigAdjuster extends ConfigProcessor {
@@ -33,6 +34,9 @@ public class RelayRaceConfigAdjuster extends ConfigProcessor {
         List.of(KEY_PAPER_RESULTS_PATH, KEY_ANNOTATIONS_PATH);
 
     private static final String DEFAULT_START_TIME = "00:00:00";
+
+    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_entry_relay." + CSV_FILE_SUFFIX;
+    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_prize_relay." + CSV_FILE_SUFFIX;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,6 +49,9 @@ public class RelayRaceConfigAdjuster extends ConfigProcessor {
     public void processConfig() {
 
         config.addIfAbsent(KEY_RACE_START_TIME, DEFAULT_START_TIME);
+
+        config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_ENTRY_CATEGORIES_PATH)));
+        config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_PRIZE_CATEGORIES_PATH)));
 
         config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
 

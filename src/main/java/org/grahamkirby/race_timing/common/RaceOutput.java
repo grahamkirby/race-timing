@@ -373,7 +373,8 @@ public abstract class RaceOutput {
         @Override
         public void printResult(final RaceResult result) throws IOException {
 
-            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result + LINE_SEPARATOR);
+//            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result + LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result + LINE_SEPARATOR);
         }
 
         @Override
@@ -402,13 +403,9 @@ public abstract class RaceOutput {
         public void printResult(final RaceResult result) throws IOException {
 
             final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
-            final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
-
             final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
 
-            paragraph.add(new Text(result.getPositionString() + ": ").setFont(font));
-            paragraph.add(new Text(result.getParticipantName()).setFont(bold_font));
-            paragraph.add(new Text(" " + result).setFont(font));
+            paragraph.add(new Text(result.getPositionString() + ": " + result).setFont(font));
 
             document.add(paragraph);
         }

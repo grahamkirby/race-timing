@@ -30,8 +30,8 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
 
     public static final int DEFAULT_NUMBER_OF_COLUMNS = 4;
 
-    public static String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_entry_individual_senior." + CSV_FILE_SUFFIX;
-    public static String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_prize_individual_senior." + CSV_FILE_SUFFIX;
+    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_entry_individual_senior." + CSV_FILE_SUFFIX;
+    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_prize_individual_senior." + CSV_FILE_SUFFIX;
 
     public IndividualRaceConfigAdjuster(final Config config) {
 

@@ -24,9 +24,9 @@ import java.io.OutputStreamWriter;
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
 /** Base class for printing results to HTML files. */
-public abstract class PrizeResultPrinterHTML extends ResultPrinter {
+public class PrizeResultPrinterHTML extends ResultPrinter {
 
-    protected PrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
+    public PrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
         super(race, writer);
     }
 
@@ -44,9 +44,7 @@ public abstract class PrizeResultPrinterHTML extends ResultPrinter {
         writer.append(
             "    <li>" +
             result.getPositionString() + " " +
-            race_results.getNormalisationProcessor().htmlEncode(result.getParticipantName()) + " " +
-            "(" + renderDetail(result) + ") " +
-            renderPerformance(result) +
+            race_results.getNormalisationProcessor().htmlEncode(String.valueOf(result)) +
             "</li>" +
             LINE_SEPARATOR);
     }
@@ -62,7 +60,4 @@ public abstract class PrizeResultPrinterHTML extends ResultPrinter {
 
         writer.append("<p>No results</p>").append(LINE_SEPARATOR);
     }
-
-    protected abstract String renderDetail(RaceResult result);
-    protected abstract String renderPerformance(RaceResult r);
 }

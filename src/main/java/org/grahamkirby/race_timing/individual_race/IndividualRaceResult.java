@@ -61,7 +61,7 @@ public class IndividualRaceResult extends SingleRaceResult {
     @Override
     public String toString() {
 
-        return "(" + ((Runner) getParticipant()).getClub() + ") " + renderDuration(this, DNF_STRING);
+        return getParticipant() + " " + renderDuration(this, DNF_STRING);
     }
 
     final ComparatorPredicate<RaceResult> both_completed =

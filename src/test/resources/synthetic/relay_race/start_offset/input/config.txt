@@ -8,10 +8,6 @@ RACE_NAME_FOR_FILENAMES = simple
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_relay.csv
-
 # Offset applied to all recorded times.
 # Positive value means the actual start took place after recording began.
 RACE_START_TIME = -00:01:00

@@ -8,10 +8,6 @@ RACE_NAME_FOR_FILENAMES = full
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-# Relative to project root directory.
-ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_relay.csv
-PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_relay.csv
-
 # Elapsed duration from start of leg 1 to mass start time for each leg.
 # 00:00:00 indicates no mass start.
 MASS_START_TIMES = 3/03:16:00,4/04:14:00
