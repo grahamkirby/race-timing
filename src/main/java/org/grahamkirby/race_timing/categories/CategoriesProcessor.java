@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 import static java.util.Comparator.comparingInt;
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class CategoriesProcessor  {
+public final class CategoriesProcessor  {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -176,7 +176,6 @@ public class CategoriesProcessor  {
 
         categories.stream().
             map(get_name).
-            sorted().
             filter(Predicate.not(seen::add)).
             findFirst().
             ifPresent(name -> { throw new RuntimeException("duplicated category name: " + name); });
@@ -186,7 +185,6 @@ public class CategoriesProcessor  {
 
         return categories.stream().
             map(extract_gender).
-            distinct().
             toList();
     }
 
@@ -207,7 +205,7 @@ public class CategoriesProcessor  {
 
         final Set<String> eligible_clubs = prize_category.getEligibleClubs();
 
-        return club == null || eligible_clubs.isEmpty() || eligible_clubs.contains(club);
+        return eligible_clubs.isEmpty() || eligible_clubs.contains(club);
     }
 
     private boolean isResultEligibleForPrizeCategoryByGender(final EntryCategory entry_category, final PrizeCategory prize_category) {
@@ -230,44 +228,9 @@ public class CategoriesProcessor  {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Gender eligibility ordering based only on the number of eligible genders.
-    private static int compareByIncreasingGenderCategoryGenerality(final PrizeCategory category1, final PrizeCategory category2) {
-
-        final Comparator<PrizeCategory> comparator = comparingInt(category -> category.getEligibleGenders().size());
-
-        return comparator.compare(category1, category2);
-    }
-
-    private static int compareByDecreasingGenderCategoryGenerality(final PrizeCategory category1, final PrizeCategory category2) {
-
-        return -compareByIncreasingGenderCategoryGenerality(category1, category2);
-    }
-
-    private static int compareByDecreasingAgeCategoryGenerality(final PrizeCategory category1, final PrizeCategory category2) {
-
-        final AgeRange range1 = category1.getAgeRange();
-        final AgeRange range2 = category2.getAgeRange();
-
-        if (range1.equals(range2)) return 0;
-        if (range1.contains(range2)) return -1;   // range1 is more general.
-        if (range2.contains(range1)) return 1;    // range1 is less general.
-
-        // Equal generality. The ranges must be disjoint since there's no containment, and intersecting
-        // ranges are rejected during category validation.
-        return 0;
-    }
-
     private static int comparePrizeCategory(final PrizeCategory category1, final PrizeCategory category2) {
 
-        final int age_comparison = compareByDecreasingAgeCategoryGenerality(category1, category2);
-        final int gender_comparison = compareByDecreasingGenderCategoryGenerality(category1, category2);
-
-        // This assumes that both comparators return the same negative or positive numbers.
-        final boolean comparison_same_for_both_aspects = age_comparison == gender_comparison;
-        final boolean age_comparison_equal = age_comparison == 0;
-        final boolean age_comparison_has_priority = !comparison_same_for_both_aspects && !age_comparison_equal;
-
-        return age_comparison_has_priority ? age_comparison : gender_comparison;
+        return category1.compareTo(category2);
     }
 
     private <C extends Category> void checkAgeRangeIntersection(final List<C> categories) {

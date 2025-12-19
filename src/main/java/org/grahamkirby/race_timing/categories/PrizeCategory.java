@@ -18,11 +18,10 @@
 package org.grahamkirby.race_timing.categories;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparingInt;
 
 /**
  * Category defining eligibility for a particular prize.
@@ -126,5 +125,37 @@ public final class PrizeCategory extends Category {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), number_of_prizes, eligible_clubs, exclusive);
+    }
+
+    // Gender eligibility ordering based only on the number of eligible genders.
+    private int compareByIncreasingGenderCategoryGenerality(final PrizeCategory other) {
+
+        final Comparator<PrizeCategory> comparator = comparingInt(category -> category.getEligibleGenders().size());
+
+        return comparator.compare(this, other);
+    }
+
+    private int compareByDecreasingGenderCategoryGenerality(final PrizeCategory other) {
+
+        return -compareByIncreasingGenderCategoryGenerality(other);
+    }
+
+    private int compareByDecreasingAgeCategoryGenerality(final PrizeCategory other) {
+
+        return getAgeRange().compareByDecreasingGenerality(other.getAgeRange());
+    }
+
+    public int compareTo(final PrizeCategory other) {
+
+        final int age_comparison = compareByDecreasingAgeCategoryGenerality(other);
+        final int gender_comparison = compareByDecreasingGenderCategoryGenerality(other);
+
+        // This assumes that both comparators return the same negative or positive numbers.
+        final boolean comparison_same_for_both_aspects = false;
+//        final boolean comparison_same_for_both_aspects = age_comparison == gender_comparison;
+        final boolean age_comparison_equal = age_comparison == 0;
+        final boolean age_comparison_has_priority = !comparison_same_for_both_aspects && !age_comparison_equal;
+
+        return age_comparison_has_priority ? age_comparison : gender_comparison;
     }
 }

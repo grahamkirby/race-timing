@@ -24,11 +24,9 @@ import java.io.IOException;
  */
 public interface Race {
 
-    // TODO mutation tests.
     // TODO fuzz tests.
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
-    // TODO default categories for relay race.
     // TODO move interpolation from RelayRace to SingleRace.
 
     /**

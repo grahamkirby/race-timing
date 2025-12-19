@@ -26,6 +26,8 @@ public class AgeRange {
 
     AgeRange(final int minimum_age, final int maximum_age) {
 
+        if (minimum_age > maximum_age) throw new RuntimeException("illegal age range");
+
         this.minimum_age = minimum_age;
         this.maximum_age = maximum_age;
     }
@@ -54,13 +56,24 @@ public class AgeRange {
         return minimum_age <= other.minimum_age && maximum_age >= other.maximum_age;
     }
 
+    public int compareByDecreasingGenerality(final AgeRange other) {
+
+        if (this.equals(other)) return 0;
+        if (this.contains(other)) return -1;   // range1 is more general.
+        if (other.contains(this)) return 1;    // range1 is less general.
+
+        // Equal generality. The ranges must be disjoint since there's no containment, and intersecting
+        // ranges are rejected during category validation.
+        return 0;
+    }
+
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(final Object obj) {
         return obj instanceof final AgeRange other && minimum_age == other.minimum_age && maximum_age == other.maximum_age;
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(minimum_age, maximum_age);
     }
 }

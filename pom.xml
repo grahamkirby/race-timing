@@ -53,6 +53,13 @@
             <type>pom</type>
         </dependency>
 
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>4.2.5</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -93,6 +100,8 @@
                                 <exclude>**/README</exclude>
                                 <exclude>src/test/resources/**</exclude>
                                 <exclude>src/main/resources/**</exclude>
+                                <exclude>arcmutate-licence.txt</exclude>
+                                <exclude>src/test/history.txt</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
@@ -126,28 +135,58 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Support for mutation testing.                                                  -->
-            <!-- https://pitest.org                                                             -->
-            <!-- To run, invoke mvn target 'mutationCoverage'.                                  -->
-            <plugin>
-                <groupId>org.pitest</groupId>
-                <artifactId>pitest-maven</artifactId>
-                <version>1.22.0</version>
-                <configuration>
-                    <targetTests>
-                        <param>*</param>
-                    </targetTests>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.pitest</groupId>
-                        <artifactId>pitest-junit5-plugin</artifactId>
-                        <version>1.2.3</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>pitest</id>
+            <build>
+                <plugins>
+                    <!-- Support for mutation testing.                                                  -->
+                    <!-- https://pitest.org                                                             -->
+                    <!-- To run, invoke mvn target 'mutationCoverage'.                                  -->
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.22.0</version>
+                        <configuration>
+                            <targetTests>
+                                <param>*</param>
+                            </targetTests>
+                            <mutators>
+                                <mutator>STRONGER</mutator>
+                                <mutator>EXTENDED</mutator>
+                            </mutators>
+                            <threads>4</threads>
+                            <timestampedReports>false</timestampedReports>
+                            <timeoutConstant>10000</timeoutConstant>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>pitest</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>mutationCoverage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.pitest</groupId>
+                                <artifactId>pitest-junit5-plugin</artifactId>
+                                <version>1.2.3</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.arcmutate</groupId>
+                                <artifactId>base</artifactId>
+                                <version>1.7.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
