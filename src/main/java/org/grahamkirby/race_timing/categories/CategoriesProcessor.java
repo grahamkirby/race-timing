@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import static java.util.Comparator.comparingInt;
 import static org.grahamkirby.race_timing.common.Config.*;
 
 public final class CategoriesProcessor  {
@@ -95,6 +95,8 @@ public final class CategoriesProcessor  {
 
         validateCategories(entry_categories, EntryCategory::getGender);
         validateCategories(prize_categories, this::getEligibleGenderList);
+
+        validateCategoryGenders(entry_categories, prize_categories);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +193,20 @@ public final class CategoriesProcessor  {
     private String getEligibleGenderList(final PrizeCategory category) {
 
         return String.join("/", category.getEligibleGenders());
+    }
+
+    private void validateCategoryGenders(final List<EntryCategory> entry_categories, final List<PrizeCategory> prize_categories) {
+
+        final Set<String> entry_genders = entry_categories.stream().
+            map(EntryCategory::getGender).
+            collect(Collectors.toSet());
+
+        final Set<String> prize_genders = prize_categories.stream().
+            flatMap(category -> category.getEligibleGenders().stream()).
+            collect(Collectors.toSet());
+
+        if (!entry_genders.equals(prize_genders))
+            throw new RuntimeException("genders are not consistent between entry categories and prize categories");
     }
 
     private <C extends Category> List<C> loadCategories(final Path entry_categories_path, final Function<String, C> make_category) throws IOException {

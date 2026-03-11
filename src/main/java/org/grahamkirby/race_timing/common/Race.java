@@ -28,6 +28,8 @@ public interface Race {
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
     // TODO move interpolation from RelayRace to SingleRace.
+    // TODO error message re entry/prize category compatibility if no results.
+    // TODO test for generating PocketTimer output.
 
     /**
      * Processes the race data and generates results.

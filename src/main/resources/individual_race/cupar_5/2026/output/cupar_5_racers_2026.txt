@@ -1,0 +1,221 @@
+1	Adamson	Douglas	Dundee Hawkhill Harriers	M		M60
+2	Aitken	David	Dundee Road Runners	M		M50
+3	Aitken	Bryce	Fife AC	M		M60
+4	Aitken	Sandra	Fife AC	F		F60
+5	Alexander	Euan	Unatt.	M		M40
+6	Alexander	Jenni	Unatt.	F		F40
+7	Allan	Mark	Unatt.	M		MS
+8	Andrejczuk	Hanna	Fife AC	F		FS
+9	Anetts	Simon	Fife AC	M		MS
+10	Angus	Gregor	Unatt.	M		M40
+11	Armour	David	Vegan Runners UK	M		M60
+12	Armstrong	Sue	Fife AC	F		F50
+13	Atkinson	Vinnie	Fife AC	M		M50
+14	Baird	David	Dundee Road Runners	M		M40
+15	Ballantyne	Andy	Kirkcaldy Wizards	M		M50
+16	Bannerman	Jenny	Inverness H	F		FS
+17	Barry	Shona	Dundee Road Runners	F		F60
+18	Bennett	Nick	Dundee Road Runners	M		MS
+19	Blair	Steven	Corstorphine AAC	M		M60
+20	Bonthrone	Keith	Fife AC	M		M60
+21	Borgeal	Romain	Dundee Hawkhill Harriers	M		MS
+22	Bothwell	Alan	Perth Road Runners	M		M60
+23	Bothwell	Susan	Perth Road Runners	F		F60
+24	Bowers	Evan	Dundee Road Runners	M		MS
+25	Brian	Nick	Fife AC	M		M70
+26	Brian	Fiona	Unatt.	F		FS
+27	Brown	Hilary	Dundee Road Runners	F		F50
+28	Bryceland	John	Dundee Road Runners	M		M50
+29	Callaghan	Fiona	Dundee Road Runners	F		FS
+30	Campbell	Geoff	Dundee Road Runners	M		M40
+31	Campbell	Colin	RunSum Running Kirkcaldy	M		M40
+32	Canavan	Fiona	Dundee Road Runners	F		FS
+33	Captieux	Mireille	Fife AC	F		F40
+34	Chalmers	Steven	Fraserburgh RC	M		M50
+35	Clark	Roger	PH Racing	M		M50
+36	Cocker	Craig	Unatt.	M		M50
+37	Corrigan	Chris	Unatt.	M		MS
+38	Creese	Jonathan	Dundee Road Runners	M		M40
+39	Darling-Brackenridge	Laura	Dundee Road Runners	F		FS
+40	Davie	Barry	Carnegie Harriers	M		M40
+41	Dick	Steven	Edinburgh AC	M		M60
+42	Doig	Brenda	Dundee Road Runners	F		F50
+43	Doig	Graeme	PH Racing	M		M50
+44	Dunbar	Lorraine	Dundee Road Runners	F		F60
+45	Dunlop	Robbie	Dundee Road Runners	M		MS
+46	Dunning	Ryan	Fife AC	M		M40
+47	Duthie	Ewan	Dundee Road Runners	M		MS
+48	Fields	Daniel	Dundee Road Runners	M		M40
+49	Finlayson	Heather	Kirkcaldy Wizards	F		F50
+50	Finlayson	Donna	VP City of Glasgow	F		FS
+51	Fletcher	Simon	Pitreavie AAC	M		M40
+52	Forbes	Malcolm	Dundee Road Runners	M		M60
+53	Fullerton	Shaun	Montrose Flyers RC	M		MS
+54	Fyffe	Lucy	Dundee Road Runners	F		F50
+55	Gage	Orla	Anster Haddies	F		FU20
+56	Gage	Will	Anster Haddies	M		M50
+57	Gardener	Alan	Falkland Trail Runners	M		M50
+58	Garside	Rebecca	Dundee Road Runners	F		F40
+59	Gelly	Keith	Dundee Road Runners	M		M50
+60	Gelly	Alison	Dundee Road Runners	F		F50
+61	Gibson	Claire	Kinross Road Runners	F		FS
+62	Gillespie	Phillip	Dundee Road Runners	M		M50
+63	Goodfellow	Stuart	Kirkcaldy Wizards	M		M50
+64	Goring	Andrew	Unatt.	M		M40
+65	Graves	Scott	Unatt.	M		M40
+66	Gray	Ryan	Fife AC	M		MS
+67	Grieve	Wendy	Kinross Road Runners	F		F60
+68	Grieve	Richard	Unatt.	M		MS
+69	Gudgin	Alistair	Fife AC	M		MS
+70	Hall	James	Fife AC	M		M40
+71	Hallatt	Alex	Dundee Road Runners	M		MS
+72	Hanlon	Gill	Dundee Road Runners	F		F70
+73	Hargrave	Emma	Dundee Road Runners	F		FS
+74	Harley	Andy	Fife AC	M		M40
+75	Hay	Debz	Anster Haddies	F		F50
+76	Henderson	Tristan	Unatt.	M		M50
+77	Hernandez	Gillian	Dundee Hawkhill Harriers	F		F50
+78	Hernandez	Pancho	Dundee Hawkhill Harriers	M		M70
+79	Hetherington	Nigel	Fife AC	M		M60
+80	Hill	Rosemary	Scotia Racewalking Club	F		F70
+81	Hughes	Jamie	Arbroath RR	M		M40
+82	Hughson	Hamish	Unatt.	M		M50
+83	Hutchison	Scott	STAART	M		MS
+84	Jack	Gail	Dundee Hawkhill Harriers	F		F60
+85	Jamieson	Maximilian	Unatt.	M		MS
+86	Johnstone	Michelle	Fife AC	F		F40
+87	Kats	Marten	Perth Road Runners	M		M40
+88	Kay	Harry	Dundee Road Runners	M		M70
+89	Kelly	Connor	Dundee Road Runners	M		M60
+90	Kemp	Gillian	Unatt.	F		F40
+91	Kent	Christopher	Kirkcaldy Wizards	M		M40
+92	Kettles	Allan	Dundee Road Runners	M		M50
+93	Kieran	Paul	PH Racing	M		M50
+94	Kinnaird	Tim	Fife AC	M		M40
+95	Kinninmonth	Ben	Fife AC	M		MS
+96	Kinninmonth	John	Fife AC	M		M60
+97	Laing	Vikki	Kirkcaldy Wizards	F		F40
+98	Law	Catherine	Arbroath RF	F		F50
+99	Law	Stuart	Arbroath RR	M		M50
+100	Lessels	Jamie	Fife AC	M		MS
+101	Liddell	Frances	Edinburgh AC	F		FS
+102	Lindsay	Gordon	Perth Road Runners	M		M60
+103	Littleson	Mairi	Dundee Road Runners	F		FS
+104	Livingstone	Connor	Dundee Road Runners	M		MS
+105	Lofthouse	Jocelyn	Harmeny AC	F		F50
+106	Luke	Iain	Dundee Road Runners	M		M70
+107	MacDonald	Mike	Fife AC	M		M50
+108	MacDonald	George	Kirkcaldy Wizards	M		M60
+109	Macdonald	Sheenagh	Unatt.	F		F50
+110	Macfarlane	Marcas	Fife AC	M		MU20
+111	MacKernan	Evan	Fife AC	M		M40
+112	Mackie	Margaret	Dundee Road Runners	F		F60
+113	Maclean	Iain	Calderglen H	M		M50
+114	Macleod	Harry	Kinross Road Runners	M		MU20
+115	Macpherson	Keren	Fife AC	F		F50
+116	MacPherson	John	Fife AC	M		M40
+117	Macqueen	Daniel	Penicuik H	M		M40
+118	Macqueen	Ruth	Penicuik H	F		F40
+119	Maguire	Eoghan	Fife AC	M		M40
+120	Martin	Euan	Falkirk Victoria H	M		MS
+121	Martin	John	Unatt.	M		M60
+122	Massie	Jennifer	Dundee Road Runners	F		F40
+123	McColl	David	Inverness H	M		M40
+124	McCulloch	Jacqueline	Dundee Road Runners	F		F50
+125	McDougall	Sandy	Dundee Hawkhill Harriers	F		F40
+126	McDowall	Graeme	Fife AC	M		M50
+127	McHardy	Christopher	Central AC	M		M40
+128	McHardy	Claire	Wee County H	F		F40
+129	Mcintosh	John	Edinburgh AC	M		M60
+130	McKay	Josh	Dundee Road Runners	M		MS
+131	McMahon	Laura	Dundee Road Runners	F		FS
+132	McManus	Joe	St Cyrus Solos	M		M60
+133	McNeilly	Alison	Dundee Road Runners	F		F40
+134	McQuaid	Michael	Falkirk Victoria Harriers	M		M60
+135	McQuistin	Stephen	North Ayrshire AC	M		MS
+136	Mill	John	Dundee Road Runners	M		M60
+137	Millar	Neil	Fife AC	M		M50
+138	Miller	Mairi-Anne	Unatt.	F		F40
+139	Milne	Chloe	Unatt.	F		FS
+140	Mitchell	Michael	Dundee Road Runners	M		M50
+141	Muir	Laura	Fife AC	F		F40
+142	Norman	Kevin	Dundee Road Runners	M		M40
+143	O'Donnell	Jane	Dundee Road Runners	F		F40
+144	O'Donnell	Michael	Unatt.	M		M40
+145	O'Grady	Stefan	Dundee Road Runners	M		M40
+146	O'Looney	Damien	Harmeny AC	M		M40
+147	Oliver	Jane	Deeside Runners	F		F60
+148	Oliver	David	Deeside Runners	M		M60
+149	Peoples	Erin	Unatt.	F		FS
+150	Petrie	Graeme	Dundee Hawkhill Harriers	M		M50
+151	Plietzsch	Birgit	STAART	F		F50
+152	Prideaux	Lewis	Unatt.	M		MS
+153	Quick	Amanda	Unatt.	F		F50
+154	Quick	Martyn	Unatt.	M		M50
+155	Rainey	Tom	Anster Haddies	M		M40
+156	Ramsay	Jennifer	Unatt.	F		F40
+157	Rees	Logan	Fife AC	M		MS
+158	Reid	Helen	Kirkcaldy Wizards	F		F60
+159	Reilly	Michael	Anster Haddies	M		M50
+160	Reilly	Logan	Anster Haddies	M		MU20
+161	Richards	Karen	Fife AC	F		F50
+162	Richardson	Michael	Dundee Road Runners	M		MS
+163	Ritchie	Hilary	Fife AC	F		F60
+164	Ritchie	Karen	Kinross Road Runners	F		F40
+165	Robertson	Jimmy	Kirkcaldy Wizards	M		M50
+166	Robertson	Kari	Unatt.	F		FS
+167	Rodger	Iain	Unatt.	M		M40
+168	Rollo	Martin	Dundee Road Runners	M		M50
+169	?	?	?	M		MS
+220	Ross	Sarah	Tweed Leader Jed Track	F		FS
+170	Royden	Michael	Dundee Road Runners	M		M50
+171	Rudd	Linda	Dundee Road Runners	F		F60
+172	Russell	Sharon	Dundee Road Runners	F		F50
+173	Sandilands	Rory	Fife AC	M		M40
+174	Scobie	Jim	Scottish Athletics	M		M80
+175	Sellar	Robert	PH Racing	M		M50
+176	Shaw	Suzanne	Anster Haddies	F		F40
+177	Shaw	Gary	Anster Haddies	M		M50
+178	Shemilt	Elaine	Unatt.	F		F70
+179	Shenton	Rebecca	Dundee Road Runners	F		FS
+180	Sheridan	Marcus	Dundee Road Runners	M		MS
+181	Simpson	Colin	Kirkintilloch Olympians	M		M60
+182	Simpson	Shirley	Scotia Racewalking Club	F		F60
+183	Small	Arron	Dundee Road Runners	M		MS
+184	Small	Keirra	Dundee Road Runners	F		FS
+185	Small	James	Unatt.	M		M50
+186	Smith	Carol	Dundee Road Runners	F		F50
+187	Sreeves	Mark	Unatt.	M		M60
+188	Stevenson	Eric	Edinburgh AC	M		M70
+189	Stevenson	Jillian	Kirkcaldy Wizards	F		F50
+190	Stewart	Stephen	Arbroath RR	M		M50
+191	Stewart	Jamie	Dundee Road Runners	M		M40
+192	Stirling	Gail	Dundee Road Runners	F		F60
+193	Stokes	Craig	Kirkcaldy Wizards	M		M40
+194	Szafarz	Kasia	Kirkcaldy Wizards	F		F40
+195	Taggart	Morag	Dundee Road Runners	F		F60
+196	Taylor	Carter	Fife AC	M		MS
+197	Tierney	John	Dundee Road Runners	M		M40
+198	Traill	Keith	Fife AC	M		M70
+199	Turner	Greg	Ayrodynamic Triathlon Club	M		MS
+200	Rensburg	Ruan	Fife AC	M		MS
+201	Rensburg	Nico	Fife AC	M		MS
+202	Vassallo	Alexander	Dundee Hawkhill Harriers	M		MS
+203	Wade	Nick	Anster Haddies	M		M50
+204	Walker	Fiona	Fife AC	F		F50
+205	Wallace	Kevin	Fife AC	M		M40
+206	Warland	Peter	Stowmarket Striders RC	M		M60
+207	Warland	Sharon	Stowmarket Striders RC	F		F50
+208	Watt	Megan	Dundee Road Runners	F		FS
+209	Webster	David	Dundee Road Runners	M		MS
+210	Webster	Kirsten	Dundee Road Runners	F		FS
+211	Whytock	Grant	Dundee Road Runners	M		M50
+212	Wildgoose	Malcolm	Edinburgh Running Network	M		MS
+213	Wilson	Christine	Fife AC	F		F40
+214	Wilson	Greg	Kirkcaldy Wizards	M		M40
+215	Wojciechowski	Mandy	St Cyrus Solos	F		F50
+216	Young	Raymond	Unatt.	M		M70
+217	Fraser	Ben	Fife AC	M		MS
+219	Arikan	India	Dundee Road Runners	F		FS
+221	Wojciechowski	Anna	St Cyrus Solos	F		FS
+218	Grecian	James	Unatt.	M		M40
