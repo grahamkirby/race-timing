@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 import static org.grahamkirby.race_timing.common.Config.loadProperties;
 
 public class RaceFactory {
@@ -65,7 +66,7 @@ public class RaceFactory {
             race.outputNotes();
 
         } catch (final Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.getMessage() + LINE_SEPARATOR);
         }
     }
 
@@ -79,7 +80,7 @@ public class RaceFactory {
             if (factory.isValidFor(properties)) return factory.makeRace(config_file_path);
         }
 
-        throw new RuntimeException("No applicable race type for config file " + config_file_path);
+        throw new RuntimeException("No applicable race type for config file " + config_file_path + LINE_SEPARATOR);
     }
 
     // Only used in subclasses.

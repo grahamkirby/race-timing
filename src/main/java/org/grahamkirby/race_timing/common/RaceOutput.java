@@ -66,7 +66,7 @@ public abstract class RaceOutput {
         catch (final Exception e) {
 
             getNotes().clear();
-            getNotes().appendToNotes(e.getMessage() + LINE_SEPARATOR);
+            getNotes().appendToNotes(e.getMessage());
         }
     }
 

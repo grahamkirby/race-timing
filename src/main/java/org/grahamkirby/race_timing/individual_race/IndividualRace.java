@@ -80,7 +80,7 @@ public class IndividualRace implements SingleRaceInternal {
             return results_processor;
         }
         catch (final Exception e) {
-            notes.appendToNotes(e.getMessage());
+            notes.appendToNotes(e.getMessage() + LINE_SEPARATOR);
             return null;
         }
     }

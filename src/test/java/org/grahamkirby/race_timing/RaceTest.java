@@ -22,8 +22,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigAdjuster;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceConfigValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +35,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -162,12 +159,7 @@ public class RaceTest {
 
         final String[] args = {config_file_path.toString()};
 
-//        final Path expected_error_message_file = expected_output_directory.resolve("expected_error_message.txt");
-//
-//        if (!Files.exists(expected_error_message_file))
-            runWithExpectedCompletion(args);
-//        else
-//            runWithExpectedError(args, expected_error_message_file);
+        runWithExpectedCompletion(args);
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -179,7 +171,7 @@ public class RaceTest {
         // This omits the normal setup phase of copying the source and expected files.
 
         final String error_output;
-        final String missing_config_path = "synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "missing_config_file'";
+        final String missing_config_path = "synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "missing_config_file";
 
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
@@ -193,7 +185,7 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals("missing config file: '" + missing_config_path + "'" + LINE_SEPARATOR,
+        assertEquals("missing config file: '" + missing_config_path + "'" + LINE_SEPARATOR + LINE_SEPARATOR,
             error_output,
             "Expected error message was not generated");
 
@@ -263,19 +255,12 @@ public class RaceTest {
 
     private void runWithExpectedCompletion(final String[] args) throws IOException {
 
-        runTest(args, "", "Unexpected error message");
+        runTest(args);
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
     }
 
-    private static void runWithExpectedError(final String[] args, final Path expected_error_message_file) throws IOException {
-
-        final String expected_error_message = String.join(LINE_SEPARATOR, readAllLines(expected_error_message_file)) + LINE_SEPARATOR;
-
-        runTest(args, expected_error_message, "Expected error message was not generated");
-    }
-
-    private static void runTest(final String[] args, final String expected_error_message, final String test_message) {
+    private static void runTest(final String[] args) {
 
         final String error_output;
         try {
@@ -290,7 +275,7 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals(expected_error_message, error_output, test_message);
+        assertEquals("", error_output, "Unexpected error message");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

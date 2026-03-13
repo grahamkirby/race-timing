@@ -202,7 +202,7 @@ public class Config {
             final String message = "unused input files: " +
                 unused_files.stream().
                     map(path -> path.getFileName().toString()).
-                    collect(Collectors.joining(", "));
+                    collect(Collectors.joining(", ")) + LINE_SEPARATOR;
 
             throw new RuntimeException(message);
         }
