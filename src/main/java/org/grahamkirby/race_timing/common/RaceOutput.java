@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,6 @@ public abstract class RaceOutput {
 
         printPrizes();
         printCombined();
-        finaliseNotes();
 
         try {
             results.getConfig().checkUnusedInputFiles();
@@ -143,18 +142,16 @@ public abstract class RaceOutput {
 
     private void finaliseNotes() {
 
-        for (final RaceResult result : race_results.getOverallResults())
-            if (result.getEntryCategory() == null)
-                race_results.getNotesProcessor().appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
-
-        final String converted_words = race_results.getNormalisationProcessor().getNonTitleCaseWords();
-
-        if (!converted_words.isEmpty())
-            race_results.getNotesProcessor().appendToNotes("Converted to title case: " + converted_words);
+        if (race_results != null)
+            for (final RaceResult result : race_results.getOverallResults())
+                if (result.getEntryCategory() == null)
+                    race_results.getNotesProcessor().appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
     public void printNotes(final NotesProcessor notes) throws IOException {
+
+        finaliseNotes();
 
         final OutputStream stream = getOutputStream("processing_notes", TEXT_FILE_SUFFIX);
 

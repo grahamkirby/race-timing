@@ -14,8 +14,8 @@ The software supports several types of race:
 * relay races
 * series races
 
-The focus is on simplicity, using files for input and output rather than a database. The input files used to
-generate race results for each [Fife AC](//fifeac.org) race, and corresponding output files, are typically added
-back into the repository to form an archive.
+The focus is on simplicity, using files for input and output rather than a database, and there is no graphical interface.
+The input files used to generate race results for each [Fife AC](//fifeac.org) race, and corresponding output files, are typically
+added back into the repository to form an archive.
 
 As far as possible, original source files (entries, raw timing results) are not changed during processing.

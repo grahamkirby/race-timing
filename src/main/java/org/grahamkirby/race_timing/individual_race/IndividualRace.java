@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,22 +90,43 @@ public class IndividualRace implements SingleRaceInternal {
 
         if (!results.getOverallResults().isEmpty())
             results_output.outputResults(results);
+
+        for (final RaceResult result : results.getOverallResults())
+            if (result.getEntryCategory() == null)
+                notes.appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
     }
 
     @Override
     public void outputNotes() throws IOException {
 
+        if (normalisation != null) {
+            final String converted_words = normalisation.getNonTitleCaseWords();
+
+            if (!converted_words.isEmpty())
+                notes.appendToNotes("Converted to title case: " + converted_words + LINE_SEPARATOR);
+        }
+
         results_output.printNotes(notes);
     }
 
     @Override
-    public void outputRacerList() throws IOException {
+    public void outputPreRaceFiles() throws IOException {
 
-        final OutputStream stream = results_output.getOutputStream("racers", TEXT_FILE_SUFFIX);
+        final OutputStream stream1 = results_output.getOutputStream("racers", TEXT_FILE_SUFFIX);
 
-        try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream1)) {
             for (final String line : makeRacerList(entries))
                 writer.append(line + LINE_SEPARATOR);
+        }
+
+        final OutputStream stream2 = results_output.getOutputStream("dummy_rawtimes", TEXT_FILE_SUFFIX);
+
+        try (final OutputStreamWriter writer = new OutputStreamWriter(stream2)) {
+            Duration dummy_time = Duration.ofMinutes(10);
+            for (final RaceEntry entry : entries) {
+                writer.append(entry.getBibNumber() + "\t" + renderDuration(dummy_time, "-") + LINE_SEPARATOR);
+                dummy_time = dummy_time.plus(Duration.ofSeconds(12));
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,11 +113,18 @@ public class RelayRace implements SingleRaceInternal {
     @Override
     public void outputNotes() throws IOException {
 
+        if (normalisation != null) {
+            final String converted_words = normalisation.getNonTitleCaseWords();
+
+            if (!converted_words.isEmpty())
+                notes.appendToNotes("Converted to title case: " + converted_words + LINE_SEPARATOR);
+        }
+
         results_output.printNotes(notes);
     }
 
     @Override
-    public void outputRacerList() throws IOException {
+    public void outputPreRaceFiles() throws IOException {
         throw new UnsupportedOperationException();
     }
 

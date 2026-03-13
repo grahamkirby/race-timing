@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,20 +111,21 @@ public final class PrizeCategory extends Category {
         return o instanceof final PrizeCategory other && super.intersectsWith(other) && exclusive && other.exclusive;
     }
 
-    /**
-     * Equality defined in terms of gender and age range.
-     */
     @Override
     public boolean equals(final Object obj) {
-        return super.equals(obj) && obj instanceof final PrizeCategory other && number_of_prizes == other.number_of_prizes && eligible_clubs.equals(other.eligible_clubs) && exclusive == other.exclusive;
+
+        return obj instanceof final PrizeCategory other &&
+            number_of_prizes == other.number_of_prizes &&
+            group.equals(other.group) &&
+            eligible_clubs.equals(other.eligible_clubs) &&
+            eligible_genders.equals(other.eligible_genders) &&
+            exclusive == other.exclusive &&
+            age_range.equals(other.age_range);
     }
 
-    /**
-     * Hash code defined in terms of gender and age range.
-     */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), number_of_prizes, eligible_clubs, exclusive);
+        return Objects.hash(number_of_prizes, group, eligible_clubs, eligible_genders, exclusive, age_range);
     }
 
     // Gender eligibility ordering based only on the number of eligible genders.
@@ -150,12 +151,6 @@ public final class PrizeCategory extends Category {
         final int age_comparison = compareByDecreasingAgeCategoryGenerality(other);
         final int gender_comparison = compareByDecreasingGenderCategoryGenerality(other);
 
-        // This assumes that both comparators return the same negative or positive numbers.
-        final boolean comparison_same_for_both_aspects = false;
-//        final boolean comparison_same_for_both_aspects = age_comparison == gender_comparison;
-        final boolean age_comparison_equal = age_comparison == 0;
-        final boolean age_comparison_has_priority = !comparison_same_for_both_aspects && !age_comparison_equal;
-
-        return age_comparison_has_priority ? age_comparison : gender_comparison;
+        return age_comparison != 0 ? age_comparison : gender_comparison;
     }
 }

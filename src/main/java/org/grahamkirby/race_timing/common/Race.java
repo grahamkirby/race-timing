@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,6 @@ public interface Race {
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
     // TODO move interpolation from RelayRace to SingleRace.
-    // TODO error message re entry/prize category compatibility if no results.
-    // TODO test for generating PocketTimer output.
 
     /**
      * Processes the race data and generates results.
@@ -54,7 +52,7 @@ public interface Race {
      * Outputs a racer list from the entry details, for import into race recording software.
      * @throws IOException if the list cannot be written to file
      */
-    void outputRacerList() throws IOException;
+    void outputPreRaceFiles() throws IOException;
 
     /**
      * Tests whether the configuration file is valid. If not, there is no purpose in further processing.

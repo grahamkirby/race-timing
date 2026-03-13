@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,8 +54,9 @@ public class RaceFactory {
                 // If results is null then an error has occurred during processing. Details will have been recorded
                 // in the notes.
                 if (results != null) {
+
                     if (results.getOverallResults().isEmpty())
-                        race.outputRacerList();
+                        race.outputPreRaceFiles();
                     else
                         race.outputResults(results);
                 }

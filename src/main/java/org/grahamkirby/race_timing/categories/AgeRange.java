@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,8 +59,8 @@ public class AgeRange {
     public int compareByDecreasingGenerality(final AgeRange other) {
 
         if (this.equals(other)) return 0;
-        if (this.contains(other)) return -1;   // range1 is more general.
-        if (other.contains(this)) return 1;    // range1 is less general.
+        if (this.contains(other)) return -1;   // This range is more general.
+        if (other.contains(this)) return 1;    // Other range is less general.
 
         // Equal generality. The ranges must be disjoint since there's no containment, and intersecting
         // ranges are rejected during category validation.

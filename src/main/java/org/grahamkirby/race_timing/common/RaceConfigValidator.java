@@ -1,6 +1,6 @@
 /*
  * race-timing - <https://github.com/grahamkirby/race-timing>
- * Copyright © 2025 Graham Kirby (race-timing@kirby-family.net)
+ * Copyright © 2026 Graham Kirby (race-timing@kirby-family.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,7 +154,7 @@ public class RaceConfigValidator extends ConfigProcessor {
         } catch (final Exception _) {
             String message = "invalid record '" + original_line + "' at line " + line_number + " in file '" + raw_results_path.getFileName() + "'";
             if (original_line.contains(COMMENT_SYMBOL))
-                message += " - possible invalid use of # comment symbol";
+                message += " - possible invalid use of # comment symbol" + LINE_SEPARATOR;
             throw new RuntimeException(message);
         }
     }
@@ -164,7 +164,7 @@ public class RaceConfigValidator extends ConfigProcessor {
         if (cleaned_line.split("\t").length < number_of_columns) {
             String message = "invalid entry '" + original_line + "' at line " + line_number + " in file '" + entries_path.getFileName() + "'";
             if (original_line.contains(COMMENT_SYMBOL))
-                message += " - possible invalid use of # comment symbol";
+                message += " - possible invalid use of # comment symbol" + LINE_SEPARATOR;
             throw new RuntimeException(message);
         }
     }
@@ -182,7 +182,7 @@ public class RaceConfigValidator extends ConfigProcessor {
     private static void validateConsecutiveRawResultsOrdering(final Duration this_time, final BoxedDuration previous_time, final Path raw_results_path, final BoxedLineNumber line_number) {
 
         if (this_time != null && previous_time.duration != null && previous_time.duration.compareTo(this_time) > 0)
-            throw new RuntimeException("result out of order at line " + line_number.line + " in file '" + raw_results_path.getFileName() + "'");
+            throw new RuntimeException("result out of order at line " + line_number.line + " in file '" + raw_results_path.getFileName() + "'" + LINE_SEPARATOR);
 
         previous_time.duration = this_time;
     }
