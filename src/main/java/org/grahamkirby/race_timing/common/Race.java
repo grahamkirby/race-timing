@@ -28,6 +28,7 @@ public interface Race {
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
     // TODO move interpolation from RelayRace to SingleRace.
+    // TODO tests for early/late starts.
 
     /**
      * Processes the race data and generates results.

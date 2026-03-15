@@ -1,0 +1,20 @@
+# Default categories for senior races
+# Long name, Short name, Gender, Minimum age, Maximum age
+Female U15,FU15,Female,13,14
+Male U15,MU15,Male,13,14
+Female U17,FU17,Female,15,16
+Male U17,MU17,Male,15,16
+Female Junior,FU20,Female,17,19
+Male Junior,MU20,Male,17,19
+Female Senior,FS,Female,20,39
+Male Senior,MS,Male,20,39
+Female 40-49,F40,Female,40,49
+Male 40-49,M40,Male,40,49
+Female 50-59,F50,Female,50,59
+Male 50-59,M50,Male,50,59
+Female 60-69,F60,Female,60,69
+Male 60-69,M60,Male,60,69
+Female 70-79,F70,Female,70,79
+Male 70-79,M70,Male,70,79
+Female 80-89,F80,Female,80,89
+Male 80-89,M80,Male,80,89
