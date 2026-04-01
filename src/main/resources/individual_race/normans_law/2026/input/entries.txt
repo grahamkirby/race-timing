@@ -1,0 +1,71 @@
+1	Arman Buta	Kirkcaldy Wizards	MS
+182	Peter Warland	Forfar Road Runners	M60
+183	Christine Myerscough	Kinross Road Runners	F60
+285	John Myerscough	Kinross Road Runners	M70
+2	Martin Towey	Unatt.	M50
+3	Isla Kinnaird	Fife AC	FU20
+4	Timothy Kinnaird	Fife AC	M40
+184	Gordon Pryde	Lomond Hill Runners	M60
+5	Stuart Buckett	Fife AC	M50
+6	David Mackay	Forfar Road Runners	M50
+286	Ron Milne	Forfar Road Runners	M70
+185	Lyle Allan	Falkland Trail Runners	M60
+7	Alison McGill	Kinross Road Runners	F40
+8	Matt Newton	Kinross Road Runners	M50
+9	David Burgess	Anster Haddies	M50
+10	Yvonne Dehn	Anster Haddies	FS
+11	Eck Anderson	Anster Haddies	M40
+12	Sharon Brown	Anster Haddies	F40
+13	Will Gage	Anster Haddies	M50
+287	Brian Howie	Carnethy HRC	M70
+14	David Cole	Dundee Road Runners	M40
+15	Ruan van Rensburg	Fife AC	MS
+16	Logan Rees	Fife AC	MS
+17	Tom Harris	Highland Hill Runners	MS
+18	Gareth Brown	Unatt.	M50
+19	Stuart Brodie	Ochil Hill Runners	M40
+20	John MacEwan	Ochil Hill Runners	M50
+21	Daniel Clarke	Ochil Hill Runners	M40
+22	Jamie Lessels	Fife AC	MS
+23	Ali Black	Carnethy HRC	M40
+186	Margaret Martin	Fife AC	F60
+24	Neil Millar	Fife AC	M50
+187	John Hendry	Cumbernauld Harriers	M60
+188	Tania Wilson	Falkland Trail Runners	F60
+189	David Pease	Falkland Trail Runners	M60
+190	Dave Shepherd	Wormit Runners	M60
+25	Philip Suttie	Falkland Trail Runners	M40
+26	Phil Mclaughlan	Falkland Trail Runners	M50
+191	Innes Bracegirdle	Fife AC	F70
+27	Gemma Crawford	Falkland Trail Runners	FS
+28	John MacPherson	Fife AC	M40
+29	Rosy Shepherd	Carnethy HRC	FS
+30	Owen Wilkinson	Carnethy HRC	MS
+31	Andrew Duff	Forfar Road Runners	MS
+32	Fay Duff	Forfar Road Runners	FS
+33	John McIntyre Snr	Fife AC	M50
+34	Rashmi Shah	Kinross Road Runners	M50
+35	Freya Gibbon	Unatt.	FS
+36	Alexander Rain	Unatt.	MS
+37	Mhairi Mcinnes	Deeside Runners	FS
+192	Clive Roberts	Fife AC	M60
+38	Stuart Niven	Unatt.	M40
+39	Victoria Stone	East Fife Tri	FS
+40	Paul Stone	East Fife Tri	MS
+41	Christopher McKiddie	Dunbar AC	M40
+42	James Hall	Fife AC	M40
+43	Catherine Leonard	HKLRRC	F50
+44	Tom Gough	Fife AC	MS
+45	Gary Paterson	East Fife Tri	M50
+46	Marti Penacchio	Unatt.	MU20
+47	Mercè Torres	Unatt.	F40
+48	Eliza Konig	Fife AC	FU20
+49	June Balgowan	Falkland Trail Runners	F50
+50	Allison MacPherson	Falkland Trail Runners	F40
+51	Lee Cessford	Falkland Trail Runners	M50
+288	Alastair Paul	Portobello	M70
+52	Matt Sweeney	Ochil Hill Runners	M40
+53	Craig Roberts	Unatt.	MS
+54	Adrian Wood	East Fife Tri	M50
+55	Ross Emslie	Unatt.	MS
+56	Chris Sturrock	Running Machines	MS
