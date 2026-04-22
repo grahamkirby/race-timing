@@ -206,7 +206,7 @@ public final class CategoriesProcessor  {
             collect(Collectors.toSet());
 
         if (!entry_genders.equals(prize_genders))
-            throw new RuntimeException("genders are not consistent between entry categories and prize categories");
+            throw new RuntimeException("genders are not consistent between entry categories (" + String.join("/", entry_genders) + ") and prize categories (" + String.join("/", prize_genders) + ")");
     }
 
     private <C extends Category> List<C> loadCategories(final Path entry_categories_path, final Function<String, C> make_category) throws IOException {

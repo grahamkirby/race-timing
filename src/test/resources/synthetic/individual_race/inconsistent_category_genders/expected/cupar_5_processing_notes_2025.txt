@@ -1,1 +1,1 @@
-genders are not consistent between entry categories and prize categories
+genders are not consistent between entry categories (Non-Binary/Female/Male) and prize categories (Women/Men)

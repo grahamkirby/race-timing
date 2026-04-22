@@ -16,3 +16,11 @@ Women 80-89,F80,Female,80,89
 Men 80-89,M80,Male,80,89
 Women 90-99,F90,Female,90,99
 Men 90-99,M90,Male,90,99
+Non-Binary Junior,NBJ,Non-Binary,13,19
+Non-Binary Senior,NBS,Non-Binary,20,39
+Non-Binary 40-49,NB40,Non-Binary,40,49
+Non-Binary 50-59,NB50,Non-Binary,50,59
+Non-Binary 60-69,NB60,Non-Binary,60,69
+Non-Binary 70-79,NB70,Non-Binary,70,79
+Non-Binary 80-89,NB80,Non-Binary,80,89
+Non-Binary 90-99,NB90,Non-Binary,90,99

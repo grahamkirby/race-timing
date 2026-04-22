@@ -1,0 +1,94 @@
+1	David	Baird	Male	M40	Dundee Road Runners
+2	Gary	Barker	Male	M60	Fife AC
+3	Mark	Bell	Male	M40	Dundee Road Runners
+4	Geoff	Bilton	Male	M70	Kinross Road Runners
+5	Keith	Bonthrone 	Male	M60	Fife AC
+6	Innes	Bracegirdle	Female	F70	Fife AC
+7	David 	Burgess	Male	M50	Anster Haddies 
+8	Peter	Condron	Non-binary	NB40	Wee County Harriers 
+9	Elise	Coward	Female	FSen	Dundee Road Runners
+10	Isla	Craig	Female	F50	Kinross Road Runners
+11	Laura 	Darling-Brackenridge	Female	F40	Dundee Road Runners
+12	Georgia	Dean	Female	FSen	
+13	Yvonne	Dehn	Female	FSen	Anster Haddies
+14	James	Donald	Male	MSen	Dundee Hawkhill Harriers
+15	Catriona	Duncan	Female	F70	Anster Haddies
+16	Daniel	Dutton	Male	MSen	Dundee Road Runners
+17	Sarah	Eaton	Female	F60	Kinross Road Runners
+18	Duncan	Edward	Male	M40	Dundee Road Runners
+19	Iain	Elliott	Male	MSen	Kinross Road Runners
+20	Sam 	Fernando 	Male	MSen	Fife AC
+21	Fiona	Findlay	Female	FSen	Anster Haddies
+22	George	Findlay	Male	M60	Anster Haddies
+23	Valerie	Findlay	Female	F60	Kinross Road Runners
+24	Connor	Finlay	Male	MSen	Kinross Road Runners 
+25	Alison	Gelly	Female	F60	Dundee Road Runners
+26	Keith	Gelly 	Male	M50	Dundee Road Runners
+27	Freya	Gibbon	Female	FSen	Fife AC
+28	Bill	Gillan	Male	M70	Recreational Running
+29	Duncan	Gray	Male	M50	Kinross Road Runners
+30	Kirsty	Gray	Female	F50	Kinross Road Runners
+31	Wendy	Grieve	Female	F60	Kinross Road Runners
+32	Jeff	Gunnell	Male	M70	
+33	Adam	Hart	Male	MSen	Dundee Road Runners
+34	Debz	Hay 	Female	F50	Anster Haddies 
+35	John	Hendry	Male	M60	Cumbernauld Harriers
+36	Dominic	Hughes	Male	M40	Dundee Road Runners
+37	Scott	Hutchison	Male	M40	STAART
+38	Stephen 	Jones	Male	M40	Kinross Road Runners
+39	Allan	Kettles	Male	M50	Dundee Road Runners
+40	Mairi	Littleson	Female	FSen	Dundee Road Runners
+41	Gillian	Lopez	Female	F60	Kinross Road Runners
+42	Hannah	Lopez	Female	FSen	Kinross Road Runners
+43	Zachary 	Loughlin 	Male	MSen	
+44	Linda	MacEachen 	Female	F70	Kinross Road Runners
+45	Rhonda	Manning	Female	F50	Dundee Hawkhill Harriers
+46	Margaret	Martin	Female	F60	Fife AC
+47	Catherine	Matthews	Female	F50	Dundee Hawkhill Harriers 
+48	Craig	McAdam	Male	M70	Kinross Road Runners
+49	Paul	Mcgarrity	Male	M40	Dundee Hawkhill Harriers 
+50	John	Mcintyre snr	Male	M50	Fife AC
+51	Alison	McNeilly	Female	F40	Dundee Road Runners
+52	Stephen	McQuistin	Male	MSen	Anster Haddies
+53	Michael	Mitchell	Male	M50	Dundee Road Runners
+54	Heather 	Mitchell 	Female	F40	Wee County Harriers 
+55	Shirras	Moir	Female	FSen	
+56	Michelle 	Murray 	Female	F50	Kinross Road Runners
+57	Christine 	Myerscough 	Female	F60	Kinross Road Runners
+58	John 	Myerscough 	Male	M70	Kinross Road Runners 
+59	Patrick 	O'Hare	Male	MSen	Fife AC
+60	Richard	Pool	Male	M50	Kinross Road Runners 
+61	Michael	Reilly	Male	M50	Anster Haddies
+62	Alex	Reily	Male	MSen	Kinross Road Runners 
+63	Lesley	Reynolds	Female	F50	Carnegie Harriers
+64	Michael 	Richardson	Male	MSen	Dundee Road Runners
+65	Paul	Riley	Male	M40	
+66	Hilary 	Ritchie 	Female	F60	Fife AC 
+67	Andrew	Robertson	Male	M40	
+68	Jen	Robertson	Female	FSen	
+69	Suzanne	Robertson	Female	F40	
+70	Martin	Rollo	Male	M60	Dundee Road Runners
+71	Alison	Rowe	Female	F40	
+72	Michael	Sanderson	Male	MSen	Fife AC
+73	David	Scott	Male	M40	Kinross Road Runners
+74	Calum	Sinclair	Male	M40	
+75	Joey 	Smith	Male	MU20	Fife AC
+76	Nico	Van Rensburg 	Male	MSen	Fife AC
+77	Rhona	Van Rensburg 	Female	F50	Fife AC
+78	Ruan 	Van Rensburg 	Male	MSen	Fife AC
+79	David	Webster	Male	MSen	Dundee Road Runners
+80	Dominic	Williams	Male	MSen	Dundee Road Runners
+81	Christine 	Wilson 	Female	F40	Fife AC
+82	Simone	Young	Female	F50	Kinross Road Runners
+83	Jamie	Lessels	Male	MSen	Fife AC
+84	Shaun	Williams	Male	M50	Anster Haddies
+85	Jane	O'Donnell	Female	F40	Dundee Road Runners
+86	Orla	Gage	Female	FU20	Anster Haddies
+87	Will	Gage	Male	M50	Anster Haddies
+88	Marcas	MacFarlane	Male	MU20	Fife AC
+89	David	Dunleavey	Male	M60	Stratheden
+90	John	McIntyre Jnr	Male	MSen	Kirkcaldy Wizards
+91	Sean	Matthew	Male	MSen	Kirkcaldy Wizards
+92	Tom	Rainey	Male	M40	Anster Haddies
+93	Robert	Thornton	Male	M60	Unatt.
+94	Huw	Watkins	Male	M40	Anster Allsorts

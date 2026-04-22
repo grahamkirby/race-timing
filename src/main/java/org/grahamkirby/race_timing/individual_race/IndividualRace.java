@@ -243,7 +243,7 @@ public class IndividualRace implements SingleRaceInternal {
                 validateResultsData(entries, raw_results_path);
             }
             else if (overall_results_path != null) {
-                validateResultsDataFiles(raw_results_path, overall_results_path);
+                validateResultsDataFiles(null, overall_results_path);
                 raw_results = List.of();
                 overall_results = loadOverallResults(overall_results_path);
             }
@@ -261,7 +261,7 @@ public class IndividualRace implements SingleRaceInternal {
         return readAllLines(entries_path).stream().
             map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
-            map(line -> new RaceEntry(Arrays.stream(line.split("\t")).toList(), this)).
+            map(line -> new RaceEntry(getLineElements(line), this)).
             toList();
     }
 
@@ -292,7 +292,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private RaceResult makeRaceResult(final String line) {
 
-        final List<String> elements = makeMutableCopy(Arrays.stream(line.split("\t")).toList());
+        final List<String> elements = makeMutableCopy(getLineElements(line));
 
         elements.addFirst(String.valueOf(DUMMY_BIB_NUMBER));
 
@@ -304,7 +304,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private void validateEntryCategory(final String line) {
 
-        final List<String> elements = Arrays.stream(line.split("\t")).toList();
+        final List<String> elements = getLineElements(line);
         final NormalisationProcessor normalisation = getNormalisationProcessor();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
@@ -315,6 +315,17 @@ public class IndividualRace implements SingleRaceInternal {
         } catch (final RuntimeException e) {
             throw new RuntimeException(String.join(" ", elements));
         }
+    }
+
+    private List<String> getLineElements(final String line) {
+
+        return Arrays.stream(splitLine(line, "\t")).toList();
+    }
+
+    private String[] splitLine(final String line, final String delimiter) {
+
+        // Use -1 limit when splitting in case there are empty string elements at the end of the line.
+        return line.split(delimiter, -1);
     }
 
     private void validateEntryDataFiles(final Path entries_path) throws IOException {
@@ -360,11 +371,11 @@ public class IndividualRace implements SingleRaceInternal {
 
         final Consumer<Object> process_separately_recorded_results = value -> {
 
-            for (final String s : ((String) value).split(",", -1)) {
+            for (final String s : splitLine((String) value, ",")) {
 
                 // Example: SEPARATELY_RECORDED_RESULTS = 126/8:09
 
-                final String[] split = s.split("/", -1);
+                final String[] split = splitLine(s, "/");
                 final int bib_number = Integer.parseInt(split[0]);
                 final Duration finish_time = parseTime(split[1]);
 
@@ -382,7 +393,7 @@ public class IndividualRace implements SingleRaceInternal {
         final Consumer<Object> process_dead_heats = value -> {
 
             // Example: DEAD_HEATS = 10/29/4
-            dead_heats = Arrays.stream(((String) value).split("/", -1)).map(Integer::parseInt).collect(Collectors.toSet());
+            dead_heats = Arrays.stream(splitLine((String) value, "/")).map(Integer::parseInt).collect(Collectors.toSet());
         };
 
         config.processConfigIfPresent(KEY_DEAD_HEATS, process_dead_heats);
