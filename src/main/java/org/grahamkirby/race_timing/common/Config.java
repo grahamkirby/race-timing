@@ -120,7 +120,6 @@ public class Config {
     private final Map<String, Object> config_map;
     private final List<String> unused_keys;
     private final List<Path> unused_files;
-    private final List<Path> used_files;
 
     private final Path config_path;
     private final List<ConfigProcessor> config_adjusters = new ArrayList<>();
@@ -142,8 +141,6 @@ public class Config {
 
         unused_files = makeMutableCopy(getInputFiles());
         unused_files.remove(config_path);
-
-        used_files = new ArrayList<>();
     }
 
     public static List<String> getIgnoredFileNames() throws IOException {
@@ -189,13 +186,7 @@ public class Config {
 
     public void checkUnusedInputFiles() throws IOException {
 
-        checkUnusedInputFiles(List.of());
-    }
-
-    public void checkUnusedInputFiles(final List<Path> files_actually_used) throws IOException {
-
         getIgnoredFileNames().forEach(ignored_file_name -> unused_files.remove(config_path.getParent().resolve(ignored_file_name)));
-        unused_files.removeAll(files_actually_used);
 
         if (!unused_files.isEmpty() && ((Boolean) get(KEY_CHECK_INPUT_FILES_USED) || override_check_input_files_used)) {
 
@@ -206,11 +197,6 @@ public class Config {
 
             throw new RuntimeException(message);
         }
-    }
-
-    public List<Path> getUsedInputFiles() {
-
-        return used_files;
     }
 
     public Object get(final String key) {
@@ -226,13 +212,10 @@ public class Config {
 
     public Path getPath(final String key) {
 
-        Path path = (Path) get(key);
+        final Path path = (Path) get(key);
 
-        if (path != null) {
-            path = path.normalize();
-            unused_files.remove(path);
-            used_files.add(path);
-        }
+        if (path != null)
+            unused_files.remove(path.normalize());
 
         return path;
     }

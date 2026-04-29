@@ -1,0 +1,79 @@
+80	Ron Milne	Forfar Road Runners	M60
+81	Elizabeth Milne	Forfar Road Runners	F60
+79	Malcolm Forbes	Dundee Road Runners	M60
+116	Michael Miller	Clydesdale Harriers	MS
+117	John MacPherson	Fife AC	M40
+118	Kevin Murray	Falkland Trail Runners	M50
+119	Phil Rowe	Falkland Trail Runners	M40
+120	Ralph McInally	Strathearn Harriers	MS
+121	Hanna McInally	Strathearn Harriers	FS
+122	Ali Black	Carnethy	M40
+123	Fergus Ingledew	Fife AC	MS
+124	Robert Sparks	Fife AC	MS
+125	Paige Brown	Perth Road Runners	FS
+126	Keri Weathering	Perth Road Runners	F40
+127	Tom Harris	Fife AC	MS
+128	Roger Rees	Fife AC	M50
+129	Logan Rees	Fife AC	MS
+130	Ross Docherty	Falkland Trail Runners	MS
+131	Steph Devlin	Dundee Road Runners	F40
+132	Evan Bowers	Dundee Road Runners	MS
+82	Ruth Toller	Dundee Road Runners	F70
+83	Richard Toller	Dundee Road Runners	M70
+133	Isla Kinnaird	Fife AC	FU20
+134	Timothy Kinnaird	Fife AC	M40
+135	Fiona Canavan	Dundee Road Runners	FS
+136	Fiona Callaghan	Dundee Road Runners	FS
+137	Dominic Hughes	Dundee Road Runners	M40
+138	Robbie Dunlop	Dundee Road Runners	MS
+139	Alison Grey	Dundee Road Runners	F50
+140	Keith Gelly	Dundee Road Runners	M50
+141	Luneau Etienne	Edinburgh Triathletes	MS
+142	Willie Rennie	PH Racing Club	M50
+143	Louise Menzies	Dundee Road Runners	F40
+144	David Aitken	Dundee Road Runners	M50
+145	Neil Millar	Fife AC	M50
+146	Andrew Edwards	East Fife Triathletes	M50
+147	Vicki Stone	East Fife Triathletes	FS
+148	Paul Stone	East Fife Triathletes	MS
+149	Joseph Sutherland	Unatt.	MS
+150	Robert Grant	Unatt.	MS
+84	Mike Dales	Perth Road Runners	M60
+151	Fiona Manson	Perth Road Runners	F50
+85	Lyle Allan	Falkland Trail Runners	M60
+152	Paul Harkins	Fife AC	M40
+153	Mark Bell	Dundee Road Runners	M40
+154	Philip Suttie	Falkland Trail Runners	M40
+155	Phil McLaughlin	Falkland Trail Runners	M50
+86	Peter Darbyshire	Unatt.	M60
+87	Martin Rollo	Dundee Road Runners	M60
+88	David Pease	Falkland Trail Runners	M60
+156	Charlie Woodhead	Perth Road Runners	M50
+157	Stephen Dickson	Fife AC	M50
+89	Euan MacDermid	Dundee Hawkhill Harriers	M60
+158	Ben MacDermid	Dundee Hawkhill Harriers	MS
+159	Jack Byrne	Helm Hill	MS
+160	Stuart Niven	Unatt.	M40
+161	Ian Logan	Linlithgow AC	M40
+162	Ian Leslie	Forfar Road Runners	M40
+163	Vince MacPherson	Fife AC	M40
+90	Clive Roberts	Fife AC	M60
+164	James Hall	Fife AC	M40
+165	Lee Cessford	Falkland Trail Runners	M50
+166	Ben Hinton	Unatt.	MS
+167	Matthew Hinton	Ochil Hill Runners	MS
+168	Gary Paterson	East Fife Triathletes	M50
+169	Debz Hay	Anster Haddies	F50
+170	Innes Gibson	ERC	M60
+171	Graham McDougall	Unatt.	M40
+172	June Balgowan	Falkland Trail Runners	F50
+173	Allison MacPherson	Falkland Trail Runners	F40
+174	Adrian Wood	East Fife Triathletes	M50
+175	Mike Page	Unatt.	M40
+176	Dan Haddow	Unatt.	MS
+177	Jeff Haddow	Unatt.	M60
+178	Sarah Clark	Forfar Road Runners	F40
+179	Garry Sherriff	Forfar Road Runners	M40
+180	Kevin Greig	Dundee Road Runners	M40
+181	Jane Anderson	Carnegie Harriers	F50
+

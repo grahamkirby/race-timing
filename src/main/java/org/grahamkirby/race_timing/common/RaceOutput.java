@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
@@ -71,7 +70,7 @@ public abstract class RaceOutput {
     }
 
     public NotesProcessor getNotes() {
-        return race_results.getNotesProcessor();
+        return race_results == null ? null : race_results.getNotesProcessor();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,7 +369,6 @@ public abstract class RaceOutput {
         @Override
         public void printResult(final RaceResult result) throws IOException {
 
-//            writer.append(result.getPositionString() + ": " + result.getParticipantName() + " " + result + LINE_SEPARATOR);
             writer.append(result.getPositionString() + ": " + result + LINE_SEPARATOR);
         }
 
@@ -378,7 +376,7 @@ public abstract class RaceOutput {
         public void printNoResults() {
             try {
                 writer.append("No results").append(LINE_SEPARATOR);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         }

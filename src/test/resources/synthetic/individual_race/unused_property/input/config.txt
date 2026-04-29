@@ -1,0 +1,9 @@
+YEAR = 2023
+RACE_NAME_FOR_FILENAMES = st_andrews
+RACE_NAME_FOR_RESULTS = St Andrews 5M
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+UNUSED_PROPERTY = unused

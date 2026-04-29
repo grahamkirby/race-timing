@@ -44,8 +44,6 @@ public class SeriesRace implements RaceInternal {
     private final Config config;
     private final NotesProcessor notes;
 
-    private final List<Path> input_files_used_by_individual_races =  new ArrayList<>();
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public SeriesRace(final Config config) {
@@ -75,11 +73,11 @@ public class SeriesRace implements RaceInternal {
     public void outputResults(final RaceResults results) throws IOException {
 
         try {
-            config.checkUnusedInputFiles(input_files_used_by_individual_races);
+            config.checkUnusedInputFiles();
             config.checkUnusedProperties();
         }
         catch (final Exception e) {
-            results_output.getNotes().appendToNotes(e.getMessage() + LINE_SEPARATOR);
+            if (results_output.getNotes() != null) results_output.getNotes().appendToNotes(e.getMessage() + LINE_SEPARATOR);
         }
 
         results_output.outputResults(results);
@@ -99,7 +97,7 @@ public class SeriesRace implements RaceInternal {
     }
 
     @Override
-    public void outputPreRaceFiles() throws IOException {
+    public void outputPreRaceFiles() {
         throw new UnsupportedOperationException();
     }
 
@@ -210,7 +208,6 @@ public class SeriesRace implements RaceInternal {
                 races.add(individual_race);
 
                 individual_race.getConfig().checkUnusedInputFiles();
-                input_files_used_by_individual_races.addAll(individual_race.getConfig().getUsedInputFiles());
             }
         }
     }

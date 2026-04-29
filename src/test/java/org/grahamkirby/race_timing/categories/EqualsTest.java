@@ -47,10 +47,22 @@ public class EqualsTest {
     }
 
     @Test
-    public void verifyEqualsPrizeCategory() {
+    public void verifyEqualsPrizeCategory1() {
 
         PrizeCategory red = new PrizeCategory("Category 1,Cat1,Male,18,39,1,Overall,Fife AC,Y");
         PrizeCategory blue = new PrizeCategory("Category 2,Cat2,Male/Female,18,99,3,Mixed,,N");
+
+        EqualsVerifier.
+            forExamples(red, blue).
+            withIgnoredFields("long_name", "short_name").
+            verify();
+    }
+
+    @Test
+    public void verifyEqualsPrizeCategory2() {
+
+        PrizeCategory red = new PrizeCategory("Category 1,Cat1,Male,18,39,1,Overall,Fife AC");
+        PrizeCategory blue = new PrizeCategory("Category 2,Cat2,Male/Female,18,99,3,Mixed,,F");
 
         EqualsVerifier.
             forExamples(red, blue).
