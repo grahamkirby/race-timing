@@ -113,8 +113,6 @@ public class Config {
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
     public static final String OUTPUT_DIRECTORY_NAME = "output";
 
-    public static boolean override_check_input_files_used = false;
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Map<String, Object> config_map;
@@ -188,7 +186,7 @@ public class Config {
 
         getIgnoredFileNames().forEach(ignored_file_name -> unused_files.remove(config_path.getParent().resolve(ignored_file_name)));
 
-        if (!unused_files.isEmpty() && ((Boolean) get(KEY_CHECK_INPUT_FILES_USED) || override_check_input_files_used)) {
+        if (!unused_files.isEmpty() && ((Boolean) get(KEY_CHECK_INPUT_FILES_USED))) {
 
             final String message = "unused input files: " +
                 unused_files.stream().

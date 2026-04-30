@@ -8,3 +8,5 @@ MINIMUM_NUMBER_OF_RACES = 5
 
 ENTRY_CATEGORIES_PATH = categories_entry.csv
 PRIZE_CATEGORIES_PATH = categories_prize.csv
+
+CHECK_INPUT_FILES_USED = false

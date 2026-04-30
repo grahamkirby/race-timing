@@ -62,7 +62,7 @@ public class RaceConfigAdjuster extends ConfigProcessor {
         config.replaceIfPresent(KEY_CHECK_INPUT_FILES_USED, Boolean::parseBoolean);
         config.replaceIfPresent(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, Boolean::parseBoolean);
 
-        config.addIfAbsent(KEY_CHECK_INPUT_FILES_USED, false);
+        config.addIfAbsent(KEY_CHECK_INPUT_FILES_USED, true);
         config.addIfAbsent(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, true);
     }
 

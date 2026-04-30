@@ -6,7 +6,3 @@
 
 # Specifies whether the files generated in the first test should be retained.
 # RETAIN_FIRST_OUTPUT = true
-
-# Specifies whether test-defined checking for unused input files should be
-# overridden and carried out in every case.
-ALWAYS_CHECK_UNUSED_INPUT_FILES = false
