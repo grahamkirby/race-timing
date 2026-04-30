@@ -308,21 +308,6 @@ public class Config {
         return config_path.getParent().resolveSibling(OUTPUT_DIRECTORY_NAME);
     }
 
-    public static void setUpDirectory(final Path path) throws IOException {
-
-        if (!Files.exists(path)) {
-            try {
-                Files.createDirectories(path);
-            }
-            catch (AccessDeniedException e) {
-                throw new RuntimeException("directory does not exist and cannot be created: " + path);
-            }
-        }
-
-        if (!Files.isDirectory(path))
-            throw new RuntimeException("directory does not exist and cannot be created: " + path);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Path makeRelativeToProjectRoot(final Path path) {
