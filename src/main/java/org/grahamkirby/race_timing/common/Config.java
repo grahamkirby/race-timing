@@ -22,10 +22,7 @@ import com.itextpdf.io.font.constants.StandardFonts;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -307,15 +304,23 @@ public class Config {
 
         // This assumes that the config file is in the "input" directory
         // which is at the same level as the "output" directory.
-        final Path path = config_path.getParent().resolveSibling(OUTPUT_DIRECTORY_NAME);
 
-        if (!Files.exists(path))
-            Files.createDirectories(path);
+        return config_path.getParent().resolveSibling(OUTPUT_DIRECTORY_NAME);
+    }
+
+    public static void setUpDirectory(final Path path) throws IOException {
+
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectories(path);
+            }
+            catch (AccessDeniedException e) {
+                throw new RuntimeException("directory does not exist and cannot be created: " + path);
+            }
+        }
 
         if (!Files.isDirectory(path))
-            throw new RuntimeException("output directory does not exist and cannot be created: " + path);
-
-        return path;
+            throw new RuntimeException("directory does not exist and cannot be created: " + path);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
