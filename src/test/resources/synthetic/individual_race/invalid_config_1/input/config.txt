@@ -1,0 +1,9 @@
+YEAR = 2023
+RACE_NAME_FOR_RESULTS = St Andrews 5M
+RACE_NAME_FOR_FILENAMES = st_andrews
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+MASS_START_TIMES = 3/1:30:00,4/2:36:00

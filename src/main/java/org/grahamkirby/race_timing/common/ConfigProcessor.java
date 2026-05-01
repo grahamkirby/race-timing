@@ -33,10 +33,9 @@ public abstract class ConfigProcessor {
 
     protected void checkAllPresent(final List<String> keys) {
 
-        for (final String key : keys) {
+        for (final String key : keys)
             if (!config.containsKey(key))
                 throw new RuntimeException("no entry for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
-        }
     }
 
     protected void checkAllFilesExist(final List<String> keys) {
@@ -47,12 +46,6 @@ public abstract class ConfigProcessor {
             if (!Files.exists(path))
                 throw new RuntimeException("invalid entry '" + path.getFileName() + "' for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
         }
-    }
-
-    protected void checkExactlyOnePresent(final List<String> keys) {
-
-        if (countKeysPresent(keys) != 1)
-            throw new RuntimeException("should have exactly one key from {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
     }
 
     protected void checkNonePresent(final List<String> keys) {

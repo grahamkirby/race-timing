@@ -32,16 +32,16 @@ public class NormalisationProcessor {
 
     private static final int SECONDS_PER_HOUR = 3600;
     private static final int SECONDS_PER_MINUTE = 60;
+
     private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;
+    private static final int DURATION_PARSING_MAX_NUMBER_OF_DECIMAL_PLACES = (int) Math.log10(NANOSECONDS_PER_SECOND);
+    private static final int DURATION_DISPLAY_MAX_NUMBER_OF_DECIMAL_PLACES = 3;
 
     /** Characters treated as word separators when converting string to title case. */
     private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '’');
 
     /** Used when replacing double spaces with single space. */
     private static final Map<String, String> DOUBLE_SPACE_REMOVAL_MAP = Map.of("  ", " ");
-
-    /** As defined by Duration.parse(). */
-    private static final int MAX_LENGTH_SECONDS_FRACTIONAL_PART = 9;
 
     /** Strings that should not be converted to title case. */
     private Set<String> capitalisation_stop_words;
@@ -65,7 +65,7 @@ public class NormalisationProcessor {
 
     private final Config config;
 
-    public NormalisationProcessor(final Config config) {
+    public NormalisationProcessor(final Config config) throws IOException {
 
         this.config = config;
         configure();
@@ -132,8 +132,7 @@ public class NormalisationProcessor {
     /** Gets the first name of the given runner, or of the first runner if it's a pair. */
     public static String getFirstNameOfRunner(final String s) {
 
-        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
-        return runner.split(" ")[0];
+        return s.split(" ")[0];
     }
 
     /** Gets the last name of the given runner, or of the first runner if it's a pair. */
@@ -169,11 +168,6 @@ public class NormalisationProcessor {
         return duration != null ? renderDuration(duration) : alternative;
     }
 
-    public static String renderDuration(final Performance performance, final String alternative) {
-
-        return performance != null && performance.getValue() != null ? renderDuration((Duration) performance.getValue()) : alternative;
-    }
-
     public static String renderDuration(final RaceResult result, final String alternative) {
 
         return result.canOrHasCompleted() ? renderDuration((Duration) result.getPerformance().getValue()) : alternative;
@@ -185,24 +179,119 @@ public class NormalisationProcessor {
         return formatWholePart(duration) + formatFractionalPart(duration);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    private static String formatWholePart(final Duration duration) {
 
-    private void configure() {
+        final long total_seconds = duration.getSeconds();
+
+        final long hours = total_seconds / SECONDS_PER_HOUR;
+        final long minutes = (total_seconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
+        final long seconds = total_seconds % SECONDS_PER_MINUTE;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    private static String formatFractionalPart(final Duration duration) {
+
+        final int fractional_seconds_as_nanoseconds = duration.getNano();
+        if (fractional_seconds_as_nanoseconds == 0) return "";
+
+        final double fractional_seconds = fractional_seconds_as_nanoseconds / NANOSECONDS_PER_SECOND;
+
+        // Round to defined number of decimal places.
+        final String formatted_fractional_seconds = String.format(getDurationFormatString(), fractional_seconds);
+
+        // Omit the zero preceding the decimal point, and trailing zeros.
+        return formatted_fractional_seconds.replaceAll("^0|0+$", "");
+    }
+
+    private static String getDurationFormatString() {
+
+        return "%1$." + DURATION_DISPLAY_MAX_NUMBER_OF_DECIMAL_PLACES + "f";
+    }
+
+    /** Parses the given time in format hours/minutes/seconds or minutes/seconds, using the given separator. */
+    private static Duration parseTime(String time, final String separator) {
+
+        // Example valid input time representations (first column), with canonical H:M:S interpretation (second column),
+        // in ascending order of duration:
+        //
+        //    -0:08:00               -00:08:00          Denotes early start.
+        //     0:58                   00:00:58
+        //     :59                    00:00:59
+        //     45:01                  00:45:01
+        //     0:45:37.6543324594234  00:45:37.654
+        //     0:49:58                00:49:58
+        //     0:51:25.23             00:51:25.230
+        //     0:54:19.2              00:54:19.200
+        //     0:58:                  00:58:00
+        //     1:00:07                01:00:07
+        //     65:55                  01:05:55
+        //     :67:22                 01:07:22
+        //     68:49.32               01:08:49.320
+        //     0:70:16                01:10:16
+        //     1.11.43                01:11:43          Different separator.
+
+        time = time.strip();
+
+        boolean negative = false;
+
+        if (time.startsWith("-")) {
+            negative = true;
+            time = time.substring(1);
+        }
+
+        // Deal with missing hours or seconds component.
+        if (time.startsWith(separator)) time = "0" + time;
+        if (time.endsWith(separator)) time = time + "0";
 
         try {
-            entry_column_mappings = loadEntryColumnMapping();
-            category_map = loadCategoryMap();
-            normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
-            normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
+            final String[] parts = time.split(separator);
 
-            final Path capitalisation_stop_words_path = config.getPath(KEY_CAPITALISATION_STOP_WORDS_PATH);
-            capitalisation_stop_words = new HashSet<>(readAllLines(capitalisation_stop_words_path));
+            // Construct ISO-8601 duration format.
+            final Duration duration = Duration.parse("PT" + hours(parts) + minutes(parts) + seconds(parts));
 
-            non_title_case_words = new HashSet<>();
+            return negative ? duration.negated() : duration;
+
+        } catch (final RuntimeException _) {
+            throw new DateTimeParseException(time, time, 0);
         }
-        catch (final IOException e) {
-            throw new RuntimeException(e);
+    }
+
+    private static String hours(final String[] parts) {
+        return parts.length > 2 ? parts[0] + "H" : "";
+    }
+
+    private static String minutes(final String[] parts) {
+        return (parts.length > 2 ? parts[1] : parts[0]) + "M";
+    }
+
+    private static String seconds(final String[] parts) {
+
+        String s = parts.length > 2 ? parts[2] : parts[1];
+
+        final String[] second_parts = s.split("\\.");
+
+        if (second_parts.length > 1) {
+            final int number_of_fractional_digits_to_retain = Math.min(second_parts[1].length(), DURATION_PARSING_MAX_NUMBER_OF_DECIMAL_PLACES);
+            s = second_parts[0] + "." + second_parts[1].substring(0, number_of_fractional_digits_to_retain);
         }
+
+        return s + "S";
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void configure() throws IOException {
+
+        entry_column_mappings = loadEntryColumnMapping();
+        category_map = loadCategoryMap();
+        normalised_club_names = loadNormalisationMap(KEY_NORMALISED_CLUB_NAMES_PATH, false);
+        normalised_html_entities = loadNormalisationMap(KEY_NORMALISED_HTML_ENTITIES_PATH, true);
+
+        final Path capitalisation_stop_words_path = config.getPath(KEY_CAPITALISATION_STOP_WORDS_PATH);
+        capitalisation_stop_words = new HashSet<>(readAllLines(capitalisation_stop_words_path));
+
+        non_title_case_words = new HashSet<>();
     }
 
     private List<String> loadEntryColumnMapping() {
@@ -343,97 +432,5 @@ public class NormalisationProcessor {
             result = result.replaceAll("(?i)" + entry.getKey(), entry.getValue());
 
         return result;
-    }
-
-    /** Parses the given time in format hours/minutes/seconds or minutes/seconds, using the given separator. */
-    private static Duration parseTime(String time, final String separator) {
-
-        // Example valid time representations, in ascending order of duration:
-        //
-        //    -0:08:00                                  Denotes early start.
-        //     0:58                   00:00:58
-        //     :59                    00:00:59
-        //     45:01                  00:45:01
-        //     0:45:37.6543324594234  00:45:37.654
-        //     0:49:58
-        //     0:51:25.23             00:51:25.230
-        //     0:54:19.2              00:54:19.200
-        //     0:58:                  00:58:00
-        //     1:00:07                01:00:07
-        //     65:55                  01:05:55
-        //     :67:22                 01:07:22
-        //     68:49.32               01:08:49.320
-        //     0:70:16                01:10:16
-        //     1.11.43                01:11:43          Different separator.
-
-        time = time.strip();
-
-        boolean negative = false;
-
-        if (time.startsWith("-")) {
-            negative = true;
-            time = time.substring(1);
-        }
-
-        // Deal with missing hours or seconds component.
-        if (time.startsWith(separator)) time = "0" + time;
-        if (time.endsWith(separator)) time = time + "0";
-
-        try {
-            final String[] parts = time.split(separator);
-
-            // Construct ISO-8601 duration format.
-            final Duration duration = Duration.parse("PT" + hours(parts) + minutes(parts) + seconds(parts));
-
-            return negative ? duration.negated() : duration;
-
-        } catch (final RuntimeException _) {
-            throw new DateTimeParseException(time, time, 0);
-        }
-    }
-
-    private static String formatWholePart(final Duration duration) {
-
-        final long total_seconds = duration.getSeconds();
-
-        final long hours = total_seconds / SECONDS_PER_HOUR;
-        final long minutes = (total_seconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
-        final long seconds = total_seconds % SECONDS_PER_MINUTE;
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-    }
-
-    private static String formatFractionalPart(final Duration duration) {
-
-        final int fractional_seconds_as_nanoseconds = duration.getNano();
-        if (fractional_seconds_as_nanoseconds == 0) return "";
-
-        final double fractional_seconds = fractional_seconds_as_nanoseconds / NANOSECONDS_PER_SECOND;
-
-        // Round to 3 decimal places.
-        final String formatted_fractional_seconds = String.format("%1$,.3f", fractional_seconds);
-
-        // Omit the zero preceding the decimal point, and trailing zeros.
-        return formatted_fractional_seconds.replaceAll("^0|0+$", "");
-    }
-
-    private static String hours(final String[] parts) {
-        return parts.length > 2 ? parts[0] + "H" : "";
-    }
-
-    private static String minutes(final String[] parts) {
-        return (parts.length > 2 ? parts[1] : parts[0]) + "M";
-    }
-
-    private static String seconds(final String[] parts) {
-
-        String s = parts.length > 2 ? parts[2] : parts[1];
-
-        final String[] second_parts = s.split("\\.");
-
-        if (second_parts.length > 1 && second_parts[1].length() > MAX_LENGTH_SECONDS_FRACTIONAL_PART)
-            s = second_parts[0] + "." + second_parts[1].substring(0, MAX_LENGTH_SECONDS_FRACTIONAL_PART);
-
-        return s + "S";
     }
 }
