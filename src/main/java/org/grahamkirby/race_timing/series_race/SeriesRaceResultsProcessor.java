@@ -91,6 +91,11 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     }
 
     @Override
+    protected void recordDNF(final String ignore) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean multipleClubs() {
         return getClubs().size() > 1;
     }

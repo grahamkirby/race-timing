@@ -157,17 +157,13 @@ public abstract class RaceResultsProcessor implements RaceResults {
                 if (highest_index_with_same_performance > result_index) {
 
                     // Check whether any result in the sequence allows equal positions, if so, all should be set to equal.
-                    boolean found_result_allowing_equal_positions = false;
 
-                    // Mutation testing indicates that this loop still works correctly if the
-                    // termination check is < rather than <=.
-                    // This is because in practice there will never be just one result in the
-                    // sequence that allows equal positions.
-                    for (int i = result_index; i <= highest_index_with_same_performance; i++)
-                        if (!can_distinguish_equal_performances.apply(results.get(i)))
-                            found_result_allowing_equal_positions = true;
+                    final boolean at_least_one_result_in_sequence_allows_equal_positions = !results.stream().
+                        skip(result_index).
+                        limit(highest_index_with_same_performance - result_index + 1).
+                        allMatch(can_distinguish_equal_performances::apply);
 
-                    if (found_result_allowing_equal_positions) {
+                    if (at_least_one_result_in_sequence_allows_equal_positions) {
 
                         // There are results following this one that should have equal positions.
                         recordEqualPositions(results, result_index, highest_index_with_same_performance);
@@ -239,8 +235,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
                 recordDNF(individual_dnf_string);
     }
 
-    protected void recordDNF(final String dnf_specification) {
-    }
+    protected abstract void recordDNF(final String dnf_specification);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

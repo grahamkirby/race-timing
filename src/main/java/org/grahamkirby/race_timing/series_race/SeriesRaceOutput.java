@@ -139,6 +139,10 @@ class SeriesRaceOutput extends RaceOutput {
 
             writer.append(LINE_SEPARATOR);
         }
+
+        protected void printNoResults() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static final class SeriesRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {

@@ -347,6 +347,10 @@ public class RelayRaceOutput extends RaceOutput {
                 append(renderDuration(result, DNF_STRING)).
                 append(LINE_SEPARATOR);
         }
+
+        protected void printNoResults() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static final class RelayRaceOverallResultPrinterHTML extends OverallResultPrinterHTML {
@@ -414,6 +418,10 @@ public class RelayRaceOutput extends RaceOutput {
 
             writer.append(leg_details);
             writer.append(LINE_SEPARATOR);
+        }
+
+        protected void printNoResults() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -486,6 +494,10 @@ public class RelayRaceOutput extends RaceOutput {
                 append(runner_names).append(",").
                 append(renderDuration(result, DNF_STRING)).
                 append(LINE_SEPARATOR);
+        }
+
+        protected void printNoResults() {
+            throw new UnsupportedOperationException();
         }
     }
 

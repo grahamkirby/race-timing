@@ -373,12 +373,9 @@ public abstract class RaceOutput {
         }
 
         @Override
-        public void printNoResults() {
-            try {
-                writer.append("No results").append(LINE_SEPARATOR);
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
+        public void printNoResults() throws IOException {
+
+            writer.append("No results").append(LINE_SEPARATOR);
         }
     }
 

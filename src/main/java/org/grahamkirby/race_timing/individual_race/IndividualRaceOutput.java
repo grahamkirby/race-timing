@@ -28,6 +28,7 @@ import org.grahamkirby.race_timing.common.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -239,6 +240,10 @@ public class IndividualRaceOutput extends RaceOutput {
                 append(participant.getCategory().getShortName()).append(",").
                 append(renderDuration(result, DNF_STRING)).
                 append(LINE_SEPARATOR);
+        }
+
+        protected void printNoResults() {
+            throw new UnsupportedOperationException();
         }
     }
 
