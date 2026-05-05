@@ -41,21 +41,14 @@ public class RaceEntry {
         final NormalisationProcessor normalisation = race.getNormalisationProcessor();
 
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
+        final String name = normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
+        final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
 
-        try {
-            bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
+        final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
+        final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().getEntryCategory(category_name);
 
-            final String name = normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
-            final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
-
-            final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-            final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().getEntryCategory(category_name);
-
-            participant = new Runner(name, club, category);
-
-        } catch (final RuntimeException e) {
-            throw new RuntimeException(String.join(" ", elements));
-        }
+        participant = new Runner(name, club, category);
+        bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));
     }
 
     public RaceEntry(final Participant participant, final int bib_number) {
@@ -72,11 +65,6 @@ public class RaceEntry {
 
     public Participant getParticipant() {
         return participant;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof final RaceEntry entry && entry.bib_number == bib_number && entry.participant.equals(participant);
     }
 
     @Override

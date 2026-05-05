@@ -55,7 +55,9 @@ public class RelayRaceFactory extends RaceFactory {
     @Override
     public boolean isValidFor(final Properties properties) {
 
-        return properties.containsKey(KEY_INDICATIVE_OF_RELAY_RACE);
+        return super.isValidFor(properties) &&
+
+            properties.containsKey(KEY_INDICATIVE_OF_RELAY_RACE);
     }
 
     private Config makeRelayRaceConfig(final Path config_file_path) throws IOException {
@@ -65,7 +67,7 @@ public class RelayRaceFactory extends RaceFactory {
         config.addConfigAdjuster(RaceConfigAdjuster::new);
         config.addConfigAdjuster(RelayRaceConfigAdjuster::new);
 
-        config.addConfigValidator(RaceConfigValidator::new);
+//        config.addConfigValidator(RaceConfigValidator::new);
         config.addConfigValidator(RelayRaceConfigValidator::new);
 
         return config;

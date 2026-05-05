@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.relay_race.RelayRaceFactory.KEY_INDICATIVE_OF_RELAY_RACE;
 import static org.grahamkirby.race_timing.series_race.SeriesRaceFactory.KEY_INDICATIVE_OF_SERIES_RACE;
 
@@ -50,11 +50,12 @@ public class IndividualRaceFactory extends RaceFactory {
         return race;
     }
 
-
     public boolean isValidFor(final Properties properties) {
 
-        // Must be an individual race if it's not a relay race or series race.
-        return !(properties.containsKey(KEY_INDICATIVE_OF_RELAY_RACE) || properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE));
+        return super.isValidFor(properties) &&
+
+            // Must be an individual race if it's not a relay race or series race.
+            !(properties.containsKey(KEY_INDICATIVE_OF_RELAY_RACE) || properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE));
     }
 
     private Config makeIndividualRaceConfig(final Path config_file_path) throws IOException {
@@ -64,7 +65,7 @@ public class IndividualRaceFactory extends RaceFactory {
         config.addConfigAdjuster(RaceConfigAdjuster::new);
         config.addConfigAdjuster(IndividualRaceConfigAdjuster::new);
 
-        config.addConfigValidator(RaceConfigValidator::new);
+//        config.addConfigValidator(RaceConfigValidator::new);
         config.addConfigValidator(IndividualRaceConfigValidator::new);
 
         return config;

@@ -197,6 +197,33 @@ public class RaceTest {
         failed_test = false;
     }
 
+    @Test
+    public void invalidRaceType() {
+
+        // This omits the normal setup phase of copying the source and expected files.
+
+        final String error_output;
+        final String invalid_config_path = getPathRelativeToProjectRoot(RESOURCES_ROOT).resolve("synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "invalid_race_type" + PATH_SEPARATOR + "input" + PATH_SEPARATOR + "config.txt").toString();
+        try {
+            final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
+            System.setErr(new PrintStream(diverted_err));
+
+            RaceFactory.main(new String[]{invalid_config_path});
+
+            error_output = diverted_err.toString();
+
+        } finally {
+            System.setErr(System.err);
+        }
+
+        assertEquals("No applicable race type for config file" + LINE_SEPARATOR + LINE_SEPARATOR,
+            error_output,
+            "Expected error message was not generated");
+
+        // Test has passed if this line is reached.
+        failed_test = false;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static List<String> getTestCases() throws IOException {

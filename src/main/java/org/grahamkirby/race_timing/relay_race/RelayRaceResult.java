@@ -98,9 +98,13 @@ public class RelayRaceResult extends SingleRaceResult {
 
     protected int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
 
+        // It doesn't matter how the positions are indexed, since this is only used to
+        // compare the recorded positions of two results.
+        // Here we index from zero, to avoid adding a constqnt 1 as would be required
+        // for indexing from one, and giving a spurious mutation testing target.
         return race.getRawResults().size() - (int) race.getRawResults().reversed().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
-            count() + 1;
+            count();
     }
 
     /** Compares two results based on alphabetical ordering of the team name. */

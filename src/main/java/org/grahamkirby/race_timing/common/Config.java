@@ -82,6 +82,12 @@ public class Config {
     public static final String KEY_TIME_TRIAL_RUNNERS_PER_WAVE = "TIME_TRIAL_RUNNERS_PER_WAVE";
     public static final String KEY_YEAR = "YEAR";
 
+    public static final List<String> REQUIRED_CONFIG_KEYS = List.of(
+
+        KEY_YEAR,
+        KEY_RACE_NAME_FOR_FILENAMES,
+        KEY_RACE_NAME_FOR_RESULTS);
+
     /** Displayed in results for runners that did not complete the course. */
     public static final String DNF_STRING = "DNF";
 
@@ -132,7 +138,7 @@ public class Config {
         properties.forEach((key, value) -> config_map.put((String) key, value));
 
         unused_keys = new ArrayList<>(config_map.keySet());
-        unused_keys.removeAll(RaceConfigValidator.REQUIRED_CONFIG_KEYS);
+        unused_keys.removeAll(REQUIRED_CONFIG_KEYS);
 
         unused_files = makeMutableCopy(getInputFiles());
         unused_files.remove(config_path);

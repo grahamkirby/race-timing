@@ -56,7 +56,9 @@ public class SeriesRaceFactory extends RaceFactory {
     @Override
     public boolean isValidFor(final Properties properties) {
 
-        return properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE);
+        return super.isValidFor(properties) &&
+
+            properties.containsKey(KEY_INDICATIVE_OF_SERIES_RACE);
     }
 
     private Config makeSeriesRaceConfig(final Path config_file_path) throws IOException {
@@ -66,7 +68,7 @@ public class SeriesRaceFactory extends RaceFactory {
         config.addConfigAdjuster(RaceConfigAdjuster::new);
         config.addConfigAdjuster(SeriesRaceConfigAdjuster::new);
 
-        config.addConfigValidator(RaceConfigValidator::new);
+//        config.addConfigValidator(RaceConfigValidator::new);
         config.addConfigValidator(SeriesRaceConfigValidator::new);
 
         if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES)) {

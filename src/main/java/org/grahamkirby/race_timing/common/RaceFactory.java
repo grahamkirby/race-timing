@@ -27,8 +27,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Config.loadProperties;
+import static org.grahamkirby.race_timing.common.Config.*;
+import static org.grahamkirby.race_timing.common.Config.KEY_RACE_NAME_FOR_FILENAMES;
+import static org.grahamkirby.race_timing.common.Config.KEY_RACE_NAME_FOR_RESULTS;
 
 public class RaceFactory {
 
@@ -77,14 +78,17 @@ public class RaceFactory {
         for (final Supplier<RaceFactory> specialised_factory : specialised_factories) {
 
             final RaceFactory factory = specialised_factory.get();
-            if (factory.isValidFor(properties)) return factory.makeRace(config_file_path);
+            if (factory.isValidFor(properties))
+                return factory.makeRace(config_file_path);
         }
 
-        throw new RuntimeException("No applicable race type for config file " + config_file_path + LINE_SEPARATOR);
+        throw new RuntimeException("No applicable race type for config file");
     }
 
     // Only used in subclasses.
     public boolean isValidFor(final Properties properties) {
-        return true;
+        return properties.containsKey(KEY_YEAR) &&
+            properties.containsKey(KEY_RACE_NAME_FOR_FILENAMES) &&
+            properties.containsKey(KEY_RACE_NAME_FOR_RESULTS);
     }
 }

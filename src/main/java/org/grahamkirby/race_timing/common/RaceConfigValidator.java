@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-public class RaceConfigValidator extends ConfigProcessor {
+public abstract class RaceConfigValidator {
 
     private static class BoxedLine {
         String line;
@@ -46,25 +46,7 @@ public class RaceConfigValidator extends ConfigProcessor {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final List<String> REQUIRED_CONFIG_KEYS = List.of(
-
-        Config.KEY_YEAR,
-        Config.KEY_RACE_NAME_FOR_FILENAMES,
-        Config.KEY_RACE_NAME_FOR_RESULTS);
-
     private static final int RAW_RESULT_TIME_INDEX = 1;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public RaceConfigValidator(final Config config) {
-
-        super(config);
-    }
-
-    public void processConfig() {
-
-        checkAllPresent(REQUIRED_CONFIG_KEYS);
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

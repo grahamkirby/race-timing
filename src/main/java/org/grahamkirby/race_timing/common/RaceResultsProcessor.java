@@ -103,7 +103,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
             if (!getPrizeWinners(other_category).isEmpty()) return true;
             if (category.equals(other_category) && !arePrizesInOtherCategoryWithSameMinimumAge(category)) return false;
         }
-        return false;
+        throw new RuntimeException();
     }
 
     @Override
@@ -158,7 +158,11 @@ public abstract class RaceResultsProcessor implements RaceResults {
 
                     // Check whether any result in the sequence allows equal positions, if so, all should be set to equal.
                     boolean found_result_allowing_equal_positions = false;
-                    
+
+                    // Mutation testing indicates that this loop still works correctly if the
+                    // termination check is < rather than <=.
+                    // This is because in practice there will never be just one result in the
+                    // sequence that allows equal positions.
                     for (int i = result_index; i <= highest_index_with_same_performance; i++)
                         if (!can_distinguish_equal_performances.apply(results.get(i)))
                             found_result_allowing_equal_positions = true;
@@ -301,7 +305,6 @@ public abstract class RaceResultsProcessor implements RaceResults {
     private boolean arePrizesInOtherCategoryWithSameMinimumAge(final PrizeCategory category) {
 
         return race.getCategoriesProcessor().getPrizeCategories().stream().
-            filter(other_category -> !other_category.equals(category)).
             filter(other_category -> other_category.getAgeRange().getMinimumAge() == category.getAgeRange().getMinimumAge()).
             anyMatch(other_category -> !getPrizeWinners(other_category).isEmpty());
     }

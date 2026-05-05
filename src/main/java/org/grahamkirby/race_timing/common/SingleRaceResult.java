@@ -74,10 +74,6 @@ public abstract class SingleRaceResult extends CommonRaceResult {
         return bib_number;
     }
 
-    public boolean isDnf() {
-        return dnf;
-    }
-
     public void setDnf(final boolean dnf) {
         this.dnf = dnf;
     }
@@ -92,9 +88,6 @@ public abstract class SingleRaceResult extends CommonRaceResult {
 
     protected int compareRecordedPositionTo(final RaceResult other) {
 
-        if (race != other.getRace())
-            throw new RuntimeException("results compared from two different races");
-
         final int recorded_position1 = getRecordedPosition(bib_number, (SingleRaceInternal) race);
         final int recorded_position2 = getRecordedPosition(((SingleRaceResult) other).bib_number, (SingleRaceInternal) race);
 
@@ -103,8 +96,12 @@ public abstract class SingleRaceResult extends CommonRaceResult {
 
     protected int getRecordedPosition(final int bib_number, final SingleRaceInternal race) {
 
+        // It doesn't matter how the positions are indexed, since this is only used to
+        // compare the recorded positions of two results.
+        // Here we index from zero, to avoid adding a constqnt 1 as would be required
+        // for indexing from one, and giving a spurious mutation testing target.
         return (int) race.getRawResults().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).
-            count() + 1;
+            count();
     }
 }
