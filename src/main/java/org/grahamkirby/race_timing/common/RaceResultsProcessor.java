@@ -131,10 +131,14 @@ public abstract class RaceResultsProcessor implements RaceResults {
         setPositionStrings(results, this::canDistinguishFromOtherEqualPerformances);
     }
 
+    private static class BoxedResult <T extends RaceResult> {
+        T value;
+    }
+
     /** Sets the position string for each result. These are recorded as strings rather than ints so
      *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
      *  is determined by the second parameter. */
-    public void setPositionStrings(final List<? extends RaceResult> results, final Function<RaceResult, Boolean> can_distinguish_equal_performances) {
+    public <T extends RaceResult> void setPositionStrings(final List<T> results, final Function<RaceResult, Boolean> can_distinguish_equal_performances) {
 
         // Sets position strings for dead heats, if allowed by the can_distinguish_equal_performances predicate.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -145,34 +149,30 @@ public abstract class RaceResultsProcessor implements RaceResults {
 
         for (int result_index = 0; result_index < results.size(); result_index++) {
 
-            final RaceResult result = results.get(result_index);
+            final T result = results.get(result_index);
 
             if (result.canOrHasCompleted()) {
 
                 // Skip over any following results with the same performance.
                 // Defined in terms of performance rather than duration, since in some races ranking is determined
                 // by scores rather than times.
-                final int highest_index_with_same_performance = getHighestIndexWithSamePerformance(results, result_index);
 
-                if (highest_index_with_same_performance > result_index) {
+                final int length_of_sequence_of_equal_performances = getLengthOfSequenceOfEqualPerformances(results, result_index);
 
-                    // Check whether any result in the sequence allows equal positions, if so, all should be set to equal.
+                final boolean no_results_in_sequence_allow_equal_positions = results.stream().
+                    skip(result_index).
+                    limit(length_of_sequence_of_equal_performances).
+                    allMatch(can_distinguish_equal_performances::apply);
 
-                    final boolean at_least_one_result_in_sequence_allows_equal_positions = !results.stream().
-                        skip(result_index).
-                        limit(highest_index_with_same_performance - result_index + 1).
-                        allMatch(can_distinguish_equal_performances::apply);
+                if (!no_results_in_sequence_allow_equal_positions) {
 
-                    if (at_least_one_result_in_sequence_allows_equal_positions) {
+                    // Sequence is non-empty, and there are results following this one that should have equal positions.
+                    recordEqualPositions(results, result_index, length_of_sequence_of_equal_performances);
 
-                        // There are results following this one that should have equal positions.
-                        recordEqualPositions(results, result_index, highest_index_with_same_performance);
-                        result_index = highest_index_with_same_performance;
-                    } else
-                        // None of those results allow equal positions, so just record current position for this one.
-                        result.setPositionString(String.valueOf(result_index + 1));
+                    // Index will also be incremented in main loop, so subtract one here.
+                    result_index += length_of_sequence_of_equal_performances - 1;
                 } else
-                    // The following result has a different performance, so just record current position for this one.
+                    // Sequence is empty, or no results in sequence allow equal positions, so just record current position for this one.
                     result.setPositionString(String.valueOf(result_index + 1));
 
             } else
@@ -182,6 +182,35 @@ public abstract class RaceResultsProcessor implements RaceResults {
         // Sort results again, since setting equal positions may have altered the sort order,
         // e.g. equal positions may be listed in alphabetical order of runner or team name.
         results.sort(null);
+    }
+
+    private static <T extends RaceResult> int getLengthOfSequenceOfEqualPerformances(final List<T> results, final int result_index) {
+
+        final BoxedResult<T> previous_result = new BoxedResult<>();
+        previous_result.value = results.get(result_index);
+
+        final int count = (int) results.stream().
+            skip(result_index + 1).
+            takeWhile(result -> {
+                final boolean equal_performance_to_previous_result = result.comparePerformanceTo(previous_result.value) == 0;
+                previous_result.value = result;
+                return equal_performance_to_previous_result;
+            }).
+            count();
+
+        // Can't have sequence of length 1.
+        return count == 0 ? 0 : count + 1;
+    }
+    
+    /** Records the same position for the given range of results. */
+    private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int length_of_sequence_of_equal_performances) {
+
+        final String position_string = (start_index + 1) + "=";
+
+        results.stream().
+            skip(start_index).
+            limit(length_of_sequence_of_equal_performances).
+            forEach(result -> result.setPositionString(position_string));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,15 +302,6 @@ public abstract class RaceResultsProcessor implements RaceResults {
     private String getClub(final RaceResult result) {
 
         return result.getParticipant() instanceof final Runner runner ? runner.getClub() : null;
-    }
-
-    /** Records the same position for the given range of results. */
-    private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int end_index) {
-
-        final String position_string = (start_index + 1) + "=";
-
-        for (int i = start_index; i <= end_index; i++)
-            results.get(i).setPositionString(position_string);
     }
 
     /** Finds the highest index for which the performance is the same as the given index. */
