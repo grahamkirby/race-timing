@@ -29,6 +29,8 @@ public interface Race {
     // TODO update README (https://www.makeareadme.com).
     // TODO move interpolation from RelayRace to SingleRace.
     // TODO tests for early/late starts.
+    // TODO store forenames and surnames separately to allow sorting on multi-word surnames.
+    // TODO rationalise config syntax for dead heats and dnfs.
 
     /**
      * Processes the race data and generates results.

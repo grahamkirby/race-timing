@@ -90,10 +90,6 @@ public class IndividualRace implements SingleRaceInternal {
 
         if (!results.getOverallResults().isEmpty())
             results_output.outputResults(results);
-
-        for (final RaceResult result : results.getOverallResults())
-            if (result.getEntryCategory() == null)
-                notes.appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
     }
 
     @Override
@@ -223,36 +219,32 @@ public class IndividualRace implements SingleRaceInternal {
             entry.getParticipant().getCategory().getShortName();
     }
 
-    private void loadRaceData() {
+    private void loadRaceData() throws IOException {
 
         final Path entries_path = config.getPath(KEY_ENTRIES_PATH);
         final Path raw_results_path = config.getPath(KEY_RAW_RESULTS_PATH);
         final Path overall_results_path = config.getPath(KEY_OVERALL_RESULTS_PATH);
 
-        try {
-            validateEntryDataFiles(entries_path);
+        validateEntryDataFiles(entries_path);
 
-            entries = loadEntries(entries_path);
-            validateEntryData(entries, entries_path);
+        entries = loadEntries(entries_path);
+        validateEntryData(entries, entries_path);
 
-            if (raw_results_path != null) {
-                validateResultsDataFiles(raw_results_path, overall_results_path);
-                raw_results = loadRawResults(raw_results_path);
-                overall_results = List.of();
+        if (raw_results_path != null) {
+            validateResultsDataFiles(raw_results_path, overall_results_path);
+            raw_results = loadRawResults(raw_results_path);
+            overall_results = List.of();
 
-                validateResultsData(entries, raw_results_path);
-            }
-            else if (overall_results_path != null) {
-                validateResultsDataFiles(null, overall_results_path);
-                raw_results = List.of();
-                overall_results = loadOverallResults(overall_results_path);
-            }
-            else {
-                raw_results = List.of();
-                overall_results = List.of();
-            }
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+            validateResultsData(entries, raw_results_path);
+        }
+        else if (overall_results_path != null) {
+            validateResultsDataFiles(null, overall_results_path);
+            raw_results = List.of();
+            overall_results = loadOverallResults(overall_results_path);
+        }
+        else {
+            raw_results = List.of();
+            overall_results = List.of();
         }
     }
 
@@ -274,18 +266,13 @@ public class IndividualRace implements SingleRaceInternal {
             toList();
     }
 
-    private List<RaceResult> loadOverallResults(final Path overall_results_path) {
+    private List<RaceResult> loadOverallResults(final Path overall_results_path) throws IOException {
 
-        try {
-            return readAllLines(overall_results_path).stream().
-                map(NormalisationProcessor::stripComment).
-                filter(Predicate.not(String::isBlank)).
-                map(this::makeRaceResult).
-                toList();
-        }
-        catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        return readAllLines(overall_results_path).stream().
+            map(NormalisationProcessor::stripComment).
+            filter(Predicate.not(String::isBlank)).
+            map(this::makeRaceResult).
+            toList();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

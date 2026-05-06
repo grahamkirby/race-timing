@@ -88,8 +88,10 @@ public abstract class SingleRaceResult extends CommonRaceResult {
 
     protected int compareRecordedPositionTo(final RaceResult other) {
 
-        final int recorded_position1 = getRecordedPosition(bib_number, (SingleRaceInternal) race);
-        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) other).bib_number, (SingleRaceInternal) race);
+        final SingleRaceInternal r = (SingleRaceInternal) race;
+
+        final int recorded_position1 = getRecordedPosition(bib_number, r);
+        final int recorded_position2 = getRecordedPosition(((SingleRaceResult) other).bib_number, r);
 
         return Integer.compare(recorded_position1, recorded_position2);
     }
@@ -98,7 +100,7 @@ public abstract class SingleRaceResult extends CommonRaceResult {
 
         // It doesn't matter how the positions are indexed, since this is only used to
         // compare the recorded positions of two results.
-        // Here we index from zero, to avoid adding a constqnt 1 as would be required
+        // Here we index from zero, to avoid adding a constant 1 as would be required
         // for indexing from one, and giving a spurious mutation testing target.
         return (int) race.getRawResults().stream().
             takeWhile(result -> result.getBibNumber() != bib_number).

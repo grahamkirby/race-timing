@@ -47,7 +47,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract void calculateResults() throws IOException;
-    protected abstract boolean canDistinguishFromOtherEqualPerformances(RaceResult result);
+    public abstract boolean canDistinguishFromOtherEqualPerformances(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -257,6 +257,9 @@ public abstract class RaceResultsProcessor implements RaceResults {
         // Cases where there is no recorded result are captured by the
         // default completion status being DNS.
 
+        // Comma-separated sequence of bib-numbers for any runners that have a time
+        // recorded but they DNF'd. e.g.
+        // DNF_FINISHERS = 6,11
         final String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
 
         if (dnf_string != null && !dnf_string.isBlank())
@@ -302,19 +305,6 @@ public abstract class RaceResultsProcessor implements RaceResults {
     private String getClub(final RaceResult result) {
 
         return result.getParticipant() instanceof final Runner runner ? runner.getClub() : null;
-    }
-
-    /** Finds the highest index for which the performance is the same as the given index. */
-    private static int getHighestIndexWithSamePerformance(final List<? extends RaceResult> results, final int start_index) {
-
-        int highest_index_with_same_result = start_index;
-
-        while (highest_index_with_same_result < results.size() - 1 &&
-            results.get(highest_index_with_same_result).comparePerformanceTo(results.get(highest_index_with_same_result + 1)) == 0)
-
-            highest_index_with_same_result++;
-
-        return highest_index_with_same_result;
     }
 
     private boolean arePrizesInOtherCategoryWithSameMinimumAge(final PrizeCategory category) {

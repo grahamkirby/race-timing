@@ -1,0 +1,1 @@
+should have no or all keys from {TIME_TRIAL_RUNNERS_PER_WAVE, TIME_TRIAL_INTER_WAVE_INTERVAL} in file 'config.txt'

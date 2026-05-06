@@ -92,9 +92,14 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
     protected void recordDNF(final String dnf_specification) {
 
         final int bib_number = Integer.parseInt(dnf_specification);
-        final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
 
-        result.setDnf(true);
+        try {
+            final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
+            result.setDnf(true);
+        }
+        catch (NoSuchElementException e) {
+            throw new RuntimeException("bib number: " + bib_number + " recorded as DNF but no result was recorded");
+        }
     }
 
     @Override

@@ -37,8 +37,9 @@ public class IndividualRaceResult extends SingleRaceResult {
     public Comparator<RaceResult> getComparator() {
 
         // In individual race results, DNF results (completion not possible) appear after completed results.
-        // Completed results are sorted by finish time, then for equal times by recorded position, and then
-        // for dead heats by runner name.
+        // Completed results are sorted by finish time, then for equal (but not explicitly recorded as dead heat)
+        // times by recorded position, or for dead heats by runner name.
+        //
         // DNF results are sorted by runner name.
 
         return consecutiveComparator(
@@ -49,21 +50,39 @@ public class IndividualRaceResult extends SingleRaceResult {
 
                 consecutiveComparator(
                     CommonRaceResult::comparePerformance,
-                    SingleRaceResult::compareRecordedPosition
+                    conditionalComparator(
+                        neither_dead_heat,
+                        SingleRaceResult::compareRecordedPosition,
+                        name_comparator
+                    )
                 )
             ),
 
+            name_comparator
+        );
+    }
+
+    final Comparator<RaceResult> name_comparator =
+        consecutiveComparator(
             CommonRaceResult::compareRunnerLastName,
             CommonRaceResult::compareRunnerFirstName
         );
-    }
+
+    final ComparatorPredicate<RaceResult> both_completed =
+        (RaceResult result1, RaceResult result2) -> result1.canOrHasCompleted() && result2.canOrHasCompleted();
+
+    final ComparatorPredicate<RaceResult> neither_dead_heat =
+        (RaceResult result1, RaceResult result2) -> {
+
+            final RaceResultsProcessor processor = ((IndividualRaceResult) result1).race.getResultsProcessor();
+
+            return processor.canDistinguishFromOtherEqualPerformances(result1) &&
+                processor.canDistinguishFromOtherEqualPerformances(result2);
+        };
 
     @Override
     public String toString() {
 
         return getParticipant() + " " + renderDuration(this, DNF_STRING);
     }
-
-    final ComparatorPredicate<RaceResult> both_completed =
-        (RaceResult result1, RaceResult result2) -> result1.canOrHasCompleted() && result2.canOrHasCompleted();
 }

@@ -58,10 +58,6 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
             KEY_CATEGORY_START_OFFSETS,
             KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
 
-        checkAtMostOnePresent(List.of(
-            KEY_CATEGORY_START_OFFSETS,
-            KEY_TIME_TRIAL_INTER_WAVE_INTERVAL));
-
         validateDNFRecords((String) config.get(KEY_DNF_FINISHERS));
     }
 

@@ -1,0 +1,1 @@
+should have no or all keys from {TEAM_PRIZE_GENDER_CATEGORIES, TEAM_PRIZE_NUMBER_TO_COUNT} in file 'config.txt'
