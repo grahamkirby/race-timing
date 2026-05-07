@@ -1,0 +1,82 @@
+101	Lyle	Allan 	Male	M60	Falkland Trail Runners 
+102	David	Baird	Male	M40	Dundee Road Runners
+103	Gill	Beere	Female	FSen	
+104	Mark 	Bell 	Male	M40	Dundee Road Runners
+105	Keith 	Bonthrone	Male	M60	Fife AC
+106	Innes	Bracegirdle	Female	F70	Fife AC
+107	David 	Burgess	Male	M50	Anster Haddies 
+108	Jane	Carle	Female	F50	Falkland Trail Runners
+109	Brian 	Cruickshank 	Male	M60	Falkland Trail Runners 
+110	Ailsa	Cruickshanks	Female	FSen	Fife AC
+111	Georgia	Dean	Female	FSen	
+112	James	Donald	Male	MSen	Dundee Hawkhill Harriers
+113	David	Dunleavey	Male	M60	Stratheden
+114	Chris 	Edwards	Male	M40	Anster Haddies 
+115	Mark	Feely	Male	M50	Anster Allsorts
+116	Fiona	Findlay	Female	FSen	Anster Haddies
+117	George	Findlay	Male	M60	Anster Haddies
+118	Orla	Gage	Female	FU20	Anster Haddies
+119	Will	Gage	Male	M50	Anster Haddies
+120	Alan	Gardener	Male	M50	Falkland Trail Runners 
+121	Sandra	Gardener	Female	F50	Falkland Trail Runners 
+122	Alison	Gelly	Female	F60	Dundee Road Runners
+123	Keith	Gelly 	Male	M50	Dundee Road Runners
+124	Freya	Gibbon	Female	FSen	Fife AC
+125	Bill	Gillan	Male	M70	Recreational Running
+126	Alistair	Gudgin	Male	MSen	Fife AC
+127	Jeff	Gunnell	Male	M70	
+128	Adam	Hart	Male	MSen	Dundee Road Runners
+129	Doninic	Hughes	Male	M40	Dundee Road Runners
+130	Scott	Hutchison	Male	M40	STAART
+131	James 	Kelman 	Male	M60	Fife AC
+132	Mairi	Littleson	Female	FSen	Dundee Road Runners
+133	Zachary	Loughlin	Male	MSen	
+134	Danielle	Macdermid	Female	FSen	Dundee Hawkhill Harriers
+135	Euan 	MacDermid	Male	M60	Dundee Hawkhill Harriers
+136	Allison	MacPherson	Female	F40	Falkland Trail Runners
+137	Alyson	Macpherson	Female	F60	Falkland Trail Runners 
+138	Rhonda	Manning	Female	F50	Dundee Hawkhill Harriers
+139	Margaret	Martin	Female	F60	Fife AC
+140	Patricia	Maxwell 	Female	F60	Dundee Hawkhill Harriers 
+141	Paul 	Mcgarrity 	Male	M40	Dundee Hawkhill Harriers
+142	John	McIntyre Jnr 	Male	MSen	Kirkcaldy Wizards 
+143	John 	Mcintyre Snr	Male	M50	Fife AC
+144	Alison 	McNeilly	Female	F40	Dundee Road Runners
+145	Stephen	McQuistin	Male	MSen	Anster Haddies
+146	Michael 	Mitchell 	Male	M50	Dundee Road Runners
+147	Gillian	Murdoch 	Female	F40	Falkland Trail Runners 
+148	Kevin	Murray	Male	M50	Falkland Trail Runners
+149	Jane	O'Donnell 	Female	F40	Dundee Road Runners 
+150	Patrick	O'Hare	Male	MSen	Fife AC
+151	Jodi	Oliver	Female	F40	
+152	David	Pease	Male	M60	Falkland Trail Runners
+153	David	Place	Male	M60	Fife AC
+154	Alex	Rain	Male	MSen	Fife AC
+155	Tom	Rainey	Male	M40	Anster Haddies
+156	Michael	Reilly	Male	M50	Anster Haddies
+157	Martin	Rollo	Male	M60	Dundee Road Runners
+158	Joey 	Smith	Male	MU20	Fife AC 
+159	Rhona	Van Rensburg 	Female	F50	Fife AC
+160	Ruan	Van Rensburg 	Male	MSen	Fife AC
+161	Shaun	Williams	Male	M50	Anster Haddies
+162	Christine 	Wilson 	Female	F40	Fife AC
+163	Dave	Shepherd	M	M60	Wormit Runners
+164	Magnus	Niven	M	MU20	Fife AC
+165	Tom	Gough	M	MSen	Fife AC
+166	Gary	Barker	M	M60	Fife AC
+167	Steph	Devlin	F	F40	Dundee Road Runners
+168	David	Aitken	M	M50	Dundee Road Runners
+169	Fiona	Callaghan	F	FSen	Dundee Road Runners
+170	Graham	Rena	M	M50	Dundee Road Runners
+171	Laura	Darling-Brackenridge	F	F40	Dundee Road Runners
+172	Nick	Bennett	M	MSen	Dundee Road Runners
+173	Jamie	Lessels	M	MSen	Fife AC
+174	Jacqueline	Thomson	F	F40	Falkland Trail Runners
+175	Daniel	Fields	M	M40	Dundee Road Runners
+176	Sam	Fernando	M	MSen	Fife AC
+182	Catriona	Duncan	F	F70	Anster Haddies
+181	Huw	Watkins	M	M40	Anster Allsorts
+180	Bethan	McRobbie	F	FSen	Anster Haddies
+177	Robert	Thornton	M	M60	Unatt.
+178	June	Balgowan	F	F50	Falkland Trail Runners
+179	Nick	Wade	M	M50	Anster Haddies

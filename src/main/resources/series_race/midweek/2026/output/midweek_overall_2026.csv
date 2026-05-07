@@ -1,77 +1,108 @@
-Pos,Runner,Club,Category,St Andrews 5M
-1=,James Donald,Dundee Hawkhill Harriers,MS,200
-1=,Mairi Littleson,Dundee Road Runners,FS,200
-3=,Rhona Van Rensburg,Fife AC,F50,199
-3=,Michael Sanderson,Fife AC,MS,199
-5=,Jamie Lessels,Fife AC,MS,198
-5=,Jen Robertson,Unatt.,FS,198
-7=,David Webster,Dundee Road Runners,MS,197
-7=,Christine Wilson,Fife AC,F40,197
-9=,Orla Gage,Anster Haddies,FU20,196
-9=,Ruan Van Rensburg,Fife AC,MS,196
-11=,Sam Fernando,Fife AC,MS,195
-11=,Jane O'Donnell,Dundee Road Runners,F40,195
-13=,Laura Darling-Brackenridge,Dundee Road Runners,F40,194
-13=,Adam Hart,Dundee Road Runners,MS,194
-15=,Kirsty Gray,Kinross Road Runners,F50,193
-15=,Michael Richardson,Dundee Road Runners,MS,193
-17=,Mark Bell,Dundee Road Runners,M40,192
-17=,Alison Gelly,Dundee Road Runners,F60,192
-19=,Margaret Martin,Fife AC,F60,191
-19=,Patrick O'Hare,Fife AC,MS,191
-21=,Nico Van Rensburg,Fife AC,MS,190
-21=,Suzanne Robertson,Unatt.,F40,190
-23=,Christine Myerscough,Kinross Road Runners,F60,189
-23=,Alex Reily,Kinross Road Runners,MS,189
-25=,Catherine Matthews,Dundee Hawkhill Harriers,F50,188
-25=,Tom Rainey,Anster Haddies,M40,188
-27=,Rhonda Manning,Dundee Hawkhill Harriers,F50,187
-27=,Joey Smith,Fife AC,MU20,187
-29=,Innes Bracegirdle,Fife AC,F70,186
-29=,Marcas MacFarlane,Fife AC,MU20,186
-31=,Debz Hay,Anster Haddies,F50,185
-31=,Stephen McQuistin,Anster Haddies,MS,185
-33=,Georgia Dean,Unatt.,FS,184
-33=,John McIntyre Jnr,Kirkcaldy Wizards,MS,184
-35=,Wendy Grieve,Kinross Road Runners,F60,183
-35=,Michael Mitchell,Dundee Road Runners,M50,183
-37=,Gillian Lopez,Kinross Road Runners,F60,182
-37=,Andrew Robertson,Unatt.,M40,182
-39=,David Burgess,Anster Haddies,M50,181
-39=,Fiona Findlay,Anster Haddies,FS,181
-41=,Freya Gibbon,Fife AC,FS,180
-41=,Scott Hutchison,STAART,M40,180
-43=,Valerie Findlay,Kinross Road Runners,F60,179
-43=,John Hendry,Cumbernauld Harriers,M60,179
-45=,Catriona Duncan,Anster Haddies,F70,178
-45=,Sean Matthew,Kirkcaldy Wizards,MS,178
-47=,Hannah Lopez,Kinross Road Runners,FS,177
-47=,Michael Reilly,Anster Haddies,M50,177
-49=,Isla Craig,Kinross Road Runners,F50,176
-49=,Will Gage,Anster Haddies,M50,176
-51=,Daniel Dutton,Dundee Road Runners,MS,175
-51=,Simone Young,Kinross Road Runners,F50,175
-53=,David Dunleavey,Stratheden,M60,174
-53=,Michelle Murray,Kinross Road Runners,F50,174
-55,Stephen Jones,Kinross Road Runners,M40,173
-56,Calum Sinclair,Unatt.,M40,172
-57,Paul Mcgarrity,Dundee Hawkhill Harriers,M40,171
-58,David Baird,Dundee Road Runners,M40,170
-59,Duncan Edward,Dundee Road Runners,M40,169
-60,Martin Rollo,Dundee Road Runners,M60,168
-61,Connor Finlay,Kinross Road Runners,MS,167
-62,Duncan Gray,Kinross Road Runners,M50,166
-63,Jeff Gunnell,Unatt.,M70,165
-64,Huw Watkins,Anster Allsorts,M40,164
-65,George Findlay,Anster Haddies,M60,163
-66,Keith Bonthrone,Fife AC,M60,162
-67,Keith Gelly,Dundee Road Runners,M50,161
-68,Craig McAdam,Kinross Road Runners,M70,160
-69,John Myerscough,Kinross Road Runners,M70,159
-70,Zachary Loughlin,Unatt.,MS,158
-71,Bill Gillan,Recreational Runners,M70,157
-72,Shaun Williams,Anster Haddies,M50,156
-73,Gary Barker,Fife AC,M60,155
-74,Robert Thornton,Unatt.,M60,154
-75,John Mcintyre Snr,Fife AC,M50,153
-76,Geoff Bilton,Kinross Road Runners,M70,152
+Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Total
+1,James Donald,Dundee Hawkhill Harriers,MS,200,200,400
+2=,Mairi Littleson,Dundee Road Runners,FS,200,199,399
+2=,Rhona Van Rensburg,Fife AC,F50,199,200,399
+4,Jamie Lessels,Fife AC,MS,198,199,397
+5=,Orla Gage,Anster Haddies,FU20,196,196,392
+5=,Ruan Van Rensburg,Fife AC,MS,196,196,392
+5=,Christine Wilson,Fife AC,F40,197,195,392
+8,Sam Fernando,Fife AC,MS,195,195,390
+9,Jane O'Donnell,Dundee Road Runners,F40,195,194,389
+10,Adam Hart,Dundee Road Runners,MS,194,193,387
+11,Laura Darling-Brackenridge,Dundee Road Runners,F40,194,192,386
+12,Patrick O'Hare,Fife AC,MS,191,194,385
+13,Mark Bell,Dundee Road Runners,M40,192,192,384
+14=,Alison Gelly,Dundee Road Runners,F60,192,189,381
+14=,Margaret Martin,Fife AC,F60,191,190,381
+16,Tom Rainey,Anster Haddies,M40,188,190,378
+17,Joey Smith,Fife AC,MU20,187,189,376
+18,Rhonda Manning,Dundee Hawkhill Harriers,F50,187,188,375
+19=,Innes Bracegirdle,Fife AC,F70,186,187,373
+19=,Stephen McQuistin,Anster Haddies,MS,185,188,373
+21,Michael Mitchell,Dundee Road Runners,M50,183,187,370
+22,Georgia Dean,Unatt.,FS,184,184,368
+23,David Burgess,Anster Haddies,M50,181,184,365
+24,Freya Gibbon,Fife AC,FS,180,183,363
+25,Fiona Findlay,Anster Haddies,FS,181,180,361
+26,Scott Hutchison,STAART,M40,180,180,360
+27,Michael Reilly,Anster Haddies,M50,177,182,359
+28,Catriona Duncan,Anster Haddies,F70,178,178,356
+29,Will Gage,Anster Haddies,M50,176,178,354
+30,David Dunleavey,Stratheden,M60,174,170,344
+31,David Baird,Dundee Road Runners,M40,170,171,341
+32,Martin Rollo,Dundee Road Runners,M60,168,169,337
+33,Jeff Gunnell,Unatt.,M70,165,168,333
+34,George Findlay,Anster Haddies,M60,163,167,330
+35,Huw Watkins,Anster Allsorts,M40,164,163,327
+36,Keith Gelly,Dundee Road Runners,M50,161,164,325
+37,Zachary Loughlin,Unatt.,MS,158,161,319
+38,Bill Gillan,Recreational Runners,M70,157,160,317
+39=,Gary Barker,Fife AC,M60,155,158,313
+39=,Robert Thornton,Unatt.,M60,154,159,313
+41,Michael Sanderson,Fife AC,MS,199,-,199
+42=,Ailsa Cruickshanks,Fife AC,FS,-,198,198
+42=,Alistair Gudgin,Fife AC,MS,-,198,198
+42=,Jen Robertson,Unatt.,FS,198,-,198
+45=,Nick Bennett,Dundee Road Runners,MS,-,197,197
+45=,Fiona Callaghan,Dundee Road Runners,FS,-,197,197
+45=,David Webster,Dundee Road Runners,MS,197,-,197
+48=,Gill Beere,Unatt.,FS,-,193,193
+48=,Kirsty Gray,Kinross Road Runners,F50,193,-,193
+48=,Michael Richardson,Dundee Road Runners,MS,193,-,193
+51=,Tom Gough,Fife AC,MS,-,191,191
+51=,Danielle MacDermid,Dundee Hawkhill Harriers,FS,-,191,191
+53=,Nico Van Rensburg,Fife AC,MS,190,-,190
+53=,Suzanne Robertson,Unatt.,F40,190,-,190
+55=,Christine Myerscough,Kinross Road Runners,F60,189,-,189
+55=,Alex Reily,Kinross Road Runners,MS,189,-,189
+57,Catherine Matthews,Dundee Hawkhill Harriers,F50,188,-,188
+58=,David Aitken,Dundee Road Runners,M50,-,186,186
+58=,Marcas MacFarlane,Fife AC,MU20,186,-,186
+58=,Allison MacPherson,Falkland Trail Runners,F40,-,186,186
+61=,Steph Devlin,Dundee Road Runners,F40,-,185,185
+61=,Debz Hay,Anster Haddies,F50,185,-,185
+61=,James Kelman,Fife AC,M60,-,185,185
+64,John McIntyre Jnr,Kirkcaldy Wizards,MS,184,-,184
+65=,Brian Cruickshank,Falkland Trail Runners,M60,-,183,183
+65=,Wendy Grieve,Kinross Road Runners,F60,183,-,183
+67=,Gillian Lopez,Kinross Road Runners,F60,182,-,182
+67=,Alyson Macpherson,Falkland Trail Runners,F60,-,182,182
+67=,Andrew Robertson,Unatt.,M40,182,-,182
+70=,Bethan McRobbie,Anster Haddies,FS,-,181,181
+70=,Kevin Murray,Falkland Trail Runners,M50,-,181,181
+72=,Mark Feely,Anster Allsorts,M50,-,179,179
+72=,Valerie Findlay,Kinross Road Runners,F60,179,-,179
+72=,John Hendry,Cumbernauld Harriers,M60,179,-,179
+72=,Patricia Maxwell,Dundee Hawkhill Harriers,F60,-,179,179
+76,Sean Matthew,Kirkcaldy Wizards,MS,178,-,178
+77=,June Balgowan,Falkland Trail Runners,F50,-,177,177
+77=,Hannah Lopez,Kinross Road Runners,FS,177,-,177
+77=,Graham Rena,Dundee Road Runners,M50,-,177,177
+80=,Isla Craig,Kinross Road Runners,F50,176,-,176
+80=,Dave Shepherd,Wormit Runners,M60,-,176,176
+80=,Jacqueline Thomson,Falkland Trail Runners,F40,-,176,176
+83=,Jane Carle,Falkland Trail Runners,F50,-,175,175
+83=,Daniel Dutton,Dundee Road Runners,MS,175,-,175
+83=,David Place,Fife AC,M60,-,175,175
+83=,Simone Young,Kinross Road Runners,F50,175,-,175
+87=,Chris Edwards,Anster Haddies,M40,-,174,174
+87=,Sandra Gardener,Falkland Trail Runners,F50,-,174,174
+87=,Michelle Murray,Kinross Road Runners,F50,174,-,174
+90=,Lyle Allan,Falkland Trail Runners,M60,-,173,173
+90=,Stephen Jones,Kinross Road Runners,M40,173,-,173
+92=,Calum Sinclair,Unatt.,M40,172,-,172
+92=,Nick Wade,Anster Haddies,M50,-,172,172
+94,Paul Mcgarrity,Dundee Hawkhill Harriers,M40,171,-,171
+95,Duncan Edward,Dundee Road Runners,M40,169,-,169
+96,Connor Finlay,Kinross Road Runners,MS,167,-,167
+97=,Duncan Gray,Kinross Road Runners,M50,166,-,166
+97=,Alex Rain,Fife AC,MS,-,166,166
+99,Euan MacDermid,Dundee Hawkhill Harriers,M60,-,165,165
+100=,Keith Bonthrone,Fife AC,M60,162,-,162
+100=,Daniel Fields,Dundee Road Runners,M40,-,162,162
+102,Craig McAdam,Kinross Road Runners,M70,160,-,160
+103,John Myerscough,Kinross Road Runners,M70,159,-,159
+104,Magnus Niven,Fife AC,MU20,-,157,157
+105,Shaun Williams,Anster Haddies,M50,156,-,156
+106,John Mcintyre Snr,Fife AC,M50,153,-,153
+107,Geoff Bilton,Kinross Road Runners,M70,152,-,152
