@@ -262,7 +262,7 @@ public class RaceTest {
         }
     }
 
-    private static Path getPathRelativeToProjectRoot(final String path) {
+    public static Path getPathRelativeToProjectRoot(final String path) {
 
         return Path.of(path.substring(1));
     }

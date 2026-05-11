@@ -1,0 +1,1 @@
+invalid entry '4	Team 4	Sofia O'Connor	Philip O’Donohue & Hasan Robertson	Lena K. Maclean & Isabel Ritchie	Martha Gibson' at line 4 in file 'entries.txt'

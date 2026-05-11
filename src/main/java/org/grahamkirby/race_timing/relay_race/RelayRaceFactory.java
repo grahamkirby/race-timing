@@ -67,7 +67,6 @@ public class RelayRaceFactory extends RaceFactory {
         config.addConfigAdjuster(RaceConfigAdjuster::new);
         config.addConfigAdjuster(RelayRaceConfigAdjuster::new);
 
-//        config.addConfigValidator(RaceConfigValidator::new);
         config.addConfigValidator(RelayRaceConfigValidator::new);
 
         return config;

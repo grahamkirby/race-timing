@@ -230,7 +230,7 @@ public class RelayRace implements SingleRaceInternal {
             toList());
 
         // Deal with dead heats in legs after the first.
-        results_processor.setPositionStrings(results, (result1) -> !(leg_number > 1));
+        results_processor.setPositionStrings(results, (_) -> leg_number == 1);
 
         return results;
     }
@@ -342,7 +342,7 @@ public class RelayRace implements SingleRaceInternal {
 
     private void validateDataFiles(final Path entries_path, final Path electronic_results_path, final Path paper_results_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, getNumberOfLegs() + 3, config.getString(KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbers(entries_path);
 

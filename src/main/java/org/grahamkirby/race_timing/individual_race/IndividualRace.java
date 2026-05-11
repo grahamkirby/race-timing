@@ -37,7 +37,9 @@ import static org.grahamkirby.race_timing.common.RaceEntry.*;
 
 public class IndividualRace implements SingleRaceInternal {
 
-    private static final int NUMBER_OF_ENTRY_COLUMNS = 4;
+    // The number of columns in entries file, if not overridden by column map.
+    private static final int DEFAULT_NUMBER_OF_ENTRY_COLUMNS = 4;
+    private static final int NUMBER_OF_OVERALL_RESULTS_COLUMNS = 4;
     private static final int DUMMY_BIB_NUMBER = 0;
 
     private List<RaceEntry> entries;
@@ -317,7 +319,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private void validateEntryDataFiles(final Path entries_path) throws IOException {
 
-        validateEntriesNumberOfElements(entries_path, NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
+        validateEntriesNumberOfElements(entries_path, DEFAULT_NUMBER_OF_ENTRY_COLUMNS, config.getString(KEY_ENTRY_COLUMN_MAP));
         validateEntryCategories(entries_path, this::validateEntryCategory);
         validateBibNumbers(entries_path);
     }
@@ -328,11 +330,10 @@ public class IndividualRace implements SingleRaceInternal {
         validateBibNumbers(raw_results_path);
         validateRawResultsOrdering(raw_results_path);
 
-        // Number of columns in directly recorded results is same as for entries file: no bib number, but does have finish time.
-        validateEntriesNumberOfElements(overall_results_path, NUMBER_OF_ENTRY_COLUMNS, null);
+        validateEntriesNumberOfElements(overall_results_path, NUMBER_OF_OVERALL_RESULTS_COLUMNS, null);
     }
 
-    private void validateEntryData(final List<RaceEntry> entries, final Path entries_path) throws IOException {
+    private void validateEntryData(final List<RaceEntry> entries, final Path entries_path) {
 
         validateEntriesUnique(entries, entries_path);
     }

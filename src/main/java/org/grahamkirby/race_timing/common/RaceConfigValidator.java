@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.common;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,17 +60,27 @@ public abstract class RaceConfigValidator {
             forEach(cleaned_line -> validateRawResultLine(cleaned_line, line.line, raw_results_path, line_number.line));
     }
 
+    public static void validateEntriesNumberOfElements(final Path entries_path, final String entry_column_map_string) throws IOException {
+
+        validateEntriesNumberOfElements(entries_path, 0, entry_column_map_string);
+    }
+
     public static void validateEntriesNumberOfElements(final Path entries_path, final int number_of_entry_columns, final String entry_column_map_string) throws IOException {
 
-        final int number_of_columns = entry_column_map_string == null ?
+        final int min_number_of_columns = entry_column_map_string == null ?
             number_of_entry_columns :
-            entry_column_map_string.split("[,\\-]").length;
+
+            // Find the highest column number referenced in the column map.
+            Arrays.stream(entry_column_map_string.split("[,\\-]", -1)).
+            map(Integer::parseInt).
+            reduce(Math::max).
+            orElseThrow();
 
         final BoxedLine line = new BoxedLine();
         final BoxedLineNumber line_number = new BoxedLineNumber();
 
         getCleanedLines(entries_path, line, line_number).
-            forEach(cleaned_line -> validateEntryNumberOfElements(cleaned_line, line.line, number_of_columns, entries_path, line_number.line));
+            forEach(cleaned_line -> validateEntryNumberOfElements(cleaned_line, line.line, min_number_of_columns, entries_path, line_number.line));
     }
 
     public static void validateEntryCategories(final Path entries_path, final Consumer<String> check_category_in_line) throws IOException {
@@ -141,9 +152,9 @@ public abstract class RaceConfigValidator {
         }
     }
 
-    private static void validateEntryNumberOfElements(final String cleaned_line, final String original_line, final int number_of_columns, final Path entries_path, final int line_number) {
+    private static void validateEntryNumberOfElements(final String cleaned_line, final String original_line, final int min_number_of_columns, final Path entries_path, final int line_number) {
 
-        if (cleaned_line.split("\t").length < number_of_columns) {
+        if (cleaned_line.split("\t", -1).length < min_number_of_columns) {
             String message = "invalid entry '" + original_line + "' at line " + line_number + " in file '" + entries_path.getFileName() + "'";
             if (original_line.contains(COMMENT_SYMBOL))
                 message += " - possible invalid use of # comment symbol" + LINE_SEPARATOR;
