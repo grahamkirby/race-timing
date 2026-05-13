@@ -212,6 +212,11 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
         final RelayRaceResult result = (RelayRaceResult) overall_results.get(team_index);
 
         final int leg_index = findIndexOfNextUnfilledLegResult(result.getLegResults());
+
+        if (leg_index >= getNumberOfLegs()) {
+            throw new RuntimeException("surplus result for team '" + raw_result.getBibNumber() + "'");
+        }
+
         final RelayRaceLegResult leg_result = result.getLegResult(leg_index + 1);
 
         leg_result.setFinishTime(raw_result.getRecordedFinishTime());

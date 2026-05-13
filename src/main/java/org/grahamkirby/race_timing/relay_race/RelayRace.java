@@ -124,7 +124,7 @@ public class RelayRace implements SingleRaceInternal {
     }
 
     @Override
-    public void outputPreRaceFiles() throws IOException {
+    public void outputPreRaceFiles() {
         throw new UnsupportedOperationException();
     }
 
@@ -427,7 +427,7 @@ public class RelayRace implements SingleRaceInternal {
         countLegResults(bib_counts, paper_results_path);
 
         for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
-            if (entry.getValue() > getNumberOfLegs()) {
+            if (!entry.getKey().equals(UNKNOWN_BIB_NUMBER_INDICATOR) && entry.getValue() > getNumberOfLegs()) {
                 String message = "surplus result for team '" + entry.getKey() + "' in file '" + raw_results_path.getFileName() + "'";
                 if (paper_results_path != null)
                     message += " or '" + paper_results_path.getFileName() + "'";
@@ -441,7 +441,6 @@ public class RelayRace implements SingleRaceInternal {
             map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             map(line -> line.split("\t")[0]).
-            filter(bib_number -> !bib_number.equals(UNKNOWN_BIB_NUMBER_INDICATOR)).
             forEachOrdered(bib_number -> bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1));
     }
 
@@ -461,7 +460,9 @@ public class RelayRace implements SingleRaceInternal {
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);
 
-        if (elements[2].equals(UNKNOWN_BIB_NUMBER_INDICATOR)) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
+        if (elements[2].equals(UNKNOWN_BIB_NUMBER_INDICATOR)) {
+            raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
+        }
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
         if (elements[3].equals(UNKNOWN_TIME_INDICATOR)) raw_result.setRecordedFinishTime(null);
@@ -484,22 +485,17 @@ public class RelayRace implements SingleRaceInternal {
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
         if (elements.size() != FIRST_RUNNER_NAME_INDEX + getNumberOfLegs())
-            throw new RuntimeException("Invalid number of elements: " + String.join(" ", elements));
+            throw new RuntimeException("invalid number of elements: " + String.join(" ", elements));
 
-        try {
-            final int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
+        final int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
 
-            final String name = elements.get(TEAM_NAME_INDEX);
-            final EntryCategory category = categories_processor.getEntryCategory(elements.get(CATEGORY_INDEX));
-            final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> getNormalisationProcessor().cleanRunnerName(s)).toList();
+        final String name = elements.get(TEAM_NAME_INDEX);
+        final EntryCategory category = categories_processor.getEntryCategory(elements.get(CATEGORY_INDEX));
+        final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> getNormalisationProcessor().cleanRunnerName(s)).toList();
 
-            final Participant participant = new Team(name, category, runners);
+        final Participant participant = new Team(name, category, runners);
 
-            return new RaceEntry(participant, bib_number);
-
-        } catch (final RuntimeException e) {
-            throw new RuntimeException(String.join(" ", elements));
-        }
+        return new RaceEntry(participant, bib_number);
     }
 
     private void completeConfiguration() {

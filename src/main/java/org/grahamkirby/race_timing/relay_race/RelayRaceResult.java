@@ -91,6 +91,11 @@ public class RelayRaceResult extends SingleRaceResult {
     }
 
     public RelayRaceLegResult getLegResult(final int leg_number) {
+
+        if (leg_number > leg_results.size()) {
+            int x = 3;
+        }
+
         return leg_results.get(leg_number - 1);
     }
 
