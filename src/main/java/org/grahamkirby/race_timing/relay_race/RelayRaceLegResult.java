@@ -51,23 +51,27 @@ public class RelayRaceLegResult extends SingleRaceResult {
     @Override
     public Comparator<RaceResult> getComparator() {
 
-        final ComparatorPredicate<RaceResult> first_leg = (RaceResult _, RaceResult _) -> leg_number == 1;
-
         return consecutiveComparator(
-            CommonRaceResult::comparePossibleCompletion,
+
+            // Don't need to sort by DNF (possible completion) first, because the performance
+            /// will be null if the result is DNF, and comparePerformance() sorts nulls last.
             CommonRaceResult::comparePerformance,
 
             conditionalComparator(
-                first_leg,
+                this::isFirstLeg,
 
-                consecutiveComparator(
-                    SingleRaceResult::compareRecordedPosition),
+                SingleRaceResult::compareRecordedPosition,
 
                 consecutiveComparator(
                     CommonRaceResult::compareRunnerLastName,
-                    CommonRaceResult::compareRunnerFirstName)
+                    CommonRaceResult::compareRunnerFirstName
+                )
             )
         );
+    }
+
+    private boolean isFirstLeg(final RaceResult ignore1, final RaceResult ignore2) {
+        return leg_number == 1;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

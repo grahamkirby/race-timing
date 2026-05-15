@@ -68,7 +68,6 @@ public class SeriesRaceFactory extends RaceFactory {
         config.addConfigAdjuster(RaceConfigAdjuster::new);
         config.addConfigAdjuster(SeriesRaceConfigAdjuster::new);
 
-//        config.addConfigValidator(RaceConfigValidator::new);
         config.addConfigValidator(SeriesRaceConfigValidator::new);
 
         if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES)) {

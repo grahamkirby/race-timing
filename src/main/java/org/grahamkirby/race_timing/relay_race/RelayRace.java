@@ -27,7 +27,9 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -223,14 +225,30 @@ public class RelayRace implements SingleRaceInternal {
 
     List<RelayRaceLegResult> getLegResults(final int leg_number) {
 
-        final List<RelayRaceLegResult> results = makeMutableCopy(results_processor.getOverallResults().stream().
-            map(result -> (RelayRaceResult) result).
-            map(result -> result.getLegResult(leg_number)).
-            sorted().
-            toList());
+        // TODO apply same approach to overall results.
+
+        final List<RelayRaceLegResult> results = makeMutableCopy(
+            results_processor.getOverallResults().stream().
+
+                map(result -> (RelayRaceResult) result).
+                map(result -> result.getLegResult(leg_number)).
+                toList().
+
+                // Reverse the original order first before sorting.
+                //
+                // This is to ensure that the final order is determined solely by the ordering explicitly defined
+                // in RelayRaceLegResult, rather than arising accidentally from the initial processing of results.
+                // For example, without this the correct order might still arise even if compareRecordedPosition()
+                // was omitted from the comparator, but only due to the way the results currently happen to be read
+                // from file.
+
+                reversed().
+                stream().
+                sorted().
+                toList());
 
         // Deal with dead heats in legs after the first.
-        results_processor.setPositionStrings(results, (_) -> leg_number == 1);
+        results_processor.setPositionStrings(results, _ -> leg_number == 1);
 
         return results;
     }
@@ -549,13 +567,8 @@ public class RelayRace implements SingleRaceInternal {
 
     private void configureMassStarts() {
 
-        start_times_for_mass_starts = new ArrayList<>();
-        mass_start_legs = new ArrayList<>();
-
-        for (int i = 0; i < getNumberOfLegs(); i++) {
-            start_times_for_mass_starts.add(null);
-            mass_start_legs.add(false);
-        }
+        start_times_for_mass_starts = Stream.generate((Supplier<Duration>) () -> null).limit(getNumberOfLegs()).collect(Collectors.toCollection(ArrayList::new));
+        mass_start_legs = Stream.generate(() -> false).limit(getNumberOfLegs()).collect(Collectors.toCollection(ArrayList::new));
 
         setMassStartTimes();
 
@@ -568,7 +581,7 @@ public class RelayRace implements SingleRaceInternal {
 
         final Consumer<Object> process_mass_start_times = mass_start_string -> {
 
-            // Example: MASS_START_TIMES = 00:00:00,00:00:00,00:00:00,2:36:00
+            // Example: MASS_START_TIMES = 3/02:42:33,4/03:34:50
             final String[] mass_start_elapsed_times_strings = ((String) mass_start_string).split(",");
 
             for (final String bib_time_as_string : mass_start_elapsed_times_strings)
@@ -594,10 +607,16 @@ public class RelayRace implements SingleRaceInternal {
         // For legs 2 and above, if there is no mass start time configured, use the next actual mass start time.
         // This covers the case where an early leg runner finishes after a mass start.
 
-        for (int leg_index = getNumberOfLegs() - 2; leg_index > 0; leg_index--)
+        IntStream.rangeClosed(2, getNumberOfLegs() - 1).boxed().
+            toList().
+            reversed().
+            forEach(this::setPreviousMassStartTimeIfNotSet);
+    }
 
-            if (start_times_for_mass_starts.get(leg_index) == null)
-                start_times_for_mass_starts.set(leg_index, start_times_for_mass_starts.get(leg_index + 1));
+    private void setPreviousMassStartTimeIfNotSet(final int leg_number) {
+
+        if (start_times_for_mass_starts.get(leg_number - 1) == null)
+            start_times_for_mass_starts.set(leg_number - 1, start_times_for_mass_starts.get(leg_number));
     }
 
     private void configureIndividualLegStarts() {
