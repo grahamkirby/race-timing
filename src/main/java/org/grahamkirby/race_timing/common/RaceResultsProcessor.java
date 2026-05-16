@@ -47,7 +47,6 @@ public abstract class RaceResultsProcessor implements RaceResults {
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public abstract void calculateResults() throws IOException;
-    public abstract boolean canDistinguishFromOtherEqualPerformances(RaceResult result);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -123,22 +122,13 @@ public abstract class RaceResultsProcessor implements RaceResults {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Sets the position string for each result. These are recorded as strings rather than ints so
-     *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
-     *  is determined by the second parameter. */
-    public void setPositionStrings(final List<? extends RaceResult> results) {
-
-        setPositionStrings(results, this::canDistinguishFromOtherEqualPerformances);
-    }
-
     private static class BoxedResult <T extends RaceResult> {
         T value;
     }
 
     /** Sets the position string for each result. These are recorded as strings rather than ints so
-     *  that equal results can be recorded as e.g. "13=". Whether or not equal positions are allowed
-     *  is determined by the second parameter. */
-    public <T extends RaceResult> void setPositionStrings(final List<T> results, final Function<RaceResult, Boolean> can_distinguish_equal_performances) {
+     *  that equal results can be recorded as e.g. "13=". */
+    public <T extends RaceResult> void setPositionStrings(final List<T> results) {
 
         // Sets position strings for dead heats, if allowed by the can_distinguish_equal_performances predicate.
         // E.g. if results 3 and 4 have the same time, both will be set to "3=".
@@ -162,7 +152,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
                 final boolean no_results_in_sequence_allow_equal_positions = results.stream().
                     skip(result_index).
                     limit(length_of_sequence_of_equal_performances).
-                    allMatch(can_distinguish_equal_performances::apply);
+                    allMatch(res -> res.canDistinguishEqualPerformances(null));
 
                 if (!no_results_in_sequence_allow_equal_positions) {
 
@@ -178,10 +168,6 @@ public abstract class RaceResultsProcessor implements RaceResults {
             } else
                 result.setPositionString("-");
         }
-
-        // Sort results again, since setting equal positions may have altered the sort order,
-        // e.g. equal positions may be listed in alphabetical order of runner or team name.
-        results.sort(null);
     }
 
     private static <T extends RaceResult> int getLengthOfSequenceOfEqualPerformances(final List<T> results, final int result_index) {
@@ -218,6 +204,13 @@ public abstract class RaceResultsProcessor implements RaceResults {
     /** Sorts all results by relevant comparators. */
     protected void sortOverallResults() {
 
+        // Reverse the original order first before sorting.
+        //
+        // This is to ensure that the final order is determined solely by the ordering explicitly defined
+        // in the relevant RaceResult class, rather than arising accidentally from the initial processing
+        // of results.
+
+        overall_results = overall_results.reversed();
         overall_results.sort(null);
     }
 
@@ -288,7 +281,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
 
                         result.getCategoriesOfPrizesAwarded().add(category);
                         prizes_allocated++;
-                        previous_was_dead_heat = !canDistinguishFromOtherEqualPerformances(result);
+                        previous_was_dead_heat = !result.canDistinguishEqualPerformances(null);
                         previous_performance = result.getPerformance();
                     }
         }

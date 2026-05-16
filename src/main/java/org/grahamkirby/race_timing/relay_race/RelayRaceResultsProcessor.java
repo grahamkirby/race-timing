@@ -95,22 +95,6 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
     }
 
     @Override
-    public boolean canDistinguishFromOtherEqualPerformances(final RaceResult result) {
-
-        // Dead heats are allowed in overall results, since each overall duration is composed of multiple
-        // leg durations.
-        //
-        // Each leg duration is rounded to the nearest second, so the actual overall duration could be
-        // anywhere in the range (calculated +/- (number of legs)/2). This means there's no way to
-        // distinguish two equal overall results.
-
-        // Can't be distinguished if any leg result was in mass start, or if last leg finish was after last recorded
-        // finish, so time can't be properly interpolated.
-        return ((RelayRaceResult) result).getLegResults().stream().
-            noneMatch(r -> r.isInMassStart() || r.isFinishTimeUnknown());
-    }
-
-    @Override
     protected void recordDNF(final String dnf_specification) {
 
         try {

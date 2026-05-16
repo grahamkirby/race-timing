@@ -18,7 +18,6 @@
 package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.categories.EntryCategory;
-import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
@@ -81,14 +80,6 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
     }
 
     @Override
-    public boolean canDistinguishFromOtherEqualPerformances(final RaceResult result) {
-
-        // Normally results with same recorded time are not treated as dead heats, since an ordering is imposed at the
-        // finish, but a dead heat can be recorded explicitly.
-        return !((IndividualRace) race).getDeadHeats().contains(((IndividualRaceResult) result).getBibNumber());
-    }
-
-    @Override
     protected void recordDNF(final String dnf_specification) {
 
         final int bib_number = Integer.parseInt(dnf_specification);
@@ -97,7 +88,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             final SingleRaceResult result = (SingleRaceResult) getResultWithBibNumber(bib_number);
             result.setDnf(true);
         }
-        catch (NoSuchElementException e) {
+        catch (NoSuchElementException _) {
             throw new RuntimeException("bib number: " + bib_number + " recorded as DNF but no result was recorded");
         }
     }

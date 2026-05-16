@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
 public class SeriesRaceResult extends CommonRaceResult {
 
@@ -76,6 +75,28 @@ public class SeriesRaceResult extends CommonRaceResult {
             ((SeriesRaceResultsProcessor) race.getResultsProcessor()).getRaceCategories().stream().allMatch(this::canCompleteRaceCategory);
 
         return can_complete_all_race_categories && numberOfRacesCompleted() + number_of_races_remaining >= minimum_number_of_races;
+    }
+
+    @Override
+    public boolean canDistinguishEqualPerformances(final RaceResult other) {
+
+        // Dead heats are allowed in overall results, since each overall score is composed of multiple
+        // individual scores.
+
+        // Depending on the nature of the particular scorer used, each individual score may be:
+        //
+        // * an individually recorded race duration
+        // * an abstract score derived from an individually recorded race duration
+        // * an abstract score derived from the runner's position in an individual race
+        //
+        // In the first and second cases, a precise overall score does exist for every result, but
+        // we can't determine what it is, since individual durations are rounded to the nearest second
+        // at recording. Therefore, there's no way to distinguish two equal overall results.
+        //
+        // In the third case, there is intrinsically no way to distinguish two overall results with
+        // the same total score.
+
+        return false;
     }
 
     @Override

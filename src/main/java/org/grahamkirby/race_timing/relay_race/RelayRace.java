@@ -225,8 +225,6 @@ public class RelayRace implements SingleRaceInternal {
 
     List<RelayRaceLegResult> getLegResults(final int leg_number) {
 
-        // TODO apply same approach to overall results.
-
         final List<RelayRaceLegResult> results = makeMutableCopy(
             results_processor.getOverallResults().stream().
 
@@ -247,8 +245,7 @@ public class RelayRace implements SingleRaceInternal {
                 sorted().
                 toList());
 
-        // Deal with dead heats in legs after the first.
-        results_processor.setPositionStrings(results, _ -> leg_number == 1);
+        results_processor.setPositionStrings(results);
 
         return results;
     }

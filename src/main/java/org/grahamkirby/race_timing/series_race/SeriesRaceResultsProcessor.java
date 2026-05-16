@@ -69,28 +69,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     }
 
     @Override
-    public boolean canDistinguishFromOtherEqualPerformances(final RaceResult result) {
-
-        // Dead heats are allowed in overall results, since each overall score is composed of multiple
-        // individual scores.
-
-        // Depending on the nature of the particular scorer used, each individual score may be:
-        //
-        // * an individually recorded race duration
-        // * an abstract score derived from an individually recorded race duration
-        // * an abstract score derived from the runner's position in an individual race
-        //
-        // In the first and second cases, a precise overall score does exist for every result, but
-        // we can't determine what it is, since individual durations are rounded to the nearest second
-        // at recording. Therefore, there's no way to distinguish two equal overall results.
-        //
-        // In the third case, there is intrinsically no way to distinguish two overall results with
-        // the same total score.
-
-        return false;
-    }
-
-    @Override
     protected void recordDNF(final String ignore) {
         throw new UnsupportedOperationException();
     }
@@ -469,5 +447,4 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
         if (earliest_category != null && latest_category != null && latest_category.getAgeRange().getMinimumAge() > earliest_category.getAgeRange().getMaximumAge() + 1)
             throw new RuntimeException("invalid category change: runner '" + runner_name + "' changed from " + earliest_category.getShortName() + " to " + latest_category.getShortName() + " during series");
     }
-
 }

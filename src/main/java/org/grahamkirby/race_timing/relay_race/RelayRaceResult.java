@@ -67,11 +67,14 @@ public class RelayRaceResult extends SingleRaceResult {
     public Comparator<RaceResult> getComparator() {
 
         return consecutiveComparator(
-            CommonRaceResult::comparePossibleCompletion,
+
+            // Don't need to sort by DNF (possible completion) first, because the performance
+            /// will be null if the result is DNF, and comparePerformance() sorts nulls last.
+
             CommonRaceResult::comparePerformance,
 
             conditionalComparator(
-                RelayRaceResult::canDistinguishEqualPerformances,
+                RaceResult::canDistinguishEqualPerformances,
                 RelayRaceResult::compareRecordedPosition,
                 RelayRaceResult::compareTeamName
             )
@@ -114,14 +117,20 @@ public class RelayRaceResult extends SingleRaceResult {
         return r1.getParticipantName().compareToIgnoreCase(r2.getParticipantName());
     }
 
-    private static boolean canDistinguishEqualPerformances(final RaceResult result1, final RaceResult result2) {
+    @Override
+    public boolean canDistinguishEqualPerformances(final RaceResult other) {
 
-        final boolean dead_heat1 = result1.getPositionString() != null && result1.getPositionString().endsWith("=");
-        final boolean dead_heat2 = result2.getPositionString() != null && result2.getPositionString().endsWith("=");
+        // Can't be distinguished if any leg result was in mass start, or if last leg finish was after last recorded
+        // finish, so time can't be properly interpolated.
 
-        final boolean dnf1 = !result1.canOrHasCompleted();
-        final boolean dnf2 = !result2.canOrHasCompleted();
+        return noLegsInMassStartOrUnknownTime(this) &&
 
-        return !(dead_heat1 || dead_heat2 || dnf1 || dnf2);
+            (other == null || noLegsInMassStartOrUnknownTime((RelayRaceResult) other));
+    }
+
+    private boolean noLegsInMassStartOrUnknownTime(final RelayRaceResult result) {
+
+        return result.getLegResults().stream().
+            noneMatch(r -> r.isInMassStart() || r.isFinishTimeUnknown());
     }
 }

@@ -58,10 +58,8 @@ public class RelayRaceLegResult extends SingleRaceResult {
             CommonRaceResult::comparePerformance,
 
             conditionalComparator(
-                this::isFirstLeg,
-
+                RaceResult::canDistinguishEqualPerformances,
                 SingleRaceResult::compareRecordedPosition,
-
                 consecutiveComparator(
                     CommonRaceResult::compareRunnerLastName,
                     CommonRaceResult::compareRunnerFirstName
@@ -70,7 +68,7 @@ public class RelayRaceLegResult extends SingleRaceResult {
         );
     }
 
-    private boolean isFirstLeg(final RaceResult ignore1, final RaceResult ignore2) {
+    public boolean canDistinguishEqualPerformances(final RaceResult other) {
         return leg_number == 1;
     }
 

@@ -91,4 +91,11 @@ public interface RaceResult extends Comparable<RaceResult> {
      * @return true if the race has been, or can be, completed
      */
     boolean canOrHasCompleted();
+
+    /**
+     * Tests whether this result can be distinguished from another result with the same performance
+     * (i.e. the two results should not be recorded as a dead heat).
+     * @return true if this result can be distinguished from another with the same performance
+     */
+    boolean canDistinguishEqualPerformances(RaceResult other);
 }

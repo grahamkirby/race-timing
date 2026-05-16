@@ -41,11 +41,6 @@ public class Team extends Participant {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(name);
-    }
-
-    @Override
     public String toString() {
         return name + " (" + category.getLongName() + ")";
     }

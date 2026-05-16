@@ -43,46 +43,29 @@ public class IndividualRaceResult extends SingleRaceResult {
         // DNF results are sorted by runner name.
 
         return consecutiveComparator(
-            CommonRaceResult::comparePossibleCompletion,
-
+            CommonRaceResult::comparePerformance,
             conditionalComparator(
-                both_completed,
-
+                RaceResult::canDistinguishEqualPerformances,
+                SingleRaceResult::compareRecordedPosition,
                 consecutiveComparator(
-                    CommonRaceResult::comparePerformance,
-                    conditionalComparator(
-                        neither_dead_heat,
-                        SingleRaceResult::compareRecordedPosition,
-                        name_comparator
-                    )
+                    CommonRaceResult::compareRunnerLastName,
+                    CommonRaceResult::compareRunnerFirstName
                 )
-            ),
-
-            name_comparator
+            )
         );
     }
-
-    final Comparator<RaceResult> name_comparator =
-        consecutiveComparator(
-            CommonRaceResult::compareRunnerLastName,
-            CommonRaceResult::compareRunnerFirstName
-        );
-
-    final ComparatorPredicate<RaceResult> both_completed =
-        (RaceResult result1, RaceResult result2) -> result1.canOrHasCompleted() && result2.canOrHasCompleted();
-
-    final ComparatorPredicate<RaceResult> neither_dead_heat =
-        (RaceResult result1, RaceResult result2) -> {
-
-            final RaceResultsProcessor processor = ((IndividualRaceResult) result1).race.getResultsProcessor();
-
-            return processor.canDistinguishFromOtherEqualPerformances(result1) &&
-                processor.canDistinguishFromOtherEqualPerformances(result2);
-        };
 
     @Override
     public String toString() {
 
         return getParticipant() + " " + renderDuration(this, DNF_STRING);
+    }
+
+    @Override
+    public boolean canDistinguishEqualPerformances(final RaceResult other) {
+
+        // Normally results with same recorded time are not treated as dead heats, since an ordering is imposed at the
+        // finish, but a dead heat can be recorded explicitly.
+        return canOrHasCompleted() && !((IndividualRace) race).getDeadHeats().contains(getBibNumber());
     }
 }
