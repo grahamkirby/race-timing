@@ -17,12 +17,15 @@
  */
 package org.grahamkirby.race_timing.relay_race;
 
+import org.grahamkirby.race_timing.common.RaceResults;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import static org.grahamkirby.race_timing.RaceTest.getPathRelativeToProjectRoot;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RelayRaceTest {
@@ -43,5 +46,22 @@ public class RelayRaceTest {
             UnsupportedOperationException.class,
             race::getOverallResults
         );
+    }
+
+    @Test
+    public void guessMissingBibNumbers() throws IOException {
+
+        final Path config_file_path = getPathRelativeToProjectRoot("/src/test/resources/synthetic/relay_race/guessed_missing_bib_numbers_c/input/config.txt");
+
+        final RelayRace race = (RelayRace) new RelayRaceFactory().makeRace(config_file_path);
+
+        final RelayRaceResultsProcessor processor = (RelayRaceResultsProcessor) race.processResults();
+        final RelayRaceResultsProcessor.TeamSummaryAtPosition summary = processor.summarise(5, 4);
+
+        assertEquals(0, summary.finishes_before());
+        assertEquals(3, summary.finishes_after());
+
+        assertEquals(Duration.parse("PT0S"), summary.previous_finish());
+        assertEquals(Duration.parse("PT1H43M8S"), summary.next_finish());
     }
 }

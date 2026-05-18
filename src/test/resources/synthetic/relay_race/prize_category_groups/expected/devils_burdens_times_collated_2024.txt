@@ -52,14 +52,14 @@
 49	00:53:15
 72	00:53:19
 106	00:53:23
-79	00:53:24		# Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so ignored. Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
-64	00:53:25		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
+79	00:53:24		# Recording sheet has 84 in this position but inconsistent with result 3 minutes earlier, so ignored. Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.
+64	00:53:25		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.
 11	00:53:28
 52	00:53:31
 19	00:54:03
 5	00:54:08
 35	00:54:10
-53	00:54:15		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
+53	00:54:15		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.
 24	00:54:17
 83	00:54:21
 27	00:54:26
@@ -67,7 +67,7 @@
 23	00:55:30
 33	00:55:32
 40	00:55:36
-10	00:55:37		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.
+10	00:55:37		# Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.
 91	00:55:39
 111	00:55:44
 77	00:55:57

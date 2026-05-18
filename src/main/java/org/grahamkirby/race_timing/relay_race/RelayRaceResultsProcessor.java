@@ -49,7 +49,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
     //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
+    protected record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
                                          Duration previous_finish, Duration next_finish) {
     }
 
@@ -58,7 +58,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final int HALF_A_SECOND_IN_NANOSECONDS = 500_000_000;
+    private static final int HALF_A_SECOND_IN_MILLISECONDS = 500;
     private static final int UNKNOWN_LEG_NUMBER = 0;
 
     private static final List<Comparator<TeamSummaryAtPosition>> team_summary_comparators = List.of(
@@ -97,18 +97,13 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
     @Override
     protected void recordDNF(final String dnf_specification) {
 
-        try {
-            // String of form "bib-number/leg-number"
+        // String of form "bib-number/leg-number"
 
-            final String[] elements = dnf_specification.split("/");
-            final int bib_number = Integer.parseInt(elements[0]);
-            final int leg_number = Integer.parseInt(elements[1]);
+        final String[] elements = dnf_specification.split("/");
+        final int bib_number = Integer.parseInt(elements[0]);
+        final int leg_number = Integer.parseInt(elements[1]);
 
-            getLegResult(bib_number, leg_number).setDnf(true);
-
-        } catch (final NumberFormatException e) {
-            throw new RuntimeException(dnf_specification, e);
-        }
+        getLegResult(bib_number, leg_number).setDnf(true);
     }
 
     @Override
@@ -293,9 +288,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
         // There is a finish time for the previous runner (previous check), so use the earlier of the mass start time,
         // if present, and the previous runner's finish time.
-        else start_time = mass_start_time != null && mass_start_time.compareTo(previous_team_member_finish_time) < 0 ?
-            mass_start_time :
-            previous_team_member_finish_time;
+        else return smallerDuration(previous_team_member_finish_time, mass_start_time);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -312,6 +305,11 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
         return start_time;
     }
 
+    private Duration smallerDuration(final Duration duration1, final Duration duration2) {
+
+        return duration2 == null || duration2.minus(duration1).isPositive() ? duration1 : duration2;
+    }
+
     private boolean isInMassStart(final Duration individual_start_time, final Duration mass_start_time, final Duration previous_runner_finish_time, final int leg_index) {
 
         // In mass start if it's not the first leg,  there is no individually recorded start time, and the previous
@@ -322,7 +320,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
         final boolean previous_runner_finish_time_is_set = previous_runner_finish_time != null;
 
         final boolean previous_runner_not_finished_by_mass_start = mass_start_time_is_set &&
-            (!previous_runner_finish_time_is_set || mass_start_time.compareTo(previous_runner_finish_time) < 0);
+            (!previous_runner_finish_time_is_set || previous_runner_finish_time.minus(mass_start_time).isPositive());
         final boolean first_leg = leg_index == 0;
 
         return !first_leg && !individual_start_time_is_set && previous_runner_not_finished_by_mass_start;
@@ -348,7 +346,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
         final List<RawResult> raw_results = ((SingleRaceInternal) race).getRawResults();
         final int number_of_electronically_recorded_results = ((RelayRace) race).getNumberOfElectronicallyRecordedRawResults();
 
-        if (number_of_electronically_recorded_results > 0 && number_of_electronically_recorded_results < raw_results.size())
+        if (number_of_electronically_recorded_results < raw_results.size())
             raw_results.get(number_of_electronically_recorded_results - 1).appendComment("Remaining times from paper recording sheet only.");
     }
 
@@ -381,7 +379,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
     private void guessMissingBibNumbers() {
 
         // Missing bib numbers are only guessed if a full set of finish times has been recorded,
-        // i.e. all runner_names have finished.
+        // i.e. all runners have finished.
 
         if (areTimesRecordedForAllRunners())
             guessMissingBibNumbersWithAllTimesRecorded();
@@ -495,9 +493,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
     private static Duration roundToIntegerSeconds(final Duration duration) {
 
-        long seconds = duration.getSeconds();
-        if (duration.getNano() > HALF_A_SECOND_IN_NANOSECONDS) seconds++;
-        return Duration.ofSeconds(seconds);
+        return Duration.ofSeconds(duration.plus(Duration.ofMillis(HALF_A_SECOND_IN_MILLISECONDS)).getSeconds());
     }
 
     private void recordNoteForResultsAfterLastRecordedTime(final int missing_times_start_index) {
@@ -534,7 +530,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
             final int guessed_number = guessTeamNumber(position_of_missing_bib_number);
 
             result_with_missing_number.setBibNumber(guessed_number);
-            result_with_missing_number.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number from DNF teams.");
+            result_with_missing_number.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.");
 
             position_of_missing_bib_number = getPositionOfNextMissingBibNumber();
         }
@@ -579,7 +575,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
                 toList());
     }
 
-    private TeamSummaryAtPosition summarise(final int position, final int bib_number) {
+    public TeamSummaryAtPosition summarise(final int position, final int bib_number) {
 
         final int finishes_before = getNumberOfTeamFinishesBetween(0, position - 1, bib_number);
         final int finishes_after = getNumberOfTeamFinishesBetween(position, ((RelayRace) race).getRawResults().size(), bib_number);
@@ -602,7 +598,11 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
     private Duration getPreviousTeamFinishTime(final int position, final int bib_number) {
 
         // Subtract two since looking at previous result and converting from position to index.
-        final Stream<RawResult> stream = ((RelayRace) race).getRawResults().reversed().stream().limit(position - 2);
+        final Stream<RawResult> stream = ((RelayRace) race).getRawResults().stream().
+            limit(position - 2).
+            toList().
+            reversed().
+            stream();
 
         return getFinishTimeForMatchingBibNumber(bib_number, stream);
     }

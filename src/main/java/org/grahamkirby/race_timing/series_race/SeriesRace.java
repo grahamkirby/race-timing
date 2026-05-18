@@ -72,26 +72,11 @@ public class SeriesRace implements RaceInternal {
     @Override
     public void outputResults(final RaceResults results) throws IOException {
 
-        try {
-            config.checkUnusedInputFiles();
-            config.checkUnusedProperties();
-        }
-        catch (final Exception e) {
-            if (results_output.getNotes() != null) results_output.getNotes().appendToNotes(e.getMessage() + LINE_SEPARATOR);
-        }
-
         results_output.outputResults(results);
     }
 
     @Override
     public void outputNotes() throws IOException {
-
-        if (normalisation != null) {
-            final String converted_words = normalisation.getNonTitleCaseWords();
-
-            if (!converted_words.isEmpty())
-                notes.appendToNotes("Converted to title case: " + converted_words + LINE_SEPARATOR);
-        }
 
         results_output.printNotes(notes);
     }

@@ -1,7 +1,7 @@
 1	David Aitken 	Dundee Road Runners 	M40
 2	Jude Alcock	Falkland Trail Runners 	F60
 3	Lyle Allan 	Falkland Trail Runners 	M60
-4	Heather anderson	Fife AC 	F40
+4	Heather Anderson	Fife AC 	F40
 5	Carrie Baird	Dundee Road Runners 	FS
 6	David Baird	Dundee Road Runners 	MS
 7	James Barnet	Dundee Road Runners	MS
@@ -110,3 +110,4 @@
 174	John Kinninmonth	RunSum Running Group	M50
 175	Paul Harkins	Fife AC	M40
 178	Lee Cessford	Falkland Trail Runners	M40
+179	James Robinson, 3rd	Dummy Club	MS

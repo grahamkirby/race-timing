@@ -1,0 +1,11 @@
+YEAR = 2020
+NUMBER_OF_LEGS = 4
+PAIRED_LEGS = 2,3
+RACE_NAME_FOR_RESULTS = Devil's Burdens
+RACE_NAME_FOR_FILENAMES = simple
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+UNUSED_PROPERTY = unused

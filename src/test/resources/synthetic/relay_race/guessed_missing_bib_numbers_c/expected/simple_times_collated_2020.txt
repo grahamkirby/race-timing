@@ -1,0 +1,16 @@
+1	00:42:43
+2	00:43:52
+3	00:44:59
+?	00:45:35		# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
+?	00:45:43		# Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.
+4	01:43:08
+4	02:34:10
+1	02:35:05
+2	02:35:34
+3	02:35:59
+5	02:37:19
+1	03:47:58
+2	03:48:22
+3	03:48:29
+4	03:49:21
+5	03:49:52
