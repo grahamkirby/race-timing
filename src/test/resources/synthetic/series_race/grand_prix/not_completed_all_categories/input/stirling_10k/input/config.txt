@@ -1,0 +1,8 @@
+YEAR = 2016
+RACE_NAME_FOR_RESULTS = Stirling
+RACE_NAME_FOR_FILENAMES = stirling
+
+# Relative to directory containing configuration file.
+RESULTS_PATH = results.txt
+
+MEDIAN_TIME = 0:45:43

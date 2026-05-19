@@ -1,0 +1,8 @@
+YEAR = 2016
+RACE_NAME_FOR_RESULTS = Black Rock
+RACE_NAME_FOR_FILENAMES = black_rock
+
+# Relative to directory containing configuration file.
+RESULTS_PATH = results.txt
+
+ENTRY_COLUMN_MAP = 1,2-3,4,5

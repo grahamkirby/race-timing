@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Properties;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -73,7 +72,6 @@ public class SeriesRaceFactory extends RaceFactory {
         if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES)) {
 
             config.addConfigAdjuster(IndividualTimesConfigAdjuster::new);
-            config.addConfigValidator(IndividualTimesConfigValidator::new);
         }
 
         if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS)) {
@@ -110,20 +108,6 @@ public class SeriesRaceFactory extends RaceFactory {
 
             config.replaceIfPresent(KEY_RACE_CATEGORIES_PATH, s -> config.interpretPath(Path.of(s)));
             config.replaceIfPresent(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
-        }
-    }
-
-    private static class IndividualTimesConfigValidator extends ConfigProcessor {
-
-        public IndividualTimesConfigValidator(final Config config) {
-
-            super(config);
-        }
-
-        public void processConfig() {
-
-            checkAllPresent(List.of(KEY_RACE_CATEGORIES_PATH, KEY_SCORE_FOR_MEDIAN_POSITION));
-            checkAllFilesExist(List.of(KEY_RACE_CATEGORIES_PATH));
         }
     }
 }

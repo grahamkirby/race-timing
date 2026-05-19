@@ -1,0 +1,6 @@
+YEAR = 2016
+RACE_NAME_FOR_RESULTS = Kinross
+RACE_NAME_FOR_FILENAMES = kinross
+
+# Relative to directory containing configuration file.
+RESULTS_PATH = results.txt

@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -80,7 +79,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     @Override
     public boolean multipleRaceCategories() {
-        return race_categories.size() > 1;
+        return !race_categories.isEmpty();
     }
 
     @Override
@@ -151,7 +150,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
                 map(SeriesRaceResultsProcessor::makeRaceCategory).
                 toList() :
 
-            makeDefaultRaceCategories();
+            Collections.emptyList();
     }
 
     private void loadRaceTemporalPermutation() {
@@ -189,14 +188,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
         // The result needs to be accessed frequently during sorting of results.
         overall_results_by_runner.put(runner, result);
         return result;
-    }
-
-    private List<SeriesRaceCategory> makeDefaultRaceCategories() {
-
-        final List<Integer> race_numbers = IntStream.rangeClosed(1, races.size()).boxed().toList();
-        final SeriesRaceCategory general_race_category = new SeriesRaceCategory("General", 0, race_numbers);
-
-        return List.of(general_race_category);
     }
 
     private boolean eligibleForSeries(final SingleRaceResult result) {
@@ -422,24 +413,14 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
         if (!previous_category.equals(current_category)) {
 
             final String race_name = (String) result.getRace().getConfig().get(KEY_RACE_NAME_FOR_RESULTS);
+            final String note = "Runner " + result.getParticipantName() + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name;
 
-            checkAgeCategoriesInSuccessiveRaces(previous_category, current_category, result.getParticipantName(), race_name);
-            checkGenderCategoriesInSuccessiveRaces(previous_category, current_category, result.getParticipantName(), race_name);
+            // If ages are equal, gender must have changed since categories are different.
+            if (current_category.getAgeRange().getMinimumAge() <= previous_category.getAgeRange().getMinimumAge())
+                throw new RuntimeException("invalid category change: " + note);
 
-            race.getNotesProcessor().appendToNotes("Runner " + result.getParticipantName() + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name + LINE_SEPARATOR);
+            race.getNotesProcessor().appendToNotes(note + LINE_SEPARATOR);
         }
-    }
-
-    private static void checkGenderCategoriesInSuccessiveRaces(final EntryCategory previous_category, final EntryCategory current_category, final String runner_name, final String race_name) {
-
-        if (previous_category != null && current_category != null && !current_category.getGender().equals(previous_category.getGender()))
-            throw new RuntimeException("invalid category change: runner '" + runner_name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
-    }
-
-    private static void checkAgeCategoriesInSuccessiveRaces(final EntryCategory previous_category, final EntryCategory current_category, final String runner_name, final String race_name) {
-
-        if (previous_category != null && current_category != null && current_category.getAgeRange().getMinimumAge() < previous_category.getAgeRange().getMinimumAge())
-            throw new RuntimeException("invalid category change: runner '" + runner_name + "' changed from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name);
     }
 
     private static void checkAgeCategoryRangeOverSeries(final String runner_name, final EntryCategory earliest_category, final EntryCategory latest_category) {

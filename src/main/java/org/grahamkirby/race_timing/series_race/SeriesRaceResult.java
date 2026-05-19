@@ -103,7 +103,6 @@ public class SeriesRaceResult extends CommonRaceResult {
     public Comparator<RaceResult> getComparator() {
 
         return consecutiveComparator(
-            CommonRaceResult::comparePossibleCompletion,
             SeriesRaceResult::compareNumberOfRacesCompleted,
             CommonRaceResult::comparePerformance,
             CommonRaceResult::compareRunnerLastName,

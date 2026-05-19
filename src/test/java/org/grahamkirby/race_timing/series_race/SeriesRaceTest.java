@@ -44,5 +44,10 @@ public class SeriesRaceTest {
             UnsupportedOperationException.class,
             race::outputPreRaceFiles
         );
+
+        assertThrows(
+            UnsupportedOperationException.class,
+            () -> ((SeriesRaceResultsProcessor)race.getResultsProcessor()).recordDNF("")
+        );
     }
 }

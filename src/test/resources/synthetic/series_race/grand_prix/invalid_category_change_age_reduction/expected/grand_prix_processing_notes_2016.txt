@@ -5,4 +5,4 @@ Club Substitutions
 Category Changes
 ----------------
 
-invalid category change: runner 'Fictional Runner2' changed from F40 to FS at Largo
+invalid category change: Runner Fictional Runner2 changed category from F40 to FS at Largo

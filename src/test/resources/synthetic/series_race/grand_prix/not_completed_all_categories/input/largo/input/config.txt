@@ -1,0 +1,7 @@
+YEAR = 2016
+RACE_NAME_FOR_RESULTS = Largo
+RACE_NAME_FOR_FILENAMES = largo
+
+# Relative to directory containing configuration file.
+RESULTS_PATH = results.txt
+CATEGORY_MAP_PATH = category_map.csv

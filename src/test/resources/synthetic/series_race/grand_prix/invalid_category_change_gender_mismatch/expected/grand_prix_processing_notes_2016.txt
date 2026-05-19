@@ -5,4 +5,4 @@ Club Substitutions
 Category Changes
 ----------------
 
-invalid category change: runner 'Fictional Runner4' changed from MS to FS at Sandy Slither
+invalid category change: Runner Fictional Runner4 changed category from MS to FS at Sandy Slither
