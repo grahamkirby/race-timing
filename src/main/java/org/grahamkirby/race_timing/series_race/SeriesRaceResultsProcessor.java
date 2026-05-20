@@ -150,7 +150,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
                 map(SeriesRaceResultsProcessor::makeRaceCategory).
                 toList() :
 
-            Collections.emptyList();
+            List.of();
     }
 
     private void loadRaceTemporalPermutation() {

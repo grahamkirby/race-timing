@@ -76,7 +76,7 @@ public final class PrizeCategory extends Category {
                 return Arrays.stream(club_string.split("/")).collect(Collectors.toSet());
         }
 
-        return Collections.emptySet();
+        return Set.of();
     }
 
     private boolean getExclusive(final String[] elements) {

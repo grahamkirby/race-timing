@@ -187,7 +187,7 @@ public class NormalisationProcessor {
         final long minutes = (total_seconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
         final long seconds = total_seconds % SECONDS_PER_MINUTE;
 
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        return "%02d:%02d:%02d".formatted(hours, minutes, seconds);
     }
 
     private static String formatFractionalPart(final Duration duration) {
@@ -198,7 +198,7 @@ public class NormalisationProcessor {
         final double fractional_seconds = fractional_seconds_as_nanoseconds / NANOSECONDS_PER_SECOND;
 
         // Round to defined number of decimal places.
-        final String formatted_fractional_seconds = String.format(getDurationFormatString(), fractional_seconds);
+        final String formatted_fractional_seconds = getDurationFormatString().formatted(fractional_seconds);
 
         // Omit the zero preceding the decimal point, and trailing zeros.
         return formatted_fractional_seconds.replaceAll("^0|0+$", "");
@@ -303,7 +303,7 @@ public class NormalisationProcessor {
         final String entry_column_map_string = config.getString(KEY_ENTRY_COLUMN_MAP);
 
         // Column mapping not used for relay races, so may not be set.
-        if (entry_column_map_string == null) return Collections.emptyList();
+        if (entry_column_map_string == null) return List.of();
 
         return Arrays.asList(entry_column_map_string.split(","));
     }
