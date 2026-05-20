@@ -1,0 +1,11 @@
+YEAR = 2025
+RACE_NAME_FOR_RESULTS = Balmullo
+RACE_NAME_FOR_FILENAMES = balmullo
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+# Comma-separated sequence of bib-number/start-time for all runners that
+# started before or after the main start time. Negative means early start.
+INDIVIDUAL_START_TIMES = 61/0:10:00

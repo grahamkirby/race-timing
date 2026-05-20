@@ -66,6 +66,10 @@ public abstract class SingleRaceResult extends CommonRaceResult {
         this.start_time = start_time;
     }
 
+    public Duration getStartTime() {
+        return start_time;
+    }
+
     public Duration getFinishTime() {
         return finish_time;
     }

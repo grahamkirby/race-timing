@@ -52,7 +52,6 @@ public class Config {
     public static final String KEY_ENTRY_CATEGORIES_PATH = "ENTRY_CATEGORIES_PATH";
     public static final String KEY_ENTRY_COLUMN_MAP = "ENTRY_COLUMN_MAP";
     public static final String KEY_INDIVIDUAL_LEG_STARTS = "INDIVIDUAL_LEG_STARTS";
-    public static final String KEY_INDIVIDUAL_START_TIMES = "INDIVIDUAL_START_TIMES";
     public static final String KEY_MASS_START_TIMES = "MASS_START_TIMES";
     public static final String KEY_MEDIAN_TIME = "MEDIAN_TIME";
     public static final String KEY_MINIMUM_NUMBER_OF_RACES = "MINIMUM_NUMBER_OF_RACES";
@@ -70,7 +69,6 @@ public class Config {
     public static final String KEY_RACE_NAME_FOR_FILENAMES = "RACE_NAME_FOR_FILENAMES";
     public static final String KEY_RACE_CATEGORIES_PATH = "RACE_CATEGORIES_PATH";
     public static final String KEY_RACE_NAME_FOR_RESULTS = "RACE_NAME_FOR_RESULTS";
-    public static final String KEY_RACE_START_TIME = "RACE_START_TIME";
     public static final String KEY_RACE_TEMPORAL_ORDER = "RACE_TEMPORAL_ORDER";
     public static final String KEY_RAW_RESULTS_PATH = "RAW_RESULTS_PATH";
     public static final String KEY_SCORE_FOR_FIRST_PLACE = "SCORE_FOR_FIRST_PLACE";
@@ -81,6 +79,10 @@ public class Config {
     public static final String KEY_TIME_TRIAL_INTER_WAVE_INTERVAL = "TIME_TRIAL_INTER_WAVE_INTERVAL";
     public static final String KEY_TIME_TRIAL_RUNNERS_PER_WAVE = "TIME_TRIAL_RUNNERS_PER_WAVE";
     public static final String KEY_YEAR = "YEAR";
+
+    // TODO rationalise key names and define as offsets consistently, add example key values in comments here.
+    public static final String KEY_INDIVIDUAL_START_TIMES = "INDIVIDUAL_START_TIMES";
+    public static final String KEY_RACE_START_TIME = "RACE_START_TIME";
 
     public static final List<String> REQUIRED_CONFIG_KEYS = List.of(
 

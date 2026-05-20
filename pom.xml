@@ -136,8 +136,8 @@
                 </executions>
             </plugin>
 
-            <!-- To run PIT mutation test analysis:                                                                                                         -->
-            <!-- mvn test-compile org.pitest:pitest-maven:mutationCoverage -DhistoryInputFile=src/test/history.txt -DhistoryOutputFile=src/test/history.txt -->
+            <!-- To run PIT mutation test analysis:                                             -->
+            <!-- mvn test-compile org.pitest:pitest-maven:mutationCoverage -DwithHistory        -->
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>

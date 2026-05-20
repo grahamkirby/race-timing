@@ -200,6 +200,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
         setTimesByCategory();
         setIndividualStartTimes();
         setTimeTrialStartTimes();
+        setRaceStartOffset();
     }
 
     private void addSeparatelyRecordedTimes() {
@@ -285,11 +286,30 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
                 final SingleRaceResult result = (SingleRaceResult) r;
 
                 if (start_times.containsKey(result.getBibNumber()))
-                    result.setStartTime(start_times.get(result.getBibNumber()));
+                    result.setStartTime(result.getStartTime().plus(start_times.get(result.getBibNumber())));
             }
         };
 
         race.getConfig().processConfigIfPresent(KEY_INDIVIDUAL_START_TIMES, process_individual_start_times);
+    }
+
+    private void setRaceStartOffset() {
+
+        // Bib number / start time
+        // Example: INDIVIDUAL_START_TIMES = 2/0:10:00,26/0:20:00
+
+        final Consumer<Object> process_race_start_time = race_start_time -> {
+
+            final Duration offset = parseTime((String) race_start_time);
+
+            for (final RaceResult r : overall_results) {
+
+                final SingleRaceResult result = (SingleRaceResult) r;
+                result.setStartTime(result.getStartTime().plus(offset));
+            }
+        };
+
+        race.getConfig().processConfigIfPresent(KEY_RACE_START_TIME, process_race_start_time);
     }
 
     private Duration getMedianTimeForOddNumberOfResults() {
