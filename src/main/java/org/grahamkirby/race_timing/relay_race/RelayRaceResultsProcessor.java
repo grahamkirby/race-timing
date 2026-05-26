@@ -297,7 +297,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
             // Get offset between actual race start time, and the time at which timing started.
             // Usually this is zero. A positive value indicates that the race started after timing started.
-            final Duration race_start_time = (Duration) race.getConfig().get(KEY_RACE_START_TIME);
+            final Duration race_start_time = (Duration) race.getConfig().get(KEY_OFFSET_RACE_START);
 
             start_time = start_time.plus(race_start_time);
         }

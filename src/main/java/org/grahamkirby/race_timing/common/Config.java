@@ -44,7 +44,6 @@ public class Config {
     public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
     public static final String KEY_CATEGORY_MAP_PATH = "CATEGORY_MAP_PATH";
-    public static final String KEY_CATEGORY_START_OFFSETS = "CATEGORY_START_OFFSETS";
     public static final String KEY_CHECK_INPUT_FILES_USED = "CHECK_INPUT_FILES_USED";
     public static final String KEY_DEAD_HEATS = "DEAD_HEATS";
     public static final String KEY_DNF_FINISHERS = "DNF_FINISHERS";
@@ -59,6 +58,21 @@ public class Config {
     public static final String KEY_NORMALISED_HTML_ENTITIES_PATH = "NORMALISED_HTML_ENTITIES_PATH";
     public static final String KEY_NUMBER_OF_LEGS = "NUMBER_OF_LEGS";
     public static final String KEY_NUMBER_OF_RACES_IN_SERIES = "NUMBER_OF_RACES_IN_SERIES";
+
+    public static final String KEY_OFFSETS_CATEGORY_STARTS = "OFFSETS_CATEGORY_STARTS";
+
+    // Offsets between the time that recording began, and the times that specified
+    // runners started the race. A positive time value means that the runner started
+    // after the main start; a negative time value means that the runner started early.
+    // Specified as a comma-separated sequence of bib-number/offset pairs.
+    // Example: OFFSETS_INDIVIDUAL_STARTS = 61/0:10:00
+    public static final String KEY_OFFSETS_INDIVIDUAL_STARTS = "OFFSETS_INDIVIDUAL_STARTS";
+
+    // Offset between the time that recording began, and the time that the race
+    // actually started. A positive value means the race started after recording began.
+    // Example: OFFSET_RACE_START = 00:01:00
+    public static final String KEY_OFFSET_RACE_START = "OFFSET_RACE_START";
+
     public static final String KEY_OVERALL_RESULTS_PATH = "RESULTS_PATH";
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
@@ -79,10 +93,6 @@ public class Config {
     public static final String KEY_TIME_TRIAL_INTER_WAVE_INTERVAL = "TIME_TRIAL_INTER_WAVE_INTERVAL";
     public static final String KEY_TIME_TRIAL_RUNNERS_PER_WAVE = "TIME_TRIAL_RUNNERS_PER_WAVE";
     public static final String KEY_YEAR = "YEAR";
-
-    // TODO rationalise key names and define as offsets consistently, add example key values in comments here.
-    public static final String KEY_INDIVIDUAL_START_TIMES = "INDIVIDUAL_START_TIMES";
-    public static final String KEY_RACE_START_TIME = "RACE_START_TIME";
 
     public static final List<String> REQUIRED_CONFIG_KEYS = List.of(
 
@@ -308,7 +318,7 @@ public class Config {
         return getPathRelativeToRaceConfigFile(path);
     }
 
-    public Path getOutputDirectoryPath() throws IOException {
+    public Path getOutputDirectoryPath() {
 
         // This assumes that the config file is in the "input" directory
         // which is at the same level as the "output" directory.

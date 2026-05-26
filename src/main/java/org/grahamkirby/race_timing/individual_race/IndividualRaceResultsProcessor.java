@@ -238,7 +238,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             }
         };
 
-        race.getConfig().processConfigIfPresent(KEY_CATEGORY_START_OFFSETS, process_category_start_times);
+        race.getConfig().processConfigIfPresent(KEY_OFFSETS_CATEGORY_STARTS, process_category_start_times);
     }
 
     private void setTimeTrialStartTimes() {
@@ -290,7 +290,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             }
         };
 
-        race.getConfig().processConfigIfPresent(KEY_INDIVIDUAL_START_TIMES, process_individual_start_times);
+        race.getConfig().processConfigIfPresent(KEY_OFFSETS_INDIVIDUAL_STARTS, process_individual_start_times);
     }
 
     private void setRaceStartOffset() {
@@ -309,7 +309,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             }
         };
 
-        race.getConfig().processConfigIfPresent(KEY_RACE_START_TIME, process_race_start_time);
+        race.getConfig().processConfigIfPresent(KEY_OFFSET_RACE_START, process_race_start_time);
     }
 
     private Duration getMedianTimeForOddNumberOfResults() {

@@ -8,6 +8,4 @@ RACE_NAME_FOR_FILENAMES = simple
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-# Offset applied to all recorded times.
-# Positive value means the actual start took place after recording began.
-RACE_START_TIME = -00:01:00
+OFFSET_RACE_START = -00:01:00

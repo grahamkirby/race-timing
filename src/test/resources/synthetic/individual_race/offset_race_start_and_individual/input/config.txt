@@ -8,4 +8,8 @@ RAW_RESULTS_PATH = rawtimes.txt
 
 # Comma-separated sequence of bib-number/start-time for all runners that
 # started before or after the main start time. Negative means early start.
-INDIVIDUAL_START_TIMES = 61/0:10:00
+OFFSETS_INDIVIDUAL_STARTS = 61/-0:10:00
+
+# Offset applied to all recorded times.
+# Positive value means the actual start took place after recording began.
+OFFSET_RACE_START = 00:01:00
