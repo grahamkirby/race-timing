@@ -46,6 +46,7 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
 
         config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_ENTRY_CATEGORIES_PATH)));
         config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_PRIZE_CATEGORIES_PATH)));
+        config.addIfAbsent(KEY_OUTPUT_ERRORS_TO_CONSOLE, false);
 
         config.replaceIfPresent(KEY_TEAM_PRIZE_NUMBER_TO_COUNT, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, Integer::parseInt);

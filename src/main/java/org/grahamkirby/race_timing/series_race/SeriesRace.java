@@ -173,6 +173,7 @@ public class SeriesRace implements RaceInternal {
 
     private void loadRaces(final List<String> race_config_paths) throws IOException {
 
+        // TODO reorganise?
         races = new ArrayList<>();
         final List<String> config_paths_seen = new ArrayList<>();
 

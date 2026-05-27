@@ -56,6 +56,7 @@ public class IndividualRace implements SingleRaceInternal {
     private CategoriesProcessor categories_processor;
     private NormalisationProcessor normalisation;
     private final NotesProcessor notes;
+    private final boolean output_errors_to_console;
 
     private RaceResultsProcessor results_processor;
     private RaceOutput results_output;
@@ -66,6 +67,7 @@ public class IndividualRace implements SingleRaceInternal {
 
         this.config = config;
         notes = new NotesProcessor();
+        output_errors_to_console = Boolean.parseBoolean((String) config.get(KEY_OUTPUT_ERRORS_TO_CONSOLE));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +84,13 @@ public class IndividualRace implements SingleRaceInternal {
             return results_processor;
         }
         catch (final Exception e) {
+
+            if (output_errors_to_console)
+                // Output controlled by config, but normally only required in a series race where the
+                // individual races are not also processed separately, since in this case the individual
+                // race notes don't persist.
+                System.out.println(e.getMessage());
+
             notes.appendToNotes(e.getMessage() + LINE_SEPARATOR);
             return null;
         }

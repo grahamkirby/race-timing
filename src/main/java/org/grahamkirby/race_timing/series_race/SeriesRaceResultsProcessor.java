@@ -231,6 +231,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private List<String> getRunnerNames() {
 
+        List<IndividualRaceResult> list = getEligibleIndividualRaceResults(races).toList();
         return getEligibleIndividualRaceResults(races).
             map(CommonRaceResult::getParticipantName).
             distinct().
@@ -264,6 +265,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private Stream<IndividualRaceResult> getEligibleIndividualRaceResults(final List<SingleRaceInternal> individual_races) {
 
+        List<RaceResult> list = getAllIndividualRaceResults(individual_races).toList();
         return getAllIndividualRaceResults(individual_races).
             map(result -> ((IndividualRaceResult) result)).
             filter(this::eligibleForSeries);

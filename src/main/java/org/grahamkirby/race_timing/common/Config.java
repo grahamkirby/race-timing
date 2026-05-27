@@ -74,6 +74,7 @@ public class Config {
     public static final String KEY_OFFSET_RACE_START = "OFFSET_RACE_START";
 
     public static final String KEY_OVERALL_RESULTS_PATH = "RESULTS_PATH";
+    public static final String KEY_OUTPUT_ERRORS_TO_CONSOLE = "OUTPUT_ERRORS_TO_CONSOLE";
     public static final String KEY_PAIRED_LEGS = "PAIRED_LEGS";
     public static final String KEY_PAPER_RESULTS_PATH = "PAPER_RESULTS_PATH";
     public static final String KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY = "PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY";
