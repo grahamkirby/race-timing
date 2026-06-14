@@ -1,0 +1,15 @@
+YEAR = 2026
+RACE_NAME_FOR_RESULTS = Race 2
+RACE_NAME_FOR_FILENAMES = minitour_race2
+
+OUTPUT_ERRORS_TO_CONSOLE = true
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+
+# Relative to project root directory.
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
+PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv
+
+OFFSETS_CATEGORY_STARTS = FU9/00:05:00,MU9/00:05:00,FU11/00:05:00,MU11/00:05:00

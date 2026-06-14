@@ -26,6 +26,7 @@ public interface SeriesRaceResults extends RaceResults {
     boolean multipleClubs();
     boolean multipleRaceCategories();
     boolean possibleToHaveCompleted();
+    boolean allRacesCompleted();
 
     List<SeriesRaceCategory> getRaceCategories();
     List<String> getRaceNames();

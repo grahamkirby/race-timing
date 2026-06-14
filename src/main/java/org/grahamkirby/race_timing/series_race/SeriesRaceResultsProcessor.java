@@ -88,6 +88,11 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     }
 
     @Override
+    public boolean allRacesCompleted() {
+        return ((SeriesRace) race).getNumberOfRacesTakenPlace() == (int) race.getConfig().get(KEY_NUMBER_OF_RACES_IN_SERIES);
+    }
+
+    @Override
     public List<SeriesRaceCategory> getRaceCategories() {
         return race_categories;
     }
@@ -231,7 +236,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private List<String> getRunnerNames() {
 
-        List<IndividualRaceResult> list = getEligibleIndividualRaceResults(races).toList();
         return getEligibleIndividualRaceResults(races).
             map(CommonRaceResult::getParticipantName).
             distinct().
@@ -265,7 +269,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private Stream<IndividualRaceResult> getEligibleIndividualRaceResults(final List<SingleRaceInternal> individual_races) {
 
-        List<RaceResult> list = getAllIndividualRaceResults(individual_races).toList();
         return getAllIndividualRaceResults(individual_races).
             map(result -> ((IndividualRaceResult) result)).
             filter(this::eligibleForSeries);

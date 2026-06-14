@@ -22,9 +22,10 @@ import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.NormalisationProcessor.parseTime;
@@ -75,8 +76,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
         recordDNFs();
         sortOverallResults();
         allocatePrizes();
-
-        getPrizeWinners(null);
+        allocateTeamPrizes();
     }
 
     @Override
@@ -94,20 +94,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
     }
 
     @Override
-    public synchronized List<TeamPerformance> getTeamPrizes() {
-
-        if (team_prizes == null) {
-
-            team_prizes = race.getConfig().containsKey(KEY_TEAM_PRIZE_GENDER_CATEGORIES) ?
-
-                Arrays.stream(race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES).split("/")).
-                    map(this::getFirstTeamInGenderCategory).
-                    filter(Optional::isPresent).
-                    map(Optional::get).
-                    toList() :
-
-                List.of();
-        }
+    public List<TeamPerformance> getTeamPrizes() {
 
         return team_prizes;
     }
@@ -163,6 +150,24 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             !directly_recorded_results.isEmpty() ? directly_recorded_results : getRaceResults(raw_results));
     }
 
+    private void adjustTimes() {
+
+        setTimesByCategory();
+        setIndividualStartTimes();
+        setTimeTrialStartTimes();
+        setRaceStartOffset();
+    }
+
+    private void addSeparatelyRecordedTimes() {
+
+        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race).getSeparatelyRecordedFinishTimes();
+
+        for (final Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet())
+            overall_results.add(makeRaceResult(new RawResult(entry.getKey(), entry.getValue())));
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     private List<RaceResult> getRaceResults(final List<RawResult> raw_results) {
 
         return raw_results.stream().
@@ -195,121 +200,168 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             orElseThrow();
     }
 
-    private void adjustTimes() {
-
-        setTimesByCategory();
-        setIndividualStartTimes();
-        setTimeTrialStartTimes();
-        setRaceStartOffset();
-    }
-
-    private void addSeparatelyRecordedTimes() {
-
-        final Map<Integer, Duration> separately_recorded_finish_times = ((IndividualRace) race).getSeparatelyRecordedFinishTimes();
-
-        for (final Map.Entry<Integer, Duration> entry : separately_recorded_finish_times.entrySet())
-            overall_results.add(makeRaceResult(new RawResult(entry.getKey(), entry.getValue())));
-    }
-
     private void setTimesByCategory() {
 
-        // Category / start time
-        // Example: CATEGORY_START_OFFSETS =  FU9/00:01:00,MU9/00:01:00,FU11/00:01:00,MU11/00:01:00
-
-        final Consumer<Object> process_category_start_times = category_start_offsets -> {
-
-            final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
-
-            for (final String offset_string : ((String) category_start_offsets).split(",", -1)) {
-
-                final String[] split = offset_string.split("/");
-                category_offsets.put(race.getCategoriesProcessor().getEntryCategory(split[0]), parseTime(split[1]));
-            }
-
-            for (final RaceResult r : overall_results) {
-
-                final SingleRaceResult result = (SingleRaceResult) r;
-                final EntryCategory category = result.getParticipant().getCategory();
-
-                final Duration category_start_time = category_offsets.get(category);
-
-                if (category_start_time != null)
-                    result.setStartTime(category_start_time);
-            }
-        };
-
-        race.getConfig().processConfigIfPresent(KEY_OFFSETS_CATEGORY_STARTS, process_category_start_times);
-    }
-
-    private void setTimeTrialStartTimes() {
-
-        // This option applies when time-trial runners are assigned to waves in order of bib number,
-        // with incomplete waves if there are any gaps in bib numbers.
-
-        final Consumer<Object> process_time_trial_start_times = time_trial_runners_per_wave -> {
-
-            final Duration time_trial_inter_wave_interval = (Duration) race.getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
-
-            for (final RaceResult r : overall_results) {
-
-                final SingleRaceResult result = (SingleRaceResult) r;
-                final int wave_number = (result.getBibNumber() - 1) / ((int) time_trial_runners_per_wave);
-
-                result.setStartTime(time_trial_inter_wave_interval.multipliedBy(wave_number));
-            }
-        };
-
-        race.getConfig().processConfigIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, process_time_trial_start_times);
+        race.getConfig().processConfigIfPresent(KEY_OFFSETS_CATEGORY_STARTS, this::setTimesByCategory);
     }
 
     private void setIndividualStartTimes() {
 
-        // Bib number / start time
-        // Example: INDIVIDUAL_START_TIMES = 2/0:10:00,26/0:20:00
+        race.getConfig().processConfigIfPresent(KEY_OFFSETS_INDIVIDUAL_STARTS, this::setIndividualStartTimes);
+    }
 
-        final Consumer<Object> process_individual_start_times = individual_start_times -> {
+    private void setTimeTrialStartTimes() {
 
-            final Map<Integer, Duration> start_times = new HashMap<>();
-
-            for (final String individual_early_start : ((String) individual_start_times).split(",")) {
-
-                final String[] split = individual_early_start.split("/");
-
-                final int bib_number = Integer.parseInt(split[0]);
-                final Duration offset = parseTime(split[1]);
-
-                start_times.put(bib_number, offset);
-            }
-
-            for (final RaceResult r : overall_results) {
-
-                final SingleRaceResult result = (SingleRaceResult) r;
-
-                if (start_times.containsKey(result.getBibNumber()))
-                    result.setStartTime(result.getStartTime().plus(start_times.get(result.getBibNumber())));
-            }
-        };
-
-        race.getConfig().processConfigIfPresent(KEY_OFFSETS_INDIVIDUAL_STARTS, process_individual_start_times);
+        race.getConfig().processConfigIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, this::setTimeTrialStartTimes);
     }
 
     private void setRaceStartOffset() {
 
+        race.getConfig().processConfigIfPresent(KEY_OFFSET_RACE_START, this::setRaceStartOffset);
+    }
+
+    private void setTimesByCategory(final Object category_start_offsets) {
+
+        // Category / start time
+        // Example: CATEGORY_START_OFFSETS =  FU9/00:01:00,MU9/00:01:00,FU11/00:01:00,MU11/00:01:00
+
+        final Map<EntryCategory, Duration> category_offsets = getCategoryOffsets((String) category_start_offsets);
+
+        for (final RaceResult r : overall_results) {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+            final EntryCategory category = result.getParticipant().getCategory();
+
+            final Duration category_start_time = category_offsets.get(category);
+
+            if (category_start_time != null)
+                result.setStartTime(category_start_time);
+        }
+    }
+
+    private Map<EntryCategory, Duration> getCategoryOffsets(final String category_start_offsets) {
+
+        final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
+
+        for (final String offset_string : category_start_offsets.split(",", -1)) {
+
+            final String[] split = offset_string.split("/");
+            final String category = split[0];
+            final Duration offset = parseTime(split[1]);
+
+            category_offsets.put(race.getCategoriesProcessor().getEntryCategory(category), offset);
+        }
+
+        return category_offsets;
+    }
+
+    private void setTimeTrialStartTimes(final Object time_trial_runners_per_wave) {
+
+        // This option applies when time-trial runners are assigned to waves in order of bib number,
+        // with incomplete waves if there are any gaps in bib numbers.
+
+        final Duration time_trial_inter_wave_interval = (Duration) race.getConfig().get(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL);
+        final int runners_per_wave = (int) time_trial_runners_per_wave;
+
+        List<List<Integer>> waves = makeWaves(runners_per_wave);
+
+        allocateBibNumbersToWaves(waves, runners_per_wave);
+        waves = removeEmptyWaves(waves);
+        setTimeTrialStartTimes(waves, time_trial_inter_wave_interval);
+    }
+
+    private List<List<Integer>> makeWaves(final int time_trial_runners_per_wave) {
+
+        final int number_of_waves = getNumberOfWaves(time_trial_runners_per_wave);
+
+        return IntStream.range(0, number_of_waves).boxed().
+            map((Function<Integer, List<Integer>>) _ -> new ArrayList<>()).
+            toList();
+    }
+
+    private void allocateBibNumbersToWaves(final List<List<Integer>> waves, final int time_trial_runners_per_wave) {
+
+        for (final RaceEntry entry : ((IndividualRace) race).getEntries()) {
+
+            final int wave_number = (entry.getBibNumber() - 1) / time_trial_runners_per_wave;
+            waves.get(wave_number).add(entry.getBibNumber());
+        }
+    }
+
+    private List<List<Integer>> removeEmptyWaves(final List<List<Integer>> waves) {
+
+        return waves.stream().filter(Predicate.not(List::isEmpty)).toList();
+    }
+
+    private void setTimeTrialStartTimes(final List<List<Integer>> waves, final Duration time_trial_inter_wave_interval) {
+
+        for (final RaceResult r : overall_results) {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+
+            final long wave_number = waves.stream().takeWhile(wave -> !wave.contains(result.getBibNumber())).count();
+            result.setStartTime(time_trial_inter_wave_interval.multipliedBy(wave_number));
+        }
+    }
+
+    private int getNumberOfWaves(final int time_trial_runners_per_wave) {
+
+        return (getHighestBibNumber() + time_trial_runners_per_wave - 1) / time_trial_runners_per_wave;
+    }
+
+    private int getHighestBibNumber() {
+
+        return ((IndividualRace) race).getEntries().stream().
+            map(RaceEntry::getBibNumber).
+            max(Integer::compareTo).
+            orElseThrow();
+    }
+
+    private void setIndividualStartTimes(final Object individual_start_times) {
+
         // Bib number / start time
         // Example: INDIVIDUAL_START_TIMES = 2/0:10:00,26/0:20:00
 
-        final Consumer<Object> process_race_start_time = race_start_time -> {
+        final Map<Integer, Duration> start_times = getStartTimes((String) individual_start_times);
 
-            final Duration offset = parseTime((String) race_start_time);
+        for (final RaceResult r : overall_results) {
 
-            for (final RaceResult r : overall_results) {
+            final SingleRaceResult result = (SingleRaceResult) r;
 
-                final SingleRaceResult result = (SingleRaceResult) r;
-                result.setStartTime(result.getStartTime().plus(offset));
-            }
-        };
+            if (start_times.containsKey(result.getBibNumber()))
+                result.setStartTime(result.getStartTime().plus(start_times.get(result.getBibNumber())));
+        }
+    }
 
-        race.getConfig().processConfigIfPresent(KEY_OFFSET_RACE_START, process_race_start_time);
+    private Map<Integer, Duration> getStartTimes(final String individual_start_times) {
+
+        final Map<Integer, Duration> start_times = new HashMap<>();
+
+        for (final String individual_early_start : individual_start_times.split(",")) {
+
+            final String[] split = individual_early_start.split("/");
+
+            final int bib_number = Integer.parseInt(split[0]);
+            final Duration offset = parseTime(split[1]);
+
+            start_times.put(bib_number, offset);
+        }
+
+        return start_times;
+    }
+
+    private void setRaceStartOffset(final Object race_start_time) {
+
+        // Bib number / start time
+        // Example: INDIVIDUAL_START_TIMES = 2/0:10:00,26/0:20:00
+
+        final Duration offset = parseTime((String) race_start_time);
+
+        for (final RaceResult r : overall_results) {
+
+            final SingleRaceResult result = (SingleRaceResult) r;
+            result.setStartTime(result.getStartTime().plus(offset));
+        }
     }
 
     private Duration getMedianTimeForOddNumberOfResults() {
@@ -335,19 +387,17 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private TeamPerformance getTeamPerformance(final String club, final String gender) {
+    private void allocateTeamPrizes() {
 
-        final int number_to_count_for_team_prize = (int) race.getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
+        final String team_prize_gender_categories = race.getConfig().getString(KEY_TEAM_PRIZE_GENDER_CATEGORIES);
 
-        final List<RunnerPerformance> runner_names = getOverallResults().stream().
-            map(result -> (Runner) result.getParticipant()).
-            filter(runner -> runner.getClub().equals(club)).
-            filter(runner -> runner.getCategory().getGender().equals(gender)).
-            limit(number_to_count_for_team_prize).
-            map(runner -> new RunnerPerformance(runner.getName(), getGenderPosition(runner.getName(), club, gender))).
-            toList();
+        team_prizes = team_prize_gender_categories == null ? List.of() :
 
-        return new TeamPerformance(club, gender, runner_names);
+            Arrays.stream(team_prize_gender_categories.split("/")).
+                map(this::getFirstTeamInGenderCategory).
+                filter(Optional::isPresent).
+                map(Optional::get).
+                toList();
     }
 
     private Optional<TeamPerformance> getFirstTeamInGenderCategory(final String team_prize_gender_category) {
@@ -382,6 +432,21 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
         notes.appendToNotes(LINE_SEPARATOR);
 
         return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
+    }
+
+    private TeamPerformance getTeamPerformance(final String club, final String gender) {
+
+        final int number_to_count_for_team_prize = (int) race.getConfig().get(KEY_TEAM_PRIZE_NUMBER_TO_COUNT);
+
+        final List<RunnerPerformance> runner_names = getOverallResults().stream().
+            map(result -> (Runner) result.getParticipant()).
+            filter(runner -> runner.getClub().equals(club)).
+            filter(runner -> runner.getCategory().getGender().equals(gender)).
+            limit(number_to_count_for_team_prize).
+            map(runner -> new RunnerPerformance(runner.getName(), getGenderPosition(runner.getName(), club, gender))).
+            toList();
+
+        return new TeamPerformance(club, gender, runner_names);
     }
 
     private Set<String> getClubs() {

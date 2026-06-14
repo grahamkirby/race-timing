@@ -169,7 +169,8 @@ class SeriesRaceOutput extends RaceOutput {
 
             if (results.getNumberOfRacesTakenPlace() > 1)
                 headers.add("Total");
-            if (results.possibleToHaveCompleted())
+
+            if (results.possibleToHaveCompleted() && !results.allRacesCompleted())
                 headers.add("Completed");
 
             if (results.multipleRaceCategories())
@@ -199,7 +200,8 @@ class SeriesRaceOutput extends RaceOutput {
 
             if (results.getNumberOfRacesTakenPlace() > 1)
                 elements.add(renderScore(result.getPerformance()));
-            if (results.possibleToHaveCompleted())
+
+            if (results.possibleToHaveCompleted() && !results.allRacesCompleted())
                 elements.add(result.hasCompletedSeries() ? "Y" : "N");
 
             if (results.multipleRaceCategories())

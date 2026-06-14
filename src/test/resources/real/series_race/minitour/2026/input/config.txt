@@ -1,0 +1,11 @@
+YEAR = 2026
+RACE_NAME_FOR_RESULTS = Minitour of Fife
+RACE_NAME_FOR_FILENAMES = minitour
+
+RACES = race1/input/config.txt,race2/input/config.txt,race3/input/config.txt,race4/input/config.txt,race5/input/config.txt
+NUMBER_OF_RACES_IN_SERIES = 5
+MINIMUM_NUMBER_OF_RACES = 5
+
+# Relative to project root directory.
+ENTRY_CATEGORIES_PATH = /src/main/resources/configuration/categories_entry_individual_junior.csv
+PRIZE_CATEGORIES_PATH = /src/main/resources/configuration/categories_prize_individual_junior.csv

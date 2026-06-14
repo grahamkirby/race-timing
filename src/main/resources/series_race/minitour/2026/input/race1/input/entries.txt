@@ -1,0 +1,154 @@
+1	Alfie Blackwood	Fife Athletic Club	MU13
+2	Jack Bradwell		MU13
+3	Billy Brady	Anster Haddies	MU13
+4	Arthur Broadhurst		MU13
+5	Laila Carmichael	Bell Baxter School	FU13
+6	Benjamin Corbett		MU13
+7	Thomas Crawford		MU13
+8	Megan Dalrymple		FU13
+9	Archie Drummond		MU13
+10	Alfie Edwards	East Fife Triathlon Club	MU13
+11	Theodore Edwards		MU13
+12	Orla Ennis	East Fife Triathlon Club	FU13
+13	Lachlann Fordyce	Fife Athletic Club	MU13
+14	Declan Greer		MU13
+15	Eden Hall		FU13
+16	Alix Harrison		FU13
+17	Michael Jamieson	Castlehill Primary School	MU13
+18	Phoebe Jones	Dunfermline Track and Field	FU13
+19	Nico Kitching		MU13
+20	Serena Konig	Fife Athletic Club	FU13
+21	Angus Logan		MU13
+22	Sadie MacGregor	Falkland Primary School	FU13
+23	Sofia Mackenzie		FU13
+24	Alice Maitland		FU13
+25	Alice Sophie Metayer		FU13
+26	Agnes Olliver		FU13
+27	Lucy Redfern		FU13
+28	Amelia Rees Jones	Canongate Primary School	FU13
+29	Phoebe Scanlon	East Fife Triathlon Club	FU13
+30	Amelia Stephen	Fife Athletic Club	FU13
+31	Ruaridh Stone	East Fife Triathlon Club	MU13
+32	Annie Strang	Fife Athletic Club	FU13
+33	Isabelle Tello		FU13
+34	William Valentine	Castlehill Primary School	MU13
+35	Felix Watters	Fife Athletic Club	MU13
+36	Fraser Whittingham		MU13
+37	Amelie Wild	East Fife Triathlon Club	FU13
+38	John Brady	Anster Haddies	MU15
+39	Sebastian Corbett		MU15
+40	Samantha Cunningham	Fife Athletic Club	FU15
+41	Clark Francis		MU15
+42	Orla Gage	Anster Haddies	FU18
+43	Ayla Gordon	Fife Athletic Club	FU15
+44	Katie Gourley	Fife Athletic Club	FU18
+45	Jenna Graham		FU15
+46	Lexi Graham	Wormit Runners	FU15
+47	Logan Graham	Fife Athletic Club	MU18
+48	Tori Graham		FU18
+49	Cole Gray	Dunfermline Track and Field	MU15
+50	Frankie Harrison		FU18
+51	Francesca Jarrett	Fife Athletic Club	FU15
+52	Isla Kinnaird	Fife Athletic Club	FU18
+53	Murray Kinnaird	Fife Athletic Club	MU15
+54	Vienna Kitching		FU15
+55	Lewis Laws		MU18
+56	Eddie Niven	Fife Athletic Club	MU15
+57	Magnus Niven		MU18
+58	Bella Olliver		FU15
+59	Orla Olliver		FU15
+60	Euan Patrick		MU15
+61	Summer Ramshaw	Fife Athletic Club	FU15
+62	Sophie Robertson		FU18
+63	Cameron Seeley	East Fife Triathlon Club	MU15
+64	James Smith		MU15
+65	Joey Smith	Fife Athletic Club	MU18
+66	Anna Torrance		FU18
+67	Rory Turner	Bell Baxter School	MU18
+68	Lewis Whittingham	Fife Athletic Club	MU18
+69	Alfie Whyte	Dunfermline Track and Field	MU15
+70	Hal Arita		MU15
+101	Ellie Adams	Fife Athletic Club	FU11
+102	Angus Baikie		MU9
+103	Ingrid Beaton	East Fife Triathlon Club	FU11
+104	Isla Beere		FU11
+105	Neave Beere		FU9
+106	Lola Rowan Bowditch		FU11
+107	Zooey Broadbent	Lawhead Primary School	MU9
+108	Alfie Brown	Fife Athletic Club	MU11
+109	Bea Burns		FU9
+110	Harry Cairns		MU11
+111	Elliot Calcutt		MU9
+112	Susannah Corbett		FU11
+113	Lucas Cox	Castlehill Primary School	MU9
+114	Peter Crawford		MU11
+115	William Crawford	Fife Athletic Club	MU9
+116	Jude Deegan	Lawhead Primary School	MU9
+117	Rowan Deegan	Lawhead Primary School	FU11
+118	Freya Dobryden		FU9
+119	Alexander Donald		MU11
+120	Betsy Edwards		FU9
+121	Reuben Edwards	Fife Athletic Club	MU11
+122	Arlo Ennis	East Fife Triathlon Club	MU9
+123	Duncan Entwistle	Newport Primary School	MU9
+124	Rowan Ferguson		MU9
+125	Ruaridh Ferguson	Fife Athletic Club	MU11
+126	Struan Ferguson	Fife Athletic Club	MU11
+127	Rosa Francis		FU11
+128	Isaac Gannon	East Fife Triathlon Club	MU11
+129	Orla Gibb		FU9
+130	Isla Glasse-Davies		FU11
+131	Cain Gray	Capshard Primary School	MU9
+132	Raife Hall	Fife Athletic Club	MU9
+133	Finn Harley	Fife Athletic Club	MU9
+134	Mark Harley	Fife Athletic Club	MU11
+135	Orla Jack	Newport Primary School	FU9
+136	Rory Jack	Newport Primary School	MU11
+137	Thomas Jakeman	Lawhead Primary School	MU9
+138	James Jones		MU9
+139	Magnus Kilpatrick	Fife Athletic Club	MU11
+140	Callum Knighting		MU11
+141	James Knighting		MU11
+142	Innes Lehmann	Fife Athletic Club	MU11
+143	James Logan		MU11
+144	Hector Luchetti	St Leonards School	MU11
+145	Eamon MacGregor	Falkland Primary School	MU9
+146	Ramsay Meiklem	Wormit Runners	MU11
+147	Leonie Helena Metayer		FU11
+148	Jamie Milne	Lawhead Primary School	MU11
+149	Huwbie Morris	Madrascals Rugby	MU9
+150	Morgan Morris		MU11
+151	Bea Niven	Fife Athletic Club	FU9
+152	Angus O’Hare		MU11
+153	Bernadette Olliver		FU11
+154	Maisie Patterson	Canongate Primary School	FU9
+155	Harper Querns	Fife Athletic Club	FU11
+156	Skye Querns	Fife Athletic Club	FU11
+157	John Rae	Canongate Primary School	MU9
+158	Sam Rainey	Anster Haddies	MU11
+159	Zach Ramshaw	Fife Athletic Club	MU11
+160	James Redfern		MU9
+161	Lydia Rees Jones	Canongate Primary School	FU9
+162	Euan Robertson	Fife Athletic Club	MU9
+163	Henrik Scanlon	East Fife Triathlon Club	MU11
+164	Kerr Seeley	East Fife Triathlon Club	MU9
+165	Ruairi Seeley	East Fife Triathlon Club	MU11
+166	Ethan Sharp	Fife Athletic Club	MU9
+167	Peggy Smart	East Fife Triathlon Club	FU11
+168	Frederick Sproson	Lawhead Primary School	MU9
+169	Theodore Sproson	Lawhead Primary School	MU11
+170	Alice Steven	Fife Athletic Club	FU9
+171	Oliver Steven	Fife Athletic Club	MU11
+172	Peter Stojanovic-Weaver		MU9
+173	Noah Stone	East Fife Triathlon Club	MU11
+174	Hugo Strachan	Fife Athletic Club	MU11
+175	Maggie Strachan	Fife Athletic Club	FU9
+176	Mac Strang	Fife Athletic Club	MU11
+177	Zoe Tello	Canongate Primary School	FU11
+178	Olive Thomson	Dunbog Primary School	FU11
+179	Connor Turner	Letham Primary School	MU9
+180	Frankie Watters	Newport Primary School	FU11
+181	Charlotte Waugh	Perth Strathtay Harriers	FU11
+182	Margo Williamson	St Leonards School	FU9
+183	Andrew Wilson		MU11
+184	Joe Wilson		MU9
