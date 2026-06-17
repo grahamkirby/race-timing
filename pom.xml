@@ -42,7 +42,8 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>6.1.0</version>
+<!--            <version>6.1.0</version>-->
+            <version>5.9.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -58,6 +59,12 @@
             <artifactId>equalsverifier</artifactId>
             <version>4.5</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.code-intelligence</groupId>
+            <artifactId>jazzer-junit</artifactId>
+            <version>0.30.0</version>
         </dependency>
 
     </dependencies>

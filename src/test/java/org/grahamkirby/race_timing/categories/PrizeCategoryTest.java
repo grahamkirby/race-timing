@@ -17,7 +17,11 @@
  */
 package org.grahamkirby.race_timing.categories;
 
+import com.code_intelligence.jazzer.junit.FuzzTest;
+import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,5 +52,29 @@ public class PrizeCategoryTest {
 
         assertEquals(0, category1.compareTo(category3));
         assertEquals(0, category3.compareTo(category1));
+    }
+
+    @FuzzTest
+    void fuzzNewPrizeCategory(@NotNull final String components) {
+
+        try {
+            new PrizeCategory(components);
+        }
+        catch (final RuntimeException e) {
+            if (!messageIsExpected(e.getMessage()))
+                throw e;
+        }
+    }
+
+    private final List<String> expected_exception_message_roots = List.of(
+        "too few category elements",
+        "invalid age range for category",
+        "illegal age range"
+    );
+
+    private boolean messageIsExpected(final String message) {
+        for (final String s : expected_exception_message_roots)
+            if (message.startsWith(s)) return true;
+        return false;
     }
 }

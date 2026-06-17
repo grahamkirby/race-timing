@@ -54,11 +54,23 @@ public abstract class Category {
 
     Category(final String components) {
 
-        final String[] parts = components.split(",");
+        final String[] parts = components.split(",", -1);
+
+        if (parts.length <= MAXIMUM_AGE_INDEX)
+            throw new RuntimeException("too few category elements");
 
         long_name = parts[LONG_NAME_INDEX];
         short_name = parts[SHORT_NAME_INDEX];
-        age_range = new AgeRange(Integer.parseInt(parts[MINIMUM_AGE_INDEX]), Integer.parseInt(parts[MAXIMUM_AGE_INDEX]));
+
+        final String minimum_age_as_string = parts[MINIMUM_AGE_INDEX];
+        final String maximum_age_as_string = parts[MAXIMUM_AGE_INDEX];
+
+        try {
+            age_range = new AgeRange(Integer.parseInt(minimum_age_as_string), Integer.parseInt(maximum_age_as_string));
+        }
+        catch (NumberFormatException _) {
+            throw new RuntimeException("invalid age range for category: " + minimum_age_as_string + ", " + maximum_age_as_string);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

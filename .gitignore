@@ -2,11 +2,10 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-arcmutate-licence.txt
-src/test/history.txt
 
 ### IntelliJ IDEA ###
 .idea/
 
 ### Mac OS ###
 .DS_Store
+/.cifuzz-corpus/

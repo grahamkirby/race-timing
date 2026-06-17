@@ -53,7 +53,10 @@ public final class PrizeCategory extends Category {
 
         super(components);
 
-        final String[] elements = components.split(",");
+        final String[] elements = components.split(",", -1);
+
+        if (elements.length <= GROUP_INDEX)
+            throw new RuntimeException("too few category elements");
 
         eligible_genders = getGenders(elements);
         number_of_prizes = Integer.parseInt(elements[PRIZES_INDEX]);
