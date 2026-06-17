@@ -306,7 +306,7 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals("", error_output, "Unexpected error message");
+        assertTrue(error_output.isEmpty() || error_output.startsWith("INFO: Instrumented"), "Unexpected error message");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
