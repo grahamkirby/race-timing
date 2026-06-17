@@ -189,9 +189,12 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals("missing config file: '" + missing_config_path + "'" + LINE_SEPARATOR + LINE_SEPARATOR,
-            error_output,
-            "Expected error message was not generated");
+        // Don't just check for equality since fuzzing framework may output some unwanted logging to stderr.
+        assertTrue(error_output.contains("missing config file: '" + missing_config_path + "'"), "Expected error message was not generated");
+
+//        assertEquals("missing config file: '" + missing_config_path + "'" + LINE_SEPARATOR + LINE_SEPARATOR,
+//            error_output,
+//            "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -216,9 +219,8 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        assertEquals("No applicable race type for config file" + LINE_SEPARATOR + LINE_SEPARATOR,
-            error_output,
-            "Expected error message was not generated");
+        // Don't just check for equality since fuzzing framework may output some unwanted logging to stderr.
+        assertTrue(error_output.contains("No applicable race type for config file"), "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -306,6 +308,8 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
+        // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
+        // for an error message.
         assertTrue(error_output.isEmpty() || error_output.startsWith("INFO: Instrumented"), "Unexpected error message");
     }
 
