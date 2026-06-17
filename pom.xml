@@ -42,7 +42,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-<!--            <version>6.1.0</version>-->
             <version>5.9.0</version>
             <scope>test</scope>
         </dependency>
@@ -107,8 +106,7 @@
                                 <exclude>**/README</exclude>
                                 <exclude>src/test/resources/**</exclude>
                                 <exclude>src/main/resources/**</exclude>
-                                <exclude>arcmutate-licence.txt</exclude>
-                                <exclude>src/test/history.txt</exclude>
+                                <exclude>.cifuzz-corpus/**</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
