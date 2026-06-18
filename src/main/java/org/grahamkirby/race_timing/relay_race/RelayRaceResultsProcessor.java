@@ -49,8 +49,8 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
     //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
-                                         Duration previous_finish, Duration next_finish) {
+    public record TeamSummaryAtPosition(int team_number, int finishes_before, int finishes_after,
+                                        Duration previous_finish, Duration next_finish) {
     }
 
     private record ContiguousSequence(int start_index, int end_index) {
@@ -319,11 +319,11 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
         final boolean mass_start_time_is_set = mass_start_time != null;
         final boolean previous_runner_finish_time_is_set = previous_runner_finish_time != null;
 
-        final boolean previous_runner_not_finished_by_mass_start = mass_start_time_is_set &&
+        final boolean previous_runner_not_finished_by_time_of_mass_start = mass_start_time_is_set &&
             (!previous_runner_finish_time_is_set || previous_runner_finish_time.minus(mass_start_time).isPositive());
         final boolean first_leg = leg_index == 0;
 
-        return !first_leg && !individual_start_time_is_set && previous_runner_not_finished_by_mass_start;
+        return !first_leg && !individual_start_time_is_set && previous_runner_not_finished_by_time_of_mass_start;
     }
 
     private static int findIndexOfNextUnfilledLegResult(final List<? extends RelayRaceLegResult> leg_results) {

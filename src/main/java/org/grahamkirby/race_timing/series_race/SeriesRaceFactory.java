@@ -69,15 +69,11 @@ public class SeriesRaceFactory extends RaceFactory {
 
         config.addConfigValidator(SeriesRaceConfigValidator::new);
 
-        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES)) {
-
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_TIMES))
             config.addConfigAdjuster(IndividualTimesConfigAdjuster::new);
-        }
 
-        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS)) {
-
+        if (config.containsKey(KEY_INDICATIVE_OF_SERIES_RACE_USING_INDIVIDUAL_POSITIONS))
             config.addConfigAdjuster(IndividualPositionsConfigAdjuster::new);
-        }
 
         return config;
     }

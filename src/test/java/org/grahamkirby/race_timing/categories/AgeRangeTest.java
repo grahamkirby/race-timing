@@ -17,7 +17,11 @@
  */
 package org.grahamkirby.race_timing.categories;
 
+import com.code_intelligence.jazzer.junit.FuzzTest;
+import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,5 +88,33 @@ public class AgeRangeTest {
         assertEquals(-1, new AgeRange(20, 30).compareByDecreasingGenerality(new AgeRange(22, 30)));
         assertEquals(-1, new AgeRange(20, 30).compareByDecreasingGenerality(new AgeRange(22, 28)));
         assertEquals(1, new AgeRange(22, 28).compareByDecreasingGenerality(new AgeRange(20, 30)));
+    }
+
+    @FuzzTest
+    void fuzzPredicates(final int minimum_age1, final int maximum_age1, final int minimum_age2, final int maximum_age2) {
+
+        try {
+            final AgeRange range1 = new AgeRange(minimum_age1, maximum_age1);
+            final AgeRange range2 = new AgeRange(minimum_age2, maximum_age2);
+
+            range1.disjoint(range2);
+            range1.intersectsWith(range2);
+            range1.contains(range2);
+            range1.compareByDecreasingGenerality(range2);
+        }
+        catch (final RuntimeException e) {
+            if (!messageIsExpected(e.getMessage()))
+                throw e;
+        }
+    }
+
+    private final List<String> expected_exception_message_roots = List.of(
+        "illegal age range"
+    );
+
+    private boolean messageIsExpected(final String message) {
+        for (final String s : expected_exception_message_roots)
+            if (message.startsWith(s)) return true;
+        return false;
     }
 }

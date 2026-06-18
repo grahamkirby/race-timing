@@ -23,42 +23,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PrizeCategoryTest {
-
-    @Test
-    public void generalityTest() {
-
-        // Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, [Eligible Clubs, default all], [Exclusive (Y/N), default Y]
-
-        final PrizeCategory category1 = new PrizeCategory(",,Male,20,40,1,General");
-        final PrizeCategory category2 = new PrizeCategory(",,Male,25,30,1,General");
-        final PrizeCategory category3 = new PrizeCategory(",,Female,20,40,1,General");
-        final PrizeCategory category4 = new PrizeCategory(",,Female/Male,20,40,1,General");
-        final PrizeCategory category5 = new PrizeCategory(",,Female/Male,25,30,1,General");
-
-        assertEquals(0, category1.compareTo(category1));
-        assertEquals(0, category5.compareTo(category5));
-
-        assertEquals(-1, category1.compareTo(category2));
-        assertEquals(1, category2.compareTo(category1));
-
-        assertEquals(-1, category4.compareTo(category1));
-        assertEquals(1, category1.compareTo(category4));
-
-        assertEquals(-1, category1.compareTo(category5));
-        assertEquals(1, category5.compareTo(category1));
-
-        assertEquals(0, category1.compareTo(category3));
-        assertEquals(0, category3.compareTo(category1));
-    }
+public class EntryCategoryTest {
 
     @FuzzTest
-    void fuzzNewPrizeCategory(@NotNull final String components) {
+    void fuzzNewEntryCategory(@NotNull final String components) {
 
         try {
-            new PrizeCategory(components);
+            new EntryCategory(components);
         }
         catch (final RuntimeException e) {
             if (!messageIsExpected(e.getMessage()))
@@ -69,8 +42,7 @@ public class PrizeCategoryTest {
     private final List<String> expected_exception_message_roots = List.of(
         "too few category elements",
         "invalid age range for category",
-        "illegal age range",
-        "invalid number of prizes"
+        "illegal age range"
     );
 
     private boolean messageIsExpected(final String message) {

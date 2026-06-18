@@ -127,7 +127,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static SeriesRaceCategory makeRaceCategory(final String line) {
+    private SeriesRaceCategory makeRaceCategory(final String line) {
 
         final String[] elements = line.split(",");
 
@@ -152,7 +152,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
         race_categories = race_categories_path != null ?
             readAllLines(race_categories_path).stream().
                 filter(line -> !line.startsWith(COMMENT_SYMBOL)).
-                map(SeriesRaceResultsProcessor::makeRaceCategory).
+                map(this::makeRaceCategory).
                 toList() :
 
             List.of();

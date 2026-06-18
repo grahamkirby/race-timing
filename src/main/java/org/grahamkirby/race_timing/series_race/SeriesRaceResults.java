@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.RaceResults;
 
 import java.util.List;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface SeriesRaceResults extends RaceResults {
 
     boolean multipleClubs();

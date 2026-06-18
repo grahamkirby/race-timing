@@ -475,9 +475,7 @@ public class RelayRace implements SingleRaceInternal {
         final int position = Integer.parseInt(elements[1]);
         final RawResult raw_result = raw_results.get(position - 1);
 
-        if (elements[2].equals(UNKNOWN_BIB_NUMBER_INDICATOR)) {
-            raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
-        }
+        if (elements[2].equals(UNKNOWN_BIB_NUMBER_INDICATOR)) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
         else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[2]));
 
         if (elements[3].equals(UNKNOWN_TIME_INDICATOR)) raw_result.setRecordedFinishTime(null);
@@ -576,16 +574,16 @@ public class RelayRace implements SingleRaceInternal {
 
     private void setMassStartTimes() {
 
-        final Consumer<Object> process_mass_start_times = mass_start_string -> {
+        config.processConfigIfPresent(KEY_MASS_START_TIMES, this::processMassStartTimes);
+    }
 
-            // Example: MASS_START_TIMES = 3/02:42:33,4/03:34:50
-            final String[] mass_start_elapsed_times_strings = ((String) mass_start_string).split(",");
+    private void processMassStartTimes(final Object mass_start_string) {
 
-            for (final String bib_time_as_string : mass_start_elapsed_times_strings)
-                setMassStartTime(bib_time_as_string);
-        };
+        // Example: MASS_START_TIMES = 3/02:42:33,4/03:34:50
+        final String[] mass_start_elapsed_times_strings = ((String) mass_start_string).split(",");
 
-        config.processConfigIfPresent(KEY_MASS_START_TIMES, process_mass_start_times);
+        for (final String bib_time_as_string : mass_start_elapsed_times_strings)
+            setMassStartTime(bib_time_as_string);
     }
 
     private void setMassStartTime(final String bib_time_as_string) {

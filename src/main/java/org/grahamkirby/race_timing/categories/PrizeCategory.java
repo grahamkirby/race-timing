@@ -59,7 +59,14 @@ public final class PrizeCategory extends Category {
             throw new RuntimeException("too few category elements");
 
         eligible_genders = getGenders(elements);
-        number_of_prizes = Integer.parseInt(elements[PRIZES_INDEX]);
+
+        try {
+            number_of_prizes = Integer.parseInt(elements[PRIZES_INDEX]);
+        }
+        catch (NumberFormatException _) {
+            throw new RuntimeException("invalid number of prizes: " + elements[PRIZES_INDEX]);
+        }
+
         group = elements[GROUP_INDEX];
         eligible_clubs = getEligibleClubs(elements);
         exclusive = getExclusive(elements);

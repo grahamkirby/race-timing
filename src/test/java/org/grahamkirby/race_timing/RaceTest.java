@@ -18,11 +18,15 @@
 package org.grahamkirby.race_timing;
 
 
+import com.code_intelligence.jazzer.api.FuzzedDataProvider;
+import com.code_intelligence.jazzer.junit.FuzzTest;
+import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import org.grahamkirby.race_timing.common.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -157,7 +161,7 @@ public class RaceTest {
 
     @ParameterizedTest
     @MethodSource("getTestCases")
-    public void testFromDirectories(final String test_directory_path_string) throws Exception {
+    public void testFromDirectory(final String test_directory_path_string) throws Exception {
 
         configureTest(test_directory_path_string);
 
@@ -167,6 +171,41 @@ public class RaceTest {
 
         // Test has passed if this line is reached.
         failed_test = false;
+    }
+
+    @FuzzTest
+    @Disabled
+    // Disabled since no useful test cases found within reasonable time budget.
+    public void fuzzTestFromDirectory(@NotNull final FuzzedDataProvider data) throws Exception {
+
+        resources_input_directory = Files.createTempDirectory(null).resolve("input");
+        Files.createDirectories(resources_input_directory);
+
+        final Path config_path = resources_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
+        final Path entries_path = resources_input_directory.resolve("entries.txt");
+        final Path rawtimes_path = resources_input_directory.resolve("rawtimes.txt");
+
+        test_input_directory = test_directory.resolve("input");
+        test_output_directory = test_directory.resolve("output");
+        config_file_path = test_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
+
+        final String config_file_content = """
+            YEAR = 2023
+            RACE_NAME_FOR_RESULTS = Balmullo Trail Race
+            RACE_NAME_FOR_FILENAMES = balmullo
+            ENTRIES_PATH = entries.txt
+            RAW_RESULTS_PATH = rawtimes.txt""";
+
+        final String fuzzed_entries_file_content = data.consumeAsciiString(1000);
+        final String fuzzed_rawtimes_file_content = data.consumeAsciiString(1000);
+
+        Files.writeString(config_path, config_file_content);
+        Files.writeString(entries_path, fuzzed_entries_file_content);
+        Files.writeString(rawtimes_path, fuzzed_rawtimes_file_content);
+
+        configureDirectoryContents(resources_input_directory);
+
+        RaceFactory.main(new String[]{config_file_path.toString()});
     }
 
     @Test
@@ -191,10 +230,6 @@ public class RaceTest {
 
         // Don't just check for equality since fuzzing framework may output some unwanted logging to stderr.
         assertTrue(error_output.contains("missing config file: '" + missing_config_path + "'"), "Expected error message was not generated");
-
-//        assertEquals("missing config file: '" + missing_config_path + "'" + LINE_SEPARATOR + LINE_SEPARATOR,
-//            error_output,
-//            "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;

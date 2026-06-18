@@ -56,26 +56,29 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
             KEY_TIME_TRIAL_RUNNERS_PER_WAVE));
 
         // Each DNF string contains single bib number.
-        validateDNFRecords(config.getString(KEY_DNF_FINISHERS), config.getConfigPath());
-        validateMassStartTimes(config.getString(KEY_MASS_START_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), config.getConfigPath());
+        validateDNFRecords(config.getString(KEY_DNF_FINISHERS), config.getConfigPath().getFileName().toString());
+        validateMassStartTimes(config.getString(KEY_MASS_START_TIMES), (int) config.get(KEY_NUMBER_OF_LEGS), config.getConfigPath().getFileName().toString());
     }
 
-    private static void validateDNFRecords(final String dnf_string, final Path config_file_path) {
+    static void validateDNFRecords(final String dnf_string, final String config_file_name) {
 
         if (dnf_string != null && !dnf_string.isBlank())
             for (final String individual_dnf_string : dnf_string.split(",")) {
                 try {
                     final String[] elements = individual_dnf_string.split("/");
+                    if (elements.length < 2)
+                        throw new RuntimeException("invalid entry '" + dnf_string + "' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_name + "'");
+
                     Integer.parseInt(elements[0]);
                     Integer.parseInt(elements[1]);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException("invalid entry '" + dnf_string + "' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_path.getFileName() + "'", e);
+                    throw new RuntimeException("invalid entry '" + dnf_string + "' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_name + "'", e);
                 }
             }
     }
 
-    private void validateMassStartTimes(final String mass_start_elapsed_times, final int number_of_legs, final Path config_file_path) {
+    static void validateMassStartTimes(final String mass_start_elapsed_times, final int number_of_legs, final String config_file_name) {
 
         Duration previous_time = null;
 
@@ -87,13 +90,13 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
                 final Duration mass_start_time;
                 try {
                     if (split.length < 2)
-                        throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_path.getFileName() + "'");
+                        throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
 
                     final String time_string = split[1];
                     mass_start_time = NormalisationProcessor.parseTime(time_string);
 
                 } catch (final DateTimeParseException _) {
-                    throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_path.getFileName() + "'");
+                    throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
                 }
 
                 try {
@@ -101,15 +104,15 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
 
                     // A mass start for leg 1 is invalid though the leg number is valid.
                     if (leg_number <= 1 || leg_number > number_of_legs)
-                        throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_path.getFileName() + "'");
+                        throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
                 }
                 catch (NumberFormatException _) {
-                    throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_path.getFileName() + "'");
+                    throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
                 }
 
                 // Start time for one mass start must be strictly less than start time for the next.
                 if (previous_time != null && previous_time.compareTo(mass_start_time) >= 0)
-                    throw new RuntimeException("invalid mass start time order for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_path.getFileName() + "'");
+                    throw new RuntimeException("invalid mass start time order for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
 
                 previous_time = mass_start_time;
             }
