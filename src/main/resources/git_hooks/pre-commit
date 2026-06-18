@@ -2,7 +2,7 @@
 
 # Add to .git/hooks/pre-commit in project directory.
 
-if grep -q '^USER_TEST_DIRECTORY_PATH =' "src/test/resources/test_config.txt"; then
+if grep -q '^ *USER_TEST_DIRECTORY_PATH =' "src/test/resources/test_config.txt"; then
     echo "Commit blocked: debug mode is enabled."
     exit 1
 fi
