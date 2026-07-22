@@ -3,26 +3,26 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 2,Jamie Lessels,Fife AC,MS,198,199,200,198,795,Y
 3,Ruan Van Rensburg,Fife AC,MS,196,196,197,199,788,Y
 4,Christine Wilson,Fife AC,F40,197,195,194,197,783,Y
-5,Adam Hart,Dundee Road Runners,MS,194,193,194,197,778,Y
-6,Margaret Martin,Fife AC,F60,191,190,190,194,765,Y
-7,Alison Gelly,Dundee Road Runners,F60,192,189,189,192,762,Y
-8=,Rhonda Manning,Dundee Hawkhill Harriers,F50,187,188,186,193,754,Y
-8=,Tom Rainey,Anster Haddies,M40,188,190,188,188,754,Y
-10,Stephen McQuistin,Anster Haddies,MS,185,188,185,193,751,Y
-11,Innes Bracegirdle,Fife AC,F70,186,187,183,189,745,Y
-12,Michael Mitchell,Dundee Road Runners,M50,183,187,183,187,740,Y
-13,Fiona Findlay,Anster Haddies,FS,181,180,181,188,730,Y
-14,David Burgess,Anster Haddies,M50,181,184,181,183,729,Y
-15,David Dunleavey,Stratheden,M60,174,170,168,168,680,Y
-16,David Baird,Dundee Road Runners,M40,170,171,163,161,665,Y
-17,Jeff Gunnell,Unatt.,M70,165,168,159,159,651,Y
-18,George Findlay,Anster Haddies,M60,163,167,158,160,648,Y
-19,Keith Gelly,Dundee Road Runners,M50,161,164,156,156,637,Y
-20,Mairi Littleson,Dundee Road Runners,FS,200,199,197,-,596,N
-21,David Webster,Dundee Road Runners,MS,197,-,198,200,595,N
-22,Orla Gage,Anster Haddies,FU20,196,196,196,-,588,N
-23,Sam Fernando,Fife AC,MS,195,195,196,-,586,N
-24,Jane O'Donnell,Dundee Road Runners,F40,195,194,195,-,584,N
+5,Jane O'Donnell,Dundee Road Runners,F40,195,194,195,195,779,Y
+6,Adam Hart,Dundee Road Runners,MS,194,193,194,197,778,Y
+7,Margaret Martin,Fife AC,F60,191,190,190,194,765,Y
+8,Alison Gelly,Dundee Road Runners,F60,192,189,189,192,762,Y
+9=,Rhonda Manning,Dundee Hawkhill Harriers,F50,187,188,186,193,754,Y
+9=,Tom Rainey,Anster Haddies,M40,188,190,188,188,754,Y
+11,Stephen McQuistin,Anster Haddies,MS,185,188,185,193,751,Y
+12,Innes Bracegirdle,Fife AC,F70,186,187,183,189,745,Y
+13,Michael Mitchell,Dundee Road Runners,M50,183,187,183,187,740,Y
+14,Fiona Findlay,Anster Haddies,FS,181,180,181,188,730,Y
+15,David Burgess,Anster Haddies,M50,181,184,181,183,729,Y
+16,David Dunleavey,Stratheden,M60,174,170,168,168,680,Y
+17,David Baird,Dundee Road Runners,M40,170,171,163,161,665,Y
+18,Jeff Gunnell,Unatt.,M70,165,168,159,159,651,Y
+19,George Findlay,Anster Haddies,M60,163,167,158,160,648,Y
+20,Keith Gelly,Dundee Road Runners,M50,161,164,156,156,637,Y
+21,Mairi Littleson,Dundee Road Runners,FS,200,199,197,-,596,N
+22,David Webster,Dundee Road Runners,MS,197,-,198,200,595,N
+23,Orla Gage,Anster Haddies,FU20,196,196,196,-,588,N
+24,Sam Fernando,Fife AC,MS,195,195,196,-,586,N
 25,Patrick O'Hare,Fife AC,MS,191,194,195,-,580,N
 26,Laura Darling-Brackenridge,Dundee Road Runners,F40,194,192,191,-,577,N
 27=,Danielle MacDermid,Dundee Hawkhill Harriers,FS,-,191,184,190,565,N
@@ -79,7 +79,6 @@ Pos,Runner,Club,Category,St Andrews 5M,Strathkinness-Blebocraigs,Hill of Tarvit,
 -,Fiona Callaghan,Dundee Road Runners,FS,-,197,-,-,197,N
 -,Isla Kinnaird,Fife AC,FU20,-,-,-,196,196,N
 -,Glen Barclay,Fife AC,MS,-,-,-,195,195,N
--,Jane O’Donnell,Dundee Road Runners,F40,-,-,-,195,195,N
 -,Graeme McDowall,Fife AC,M50,-,-,-,194,194,N
 -,Gill Beere,Unatt.,FS,-,193,-,-,193,N
 -,Kirsty Gray,Kinross Road Runners,F50,193,-,-,-,193,N

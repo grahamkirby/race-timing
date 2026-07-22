@@ -33,6 +33,16 @@
 
     <dependencies>
 
+        <!-- These override insecure transitive dependencies -->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>[2.21.5,)</version>
+        </dependency>
+
+        <!-- Direct dependencies -->
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
