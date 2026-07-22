@@ -31,7 +31,7 @@ Isla	Kinnaird	Fife AC	FU20	39.35
 Tony	Martin	Fife AC	MV70	39.42
 Paul	Leishman	Fife AC	MV50	39.52
 Scott	Henderson	Dundee RR	MS	39.56
-Jane	O'Donnell	Dundee RR	FV40	40.03
+Jane	O’Donnell	Dundee RR	FV40	40.03
 Graham	Rena	Dundee RR	MV50	40.13
 Daniel	Dutton	Dundee RR	MS	40.43
 Neil	Mitchell	Fife AC	MV50	41.11

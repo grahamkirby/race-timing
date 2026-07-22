@@ -110,8 +110,11 @@ public class NormalisationProcessor {
         final String step1 = replaceAllMapEntries(name, DOUBLE_SPACE_REMOVAL_MAP);
         final String step2 = step1.strip();
 
+        // Replace straight apostrophe with curly apostrophe.
+        final String step3 = step2.replace("'", "’");
+
         // Convert to title case, unless present in stop list.
-        return toTitleCase(step2);
+        return toTitleCase(step3);
     }
 
     /** Cleans name by removing extra whitespace and normalising if present in normalisation file,
