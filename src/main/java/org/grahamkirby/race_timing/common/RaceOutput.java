@@ -23,7 +23,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.categories.PrizeCategory;
 import org.grahamkirby.race_timing.series_race.SeriesRaceResults;
 
@@ -33,6 +32,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -78,6 +78,7 @@ public abstract class RaceOutput {
     protected abstract ResultPrinterGenerator getOverallResultCSVPrinterGenerator();
     protected abstract ResultPrinterGenerator getOverallResultHTMLPrinterGenerator();
     protected abstract ResultPrinterGenerator getPrizeHTMLPrinterGenerator();
+    protected abstract BiFunction<RaceResults, Document, ResultPrinter> getPrizePDFPrinterGenerator();
 
     protected static PdfFont getFont(final String font_name) throws IOException {
 
@@ -226,7 +227,7 @@ public abstract class RaceOutput {
     private void printPrizesHTML(final PrizeCategory category, final OutputStreamWriter writer, final ResultPrinter printer) {
 
         try {
-            writer.append("<p><strong>" + category.getLongName() + "</strong></p>" + LINE_SEPARATOR);
+            writer.append("<p><strong>" + race_results.getNormalisationProcessor().htmlEncode(category.getLongName()) + "</strong></p>" + LINE_SEPARATOR);
 
             final List<? extends RaceResult> category_prize_winners = race_results.getPrizeWinners(category);
             printer.print(category_prize_winners);
@@ -284,8 +285,9 @@ public abstract class RaceOutput {
 
     protected void printPrizesHeaderText(final OutputStreamWriter writer) throws IOException {
 
-        final String header = race_results.getConfig().getString(KEY_RACE_NAME_FOR_RESULTS) +
-            " Results " + race_results.getConfig().getString(KEY_YEAR);
+        final String race_name = race_results.getConfig().getRaceName();
+        final String header = race_name + " Results " + race_results.getConfig().getString(KEY_YEAR);
+
         writer.append(header + LINE_SEPARATOR + underline(header, "=") + LINE_SEPARATOR + LINE_SEPARATOR);
     }
 
@@ -313,13 +315,14 @@ public abstract class RaceOutput {
     protected void printPrizesPDF(final Document document) throws IOException {
 
         final String year = race_results.getConfig().getString(KEY_YEAR);
+        final String race_name = race_results.getConfig().getRaceName();
 
-        final ResultPrinter printer = new PrizeResultPrinterPDF(race_results, document);
+        final ResultPrinter printer = getPrizePDFPrinterGenerator().apply(race_results, document);
 
         final Paragraph section_header = new Paragraph().
             setFont(getFont(PDF_PRIZE_FONT_NAME)).
             setFontSize(PDF_PRIZE_FONT_SIZE).
-            add(race_results.getConfig().get(KEY_RACE_NAME_FOR_RESULTS) + " " + year + " Category Prizes");
+            add(race_name + " " + year + " Category Prizes");
 
         document.add(section_header);
         printPrizes(category -> printPrizesPDF(category, document, printer));
@@ -376,36 +379,6 @@ public abstract class RaceOutput {
         public void printNoResults() throws IOException {
 
             writer.append("No results").append(LINE_SEPARATOR);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final class PrizeResultPrinterPDF extends ResultPrinter {
-
-        private final Document document;
-
-        public PrizeResultPrinterPDF(final RaceResults race, final Document document) {
-
-            super(race, null);
-            this.document = document;
-        }
-
-        @Override
-        public void printResult(final RaceResult result) throws IOException {
-
-            final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
-            final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
-
-            paragraph.add(new Text(result.getPositionString() + ": " + result).setFont(font));
-
-            document.add(paragraph);
-        }
-
-        @Override
-        public void printNoResults() throws IOException {
-
-            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 }

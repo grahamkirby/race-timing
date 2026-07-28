@@ -118,8 +118,8 @@ public final class CategoriesProcessor  {
     public boolean isResultEligibleForPrizeCategory(final EntryCategory entry_category, final String club, final PrizeCategory prize_category) {
 
         return isResultEligibleForPrizeCategoryByGender(entry_category, prize_category) &&
-            isResultEligibleForPrizeCategoryByAge(entry_category, prize_category) &&
-            isResultEligibleForPrizeCategoryByClub(club, prize_category);
+               isResultEligibleForPrizeCategoryByAge(entry_category, prize_category) &&
+               isResultEligibleForPrizeCategoryByClub(club, prize_category);
     }
 
     public List<PrizeCategory> getPrizeCategoriesInDecreasingGeneralityOrder() {
@@ -238,8 +238,8 @@ public final class CategoriesProcessor  {
         // race results may not include entry categories.
 
         return entry_category != null &&
-            entry_category.getAgeRange().getMinimumAge() >= prize_category.getAgeRange().getMinimumAge() &&
-            entry_category.getAgeRange().getMaximumAge() <= prize_category.getAgeRange().getMaximumAge();
+               entry_category.getAgeRange().getMinimumAge() >= prize_category.getAgeRange().getMinimumAge() &&
+               entry_category.getAgeRange().getMaximumAge() <= prize_category.getAgeRange().getMaximumAge();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

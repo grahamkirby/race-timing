@@ -7,5 +7,5 @@ ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
 # Comma-separated sequence of bib-numbers for any runners that have a time
-# recorded but they DNF'd.
+# recorded but they DNF’d.
 DNF_FINISHERS = 6,11

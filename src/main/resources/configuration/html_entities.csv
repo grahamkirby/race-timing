@@ -1,5 +1,8 @@
 # Character, Entity
-’,&acute;
+‘,&lsquo;
+’,&rsquo;
+“,&ldquo;
+”,&rdquo;
 á,&aacute;
 â,&acirc;
 à,&agrave;

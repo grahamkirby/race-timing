@@ -1,7 +1,7 @@
 1	John Smith	Fife AC	MS
 2	Bartosz Thomson	Dundee RR	M50
-3	JackBruce	Dundee Road Runners	MS
-4	Sofia O'Connor	Fife Athletic Club	F50
+3	JackBruce	Dundee 'Road' Runners	MS
+4	Sofia O'Connor	'Fife' Athletic Club	F50
 5	Clark O' Connor		MS
 6	Hailey Dickson:)	Unatt.	FU20
 7	John Smith	None	MU20

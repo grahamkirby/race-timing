@@ -78,6 +78,7 @@ public class RaceFactory {
         for (final Supplier<RaceFactory> specialised_factory : specialised_factories) {
 
             final RaceFactory factory = specialised_factory.get();
+
             if (factory.isValidFor(properties))
                 return factory.makeRace(config_file_path);
         }
@@ -88,7 +89,7 @@ public class RaceFactory {
     // Only used in subclasses.
     public boolean isValidFor(final Properties properties) {
         return properties.containsKey(KEY_YEAR) &&
-            properties.containsKey(KEY_RACE_NAME_FOR_FILENAMES) &&
-            properties.containsKey(KEY_RACE_NAME_FOR_RESULTS);
+               properties.containsKey(KEY_RACE_NAME_FOR_FILENAMES) &&
+               properties.containsKey(KEY_RACE_NAME_FOR_RESULTS);
     }
 }

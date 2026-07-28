@@ -26,7 +26,7 @@ PRIZE_CATEGORIES_PATH = categories_prize_relay.csv
 MASS_START_TIMES = 3/02:42:33,4/03:34:50
 
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
-# recorded but the runners DNF'd the leg.
+# recorded but the runners DNF’d the leg.
 DNF_FINISHERS = 85/2
 
 # Comma-separated sequence of bib-number/leg-number/start-time for all legs that

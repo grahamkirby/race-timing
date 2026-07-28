@@ -13,8 +13,8 @@ Category: Men Open
 ------------------
 
 1: John Smith (Fife Ac) 00:45:37
-2: Clark O' Connor (Unatt.) 00:48:31
-3: Leo McKenzie (Dundee Hawkhill Harriers) 00:51:25
+2: Clark O’ Connor (Unatt.) 00:48:31
+3: Leo McKenzie (Dundee HAWKHILL Harriers) 00:51:25
 
 
 Category: Women Junior
@@ -44,7 +44,7 @@ Category: Men 40-49
 Category: Women 50-59
 ---------------------
 
-1: Sofia O'Connor (Fife AC) 00:49:58
+1: Sofia O’Connor (Fife Ac) 00:49:58
 
 
 Category: Men 50-59
@@ -74,6 +74,6 @@ Category: Women 70-79
 Category: Men 70-79
 -------------------
 
-1: Rhys Müllar (Dundee Hawkhill Harriers) 01:08:49
+1: Rhys Müllar (Dundee HAWKHILL Harriers) 01:08:49
 
 

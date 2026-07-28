@@ -18,6 +18,8 @@
 package org.grahamkirby.race_timing.categories;
 
 
+import org.grahamkirby.race_timing.common.NormalisationProcessor;
+
 /**
  * Parent class for entry category and prize category.
  */
@@ -59,8 +61,8 @@ public abstract class Category {
         if (parts.length <= MAXIMUM_AGE_INDEX)
             throw new RuntimeException("too few category elements");
 
-        long_name = parts[LONG_NAME_INDEX];
-        short_name = parts[SHORT_NAME_INDEX];
+        long_name = NormalisationProcessor.cleanSpacesAndQuotes(parts[LONG_NAME_INDEX]);
+        short_name = NormalisationProcessor.cleanSpacesAndQuotes(parts[SHORT_NAME_INDEX]);
 
         final String minimum_age_as_string = parts[MINIMUM_AGE_INDEX];
         final String maximum_age_as_string = parts[MAXIMUM_AGE_INDEX];

@@ -342,8 +342,8 @@ public class RelayRace implements SingleRaceInternal {
 
     private void validateEntryCategory(final String line) {
 
-        final List<String> elements = Arrays.stream(line.split("\t")).toList();
         final NormalisationProcessor normalisation = getNormalisationProcessor();
+        final List<String> elements = Arrays.stream(line.split("\t")).toList();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
@@ -502,9 +502,9 @@ public class RelayRace implements SingleRaceInternal {
 
         final int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
 
-        final String name = elements.get(TEAM_NAME_INDEX);
-        final EntryCategory category = categories_processor.getEntryCategory(elements.get(CATEGORY_INDEX));
-        final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> getNormalisationProcessor().cleanRunnerName(s)).toList();
+        final String name = NormalisationProcessor.cleanSpacesAndQuotes(elements.get(TEAM_NAME_INDEX));
+        final EntryCategory category = categories_processor.getEntryCategory(NormalisationProcessor.cleanSpacesAndQuotes(elements.get(CATEGORY_INDEX)));
+        final List<String> runners = elements.subList(FIRST_RUNNER_NAME_INDEX, elements.size()).stream().map(s -> normalisation.cleanRunnerName(s)).toList();
 
         final Participant participant = new Team(name, category, runners);
 

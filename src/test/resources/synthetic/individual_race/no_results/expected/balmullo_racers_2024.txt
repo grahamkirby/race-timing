@@ -1,7 +1,7 @@
 1	Smith	John	Fife AC	M		MS
 2	Thomson	Bartosz	Dundee Road Runners	M		M50
 3	Jackbruce	Jackbruce	Dundee Road Runners	M		MS
-4	O'Connor	Sofia	Fife AC	F		F50
+4	O’Connor	Sofia	Fife AC	F		F50
 5	Connor	Clark	Unatt.	M		MS
 6	Dickson:)	Hailey	Unatt.	F		FU20
 7	Smith	John	Unatt.	M		MU20

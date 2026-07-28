@@ -22,7 +22,7 @@ import java.time.Duration;
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
 import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
-public class DurationPerformance extends Performance{
+public class DurationPerformance extends Performance {
 
     private final Duration performance;
 

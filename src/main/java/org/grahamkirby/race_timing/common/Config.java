@@ -19,9 +19,8 @@ package org.grahamkirby.race_timing.common;
 
 import com.itextpdf.io.font.constants.StandardFonts;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.function.Consumer;
@@ -182,10 +181,10 @@ public class Config {
         if (!Files.exists(config_file_path))
             throw new RuntimeException("missing config file: '" + config_file_path + "'");
 
-        try (final InputStream stream = Files.newInputStream(config_file_path)) {
+        try (final InputStreamReader reader = new InputStreamReader(Files.newInputStream(config_file_path), StandardCharsets.UTF_8)) {
 
             final Properties properties = new Properties();
-            properties.load(stream);
+            properties.load(reader);
             return properties;
         }
     }
@@ -325,6 +324,11 @@ public class Config {
         // which is at the same level as the "output" directory.
 
         return config_path.getParent().resolveSibling(OUTPUT_DIRECTORY_NAME);
+    }
+
+    public String getRaceName() {
+
+        return NormalisationProcessor.cleanSpacesAndQuotes(getString(KEY_RACE_NAME_FOR_RESULTS));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

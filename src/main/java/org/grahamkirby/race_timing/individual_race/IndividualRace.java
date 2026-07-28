@@ -42,6 +42,11 @@ public class IndividualRace implements SingleRaceInternal {
     private static final int NUMBER_OF_OVERALL_RESULTS_COLUMNS = 4;
     private static final int DUMMY_BIB_NUMBER = 0;
 
+    private static final String POCKET_TIMER_RACERS_FILENAME = "racers";
+    private static final String DUMMY_RAWTIMES_FILENAME = "dummy_rawtimes";
+    private static final Duration DUMMY_WINNING_TIME = Duration.ofMinutes(10);
+    private static final Duration DUMMY_INTERVAL = Duration.ofSeconds(12);
+
     private List<RaceEntry> entries;
     private List<RawResult> raw_results;
     private List<RaceResult> overall_results;
@@ -119,20 +124,20 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public void outputPreRaceFiles() throws IOException {
 
-        final OutputStream stream1 = results_output.getOutputStream("racers", TEXT_FILE_SUFFIX);
+        final OutputStream stream1 = results_output.getOutputStream(POCKET_TIMER_RACERS_FILENAME, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream1)) {
             for (final String line : makeRacerList(entries))
                 writer.append(line + LINE_SEPARATOR);
         }
 
-        final OutputStream stream2 = results_output.getOutputStream("dummy_rawtimes", TEXT_FILE_SUFFIX);
+        final OutputStream stream2 = results_output.getOutputStream(DUMMY_RAWTIMES_FILENAME, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream2)) {
-            Duration dummy_time = Duration.ofMinutes(10);
+            Duration dummy_time = DUMMY_WINNING_TIME;
             for (final RaceEntry entry : entries) {
                 writer.append(entry.getBibNumber() + "\t" + renderDuration(dummy_time, "-") + LINE_SEPARATOR);
-                dummy_time = dummy_time.plus(Duration.ofSeconds(12));
+                dummy_time = dummy_time.plus(DUMMY_INTERVAL);
             }
         }
     }
@@ -222,12 +227,16 @@ public class IndividualRace implements SingleRaceInternal {
 
     private String makeRacerListEntry(final RaceEntry entry) {
 
+        final Participant participant = entry.getParticipant();
+        final String name = participant.getName();
+        final String category_name = participant.getCategory().getShortName();
+
         return entry.getBibNumber() + "\t" +
-            getLastNameOfRunner(entry.getParticipant().getName()) + "\t" +
-            getFirstNameOfRunner(entry.getParticipant().getName()) + "\t" +
-            ((Runner) entry.getParticipant()).getClub() + "\t" +
-            entry.getParticipant().getCategory().getShortName().charAt(0) + "\t\t" +
-            entry.getParticipant().getCategory().getShortName();
+            getLastNameOfRunner(name) + "\t" +
+            getFirstNameOfRunner(name) + "\t" +
+            ((Runner) participant).getClub() + "\t" +
+            category_name.charAt(0) + "\t\t" +
+            category_name;
     }
 
     private void loadRaceData() throws IOException {

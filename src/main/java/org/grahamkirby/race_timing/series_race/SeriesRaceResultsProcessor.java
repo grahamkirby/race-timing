@@ -101,7 +101,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     public List<String> getRaceNames() {
 
         return races.stream().
-            map(individual_race -> individual_race != null ? individual_race.getConfig().getString(KEY_RACE_NAME_FOR_RESULTS) : null).
+            map(individual_race -> individual_race != null ? individual_race.getConfig().getRaceName() : null).
             toList();
     }
 
@@ -417,7 +417,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
         if (!previous_category.equals(current_category)) {
 
-            final String race_name = (String) result.getRace().getConfig().get(KEY_RACE_NAME_FOR_RESULTS);
+            final String race_name = (String) result.getRace().getConfig().getRaceName();
             final String note = "Runner " + result.getParticipantName() + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name;
 
             // If ages are equal, gender must have changed since categories are different.

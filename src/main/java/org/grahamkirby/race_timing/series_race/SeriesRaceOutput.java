@@ -18,7 +18,12 @@
 package org.grahamkirby.race_timing.series_race;
 
 
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.*;
+import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
@@ -27,10 +32,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.NormalisationProcessor.csvEncode;
+import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 
 class SeriesRaceOutput extends RaceOutput {
 
@@ -53,6 +60,11 @@ class SeriesRaceOutput extends RaceOutput {
     @Override
     protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
         return PrizeResultPrinterHTML::new;
+    }
+
+    @Override
+    protected BiFunction<RaceResults, Document, ResultPrinter> getPrizePDFPrinterGenerator() {
+        return PrizeResultPrinterPDF::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,8 +108,7 @@ class SeriesRaceOutput extends RaceOutput {
             writer.append("Pos,Runner,");
             if (results.multipleClubs())
                 writer.append("Club,");
-            writer.append("Category,").
-                append(race_names);
+            writer.append("Category,").append(race_names);
             if (results.getNumberOfRacesTakenPlace() > 1)
                 writer.append(",Total");
             if (results.possibleToHaveCompleted())
@@ -163,8 +174,11 @@ class SeriesRaceOutput extends RaceOutput {
                 headers.add("Club");
 
             // This traverses race names in order of listing in config.
+            final NormalisationProcessor processor = results.getNormalisationProcessor();
+
             results.getRaceNames().stream().
                 filter(Objects::nonNull).
+                map(processor::htmlEncode).
                 forEach(headers::add);
 
             if (results.getNumberOfRacesTakenPlace() > 1)
@@ -183,17 +197,18 @@ class SeriesRaceOutput extends RaceOutput {
         protected List<String> getResultsElements(final RaceResult r) {
 
             final List<String> elements = new ArrayList<>();
+            final NormalisationProcessor processor = race_results.getNormalisationProcessor();
 
             final SeriesRaceResults results = (SeriesRaceResults) race_results;
             final SeriesRaceResult result = (SeriesRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
 
             elements.add(result.getPositionString());
-            elements.add(race_results.getNormalisationProcessor().htmlEncode(result.getParticipantName()));
-            elements.add(result.getParticipant().getCategory().getShortName());
+            elements.add(processor.htmlEncode(result.getParticipantName()));
+            elements.add(processor.htmlEncode(result.getParticipant().getCategory().getShortName()));
 
             if (results.multipleClubs())
-                elements.add(runner.getClub());
+                elements.add(processor.htmlEncode(runner.getClub()));
 
             result.getPerformances().forEach(
                 performance -> elements.add(renderScore(performance)));
@@ -209,6 +224,34 @@ class SeriesRaceOutput extends RaceOutput {
                     elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
 
             return elements;
+        }
+    }
+
+    private static final class PrizeResultPrinterPDF extends ResultPrinter {
+
+        private final Document document;
+
+        public PrizeResultPrinterPDF(final RaceResults race, final Document document) {
+
+            super(race, null);
+            this.document = document;
+        }
+
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
+            final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
+
+            paragraph.add(new Text(result.getPositionString() + ": " + result).setFont(font));
+
+            document.add(paragraph);
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 }

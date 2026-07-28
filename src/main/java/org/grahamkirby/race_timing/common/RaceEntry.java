@@ -42,10 +42,10 @@ public class RaceEntry {
 
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
         final String name = normalisation.cleanRunnerName(mapped_elements.get(NAME_INDEX));
-        final String club = normalisation.cleanClubOrTeamName(mapped_elements.get(CLUB_INDEX));
+        final String club = normalisation.cleanClubName(mapped_elements.get(CLUB_INDEX));
 
-        final String category_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
-        final EntryCategory category = category_name.isEmpty() ? null : race.getCategoriesProcessor().getEntryCategory(category_name);
+        final String category_short_name = normalisation.normaliseCategoryShortName(mapped_elements.get(CATEGORY_INDEX));
+        final EntryCategory category = category_short_name.isEmpty() ? null : race.getCategoriesProcessor().getEntryCategory(category_short_name);
 
         participant = new Runner(name, club, category);
         bib_number = Integer.parseInt(mapped_elements.get(BIB_NUMBER_INDEX));

@@ -8,5 +8,5 @@ RACE_NAME_FOR_FILENAMES = devils_burdens
 ENTRIES_PATH = entries.txt
 
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
-# recorded but the runners DNF'd the leg.
+# recorded but the runners DNF’d the leg.
 DNF_FINISHERS = 1/XXX

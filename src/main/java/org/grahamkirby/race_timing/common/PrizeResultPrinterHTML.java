@@ -23,7 +23,6 @@ import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
 
-/** Base class for printing results to HTML files. */
 public class PrizeResultPrinterHTML extends ResultPrinter {
 
     public PrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {

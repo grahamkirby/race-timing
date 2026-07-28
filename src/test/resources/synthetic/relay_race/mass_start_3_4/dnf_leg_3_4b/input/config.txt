@@ -12,5 +12,5 @@ RAW_RESULTS_PATH = rawtimes.txt
 MASS_START_TIMES = 3/1:30:00,4/2:36:00
 
 # Comma-separated sequence of bib-number/leg-number for all legs that have a time
-# recorded but the runners DNF'd the leg.
+# recorded but the runners DNF’d the leg.
 DNF_FINISHERS = 3/3,3/4

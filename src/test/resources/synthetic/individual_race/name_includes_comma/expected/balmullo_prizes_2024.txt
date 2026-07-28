@@ -13,7 +13,7 @@ Category: Men Open
 ------------------
 
 1: John Smith (Fife AC) 00:45:37
-2: Clark O' Connor (Unatt.) 00:48:31
+2: Clark O’ Connor (Unatt.) 00:48:31
 3: Leo McKenzie (Dundee Hawkhill Harriers) 00:51:25
 
 
@@ -44,7 +44,7 @@ Category: Men 40-49
 Category: Women 50-59
 ---------------------
 
-1: Sofia O'Connor (Dummy, Club Name) 00:49:58
+1: Sofia O’Connor (Dummy, Club Name) 00:49:58
 
 
 Category: Men 50-59

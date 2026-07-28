@@ -5,15 +5,15 @@ Category: Women Senior
 ----------------------
 
 1: Amelia Muir (Strathearn Harriers) 00:42:43
-2: Isabel Ritchie (FAC) 00:44:10
+2: Isabel Ritchie (F AC) 00:44:10
 3: Nina Joan Fiona Walker (Carnegie Harriers) 00:47:04
 
 
 Category: Men Senior
 --------------------
 
-1: John Smith (FAC) 00:45:37
-2: Clark O' Connor (Unatt.) 00:48:31
+1: John Smith (F AC) 00:45:37
+2: Clark O’ Connor (Unatt.) 00:48:31
 3: Jackbruce (Dundee Road Runners) 01:13:10
 
 
@@ -32,7 +32,7 @@ Category: Men Junior
 Category: Women 40-49
 ---------------------
 
-1: Myles Christie (FAC) 01:04:28
+1: Myles Christie (F AC) 01:04:28
 
 
 Category: Men 40-49
@@ -44,7 +44,7 @@ Category: Men 40-49
 Category: Women 50-59
 ---------------------
 
-1: Sofia O'Connor (FAC) 00:49:58
+1: Sofia O’Connor (F AC) 00:49:58
 
 
 Category: Men 50-59

@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -38,7 +39,7 @@ public class NormalisationProcessor {
     private static final int DURATION_DISPLAY_MAX_NUMBER_OF_DECIMAL_PLACES = 3;
 
     /** Characters treated as word separators when converting string to title case. */
-    private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '’');
+    private static final Set<Character> WORD_SEPARATORS = Set.of(' ', '-', '\'', '"', '‘', '’', '“', '”');
 
     /** Used when replacing double spaces with single space. */
     private static final Map<String, String> DOUBLE_SPACE_REMOVAL_MAP = Map.of("  ", " ");
@@ -60,6 +61,18 @@ public class NormalisationProcessor {
 
     /** Map from accented strings to corresponding entities. */
     private Map<String, String> normalised_html_entities;
+
+    private static final List<Function<String, String>> QUOTE_CLEANING_MAPPINGS = List.of(
+
+        x -> x.replace("'", "’"),
+        x -> x.replace("\"", "”"),
+        x -> x.replace(" ’", " ‘"),
+        x -> x.replace("-’", "-‘"),
+        x -> x.replaceAll("^’", "‘"),
+        x -> x.replace(" ”", " “"),
+        x -> x.replace("-”", "-“"),
+        x -> x.replaceAll("^”", "“")
+    );
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,35 +115,44 @@ public class NormalisationProcessor {
             toList();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static String cleanSpacesAndQuotes(final String name) {
+
+        // Remove extra whitespace.
+        final String step1 = replaceAllMapEntries(name, DOUBLE_SPACE_REMOVAL_MAP);
+        final String step2 = step1.strip();
+
+        // Replace straight quotes and apostrophes with curly versions.
+        return replaceQuotes(step2);
+    }
+
     /** Cleans name by removing extra whitespace and converting to title case, unless present
      *  in stop list file. */
     public String cleanRunnerName(final String name) {
 
-        // Remove extra whitespace.
-        final String step1 = replaceAllMapEntries(name, DOUBLE_SPACE_REMOVAL_MAP);
-        final String step2 = step1.strip();
-
-        // Replace straight apostrophe with curly apostrophe.
-        final String step3 = step2.replace("'", "’");
-
-        // Convert to title case, unless present in stop list.
-        return toTitleCase(step3);
+        return toTitleCase(cleanSpacesAndQuotes(name));
     }
 
     /** Cleans name by removing extra whitespace and normalising if present in normalisation file,
      *  otherwise converting to title case, unless present in stop list file. */
-    public String cleanClubOrTeamName(final String name) {
+    public String cleanClubName(final String name) {
 
-        // Remove extra whitespace.
-        final String step1 = replaceAllMapEntries(name, DOUBLE_SPACE_REMOVAL_MAP);
-        final String step2 = step1.strip();
+        final String cleaned_name = cleanSpacesAndQuotes(name);
+        final String normalised_name = normalised_club_names.getOrDefault(cleaned_name, cleaned_name);
 
-        // Check normalisation list (which is case insensitive for keys).
-        if (normalised_club_names.containsKey(step2)) return normalised_club_names.get(step2);
-
-        // Convert to title case, unless present in stop list.
-        return toTitleCase(step2);
+        return toTitleCase(normalised_name);
     }
+
+    private static String replaceQuotes(String s) {
+
+        for (final Function<String, String> mapping : QUOTE_CLEANING_MAPPINGS)
+            s = mapping.apply(s);
+
+        return s;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Gets the first name of the given runner, or of the first runner if it's a pair. */
     public static String getFirstNameOfRunner(final String s) {

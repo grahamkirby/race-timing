@@ -7,9 +7,9 @@ Pos,No,Team,Category,Total
 6,119,Shettleston Aging Gracefully,O40,03:30:13
 7,14,Carnethy HRC MV40,O40,03:32:16
 8,136,The Incredible Tartan Soldiers,OS,03:32:54
-9,108,Ochil Hill Runners "Tarmangenies",OS,03:34:06
+9,108,Ochil Hill Runners “Tarmangenies”,OS,03:34:06
 10,90,Hill Yeah,OS,03:39:05
-11,107,Ochil Hill Runners "Cleuchie Dumplings",O40,03:40:07
+11,107,Ochil Hill Runners “Cleuchie Dumplings”,O40,03:40:07
 12,11,CAAC,OS,03:40:27
 13,96,KRR Jagged Little Hill,OS,03:42:57
 14,41,Edinburgh Uni Hare & Hounds Mixed Team,OS,03:43:04
@@ -32,7 +32,7 @@ Pos,No,Team,Category,Total
 31,91,Kilmarnock Harriers Ayrshire Tatties,OS,04:13:19
 32,45,Falkland 666,OS,04:14:03
 33,116,Pitreavie AAC Old Boys,O40,04:14:56
-34,106,Ochil Hill Runners "Ben Buckaroos",MS,04:15:30
+34,106,Ochil Hill Runners “Ben Buckaroos”,MS,04:15:30
 35,83,HBT Men B,OS,04:15:53
 36,146,Westies Hooch,O50,04:18:10
 37,153,Westies White Lightning,WS,04:18:18
@@ -40,12 +40,12 @@ Pos,No,Team,Category,Total
 39,4,Anster Haddies Team Elite,OS,04:19:43
 40,73,Fife AC/Wizards Wizards United,OS,04:20:20
 41,31,Deeside Old Men,O50,04:20:53
-42,32,Don't Pack Up We're Coming,OS,04:21:53
+42,32,Don’t Pack Up We’re Coming,OS,04:21:53
 43,48,Falkland Trail Runners Mixed Nuts,MS,04:22:05
 44,21,Carnethy HRC Open Sen 4,OS,04:22:29
 45,20,Carnethy HRC Open Sen 3,OS,04:24:54
 46,122,Shettleston Gals Luath,WS,04:25:11
-47,69,Fife AC/Wizards Satan's Sisters,W40,04:26:50
+47,69,Fife AC/Wizards Satan’s Sisters,W40,04:26:50
 48,110,Penicuik Harriers Team 1,O40,04:28:35
 49,6,Beacon: Beacon Belligerents,OS,04:29:32
 50,67,Fife AC/Wizards Mountain Goats,OS,04:30:29
@@ -59,13 +59,13 @@ Pos,No,Team,Category,Total
 58,74,Fife AC/Wizards YAAS Queens,WS,04:36:00
 59,26,Clydeside Orienteers,OS,04:36:06
 60,70,Fife AC/Wizards St Leonards,OS,04:36:29
-61,109,Ochil Hill Runners "The Maddy Mousers",W40,04:36:40
+61,109,Ochil Hill Runners “The Maddy Mousers”,W40,04:36:40
 62,38,Dundee Road Runners Rocketmen,O40,04:37:02
 63,144,Westies Glens,O60,04:38:50
 64,13,Carnegie Harriers,OS,04:40:20
 65,27,Cosmics 1,OS,04:40:22
 66,52,Fife AC/Wizards Dayasyertelt,OS,04:40:24
-67,8,Braes o' Fife MC (A),OS,04:40:32
+67,8,Braes o’ Fife MC (A),OS,04:40:32
 68,94,KRR Hills Angels,WS,04:41:02
 69,87,Helensburgh AAC Reservoir Jogs,OS,04:42:20
 70,16,Carnethy HRC MV50 2,O50,04:42:51
@@ -90,7 +90,7 @@ Pos,No,Team,Category,Total
 89,36,Dundee Road Runners In it to Win it,MS,05:04:07
 90,54,Fife AC/Wizards Fat + Furious 6,OS,05:04:32
 91,103,Linlithgow Athletic Club B,OS,05:04:47
-92,139,We've Got the Runs,OS,05:05:44
+92,139,We’ve Got the Runs,OS,05:05:44
 93,49,Falkland Trail Runners Vixens,WS,05:06:24
 94,63,Fife AC/Wizards Get Burdens Done,OS,05:07:43
 95,44,EFT Lost Souls,OS,05:09:01
@@ -107,16 +107,16 @@ Pos,No,Team,Category,Total
 106,129,Stonehaven Underdogs,OS,05:20:46
 107,59,Fife AC/Wizards Fife Youth and Experience,W40,05:20:57
 108,78,Glenrothes Tri: Dying to TRI,OS,05:24:38
-109,76,Forfar Road Runners 'B',OS,05:26:42
+109,76,Forfar Road Runners ‘B’,OS,05:26:42
 110,80,Haggis Hunters,OS,05:28:21
 111,17,Carnethy HRC MV60+,O60,05:29:01
 112,132,Strathearn Squirrels,M40,05:29:28
-113,75,Forfar Road Runners 'A',OS,05:30:14
+113,75,Forfar Road Runners ‘A’,OS,05:30:14
 114,88,Helensburgh AAC Slumdog Millionaires,OS,05:30:41
 115,3,Anster Haddies Mens 1,O50,05:30:52
 116,64,Fife AC/Wizards Hill Rangers,OS,05:32:02
 117,58,Fife AC/Wizards Fife Super Seventies,O60,05:33:34
-118,79,Glenrothes Tri: TRI'ing till we drop,MS,05:37:05
+118,79,Glenrothes Tri: TRI’ing till we drop,MS,05:37:05
 119,97,KRR Kinross Where the Devil are We,OS,05:41:20
 120,126,Souper Troupers,OS,05:41:48
 121=,40,Edinburgh Running Network A,OS,05:42:15
@@ -127,7 +127,7 @@ Pos,No,Team,Category,Total
 126,124,Sleekit Beasties,O40,05:46:26
 127,145,Westies Hogwash,WS,05:47:10
 128,81,Hartfell Hill Running Club,O40,05:47:52
-129,140,Wee County Harriers - The Captain's Crew,OS,05:48:09
+129,140,Wee County Harriers - The Captain’s Crew,OS,05:48:09
 130,99,LastMinuteDevils.com,M40,05:48:39
 131,154,Wormit Runners: Wormit in the Wilderness,M40,05:51:08
 132,112,Perth Tri Club A Few Nuts and a Lot of Guts,OS,05:53:41
@@ -136,17 +136,17 @@ Pos,No,Team,Category,Total
 135,39,Edinburgh Running Network 1,OS,05:55:03
 136,130,Strathearn Beavers,MS,05:55:37
 137,85,HBT Open,WS,05:59:30
-138,43,EFT Can't Run; Won't run; especially up Hills,OS,05:59:57
+138,43,EFT Can’t Run; Won’t run; especially up Hills,OS,05:59:57
 139,105,Lost Lomies,OS,06:01:37
-140,55,Fife AC/Wizards Fife Fifty "B",W50,06:03:06
+140,55,Fife AC/Wizards Fife Fifty “B”,W50,06:03:06
 141,51,Fife AC/Wizards Cirque du Sore Legs,OS,06:03:39
 142,100,Leven Las Vegas Mixed,MS,06:03:53
 143,89,Helensburgh AAC The Italian Jog,OS,06:04:35
 144,98,KRR Stormin Normans posse,O40,06:06:54
 145,57,Fife AC/Wizards Fife Sixties Plus,W60,06:09:00
-146,53,Fife AC/Wizards Devil's Virgins,WS,06:09:09
+146,53,Fife AC/Wizards Devil’s Virgins,WS,06:09:09
 147,5,Beacon: 50 Shades of Beacon,W50,06:09:15
-148,9,Braes o' Fife MC (B),OS,06:16:05
+148,9,Braes o’ Fife MC (B),OS,06:16:05
 149,24,Carnethy HRC W50,W50,06:16:20
 150,28,Cosmics 2,O40,06:23:02
 151,142,Westies Champers,W40,06:29:52

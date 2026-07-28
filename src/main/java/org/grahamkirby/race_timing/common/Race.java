@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public interface Race {
 
-    // TODO valid entry categories in race with overall results input.
+    // TODO validate entry categories in race with overall results input.
     // TODO test running from jar.
     // TODO update README (https://www.makeareadme.com).
     // TODO move interpolation from RelayRace to SingleRace.

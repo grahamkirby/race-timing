@@ -18,6 +18,10 @@
 package org.grahamkirby.race_timing.relay_race;
 
 
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.*;
 
 import java.io.IOException;
@@ -27,6 +31,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -69,7 +74,12 @@ public class RelayRaceOutput extends RaceOutput {
 
     @Override
     protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
-        return RelayRacePrizeResultPrinterHTML::new;
+        return PrizeResultPrinterHTML::new;
+    }
+
+    @Override
+    protected BiFunction<RaceResults, Document, ResultPrinter> getPrizePDFPrinterGenerator() {
+        return PrizeResultPrinterPDF::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +182,7 @@ public class RelayRaceOutput extends RaceOutput {
             writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
 
             writer.append(getPrizesHeaderHTML());
-            printPrizesHTML(writer, new RelayRacePrizeResultPrinterHTML(race_results, writer));
+            printPrizesHTML(writer, new PrizeResultPrinterHTML(race_results, writer));
 
             writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
             printResults(writer, new RelayRaceOverallResultPrinterHTML(race_results, writer), this::getResultsSubHeaderHTML);
@@ -369,12 +379,14 @@ public class RelayRaceOutput extends RaceOutput {
         protected List<String> getResultsElements(final RaceResult r) {
 
             final RelayRaceResult result = (RelayRaceResult) r;
+            final NormalisationProcessor processor = race_results.getNormalisationProcessor();
+            final Participant participant = result.getParticipant();
 
             return List.of(
                 result.getPositionString(),
                 String.valueOf(result.getBibNumber()),
-                race_results.getNormalisationProcessor().htmlEncode(result.getParticipant().getName()),
-                result.getParticipant().getCategory().getLongName(),
+                processor.htmlEncode(participant.getName()),
+                processor.htmlEncode(participant.getCategory().getLongName()),
                 renderDuration(result, DNF_STRING)
             );
         }
@@ -407,10 +419,13 @@ public class RelayRaceOutput extends RaceOutput {
 
             final RelayRaceResult result = (RelayRaceResult) r;
 
+            final String team_name = csvEncode(result.getParticipantName());
+            final String category_name = result.getParticipant().getCategory().getLongName();
+
             writer.append(result.getPositionString()).append(",").
                 append(String.valueOf(result.getBibNumber())).append(",").
-                append(csvEncode(result.getParticipantName())).append(",").
-                append(result.getParticipant().getCategory().getLongName()).append(",");
+                append(team_name).append(",").
+                append(category_name).append(",");
 
             final String leg_details = ((RelayRaceResults) race_results).getLegDetails(result).stream().
                 map(NormalisationProcessor::csvEncode).
@@ -453,15 +468,17 @@ public class RelayRaceOutput extends RaceOutput {
         protected List<String> getResultsElements(final RaceResult r) {
 
             final RelayRaceResult result = (RelayRaceResult) r;
+            final Participant participant = result.getParticipant();
+            final NormalisationProcessor processor = race_results.getNormalisationProcessor();
             final List<String> elements = new ArrayList<>();
 
             elements.add(result.getPositionString());
             elements.add(String.valueOf(result.getBibNumber()));
-            elements.add(race_results.getNormalisationProcessor().htmlEncode(result.getParticipantName()));
-            elements.add(result.getParticipant().getCategory().getLongName());
+            elements.add(processor.htmlEncode(participant.getName()));
+            elements.add(processor.htmlEncode(participant.getCategory().getLongName()));
 
             for (final String element : ((RelayRaceResults) race_results).getLegDetails(result))
-                elements.add(race_results.getNormalisationProcessor().htmlEncode(element));
+                elements.add(processor.htmlEncode(element));
 
             return elements;
         }
@@ -526,22 +543,46 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsElements(final RaceResult r) {
 
+            final NormalisationProcessor processor = race_results.getNormalisationProcessor();
             final RelayRaceLegResult leg_result = (RelayRaceLegResult) r;
             final String runner_names = ((Team) leg_result.getParticipant()).getRunnerNames().get(leg_result.getLegNumber() - 1);
 
             return List.of(
                 leg_result.getPositionString(),
-                race_results.getNormalisationProcessor().htmlEncode(runner_names),
+                processor.htmlEncode(runner_names),
                 renderDuration(leg_result, DNF_STRING)
             );
         }
     }
 
-    private static final class RelayRacePrizeResultPrinterHTML extends PrizeResultPrinterHTML {
+    private static final class PrizeResultPrinterPDF extends ResultPrinter {
 
-        public RelayRacePrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
-            super(race, writer);
+        private final Document document;
+
+        public PrizeResultPrinterPDF(final RaceResults race, final Document document) {
+
+            super(race, null);
+            this.document = document;
         }
 
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
+            final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
+
+            paragraph.add(new Text(
+                result.getPositionString() + ": " +
+                result.getParticipant() + " " +
+                renderDuration(result, DNF_STRING)).setFont(font));
+
+            document.add(paragraph);
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+        }
     }
 }

@@ -43,12 +43,12 @@ public class IndividualRaceResult extends SingleRaceResult {
         // DNF results are sorted by runner name.
 
         return consecutiveComparator(
-            CommonRaceResult::comparePerformance,
+            CommonRaceResult::comparePerformance,                // Sort by time or score, DNF at end.
             conditionalComparator(
-                RaceResult::canDistinguishEqualPerformances,
-                SingleRaceResult::compareRecordedPosition,
+                RaceResult::canDistinguishEqualPerformances,     // Test whether results with equal performances can be distinguished.
+                SingleRaceResult::compareRecordedPosition,       // If so, sort by recorded position, e.g. runners have same recorded time but finish order is known.
                 consecutiveComparator(
-                    CommonRaceResult::compareRunnerLastName,
+                    CommonRaceResult::compareRunnerLastName,     // If not, sort by name.
                     CommonRaceResult::compareRunnerFirstName
                 )
             )

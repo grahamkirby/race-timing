@@ -31,6 +31,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -61,7 +62,12 @@ public class IndividualRaceOutput extends RaceOutput {
 
     @Override
     protected ResultPrinterGenerator getPrizeHTMLPrinterGenerator() {
-        return PrizeResultPrinterHTML::new;
+        return IndividualPrizeResultPrinterHTML::new;
+    }
+
+    @Override
+    protected BiFunction<RaceResults, Document, ResultPrinter> getPrizePDFPrinterGenerator() {
+        return PrizeResultPrinterPDF::new;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +136,7 @@ public class IndividualRaceOutput extends RaceOutput {
                     append("            <li>").
                     append(
                         team_performance.runner_performances().stream().
-                            map(runnerPerformance -> runnerPerformance.name() + " (" + runnerPerformance.position() + ")").
+                            map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                             collect(Collectors.joining(", "))).
                     append("</li>").append(LINE_SEPARATOR).
                     append("        </ul>").append(LINE_SEPARATOR).
@@ -166,7 +172,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
                 final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(24);
                 paragraph2.add(new Text(team_performance.runner_performances().stream().
-                    map(performance -> performance.name() + " (" + performance.position() + ")").
+                    map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                     collect(Collectors.joining(", "))));
 
                 document.add(paragraph1);
@@ -190,7 +196,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
                 writer.append("First " + team_performance.gender().toLowerCase() + " team: " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
                     team_performance.runner_performances().stream().
-                        map(runnerPerformance -> runnerPerformance.name() + " (" + runnerPerformance.position() + ")").
+                        map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                         collect(Collectors.joining(", ")));
                 writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
             }
@@ -263,15 +269,89 @@ public class IndividualRaceOutput extends RaceOutput {
         protected List<String> getResultsElements(final RaceResult r) {
 
             final SingleRaceResult result = (SingleRaceResult) r;
+            final Participant participant = result.getParticipant();
+            final NormalisationProcessor normalisation = race_results.getNormalisationProcessor();
 
             return List.of(
                 result.getPositionString(),
                 String.valueOf(result.getBibNumber()),
-                race_results.getNormalisationProcessor().htmlEncode(result.getParticipant().getName()),
-                ((Runner) result.getParticipant()).getClub(),
-                result.getParticipant().getCategory().getShortName(),
+                normalisation.htmlEncode(participant.getName()),
+                normalisation.htmlEncode(((Runner) participant).getClub()),
+                normalisation.htmlEncode(participant.getCategory().getShortName()),
                 renderDuration(result, DNF_STRING)
             );
+        }
+    }
+
+    private static final class PrizeResultPrinterPDF extends ResultPrinter {
+
+        private final Document document;
+
+        public PrizeResultPrinterPDF(final RaceResults race, final Document document) {
+
+            super(race, null);
+            this.document = document;
+        }
+
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            final PdfFont font = getFont(PDF_PRIZE_FONT_NAME);
+            final Paragraph paragraph = new Paragraph().setFont(font).setMarginBottom(0);
+
+            paragraph.add(new Text(
+                result.getPositionString() + ": " +
+                result.getParticipant() + " " +
+                renderDuration(result, DNF_STRING)).setFont(font));
+
+            document.add(paragraph);
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+        }
+    }
+
+    public static class IndividualPrizeResultPrinterHTML extends ResultPrinter {
+
+        public IndividualPrizeResultPrinterHTML(final RaceResults race, final OutputStreamWriter writer) {
+            super(race, writer);
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        @Override
+        public void printResultsHeader() throws IOException {
+
+            writer.append("<ul>").append(LINE_SEPARATOR);
+        }
+
+        @Override
+        public void printResult(final RaceResult result) throws IOException {
+
+            final NormalisationProcessor normalisation = race_results.getNormalisationProcessor();
+
+            writer.append(
+                "    <li>" +
+                    result.getPositionString() + " " +
+                    normalisation.htmlEncode(result.getParticipant().toString()) + " " +
+                    renderDuration(result, DNF_STRING) +
+                    "</li>" +
+                    LINE_SEPARATOR);
+        }
+
+        @Override
+        public void printResultsFooter() throws IOException {
+
+            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+        }
+
+        @Override
+        public void printNoResults() throws IOException {
+
+            writer.append("<p>No results</p>").append(LINE_SEPARATOR);
         }
     }
 }
