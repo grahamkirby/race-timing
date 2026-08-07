@@ -64,14 +64,12 @@ public class NormalisationProcessor {
 
     private static final List<Function<String, String>> QUOTE_CLEANING_MAPPINGS = List.of(
 
-        x -> x.replace("'", "’"),
-        x -> x.replace("\"", "”"),
-        x -> x.replace(" ’", " ‘"),
-        x -> x.replace("-’", "-‘"),
-        x -> x.replaceAll("^’", "‘"),
-        x -> x.replace(" ”", " “"),
-        x -> x.replace("-”", "-“"),
-        x -> x.replaceAll("^”", "“")
+        x -> x.replace("'", "’"),             // Straight apostrophe/quote to curly apostrophe/closing curly quote.
+        x -> x.replace("\"", "”"),            // Straight double quote to closing curly.
+        x -> x.replaceAll("([- ])’", "$1‘"),  // Closing curly quote at start of word (preceded by space or hyphen) to opening.
+        x -> x.replaceAll("^’", "‘"),         // Closing curly quote at start of string to opening.
+        x -> x.replaceAll("([- ])”", "$1“"),  // Closing double curly quote at start of word (preceded by space or hyphen) to opening.
+        x -> x.replaceAll("^”", "“")          // Closing double curly quote at start of string to opening.
     );
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

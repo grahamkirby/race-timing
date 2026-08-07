@@ -1,0 +1,59 @@
+David	Webster	Dundee RR	MS	28.49
+Ruan	Van Rensburg	Fife AC	MS	28.57
+Jamie	Lessels	Fife AC	MS	29.03
+Adam	Hart	Dundee RR	MS	30.36
+Simon	Anetts	Fife AC	MS	30.55
+Glen	Barclay	Fife AC	MS	31.18
+Graeme	McDowall	Fife AC	MV50	33.08
+Stephen	McQuistin	Anster Haddies	MS	33.25
+Tim	Kinnaird	Fife AC	MV40	33.30
+Cian	McCrickard	Falkland TR	MU20	33.45
+Rhona	Van Rensburg	Fife AC	FV50	33.47
+Eliza	Konig	Fife AC	FU20	33.55
+David	Aitken	Dundee RR	MV50	33.59
+Rory	Sandilands	Fife AC	MV40	35.05
+Tom	Rainey	Anster Haddies	MV40	35.29
+Michael	Mitchell	Dundee RR	MV50	35.36
+Ciaron	Collins	Dundee HH	MV50	35.40
+Paul Dominic	Harkins	Fife AC	MU20	35.55
+Ross	Young	Anster Haddies	MS	36.42
+David	Burgess	Anster Haddies	MV50	37.11
+Simon	Jeynes	Fife AC	MV40	37.21
+Beth	McCrickard	Fife AC	FU20	37.42
+Marcas	MacFarlane	Fife AC	MU20	37.48
+Gifford	Kerr	Tri Bridges	MV60	38.45
+Scott	Hutchison	STAART	MV40	38.49
+Paul Michael	Harkins	Fife AC	MV40	39.03
+James	Kelman	Fife AC	MV60	39.04
+Christine	Wilson	Fife AC	FV40	39.05
+Arman	Buta	Kirkcaldy Wizards	MS	39.10
+Isla	Kinnaird	Fife AC	FU20	39.35
+Tony	Martin	Fife AC	MV70	39.42
+Paul	Leishman	Fife AC	MV50	39.52
+Scott	Henderson	Dundee RR	MS	39.56
+Jane	O’Donnell	Dundee RR	FV40	40.03
+Graham	Rena	Dundee RR	MV50	40.13
+Daniel	Dutton	Dundee RR	MS	40.43
+Neil	Mitchell	Fife AC	MV50	41.11
+Kris	Welsh		MV40	41.12
+David	Dunleavey	Stratheden	MV60	41.22
+Dave	Shepherd	Wormit Runners	MV60	41.42
+Paul	McGarrity	Dundee HH	MV40	42.23
+Margaret	Martin	Fife AC	FV70	42.45
+Cameron	Tweedie	Anster Haddies	MS	43.05
+Rhonda	Manning	Dundee HH	FV50	43.11
+Simon	Wakefield	Kirkcaldy Wizards	MV60	43.42
+Zachary	Loughlin		MS	43.54
+Alison	Gelly	Dundee RR	FV60	44.26
+Alex	Rain	Fife AC	MS	44.40
+David	Baird	Dundee RR	MV40	45.28
+George	Findlay	Anster Haddies	MV60	45.45
+Jeff	Gunnell		MV70	45.51
+Georgia	Dean		FS	45.56
+Danielle	MacDermid	Dundee HH	FS	46.11
+Joe	Eyden		MS	46.21
+Innes	Bracegirdle	Fife AC	FV70	46.41
+Andrew	Strachan	Dundee RR	MV60	47.00
+Keith	Gelly	Dundee RR	MV50	47.20
+Fiona	Findlay	Anster Haddies	FS	48.24
+John	Mcintyre Snr	Fife AC	MV50	58.06
