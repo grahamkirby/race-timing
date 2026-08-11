@@ -163,11 +163,17 @@ public class RaceTest {
     @MethodSource("getTestCases")
     public void testFromDirectory(final String test_directory_path_string) throws Exception {
 
-        configureTest(test_directory_path_string);
+        configureDirectories(test_directory_path_string);
+        configureDirectoryContents(resources_input_directory);
 
         final String[] args = {config_file_path.toString()};
+        final String error_output = processRaceWithDivertedErrorOutput(args);
 
-        runWithExpectedCompletion(args);
+        // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
+        // for an error message.
+        assertTrue(error_output.isEmpty() || error_output.startsWith("INFO: Instrumented"), "Unexpected error message");
+
+        assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -228,8 +234,40 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        // Don't just check for equality since fuzzing framework may output some unwanted logging to stderr.
+        // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
+        // for an error message.
         assertTrue(error_output.contains("missing config file: '" + missing_config_path + "'"), "Expected error message was not generated");
+
+        // Test has passed if this line is reached.
+        failed_test = false;
+    }
+
+    @Test
+    public void missingOrUnwritableOutputDirectory() throws Exception {
+
+        // Randomly selected test case.
+        final String config_path = "real" + PATH_SEPARATOR + "individual_race" + PATH_SEPARATOR + "balmullo" + PATH_SEPARATOR + "2026";
+
+        configureDirectories(config_path);
+
+        ///////////////////////////////////////////////////
+
+        // Lines duplicated from configureDirectoryContents() but output directory is not created.
+        if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
+
+        if (!Files.exists(resources_input_directory))
+            throw new RuntimeException("missing config file: '" + resources_input_directory + "/" + PER_TEST_CONFIG_FILE_NAME + "'");
+
+        copyDirectory(resources_input_directory, test_input_directory);
+
+        ///////////////////////////////////////////////////
+
+        final String[] args = {config_file_path.toString()};
+        final String error_output = processRaceWithDivertedErrorOutput(args);
+
+        // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
+        // for an error message.
+        assertTrue(error_output.contains("cannot create file: " + user_test_directory_path_string + PATH_SEPARATOR + OUTPUT_DIRECTORY_NAME));
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -254,7 +292,8 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        // Don't just check for equality since fuzzing framework may output some unwanted logging to stderr.
+        // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
+        // for an error message.
         assertTrue(error_output.contains("No applicable race type for config file"), "Expected error message was not generated");
 
         // Test has passed if this line is reached.
@@ -315,20 +354,7 @@ public class RaceTest {
         root_logger.setLevel(level);
     }
 
-    private void configureTest(final String individual_test_resource_root) throws IOException {
-
-        configureDirectories(individual_test_resource_root);
-        configureDirectoryContents(resources_input_directory);
-    }
-
-    private void runWithExpectedCompletion(final String[] args) throws IOException {
-
-        runTest(args);
-
-        assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
-    }
-
-    private static void runTest(final String[] args) {
+    private static String processRaceWithDivertedErrorOutput(final String[] args) {
 
         final String error_output;
         try {
@@ -343,9 +369,7 @@ public class RaceTest {
             System.setErr(System.err);
         }
 
-        // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
-        // for an error message.
-        assertTrue(error_output.isEmpty() || error_output.startsWith("INFO: Instrumented"), "Unexpected error message");
+        return error_output;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

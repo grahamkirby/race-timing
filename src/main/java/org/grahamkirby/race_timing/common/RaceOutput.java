@@ -87,7 +87,7 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected Path getOutputStreamPath(final String output_type, final String file_suffix) throws IOException {
+    protected Path getOutputStreamPath(final String output_type, final String file_suffix) {
 
         final String race_name = config.getString(KEY_RACE_NAME_FOR_FILENAMES);
         final String year = config.getString(KEY_YEAR);
@@ -97,7 +97,12 @@ public abstract class RaceOutput {
 
     public OutputStream getOutputStream(final String output_type, final String file_suffix) throws IOException {
 
-        return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
+        try {
+            return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
+        }
+        catch (final IOException e) {
+            throw new IOException("cannot create file: " + e.getMessage());
+        }
     }
 
     protected void printResultsWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_overall_result_printer) throws IOException {
