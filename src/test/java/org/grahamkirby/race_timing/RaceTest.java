@@ -267,7 +267,7 @@ public class RaceTest {
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.contains("cannot create file: " + user_test_directory_path_string + PATH_SEPARATOR + OUTPUT_DIRECTORY_NAME));
+        assertTrue(error_output.contains("cannot create output directory, or file within it: " + test_output_directory));
 
         // Test has passed if this line is reached.
         failed_test = false;

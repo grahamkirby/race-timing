@@ -101,7 +101,7 @@ public abstract class RaceOutput {
             return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
         }
         catch (final IOException e) {
-            throw new IOException("cannot create file: " + e.getMessage());
+            throw new IOException("cannot create output directory, or file within it: " + e.getMessage());
         }
     }
 
