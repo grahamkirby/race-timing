@@ -113,7 +113,6 @@ public class Config {
 
     /** Platform-specific line separator used in creating output files. */
     public static final String LINE_SEPARATOR = System.lineSeparator();
-    public static final String PATH_SEPARATOR = File.separator;
 
     /** Used when a result is recorded without a bib number. */
     public static final String UNKNOWN_BIB_NUMBER_INDICATOR = "?";

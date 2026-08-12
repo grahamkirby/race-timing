@@ -70,7 +70,28 @@ public class RaceTest {
 
     private static final String PER_TEST_CONFIG_FILE_NAME = "config.txt";
     private static final String OVERALL_TEST_CONFIG_FILE_NAME = "test_config.txt";
-    private static final String RESOURCES_ROOT = "/src/test/resources/";
+    private static final String TEST_RESOURCES_ROOT = "/src/test/resources/";
+    public static final String INFO_INSTRUMENTED = "INFO: Instrumented";
+    public static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error message";
+    public static final String ENTRIES_TXT = "entries.txt";
+    public static final String RAWTIMES_TXT = "rawtimes.txt";
+    public static final String INPUT = "input";
+    public static final String OUTPUT = "output";
+    public static final int MAX_LENGTH = 1000;
+    public static final String SYNTHETIC = "synthetic";
+    public static final String SPECIAL_CASES = "special_cases";
+    public static final String MISSING_CONFIG_FILE = "missing_config_file";
+    public static final String REAL = "real";
+    public static final String INDIVIDUAL_RACE = "individual_race";
+    public static final String CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT = "cannot create output directory, or file within it";
+    public static final String INVALID_RACE_TYPE = "invalid_race_type";
+    public static final String NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE = "no applicable race type for config file";
+    public static final String EXPECTED = "expected";
+    public static final String OUTPUT_RETAINED = "output_retained";
+    public static final String MISSING_CONFIG_FILE2 = "missing config file";
+    public static final String EXPECTED_DIRECTORY_MISSING = "Expected directory missing";
+    public static final String UNEXPECTED_DIRECTORY = "Unexpected directory";
+    public static final String DIFFERENCE_IN_FILES = "Difference in files";
 
     private final boolean debug;
     private final String user_test_directory_path_string;
@@ -103,7 +124,7 @@ public class RaceTest {
 
     public RaceTest() throws IOException {
 
-        final Path overall_test_config_path = getPathRelativeToProjectRoot(RESOURCES_ROOT).resolve(OVERALL_TEST_CONFIG_FILE_NAME);
+        final Path overall_test_config_path = getPathRelativeToProjectRoot(TEST_RESOURCES_ROOT).resolve(OVERALL_TEST_CONFIG_FILE_NAME);
 
         final Properties overall_test_properties = loadProperties(overall_test_config_path);
 
@@ -171,7 +192,7 @@ public class RaceTest {
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.isEmpty() || error_output.startsWith("INFO: Instrumented"), "Unexpected error message");
+        assertTrue(error_output.isEmpty() || error_output.startsWith(INFO_INSTRUMENTED), UNEXPECTED_ERROR_MESSAGE);
 
         assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
 
@@ -184,15 +205,15 @@ public class RaceTest {
     // Disabled since no useful test cases found within reasonable time budget.
     public void fuzzTestFromDirectory(@NotNull final FuzzedDataProvider data) throws Exception {
 
-        resources_input_directory = Files.createTempDirectory(null).resolve("input");
+        resources_input_directory = Files.createTempDirectory(null).resolve(INPUT);
         Files.createDirectories(resources_input_directory);
 
         final Path config_path = resources_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
-        final Path entries_path = resources_input_directory.resolve("entries.txt");
-        final Path rawtimes_path = resources_input_directory.resolve("rawtimes.txt");
+        final Path entries_path = resources_input_directory.resolve(ENTRIES_TXT);
+        final Path rawtimes_path = resources_input_directory.resolve(RAWTIMES_TXT);
 
-        test_input_directory = test_directory.resolve("input");
-        test_output_directory = test_directory.resolve("output");
+        test_input_directory = test_directory.resolve(INPUT);
+        test_output_directory = test_directory.resolve(OUTPUT);
         config_file_path = test_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
 
         final String config_file_content = """
@@ -202,8 +223,8 @@ public class RaceTest {
             ENTRIES_PATH = entries.txt
             RAW_RESULTS_PATH = rawtimes.txt""";
 
-        final String fuzzed_entries_file_content = data.consumeAsciiString(1000);
-        final String fuzzed_rawtimes_file_content = data.consumeAsciiString(1000);
+        final String fuzzed_entries_file_content = data.consumeAsciiString(MAX_LENGTH);
+        final String fuzzed_rawtimes_file_content = data.consumeAsciiString(MAX_LENGTH);
 
         Files.writeString(config_path, config_file_content);
         Files.writeString(entries_path, fuzzed_entries_file_content);
@@ -220,13 +241,13 @@ public class RaceTest {
         // This omits the normal setup phase of copying the source and expected files.
 
         final String error_output;
-        final String missing_config_path = "synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "missing_config_file";
+        final Path missing_config_path = Path.of(SYNTHETIC).resolve(resolvePath(SPECIAL_CASES, MISSING_CONFIG_FILE));
 
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(diverted_err));
 
-            RaceFactory.main(new String[]{missing_config_path});
+            RaceFactory.main(new String[]{missing_config_path.toString()});
 
             error_output = diverted_err.toString();
 
@@ -236,7 +257,7 @@ public class RaceTest {
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.contains("missing config file: '" + missing_config_path + "'"), "Expected error message was not generated");
+        assertTrue(error_output.contains(MISSING_CONFIG_FILE2 + ": '" + missing_config_path + "'"), "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -246,9 +267,9 @@ public class RaceTest {
     public void missingOrUnwritableOutputDirectory() throws Exception {
 
         // Randomly selected test case.
-        final String config_path = "real" + PATH_SEPARATOR + "individual_race" + PATH_SEPARATOR + "balmullo" + PATH_SEPARATOR + "2026";
+        final Path config_path = Path.of(REAL).resolve(resolvePath(INDIVIDUAL_RACE, "balmullo", "2026"));
 
-        configureDirectories(config_path);
+        configureDirectories(config_path.toString());
 
         ///////////////////////////////////////////////////
 
@@ -256,7 +277,7 @@ public class RaceTest {
         if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
 
         if (!Files.exists(resources_input_directory))
-            throw new RuntimeException("missing config file: '" + resources_input_directory + "/" + PER_TEST_CONFIG_FILE_NAME + "'");
+            throw new RuntimeException(MISSING_CONFIG_FILE + ": '" + resources_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME) + "'");
 
         copyDirectory(resources_input_directory, test_input_directory);
 
@@ -267,10 +288,18 @@ public class RaceTest {
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.contains("cannot create output directory, or file within it: " + test_output_directory));
+        assertTrue(error_output.contains(CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT + ": " + test_output_directory));
 
         // Test has passed if this line is reached.
         failed_test = false;
+    }
+
+    private Path resolvePath(final String... elements) {
+
+        Path result = Path.of(elements[0]);
+        for (int i = 1; i < elements.length; i++)
+            result = result.resolve(elements[i]);
+        return result;
     }
 
     @Test
@@ -279,7 +308,7 @@ public class RaceTest {
         // This omits the normal setup phase of copying the source and expected files.
 
         final String error_output;
-        final String invalid_config_path = getPathRelativeToProjectRoot(RESOURCES_ROOT).resolve("synthetic" + PATH_SEPARATOR + "special_cases" + PATH_SEPARATOR + "invalid_race_type" + PATH_SEPARATOR + "input" + PATH_SEPARATOR + "config.txt").toString();
+        final String invalid_config_path = getPathRelativeToProjectRoot(TEST_RESOURCES_ROOT).resolve(resolvePath(SYNTHETIC, SPECIAL_CASES, INVALID_RACE_TYPE, INPUT, PER_TEST_CONFIG_FILE_NAME)).toString();
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(diverted_err));
@@ -294,7 +323,7 @@ public class RaceTest {
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.contains("No applicable race type for config file"), "Expected error message was not generated");
+        assertTrue(error_output.contains(NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE), "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -306,8 +335,8 @@ public class RaceTest {
 
         final List<String> test_cases = new ArrayList<>();
 
-        test_cases.addAll(getTestCasesWithin("real"));
-        test_cases.addAll(getTestCasesWithin("synthetic"));
+        test_cases.addAll(getTestCasesWithin(REAL));
+        test_cases.addAll(getTestCasesWithin(SYNTHETIC));
 
         return test_cases;
     }
@@ -326,7 +355,7 @@ public class RaceTest {
 
                 if (Files.isDirectory(test_resources_root_path)) {
 
-                    final boolean this_is_test_case_directory = Files.isDirectory(test_resources_root_path.resolve("expected"));
+                    final boolean this_is_test_case_directory = Files.isDirectory(test_resources_root_path.resolve(EXPECTED));
 
                     if (this_is_test_case_directory)
                         test_cases.add(test_directory_path_string);
@@ -345,7 +374,7 @@ public class RaceTest {
 
     private static Path getTestResourcesRootPath(final String individual_test_resource_root) {
 
-        return getPathRelativeToProjectRoot("/src/test/resources/" + individual_test_resource_root);
+        return getPathRelativeToProjectRoot(TEST_RESOURCES_ROOT + individual_test_resource_root);
     }
 
     private static void setLoggingLevel(final Level level) {
@@ -386,16 +415,17 @@ public class RaceTest {
         return Files.createTempDirectory(null);
     }
 
+    // TODO pass in as path.
     private void configureDirectories(final String individual_test_resource_root) throws IOException {
 
         final Path resources_root_directory = getTestResourcesRootPath(individual_test_resource_root);
 
-        resources_input_directory = resources_root_directory.resolve("input");
-        expected_output_directory = resources_root_directory.resolve("expected");
+        resources_input_directory = resources_root_directory.resolve(INPUT);
+        expected_output_directory = resources_root_directory.resolve(EXPECTED);
 
-        test_input_directory = test_directory.resolve("input");
-        test_output_directory = test_directory.resolve("output");
-        retained_output_directory = test_directory.resolve("output_retained");
+        test_input_directory = test_directory.resolve(INPUT);
+        test_output_directory = test_directory.resolve(OUTPUT);
+        retained_output_directory = test_directory.resolve(OUTPUT_RETAINED);
 
         config_file_path = test_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
         ignored_file_names = Config.getIgnoredFileNames();
@@ -407,7 +437,7 @@ public class RaceTest {
         if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
 
         if (!Files.exists(resources_inputs))
-            throw new RuntimeException("missing config file: '" + resources_inputs + "/" + PER_TEST_CONFIG_FILE_NAME + "'");
+            throw new RuntimeException(MISSING_CONFIG_FILE2 + ": '" + resources_inputs + "/" + PER_TEST_CONFIG_FILE_NAME + "'");
 
         copyDirectory(resources_inputs, test_input_directory);
     }
@@ -423,11 +453,11 @@ public class RaceTest {
 
                 if (Files.isDirectory(path_expected)) {
 
-                    assertTrue(Files.isDirectory(path_actual), "Expected directory missing");
+                    assertTrue(Files.isDirectory(path_actual), EXPECTED_DIRECTORY_MISSING);
                     assertThatDirectoryContainsAllExpectedContent(path_expected, path_actual);
 
                 } else {
-                    assertFalse(Files.isDirectory(path_actual), "Unexpected directory");
+                    assertFalse(Files.isDirectory(path_actual), UNEXPECTED_DIRECTORY);
                     assertThatFilesHaveSameContent(path_expected, path_actual);
                 }
             }
@@ -447,7 +477,7 @@ public class RaceTest {
         final List<String> file_content2 = getFileContent(path2);
 
         for (int i = 0; i < Math.min(file_content1.size(), file_content2.size()); i++) {
-            assertEquals(file_content1.get(i), file_content2.get(i), LINE_SEPARATOR + "Difference in files: " + path1 + " and " + path2 + " at line " + (i + 1) + ":" + LINE_SEPARATOR +
+            assertEquals(file_content1.get(i), file_content2.get(i), LINE_SEPARATOR + DIFFERENCE_IN_FILES + ": " + path1 + " and " + path2 + " at line " + (i + 1) + ":" + LINE_SEPARATOR +
                 file_content1.get(i) + LINE_SEPARATOR + file_content2.get(i));
         }
 
