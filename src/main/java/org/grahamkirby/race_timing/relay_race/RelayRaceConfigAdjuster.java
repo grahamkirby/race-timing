@@ -50,10 +50,10 @@ public class RelayRaceConfigAdjuster extends ConfigProcessor {
 
         config.addIfAbsent(KEY_OFFSET_RACE_START, DEFAULT_START_TIME);
 
-        config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_ENTRY_CATEGORIES_PATH)));
-        config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_PRIZE_CATEGORIES_PATH)));
+        config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(DEFAULT_ENTRY_CATEGORIES_PATH));
+        config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(DEFAULT_PRIZE_CATEGORIES_PATH));
 
-        config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
+        config.replaceIfPresent(PATH_PROPERTY_KEYS, config::interpretPath);
 
         config.replaceIfPresent(KEY_NUMBER_OF_LEGS, Integer::parseInt);
         config.replaceIfPresent(KEY_OFFSET_RACE_START, NormalisationProcessor::parseTime);

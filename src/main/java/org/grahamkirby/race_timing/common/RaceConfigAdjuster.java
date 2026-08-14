@@ -58,7 +58,7 @@ public class RaceConfigAdjuster extends ConfigProcessor {
         config.addIfAbsent(KEY_NORMALISED_CLUB_NAMES_PATH, DEFAULT_NORMALISED_CLUB_NAMES_PATH);
         config.addIfAbsent(KEY_NORMALISED_HTML_ENTITIES_PATH, DEFAULT_NORMALISED_HTML_ENTITIES_PATH);
 
-        config.replaceIfPresent(PATH_PROPERTY_KEYS, s -> config.interpretPath(Path.of(s)));
+        config.replaceIfPresent(PATH_PROPERTY_KEYS, config::interpretPath);
         config.replaceIfPresent(KEY_CHECK_INPUT_FILES_USED, Boolean::parseBoolean);
         config.replaceIfPresent(KEY_PREFER_LOWER_PRIZE_IN_MORE_GENERAL_CATEGORY, Boolean::parseBoolean);
 

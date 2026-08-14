@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 
-import static org.grahamkirby.race_timing.RaceTest.getPathRelativeToProjectRoot;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -33,7 +32,8 @@ public class RelayRaceTest {
     @Test
     public void relayRaceUnsupportedOperations() throws IOException {
 
-        final Path config_file_path = getPathRelativeToProjectRoot("/src/test/resources/synthetic/relay_race/html_output/input/config.txt");
+//        final Path config_file_path = getPathRelativeToProjectRoot("src/test/resources/synthetic/relay_race/html_output/input/config.txt");
+        final Path config_file_path = Path.of("src/test/resources/synthetic/relay_race/html_output/input/config.txt");
 
         final RelayRace race = (RelayRace) new RelayRaceFactory().makeRace(config_file_path);
 
@@ -51,7 +51,8 @@ public class RelayRaceTest {
     @Test
     public void guessMissingBibNumbers() throws IOException {
 
-        final Path config_file_path = getPathRelativeToProjectRoot("/src/test/resources/synthetic/relay_race/guessed_missing_bib_numbers_c/input/config.txt");
+//        final Path config_file_path = getPathRelativeToProjectRoot("src/test/resources/synthetic/relay_race/guessed_missing_bib_numbers_c/input/config.txt");
+        final Path config_file_path = Path.of("src/test/resources/synthetic/relay_race/guessed_missing_bib_numbers_c/input/config.txt");
 
         final RelayRace race = (RelayRace) new RelayRaceFactory().makeRace(config_file_path);
 

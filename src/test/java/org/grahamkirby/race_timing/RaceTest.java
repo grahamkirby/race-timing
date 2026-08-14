@@ -32,6 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.*;
@@ -68,30 +69,36 @@ public class RaceTest {
 
     private static final String KEY_RETAIN_FIRST_OUTPUT = "RETAIN_FIRST_OUTPUT";
 
-    private static final String PER_TEST_CONFIG_FILE_NAME = "config.txt";
-    private static final String OVERALL_TEST_CONFIG_FILE_NAME = "test_config.txt";
-    private static final String TEST_RESOURCES_ROOT = "/src/test/resources/";
-    public static final String INFO_INSTRUMENTED = "INFO: Instrumented";
-    public static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error message";
-    public static final String ENTRIES_TXT = "entries.txt";
-    public static final String RAWTIMES_TXT = "rawtimes.txt";
-    public static final String INPUT = "input";
-    public static final String OUTPUT = "output";
-    public static final int MAX_LENGTH = 1000;
-    public static final String SYNTHETIC = "synthetic";
-    public static final String SPECIAL_CASES = "special_cases";
-    public static final String MISSING_CONFIG_FILE = "missing_config_file";
-    public static final String REAL = "real";
-    public static final String INDIVIDUAL_RACE = "individual_race";
-    public static final String CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT = "cannot create output directory, or file within it";
-    public static final String INVALID_RACE_TYPE = "invalid_race_type";
-    public static final String NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE = "no applicable race type for config file";
-    public static final String EXPECTED = "expected";
-    public static final String OUTPUT_RETAINED = "output_retained";
-    public static final String MISSING_CONFIG_FILE2 = "missing config file";
-    public static final String EXPECTED_DIRECTORY_MISSING = "Expected directory missing";
-    public static final String UNEXPECTED_DIRECTORY = "Unexpected directory";
-    public static final String DIFFERENCE_IN_FILES = "Difference in files";
+    private static final Path TEST_RESOURCES_ROOT = Path.of("src", "test", "resources");
+
+    private static final String FUZZ_OUTPUT_PREFIX = "INFO: Instrumented";
+
+    private static final String FILE_NAME_PER_TEST_CONFIG = "config.txt";
+    private static final String FILE_NAME_OVERALL_TEST_CONFIG = "test_config.txt";
+    private static final String FILE_NAME_ENTRIES = "entries.txt";
+    private static final String FILE_NAME_RAW_TIMES = "rawtimes.txt";
+
+    private static final String DIR_NAME_INPUT = "input";
+    private static final String DIR_NAME_OUTPUT = "output";
+    private static final String DIR_NAME_REAL_RACES = "real";
+    private static final String DIR_NAME_SYNTHETIC_RACES = "synthetic";
+    private static final String DIR_NAME_EXPECTED_OUTPUT = "expected";
+    private static final String DIR_NAME_OUTPUT_RETAINED = "output_retained";
+    private static final String DIR_NAME_INDIVIDUAL_RACES = "individual_race";
+    private static final String DIR_NAME_SPECIAL_CASES = "special_cases";
+    private static final String DIR_NAME_MISSING_CONFIG = "missing_config_file";
+    private static final String DIR_NAME_INVALID_RACE_TYPE = "invalid_race_type";
+
+    private static final String ERROR_CANNOT_CREATE_OUTPUT_DIRECTORY = "cannot create output directory, or file within it";
+    private static final String ERROR_NO_APPLICABLE_RACE_TYPE = "no applicable race type for config file";
+    private static final String ERROR_MISSING_CONFIG = "missing config file";
+    private static final String ERROR_EXPECTED_DIRECTORY_MISSING = "expected directory missing";
+    private static final String ERROR_UNEXPECTED_DIRECTORY = "unexpected directory";
+    private static final String ERROR_DIFFERENCE_IN_FILES = "difference in files";
+    private static final String ERROR_READING_EXPECTED_OUTPUT_FILE = "error reading expected output file";
+    private static final String ERROR_UNEXPECTED_ERROR_MESSAGE = "unexpected error message";
+
+    private static final int FUZZED_CONTENT_MAX_LENGTH = 1000;
 
     private final boolean debug;
     private final String user_test_directory_path_string;
@@ -112,26 +119,27 @@ public class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private Path config_file_path;
-    private Path resources_input_directory;
+    private Path reference_input_directory;
+    private Path reference_expected_directory;
 
-    private final Path test_directory;
+    private final Path test_run_directory;
+    private Path test_run_input_directory;
+    private Path test_run_output_directory;
+    private Path test_run_output_retained_directory;
 
-    private Path test_input_directory;
-    private Path test_output_directory;
-    private Path retained_output_directory;
-    private Path expected_output_directory;
+    private Path test_run_input_config;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     public RaceTest() throws IOException {
 
-        final Path overall_test_config_path = getPathRelativeToProjectRoot(TEST_RESOURCES_ROOT).resolve(OVERALL_TEST_CONFIG_FILE_NAME);
-
+        final Path overall_test_config_path = TEST_RESOURCES_ROOT.resolve(FILE_NAME_OVERALL_TEST_CONFIG);
         final Properties overall_test_properties = loadProperties(overall_test_config_path);
 
         user_test_directory_path_string = (String) overall_test_properties.get(KEY_USER_TEST_DIRECTORY_PATH);
 
         debug = user_test_directory_path_string != null;
-        test_directory = getTempDirectory();
+        test_run_directory = getTempDirectory();
         retain_first_output = Boolean.parseBoolean((String) overall_test_properties.get(KEY_RETAIN_FIRST_OUTPUT));
 
         setLoggingLevel(debug ? Level.INFO : Level.WARNING);
@@ -148,7 +156,7 @@ public class RaceTest {
             final boolean first_failed_test = failed_test && !previous_failed_test;
 
             // Whether the retained output directory is present from a previous run (in which case it should be deleted).
-            final boolean output_directory_retained_from_previous_run = first_test && retained_output_directory != null && Files.exists(retained_output_directory);
+            final boolean output_directory_retained_from_previous_run = first_test && test_run_output_retained_directory != null && Files.exists(test_run_output_retained_directory);
 
             // Whether the output directory from this run should be retained, either because this is the first test
             // in the run to fail, or this is the first test in the run and RETAIN_FIRST_OUTPUT is set.
@@ -163,38 +171,38 @@ public class RaceTest {
             if (first_failed_test) previous_failed_test = true;
 
         } else
-            deleteDirectory(test_directory);
+            deleteDirectory(test_run_directory);
     }
 
     private void cleanUpDirectories(final boolean output_directory_retained_from_previous_run, final boolean output_directory_should_be_retained) throws IOException {
 
         if (output_directory_retained_from_previous_run)
-            deleteDirectory(retained_output_directory);
+            deleteDirectory(test_run_output_retained_directory);
 
         if (output_directory_should_be_retained)
-            copyDirectory(test_output_directory, retained_output_directory);
+            copyDirectory(test_run_output_directory, test_run_output_retained_directory);
 
-        deleteDirectory(test_input_directory);
-        deleteDirectory(test_output_directory);
+        deleteDirectory(test_run_input_directory);
+        deleteDirectory(test_run_output_directory);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     @ParameterizedTest
     @MethodSource("getTestCases")
-    public void testFromDirectory(final String test_directory_path_string) throws Exception {
+    public void testFromDirectory(final Path test_resource_root) throws Exception {
 
-        configureDirectories(test_directory_path_string);
-        configureDirectoryContents(resources_input_directory);
+        configureDirectories(test_resource_root);
+        configureDirectoryContents(reference_input_directory);
 
-        final String[] args = {config_file_path.toString()};
+        final String[] args = {test_run_input_config.toString()};
         final String error_output = processRaceWithDivertedErrorOutput(args);
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.isEmpty() || error_output.startsWith(INFO_INSTRUMENTED), UNEXPECTED_ERROR_MESSAGE);
+        assertTrue(error_output.isEmpty() || error_output.startsWith(FUZZ_OUTPUT_PREFIX), ERROR_UNEXPECTED_ERROR_MESSAGE);
 
-        assertThatDirectoryContainsAllExpectedContent(expected_output_directory, test_output_directory);
+        assertThatDirectoryContainsAllExpectedContent(reference_expected_directory, test_run_output_directory);
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -205,16 +213,16 @@ public class RaceTest {
     // Disabled since no useful test cases found within reasonable time budget.
     public void fuzzTestFromDirectory(@NotNull final FuzzedDataProvider data) throws Exception {
 
-        resources_input_directory = Files.createTempDirectory(null).resolve(INPUT);
-        Files.createDirectories(resources_input_directory);
+        reference_input_directory = Files.createTempDirectory(null).resolve(DIR_NAME_INPUT);
+        Files.createDirectories(reference_input_directory);
 
-        final Path config_path = resources_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
-        final Path entries_path = resources_input_directory.resolve(ENTRIES_TXT);
-        final Path rawtimes_path = resources_input_directory.resolve(RAWTIMES_TXT);
+        final Path config_path = reference_input_directory.resolve(FILE_NAME_PER_TEST_CONFIG);
+        final Path entries_path = reference_input_directory.resolve(FILE_NAME_ENTRIES);
+        final Path rawtimes_path = reference_input_directory.resolve(FILE_NAME_RAW_TIMES);
 
-        test_input_directory = test_directory.resolve(INPUT);
-        test_output_directory = test_directory.resolve(OUTPUT);
-        config_file_path = test_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
+        test_run_input_directory = test_run_directory.resolve(DIR_NAME_INPUT);
+        test_run_output_directory = test_run_directory.resolve(DIR_NAME_OUTPUT);
+        test_run_input_config = test_run_input_directory.resolve(FILE_NAME_PER_TEST_CONFIG);
 
         final String config_file_content = """
             YEAR = 2023
@@ -223,16 +231,16 @@ public class RaceTest {
             ENTRIES_PATH = entries.txt
             RAW_RESULTS_PATH = rawtimes.txt""";
 
-        final String fuzzed_entries_file_content = data.consumeAsciiString(MAX_LENGTH);
-        final String fuzzed_rawtimes_file_content = data.consumeAsciiString(MAX_LENGTH);
+        final String fuzzed_entries_file_content = data.consumeAsciiString(FUZZED_CONTENT_MAX_LENGTH);
+        final String fuzzed_rawtimes_file_content = data.consumeAsciiString(FUZZED_CONTENT_MAX_LENGTH);
 
         Files.writeString(config_path, config_file_content);
         Files.writeString(entries_path, fuzzed_entries_file_content);
         Files.writeString(rawtimes_path, fuzzed_rawtimes_file_content);
 
-        configureDirectoryContents(resources_input_directory);
+        configureDirectoryContents(reference_input_directory);
 
-        RaceFactory.main(new String[]{config_file_path.toString()});
+        RaceFactory.main(new String[]{test_run_input_config.toString()});
     }
 
     @Test
@@ -241,7 +249,7 @@ public class RaceTest {
         // This omits the normal setup phase of copying the source and expected files.
 
         final String error_output;
-        final Path missing_config_path = Path.of(SYNTHETIC).resolve(resolvePath(SPECIAL_CASES, MISSING_CONFIG_FILE));
+        final Path missing_config_path = Path.of(DIR_NAME_SYNTHETIC_RACES, DIR_NAME_SPECIAL_CASES, DIR_NAME_MISSING_CONFIG);
 
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
@@ -257,7 +265,7 @@ public class RaceTest {
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.contains(MISSING_CONFIG_FILE2 + ": '" + missing_config_path + "'"), "Expected error message was not generated");
+        assertTrue(error_output.contains(ERROR_MISSING_CONFIG + ": '" + missing_config_path + "'"), "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -267,39 +275,33 @@ public class RaceTest {
     public void missingOrUnwritableOutputDirectory() throws Exception {
 
         // Randomly selected test case.
-        final Path config_path = Path.of(REAL).resolve(resolvePath(INDIVIDUAL_RACE, "balmullo", "2026"));
+        final Path config_path = Path.of(DIR_NAME_REAL_RACES, DIR_NAME_INDIVIDUAL_RACES, "balmullo", "2026");
 
-        configureDirectories(config_path.toString());
-
-        ///////////////////////////////////////////////////
-
-        // Lines duplicated from configureDirectoryContents() but output directory is not created.
-        if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
-
-        if (!Files.exists(resources_input_directory))
-            throw new RuntimeException(MISSING_CONFIG_FILE + ": '" + resources_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME) + "'");
-
-        copyDirectory(resources_input_directory, test_input_directory);
+        configureDirectories(config_path);
 
         ///////////////////////////////////////////////////
 
-        final String[] args = {config_file_path.toString()};
+        // Lines adapted from configureDirectoryContents() but output directory is not created.
+        if (Files.exists(test_run_input_directory)) deleteDirectory(test_run_input_directory);
+
+        final Path resources_input_directory_relative_to_project = getTestResourcesRootPath(reference_input_directory);
+
+        if (!Files.exists(resources_input_directory_relative_to_project))
+            throw new RuntimeException(DIR_NAME_MISSING_CONFIG + ": '" + resources_input_directory_relative_to_project.resolve(FILE_NAME_PER_TEST_CONFIG) + "'");
+
+        copyDirectory(resources_input_directory_relative_to_project, test_run_input_directory);
+
+        ///////////////////////////////////////////////////
+
+        final String[] args = {test_run_input_config.toString()};
         final String error_output = processRaceWithDivertedErrorOutput(args);
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.contains(CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT + ": " + test_output_directory));
+        assertTrue(error_output.contains(ERROR_CANNOT_CREATE_OUTPUT_DIRECTORY + ": " + test_run_output_directory));
 
         // Test has passed if this line is reached.
         failed_test = false;
-    }
-
-    private Path resolvePath(final String... elements) {
-
-        Path result = Path.of(elements[0]);
-        for (int i = 1; i < elements.length; i++)
-            result = result.resolve(elements[i]);
-        return result;
     }
 
     @Test
@@ -308,12 +310,13 @@ public class RaceTest {
         // This omits the normal setup phase of copying the source and expected files.
 
         final String error_output;
-        final String invalid_config_path = getPathRelativeToProjectRoot(TEST_RESOURCES_ROOT).resolve(resolvePath(SYNTHETIC, SPECIAL_CASES, INVALID_RACE_TYPE, INPUT, PER_TEST_CONFIG_FILE_NAME)).toString();
+        final Path invalid_config_path = TEST_RESOURCES_ROOT.resolve(DIR_NAME_SYNTHETIC_RACES, DIR_NAME_SPECIAL_CASES, DIR_NAME_INVALID_RACE_TYPE, DIR_NAME_INPUT, FILE_NAME_PER_TEST_CONFIG);
+
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(diverted_err));
 
-            RaceFactory.main(new String[]{invalid_config_path});
+            RaceFactory.main(new String[]{invalid_config_path.toString()});
 
             error_output = diverted_err.toString();
 
@@ -323,7 +326,7 @@ public class RaceTest {
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
-        assertTrue(error_output.contains(NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE), "Expected error message was not generated");
+        assertTrue(error_output.contains(ERROR_NO_APPLICABLE_RACE_TYPE), "Expected error message was not generated");
 
         // Test has passed if this line is reached.
         failed_test = false;
@@ -331,50 +334,18 @@ public class RaceTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static List<String> getTestCases() throws IOException {
+    private static List<Path> getTestCases() throws IOException {
 
-        final List<String> test_cases = new ArrayList<>();
+        try (final Stream<Path> paths = Files.walk(TEST_RESOURCES_ROOT)) {
 
-        test_cases.addAll(getTestCasesWithin(REAL));
-        test_cases.addAll(getTestCasesWithin(SYNTHETIC));
-
-        return test_cases;
-    }
-
-    private static List<String> getTestCasesWithin(final String parent_test_directory) throws IOException {
-
-        final Path parent_test_directory_path = getTestResourcesRootPath(parent_test_directory);
-
-        try (final Stream<Path> paths = Files.list(parent_test_directory_path).sorted()) {
-
-            final List<String> test_cases = new ArrayList<>();
-            for (final Path test_directory_path : paths.toList()) {
-
-                final String test_directory_path_string = Path.of(parent_test_directory).resolve(test_directory_path.getFileName()).toString();
-                final Path test_resources_root_path = getTestResourcesRootPath(test_directory_path_string);
-
-                if (Files.isDirectory(test_resources_root_path)) {
-
-                    final boolean this_is_test_case_directory = Files.isDirectory(test_resources_root_path.resolve(EXPECTED));
-
-                    if (this_is_test_case_directory)
-                        test_cases.add(test_directory_path_string);
-
-                    test_cases.addAll(getTestCasesWithin(test_directory_path_string));
-                }
-            }
-            return test_cases;
+            // Assume it's a directory containing a test case if it contains a sub-directory named 'expected'.
+            return paths.filter(directory_entry -> Files.isDirectory(directory_entry.resolve(DIR_NAME_EXPECTED_OUTPUT))).toList();
         }
     }
 
-    public static Path getPathRelativeToProjectRoot(final String path) {
+    private static Path getTestResourcesRootPath(final Path individual_test_resource_root) {
 
-        return Path.of(path.substring(1));
-    }
-
-    private static Path getTestResourcesRootPath(final String individual_test_resource_root) {
-
-        return getPathRelativeToProjectRoot(TEST_RESOURCES_ROOT + individual_test_resource_root);
+        return TEST_RESOURCES_ROOT.resolve(individual_test_resource_root);
     }
 
     private static void setLoggingLevel(final Level level) {
@@ -407,67 +378,64 @@ public class RaceTest {
 
         if (debug) {
             final Path temp_dir_path = Path.of(user_test_directory_path_string);
-            if (!Files.exists(temp_dir_path))
-                Files.createDirectory(temp_dir_path);
+            if (!Files.exists(temp_dir_path)) Files.createDirectory(temp_dir_path);
+
             return temp_dir_path;
         }
 
         return Files.createTempDirectory(null);
     }
 
-    // TODO pass in as path.
-    private void configureDirectories(final String individual_test_resource_root) throws IOException {
+    private void configureDirectories(final Path test_resource_root) throws IOException {
 
-        final Path resources_root_directory = getTestResourcesRootPath(individual_test_resource_root);
+        reference_input_directory = test_resource_root.resolve(DIR_NAME_INPUT);
+        reference_expected_directory = test_resource_root.resolve(DIR_NAME_EXPECTED_OUTPUT);
 
-        resources_input_directory = resources_root_directory.resolve(INPUT);
-        expected_output_directory = resources_root_directory.resolve(EXPECTED);
+        test_run_input_directory = test_run_directory.resolve(DIR_NAME_INPUT);
+        test_run_output_directory = test_run_directory.resolve(DIR_NAME_OUTPUT);
+        test_run_output_retained_directory = test_run_directory.resolve(DIR_NAME_OUTPUT_RETAINED);
 
-        test_input_directory = test_directory.resolve(INPUT);
-        test_output_directory = test_directory.resolve(OUTPUT);
-        retained_output_directory = test_directory.resolve(OUTPUT_RETAINED);
-
-        config_file_path = test_input_directory.resolve(PER_TEST_CONFIG_FILE_NAME);
+        test_run_input_config = test_run_input_directory.resolve(FILE_NAME_PER_TEST_CONFIG);
         ignored_file_names = Config.getIgnoredFileNames();
     }
 
-    private void configureDirectoryContents(final Path resources_inputs) throws IOException {
+    private void configureDirectoryContents(final Path reference_input_directory) throws IOException {
 
-        Files.createDirectories(test_output_directory);
-        if (Files.exists(test_input_directory)) deleteDirectory(test_input_directory);
+        if (Files.exists(test_run_input_directory)) deleteDirectory(test_run_input_directory);
+        Files.createDirectories(test_run_output_directory);
 
-        if (!Files.exists(resources_inputs))
-            throw new RuntimeException(MISSING_CONFIG_FILE2 + ": '" + resources_inputs + "/" + PER_TEST_CONFIG_FILE_NAME + "'");
+        if (!Files.exists(reference_input_directory))
+            throw new RuntimeException(ERROR_MISSING_CONFIG + ": '" + reference_input_directory + File.separator + FILE_NAME_PER_TEST_CONFIG + "'");
 
-        copyDirectory(resources_inputs, test_input_directory);
+        copyDirectory(reference_input_directory, test_run_input_directory);
     }
 
     private void assertThatDirectoryContainsAllExpectedContent(final Path expected, final Path actual) throws IOException {
 
-        for (final String expected_file_name : getDirectoryEntries(expected)) {
+        for (final Path expected_entry : getDirectoryEntries(expected)) {
 
-            if (!shouldFileInExpectedDirectoryBeIgnored(expected_file_name)) {
+            if (!shouldEntryInExpectedDirectoryBeIgnored(expected_entry)) {
 
-                final Path path_expected = expected.resolve(expected_file_name);
-                final Path path_actual = actual.resolve(expected_file_name);
+                final Path path_expected = expected.resolve(expected_entry);
+                final Path path_actual = actual.resolve(expected_entry);
 
                 if (Files.isDirectory(path_expected)) {
 
-                    assertTrue(Files.isDirectory(path_actual), EXPECTED_DIRECTORY_MISSING);
+                    assertTrue(Files.isDirectory(path_actual), ERROR_EXPECTED_DIRECTORY_MISSING);
                     assertThatDirectoryContainsAllExpectedContent(path_expected, path_actual);
 
                 } else {
-                    assertFalse(Files.isDirectory(path_actual), UNEXPECTED_DIRECTORY);
+                    assertFalse(Files.isDirectory(path_actual), ERROR_UNEXPECTED_DIRECTORY);
                     assertThatFilesHaveSameContent(path_expected, path_actual);
                 }
             }
         }
     }
 
-    private static List<String> getDirectoryEntries(final Path directory) throws IOException {
+    private static List<Path> getDirectoryEntries(final Path directory) throws IOException {
 
         try (final Stream<Path> list = Files.list(directory)) {
-            return list.map(path -> path.getFileName().toString()).toList();
+            return list.map(Path::getFileName).toList();
         }
     }
 
@@ -477,7 +445,7 @@ public class RaceTest {
         final List<String> file_content2 = getFileContent(path2);
 
         for (int i = 0; i < Math.min(file_content1.size(), file_content2.size()); i++) {
-            assertEquals(file_content1.get(i), file_content2.get(i), LINE_SEPARATOR + DIFFERENCE_IN_FILES + ": " + path1 + " and " + path2 + " at line " + (i + 1) + ":" + LINE_SEPARATOR +
+            assertEquals(file_content1.get(i), file_content2.get(i), LINE_SEPARATOR + ERROR_DIFFERENCE_IN_FILES + ": " + path1 + " and " + path2 + " at line " + (i + 1) + ":" + LINE_SEPARATOR +
                 file_content1.get(i) + LINE_SEPARATOR + file_content2.get(i));
         }
 
@@ -514,14 +482,14 @@ public class RaceTest {
             } else return readAllLines(path);
 
         } catch (final IOException e) {
-            fail("Error reading expected output file " + path + ": " + e);
+            fail(ERROR_READING_EXPECTED_OUTPUT_FILE + " " + path + ": " + e);
             throw new RuntimeException(e);
         }
     }
 
-    private boolean shouldFileInExpectedDirectoryBeIgnored(final String file_name) {
+    private boolean shouldEntryInExpectedDirectoryBeIgnored(final Path entry) {
 
-        return ignored_file_names.contains(file_name);
+        return ignored_file_names.contains(entry.toString());
     }
 
     private static void copyDirectory(final Path source_directory, final Path destination_directory) throws IOException {

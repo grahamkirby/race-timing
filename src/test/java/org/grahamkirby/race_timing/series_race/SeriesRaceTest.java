@@ -17,18 +17,11 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
-import org.grahamkirby.race_timing.common.Race;
-import org.grahamkirby.race_timing.relay_race.RelayRace;
-import org.grahamkirby.race_timing.relay_race.RelayRaceFactory;
-import org.grahamkirby.race_timing.relay_race.RelayRaceResultsProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Duration;
 
-import static org.grahamkirby.race_timing.RaceTest.getPathRelativeToProjectRoot;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SeriesRaceTest {
@@ -36,7 +29,7 @@ public class SeriesRaceTest {
     @Test
     public void seriesRaceUnsupportedOperations() throws IOException {
 
-        final Path config_file_path = getPathRelativeToProjectRoot("/src/test/resources/synthetic/series_race/midweek/large_race/input/config.txt");
+        final Path config_file_path = Path.of("src", "test", "resources", "synthetic", "series_race", "midweek", "large_race", "input", "config.txt");
 
         final SeriesRace race = (SeriesRace) new SeriesRaceFactory().makeRace(config_file_path);
 

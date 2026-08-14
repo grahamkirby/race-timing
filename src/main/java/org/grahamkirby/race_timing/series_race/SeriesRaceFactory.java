@@ -102,7 +102,7 @@ public class SeriesRaceFactory extends RaceFactory {
         @Override
         public void processConfig() {
 
-            config.replaceIfPresent(KEY_RACE_CATEGORIES_PATH, s -> config.interpretPath(Path.of(s)));
+            config.replaceIfPresent(KEY_RACE_CATEGORIES_PATH, config::interpretPath);
             config.replaceIfPresent(KEY_SCORE_FOR_MEDIAN_POSITION, Integer::parseInt);
         }
     }

@@ -44,8 +44,8 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
         // Default entry map with 4 elements (bib number, full club, club, category), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));
 
-        config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_ENTRY_CATEGORIES_PATH)));
-        config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(Path.of(DEFAULT_PRIZE_CATEGORIES_PATH)));
+        config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(DEFAULT_ENTRY_CATEGORIES_PATH));
+        config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(DEFAULT_PRIZE_CATEGORIES_PATH));
         config.addIfAbsent(KEY_OUTPUT_ERRORS_TO_CONSOLE, false);
 
         config.replaceIfPresent(KEY_TEAM_PRIZE_NUMBER_TO_COUNT, Integer::parseInt);

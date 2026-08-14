@@ -38,7 +38,7 @@ public class Config {
 
     // Treated differently from other configurable paths, because it needs to be accessed
     // from test code independently of a particular race.
-    public static final Path IGNORED_FILE_NAMES_PATH = Path.of("src/main/resources/configuration/ignored_file_names." + CSV_FILE_SUFFIX);
+    public static final Path IGNORED_FILE_NAMES_PATH = resolvePath("src", "main", "resources", "configuration", "ignored_file_names." + CSV_FILE_SUFFIX);
 
     public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
@@ -95,10 +95,10 @@ public class Config {
     public static final String KEY_YEAR = "YEAR";
 
     public static final List<String> REQUIRED_CONFIG_KEYS = List.of(
-
         KEY_YEAR,
         KEY_RACE_NAME_FOR_FILENAMES,
-        KEY_RACE_NAME_FOR_RESULTS);
+        KEY_RACE_NAME_FOR_RESULTS
+    );
 
     /** Displayed in results for runners that did not complete the course. */
     public static final String DNF_STRING = "DNF";
@@ -164,6 +164,14 @@ public class Config {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static Path resolvePath(final String... elements) {
+
+        Path result = Path.of(elements[0]);
+        for (int i = 1; i < elements.length; i++)
+            result = result.resolve(elements[i]);
+        return result;
+    }
 
     public static <T> List<T> makeMutableCopy(final List<T> list) {
 
@@ -307,12 +315,13 @@ public class Config {
      *    src/main/resources/configuration/categories_entry_individual_senior.csv
      */
     @SuppressWarnings("JavadocBlankLines")
-    public Path interpretPath(final Path path) {
+    public Path interpretPath(final String path_as_string) {
+
+        final Path path = Path.of(path_as_string);
 
         // Absolute paths originate from config file where path starting with "/" denotes
         // a path relative to the project root.
-        // Can't test with isAbsolute() since that will return false on Windows.
-        if (path.startsWith("/")) return makeRelativeToProjectRoot(path);
+        if (path_as_string.startsWith("/")) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
     }

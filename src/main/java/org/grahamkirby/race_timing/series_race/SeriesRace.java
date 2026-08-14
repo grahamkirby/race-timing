@@ -200,7 +200,7 @@ public class SeriesRace implements RaceInternal {
 
     private SingleRaceInternal getIndividualRace(final String individual_race_config_path, final int race_number) throws IOException {
 
-        final Path config_path = config.interpretPath(Path.of(individual_race_config_path));
+        final Path config_path = config.interpretPath(individual_race_config_path);
 
         if (!Files.exists(config_path))
             throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");
