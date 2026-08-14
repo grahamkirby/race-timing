@@ -405,7 +405,8 @@ public class RaceTest {
         Files.createDirectories(test_run_output_directory);
 
         if (!Files.exists(reference_input_directory))
-            throw new RuntimeException(ERROR_MISSING_CONFIG + ": '" + reference_input_directory + File.separator + FILE_NAME_PER_TEST_CONFIG + "'");
+            throw new RuntimeException(ERROR_MISSING_CONFIG + ": '" + reference_input_directory + "/" + FILE_NAME_PER_TEST_CONFIG + "'");
+//        throw new RuntimeException(ERROR_MISSING_CONFIG + ": '" + reference_input_directory + File.separator + FILE_NAME_PER_TEST_CONFIG + "'");
 
         copyDirectory(reference_input_directory, test_run_input_directory);
     }
