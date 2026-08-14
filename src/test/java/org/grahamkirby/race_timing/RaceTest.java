@@ -209,6 +209,9 @@ public class RaceTest {
         System.out.println("test_run_output_directory = " + test_run_output_directory);
         Files.list(test_run_output_directory).forEach(System.out::println);
         System.out.println("End listing");
+        System.out.println("Notes:");
+        Files.readAllLines(test_run_output_directory.resolve("balmullo_processing_notes_2023.txt")).forEach(System.out::println);
+        System.out.println("End notes");
 
         assertThatDirectoryContainsAllExpectedContent(reference_expected_directory, test_run_output_directory);
 
