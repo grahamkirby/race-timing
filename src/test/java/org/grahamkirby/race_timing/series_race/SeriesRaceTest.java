@@ -25,13 +25,12 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Disabled
 public class SeriesRaceTest {
 
     @Test
     public void seriesRaceUnsupportedOperations() throws IOException {
 
-        final Path config_file_path = Path.of("src", "test", "resources", "synthetic", "series_race", "midweek", "large_race", "input", "config.txt");
+        final Path config_file_path = Path.of("src/test/resources/synthetic/series_race/midweek/large_race/input/config.txt");
 
         final SeriesRace race = (SeriesRace) new SeriesRaceFactory().makeRace(config_file_path);
 

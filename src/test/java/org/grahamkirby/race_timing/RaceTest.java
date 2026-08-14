@@ -206,12 +206,12 @@ public class RaceTest {
         assertTrue(error_output.isEmpty() || error_output.startsWith(FUZZ_OUTPUT_PREFIX), ERROR_UNEXPECTED_ERROR_MESSAGE);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD2");
 
-        System.out.println("test_run_output_directory = " + test_run_output_directory);
-        Files.list(test_run_output_directory).forEach(System.out::println);
-        System.out.println("End listing");
-        System.out.println("Notes:");
-        Files.readAllLines(test_run_output_directory.resolve("balmullo_processing_notes_2023.txt")).forEach(System.out::println);
-        System.out.println("End notes");
+//        System.out.println("test_run_output_directory = " + test_run_output_directory);
+//        Files.list(test_run_output_directory).forEach(System.out::println);
+//        System.out.println("End listing");
+//        System.out.println("Notes:");
+//        Files.readAllLines(test_run_output_directory.resolve("balmullo_processing_notes_2023.txt")).forEach(System.out::println);
+//        System.out.println("End notes");
 
         assertThatDirectoryContainsAllExpectedContent(reference_expected_directory, test_run_output_directory);
 
@@ -256,7 +256,6 @@ public class RaceTest {
     }
 
     @Test
-    @Disabled
     public void missingConfigFile() {
 
         // This omits the normal setup phase of copying the source and expected files.
@@ -285,7 +284,6 @@ public class RaceTest {
     }
 
     @Test
-    @Disabled
     public void missingOrUnwritableOutputDirectory() throws Exception {
 
         // Randomly selected test case.
@@ -319,7 +317,6 @@ public class RaceTest {
     }
 
     @Test
-    @Disabled
     public void invalidRaceType() {
 
         // This omits the normal setup phase of copying the source and expected files.
@@ -351,13 +348,13 @@ public class RaceTest {
 
     private static List<Path> getTestCases() throws IOException {
 
-        return List.of(TEST_RESOURCES_ROOT.resolve("real/individual_race/balmullo/2023"));
+//        return List.of(TEST_RESOURCES_ROOT.resolve("real/individual_race/balmullo/2023"));
 
-//        try (final Stream<Path> paths = Files.walk(TEST_RESOURCES_ROOT)) {
-//
-//            // Assume it's a directory containing a test case if it contains a sub-directory named 'expected'.
-//            return paths.filter(directory_entry -> Files.isDirectory(directory_entry.resolve(DIR_NAME_EXPECTED_OUTPUT))).toList();
-//        }
+        try (final Stream<Path> paths = Files.walk(TEST_RESOURCES_ROOT)) {
+
+            // Assume it's a directory containing a test case if it contains a sub-directory named 'expected'.
+            return paths.filter(directory_entry -> Files.isDirectory(directory_entry.resolve(DIR_NAME_EXPECTED_OUTPUT))).toList();
+        }
     }
 
     private static Path getTestResourcesRootPath(final Path individual_test_resource_root) {
