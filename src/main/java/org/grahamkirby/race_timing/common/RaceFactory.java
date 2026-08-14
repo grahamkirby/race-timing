@@ -47,16 +47,21 @@ public class RaceFactory {
     public void createAndProcessRace(final String[] args) {
 
         try {
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CPR1");
             final Race race = makeRace(Path.of(args[0]));
 
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CPR2");
             if (race.configIsValid()) {
 
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CPR3");
                 final RaceResults results = race.processResults();
 
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CPR4");
                 // If results is null then an error has occurred during processing. Details will have been recorded
                 // in the notes.
                 if (results != null) {
 
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CPR5");
                     if (results.getOverallResults().isEmpty())
                         race.outputPreRaceFiles();
                     else
@@ -64,7 +69,9 @@ public class RaceFactory {
                 }
             }
 
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CPR6");
             race.outputNotes();
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CPR7");
 
         } catch (final Exception e) {
             System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + e.getMessage());
