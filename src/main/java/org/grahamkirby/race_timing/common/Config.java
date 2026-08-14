@@ -319,9 +319,9 @@ public class Config {
 
         final Path path = Path.of(path_as_string);
 
-        // Absolute paths originate from config file where path starting with "/" denotes
-        // a path relative to the project root.
-        if (path_as_string.startsWith(File.separator)) return makeRelativeToProjectRoot(path);
+        // Absolute path may originate from config file where "/" used on all platforms.
+        // Such a path denotes a path relative to the project root.
+        if (path_as_string.startsWith(File.separator) || path_as_string.startsWith("/")) return makeRelativeToProjectRoot(path);
 
         return getPathRelativeToRaceConfigFile(path);
     }
