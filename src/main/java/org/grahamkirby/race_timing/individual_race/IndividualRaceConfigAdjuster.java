@@ -43,6 +43,7 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
     @Override
     public void processConfig() {
 
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PC1");
         // Default entry map with 4 elements (bib number, full club, club, category), and no column combining or re-ordering.
         config.addIfAbsent(KEY_ENTRY_COLUMN_MAP, makeDefaultEntryColumnMap(DEFAULT_NUMBER_OF_COLUMNS));
 
@@ -53,5 +54,6 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
         config.replaceIfPresent(KEY_TEAM_PRIZE_NUMBER_TO_COUNT, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_RUNNERS_PER_WAVE, Integer::parseInt);
         config.replaceIfPresent(KEY_TIME_TRIAL_INTER_WAVE_INTERVAL, NormalisationProcessor::parseTime);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PC2");
     }
 }
