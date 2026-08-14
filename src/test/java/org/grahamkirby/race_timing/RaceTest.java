@@ -192,20 +192,25 @@ public class RaceTest {
     @MethodSource("getTestCases")
     public void testFromDirectory(final Path test_resource_root) throws Exception {
 
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD1");
         configureDirectories(test_resource_root);
         configureDirectoryContents(reference_input_directory);
 
         final String[] args = {test_run_input_config.toString()};
         final String error_output = processRaceWithDivertedErrorOutput(args);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR_OUTPUT: " + error_output);
+
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
         assertTrue(error_output.isEmpty() || error_output.startsWith(FUZZ_OUTPUT_PREFIX), ERROR_UNEXPECTED_ERROR_MESSAGE);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD2");
 
         assertThatDirectoryContainsAllExpectedContent(reference_expected_directory, test_run_output_directory);
 
         // Test has passed if this line is reached.
         failed_test = false;
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD3");
     }
 
     @FuzzTest
