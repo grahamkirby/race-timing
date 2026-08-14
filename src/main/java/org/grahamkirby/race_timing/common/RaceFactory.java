@@ -67,6 +67,8 @@ public class RaceFactory {
             race.outputNotes();
 
         } catch (final Exception e) {
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + e.getMessage());
+            e.printStackTrace();
             System.err.println(e.getMessage() + LINE_SEPARATOR);
         }
     }
