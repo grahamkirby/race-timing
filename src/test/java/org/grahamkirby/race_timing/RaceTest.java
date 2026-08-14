@@ -365,15 +365,20 @@ public class RaceTest {
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(diverted_err));
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO1");
 
             RaceFactory.main(args);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO2");
 
             error_output = diverted_err.toString();
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO3");
 
         } finally {
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO4");
             System.setErr(System.err);
         }
 
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO5");
         return error_output;
     }
 
