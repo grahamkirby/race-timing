@@ -30,10 +30,10 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
 
     public static final int DEFAULT_NUMBER_OF_COLUMNS = 4;
 
-//    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_entry_individual_senior." + CSV_FILE_SUFFIX;
-//    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_prize_individual_senior." + CSV_FILE_SUFFIX;
-    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_entry_individual_senior." + CSV_FILE_SUFFIX).toString();
-    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_prize_individual_senior." + CSV_FILE_SUFFIX).toString();
+    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_entry_individual_senior." + CSV_FILE_SUFFIX;
+    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH + "/categories_prize_individual_senior." + CSV_FILE_SUFFIX;
+//    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_entry_individual_senior." + CSV_FILE_SUFFIX).toString();
+//    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_prize_individual_senior." + CSV_FILE_SUFFIX).toString();
 
     public IndividualRaceConfigAdjuster(final Config config) {
 
@@ -49,6 +49,8 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
 
         System.out.println("DEFAULT_ENTRY_CATEGORIES_PATH: " + DEFAULT_ENTRY_CATEGORIES_PATH);
         System.out.println("Interpreted: " + config.interpretPath(DEFAULT_ENTRY_CATEGORIES_PATH));
+        System.out.println("Already present: " + config.get(KEY_ENTRY_CATEGORIES_PATH));
+
         config.addIfAbsent(KEY_ENTRY_CATEGORIES_PATH, config.interpretPath(DEFAULT_ENTRY_CATEGORIES_PATH));
         config.addIfAbsent(KEY_PRIZE_CATEGORIES_PATH, config.interpretPath(DEFAULT_PRIZE_CATEGORIES_PATH));
         config.addIfAbsent(KEY_OUTPUT_ERRORS_TO_CONSOLE, false);
