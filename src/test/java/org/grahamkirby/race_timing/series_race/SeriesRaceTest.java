@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class SeriesRaceTest {
 
     @Test
-    @Disabled
     public void seriesRaceUnsupportedOperations() throws IOException {
 
         final Path config_file_path = Path.of("src/test/resources/synthetic/series_race/midweek/large_race/input/config.txt");

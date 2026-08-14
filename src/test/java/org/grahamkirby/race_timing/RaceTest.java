@@ -256,7 +256,6 @@ public class RaceTest {
     }
 
     @Test
-    @Disabled
     public void missingConfigFile() {
 
         // This omits the normal setup phase of copying the source and expected files.
@@ -285,7 +284,6 @@ public class RaceTest {
     }
 
     @Test
-    @Disabled
     public void missingOrUnwritableOutputDirectory() throws Exception {
 
         // Randomly selected test case.
@@ -319,7 +317,6 @@ public class RaceTest {
     }
 
     @Test
-    @Disabled
     public void invalidRaceType() {
 
         // This omits the normal setup phase of copying the source and expected files.
