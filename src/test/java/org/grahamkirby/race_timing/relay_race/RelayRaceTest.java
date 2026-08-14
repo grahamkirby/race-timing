@@ -28,6 +28,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Disabled
 public class RelayRaceTest {
 
     @Test

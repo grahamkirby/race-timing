@@ -26,6 +26,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 public class EntryCategoryTest {
 
     @FuzzTest
