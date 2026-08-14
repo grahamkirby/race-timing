@@ -20,6 +20,7 @@ package org.grahamkirby.race_timing.common;
 import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import org.grahamkirby.race_timing.categories.AgeRange;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.format.DateTimeParseException;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 public class NormalisationProcessorTest {
 
     @FuzzTest

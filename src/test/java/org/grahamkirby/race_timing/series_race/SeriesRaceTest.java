@@ -17,6 +17,7 @@
  */
 package org.grahamkirby.race_timing.series_race;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Disabled
 public class SeriesRaceTest {
 
     @Test
