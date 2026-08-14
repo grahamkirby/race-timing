@@ -65,7 +65,6 @@ public class IndividualRaceFactory extends RaceFactory {
         config.addConfigAdjuster(RaceConfigAdjuster::new);
         config.addConfigAdjuster(IndividualRaceConfigAdjuster::new);
 
-//        config.addConfigValidator(RaceConfigValidator::new);
         config.addConfigValidator(IndividualRaceConfigValidator::new);
 
         return config;

@@ -192,32 +192,20 @@ public class RaceTest {
     @MethodSource("getTestCases")
     public void testFromDirectory(final Path test_resource_root) throws Exception {
 
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD1");
         configureDirectories(test_resource_root);
         configureDirectoryContents(reference_input_directory);
 
         final String[] args = {test_run_input_config.toString()};
         final String error_output = processRaceWithDivertedErrorOutput(args);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR_OUTPUT: " + error_output);
-
 
         // Fuzzing framework may output some unwanted logging to stderr, which should be ignored when checking
         // for an error message.
         assertTrue(error_output.isEmpty() || error_output.startsWith(FUZZ_OUTPUT_PREFIX), ERROR_UNEXPECTED_ERROR_MESSAGE);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD2");
-
-//        System.out.println("test_run_output_directory = " + test_run_output_directory);
-//        Files.list(test_run_output_directory).forEach(System.out::println);
-//        System.out.println("End listing");
-//        System.out.println("Notes:");
-//        Files.readAllLines(test_run_output_directory.resolve("balmullo_processing_notes_2023.txt")).forEach(System.out::println);
-//        System.out.println("End notes");
 
         assertThatDirectoryContainsAllExpectedContent(reference_expected_directory, test_run_output_directory);
 
         // Test has passed if this line is reached.
         failed_test = false;
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD3");
     }
 
     @FuzzTest
@@ -348,8 +336,6 @@ public class RaceTest {
 
     private static List<Path> getTestCases() throws IOException {
 
-//        return List.of(TEST_RESOURCES_ROOT.resolve("real/individual_race/ceres_8/2025"));
-
         try (final Stream<Path> paths = Files.walk(TEST_RESOURCES_ROOT)) {
 
             // Assume it's a directory containing a test case if it contains a sub-directory named 'expected'.
@@ -374,20 +360,15 @@ public class RaceTest {
         try {
             final ByteArrayOutputStream diverted_err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(diverted_err));
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO1");
 
             RaceFactory.main(args);
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO2");
 
             error_output = diverted_err.toString();
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO3");
 
         } finally {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO4");
             System.setErr(System.err);
         }
 
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRWDEO5");
         return error_output;
     }
 
@@ -424,8 +405,7 @@ public class RaceTest {
         Files.createDirectories(test_run_output_directory);
 
         if (!Files.exists(reference_input_directory))
-            throw new RuntimeException(ERROR_MISSING_CONFIG + ": '" + reference_input_directory + "/" + FILE_NAME_PER_TEST_CONFIG + "'");
-//        throw new RuntimeException(ERROR_MISSING_CONFIG + ": '" + reference_input_directory + File.separator + FILE_NAME_PER_TEST_CONFIG + "'");
+            throw new RuntimeException(ERROR_MISSING_CONFIG + ": '" + reference_input_directory + File.separator + FILE_NAME_PER_TEST_CONFIG + "'");
 
         copyDirectory(reference_input_directory, test_run_input_directory);
     }
