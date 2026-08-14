@@ -38,7 +38,7 @@ public class Config {
 
     // Treated differently from other configurable paths, because it needs to be accessed
     // from test code independently of a particular race.
-    public static final Path IGNORED_FILE_NAMES_PATH = resolvePath("src", "main", "resources", "configuration", "ignored_file_names." + CSV_FILE_SUFFIX);
+    public static final Path IGNORED_FILE_NAMES_PATH = Path.of("src/main/resources/configuration/ignored_file_names." + CSV_FILE_SUFFIX);
 
     public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
@@ -126,6 +126,9 @@ public class Config {
     /** Web link to application on GitHub. */
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
     public static final String OUTPUT_DIRECTORY_NAME = "output";
+    public static final String MISSING_CONFIG_FILE = "missing config file";
+    public static final String UNUSED_KEYS = "unused keys";
+    public static final String UNUSED_INPUT_FILES = "unused input files";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -186,7 +189,7 @@ public class Config {
     public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         if (!Files.exists(config_file_path))
-            throw new RuntimeException("missing config file: '" + config_file_path + "'");
+            throw new RuntimeException(MISSING_CONFIG_FILE + ": '" + config_file_path + "'");
 
         try (final InputStreamReader reader = new InputStreamReader(Files.newInputStream(config_file_path), StandardCharsets.UTF_8)) {
 
@@ -201,7 +204,7 @@ public class Config {
     public void checkUnusedProperties() {
 
         if (!unused_keys.isEmpty())
-            throw new RuntimeException("unused keys: " + String.join(", ", unused_keys));
+            throw new RuntimeException(UNUSED_KEYS + ": " + String.join(", ", unused_keys));
     }
 
     public void checkUnusedInputFiles() throws IOException {
@@ -210,7 +213,7 @@ public class Config {
 
         if (!unused_files.isEmpty() && ((Boolean) get(KEY_CHECK_INPUT_FILES_USED))) {
 
-            final String message = "unused input files: " +
+            final String message = UNUSED_INPUT_FILES + ": " +
                 unused_files.stream().
                     map(path -> path.getFileName().toString()).
                     collect(Collectors.joining(", ")) + LINE_SEPARATOR;
@@ -321,9 +324,12 @@ public class Config {
 
         // Absolute path may originate from config file where "/" used on all platforms.
         // Such a path denotes a path relative to the project root.
-        if (path_as_string.startsWith(File.separator) || path_as_string.startsWith("/")) return makeRelativeToProjectRoot(path);
-
-        return getPathRelativeToRaceConfigFile(path);
+//        if (path_as_string.startsWith(File.separator) || path_as_string.startsWith("/")) return makeRelativeToProjectRoot(path);
+        if (path.isAbsolute())
+            return makeRelative(path);
+        else
+            // Path is a relative path from the directory containing the config file.
+            return getAbsolutePath(path);
     }
 
     public Path getOutputDirectoryPath() {
@@ -341,15 +347,16 @@ public class Config {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static Path makeRelativeToProjectRoot(final Path path) {
+    public static Path makeRelative(final Path path) {
 
-        // Path is specified as absolute path, should be reinterpreted relative to project root.
-        return path.subpath(0, path.getNameCount());
+        // Convert absolute path to relative, assuming root is project directory.
+        return Path.of(path.toString().substring(1));
+//        return path.subpath(0, path.getNameCount());
     }
 
-    private Path getPathRelativeToRaceConfigFile(final Path path) {
+    private Path getAbsolutePath(final Path relative_path_from_config_directory) {
 
-        return config_path.resolveSibling(path);
+        return config_path.resolveSibling(relative_path_from_config_directory);
     }
 
     private List<Path> getInputFiles() throws IOException {
