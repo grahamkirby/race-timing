@@ -206,6 +206,10 @@ public class RaceTest {
         assertTrue(error_output.isEmpty() || error_output.startsWith(FUZZ_OUTPUT_PREFIX), ERROR_UNEXPECTED_ERROR_MESSAGE);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TFD2");
 
+        System.out.println("test_run_output_directory = " + test_run_output_directory);
+        Files.list(test_run_output_directory).forEach(System.out::println);
+        System.out.println("End listing");
+
         assertThatDirectoryContainsAllExpectedContent(reference_expected_directory, test_run_output_directory);
 
         // Test has passed if this line is reached.
