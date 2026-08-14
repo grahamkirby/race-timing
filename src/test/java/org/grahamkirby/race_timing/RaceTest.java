@@ -348,13 +348,13 @@ public class RaceTest {
 
     private static List<Path> getTestCases() throws IOException {
 
-//        return List.of(TEST_RESOURCES_ROOT.resolve("real/individual_race/balmullo/2023"));
+        return List.of(TEST_RESOURCES_ROOT.resolve("real/individual_race/ceres_8/2025"));
 
-        try (final Stream<Path> paths = Files.walk(TEST_RESOURCES_ROOT)) {
-
-            // Assume it's a directory containing a test case if it contains a sub-directory named 'expected'.
-            return paths.filter(directory_entry -> Files.isDirectory(directory_entry.resolve(DIR_NAME_EXPECTED_OUTPUT))).toList();
-        }
+//        try (final Stream<Path> paths = Files.walk(TEST_RESOURCES_ROOT)) {
+//
+//            // Assume it's a directory containing a test case if it contains a sub-directory named 'expected'.
+//            return paths.filter(directory_entry -> Files.isDirectory(directory_entry.resolve(DIR_NAME_EXPECTED_OUTPUT))).toList();
+//        }
     }
 
     private static Path getTestResourcesRootPath(final Path individual_test_resource_root) {
