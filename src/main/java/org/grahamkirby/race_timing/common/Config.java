@@ -324,8 +324,8 @@ public class Config {
 
         // Absolute path may originate from config file where "/" used on all platforms.
         // Such a path denotes a path relative to the project root.
-//        if (path_as_string.startsWith(File.separator) || path_as_string.startsWith("/")) return makeRelativeToProjectRoot(path);
-        if (path.isAbsolute())
+        if (path_as_string.startsWith(File.separator) || path_as_string.startsWith("/"))// return makeRelative(path);
+//        if (path.isAbsolute())
             return makeRelative(path);
         else
             // Path is a relative path from the directory containing the config file.
