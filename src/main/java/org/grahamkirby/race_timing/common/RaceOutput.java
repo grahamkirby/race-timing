@@ -101,13 +101,13 @@ public abstract class RaceOutput {
             return Files.newOutputStream(getOutputStreamPath(output_type, file_suffix), STANDARD_FILE_OPEN_OPTIONS);
         }
         catch (final IOException e) {
-            throw new IOException("cannot create output directory, or file within it: " + e.getMessage());
+            throw new IOException(CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT + ": " + e.getMessage());
         }
     }
 
     protected void printResultsWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_overall_result_printer) throws IOException {
 
-        writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+        writer.append("<h4>" + OVERALL + "</h4>").append(LINE_SEPARATOR);
 
         printResults(writer, make_overall_result_printer.apply(race_results, writer), this::getResultsSubHeaderHTML);
         writer.append(SOFTWARE_CREDIT_LINK_TEXT);
@@ -150,7 +150,7 @@ public abstract class RaceOutput {
         if (race_results != null)
             for (final RaceResult result : race_results.getOverallResults())
                 if (result.getEntryCategory() == null)
-                    race_results.getNotesProcessor().appendToNotes("Runner " + result.getParticipantName() + " unknown category so omitted from overall results" + LINE_SEPARATOR);
+                    race_results.getNotesProcessor().appendToNotes(RUNNER + " " + result.getParticipantName() + " " + UNKNOWN_CATEGORY_SO_OMITTED_FROM_OVERALL_RESULTS + LINE_SEPARATOR);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
@@ -158,7 +158,7 @@ public abstract class RaceOutput {
 
         finaliseNotes();
 
-        final OutputStream stream = getOutputStream("processing_notes", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PROCESSING_NOTES, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             writer.append(notes.getCombinedNotes());
@@ -179,7 +179,7 @@ public abstract class RaceOutput {
 
     private void printResults(final ResultPrinterGenerator printer_generator, final Function<String, String> get_results_sub_header, final String suffix) throws IOException {
 
-        final OutputStream stream = getOutputStream("overall", suffix);
+        final OutputStream stream = getOutputStream(OVERALL.toLowerCase(), suffix);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -213,7 +213,7 @@ public abstract class RaceOutput {
 
     protected void printPrizesHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -245,7 +245,7 @@ public abstract class RaceOutput {
 
     protected void printPrizesWithHeaderHTML(final OutputStreamWriter writer, final ResultPrinterGenerator make_prize_result_printer) throws IOException {
 
-        writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+        writer.append("<h3>" + RESULTS + "</h3>").append(LINE_SEPARATOR);
         writer.append(getPrizesHeaderHTML());
 
         printPrizesHTML(writer, make_prize_result_printer.apply(race_results, writer));
@@ -254,7 +254,7 @@ public abstract class RaceOutput {
     protected String getPrizesHeaderHTML() {
 
         final String header = race_results instanceof final SeriesRaceResults series_race_results &&
-            series_race_results.getNumberOfRacesTakenPlace() < series_race_results.getRaceNames().size() ? "Current Standings" : "Prizes";
+            series_race_results.getNumberOfRacesTakenPlace() < series_race_results.getRaceNames().size() ? CURRENT_STANDINGS : PRIZES;
         return "<h4>" + header + "</h4>" + LINE_SEPARATOR;
     }
 
@@ -274,7 +274,7 @@ public abstract class RaceOutput {
     private void printPrizesText(final PrizeCategory category, final OutputStreamWriter writer, final ResultPrinter printer) {
 
         try {
-            final String header = "Category: " + category.getLongName();
+            final String header = CATEGORY + ": " + category.getLongName();
             writer.append(header + LINE_SEPARATOR + underline(header, "-") + LINE_SEPARATOR + LINE_SEPARATOR);
 
             final List<? extends RaceResult> category_prize_winners = race_results.getPrizeWinners(category);
@@ -291,14 +291,14 @@ public abstract class RaceOutput {
     protected void printPrizesHeaderText(final OutputStreamWriter writer) throws IOException {
 
         final String race_name = race_results.getConfig().getRaceName();
-        final String header = race_name + " Results " + race_results.getConfig().getString(KEY_YEAR);
+        final String header = race_name + " " + RESULTS + " " + race_results.getConfig().getString(KEY_YEAR);
 
         writer.append(header + LINE_SEPARATOR + underline(header, "=") + LINE_SEPARATOR + LINE_SEPARATOR);
     }
 
     protected void printPrizesText() throws IOException {
 
-        final OutputStream stream = getOutputStream("prizes", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -309,7 +309,7 @@ public abstract class RaceOutput {
 
     protected void printPrizesPDF() throws IOException {
 
-        final Path path = getOutputStreamPath("prizes", PDF_FILE_SUFFIX);
+        final Path path = getOutputStreamPath(PRIZES, PDF_FILE_SUFFIX);
         final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
@@ -327,7 +327,7 @@ public abstract class RaceOutput {
         final Paragraph section_header = new Paragraph().
             setFont(getFont(PDF_PRIZE_FONT_NAME)).
             setFontSize(PDF_PRIZE_FONT_SIZE).
-            add(race_name + " " + year + " Category Prizes");
+            add(race_name + " " + year + " " + CATEGORY_PRIZES);
 
         document.add(section_header);
         printPrizes(category -> printPrizesPDF(category, document, printer));
@@ -339,7 +339,7 @@ public abstract class RaceOutput {
         try {
             final PdfFont bold_font = getFont(PDF_PRIZE_FONT_BOLD_NAME);
 
-            final Paragraph category_header = new Paragraph("Category: " + category.getLongName()).
+            final Paragraph category_header = new Paragraph(CATEGORY + ": " + category.getLongName()).
                 setFont(bold_font).
                 setUnderline().
                 setPaddingTop(PDF_PRIZE_FONT_SIZE);
@@ -357,7 +357,7 @@ public abstract class RaceOutput {
 
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(COMBINED, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -383,7 +383,7 @@ public abstract class RaceOutput {
         @Override
         public void printNoResults() throws IOException {
 
-            writer.append("No results").append(LINE_SEPARATOR);
+            writer.append(NO_RESULTS).append(LINE_SEPARATOR);
         }
     }
 }

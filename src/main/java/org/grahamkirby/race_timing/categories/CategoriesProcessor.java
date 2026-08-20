@@ -180,7 +180,7 @@ public final class CategoriesProcessor  {
             map(get_name).
             filter(Predicate.not(seen::add)).
             findFirst().
-            ifPresent(name -> { throw new RuntimeException("duplicated category name: " + name); });
+            ifPresent(name -> { throw new RuntimeException(DUPLICATED_CATEGORY_NAME + ": " + name); });
     }
 
     private <C extends Category> List<String> getCategoryGenders(final List<C> categories, final Function<C, String> extract_gender) {
@@ -192,7 +192,7 @@ public final class CategoriesProcessor  {
 
     private String getEligibleGenderList(final PrizeCategory category) {
 
-        return String.join("/", category.getEligibleGenders());
+        return String.join(CONFIG_INNER_SEPARATOR, category.getEligibleGenders());
     }
 
     private void validateCategoryGenders(final List<EntryCategory> entry_categories, final List<PrizeCategory> prize_categories) {
@@ -206,7 +206,7 @@ public final class CategoriesProcessor  {
             collect(Collectors.toSet());
 
         if (!entry_genders.equals(prize_genders))
-            throw new RuntimeException("genders are not consistent between entry categories (" + String.join("/", entry_genders) + ") and prize categories (" + String.join("/", prize_genders) + ")");
+            throw new RuntimeException(GENDERS_ARE_NOT_CONSISTENT_BETWEEN_ENTRY_CATEGORIES + " (" + String.join(CONFIG_INNER_SEPARATOR, entry_genders) + ") and " + PRIZE_CATEGORIES + " (" + String.join(CONFIG_INNER_SEPARATOR, prize_genders) + ")");
     }
 
     private <C extends Category> List<C> loadCategories(final Path entry_categories_path, final Function<String, C> make_category) throws IOException {
@@ -214,7 +214,7 @@ public final class CategoriesProcessor  {
         return readAllLines(entry_categories_path).stream().
             filter(line -> !line.startsWith(COMMENT_SYMBOL)).
             map(make_category).
-            toList();
+            collect(Collectors.toList());
     }
 
     private boolean isResultEligibleForPrizeCategoryByClub(final String club, final PrizeCategory prize_category) {
@@ -254,7 +254,7 @@ public final class CategoriesProcessor  {
         for (final C category1 : categories)
             for (final C category2 : categories)
                 if (category1 != category2 && category1.intersectsWith(category2))
-                    throw new RuntimeException("invalid intersecting age ranges: " + category1 + ", " + category2);
+                    throw new RuntimeException(INVALID_INTERSECTING_AGE_RANGES + ": " + category1 + ", " + category2);
     }
 
     private <C extends Category> List<C> getCategoriesByGender(final List<C> categories, final String gender, final Function<C, String> extract_gender) {
@@ -269,16 +269,15 @@ public final class CategoriesProcessor  {
         final List<AgeRange> amalgamated_ranges = getAmalgamatedAgeRanges(categories);
 
         if (amalgamated_ranges.size() > 1)
-            throw new RuntimeException("invalid categories: missing age range for " + gender + ": (" +
+            throw new RuntimeException(INVALID_CATEGORIES_MISSING_AGE_RANGE_FOR + " " + gender + ": (" +
                 (amalgamated_ranges.get(0).getMaximumAge() + 1) + "," + (amalgamated_ranges.get(1).getMinimumAge() - 1) + ")");
     }
 
     private <C extends Category> List<AgeRange> getAmalgamatedAgeRanges(final List<C> categories) {
 
-        final List<AgeRange> ranges = makeMutableCopy(
-            categories.stream().
+        final List<AgeRange> ranges = categories.stream().
                 map(Category::getAgeRange).
-                toList());
+                collect(Collectors.toList());
 
         amalgamate(ranges);
         ranges.sort(Comparator.comparingInt(AgeRange::getMinimumAge));

@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingInt;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 /**
  * Category defining eligibility for a particular prize.
@@ -56,7 +57,7 @@ public final class PrizeCategory extends Category {
         final String[] elements = components.split(",", -1);
 
         if (elements.length <= GROUP_INDEX)
-            throw new RuntimeException("too few category elements");
+            throw new RuntimeException(TOO_FEW_CATEGORY_ELEMENTS1);
 
         eligible_genders = getGenders(elements);
 
@@ -64,7 +65,7 @@ public final class PrizeCategory extends Category {
             number_of_prizes = Integer.parseInt(elements[PRIZES_INDEX]);
         }
         catch (NumberFormatException _) {
-            throw new RuntimeException("invalid number of prizes: " + elements[PRIZES_INDEX]);
+            throw new RuntimeException(INVALID_NUMBER_OF_PRIZES + ": " + elements[PRIZES_INDEX]);
         }
 
         group = elements[GROUP_INDEX];
@@ -74,7 +75,7 @@ public final class PrizeCategory extends Category {
 
     private Set<String> getGenders(final String[] elements) {
 
-        final String[] split = elements[GENDER_INDEX].split("/");
+        final String[] split = elements[GENDER_INDEX].split(ELIGIBLE_CLUBS_SEPARATOR);
         return Arrays.stream(split).map(String::trim).collect(Collectors.toSet());
     }
 
@@ -83,7 +84,7 @@ public final class PrizeCategory extends Category {
         if (elements.length >= CLUBS_INDEX + 1) {
             final String club_string = elements[CLUBS_INDEX];
             if (!club_string.isEmpty())
-                return Arrays.stream(club_string.split("/")).collect(Collectors.toSet());
+                return Arrays.stream(club_string.split(ELIGIBLE_CLUBS_SEPARATOR)).collect(Collectors.toSet());
         }
 
         return Set.of();

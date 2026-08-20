@@ -33,7 +33,7 @@ public class RawResult {
 
     public RawResult(final String file_line) {
 
-        final String[] elements = file_line.split("\t");
+        final String[] elements = file_line.split(RAW_RESULT_SEPARATOR);
 
         final String bib_number_as_string = elements[0];
         final String time_as_string = elements[1];

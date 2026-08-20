@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
@@ -67,7 +68,9 @@ public abstract class RaceResultsProcessor implements RaceResults {
         final Predicate<RaceResult> prize_category_filter = result ->
             race.getCategoriesProcessor().isResultEligibleInSomePrizeCategory(result.getEntryCategory(), getClub(result), prize_categories);
 
-        final List<RaceResult> results = makeMutableCopy(overall_results.stream().filter(prize_category_filter).toList());
+        final List<RaceResult> results = overall_results.stream().
+            filter(prize_category_filter).
+            collect(Collectors.toList());
 
         setPositionStrings(results);
         return results;
@@ -76,9 +79,9 @@ public abstract class RaceResultsProcessor implements RaceResults {
     @Override
     public List<RaceResult> getPrizeWinners(final PrizeCategory prize_category) {
 
-        final List<RaceResult> prize_results = makeMutableCopy(overall_results.stream().
+        final List<RaceResult> prize_results = overall_results.stream().
             filter(result -> result.getCategoriesOfPrizesAwarded().contains(prize_category)).
-            toList());
+            collect(Collectors.toList());
 
         setPositionStrings(prize_results);
         return prize_results;
@@ -191,7 +194,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
     /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int length_of_sequence_of_equal_performances) {
 
-        final String position_string = (start_index + 1) + "=";
+        final String position_string = (start_index + 1) + EQUAL_POSITION_INDICATOR;
 
         results.stream().
             skip(start_index).

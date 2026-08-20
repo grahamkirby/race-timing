@@ -28,7 +28,6 @@ import org.grahamkirby.race_timing.common.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -41,8 +40,6 @@ import static org.grahamkirby.race_timing.individual_race.IndividualRaceResults.
 import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsProcessor.getAggregatePosition;
 
 public class IndividualRaceOutput extends RaceOutput {
-
-    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Runner,Club,Category,Time" + LINE_SEPARATOR;
 
     public IndividualRaceOutput(final Config config) {
         super(config);
@@ -75,7 +72,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printPrizesHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream("prizes", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -88,7 +85,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printPrizesPDF() throws IOException {
 
-        final Path path = getOutputStreamPath("prizes", PDF_FILE_SUFFIX);
+        final Path path = getOutputStreamPath(PRIZES.toLowerCase(), PDF_FILE_SUFFIX);
         final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
@@ -101,7 +98,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printPrizesText() throws IOException {
 
-        final OutputStream stream = getOutputStream("prizes", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -119,7 +116,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
         if (!team_prizes.isEmpty()) {
 
-            writer.append("<h4>Team Prizes</h4>").append(LINE_SEPARATOR);
+            writer.append("<h4>" + TEAM_PRIZES + "</h4>").append(LINE_SEPARATOR);
             writer.append("<ul>").append(LINE_SEPARATOR);
 
             for (final TeamPerformance team_performance : team_prizes) {
@@ -127,9 +124,9 @@ public class IndividualRaceOutput extends RaceOutput {
                 final int best_team_total = getAggregatePosition(team_performance);
 
                 writer.append("    <li>").
-                    append("First <strong>").
+                    append(FIRST + " <strong>").
                     append(team_performance.gender().toLowerCase()).
-                    append(" team</strong>: ").
+                    append(" " + TEAM + "</strong>: ").
                     append(team_performance.club()).
                     append(" (").append(String.valueOf(best_team_total)).append("):").append(LINE_SEPARATOR).
                     append("        <ul>").append(LINE_SEPARATOR).
@@ -156,7 +153,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
         if (!team_prizes.isEmpty()) {
 
-            document.add(new Paragraph("Team Prizes").
+            document.add(new Paragraph(TEAM_PRIZES).
                 setFont(getFont(PDF_PRIZE_FONT_BOLD_NAME)).
                 setUnderline().
                 setPaddingTop(PDF_PRIZE_FONT_SIZE));
@@ -166,11 +163,11 @@ public class IndividualRaceOutput extends RaceOutput {
                 final int best_team_total = getAggregatePosition(team_performance);
 
                 final Paragraph paragraph1 = new Paragraph();
-                paragraph1.add(new Text("First "));
-                paragraph1.add(new Text(team_performance.gender().toLowerCase() + " team").setFont(bold_font));
+                paragraph1.add(new Text(FIRST + " "));
+                paragraph1.add(new Text(team_performance.gender().toLowerCase() + " " + TEAM).setFont(bold_font));
                 paragraph1.add(new Text(": " + team_performance.club() + " (" + best_team_total + "):"));
 
-                final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(24);
+                final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(INDENT);
                 paragraph2.add(new Text(team_performance.runner_performances().stream().
                     map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                     collect(Collectors.joining(", "))));
@@ -187,14 +184,14 @@ public class IndividualRaceOutput extends RaceOutput {
 
         if (!team_prizes.isEmpty()) {
 
-            writer.append("Team Prizes\n");
-            writer.append("-----------\n\n");
+            writer.append(TEAM_PRIZES).append(LINE_SEPARATOR);
+            writer.append(UNDERLINE).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
             for (final TeamPerformance team_performance : team_prizes) {
 
                 final int best_team_total = getAggregatePosition(team_performance);
 
-                writer.append("First " + team_performance.gender().toLowerCase() + " team: " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
+                writer.append(FIRST + " " + team_performance.gender().toLowerCase() + " " + TEAM + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
                     team_performance.runner_performances().stream().
                         map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                         collect(Collectors.joining(", ")));
@@ -209,7 +206,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(COMBINED1, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -230,7 +227,7 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append(OVERALL_RESULTS_HEADER);
+            writer.append(String.join(CSV_SEPARATOR, HEADERS)).append(LINE_SEPARATOR);
         }
 
         @Override
@@ -262,7 +259,7 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            return List.of("Pos", "No", "Runner", "Club", "Category", "Time");
+            return HEADERS;
         }
 
         @Override
@@ -310,7 +307,7 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         public void printNoResults() throws IOException {
 
-            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+            document.add(new Paragraph(NO_RESULTS).setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 
@@ -351,7 +348,7 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         public void printNoResults() throws IOException {
 
-            writer.append("<p>No results</p>").append(LINE_SEPARATOR);
+            writer.append("<p>" + NO_RESULTS + "</p>").append(LINE_SEPARATOR);
         }
     }
 }

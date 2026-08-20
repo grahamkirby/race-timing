@@ -21,7 +21,6 @@ import org.grahamkirby.race_timing.common.Config;
 import org.grahamkirby.race_timing.common.ConfigProcessor;
 import org.grahamkirby.race_timing.common.NormalisationProcessor;
 
-import java.nio.file.Path;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -63,17 +62,17 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
     static void validateDNFRecords(final String dnf_string, final String config_file_name) {
 
         if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(",")) {
+            for (final String individual_dnf_string : dnf_string.split(CONFIG_OUTER_SEPARATOR)) {
                 try {
-                    final String[] elements = individual_dnf_string.split("/");
+                    final String[] elements = individual_dnf_string.split(CONFIG_INNER_SEPARATOR);
                     if (elements.length < 2)
-                        throw new RuntimeException("invalid entry '" + dnf_string + "' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_name + "'");
+                        throw new RuntimeException(INVALID_ENTRY1 + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
 
                     Integer.parseInt(elements[0]);
                     Integer.parseInt(elements[1]);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException("invalid entry '" + dnf_string + "' for key '" + KEY_DNF_FINISHERS + "' in file '" + config_file_name + "'", e);
+                    throw new RuntimeException(INVALID_ENTRY1 + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
             }
     }
@@ -83,20 +82,20 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
         Duration previous_time = null;
 
         if (mass_start_elapsed_times != null)
-            for (final String leg_time_string : mass_start_elapsed_times.split(",")) {
+            for (final String leg_time_string : mass_start_elapsed_times.split(CONFIG_OUTER_SEPARATOR)) {
 
-                final String[] split = leg_time_string.split("/");
+                final String[] split = leg_time_string.split(CONFIG_INNER_SEPARATOR);
 
                 final Duration mass_start_time;
                 try {
                     if (split.length < 2)
-                        throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
+                        throw new RuntimeException(FOR_KEY1 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
 
                     final String time_string = split[1];
                     mass_start_time = NormalisationProcessor.parseTime(time_string);
 
                 } catch (final DateTimeParseException _) {
-                    throw new RuntimeException("invalid mass start time for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
+                    throw new RuntimeException(FOR_KEY1 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
 
                 try {
@@ -104,15 +103,15 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
 
                     // A mass start for leg 1 is invalid though the leg number is valid.
                     if (leg_number <= 1 || leg_number > number_of_legs)
-                        throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
+                        throw new RuntimeException(FOR_KEY2 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
                 catch (NumberFormatException _) {
-                    throw new RuntimeException("invalid leg number for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
+                    throw new RuntimeException(FOR_KEY2 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
 
                 // Start time for one mass start must be strictly less than start time for the next.
                 if (previous_time != null && previous_time.compareTo(mass_start_time) >= 0)
-                    throw new RuntimeException("invalid mass start time order for key '" + KEY_MASS_START_TIMES + "' in file '" + config_file_name + "'");
+                    throw new RuntimeException(FOR_KEY3 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
 
                 previous_time = mass_start_time;
             }

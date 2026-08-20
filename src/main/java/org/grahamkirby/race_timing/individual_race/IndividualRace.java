@@ -42,11 +42,6 @@ public class IndividualRace implements SingleRaceInternal {
     private static final int NUMBER_OF_OVERALL_RESULTS_COLUMNS = 4;
     private static final int DUMMY_BIB_NUMBER = 0;
 
-    private static final String POCKET_TIMER_RACERS_FILENAME = "racers";
-    private static final String DUMMY_RAWTIMES_FILENAME = "dummy_rawtimes";
-    private static final Duration DUMMY_WINNING_TIME = Duration.ofMinutes(10);
-    private static final Duration DUMMY_INTERVAL = Duration.ofSeconds(12);
-
     private List<RaceEntry> entries;
     private List<RawResult> raw_results;
     private List<RaceResult> overall_results;
@@ -115,7 +110,7 @@ public class IndividualRace implements SingleRaceInternal {
             final String converted_words = normalisation.getNonTitleCaseWords();
 
             if (!converted_words.isEmpty())
-                notes.appendToNotes("Converted to title case: " + converted_words + LINE_SEPARATOR);
+                notes.appendToNotes(CONVERTED_TO_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
         }
 
         results_output.printNotes(notes);
@@ -136,7 +131,7 @@ public class IndividualRace implements SingleRaceInternal {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream2)) {
             Duration dummy_time = DUMMY_WINNING_TIME;
             for (final RaceEntry entry : entries) {
-                writer.append(entry.getBibNumber() + "\t" + renderDuration(dummy_time, "-") + LINE_SEPARATOR);
+                writer.append(entry.getBibNumber() + RAW_RESULT_SEPARATOR + renderDuration(dummy_time, "-") + LINE_SEPARATOR);
                 dummy_time = dummy_time.plus(DUMMY_INTERVAL);
             }
         }
@@ -231,10 +226,10 @@ public class IndividualRace implements SingleRaceInternal {
         final String name = participant.getName();
         final String category_name = participant.getCategory().getShortName();
 
-        return entry.getBibNumber() + "\t" +
-            getLastNameOfRunner(name) + "\t" +
-            getFirstNameOfRunner(name) + "\t" +
-            ((Runner) participant).getClub() + "\t" +
+        return entry.getBibNumber() + RACE_ENTRY_SEPARATOR +
+            getLastNameOfRunner(name) + RACE_ENTRY_SEPARATOR +
+            getFirstNameOfRunner(name) + RACE_ENTRY_SEPARATOR +
+            ((Runner) participant).getClub() + RACE_ENTRY_SEPARATOR +
             category_name.charAt(0) + "\t\t" +
             category_name;
     }
@@ -299,7 +294,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private RaceResult makeRaceResult(final String line) {
 
-        final List<String> elements = makeMutableCopy(getLineElements(line));
+        final List<String> elements = getLineElements(line);
 
         elements.addFirst(String.valueOf(DUMMY_BIB_NUMBER));
 
@@ -326,7 +321,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private List<String> getLineElements(final String line) {
 
-        return Arrays.stream(splitLine(line, "\t")).toList();
+        return Arrays.stream(splitLine(line, RACE_ENTRY_SEPARATOR)).collect(Collectors.toList());
     }
 
     private String[] splitLine(final String line, final String delimiter) {
@@ -366,7 +361,7 @@ public class IndividualRace implements SingleRaceInternal {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
-                    throw new RuntimeException("duplicate entry '" + entry1 + "' in file '" + entries_path.getFileName() + "'");
+                    throw new RuntimeException(DUPLICATE_ENTRY + " '" + entry1 + "' " + IN_FILE + " '" + entries_path.getFileName() + "'");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,11 +372,11 @@ public class IndividualRace implements SingleRaceInternal {
 
         final Consumer<Object> process_separately_recorded_results = value -> {
 
-            for (final String s : splitLine((String) value, ",")) {
+            // Example: SEPARATELY_RECORDED_RESULTS = 126/8:09,145/11:21
 
-                // Example: SEPARATELY_RECORDED_RESULTS = 126/8:09
+            for (final String s : splitLine((String) value, CONFIG_OUTER_SEPARATOR)) {
 
-                final String[] split = splitLine(s, "/");
+                final String[] split = splitLine(s, CONFIG_INNER_SEPARATOR);
                 final int bib_number = Integer.parseInt(split[0]);
                 final Duration finish_time = parseTime(split[1]);
 
@@ -398,8 +393,8 @@ public class IndividualRace implements SingleRaceInternal {
 
         final Consumer<Object> process_dead_heats = value -> {
 
-            // Example: DEAD_HEATS = 10/29/4
-            dead_heats = Arrays.stream(splitLine((String) value, "/")).map(Integer::parseInt).collect(Collectors.toSet());
+            // Example: DEAD_HEATS = 10,29,4
+            dead_heats = Arrays.stream(splitLine((String) value, CONFIG_OUTER_SEPARATOR)).map(Integer::parseInt).collect(Collectors.toSet());
         };
 
         config.processConfigIfPresent(KEY_DEAD_HEATS, process_dead_heats);

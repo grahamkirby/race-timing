@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Config.NO_RESULTS;
 
 public class PrizeResultPrinterHTML extends ResultPrinter {
 
@@ -57,6 +58,6 @@ public class PrizeResultPrinterHTML extends ResultPrinter {
     @Override
     public void printNoResults() throws IOException {
 
-        writer.append("<p>No results</p>").append(LINE_SEPARATOR);
+        writer.append("<p>" + NO_RESULTS + "</p>").append(LINE_SEPARATOR);
     }
 }

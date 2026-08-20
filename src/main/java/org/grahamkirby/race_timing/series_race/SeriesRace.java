@@ -166,7 +166,7 @@ public class SeriesRace implements RaceInternal {
 
         final int number_of_races_in_series = (int) config.get(KEY_NUMBER_OF_RACES_IN_SERIES);
         if (race_config_paths.size() != number_of_races_in_series)
-            throw new RuntimeException("invalid number of races specified in file '" + config.getConfigPath().getFileName() + "'");
+            throw new RuntimeException(INVALID_NUMBER_OF_RACES_SPECIFIED_IN_FILE + " '" + config.getConfigPath().getFileName() + "'");
 
         loadRaces(race_config_paths);
     }
@@ -186,7 +186,7 @@ public class SeriesRace implements RaceInternal {
                 races.add(null);
             else {
                 if (config_paths_seen.contains(race_config_path))
-                    throw new RuntimeException("duplicate races specified in file '" + config.getConfigPath().getFileName() + "'");
+                    throw new RuntimeException(DUPLICATE_RACES_SPECIFIED_IN_FILE + " '" + config.getConfigPath().getFileName() + "'");
 
                 config_paths_seen.add(race_config_path);
 
@@ -203,7 +203,7 @@ public class SeriesRace implements RaceInternal {
         final Path config_path = config.interpretPath(individual_race_config_path);
 
         if (!Files.exists(config_path))
-            throw new RuntimeException("invalid config for race " + race_number + " in file '" + config.getConfigPath().getFileName() + "'");
+            throw new RuntimeException(INVALID_CONFIG_FOR_RACE + " " + race_number + " " + IN_FILE + " '" + config.getConfigPath().getFileName() + "'");
 
         final SingleRaceInternal individual_race = (SingleRaceInternal) new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();

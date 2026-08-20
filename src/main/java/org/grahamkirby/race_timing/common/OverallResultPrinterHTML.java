@@ -23,6 +23,7 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
+import static org.grahamkirby.race_timing.common.Config.NO_RESULTS;
 
 /** Base class for printing results to HTML files. */
 public abstract class OverallResultPrinterHTML extends ResultPrinter {
@@ -79,7 +80,7 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
     @Override
     public void printNoResults() throws IOException {
 
-        writer.append("<p>No results</p>").append(LINE_SEPARATOR);
+        writer.append("<p>" + NO_RESULTS + "</p>").append(LINE_SEPARATOR);
     }
 
     protected abstract List<String> getResultsElements(final RaceResult result) throws IOException;

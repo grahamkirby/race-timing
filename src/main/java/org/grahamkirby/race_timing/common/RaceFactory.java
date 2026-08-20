@@ -53,8 +53,8 @@ public class RaceFactory {
 
                 final RaceResults results = race.processResults();
 
-                // If results is null then an error has occurred during processing. Details will have been recorded
-                // in the notes.
+                // If results is null then an error has occurred during processing.
+                // Details will have been recorded in the notes.
                 if (results != null) {
 
                     if (results.getOverallResults().isEmpty())
@@ -83,7 +83,7 @@ public class RaceFactory {
                 return factory.makeRace(config_file_path);
         }
 
-        throw new RuntimeException("no applicable race type for config file");
+        throw new RuntimeException(NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE);
     }
 
     // Only used in subclasses.

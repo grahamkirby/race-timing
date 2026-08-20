@@ -22,9 +22,10 @@ import org.grahamkirby.race_timing.common.*;
 import org.grahamkirby.race_timing.common.Performance;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.grahamkirby.race_timing.common.Config.DNF_STRING;
 import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
@@ -39,10 +40,10 @@ public class RelayRaceResult extends SingleRaceResult {
 
         super(race, entry, finish_time);
 
-        leg_results = new ArrayList<>();
-
-        for (int i = 0; i < ((RelayRace) race).getNumberOfLegs(); i++)
-            leg_results.add(new RelayRaceLegResult(race, entry));
+        leg_results = IntStream.range(0, ((RelayRace) race).getNumberOfLegs()).
+            boxed().
+            map(_ -> new RelayRaceLegResult(race, entry)).
+            collect(Collectors.toList());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

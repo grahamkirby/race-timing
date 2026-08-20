@@ -64,13 +64,13 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
     private void validateDNFRecords(final String dnf_string) {
 
         if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(","))
+            for (final String individual_dnf_string : dnf_string.split(CONFIG_OUTER_SEPARATOR))
                 try {
                     // Each DNF string contains single bib number.
                     Integer.parseInt(individual_dnf_string);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException("invalid entry '" + dnf_string +"' for key '" + KEY_DNF_FINISHERS + "' in file '" + config.getConfigPath().getFileName() + "'", e);
+                    throw new RuntimeException(INVALID_ENTRY1 + " '" + dnf_string +"' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config.getConfigPath().getFileName() + "'", e);
                 }
     }
 }

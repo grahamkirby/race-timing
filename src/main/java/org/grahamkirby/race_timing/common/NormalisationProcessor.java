@@ -161,7 +161,7 @@ public class NormalisationProcessor {
     /** Gets the last name of the given runner, or of the first runner if it's a pair. */
     public static String getLastNameOfRunner(final String s) {
 
-        final String runner = s.contains(" & ") ? s.split(" & ")[0] : s;
+        final String runner = s.contains(RUNNER_PAIR_NAMES_SEPARATOR) ? s.split(RUNNER_PAIR_NAMES_SEPARATOR)[0] : s;
         return Arrays.stream(runner.split(" ")).toList().getLast();
     }
 
@@ -328,7 +328,7 @@ public class NormalisationProcessor {
         // Column mapping not used for relay races, so may not be set.
         if (entry_column_map_string == null) return List.of();
 
-        return Arrays.asList(entry_column_map_string.split(","));
+        return Arrays.asList(entry_column_map_string.split(CONFIG_OUTER_SEPARATOR));
     }
 
     private Map<String, String> loadCategoryMap() throws IOException {
@@ -342,7 +342,7 @@ public class NormalisationProcessor {
                 filter(line -> !line.isEmpty()).
                 filter(line -> !line.startsWith(COMMENT_SYMBOL)).
                 forEachOrdered(line -> {
-                    final String[] parts = line.split(",");
+                    final String[] parts = line.split(CONFIG_OUTER_SEPARATOR);
                     map.put(parts[0], parts[1]);
                 });
         }
@@ -357,7 +357,7 @@ public class NormalisationProcessor {
 
         readAllLines(path).forEach(line -> {
 
-            final String[] parts = line.split(",");
+            final String[] parts = line.split(CONFIG_OUTER_SEPARATOR);
             map.put(parts[0], parts[1]);
         });
 

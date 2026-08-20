@@ -23,7 +23,6 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 /** Abstracts over the details of how to print out race results. */
-@SuppressWarnings("IncorrectFormatting")
 public abstract class ResultPrinter {
 
     protected final RaceResults race_results;

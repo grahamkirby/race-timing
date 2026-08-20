@@ -22,6 +22,7 @@ import com.itextpdf.io.font.constants.StandardFonts;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -31,10 +32,151 @@ import java.util.stream.Stream;
 
 public class Config {
 
+    public static final int POSITION_INDEX = 1;
+    public static final int BIB_INDEX = 2;
+    public static final int TIME_INDEX = 3;
+    public static final int COMMENT_INDEX = 4;
+
+    public static final int INDENT = 24;
+
+    public static final Duration DUMMY_WINNING_TIME = Duration.ofMinutes(10);
+    public static final Duration DUMMY_INTERVAL = Duration.ofSeconds(12);
+
     public static final String CSV_FILE_SUFFIX = "csv";
     public static final String HTML_FILE_SUFFIX = "html";
     public static final String PDF_FILE_SUFFIX = "pdf";
     public static final String TEXT_FILE_SUFFIX = "txt";
+
+    public static final String ILLEGAL_AGE_RANGE = "illegal age range";
+    public static final String DUPLICATED_CATEGORY_NAME = "duplicated category name";
+    public static final String GENDERS_ARE_NOT_CONSISTENT_BETWEEN_ENTRY_CATEGORIES = "genders are not consistent between entry categories";
+    public static final String PRIZE_CATEGORIES = "prize categories";
+    public static final String INVALID_INTERSECTING_AGE_RANGES = "invalid intersecting age ranges";
+    public static final String INVALID_CATEGORIES_MISSING_AGE_RANGE_FOR = "invalid categories: missing age range for";
+    public static final String TOO_FEW_CATEGORY_ELEMENTS = "too few category elements";
+    public static final String INVALID_AGE_RANGE_FOR_CATEGORY = "invalid age range for category";
+    public static final String TOO_FEW_CATEGORY_ELEMENTS1 = "too few category elements";
+    public static final String INVALID_NUMBER_OF_PRIZES = "invalid number of prizes";
+    public static final String ELIGIBLE_CLUBS_SEPARATOR = "/";
+    public static final String NO_ENTRY_FOR_KEY = "no entry for key";
+    public static final String INVALID_ENTRY = "invalid entry";
+    public static final String SHOULD_HAVE_NO_KEYS_FROM = "should have no keys from";
+    public static final String SHOULD_HAVE_NO_OR_ALL_KEYS_FROM = "should have no or all keys from";
+    public static final String SHOULD_HAVE_NO_MORE_THAN_ONE_KEY_FROM = "should have no more than one key from";
+    public static final String RUNNER_PAIR_NAMES_SEPARATOR = " & ";
+    public static final String NO_RESULTS = "No results";
+    public static final String AT_LINE = "at line";
+    public static final String IN_FILE = "in file";
+    public static final String DUPLICATE_BIB_NUMBER = "duplicate bib number";
+    public static final String INVALID_RECORD = "invalid record";
+    public static final String POSSIBLE_INVALID_USE_OF_COMMENT_SYMBOL = "possible invalid use of # comment symbol";
+    public static final String INVALID_CATEGORY_IN_ENTRY = "invalid category in entry";
+    public static final String AT_LINE1 = "result out of order at line";
+    public static final String NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE = "no applicable race type for config file";
+    public static final String CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT = "cannot create output directory, or file within it";
+    public static final String OVERALL = "Overall";
+    public static final String RUNNER = "Runner";
+    public static final String UNKNOWN_CATEGORY_SO_OMITTED_FROM_OVERALL_RESULTS = "unknown category so omitted from overall results";
+    public static final String PROCESSING_NOTES = "processing_notes";
+    public static final String PRIZES = "Prizes";
+    public static final String RESULTS = "Results";
+    public static final String CURRENT_STANDINGS = "Current Standings";
+    public static final String CATEGORY = "Category";
+    public static final String CATEGORY_PRIZES = "Category Prizes";
+    public static final String COMBINED = "combined";
+    public static final String EQUAL_POSITION_INDICATOR = "=";
+    public static final String POCKET_TIMER_RACERS_FILENAME = "racers";
+    public static final String DUMMY_RAWTIMES_FILENAME = "dummy_rawtimes";
+    public static final String CONVERTED_TO_TITLE_CASE = "Converted to title case";
+
+    public static final String RAW_RESULT_SEPARATOR = "\t";
+    public static final String RACE_ENTRY_SEPARATOR = "\t";
+    public static final String CONFIG_INNER_SEPARATOR = "/";
+    public static final String CONFIG_OUTER_SEPARATOR = ",";
+    public static final String CSV_SEPARATOR = ",";
+
+    public static final String INVALID_ENTRY1 = "invalid entry";
+    public static final String FOR_KEY = "for key";
+    public static final String FIRST = "First";
+    public static final String TEAM = "team";
+    public static final String TEAM_PRIZES = "Team Prizes";
+    public static final String UNDERLINE = "-----------";
+    public static final String COMBINED1 = "combined";
+    public static final String BIB_NUMBER = "bib number";
+    public static final String RECORDED_AS_DNF_BUT_NO_RESULT_WAS_RECORDED = "recorded as DNF but no result was recorded";
+    public static final String TEAM_SCORES = "Team scores";
+    public static final String UNATT = "Unatt.";
+    public static final String ENTRY_SEPARATOR = "\t";
+    public static final String UNREGISTERED_BIB_NUMBER = "unregistered bib number";
+    public static final String AT_LINE2 = "at line";
+    public static final String DUPLICATE_ENTRY = "duplicate entry";
+    public static final String IN_FILE2 = "in file";
+    public static final String SURPLUS_RESULT_FOR_TEAM = "surplus result for team";
+    public static final String UPDATE = "Update";
+    public static final String INVALID_NUMBER_OF_ELEMENTS = "invalid number of elements";
+    public static final String MASS_START_INDICATOR = "M";
+    public static final String FOR_KEY1 = "invalid mass start time for key";
+    public static final String FOR_KEY2 = "invalid leg number for key";
+    public static final String FOR_KEY3 = "invalid mass start time order for key";
+    public static final String TIME = "Time";
+    public static final String OVERALL_RESULTS_HEADER2 = "Pos,No,Team,Category,";
+    public static final String DETAILED = "detailed";
+    public static final String M_3_MASS_START_LEG_3 = "M3: mass start leg 3";
+    public static final String M_4_MASS_START_LEG_4 = "M4: mass start leg 4";
+    public static final String LEG = "leg_";
+    public static final String LEG1 = "Leg";
+    public static final String FULL_RESULTS = "Full Results";
+    public static final String TIMES_COLLATED = "times_collated";
+    public static final String TOTAL = "Total";
+    public static final String POS = "Pos";
+    public static final String RUNNERS = "Runners";
+    public static final String SPLIT = "Split";
+
+    public static final List<String> HEADERS = List.of(POS, "No", "Runner", "Club", "Category", "Time");
+    public static final List<String> POS1 = List.of(POS, "No", "Team", "Category");
+    public static final List<String> HEADERS2 = concat(POS1, List.of(TOTAL));
+
+
+    public static final String TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_FIRST_RECORDED_TIME = "Time not recorded. No basis for interpolation so set to first recorded time.";
+    public static final String TIME_NOT_RECORDED_TIME_INTERPOLATED = "Time not recorded. Time interpolated.";
+    public static final String TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_LAST_RECORDED_TIME_1_S = "Time not recorded. No basis for interpolation so set to last recorded time + 1s.";
+    public static final String TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_TOO_MANY_MISSING_TIMES_TO_GUESS_FROM_DNF_TEAMS = "Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.";
+    public static final String TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_GUESSED_BIB_NUMBER = "Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.";
+    public static final String INVALID_NUMBER_OF_RACES_SPECIFIED_IN_FILE = "invalid number of races specified in file";
+    public static final String DUPLICATE_RACES_SPECIFIED_IN_FILE = "duplicate races specified in file";
+    public static final String INVALID_CONFIG_FOR_RACE = "invalid config for race";
+    public static final String RUNNERS_IN_SERIES = "Runners in Series";
+    public static final String CLUB = "Club";
+    public static final String SUBSTITUTED_FOR_UNKNOWN_CLUBS_FOR_RUNNER_NAME = "substituted for unknown clubs for runner name";
+    public static final String RUNNER_NAME = "Runner name";
+    public static final String RECORDED_FOR_MULTIPLE_CLUBS = "recorded for multiple clubs";
+    public static final String ASSUMING_THERE_ARE_MULTIPLE_RUNNERS_WITH_THIS_NAME = "assuming there are multiple runners with this name";
+    public static final String CATEGORY_CHANGES = "Category Changes";
+    public static final String CHANGED_CATEGORY_FROM = "changed category from";
+    public static final String TO = "to";
+    public static final String AT = "at";
+    public static final String INVALID_CATEGORY_CHANGE = "invalid category change";
+    public static final String CHANGED_FROM = "changed from";
+    public static final String DURING_SERIES = "during series";
+    public static final String FINISHER_WAS_RUNNER = "finisher was runner";
+    public static final String TO_FINISH_FOR_TEAM = "to finish for team";
+    public static final String DISCREPANCIES = """
+        
+        Discrepancies:
+        -------------
+        """;
+    public static final String S = """
+        
+        
+        """;
+    public static final String S1 = """
+        
+        Bib numbers with missing times:\s""";
+    public static final String S2 = """
+        
+        Times with missing bib numbers:
+        
+        """;
 
     // Treated differently from other configurable paths, because it needs to be accessed
     // from test code independently of a particular race.
@@ -164,16 +306,6 @@ public class Config {
             map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
             toList();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static Path resolvePath(final String... elements) {
-
-        Path result = Path.of(elements[0]);
-        for (int i = 1; i < elements.length; i++)
-            result = result.resolve(elements[i]);
-        return result;
     }
 
     public static <T> List<T> makeMutableCopy(final List<T> list) {
@@ -322,10 +454,9 @@ public class Config {
 
         final Path path = Path.of(path_as_string);
 
-        // Absolute path may originate from config file where "/" used on all platforms.
-        // Such a path denotes a path relative to the project root.
-        if (path_as_string.startsWith(File.separator) || path_as_string.startsWith("/"))// return makeRelative(path);
-//        if (path.isAbsolute())
+        // .isAbsolute() won't work for this check on Windows since an absolute path may originate from config file,
+        // where "/" is used on all platforms. Such a path denotes a path relative to the project root.
+        if (path_as_string.startsWith(File.separator) || path_as_string.startsWith("/"))
             return makeRelative(path);
         else
             // Path is a relative path from the directory containing the config file.
@@ -349,9 +480,9 @@ public class Config {
 
     public static Path makeRelative(final Path path) {
 
-        // Convert absolute path to relative, assuming root is project directory.
+        // Convert absolute path to relative path from the project directory,
+        // interpreting the input path's root as the project directory.
         return Path.of(path.toString().substring(1));
-//        return path.subpath(0, path.getNameCount());
     }
 
     private Path getAbsolutePath(final Path relative_path_from_config_directory) {
@@ -366,6 +497,10 @@ public class Config {
         try (final Stream<Path> paths = Files.list(input_directory)) {
             return paths.filter(Files::isRegularFile).toList();
         }
+    }
+
+    private static List<String> concat(final List<String> list1, final List<String> list2) {
+        return Stream.concat(list1.stream(), list2.stream()).toList();
     }
 }
 

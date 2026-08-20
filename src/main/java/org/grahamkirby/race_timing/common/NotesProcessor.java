@@ -21,8 +21,9 @@ public class NotesProcessor {
 
     protected final StringBuilder notes =  new StringBuilder();
 
-    public void appendToNotes(final String s) {
+    public NotesProcessor appendToNotes(final String s) {
         notes.append(s);
+        return this;
     }
 
     public String getCombinedNotes() {

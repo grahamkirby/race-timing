@@ -97,7 +97,7 @@ public abstract class RaceConfigValidator {
         final BoxedDuration previous_time = new BoxedDuration();
 
         getCleanedLines(raw_results_path, line_number).
-            map(line -> line.split("\t")[RAW_RESULT_TIME_INDEX]).
+            map(line -> line.split(RAW_RESULT_SEPARATOR)[RAW_RESULT_TIME_INDEX]).
             filter(time_string -> !time_string.equals(UNKNOWN_TIME_INDICATOR)).
             map(NormalisationProcessor::parseTime).
             forEachOrdered(finish_time -> validateConsecutiveRawResultsOrdering(finish_time, previous_time, raw_results_path, line_number));
@@ -116,10 +116,10 @@ public abstract class RaceConfigValidator {
                 final String bib_number = getBibNumber(line);
 
                 if (!validBibNumber(bib_number))
-                    throw new RuntimeException("invalid entry '" + line + "' at line " + line_number.line + " in file '" + file_path.getFileName() + "'");
+                    throw new RuntimeException(INVALID_ENTRY + " '" + line + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + file_path.getFileName() + "'");
 
                 if (!seen.add(bib_number))
-                    throw new RuntimeException("duplicate bib number '" + bib_number + "' at line " + line_number.line + " in file '" + file_path.getFileName() + "'");
+                    throw new RuntimeException(DUPLICATE_BIB_NUMBER + " '" + bib_number + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + file_path.getFileName() + "'");
             });
     }
 
@@ -145,9 +145,9 @@ public abstract class RaceConfigValidator {
             new RawResult(cleaned_line);
 
         } catch (final Exception _) {
-            String message = "invalid record '" + original_line + "' at line " + line_number + " in file '" + raw_results_path.getFileName() + "'";
+            String message = INVALID_RECORD + " '" + original_line + "' " + AT_LINE + " " + line_number + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'";
             if (original_line.contains(COMMENT_SYMBOL))
-                message += " - possible invalid use of # comment symbol" + LINE_SEPARATOR;
+                message += " - " + POSSIBLE_INVALID_USE_OF_COMMENT_SYMBOL + LINE_SEPARATOR;
             throw new RuntimeException(message);
         }
     }
@@ -155,9 +155,10 @@ public abstract class RaceConfigValidator {
     private static void validateEntryNumberOfElements(final String cleaned_line, final String original_line, final int min_number_of_columns, final Path entries_path, final int line_number) {
 
         if (cleaned_line.split("\t", -1).length < min_number_of_columns) {
-            String message = "invalid entry '" + original_line + "' at line " + line_number + " in file '" + entries_path.getFileName() + "'";
+
+            String message = INVALID_ENTRY + " '" + original_line + "' " + AT_LINE + " " + line_number + " " + IN_FILE + " '" + entries_path.getFileName() + "'";
             if (original_line.contains(COMMENT_SYMBOL))
-                message += " - possible invalid use of # comment symbol" + LINE_SEPARATOR;
+                message += " - " + POSSIBLE_INVALID_USE_OF_COMMENT_SYMBOL + LINE_SEPARATOR;
             throw new RuntimeException(message);
         }
     }
@@ -168,14 +169,14 @@ public abstract class RaceConfigValidator {
             check_category_in_line.accept(line);
 
         } catch (final RuntimeException e) {
-            throw new RuntimeException("invalid category in entry '" + e.getMessage() + "' at line " + line_number.line + " in file '" + entries_path.getFileName() + "'", e);
+            throw new RuntimeException(INVALID_CATEGORY_IN_ENTRY + " '" + e.getMessage() + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + entries_path.getFileName() + "'");
         }
     }
 
     private static void validateConsecutiveRawResultsOrdering(final Duration this_time, final BoxedDuration previous_time, final Path raw_results_path, final BoxedLineNumber line_number) {
 
         if (this_time != null && previous_time.duration != null && previous_time.duration.compareTo(this_time) > 0)
-            throw new RuntimeException("result out of order at line " + line_number.line + " in file '" + raw_results_path.getFileName() + "'" + LINE_SEPARATOR);
+            throw new RuntimeException(AT_LINE1 + " " + line_number.line + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'");
 
         previous_time.duration = this_time;
     }
@@ -183,7 +184,7 @@ public abstract class RaceConfigValidator {
     private static void validateResultBibNumberRegistered(final int bib_number, final Set<Integer> entry_bib_numbers, final Path raw_results_path, final BoxedLineNumber line_number) {
 
         if (bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(bib_number))
-            throw new RuntimeException("unregistered bib number '" + bib_number + "' at line " + line_number.line + " in file '" + raw_results_path.getFileName() + "'");
+            throw new RuntimeException(UNREGISTERED_BIB_NUMBER + " '" + bib_number + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'");
     }
 
     private static Stream<String> getCleanedLines(final Path file_path, final BoxedLineNumber line_number) throws IOException {

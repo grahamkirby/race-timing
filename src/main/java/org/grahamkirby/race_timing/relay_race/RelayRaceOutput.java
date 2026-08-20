@@ -40,8 +40,6 @@ import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDu
 
 public class RelayRaceOutput extends RaceOutput {
 
-    private static final String OVERALL_RESULTS_HEADER = "Pos,No,Team,Category,";
-
     public RelayRaceOutput(final Config config) {
         super(config);
     }
@@ -105,7 +103,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsCSV() throws IOException {
 
-        final OutputStream stream = getOutputStream("detailed", CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(DETAILED, CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, new DetailedResultPrinterCSV(race_results, writer), _ -> "");
@@ -114,7 +112,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream("detailed", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(DETAILED, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResultsHTML(writer);
@@ -126,7 +124,7 @@ public class RelayRaceOutput extends RaceOutput {
         printResults(writer, new DetailedResultPrinterHTML(race_results, writer), this::getResultsSubHeaderHTML);
 
         if (areAnyResultsInMassStart())
-            writer.append("<p>M3: mass start leg 3<br />M4: mass start leg 4</p>").append(LINE_SEPARATOR);
+            writer.append("<p>" + M_3_MASS_START_LEG_3 + "<br />" + M_4_MASS_START_LEG_4 + "</p>").append(LINE_SEPARATOR);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,7 +137,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsCSV(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream("leg_" + leg, CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(LEG + leg, CSV_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -156,7 +154,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsHTML(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream("leg_" + leg, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(LEG + leg, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResultsHTML(writer, leg);
@@ -175,24 +173,24 @@ public class RelayRaceOutput extends RaceOutput {
     /** Prints all details to a single web page. */
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream("combined", HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(COMBINED1, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append("<h3>Results</h3>").append(LINE_SEPARATOR);
+            writer.append("<h3>" + RESULTS + "</h3>").append(LINE_SEPARATOR);
 
             writer.append(getPrizesHeaderHTML());
             printPrizesHTML(writer, new PrizeResultPrinterHTML(race_results, writer));
 
-            writer.append("<h4>Overall</h4>").append(LINE_SEPARATOR);
+            writer.append("<h4>" + OVERALL + "</h4>").append(LINE_SEPARATOR);
             printResults(writer, new RelayRaceOverallResultPrinterHTML(race_results, writer), this::getResultsSubHeaderHTML);
 
-            writer.append("<h4>Full Results</h4>").append(LINE_SEPARATOR);
+            writer.append("<h4>" + FULL_RESULTS + "</h4>").append(LINE_SEPARATOR);
             printDetailedResultsHTML(writer);
 
             for (int leg_number = 1; leg_number <= ((RelayRaceResults) race_results).getNumberOfLegs(); leg_number++) {
 
-                writer.append("<p></p>" + LINE_SEPARATOR + "<h4>Leg " + leg_number + " Results</h4>" + LINE_SEPARATOR);
+                writer.append("<p></p>" + LINE_SEPARATOR + "<h4>" + LEG1 + " " + leg_number + " " + RESULTS + "</h4>" + LINE_SEPARATOR);
                 printLegResultsHTML(writer, leg_number);
             }
 
@@ -228,7 +226,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printCollatedResultsText() throws IOException {
 
-        final OutputStream stream = getOutputStream("times_collated", TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(TIMES_COLLATED, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -247,20 +245,13 @@ public class RelayRaceOutput extends RaceOutput {
         final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
 
         if (discrepancies_exist)
-            race_results.getNotesProcessor().appendToNotes("""
-            
-            Discrepancies:
-            -------------
-            """);
+            race_results.getNotesProcessor().appendToNotes(DISCREPANCIES);
 
         recordBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
         recordTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
 
         if (discrepancies_exist)
-            race_results.getNotesProcessor().appendToNotes("""
-            
-            
-            """);
+            race_results.getNotesProcessor().appendToNotes(S);
     }
 
     private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
@@ -268,7 +259,7 @@ public class RelayRaceOutput extends RaceOutput {
         final int bib_number = raw_result.getBibNumber();
 
         writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : UNKNOWN_BIB_NUMBER_INDICATOR).
-            append("\t").
+            append(RAW_RESULT_SEPARATOR).
             append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime(), DNF_STRING) : UNKNOWN_TIME_INDICATOR);
     }
 
@@ -279,10 +270,10 @@ public class RelayRaceOutput extends RaceOutput {
         if (explicitly_recorded_leg_numbers.containsKey(raw_result)) {
 
             final int leg_number = explicitly_recorded_leg_numbers.get(raw_result);
-            writer.append("\t" + leg_number);
+            writer.append(RAW_RESULT_SEPARATOR + leg_number);
 
             if (legs_already_finished >= leg_number)
-                raw_result.appendComment("Leg " + leg_number + " finisher was runner " + (legs_already_finished + 1) + " to finish for team.");
+                raw_result.appendComment(LEG1 + " " + leg_number + " " + FINISHER_WAS_RUNNER + " " + (legs_already_finished + 1) + " " + TO_FINISH_FOR_TEAM + ".");
         }
     }
 
@@ -292,8 +283,8 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!raw_result.getComment().isEmpty()) {
 
-            if (!explicitly_recorded_leg_numbers.containsKey(raw_result)) writer.append("\t");
-            writer.append("\t").append(COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
+            if (!explicitly_recorded_leg_numbers.containsKey(raw_result)) writer.append(RAW_RESULT_SEPARATOR);
+            writer.append(RAW_RESULT_SEPARATOR).append(COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
         }
 
         writer.append(LINE_SEPARATOR);
@@ -303,11 +294,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!bib_numbers_with_missing_times.isEmpty()) {
 
-            race_results.getNotesProcessor().appendToNotes("""
-                
-                Bib numbers with missing times:\s""");
-
-            race_results.getNotesProcessor().appendToNotes(
+            race_results.getNotesProcessor().appendToNotes(S1).appendToNotes(
                 bib_numbers_with_missing_times.stream().
                     map(String::valueOf).
                     collect(Collectors.joining(", ")));
@@ -318,13 +305,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!times_with_missing_bib_numbers.isEmpty()) {
 
-            race_results.getNotesProcessor().appendToNotes("""
-                
-                Times with missing bib numbers:
-                
-                """);
-
-            race_results.getNotesProcessor().appendToNotes(
+            race_results.getNotesProcessor().appendToNotes(S2).appendToNotes(
                 times_with_missing_bib_numbers.stream().
                     map(duration -> renderDuration(duration, DNF_STRING)).
                     collect(Collectors.joining(LINE_SEPARATOR)));
@@ -342,7 +323,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append(OVERALL_RESULTS_HEADER + "Total" + LINE_SEPARATOR);
+            writer.append(OVERALL_RESULTS_HEADER2 + TOTAL + LINE_SEPARATOR);
         }
 
         @Override
@@ -372,7 +353,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            return List.of("Pos", "No", "Team", "Category", "Total");
+            return HEADERS2;
         }
 
         @Override
@@ -403,15 +384,15 @@ public class RelayRaceOutput extends RaceOutput {
 
             final int number_of_legs = ((RelayRaceResults) race_results).getNumberOfLegs();
 
-            writer.append(OVERALL_RESULTS_HEADER);
+            writer.append(OVERALL_RESULTS_HEADER2);
 
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
-                writer.append("Runners " + leg_number + ",Leg " + leg_number + ",");
-                if (leg_number < number_of_legs) writer.append("Split " + leg_number + ",");
+                writer.append(RUNNERS + " " + leg_number + "," + LEG1 + " " + leg_number + ",");
+                if (leg_number < number_of_legs) writer.append(SPLIT + " " + leg_number + ",");
             }
 
-            writer.append("Total").append(LINE_SEPARATOR);
+            writer.append(TOTAL).append(LINE_SEPARATOR);
         }
 
         @Override
@@ -449,16 +430,16 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            final List<String> headers = new ArrayList<>(List.of("Pos", "No", "Team", "Category"));
+            final List<String> headers = makeMutableCopy(POS1);
             final int number_of_legs = ((RelayRaceResults) race_results).getNumberOfLegs();
 
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
                 final String plural = ((RelayRaceResults) race_results).getPairedLegs().get(leg_number - 1) ? "s" : "";
 
-                headers.add("Runner" + plural + " " + leg_number);
-                headers.add("Leg " + leg_number);
-                headers.add(leg_number < number_of_legs ? "Split " + leg_number : "Total");
+                headers.add(RUNNER + plural + " " + leg_number);
+                headers.add(LEG1 + " " + leg_number);
+                headers.add(leg_number < number_of_legs ? SPLIT + " " + leg_number : TOTAL);
             }
 
             return headers;
@@ -498,7 +479,7 @@ public class RelayRaceOutput extends RaceOutput {
         public void printResultsHeader() throws IOException {
 
             final String plural = ((RelayRaceResults) race_results).getPairedLegs().get(leg - 1) ? "s" : "";
-            writer.append("Pos,Runner" + plural + ",Time" + LINE_SEPARATOR);
+            writer.append(POS + "," + RUNNER + plural + "," + TIME + LINE_SEPARATOR);
         }
 
         @Override
@@ -535,9 +516,9 @@ public class RelayRaceOutput extends RaceOutput {
             final String plural = paired_legs.get(leg - 1) ? "s" : "";
 
             return List.of(
-                "Pos",
-                "Runner" + plural,
-                "Time");
+                POS,
+                RUNNER + plural,
+                TIME);
         }
 
         @Override
@@ -582,7 +563,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printNoResults() throws IOException {
 
-            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+            document.add(new Paragraph(NO_RESULTS).setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 }

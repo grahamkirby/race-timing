@@ -41,6 +41,15 @@ import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDu
 
 class SeriesRaceOutput extends RaceOutput {
 
+    public static final String POS = "Pos";
+    public static final String RUNNER1 = "Runner";
+    public static final String CLUB = "Club";
+    public static final String CATEGORY1 = "Category";
+    public static final String TOTAL = "Total";
+    public static final String COMPLETED = "Completed";
+    public static final String Y = "Y";
+    public static final String N = "N";
+
     public SeriesRaceOutput(final Config config) {
         super(config);
     }
@@ -105,14 +114,14 @@ class SeriesRaceOutput extends RaceOutput {
                 map(SeriesRaceCategory::category_title).
                 collect(Collectors.joining(","));
 
-            writer.append("Pos,Runner,");
+            writer.append(POS + "," + RUNNER1 + ",");
             if (results.multipleClubs())
-                writer.append("Club,");
-            writer.append("Category,").append(race_names);
+                writer.append(CLUB + ",");
+            writer.append(CATEGORY1 + ",").append(race_names);
             if (results.getNumberOfRacesTakenPlace() > 1)
-                writer.append(",Total");
+                writer.append("," + TOTAL);
             if (results.possibleToHaveCompleted())
-                writer.append(",Completed");
+                writer.append("," + COMPLETED);
             if (results.multipleRaceCategories())
                 writer.append(",").append(race_categories_header);
             writer.append(LINE_SEPARATOR);
@@ -139,12 +148,12 @@ class SeriesRaceOutput extends RaceOutput {
             if (results.getNumberOfRacesTakenPlace() > 1)
                 writer.append("," ).append(renderScore(result.getPerformance()));
             if (results.possibleToHaveCompleted())
-                writer.append(",").append(result.hasCompletedSeries() ? "Y" : "N");
+                writer.append(",").append(result.hasCompletedSeries() ? Y : N);
 
             if (results.multipleRaceCategories())
                 writer.append(",").append(
                     results.getRaceCategories().stream().
-                        map(category -> result.hasCompletedRaceCategory(category) ? "Y" : "N").
+                        map(category -> result.hasCompletedRaceCategory(category) ? Y : N).
                         collect(Collectors.joining(","))
                 );
 
@@ -167,11 +176,11 @@ class SeriesRaceOutput extends RaceOutput {
 
             final SeriesRaceResults results = (SeriesRaceResults) race_results;
 
-            final List<String> common_headers = Arrays.asList("Pos", "Runner", "Category");
+            final List<String> common_headers = Arrays.asList(POS, RUNNER1, CATEGORY1);
             final List<String> headers = new ArrayList<>(common_headers);
 
             if (results.multipleClubs())
-                headers.add("Club");
+                headers.add(CLUB);
 
             // This traverses race names in order of listing in config.
             final NormalisationProcessor processor = results.getNormalisationProcessor();
@@ -182,10 +191,10 @@ class SeriesRaceOutput extends RaceOutput {
                 forEach(headers::add);
 
             if (results.getNumberOfRacesTakenPlace() > 1)
-                headers.add("Total");
+                headers.add(TOTAL);
 
             if (results.possibleToHaveCompleted() && !results.allRacesCompleted())
-                headers.add("Completed");
+                headers.add(COMPLETED);
 
             if (results.multipleRaceCategories())
                 for (final SeriesRaceCategory category : results.getRaceCategories())
@@ -217,11 +226,11 @@ class SeriesRaceOutput extends RaceOutput {
                 elements.add(renderScore(result.getPerformance()));
 
             if (results.possibleToHaveCompleted() && !results.allRacesCompleted())
-                elements.add(result.hasCompletedSeries() ? "Y" : "N");
+                elements.add(result.hasCompletedSeries() ? Y : N);
 
             if (results.multipleRaceCategories())
                 for (final SeriesRaceCategory category : results.getRaceCategories())
-                    elements.add(result.hasCompletedRaceCategory(category) ? "Y" : "N");
+                    elements.add(result.hasCompletedRaceCategory(category) ? Y : N);
 
             return elements;
         }
@@ -251,7 +260,7 @@ class SeriesRaceOutput extends RaceOutput {
         @Override
         public void printNoResults() throws IOException {
 
-            document.add(new Paragraph("No results").setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+            document.add(new Paragraph(NO_RESULTS).setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 }

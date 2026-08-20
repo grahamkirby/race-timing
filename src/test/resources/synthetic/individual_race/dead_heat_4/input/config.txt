@@ -6,4 +6,4 @@ RACE_NAME_FOR_FILENAMES = balmullo
 ENTRIES_PATH = entries.txt
 RAW_RESULTS_PATH = rawtimes.txt
 
-DEAD_HEATS = 20/10
+DEAD_HEATS = 20,10

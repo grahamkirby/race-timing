@@ -89,7 +89,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             result.setDnf(true);
         }
         catch (NoSuchElementException _) {
-            throw new RuntimeException("bib number: " + bib_number + " recorded as DNF but no result was recorded");
+            throw new RuntimeException(BIB_NUMBER + ": " + bib_number + " " + RECORDED_AS_DNF_BUT_NO_RESULT_WAS_RECORDED);
         }
     }
 
@@ -243,9 +243,9 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
 
-        for (final String offset_string : category_start_offsets.split(",", -1)) {
+        for (final String offset_string : category_start_offsets.split(CONFIG_OUTER_SEPARATOR, -1)) {
 
-            final String[] split = offset_string.split("/");
+            final String[] split = offset_string.split(CONFIG_INNER_SEPARATOR);
             final String category = split[0];
             final Duration offset = parseTime(split[1]);
 
@@ -337,9 +337,9 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         final Map<Integer, Duration> start_times = new HashMap<>();
 
-        for (final String individual_early_start : individual_start_times.split(",")) {
+        for (final String individual_early_start : individual_start_times.split(CONFIG_OUTER_SEPARATOR)) {
 
-            final String[] split = individual_early_start.split("/");
+            final String[] split = individual_early_start.split(CONFIG_INNER_SEPARATOR);
 
             final int bib_number = Integer.parseInt(split[0]);
             final Duration offset = parseTime(split[1]);
@@ -393,7 +393,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         team_prizes = team_prize_gender_categories == null ? List.of() :
 
-            Arrays.stream(team_prize_gender_categories.split("/")).
+            Arrays.stream(team_prize_gender_categories.split(CONFIG_OUTER_SEPARATOR)).
                 map(this::getFirstTeamInGenderCategory).
                 filter(Optional::isPresent).
                 map(Optional::get).
@@ -415,7 +415,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             sorted(sort_by_aggregate_position.thenComparing(sort_by_first_position)).toList();
 
         final NotesProcessor notes = race.getNotesProcessor();
-        notes.appendToNotes("Team scores: " + team_prize_gender_category + LINE_SEPARATOR + LINE_SEPARATOR);
+        notes.appendToNotes(TEAM_SCORES + ": " + team_prize_gender_category + LINE_SEPARATOR + LINE_SEPARATOR);
 
         for (int i = 0; i < list.size(); i++) {
 
@@ -453,7 +453,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         return getOverallResults().stream().
             map(result -> ((Runner) result.getParticipant()).getClub()).
-            filter(Predicate.not(club -> club.equals("Unatt."))).
+            filter(Predicate.not(club -> club.equals(UNATT))).
             collect(Collectors.toSet());
     }
 }

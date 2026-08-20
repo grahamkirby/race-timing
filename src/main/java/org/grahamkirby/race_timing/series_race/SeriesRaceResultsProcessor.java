@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
@@ -129,7 +130,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private SeriesRaceCategory makeRaceCategory(final String line) {
 
-        final String[] elements = line.split(",");
+        final String[] elements = line.split(CONFIG_OUTER_SEPARATOR);
 
         final String category_name = elements[0];
         final int minimum_number = Integer.parseInt(elements[1]);
@@ -164,7 +165,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
         race_temporal_permutation = race_temporal_order_string != null ?
             new Permutation<>(
-                Arrays.stream(race_temporal_order_string.split(",")).
+                Arrays.stream(race_temporal_order_string.split(CONFIG_OUTER_SEPARATOR)).
                     map(Integer::parseInt).
                     toList()) :
 
@@ -176,7 +177,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
         final String eligible_clubs_string = race.getConfig().getString(KEY_ELIGIBLE_CLUBS);
 
         eligible_clubs = eligible_clubs_string != null ?
-            List.of(eligible_clubs_string.split(",")) :
+            List.of(eligible_clubs_string.split(CONFIG_OUTER_SEPARATOR)) :
             List.of();
     }
 
@@ -203,28 +204,29 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     private void calculateOverallResults() {
 
         // List needs to be mutable to allow sorting.
-        overall_results = makeMutableCopy(
-            getEligibleIndividualRaceResults(race_temporal_permutation.permute(races)).
+        overall_results = getEligibleIndividualRaceResults(race_temporal_permutation.permute(races)).
                 map(result -> (Runner) result.getParticipant()).
                 distinct().
                 map(this::makeOverallResult).
-                toList());
+                collect(Collectors.toList());
 
         recordRunnersInNotes();
     }
 
     private void recordRunnersInNotes() {
 
-        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR + "Runners in Series" + LINE_SEPARATOR +
+        final NotesProcessor notes = race.getNotesProcessor();
+
+        notes.appendToNotes(LINE_SEPARATOR + RUNNERS_IN_SERIES + LINE_SEPARATOR +
             "-----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
 
         overall_results.stream().
             map(result -> ((SeriesRaceResult) result)).
             map(result -> (Runner) result.getParticipant()).
             sorted(SeriesRaceResultsProcessor::compareRunner).
-            forEachOrdered(runner -> race.getNotesProcessor().appendToNotes(runner + LINE_SEPARATOR));
+            forEachOrdered(runner -> notes.appendToNotes(runner + LINE_SEPARATOR));
 
-        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR);
+        notes.appendToNotes(LINE_SEPARATOR);
     }
 
     private static int compareRunner(final Runner r1, final Runner r2) {
@@ -291,7 +293,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private void processClubsForRunnerName(final String runner_name) {
 
-        // Where a runner name is associated with a single entry with a known club plus some other entries with unknown
+        // Where a runner name is associated with a single known club plus some other entries with unknown
         // club, add the club to those entries.
 
         // Where a runner name is associated with multiple clubs, leave as is, under assumption that there are multiple
@@ -350,19 +352,19 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
             map(participant -> (Runner) participant).
             forEachOrdered(runner -> runner.setClub(defined_club));
 
-        race.getNotesProcessor().appendToNotes("Club " + defined_club + " substituted for unknown clubs for runner name " + runner_name + LINE_SEPARATOR);
+        race.getNotesProcessor().appendToNotes(CLUB + " " + defined_club + " " + SUBSTITUTED_FOR_UNKNOWN_CLUBS_FOR_RUNNER_NAME + " " + runner_name + LINE_SEPARATOR);
     }
 
     private void noteRunnerNameRepresentsMultipleRunners(final String runner_name, final List<String> known_clubs) {
 
-        race.getNotesProcessor().appendToNotes("Runner name " + runner_name + " recorded for multiple clubs: " + String.join(", ", known_clubs) + "; assuming there are multiple runners with this name" + LINE_SEPARATOR);
+        race.getNotesProcessor().appendToNotes(RUNNER_NAME + " " + runner_name + " " + RECORDED_FOR_MULTIPLE_CLUBS + ": " + String.join(", ", known_clubs) + "; " + ASSUMING_THERE_ARE_MULTIPLE_RUNNERS_WITH_THIS_NAME + LINE_SEPARATOR);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void ensureRunnerCategoryConsistencyOverSeries() {
 
-        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR + "Category Changes" + LINE_SEPARATOR + "----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
+        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR + CATEGORY_CHANGES + LINE_SEPARATOR + "----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
 
         getResultsByEligibleRunner().forEach(results_for_runner -> {
 
@@ -417,12 +419,12 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
         if (!previous_category.equals(current_category)) {
 
-            final String race_name = (String) result.getRace().getConfig().getRaceName();
-            final String note = "Runner " + result.getParticipantName() + " changed category from " + previous_category.getShortName() + " to " + current_category.getShortName() + " at " + race_name;
+            final String race_name = result.getRace().getConfig().getRaceName();
+            final String note = RUNNER + " " + result.getParticipantName() + " " + CHANGED_CATEGORY_FROM + " " + previous_category.getShortName() + " " + TO + " " + current_category.getShortName() + " " + AT + " " + race_name;
 
             // If ages are equal, gender must have changed since categories are different.
             if (current_category.getAgeRange().getMinimumAge() <= previous_category.getAgeRange().getMinimumAge())
-                throw new RuntimeException("invalid category change: " + note);
+                throw new RuntimeException(INVALID_CATEGORY_CHANGE + ": " + note);
 
             race.getNotesProcessor().appendToNotes(note + LINE_SEPARATOR);
         }
@@ -431,6 +433,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     private static void checkAgeCategoryRangeOverSeries(final String runner_name, final EntryCategory earliest_category, final EntryCategory latest_category) {
 
         if (earliest_category != null && latest_category != null && latest_category.getAgeRange().getMinimumAge() > earliest_category.getAgeRange().getMaximumAge() + 1)
-            throw new RuntimeException("invalid category change: runner '" + runner_name + "' changed from " + earliest_category.getShortName() + " to " + latest_category.getShortName() + " during series");
+            throw new RuntimeException(INVALID_CATEGORY_CHANGE + ": " + RUNNER.toLowerCase() + " '" + runner_name + "' " + CHANGED_FROM + " " + earliest_category.getShortName() + " " + TO + " " + latest_category.getShortName() + " " + DURING_SERIES);
     }
 }

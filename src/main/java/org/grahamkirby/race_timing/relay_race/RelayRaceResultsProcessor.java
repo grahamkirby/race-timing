@@ -21,6 +21,7 @@ import org.grahamkirby.race_timing.common.*;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingInt;
@@ -157,13 +158,11 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
         final Collection<Integer> bib_numbers_seen = new HashSet<>();
 
-        final List<RaceResult> results = ((SingleRaceInternal) race).getRawResults().stream().
+        overall_results = ((SingleRaceInternal) race).getRawResults().stream().
             filter(raw_result -> raw_result.getBibNumber() != 0).
             filter(raw_result -> bib_numbers_seen.add(raw_result.getBibNumber())).
             map(this::makeRaceResult).
-            toList();
-
-        overall_results = makeMutableCopy(results);
+            collect(Collectors.toList());
     }
 
     private void guessMissingData() {
@@ -193,7 +192,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
         final int leg_index = findIndexOfNextUnfilledLegResult(result.getLegResults());
 
         if (leg_index >= getNumberOfLegs()) {
-            throw new RuntimeException("surplus result for team '" + raw_result.getBibNumber() + "'");
+            throw new RuntimeException(SURPLUS_RESULT_FOR_TEAM + " '" + raw_result.getBibNumber() + "'");
         }
 
         final RelayRaceLegResult leg_result = result.getLegResult(leg_index + 1);
@@ -414,7 +413,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
             forEachOrdered(result -> {
 
                 result.setRecordedFinishTime(first_recorded_time);
-                result.appendComment("Time not recorded. No basis for interpolation so set to first recorded time.");
+                result.appendComment(TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_FIRST_RECORDED_TIME);
             });
     }
 
@@ -487,7 +486,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
             final RawResult interpolated_result = results.get(sequence.start_index + i);
 
             interpolated_result.setRecordedFinishTime(rounded_interpolated_finish_time);
-            interpolated_result.appendComment("Time not recorded. Time interpolated.");
+            interpolated_result.appendComment(TIME_NOT_RECORDED_TIME_INTERPOLATED);
         }
     }
 
@@ -500,7 +499,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
         ((RelayRace) race).getRawResults().stream().
             skip(missing_times_start_index).
-            forEachOrdered(result -> result.appendComment("Time not recorded. No basis for interpolation so set to last recorded time + 1s."));
+            forEachOrdered(result -> result.appendComment(TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_LAST_RECORDED_TIME_1_S));
     }
 
     public Duration getLastRecordedFinishTime() {
@@ -516,7 +515,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
         ((RelayRace) race).getRawResults().stream().
             filter(result -> result.getBibNumber() == UNKNOWN_BIB_NUMBER).
-            forEach(result -> result.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams."));
+            forEach(result -> result.appendComment(TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_TOO_MANY_MISSING_TIMES_TO_GUESS_FROM_DNF_TEAMS));
     }
 
     private void guessMissingBibNumbersWithAllTimesRecorded() {
@@ -530,7 +529,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
             final int guessed_number = guessTeamNumber(position_of_missing_bib_number);
 
             result_with_missing_number.setBibNumber(guessed_number);
-            result_with_missing_number.appendComment("Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.");
+            result_with_missing_number.appendComment(TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_GUESSED_BIB_NUMBER);
 
             position_of_missing_bib_number = getPositionOfNextMissingBibNumber();
         }
@@ -569,10 +568,9 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
     private List<TeamSummaryAtPosition> summarise(final int position) {
 
-        return makeMutableCopy(
-            ((RelayRace) race).getUniqueBibNumbersRecorded().stream().
+        return ((RelayRace) race).getUniqueBibNumbersRecorded().stream().
                 map(bib_number -> summarise(position, bib_number)).
-                toList());
+                collect(Collectors.toList());
     }
 
     public TeamSummaryAtPosition summarise(final int position, final int bib_number) {

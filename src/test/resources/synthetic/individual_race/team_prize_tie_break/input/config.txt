@@ -12,5 +12,5 @@ PRIZE_CATEGORIES_PATH = categories_prize_individual_senior.csv
 # Column 2 is last name, column 3 is first name.
 ENTRY_COLUMN_MAP = 1,3-2,5,6
 
-TEAM_PRIZE_GENDER_CATEGORIES = Male/Female
+TEAM_PRIZE_GENDER_CATEGORIES = Male,Female
 TEAM_PRIZE_NUMBER_TO_COUNT = 3
