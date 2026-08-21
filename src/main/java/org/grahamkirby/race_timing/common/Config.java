@@ -99,7 +99,6 @@ public class Config {
     public static final String CATEGORY_PRIZES = "Category Prizes";
     public static final String COMBINED = "combined";
 
-
     public static final String NOTES_CONVERTED_TO_TITLE_CASE = "Converted to title case";
     public static final String NOTES_UNKNOWN_CATEGORY = "unknown category so omitted from overall results";
 

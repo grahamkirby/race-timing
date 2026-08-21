@@ -213,7 +213,7 @@ public abstract class RaceOutput {
 
     protected void printPrizesHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(PRIZES, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -298,7 +298,7 @@ public abstract class RaceOutput {
 
     protected void printPrizesText() throws IOException {
 
-        final OutputStream stream = getOutputStream(PRIZES, TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -309,7 +309,7 @@ public abstract class RaceOutput {
 
     protected void printPrizesPDF() throws IOException {
 
-        final Path path = getOutputStreamPath(PRIZES, PDF_FILE_SUFFIX);
+        final Path path = getOutputStreamPath(PRIZES.toLowerCase(), PDF_FILE_SUFFIX);
         final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
