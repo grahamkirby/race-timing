@@ -118,7 +118,7 @@ public class RelayRace implements SingleRaceInternal {
             final String converted_words = normalisation.getNonTitleCaseWords();
 
             if (!converted_words.isEmpty())
-                notes.appendToNotes(CONVERTED_TO_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
+                notes.appendToNotes(NOTES_CONVERTED_TO_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
         }
 
         results_output.printNotes(notes);
@@ -418,7 +418,7 @@ public class RelayRace implements SingleRaceInternal {
             map(RawResult::getBibNumber).
             filter(bib_number -> bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(bib_number)).
             forEachOrdered(bib_number -> {
-                String message = UNREGISTERED_BIB_NUMBER + " '" + bib_number + "' " + AT_LINE2 + " " + line.line + " " + IN_FILE2 + " '" + electronic_results_path.getFileName() + "'";
+                String message = UNREGISTERED_BIB_NUMBER + " '" + bib_number + "' " + AT_LINE + " " + line.line + " " + IN_FILE + " '" + electronic_results_path.getFileName() + "'";
                 if (paper_results_path != null) message += " or '" + paper_results_path.getFileName() + "'";
                 throw new RuntimeException(message);
             });
@@ -429,7 +429,7 @@ public class RelayRace implements SingleRaceInternal {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
-                    throw new RuntimeException(DUPLICATE_ENTRY + " '" + entry1.getParticipant().getName() + "' " + IN_FILE2 + " '" + entries_path.getFileName() + "'");
+                    throw new RuntimeException(DUPLICATE_ENTRY + " '" + entry1.getParticipant().getName() + "' " + IN_FILE + " '" + entries_path.getFileName() + "'");
     }
 
     private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) throws IOException {
@@ -441,7 +441,7 @@ public class RelayRace implements SingleRaceInternal {
 
         for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
             if (!entry.getKey().equals(UNKNOWN_BIB_NUMBER_INDICATOR) && entry.getValue() > getNumberOfLegs()) {
-                String message = SURPLUS_RESULT_FOR_TEAM + " '" + entry.getKey() + "' " + IN_FILE2 + " '" + raw_results_path.getFileName() + "'";
+                String message = SURPLUS_RESULT_FOR_TEAM + " '" + entry.getKey() + "' " + IN_FILE + " '" + raw_results_path.getFileName() + "'";
                 if (paper_results_path != null)
                     message += " or '" + paper_results_path.getFileName() + "'";
                 throw new RuntimeException(message);

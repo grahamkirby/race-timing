@@ -47,26 +47,25 @@ public class Config {
     public static final String PDF_FILE_SUFFIX = "pdf";
     public static final String TEXT_FILE_SUFFIX = "txt";
 
-    public static final String ILLEGAL_AGE_RANGE = "illegal age range";
-    public static final String DUPLICATED_CATEGORY_NAME = "duplicated category name";
-    public static final String GENDERS_ARE_NOT_CONSISTENT_BETWEEN_ENTRY_CATEGORIES = "genders are not consistent between entry categories";
-    public static final String PRIZE_CATEGORIES = "prize categories";
-    public static final String INVALID_INTERSECTING_AGE_RANGES = "invalid intersecting age ranges";
-    public static final String INVALID_CATEGORIES_MISSING_AGE_RANGE_FOR = "invalid categories: missing age range for";
-    public static final String TOO_FEW_CATEGORY_ELEMENTS = "too few category elements";
-    public static final String INVALID_AGE_RANGE_FOR_CATEGORY = "invalid age range for category";
-    public static final String TOO_FEW_CATEGORY_ELEMENTS1 = "too few category elements";
+    public static final String FILE_TIMES_COLLATED = "times_collated";
+    public static final String FILE_POCKET_TIMER_INPUT = "racers";
+    public static final String FILE_DUMMY_RAWTIMES = "dummy_rawtimes";
+    public static final String FILE_PROCESSING_NOTES = "processing_notes";
+
+    public static final String ERROR_DUPLICATED_CATEGORY_NAME = "duplicated category name";
+    public static final String ERROR_ILLEGAL_AGE_RANGE = "illegal age range";
+    public static final String ERROR_INCONSISTENT_GENDERS = "genders are not consistent between entry categories";
+    public static final String EROR_PRIZE_CATEGORIES = "prize categories";
+    public static final String ERROR_INTERSECTING_AGE_RANGES = "invalid intersecting age ranges";
+    public static final String ERROR_MISSING_AGE_RANGE = "invalid categories: missing age range for";
+    public static final String ERROR_MISSING_CATEGORY_ELEMENTS = "too few category elements";
+    public static final String ERROR_INVALID_AGE_RANGE = "invalid age range for category";
     public static final String INVALID_NUMBER_OF_PRIZES = "invalid number of prizes";
-    public static final String ELIGIBLE_CLUBS_SEPARATOR = "/";
     public static final String NO_ENTRY_FOR_KEY = "no entry for key";
     public static final String INVALID_ENTRY = "invalid entry";
     public static final String SHOULD_HAVE_NO_KEYS_FROM = "should have no keys from";
     public static final String SHOULD_HAVE_NO_OR_ALL_KEYS_FROM = "should have no or all keys from";
     public static final String SHOULD_HAVE_NO_MORE_THAN_ONE_KEY_FROM = "should have no more than one key from";
-    public static final String RUNNER_PAIR_NAMES_SEPARATOR = " & ";
-    public static final String NO_RESULTS = "No results";
-    public static final String AT_LINE = "at line";
-    public static final String IN_FILE = "in file";
     public static final String DUPLICATE_BIB_NUMBER = "duplicate bib number";
     public static final String INVALID_RECORD = "invalid record";
     public static final String POSSIBLE_INVALID_USE_OF_COMMENT_SYMBOL = "possible invalid use of # comment symbol";
@@ -74,79 +73,73 @@ public class Config {
     public static final String AT_LINE1 = "result out of order at line";
     public static final String NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE = "no applicable race type for config file";
     public static final String CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT = "cannot create output directory, or file within it";
+    public static final String INVALID_NUMBER_OF_ELEMENTS = "invalid number of elements";
+    public static final String UNREGISTERED_BIB_NUMBER = "unregistered bib number";
+    public static final String DUPLICATE_ENTRY = "duplicate entry";
+    public static final String SURPLUS_RESULT_FOR_TEAM = "surplus result for team";
+    public static final String FOR_KEY1 = "invalid mass start time for key";
+    public static final String FOR_KEY2 = "invalid leg number for key";
+    public static final String FOR_KEY3 = "invalid mass start time order for key";
+    public static final String INVALID_NUMBER_OF_RACES_SPECIFIED_IN_FILE = "invalid number of races specified in file";
+    public static final String DUPLICATE_RACES_SPECIFIED_IN_FILE = "duplicate races specified in file";
+    public static final String INVALID_CONFIG_FOR_RACE = "invalid config for race";
+    public static final String INVALID_CATEGORY_CHANGE = "invalid category change";
+    public static final String CHANGED_FROM = "changed from";
+    public static final String DURING_SERIES = "during series";
+
+    public static final String NO_RESULTS = "No results";
+    public static final String AT_LINE = "at line";
+    public static final String IN_FILE = "in file";
     public static final String OVERALL = "Overall";
     public static final String RUNNER = "Runner";
-    public static final String UNKNOWN_CATEGORY_SO_OMITTED_FROM_OVERALL_RESULTS = "unknown category so omitted from overall results";
-    public static final String PROCESSING_NOTES = "processing_notes";
     public static final String PRIZES = "Prizes";
     public static final String RESULTS = "Results";
     public static final String CURRENT_STANDINGS = "Current Standings";
     public static final String CATEGORY = "Category";
     public static final String CATEGORY_PRIZES = "Category Prizes";
     public static final String COMBINED = "combined";
-    public static final String EQUAL_POSITION_INDICATOR = "=";
-    public static final String POCKET_TIMER_RACERS_FILENAME = "racers";
-    public static final String DUMMY_RAWTIMES_FILENAME = "dummy_rawtimes";
-    public static final String CONVERTED_TO_TITLE_CASE = "Converted to title case";
 
+
+    public static final String NOTES_CONVERTED_TO_TITLE_CASE = "Converted to title case";
+    public static final String NOTES_UNKNOWN_CATEGORY = "unknown category so omitted from overall results";
+
+    public static final String ENTRY_SEPARATOR = "\t";
     public static final String RAW_RESULT_SEPARATOR = "\t";
-    public static final String RACE_ENTRY_SEPARATOR = "\t";
     public static final String CONFIG_INNER_SEPARATOR = "/";
     public static final String CONFIG_OUTER_SEPARATOR = ",";
     public static final String CSV_SEPARATOR = ",";
+    public static final String RUNNER_PAIR_NAMES_SEPARATOR = " & ";
+    public static final String EQUAL_POSITION_INDICATOR = "=";
 
-    public static final String INVALID_ENTRY1 = "invalid entry";
     public static final String FOR_KEY = "for key";
     public static final String FIRST = "First";
-    public static final String TEAM = "team";
+    public static final String TEAM = "Team";
     public static final String TEAM_PRIZES = "Team Prizes";
     public static final String UNDERLINE = "-----------";
-    public static final String COMBINED1 = "combined";
     public static final String BIB_NUMBER = "bib number";
     public static final String RECORDED_AS_DNF_BUT_NO_RESULT_WAS_RECORDED = "recorded as DNF but no result was recorded";
     public static final String TEAM_SCORES = "Team scores";
     public static final String UNATT = "Unatt.";
-    public static final String ENTRY_SEPARATOR = "\t";
-    public static final String UNREGISTERED_BIB_NUMBER = "unregistered bib number";
-    public static final String AT_LINE2 = "at line";
-    public static final String DUPLICATE_ENTRY = "duplicate entry";
-    public static final String IN_FILE2 = "in file";
-    public static final String SURPLUS_RESULT_FOR_TEAM = "surplus result for team";
     public static final String UPDATE = "Update";
-    public static final String INVALID_NUMBER_OF_ELEMENTS = "invalid number of elements";
     public static final String MASS_START_INDICATOR = "M";
-    public static final String FOR_KEY1 = "invalid mass start time for key";
-    public static final String FOR_KEY2 = "invalid leg number for key";
-    public static final String FOR_KEY3 = "invalid mass start time order for key";
     public static final String TIME = "Time";
-    public static final String OVERALL_RESULTS_HEADER2 = "Pos,No,Team,Category,";
     public static final String DETAILED = "detailed";
     public static final String M_3_MASS_START_LEG_3 = "M3: mass start leg 3";
     public static final String M_4_MASS_START_LEG_4 = "M4: mass start leg 4";
     public static final String LEG = "leg_";
     public static final String LEG1 = "Leg";
     public static final String FULL_RESULTS = "Full Results";
-    public static final String TIMES_COLLATED = "times_collated";
     public static final String TOTAL = "Total";
     public static final String POS = "Pos";
-    public static final String RUNNERS = "Runners";
+    public static final String NO = "No";
+    public static final String CLUB = "Club";
     public static final String SPLIT = "Split";
-
-    public static final List<String> HEADERS = List.of(POS, "No", "Runner", "Club", "Category", "Time");
-    public static final List<String> POS1 = List.of(POS, "No", "Team", "Category");
-    public static final List<String> HEADERS2 = concat(POS1, List.of(TOTAL));
-
-
     public static final String TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_FIRST_RECORDED_TIME = "Time not recorded. No basis for interpolation so set to first recorded time.";
     public static final String TIME_NOT_RECORDED_TIME_INTERPOLATED = "Time not recorded. Time interpolated.";
     public static final String TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_LAST_RECORDED_TIME_1_S = "Time not recorded. No basis for interpolation so set to last recorded time + 1s.";
     public static final String TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_TOO_MANY_MISSING_TIMES_TO_GUESS_FROM_DNF_TEAMS = "Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.";
     public static final String TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_GUESSED_BIB_NUMBER = "Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.";
-    public static final String INVALID_NUMBER_OF_RACES_SPECIFIED_IN_FILE = "invalid number of races specified in file";
-    public static final String DUPLICATE_RACES_SPECIFIED_IN_FILE = "duplicate races specified in file";
-    public static final String INVALID_CONFIG_FOR_RACE = "invalid config for race";
     public static final String RUNNERS_IN_SERIES = "Runners in Series";
-    public static final String CLUB = "Club";
     public static final String SUBSTITUTED_FOR_UNKNOWN_CLUBS_FOR_RUNNER_NAME = "substituted for unknown clubs for runner name";
     public static final String RUNNER_NAME = "Runner name";
     public static final String RECORDED_FOR_MULTIPLE_CLUBS = "recorded for multiple clubs";
@@ -155,28 +148,34 @@ public class Config {
     public static final String CHANGED_CATEGORY_FROM = "changed category from";
     public static final String TO = "to";
     public static final String AT = "at";
-    public static final String INVALID_CATEGORY_CHANGE = "invalid category change";
-    public static final String CHANGED_FROM = "changed from";
-    public static final String DURING_SERIES = "during series";
     public static final String FINISHER_WAS_RUNNER = "finisher was runner";
     public static final String TO_FINISH_FOR_TEAM = "to finish for team";
+
     public static final String DISCREPANCIES = """
         
         Discrepancies:
         -------------
         """;
+
     public static final String S = """
         
         
         """;
+
     public static final String S1 = """
         
         Bib numbers with missing times:\s""";
+
     public static final String S2 = """
         
         Times with missing bib numbers:
         
         """;
+
+    public static final List<String> HEADERS = List.of(POS, NO, RUNNER, CLUB, CATEGORY, TIME);
+    public static final List<String> POS1 = List.of(POS, NO, TEAM, CATEGORY);
+    public static final List<String> HEADERS2 = concat(POS1, List.of(TOTAL));
+
 
     // Treated differently from other configurable paths, because it needs to be accessed
     // from test code independently of a particular race.

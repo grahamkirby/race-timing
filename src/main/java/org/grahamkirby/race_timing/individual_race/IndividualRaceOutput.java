@@ -126,7 +126,7 @@ public class IndividualRaceOutput extends RaceOutput {
                 writer.append("    <li>").
                     append(FIRST + " <strong>").
                     append(team_performance.gender().toLowerCase()).
-                    append(" " + TEAM + "</strong>: ").
+                    append(" " + TEAM.toLowerCase() + "</strong>: ").
                     append(team_performance.club()).
                     append(" (").append(String.valueOf(best_team_total)).append("):").append(LINE_SEPARATOR).
                     append("        <ul>").append(LINE_SEPARATOR).
@@ -164,7 +164,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
                 final Paragraph paragraph1 = new Paragraph();
                 paragraph1.add(new Text(FIRST + " "));
-                paragraph1.add(new Text(team_performance.gender().toLowerCase() + " " + TEAM).setFont(bold_font));
+                paragraph1.add(new Text(team_performance.gender().toLowerCase() + " " + TEAM.toLowerCase()).setFont(bold_font));
                 paragraph1.add(new Text(": " + team_performance.club() + " (" + best_team_total + "):"));
 
                 final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(INDENT);
@@ -191,7 +191,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
                 final int best_team_total = getAggregatePosition(team_performance);
 
-                writer.append(FIRST + " " + team_performance.gender().toLowerCase() + " " + TEAM + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
+                writer.append(FIRST + " " + team_performance.gender().toLowerCase() + " " + TEAM.toLowerCase() + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
                     team_performance.runner_performances().stream().
                         map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                         collect(Collectors.joining(", ")));
@@ -206,7 +206,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(COMBINED1, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(COMBINED, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

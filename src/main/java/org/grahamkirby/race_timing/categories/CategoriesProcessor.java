@@ -180,7 +180,7 @@ public final class CategoriesProcessor  {
             map(get_name).
             filter(Predicate.not(seen::add)).
             findFirst().
-            ifPresent(name -> { throw new RuntimeException(DUPLICATED_CATEGORY_NAME + ": " + name); });
+            ifPresent(name -> { throw new RuntimeException(ERROR_DUPLICATED_CATEGORY_NAME + ": " + name); });
     }
 
     private <C extends Category> List<String> getCategoryGenders(final List<C> categories, final Function<C, String> extract_gender) {
@@ -206,7 +206,7 @@ public final class CategoriesProcessor  {
             collect(Collectors.toSet());
 
         if (!entry_genders.equals(prize_genders))
-            throw new RuntimeException(GENDERS_ARE_NOT_CONSISTENT_BETWEEN_ENTRY_CATEGORIES + " (" + String.join(CONFIG_INNER_SEPARATOR, entry_genders) + ") and " + PRIZE_CATEGORIES + " (" + String.join(CONFIG_INNER_SEPARATOR, prize_genders) + ")");
+            throw new RuntimeException(ERROR_INCONSISTENT_GENDERS + " (" + String.join(CONFIG_INNER_SEPARATOR, entry_genders) + ") and " + EROR_PRIZE_CATEGORIES + " (" + String.join(CONFIG_INNER_SEPARATOR, prize_genders) + ")");
     }
 
     private <C extends Category> List<C> loadCategories(final Path entry_categories_path, final Function<String, C> make_category) throws IOException {
@@ -254,7 +254,7 @@ public final class CategoriesProcessor  {
         for (final C category1 : categories)
             for (final C category2 : categories)
                 if (category1 != category2 && category1.intersectsWith(category2))
-                    throw new RuntimeException(INVALID_INTERSECTING_AGE_RANGES + ": " + category1 + ", " + category2);
+                    throw new RuntimeException(ERROR_INTERSECTING_AGE_RANGES + ": " + category1 + ", " + category2);
     }
 
     private <C extends Category> List<C> getCategoriesByGender(final List<C> categories, final String gender, final Function<C, String> extract_gender) {
@@ -269,7 +269,7 @@ public final class CategoriesProcessor  {
         final List<AgeRange> amalgamated_ranges = getAmalgamatedAgeRanges(categories);
 
         if (amalgamated_ranges.size() > 1)
-            throw new RuntimeException(INVALID_CATEGORIES_MISSING_AGE_RANGE_FOR + " " + gender + ": (" +
+            throw new RuntimeException(ERROR_MISSING_AGE_RANGE + " " + gender + ": (" +
                 (amalgamated_ranges.get(0).getMaximumAge() + 1) + "," + (amalgamated_ranges.get(1).getMinimumAge() - 1) + ")");
     }
 

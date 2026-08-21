@@ -70,7 +70,7 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
                     Integer.parseInt(individual_dnf_string);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException(INVALID_ENTRY1 + " '" + dnf_string +"' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config.getConfigPath().getFileName() + "'", e);
+                    throw new RuntimeException(INVALID_ENTRY + " '" + dnf_string +"' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config.getConfigPath().getFileName() + "'", e);
                 }
     }
 }

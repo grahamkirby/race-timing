@@ -110,7 +110,7 @@ public class IndividualRace implements SingleRaceInternal {
             final String converted_words = normalisation.getNonTitleCaseWords();
 
             if (!converted_words.isEmpty())
-                notes.appendToNotes(CONVERTED_TO_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
+                notes.appendToNotes(NOTES_CONVERTED_TO_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
         }
 
         results_output.printNotes(notes);
@@ -119,14 +119,14 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public void outputPreRaceFiles() throws IOException {
 
-        final OutputStream stream1 = results_output.getOutputStream(POCKET_TIMER_RACERS_FILENAME, TEXT_FILE_SUFFIX);
+        final OutputStream stream1 = results_output.getOutputStream(FILE_POCKET_TIMER_INPUT, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream1)) {
             for (final String line : makeRacerList(entries))
                 writer.append(line + LINE_SEPARATOR);
         }
 
-        final OutputStream stream2 = results_output.getOutputStream(DUMMY_RAWTIMES_FILENAME, TEXT_FILE_SUFFIX);
+        final OutputStream stream2 = results_output.getOutputStream(FILE_DUMMY_RAWTIMES, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream2)) {
             Duration dummy_time = DUMMY_WINNING_TIME;
@@ -226,10 +226,10 @@ public class IndividualRace implements SingleRaceInternal {
         final String name = participant.getName();
         final String category_name = participant.getCategory().getShortName();
 
-        return entry.getBibNumber() + RACE_ENTRY_SEPARATOR +
-            getLastNameOfRunner(name) + RACE_ENTRY_SEPARATOR +
-            getFirstNameOfRunner(name) + RACE_ENTRY_SEPARATOR +
-            ((Runner) participant).getClub() + RACE_ENTRY_SEPARATOR +
+        return entry.getBibNumber() + ENTRY_SEPARATOR +
+            getLastNameOfRunner(name) + ENTRY_SEPARATOR +
+            getFirstNameOfRunner(name) + ENTRY_SEPARATOR +
+            ((Runner) participant).getClub() + ENTRY_SEPARATOR +
             category_name.charAt(0) + "\t\t" +
             category_name;
     }
@@ -321,7 +321,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private List<String> getLineElements(final String line) {
 
-        return Arrays.stream(splitLine(line, RACE_ENTRY_SEPARATOR)).collect(Collectors.toList());
+        return Arrays.stream(splitLine(line, ENTRY_SEPARATOR)).collect(Collectors.toList());
     }
 
     private String[] splitLine(final String line, final String delimiter) {

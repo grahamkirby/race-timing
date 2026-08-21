@@ -173,7 +173,7 @@ public class RelayRaceOutput extends RaceOutput {
     /** Prints all details to a single web page. */
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(COMBINED1, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(COMBINED, HTML_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -226,7 +226,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printCollatedResultsText() throws IOException {
 
-        final OutputStream stream = getOutputStream(TIMES_COLLATED, TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(FILE_TIMES_COLLATED, TEXT_FILE_SUFFIX);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -323,7 +323,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append(OVERALL_RESULTS_HEADER2 + TOTAL + LINE_SEPARATOR);
+            writer.append(String.join(",", POS1) + "," + TOTAL + LINE_SEPARATOR);
         }
 
         @Override
@@ -384,11 +384,11 @@ public class RelayRaceOutput extends RaceOutput {
 
             final int number_of_legs = ((RelayRaceResults) race_results).getNumberOfLegs();
 
-            writer.append(OVERALL_RESULTS_HEADER2);
+            writer.append(String.join(",", POS1) + ",");
 
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
-                writer.append(RUNNERS + " " + leg_number + "," + LEG1 + " " + leg_number + ",");
+                writer.append(RUNNER + "s " + leg_number + "," + LEG1 + " " + leg_number + ",");
                 if (leg_number < number_of_legs) writer.append(SPLIT + " " + leg_number + ",");
             }
 

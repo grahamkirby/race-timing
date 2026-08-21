@@ -54,10 +54,10 @@ public final class PrizeCategory extends Category {
 
         super(components);
 
-        final String[] elements = components.split(",", -1);
+        final String[] elements = components.split(CONFIG_OUTER_SEPARATOR, -1);
 
         if (elements.length <= GROUP_INDEX)
-            throw new RuntimeException(TOO_FEW_CATEGORY_ELEMENTS1);
+            throw new RuntimeException(ERROR_MISSING_CATEGORY_ELEMENTS);
 
         eligible_genders = getGenders(elements);
 
@@ -75,7 +75,7 @@ public final class PrizeCategory extends Category {
 
     private Set<String> getGenders(final String[] elements) {
 
-        final String[] split = elements[GENDER_INDEX].split(ELIGIBLE_CLUBS_SEPARATOR);
+        final String[] split = elements[GENDER_INDEX].split(CONFIG_INNER_SEPARATOR);
         return Arrays.stream(split).map(String::trim).collect(Collectors.toSet());
     }
 
@@ -84,7 +84,7 @@ public final class PrizeCategory extends Category {
         if (elements.length >= CLUBS_INDEX + 1) {
             final String club_string = elements[CLUBS_INDEX];
             if (!club_string.isEmpty())
-                return Arrays.stream(club_string.split(ELIGIBLE_CLUBS_SEPARATOR)).collect(Collectors.toSet());
+                return Arrays.stream(club_string.split(CONFIG_INNER_SEPARATOR)).collect(Collectors.toSet());
         }
 
         return Set.of();

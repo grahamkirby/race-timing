@@ -66,13 +66,13 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
                 try {
                     final String[] elements = individual_dnf_string.split(CONFIG_INNER_SEPARATOR);
                     if (elements.length < 2)
-                        throw new RuntimeException(INVALID_ENTRY1 + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
+                        throw new RuntimeException(INVALID_ENTRY + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
 
                     Integer.parseInt(elements[0]);
                     Integer.parseInt(elements[1]);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException(INVALID_ENTRY1 + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
+                    throw new RuntimeException(INVALID_ENTRY + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
             }
     }

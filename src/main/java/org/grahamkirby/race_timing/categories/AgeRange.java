@@ -17,11 +17,9 @@
  */
 package org.grahamkirby.race_timing.categories;
 
-import org.grahamkirby.race_timing.common.Config;
-
 import java.util.Objects;
 
-import static org.grahamkirby.race_timing.common.Config.ILLEGAL_AGE_RANGE;
+import static org.grahamkirby.race_timing.common.Config.ERROR_ILLEGAL_AGE_RANGE;
 
 public class AgeRange {
 
@@ -30,7 +28,7 @@ public class AgeRange {
 
     AgeRange(final int minimum_age, final int maximum_age) {
 
-        if (minimum_age > maximum_age) throw new RuntimeException(ILLEGAL_AGE_RANGE);
+        if (minimum_age > maximum_age) throw new RuntimeException(ERROR_ILLEGAL_AGE_RANGE);
 
         this.minimum_age = minimum_age;
         this.maximum_age = maximum_age;
