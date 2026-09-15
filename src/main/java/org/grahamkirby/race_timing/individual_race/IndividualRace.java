@@ -119,14 +119,14 @@ public class IndividualRace implements SingleRaceInternal {
     @Override
     public void outputPreRaceFiles() throws IOException {
 
-        final OutputStream stream1 = results_output.getOutputStream(FILE_POCKET_TIMER_INPUT, TEXT_FILE_SUFFIX);
+        final OutputStream stream1 = results_output.getOutputStream(FILE_NAME_POCKET_TIMER_INPUT, FILE_SUFFIX_TEXT);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream1)) {
             for (final String line : makeRacerList(entries))
                 writer.append(line + LINE_SEPARATOR);
         }
 
-        final OutputStream stream2 = results_output.getOutputStream(FILE_DUMMY_RAWTIMES, TEXT_FILE_SUFFIX);
+        final OutputStream stream2 = results_output.getOutputStream(FILE_NAME_DUMMY_RAWTIMES, FILE_SUFFIX_TEXT);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream2)) {
             Duration dummy_time = DUMMY_WINNING_TIME;
@@ -361,7 +361,7 @@ public class IndividualRace implements SingleRaceInternal {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
-                    throw new RuntimeException(DUPLICATE_ENTRY + " '" + entry1 + "' " + IN_FILE + " '" + entries_path.getFileName() + "'");
+                    throw new RuntimeException(ERROR_ENTRY_DUPLICATE + " '" + entry1 + "' " + IN_FILE + " '" + entries_path.getFileName() + "'");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

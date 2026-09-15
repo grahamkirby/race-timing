@@ -116,10 +116,10 @@ public abstract class RaceConfigValidator {
                 final String bib_number = getBibNumber(line);
 
                 if (!validBibNumber(bib_number))
-                    throw new RuntimeException(INVALID_ENTRY + " '" + line + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + file_path.getFileName() + "'");
+                    throw new RuntimeException(ERROR_CONFIG_ENTRY_INVALID + " '" + line + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + file_path.getFileName() + "'");
 
                 if (!seen.add(bib_number))
-                    throw new RuntimeException(DUPLICATE_BIB_NUMBER + " '" + bib_number + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + file_path.getFileName() + "'");
+                    throw new RuntimeException(ERROR_BIB_NUMBER_DUPLICATE + " '" + bib_number + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + file_path.getFileName() + "'");
             });
     }
 
@@ -145,9 +145,9 @@ public abstract class RaceConfigValidator {
             new RawResult(cleaned_line);
 
         } catch (final Exception _) {
-            String message = INVALID_RECORD + " '" + original_line + "' " + AT_LINE + " " + line_number + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'";
+            String message = ERROR_RAW_RESULT_INVALID + " '" + original_line + "' " + AT_LINE + " " + line_number + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'";
             if (original_line.contains(COMMENT_SYMBOL))
-                message += " - " + POSSIBLE_INVALID_USE_OF_COMMENT_SYMBOL + LINE_SEPARATOR;
+                message += " - " + ERROR_COMMENT_INVALID + LINE_SEPARATOR;
             throw new RuntimeException(message);
         }
     }
@@ -156,9 +156,9 @@ public abstract class RaceConfigValidator {
 
         if (cleaned_line.split("\t", -1).length < min_number_of_columns) {
 
-            String message = INVALID_ENTRY + " '" + original_line + "' " + AT_LINE + " " + line_number + " " + IN_FILE + " '" + entries_path.getFileName() + "'";
+            String message = ERROR_CONFIG_ENTRY_INVALID + " '" + original_line + "' " + AT_LINE + " " + line_number + " " + IN_FILE + " '" + entries_path.getFileName() + "'";
             if (original_line.contains(COMMENT_SYMBOL))
-                message += " - " + POSSIBLE_INVALID_USE_OF_COMMENT_SYMBOL + LINE_SEPARATOR;
+                message += " - " + ERROR_COMMENT_INVALID + LINE_SEPARATOR;
             throw new RuntimeException(message);
         }
     }
@@ -169,14 +169,14 @@ public abstract class RaceConfigValidator {
             check_category_in_line.accept(line);
 
         } catch (final RuntimeException e) {
-            throw new RuntimeException(INVALID_CATEGORY_IN_ENTRY + " '" + e.getMessage() + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + entries_path.getFileName() + "'");
+            throw new RuntimeException(ERROR_CATEGORY_INVALID + " '" + e.getMessage() + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + entries_path.getFileName() + "'");
         }
     }
 
     private static void validateConsecutiveRawResultsOrdering(final Duration this_time, final BoxedDuration previous_time, final Path raw_results_path, final BoxedLineNumber line_number) {
 
         if (this_time != null && previous_time.duration != null && previous_time.duration.compareTo(this_time) > 0)
-            throw new RuntimeException(AT_LINE1 + " " + line_number.line + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'");
+            throw new RuntimeException(ERROR_RAW_RESULT_INVALID_ORDER + " " + line_number.line + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'");
 
         previous_time.duration = this_time;
     }
@@ -184,7 +184,7 @@ public abstract class RaceConfigValidator {
     private static void validateResultBibNumberRegistered(final int bib_number, final Set<Integer> entry_bib_numbers, final Path raw_results_path, final BoxedLineNumber line_number) {
 
         if (bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(bib_number))
-            throw new RuntimeException(UNREGISTERED_BIB_NUMBER + " '" + bib_number + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'");
+            throw new RuntimeException(ERROR_BIB_NUMBER_UNREGISTERED + " '" + bib_number + "' " + AT_LINE + " " + line_number.line + " " + IN_FILE + " '" + raw_results_path.getFileName() + "'");
     }
 
     private static Stream<String> getCleanedLines(final Path file_path, final BoxedLineNumber line_number) throws IOException {

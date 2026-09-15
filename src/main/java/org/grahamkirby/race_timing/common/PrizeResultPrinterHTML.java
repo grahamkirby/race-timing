@@ -21,8 +21,7 @@ package org.grahamkirby.race_timing.common;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Config.NO_RESULTS;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 public class PrizeResultPrinterHTML extends ResultPrinter {
 
@@ -35,29 +34,27 @@ public class PrizeResultPrinterHTML extends ResultPrinter {
     @Override
     public void printResultsHeader() throws IOException {
 
-        writer.append("<ul>").append(LINE_SEPARATOR);
+        writer.append(UL_OPEN).append(LINE_SEPARATOR);
     }
 
     @Override
     public void printResult(final RaceResult result) throws IOException {
 
-        writer.append(
-            "    <li>" +
-            result.getPositionString() + " " +
-            race_results.getNormalisationProcessor().htmlEncode(String.valueOf(result)) +
-            "</li>" +
-            LINE_SEPARATOR);
+        writer.append("    ").
+            append(LI_OPEN).append(result.getPositionString()).append(" ").
+            append(race_results.getNormalisationProcessor().htmlEncode(String.valueOf(result))).
+            append(LI_CLOSE).append(LINE_SEPARATOR);
     }
 
     @Override
     public void printResultsFooter() throws IOException {
 
-        writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+        writer.append(UL_CLOSE).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     }
 
     @Override
     public void printNoResults() throws IOException {
 
-        writer.append("<p>" + NO_RESULTS + "</p>").append(LINE_SEPARATOR);
+        writer.append(PARA_OPEN + NO_RESULTS + PARA_CLOSE).append(LINE_SEPARATOR);
     }
 }

@@ -83,7 +83,7 @@ public class RaceFactory {
                 return factory.makeRace(config_file_path);
         }
 
-        throw new RuntimeException(NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE);
+        throw new RuntimeException(ERROR_CONFIG_RACE_NONE_APPLICABLE);
     }
 
     // Only used in subclasses.

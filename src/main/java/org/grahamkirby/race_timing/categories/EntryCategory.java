@@ -44,7 +44,7 @@ public final class EntryCategory extends Category {
 
         super(components);
 
-        gender = components.split(",")[GENDER_INDEX];
+        gender = components.split(",")[CATEGORY_INDEX_GENDER];
     }
 
     public String getGender() {

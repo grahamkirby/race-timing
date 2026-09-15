@@ -41,6 +41,8 @@ import static org.grahamkirby.race_timing.individual_race.IndividualRaceResultsP
 
 public class IndividualRaceOutput extends RaceOutput {
 
+    private static final int TEAM_MEMBERS_INDENT = 24;
+
     public IndividualRaceOutput(final Config config) {
         super(config);
     }
@@ -72,7 +74,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printPrizesHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -85,7 +87,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printPrizesPDF() throws IOException {
 
-        final Path path = getOutputStreamPath(PRIZES.toLowerCase(), PDF_FILE_SUFFIX);
+        final Path path = getOutputStreamPath(PRIZES.toLowerCase(), FILE_SUFFIX_PDF);
         final PdfWriter writer = new PdfWriter(path.toString());
 
         try (final Document document = new Document(new PdfDocument(writer))) {
@@ -98,7 +100,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printPrizesText() throws IOException {
 
-        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(PRIZES.toLowerCase(), FILE_SUFFIX_TEXT);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -116,32 +118,28 @@ public class IndividualRaceOutput extends RaceOutput {
 
         if (!team_prizes.isEmpty()) {
 
-            writer.append("<h4>" + TEAM_PRIZES + "</h4>").append(LINE_SEPARATOR);
-            writer.append("<ul>").append(LINE_SEPARATOR);
+            writer.append(heading4(TEAM_PRIZES)).append(LINE_SEPARATOR);
+            writer.append(UL_OPEN).append(LINE_SEPARATOR);
 
             for (final TeamPerformance team_performance : team_prizes) {
 
                 final int best_team_total = getAggregatePosition(team_performance);
 
-                writer.append("    <li>").
-                    append(FIRST + " <strong>").
-                    append(team_performance.gender().toLowerCase()).
-                    append(" " + TEAM.toLowerCase() + "</strong>: ").
-                    append(team_performance.club()).
-                    append(" (").append(String.valueOf(best_team_total)).append("):").append(LINE_SEPARATOR).
-                    append("        <ul>").append(LINE_SEPARATOR).
-                    append("            <li>").
+                writer.append("    ").append(LI_OPEN).
+                    append(FIRST + " " + strong(team_performance.gender().toLowerCase() + " " + TEAM.toLowerCase()) + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR).
+                    append("        ").append(UL_OPEN).append(LINE_SEPARATOR).
+                    append("            ").append(LI_OPEN).
                     append(
                         team_performance.runner_performances().stream().
                             map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                             collect(Collectors.joining(", "))).
-                    append("</li>").append(LINE_SEPARATOR).
-                    append("        </ul>").append(LINE_SEPARATOR).
-                    append("    </li>").append(LINE_SEPARATOR).
-                    append("    <br />").append(LINE_SEPARATOR);
+                    append(LI_CLOSE).append(LINE_SEPARATOR).
+                    append("        ").append(UL_CLOSE).append(LINE_SEPARATOR).
+                    append("    ").append(LI_CLOSE).append(LINE_SEPARATOR).
+                    append("    ").append(BR).append(LINE_SEPARATOR);
             }
 
-            writer.append("</ul>").append(LINE_SEPARATOR);
+            writer.append(UL_CLOSE).append(LINE_SEPARATOR);
         }
     }
 
@@ -167,7 +165,7 @@ public class IndividualRaceOutput extends RaceOutput {
                 paragraph1.add(new Text(team_performance.gender().toLowerCase() + " " + TEAM.toLowerCase()).setFont(bold_font));
                 paragraph1.add(new Text(": " + team_performance.club() + " (" + best_team_total + "):"));
 
-                final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(INDENT);
+                final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(TEAM_MEMBERS_INDENT);
                 paragraph2.add(new Text(team_performance.runner_performances().stream().
                     map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                     collect(Collectors.joining(", "))));
@@ -206,7 +204,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(COMBINED, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(COMBINED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -322,7 +320,7 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append("<ul>").append(LINE_SEPARATOR);
+            writer.append(UL_OPEN).append(LINE_SEPARATOR);
         }
 
         @Override
@@ -331,24 +329,24 @@ public class IndividualRaceOutput extends RaceOutput {
             final NormalisationProcessor normalisation = race_results.getNormalisationProcessor();
 
             writer.append(
-                "    <li>" +
+                "    " + LI_OPEN +
                     result.getPositionString() + " " +
                     normalisation.htmlEncode(result.getParticipant().toString()) + " " +
                     renderDuration(result, DNF_STRING) +
-                    "</li>" +
+                    LI_CLOSE +
                     LINE_SEPARATOR);
         }
 
         @Override
         public void printResultsFooter() throws IOException {
 
-            writer.append("</ul>").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+            writer.append(UL_CLOSE).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
 
         @Override
         public void printNoResults() throws IOException {
 
-            writer.append("<p>" + NO_RESULTS + "</p>").append(LINE_SEPARATOR);
+            writer.append(para(NO_RESULTS)).append(LINE_SEPARATOR);
         }
     }
 }

@@ -89,7 +89,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             result.setDnf(true);
         }
         catch (NoSuchElementException _) {
-            throw new RuntimeException(BIB_NUMBER + ": " + bib_number + " " + RECORDED_AS_DNF_BUT_NO_RESULT_WAS_RECORDED);
+            throw new RuntimeException(BIB_NUMBER + ": " + bib_number + " " + ERROR_DNF_NO_RESULT);
         }
     }
 

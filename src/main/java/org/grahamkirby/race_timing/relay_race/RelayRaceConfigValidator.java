@@ -66,13 +66,13 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
                 try {
                     final String[] elements = individual_dnf_string.split(CONFIG_INNER_SEPARATOR);
                     if (elements.length < 2)
-                        throw new RuntimeException(INVALID_ENTRY + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
+                        throw new RuntimeException(ERROR_CONFIG_ENTRY_INVALID + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
 
                     Integer.parseInt(elements[0]);
                     Integer.parseInt(elements[1]);
 
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException(INVALID_ENTRY + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
+                    throw new RuntimeException(ERROR_CONFIG_ENTRY_INVALID + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
             }
     }
@@ -89,13 +89,13 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
                 final Duration mass_start_time;
                 try {
                     if (split.length < 2)
-                        throw new RuntimeException(FOR_KEY1 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
+                        throw new RuntimeException(ERROR_MASS_START_TIME_INVALID + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
 
                     final String time_string = split[1];
                     mass_start_time = NormalisationProcessor.parseTime(time_string);
 
                 } catch (final DateTimeParseException _) {
-                    throw new RuntimeException(FOR_KEY1 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
+                    throw new RuntimeException(ERROR_MASS_START_TIME_INVALID + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
 
                 try {
@@ -103,15 +103,15 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
 
                     // A mass start for leg 1 is invalid though the leg number is valid.
                     if (leg_number <= 1 || leg_number > number_of_legs)
-                        throw new RuntimeException(FOR_KEY2 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
+                        throw new RuntimeException(ERROR_LEG_NUMBER_INVALID + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
                 catch (NumberFormatException _) {
-                    throw new RuntimeException(FOR_KEY2 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
+                    throw new RuntimeException(ERROR_LEG_NUMBER_INVALID + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
                 }
 
                 // Start time for one mass start must be strictly less than start time for the next.
                 if (previous_time != null && previous_time.compareTo(mass_start_time) >= 0)
-                    throw new RuntimeException(FOR_KEY3 + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
+                    throw new RuntimeException(ERROR_MASS_START_ORDER_INVALID + " '" + KEY_MASS_START_TIMES + "' " + IN_FILE + " '" + config_file_name + "'");
 
                 previous_time = mass_start_time;
             }

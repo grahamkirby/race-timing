@@ -37,7 +37,7 @@ public abstract class ConfigProcessor {
 
         for (final String key : keys)
             if (!config.containsKey(key))
-                throw new RuntimeException(NO_ENTRY_FOR_KEY + " '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
+                throw new RuntimeException(ERROR_CONFIG_KEY_MISSING + " '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
     }
 
     protected void checkAllFilesExist(final List<String> keys) {
@@ -46,14 +46,14 @@ public abstract class ConfigProcessor {
             final Path path = config.getPath(key);
 
             if (!Files.exists(path))
-                throw new RuntimeException(INVALID_ENTRY + " '" + path.getFileName() + "' for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
+                throw new RuntimeException(ERROR_CONFIG_ENTRY_INVALID + " '" + path.getFileName() + "' for key '" + key + "' in file '" + config.getConfigPath().getFileName() + "'");
         }
     }
 
     protected void checkNonePresent(final List<String> keys) {
 
         if (countKeysPresent(keys) > 0)
-            throw new RuntimeException(SHOULD_HAVE_NO_KEYS_FROM + " {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
+            throw new RuntimeException(ERROR_CONFIG_KEY_INVALID + " {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
     }
 
     protected void checkAllOrNonePresent(final List<String> keys) {
@@ -61,13 +61,13 @@ public abstract class ConfigProcessor {
         final int count = countKeysPresent(keys);
 
         if (count > 0 && count < keys.size())
-            throw new RuntimeException(SHOULD_HAVE_NO_OR_ALL_KEYS_FROM + " {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
+            throw new RuntimeException(ERROR_CONFIG_KEY_INCONSISTENT + " {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
     }
 
     protected void checkAtMostOnePresent(final List<String> keys) {
 
         if (countKeysPresent(keys) > 1)
-            throw new RuntimeException(SHOULD_HAVE_NO_MORE_THAN_ONE_KEY_FROM + " {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
+            throw new RuntimeException(ERROR_CONFIG_KEY_SURPLUS + " {" + String.join(", ", keys) + "} in file '" + config.getConfigPath().getFileName() + "'");
     }
 
     private int countKeysPresent(final List<String> keys) {

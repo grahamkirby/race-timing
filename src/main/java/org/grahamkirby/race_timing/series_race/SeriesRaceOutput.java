@@ -41,14 +41,14 @@ import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDu
 
 class SeriesRaceOutput extends RaceOutput {
 
-    public static final String POS = "Pos";
-    public static final String RUNNER1 = "Runner";
-    public static final String CLUB = "Club";
-    public static final String CATEGORY1 = "Category";
-    public static final String TOTAL = "Total";
-    public static final String COMPLETED = "Completed";
-    public static final String Y = "Y";
-    public static final String N = "N";
+    private static final String POS = "Pos";
+    private static final String RUNNER1 = "Runner";
+    private static final String CLUB = "Club";
+    private static final String CATEGORY1 = "Category";
+    private static final String TOTAL = "Total";
+    private static final String COMPLETED = "Completed";
+    private static final String Y = "Y";
+    private static final String N = "N";
 
     public SeriesRaceOutput(final Config config) {
         super(config);
@@ -115,15 +115,11 @@ class SeriesRaceOutput extends RaceOutput {
                 collect(Collectors.joining(","));
 
             writer.append(POS + "," + RUNNER1 + ",");
-            if (results.multipleClubs())
-                writer.append(CLUB + ",");
+            if (results.multipleClubs()) writer.append(CLUB).append(",");
             writer.append(CATEGORY1 + ",").append(race_names);
-            if (results.getNumberOfRacesTakenPlace() > 1)
-                writer.append("," + TOTAL);
-            if (results.possibleToHaveCompleted())
-                writer.append("," + COMPLETED);
-            if (results.multipleRaceCategories())
-                writer.append(",").append(race_categories_header);
+            if (results.getNumberOfRacesTakenPlace() > 1) writer.append(",").append(TOTAL);
+            if (results.possibleToHaveCompleted()) writer.append(",").append(COMPLETED);
+            if (results.multipleRaceCategories()) writer.append(",").append(race_categories_header);
             writer.append(LINE_SEPARATOR);
         }
 
@@ -135,20 +131,16 @@ class SeriesRaceOutput extends RaceOutput {
             final SeriesRaceResult result = (SeriesRaceResult) r;
             final Runner runner = (Runner) result.getParticipant();
 
-            writer.append(result.getPositionString()).append(",").
-                append(csvEncode(runner.getName())).append(",");
-            if (results.multipleClubs())
-                writer.append(csvEncode((runner).getClub())).append(",");
+            writer.append(result.getPositionString()).append(",").append(csvEncode(runner.getName())).append(",");
+            if (results.multipleClubs()) writer.append(csvEncode((runner).getClub())).append(",");
             writer.append(runner.getCategory().getShortName()).append(",");
 
             writer.append(result.getPerformances().stream().
                 map(SeriesRaceOutput::renderScore).
                 collect(Collectors.joining(",")));
 
-            if (results.getNumberOfRacesTakenPlace() > 1)
-                writer.append("," ).append(renderScore(result.getPerformance()));
-            if (results.possibleToHaveCompleted())
-                writer.append(",").append(result.hasCompletedSeries() ? Y : N);
+            if (results.getNumberOfRacesTakenPlace() > 1) writer.append("," ).append(renderScore(result.getPerformance()));
+            if (results.possibleToHaveCompleted()) writer.append(",").append(result.hasCompletedSeries() ? Y : N);
 
             if (results.multipleRaceCategories())
                 writer.append(",").append(
@@ -190,11 +182,8 @@ class SeriesRaceOutput extends RaceOutput {
                 map(processor::htmlEncode).
                 forEach(headers::add);
 
-            if (results.getNumberOfRacesTakenPlace() > 1)
-                headers.add(TOTAL);
-
-            if (results.possibleToHaveCompleted() && !results.allRacesCompleted())
-                headers.add(COMPLETED);
+            if (results.getNumberOfRacesTakenPlace() > 1) headers.add(TOTAL);
+            if (results.possibleToHaveCompleted() && !results.allRacesCompleted()) headers.add(COMPLETED);
 
             if (results.multipleRaceCategories())
                 for (final SeriesRaceCategory category : results.getRaceCategories())
@@ -216,17 +205,13 @@ class SeriesRaceOutput extends RaceOutput {
             elements.add(processor.htmlEncode(result.getParticipantName()));
             elements.add(processor.htmlEncode(result.getParticipant().getCategory().getShortName()));
 
-            if (results.multipleClubs())
-                elements.add(processor.htmlEncode(runner.getClub()));
+            if (results.multipleClubs()) elements.add(processor.htmlEncode(runner.getClub()));
 
             result.getPerformances().forEach(
                 performance -> elements.add(renderScore(performance)));
 
-            if (results.getNumberOfRacesTakenPlace() > 1)
-                elements.add(renderScore(result.getPerformance()));
-
-            if (results.possibleToHaveCompleted() && !results.allRacesCompleted())
-                elements.add(result.hasCompletedSeries() ? Y : N);
+            if (results.getNumberOfRacesTakenPlace() > 1) elements.add(renderScore(result.getPerformance()));
+            if (results.possibleToHaveCompleted() && !results.allRacesCompleted()) elements.add(result.hasCompletedSeries() ? Y : N);
 
             if (results.multipleRaceCategories())
                 for (final SeriesRaceCategory category : results.getRaceCategories())

@@ -69,8 +69,7 @@ public class PrizeCategoryTest {
 
     private final List<String> expected_exception_message_roots = List.of(
         "too few category elements",
-        "invalid age range for category",
-        "illegal age range",
+        "invalid age range",
         "invalid number of prizes"
     );
 

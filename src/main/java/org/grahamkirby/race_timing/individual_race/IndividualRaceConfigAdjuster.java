@@ -19,8 +19,6 @@ package org.grahamkirby.race_timing.individual_race;
 
 import org.grahamkirby.race_timing.common.*;
 
-import java.nio.file.Path;
-
 import static org.grahamkirby.race_timing.common.Config.*;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.DEFAULT_CONFIG_ROOT_PATH;
 import static org.grahamkirby.race_timing.common.RaceConfigAdjuster.makeDefaultEntryColumnMap;
@@ -33,8 +31,8 @@ public class IndividualRaceConfigAdjuster extends ConfigProcessor {
     public static final String CATEGORIES_ENTRY_INDIVIDUAL_SENIOR = "categories_entry_individual_senior";
     public static final String CATEGORIES_PRIZE_INDIVIDUAL_SENIOR = "categories_prize_individual_senior";
 
-    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve(CATEGORIES_ENTRY_INDIVIDUAL_SENIOR + "." + CSV_FILE_SUFFIX).toString();
-    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve(CATEGORIES_PRIZE_INDIVIDUAL_SENIOR + "." + CSV_FILE_SUFFIX).toString();
+    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve(CATEGORIES_ENTRY_INDIVIDUAL_SENIOR + "." + FILE_SUFFIX_CSV).toString();
+    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve(CATEGORIES_PRIZE_INDIVIDUAL_SENIOR + "." + FILE_SUFFIX_CSV).toString();
 
     public IndividualRaceConfigAdjuster(final Config config) {
 

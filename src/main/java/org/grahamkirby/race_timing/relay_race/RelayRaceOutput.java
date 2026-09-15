@@ -103,7 +103,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsCSV() throws IOException {
 
-        final OutputStream stream = getOutputStream(DETAILED, CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(DETAILED, FILE_SUFFIX_CSV);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, new DetailedResultPrinterCSV(race_results, writer), _ -> "");
@@ -112,7 +112,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(DETAILED, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(DETAILED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResultsHTML(writer);
@@ -124,7 +124,7 @@ public class RelayRaceOutput extends RaceOutput {
         printResults(writer, new DetailedResultPrinterHTML(race_results, writer), this::getResultsSubHeaderHTML);
 
         if (areAnyResultsInMassStart())
-            writer.append("<p>" + M_3_MASS_START_LEG_3 + "<br />" + M_4_MASS_START_LEG_4 + "</p>").append(LINE_SEPARATOR);
+            writer.append(para(M_3_MASS_START_LEG_3 + BR + M_4_MASS_START_LEG_4)).append(LINE_SEPARATOR);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsCSV(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream(LEG + leg, CSV_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(LEG + leg, FILE_SUFFIX_CSV);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -154,7 +154,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsHTML(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream(LEG + leg, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(LEG + leg, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResultsHTML(writer, leg);
@@ -173,24 +173,24 @@ public class RelayRaceOutput extends RaceOutput {
     /** Prints all details to a single web page. */
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(COMBINED, HTML_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(COMBINED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append("<h3>" + RESULTS + "</h3>").append(LINE_SEPARATOR);
+            writer.append(heading3(RESULTS)).append(LINE_SEPARATOR);
 
             writer.append(getPrizesHeaderHTML());
             printPrizesHTML(writer, new PrizeResultPrinterHTML(race_results, writer));
 
-            writer.append("<h4>" + OVERALL + "</h4>").append(LINE_SEPARATOR);
+            writer.append(heading4(OVERALL)).append(LINE_SEPARATOR);
             printResults(writer, new RelayRaceOverallResultPrinterHTML(race_results, writer), this::getResultsSubHeaderHTML);
 
-            writer.append("<h4>" + FULL_RESULTS + "</h4>").append(LINE_SEPARATOR);
+            writer.append(heading4(FULL_RESULTS)).append(LINE_SEPARATOR);
             printDetailedResultsHTML(writer);
 
             for (int leg_number = 1; leg_number <= ((RelayRaceResults) race_results).getNumberOfLegs(); leg_number++) {
 
-                writer.append("<p></p>" + LINE_SEPARATOR + "<h4>" + LEG1 + " " + leg_number + " " + RESULTS + "</h4>" + LINE_SEPARATOR);
+                writer.append(para("") + LINE_SEPARATOR + heading4(LEG1 + " " + leg_number + " " + RESULTS) + LINE_SEPARATOR);
                 printLegResultsHTML(writer, leg_number);
             }
 
@@ -226,7 +226,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printCollatedResultsText() throws IOException {
 
-        final OutputStream stream = getOutputStream(FILE_TIMES_COLLATED, TEXT_FILE_SUFFIX);
+        final OutputStream stream = getOutputStream(FILE_NAME_COLLATED_TIMES, FILE_SUFFIX_TEXT);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

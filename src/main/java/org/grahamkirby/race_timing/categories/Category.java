@@ -20,8 +20,8 @@ package org.grahamkirby.race_timing.categories;
 
 import org.grahamkirby.race_timing.common.NormalisationProcessor;
 
-import static org.grahamkirby.race_timing.common.Config.ERROR_INVALID_AGE_RANGE;
-import static org.grahamkirby.race_timing.common.Config.ERROR_MISSING_CATEGORY_ELEMENTS;
+import static org.grahamkirby.race_timing.common.Config.ERROR_AGE_RANGE_INVALID;
+import static org.grahamkirby.race_timing.common.Config.ERROR_CATEGORY_MISSING_ELEMENTS;
 
 /**
  * Parent class for entry category and prize category.
@@ -36,15 +36,15 @@ public abstract class Category {
     //
     // Long Category Name, Short Category Name, Eligible Gender(s), Minimum Age, Maximum Age, Number of Prizes, Category Group, [Eligible Clubs], [Exclusive (Y/N)]
 
-    protected static final int LONG_NAME_INDEX = 0;
-    protected static final int SHORT_NAME_INDEX = 1;
-    protected static final int GENDER_INDEX = 2;
-    protected static final int MINIMUM_AGE_INDEX = 3;
-    protected static final int MAXIMUM_AGE_INDEX = 4;
-    protected static final int PRIZES_INDEX = 5;
-    protected static final int GROUP_INDEX = 6;
-    protected static final int CLUBS_INDEX = 7;
-    protected static final int EXCLUSIVE_INDEX = 8;
+    protected static final int CATEGORY_INDEX_LONG_NAME = 0;
+    protected static final int CATEGORY_INDEX_SHORT_NAME = 1;
+    protected static final int CATEGORY_INDEX_GENDER = 2;
+    protected static final int CATEGORY_INDEX_MINIMUM_AGE = 3;
+    protected static final int CATEGORY_INDEX_MAXIMUM_AGE = 4;
+    protected static final int CATEGORY_INDEX_PRIZES = 5;
+    protected static final int CATEGORY_INDEX_GROUP = 6;
+    protected static final int CATEGORY_INDEX_CLUBS = 7;
+    protected static final int CATEGORY_INDEX_EXCLUSIVE = 8;
 
     // E.g. "Men Senior", "Men 40-49".
     private final String long_name;
@@ -61,20 +61,20 @@ public abstract class Category {
 
         final String[] parts = components.split(",", -1);
 
-        if (parts.length <= MAXIMUM_AGE_INDEX)
-            throw new RuntimeException(ERROR_MISSING_CATEGORY_ELEMENTS);
+        if (parts.length <= CATEGORY_INDEX_MAXIMUM_AGE)
+            throw new RuntimeException(ERROR_CATEGORY_MISSING_ELEMENTS);
 
-        long_name = NormalisationProcessor.cleanSpacesAndQuotes(parts[LONG_NAME_INDEX]);
-        short_name = NormalisationProcessor.cleanSpacesAndQuotes(parts[SHORT_NAME_INDEX]);
+        long_name = NormalisationProcessor.cleanSpacesAndQuotes(parts[CATEGORY_INDEX_LONG_NAME]);
+        short_name = NormalisationProcessor.cleanSpacesAndQuotes(parts[CATEGORY_INDEX_SHORT_NAME]);
 
-        final String minimum_age_as_string = parts[MINIMUM_AGE_INDEX];
-        final String maximum_age_as_string = parts[MAXIMUM_AGE_INDEX];
+        final String minimum_age_as_string = parts[CATEGORY_INDEX_MINIMUM_AGE];
+        final String maximum_age_as_string = parts[CATEGORY_INDEX_MAXIMUM_AGE];
 
         try {
             age_range = new AgeRange(Integer.parseInt(minimum_age_as_string), Integer.parseInt(maximum_age_as_string));
         }
         catch (NumberFormatException _) {
-            throw new RuntimeException(ERROR_INVALID_AGE_RANGE + ": " + minimum_age_as_string + ", " + maximum_age_as_string);
+            throw new RuntimeException(ERROR_AGE_RANGE_INVALID + " for category: " + minimum_age_as_string + ", " + maximum_age_as_string);
         }
     }
 

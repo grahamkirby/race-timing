@@ -56,33 +56,33 @@ public final class PrizeCategory extends Category {
 
         final String[] elements = components.split(CONFIG_OUTER_SEPARATOR, -1);
 
-        if (elements.length <= GROUP_INDEX)
-            throw new RuntimeException(ERROR_MISSING_CATEGORY_ELEMENTS);
+        if (elements.length <= CATEGORY_INDEX_GROUP)
+            throw new RuntimeException(ERROR_CATEGORY_MISSING_ELEMENTS);
 
         eligible_genders = getGenders(elements);
 
         try {
-            number_of_prizes = Integer.parseInt(elements[PRIZES_INDEX]);
+            number_of_prizes = Integer.parseInt(elements[CATEGORY_INDEX_PRIZES]);
         }
         catch (NumberFormatException _) {
-            throw new RuntimeException(INVALID_NUMBER_OF_PRIZES + ": " + elements[PRIZES_INDEX]);
+            throw new RuntimeException(ERROR_PRIZES_INVALID_NUMBER + ": " + elements[CATEGORY_INDEX_PRIZES]);
         }
 
-        group = elements[GROUP_INDEX];
+        group = elements[CATEGORY_INDEX_GROUP];
         eligible_clubs = getEligibleClubs(elements);
         exclusive = getExclusive(elements);
     }
 
     private Set<String> getGenders(final String[] elements) {
 
-        final String[] split = elements[GENDER_INDEX].split(CONFIG_INNER_SEPARATOR);
+        final String[] split = elements[CATEGORY_INDEX_GENDER].split(CONFIG_INNER_SEPARATOR);
         return Arrays.stream(split).map(String::trim).collect(Collectors.toSet());
     }
 
     private Set<String> getEligibleClubs(final String[] elements) {
 
-        if (elements.length >= CLUBS_INDEX + 1) {
-            final String club_string = elements[CLUBS_INDEX];
+        if (elements.length >= CATEGORY_INDEX_CLUBS + 1) {
+            final String club_string = elements[CATEGORY_INDEX_CLUBS];
             if (!club_string.isEmpty())
                 return Arrays.stream(club_string.split(CONFIG_INNER_SEPARATOR)).collect(Collectors.toSet());
         }
@@ -93,7 +93,7 @@ public final class PrizeCategory extends Category {
     private boolean getExclusive(final String[] elements) {
 
         // Default is TRUE if not defined.
-        return elements.length <= EXCLUSIVE_INDEX || elements[EXCLUSIVE_INDEX].equals("Y");
+        return elements.length <= CATEGORY_INDEX_EXCLUSIVE || elements[CATEGORY_INDEX_EXCLUSIVE].equals("Y");
     }
 
     public int numberOfPrizes() {

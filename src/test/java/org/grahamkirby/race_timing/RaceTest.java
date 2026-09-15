@@ -470,7 +470,7 @@ public class RaceTest {
     private static List<String> getFileContent(final Path path) {
 
         try {
-            if (path.toString().endsWith(PDF_FILE_SUFFIX)) {
+            if (path.toString().endsWith(FILE_SUFFIX_PDF)) {
                 try (final PdfDocument document = new PdfDocument(new PdfReader(path.toString()))) {
 
                     final List<String> contents = new ArrayList<>();

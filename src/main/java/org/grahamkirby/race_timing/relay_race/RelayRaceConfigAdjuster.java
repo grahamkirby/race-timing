@@ -34,8 +34,8 @@ public class RelayRaceConfigAdjuster extends ConfigProcessor {
 
     private static final String DEFAULT_START_TIME = "00:00:00";
 
-    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_entry_relay." + CSV_FILE_SUFFIX).toString();
-    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_prize_relay." + CSV_FILE_SUFFIX).toString();
+    private static final String DEFAULT_ENTRY_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_entry_relay." + FILE_SUFFIX_CSV).toString();
+    private static final String DEFAULT_PRIZE_CATEGORIES_PATH = DEFAULT_CONFIG_ROOT_PATH.resolve("categories_prize_relay." + FILE_SUFFIX_CSV).toString();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 

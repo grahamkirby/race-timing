@@ -424,7 +424,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
             // If ages are equal, gender must have changed since categories are different.
             if (current_category.getAgeRange().getMinimumAge() <= previous_category.getAgeRange().getMinimumAge())
-                throw new RuntimeException(INVALID_CATEGORY_CHANGE + ": " + note);
+                throw new RuntimeException(ERROR_CATEGORY_INVALID_CHANGE + ": " + note);
 
             race.getNotesProcessor().appendToNotes(note + LINE_SEPARATOR);
         }
@@ -433,6 +433,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     private static void checkAgeCategoryRangeOverSeries(final String runner_name, final EntryCategory earliest_category, final EntryCategory latest_category) {
 
         if (earliest_category != null && latest_category != null && latest_category.getAgeRange().getMinimumAge() > earliest_category.getAgeRange().getMaximumAge() + 1)
-            throw new RuntimeException(INVALID_CATEGORY_CHANGE + ": " + RUNNER.toLowerCase() + " '" + runner_name + "' " + CHANGED_FROM + " " + earliest_category.getShortName() + " " + TO + " " + latest_category.getShortName() + " " + DURING_SERIES);
+            throw new RuntimeException(ERROR_CATEGORY_INVALID_CHANGE + ": " + RUNNER.toLowerCase() + " '" + runner_name + "' " + CHANGED_FROM + " " + earliest_category.getShortName() + " " + TO + " " + latest_category.getShortName() + " " + DURING_SERIES);
     }
 }

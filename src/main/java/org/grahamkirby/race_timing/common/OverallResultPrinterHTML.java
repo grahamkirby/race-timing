@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import static org.grahamkirby.race_timing.common.Config.LINE_SEPARATOR;
-import static org.grahamkirby.race_timing.common.Config.NO_RESULTS;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 /** Base class for printing results to HTML files. */
 public abstract class OverallResultPrinterHTML extends ResultPrinter {
@@ -44,7 +43,7 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
             """);
 
         for (final String header : getResultsColumnHeaders())
-            writer.append("            <th>"  + header + "</th>" + LINE_SEPARATOR);
+            writer.append("            " + TH_OPEN + header + TH_CLOSE + LINE_SEPARATOR);
 
         writer.append("""
                     </tr>
@@ -61,7 +60,7 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
             """);
 
         for (final String element : getResultsElements(result))
-            writer.append("            <td>" + element + "</td>" + LINE_SEPARATOR);
+            writer.append("            " + TD_OPEN + element + TD_CLOSE + LINE_SEPARATOR);
 
         writer.append("""
                     </tr>
@@ -80,7 +79,7 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
     @Override
     public void printNoResults() throws IOException {
 
-        writer.append("<p>" + NO_RESULTS + "</p>").append(LINE_SEPARATOR);
+        writer.append(para(NO_RESULTS)).append(LINE_SEPARATOR);
     }
 
     protected abstract List<String> getResultsElements(final RaceResult result) throws IOException;

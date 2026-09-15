@@ -32,58 +32,62 @@ import java.util.stream.Stream;
 
 public class Config {
 
-    public static final int POSITION_INDEX = 1;
-    public static final int BIB_INDEX = 2;
-    public static final int TIME_INDEX = 3;
-    public static final int COMMENT_INDEX = 4;
+    public static final String FILE_SUFFIX_CSV = "csv";
+    public static final String FILE_SUFFIX_HTML = "html";
+    public static final String FILE_SUFFIX_PDF = "pdf";
+    public static final String FILE_SUFFIX_TEXT = "txt";
 
-    public static final int INDENT = 24;
+    public static final String FILE_NAME_COLLATED_TIMES = "times_collated";
+    public static final String FILE_NAME_POCKET_TIMER_INPUT = "racers";
+    public static final String FILE_NAME_DUMMY_RAWTIMES = "dummy_rawtimes";
+    public static final String FILE_NAME_PROCESSING_NOTES = "processing_notes";
 
-    public static final Duration DUMMY_WINNING_TIME = Duration.ofMinutes(10);
-    public static final Duration DUMMY_INTERVAL = Duration.ofSeconds(12);
+    public static final String ENTRY_SEPARATOR = "\t";
+    public static final String RAW_RESULT_SEPARATOR = "\t";
+    public static final String RELAY_RACE_RESULT_ANNOTATION_SEPARATOR = "\t";
+    public static final String CONFIG_INNER_SEPARATOR = "/";
+    public static final String CONFIG_OUTER_SEPARATOR = ",";
+    public static final String CSV_SEPARATOR = ",";
+    public static final String RUNNER_PAIR_NAMES_SEPARATOR = " & ";
+    public static final String EQUAL_POSITION_INDICATOR = "=";
 
-    public static final String CSV_FILE_SUFFIX = "csv";
-    public static final String HTML_FILE_SUFFIX = "html";
-    public static final String PDF_FILE_SUFFIX = "pdf";
-    public static final String TEXT_FILE_SUFFIX = "txt";
 
-    public static final String FILE_TIMES_COLLATED = "times_collated";
-    public static final String FILE_POCKET_TIMER_INPUT = "racers";
-    public static final String FILE_DUMMY_RAWTIMES = "dummy_rawtimes";
-    public static final String FILE_PROCESSING_NOTES = "processing_notes";
+    public static final String ERROR_AGE_RANGE_INTERSECTING = "invalid intersecting age ranges";
+    public static final String ERROR_AGE_RANGE_INVALID = "invalid age range";
+    public static final String ERROR_BIB_NUMBER_DUPLICATE = "duplicate bib number";
+    public static final String ERROR_BIB_NUMBER_UNREGISTERED = "unregistered bib number";
+    public static final String ERROR_CATEGORY_DUPLICATED_NAME = "duplicated category name";
+    public static final String ERROR_CATEGORY_INVALID = "invalid category in entry";
+    public static final String ERROR_CATEGORY_INVALID_CHANGE = "invalid category change";
+    public static final String ERROR_CATEGORY_MISSING_AGE_RANGE = "invalid categories: missing age range for";
+    public static final String ERROR_CATEGORY_MISSING_ELEMENTS = "too few category elements";
+    public static final String ERROR_CATEGORY_PRIZE = "prize categories";
+    public static final String ERROR_CONFIG_ENTRY_INVALID = "invalid entry";
+    public static final String ERROR_CONFIG_KEY_INCONSISTENT = "should have no or all keys from";
+    public static final String ERROR_CONFIG_KEY_INVALID = "should have no keys from";
+    public static final String ERROR_CONFIG_KEY_MISSING = "no entry for key";
+    public static final String ERROR_CONFIG_KEY_SURPLUS = "should have no more than one key from";
+    public static final String ERROR_CONFIG_KEY_UNUSED = "unused keys";
+    public static final String ERROR_CONFIG_MISSING_FILE = "missing config file";
+    public static final String ERROR_CONFIG_RACE_INVALID = "invalid config for race";
+    public static final String ERROR_CONFIG_RACE_NONE_APPLICABLE = "no applicable race type for config file";
+    public static final String ERROR_DNF_NO_RESULT = "recorded as DNF but no result was recorded";
+    public static final String ERROR_COMMENT_INVALID = "possible invalid use of # comment symbol";
+    public static final String ERROR_ENTRY_RELAY_RACE_INVALID_NUMBER_OF_ELEMENTS = "invalid number of elements";
+    public static final String ERROR_ENTRY_DUPLICATE = "duplicate entry";
+    public static final String ERROR_FILE_DIR_CREATION = "cannot create output directory, or file within it";
+    public static final String ERROR_FILE_UNUSED = "unused input files";
+    public static final String ERROR_GENDER_INCONSISTENT = "genders are not consistent between entry categories";
+    public static final String ERROR_LEG_NUMBER_INVALID = "invalid leg number for key";
+    public static final String ERROR_MASS_START_TIME_INVALID = "invalid mass start time for key";
+    public static final String ERROR_MASS_START_ORDER_INVALID = "invalid mass start time order for key";
+    public static final String ERROR_TEAM_SURPLUS_RESULT = "surplus result for team";
+    public static final String ERROR_PRIZES_INVALID_NUMBER = "invalid number of prizes";
+    public static final String ERROR_RAW_RESULT_INVALID = "invalid record";
+    public static final String ERROR_RAW_RESULT_INVALID_ORDER = "result out of order at line";
+    public static final String ERROR_SERIES_NUMBER_INVALID = "invalid number of races specified in file";
+    public static final String ERROR_SERIES_DUPLICATES = "duplicate races specified in file";
 
-    public static final String ERROR_DUPLICATED_CATEGORY_NAME = "duplicated category name";
-    public static final String ERROR_ILLEGAL_AGE_RANGE = "illegal age range";
-    public static final String ERROR_INCONSISTENT_GENDERS = "genders are not consistent between entry categories";
-    public static final String EROR_PRIZE_CATEGORIES = "prize categories";
-    public static final String ERROR_INTERSECTING_AGE_RANGES = "invalid intersecting age ranges";
-    public static final String ERROR_MISSING_AGE_RANGE = "invalid categories: missing age range for";
-    public static final String ERROR_MISSING_CATEGORY_ELEMENTS = "too few category elements";
-    public static final String ERROR_INVALID_AGE_RANGE = "invalid age range for category";
-    public static final String INVALID_NUMBER_OF_PRIZES = "invalid number of prizes";
-    public static final String NO_ENTRY_FOR_KEY = "no entry for key";
-    public static final String INVALID_ENTRY = "invalid entry";
-    public static final String SHOULD_HAVE_NO_KEYS_FROM = "should have no keys from";
-    public static final String SHOULD_HAVE_NO_OR_ALL_KEYS_FROM = "should have no or all keys from";
-    public static final String SHOULD_HAVE_NO_MORE_THAN_ONE_KEY_FROM = "should have no more than one key from";
-    public static final String DUPLICATE_BIB_NUMBER = "duplicate bib number";
-    public static final String INVALID_RECORD = "invalid record";
-    public static final String POSSIBLE_INVALID_USE_OF_COMMENT_SYMBOL = "possible invalid use of # comment symbol";
-    public static final String INVALID_CATEGORY_IN_ENTRY = "invalid category in entry";
-    public static final String AT_LINE1 = "result out of order at line";
-    public static final String NO_APPLICABLE_RACE_TYPE_FOR_CONFIG_FILE = "no applicable race type for config file";
-    public static final String CANNOT_CREATE_OUTPUT_DIRECTORY_OR_FILE_WITHIN_IT = "cannot create output directory, or file within it";
-    public static final String INVALID_NUMBER_OF_ELEMENTS = "invalid number of elements";
-    public static final String UNREGISTERED_BIB_NUMBER = "unregistered bib number";
-    public static final String DUPLICATE_ENTRY = "duplicate entry";
-    public static final String SURPLUS_RESULT_FOR_TEAM = "surplus result for team";
-    public static final String FOR_KEY1 = "invalid mass start time for key";
-    public static final String FOR_KEY2 = "invalid leg number for key";
-    public static final String FOR_KEY3 = "invalid mass start time order for key";
-    public static final String INVALID_NUMBER_OF_RACES_SPECIFIED_IN_FILE = "invalid number of races specified in file";
-    public static final String DUPLICATE_RACES_SPECIFIED_IN_FILE = "duplicate races specified in file";
-    public static final String INVALID_CONFIG_FOR_RACE = "invalid config for race";
-    public static final String INVALID_CATEGORY_CHANGE = "invalid category change";
     public static final String CHANGED_FROM = "changed from";
     public static final String DURING_SERIES = "during series";
 
@@ -102,21 +106,12 @@ public class Config {
     public static final String NOTES_CONVERTED_TO_TITLE_CASE = "Converted to title case";
     public static final String NOTES_UNKNOWN_CATEGORY = "unknown category so omitted from overall results";
 
-    public static final String ENTRY_SEPARATOR = "\t";
-    public static final String RAW_RESULT_SEPARATOR = "\t";
-    public static final String CONFIG_INNER_SEPARATOR = "/";
-    public static final String CONFIG_OUTER_SEPARATOR = ",";
-    public static final String CSV_SEPARATOR = ",";
-    public static final String RUNNER_PAIR_NAMES_SEPARATOR = " & ";
-    public static final String EQUAL_POSITION_INDICATOR = "=";
-
     public static final String FOR_KEY = "for key";
     public static final String FIRST = "First";
     public static final String TEAM = "Team";
     public static final String TEAM_PRIZES = "Team Prizes";
     public static final String UNDERLINE = "-----------";
     public static final String BIB_NUMBER = "bib number";
-    public static final String RECORDED_AS_DNF_BUT_NO_RESULT_WAS_RECORDED = "recorded as DNF but no result was recorded";
     public static final String TEAM_SCORES = "Team scores";
     public static final String UNATT = "Unatt.";
     public static final String UPDATE = "Update";
@@ -171,14 +166,22 @@ public class Config {
         
         """;
 
+    public static final int RELAY_RACE_RESULT_ANNOTATION_POSITION_INDEX = 1;
+    public static final int RELAY_RACE_RESULT_ANNOTATION_BIB_INDEX = 2;
+    public static final int RELAY_RACE_RESULT_ANNOTATION_TIME_INDEX = 3;
+    public static final int RELAY_RACE_RESULT_ANNOTATION_COMMENT_INDEX = 4;
+
+    public static final Duration DUMMY_WINNING_TIME = Duration.ofMinutes(10);
+    public static final Duration DUMMY_INTERVAL = Duration.ofSeconds(12);
+
+
     public static final List<String> HEADERS = List.of(POS, NO, RUNNER, CLUB, CATEGORY, TIME);
     public static final List<String> POS1 = List.of(POS, NO, TEAM, CATEGORY);
     public static final List<String> HEADERS2 = concat(POS1, List.of(TOTAL));
 
-
     // Treated differently from other configurable paths, because it needs to be accessed
     // from test code independently of a particular race.
-    public static final Path IGNORED_FILE_NAMES_PATH = Path.of("src/main/resources/configuration/ignored_file_names." + CSV_FILE_SUFFIX);
+    public static final Path IGNORED_FILE_NAMES_PATH = Path.of("src/main/resources/configuration/ignored_file_names." + FILE_SUFFIX_CSV);
 
     public static final String KEY_ANNOTATIONS_PATH = "ANNOTATIONS_PATH";
     public static final String KEY_CAPITALISATION_STOP_WORDS_PATH = "CAPITALISATION_STOP_WORDS_PATH";
@@ -266,9 +269,24 @@ public class Config {
     /** Web link to application on GitHub. */
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
     public static final String OUTPUT_DIRECTORY_NAME = "output";
-    public static final String MISSING_CONFIG_FILE = "missing config file";
-    public static final String UNUSED_KEYS = "unused keys";
-    public static final String UNUSED_INPUT_FILES = "unused input files";
+
+    public static final String STRONG_OPEN = "<strong>";
+    public static final String STRONG_CLOSE = "</strong>";
+    public static final String H3_OPEN = "<h3>";
+    public static final String H3_CLOSE = "</h3>";
+    public static final String H4_OPEN = "<h4>";
+    public static final String H4_CLOSE = "</h4>";
+    public static final String UL_OPEN = "<ul>";
+    public static final String LI_OPEN = "<li>";
+    public static final String LI_CLOSE = "</li>";
+    public static final String UL_CLOSE = "</ul>";
+    public static final String PARA_OPEN = "<p>";
+    public static final String PARA_CLOSE = "</p>";
+    public static final String TH_OPEN = "<th>";
+    public static final String TH_CLOSE = "</th>";
+    public static final String TD_OPEN = "<td>";
+    public static final String TD_CLOSE = "</td>";
+    public static final String BR = "<br />";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -319,7 +337,7 @@ public class Config {
     public static Properties loadProperties(final Path config_file_path) throws IOException {
 
         if (!Files.exists(config_file_path))
-            throw new RuntimeException(MISSING_CONFIG_FILE + ": '" + config_file_path + "'");
+            throw new RuntimeException(ERROR_CONFIG_MISSING_FILE + ": '" + config_file_path + "'");
 
         try (final InputStreamReader reader = new InputStreamReader(Files.newInputStream(config_file_path), StandardCharsets.UTF_8)) {
 
@@ -334,7 +352,7 @@ public class Config {
     public void checkUnusedProperties() {
 
         if (!unused_keys.isEmpty())
-            throw new RuntimeException(UNUSED_KEYS + ": " + String.join(", ", unused_keys));
+            throw new RuntimeException(ERROR_CONFIG_KEY_UNUSED + ": " + String.join(", ", unused_keys));
     }
 
     public void checkUnusedInputFiles() throws IOException {
@@ -343,7 +361,7 @@ public class Config {
 
         if (!unused_files.isEmpty() && ((Boolean) get(KEY_CHECK_INPUT_FILES_USED))) {
 
-            final String message = UNUSED_INPUT_FILES + ": " +
+            final String message = ERROR_FILE_UNUSED + ": " +
                 unused_files.stream().
                     map(path -> path.getFileName().toString()).
                     collect(Collectors.joining(", ")) + LINE_SEPARATOR;
@@ -474,9 +492,25 @@ public class Config {
         return NormalisationProcessor.cleanSpacesAndQuotes(getString(KEY_RACE_NAME_FOR_RESULTS));
     }
 
+    public static String strong(final String s) {
+        return STRONG_OPEN + s + STRONG_CLOSE;
+    }
+
+    public static String para(final String s) {
+        return PARA_OPEN + s + PARA_CLOSE;
+    }
+
+    public static String heading3(final String heading) {
+        return H3_OPEN + heading + H3_CLOSE;
+    }
+
+    public static String heading4(final String heading) {
+        return H4_OPEN + heading + H4_CLOSE;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static Path makeRelative(final Path path) {
+    private static Path makeRelative(final Path path) {
 
         // Convert absolute path to relative path from the project directory,
         // interpreting the input path's root as the project directory.
@@ -497,8 +531,8 @@ public class Config {
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static List<String> concat(final List<String> list1, final List<String> list2) {
         return Stream.concat(list1.stream(), list2.stream()).toList();
     }
 }
-
