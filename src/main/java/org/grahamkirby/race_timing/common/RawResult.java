@@ -33,13 +33,13 @@ public class RawResult {
 
     public RawResult(final String file_line) {
 
-        final String[] elements = file_line.split(RAW_RESULT_SEPARATOR);
+        final String[] elements = file_line.split(SEPARATOR_RAW_RESULT);
 
         final String bib_number_as_string = elements[0];
         final String time_as_string = elements[1];
 
-        bib_number = bib_number_as_string.equals(UNKNOWN_BIB_NUMBER_INDICATOR) ? UNKNOWN_BIB_NUMBER : Integer.parseInt(bib_number_as_string);
-        recorded_finish_time = time_as_string.equals(UNKNOWN_TIME_INDICATOR) ? null : parseTime(time_as_string);
+        bib_number = bib_number_as_string.equals(INDICATOR_BIB_NUMBER_UNKNOWN) ? UNKNOWN_BIB_NUMBER : Integer.parseInt(bib_number_as_string);
+        recorded_finish_time = time_as_string.equals(INDICATOR_TIME_UNKNOWN) ? null : parseTime(time_as_string);
     }
 
     public RawResult(final int bib_number, final Duration recorded_finish_time) {

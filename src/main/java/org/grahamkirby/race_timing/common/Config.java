@@ -32,25 +32,54 @@ import java.util.stream.Stream;
 
 public class Config {
 
+    public static final String FILE_PREFIX_COMBINED = "combined";
+    public static final String FILE_PREFIX_DETAILED = "detailed";
+
+    public static final String DIRECTORY_OUTPUT_NAME = "output";
+
     public static final String FILE_SUFFIX_CSV = "csv";
     public static final String FILE_SUFFIX_HTML = "html";
     public static final String FILE_SUFFIX_PDF = "pdf";
     public static final String FILE_SUFFIX_TEXT = "txt";
+
+    public static final String STRONG_OPEN = "<strong>";
+    public static final String STRONG_CLOSE = "</strong>";
+    public static final String H3_OPEN = "<h3>";
+    public static final String H3_CLOSE = "</h3>";
+    public static final String H4_OPEN = "<h4>";
+    public static final String H4_CLOSE = "</h4>";
+    public static final String UL_OPEN = "<ul>";
+    public static final String LI_OPEN = "<li>";
+    public static final String LI_CLOSE = "</li>";
+    public static final String UL_CLOSE = "</ul>";
+    public static final String PARA_OPEN = "<p>";
+    public static final String PARA_CLOSE = "</p>";
+    public static final String TH_OPEN = "<th>";
+    public static final String TH_CLOSE = "</th>";
+    public static final String TD_OPEN = "<td>";
+    public static final String TD_CLOSE = "</td>";
+    public static final String BR = "<br />";
 
     public static final String FILE_NAME_COLLATED_TIMES = "times_collated";
     public static final String FILE_NAME_POCKET_TIMER_INPUT = "racers";
     public static final String FILE_NAME_DUMMY_RAWTIMES = "dummy_rawtimes";
     public static final String FILE_NAME_PROCESSING_NOTES = "processing_notes";
 
-    public static final String ENTRY_SEPARATOR = "\t";
-    public static final String RAW_RESULT_SEPARATOR = "\t";
-    public static final String RELAY_RACE_RESULT_ANNOTATION_SEPARATOR = "\t";
-    public static final String CONFIG_INNER_SEPARATOR = "/";
-    public static final String CONFIG_OUTER_SEPARATOR = ",";
-    public static final String CSV_SEPARATOR = ",";
-    public static final String RUNNER_PAIR_NAMES_SEPARATOR = " & ";
-    public static final String EQUAL_POSITION_INDICATOR = "=";
+    public static final String SEPARATOR_ANNOTATION_RELAY_RACE_RESULT = "\t";
+    public static final String SEPARATOR_CONFIG_INNER = "/";
+    public static final String SEPARATOR_CONFIG_OUTER = ",";
+    public static final String SEPARATOR_CSV = ",";
+    public static final String SEPARATOR_ENTRY = "\t";
+    public static final String SEPARATOR_RAW_RESULT = "\t";
+    public static final String SEPARATOR_RUNNER_PAIR_NAMES = " & ";
 
+    public static final String INDICATOR_EQUAL_POSITION = "=";
+    public static final String INDICATOR_MASS_START = "M";
+
+    /** Used when a result is recorded without a bib number. */
+    public static final String INDICATOR_BIB_NUMBER_UNKNOWN = "?";
+    public static final String INDICATOR_TIME_UNKNOWN = "?";
+    public static final String INDICATOR_CLUB_UNKNOWN = "?";
 
     public static final String ERROR_AGE_RANGE_INTERSECTING = "invalid intersecting age ranges";
     public static final String ERROR_AGE_RANGE_INVALID = "invalid age range";
@@ -88,49 +117,50 @@ public class Config {
     public static final String ERROR_SERIES_NUMBER_INVALID = "invalid number of races specified in file";
     public static final String ERROR_SERIES_DUPLICATES = "duplicate races specified in file";
 
-    public static final String CHANGED_FROM = "changed from";
-    public static final String DURING_SERIES = "during series";
+    public static final String HEADING_CATEGORY = "Category";
+    public static final String HEADING_CATEGORY_PRIZES = "Category Prizes";
+    public static final String HEADING_CURRENT_STANDINGS = "Current Standings";
+    public static final String HEADING_FULL_RESULTS = "Full Results";
+    public static final String HEADING_NO_RESULTS = "No results";
+    public static final String HEADING_OVERALL = "Overall";
+    public static final String HEADING_PRIZES = "Prizes";
+    public static final String HEADING_RESULTS = "Results";
+    public static final String HEADING_TEAM_PRIZES = "Team Prizes";
 
-    public static final String NO_RESULTS = "No results";
+    public static final String NOTES_CATEGORY_CHANGE1 = "changed from";
+    public static final String NOTES_CATEGORY_CHANGE2 = "during series";
+    public static final String NOTES_CATEGORY_UNKNOWN = "unknown category so omitted from overall results";
+    public static final String NOTES_CONVERTED_TO_TITLE_CASE = "Converted to title case";
+    public static final String NOTES_TEAM_SCORES = "Team scores";
+    public static final String NOTES_CATEGORY_CHANGES = "Category Changes";
+
+    public static final String LEG = "Leg";
+    public static final String RUNNER = "Runner";
+
+    public static final String PREFIX_LEG = LEG.toLowerCase() + "_";
+
+    public static final String LEGEND_MASS_STARTS = "M3: mass start leg 3" + BR + "M4: mass start leg 4";
+
     public static final String AT_LINE = "at line";
     public static final String IN_FILE = "in file";
-    public static final String OVERALL = "Overall";
-    public static final String RUNNER = "Runner";
-    public static final String PRIZES = "Prizes";
-    public static final String RESULTS = "Results";
-    public static final String CURRENT_STANDINGS = "Current Standings";
-    public static final String CATEGORY = "Category";
-    public static final String CATEGORY_PRIZES = "Category Prizes";
-    public static final String COMBINED = "combined";
-
-    public static final String NOTES_CONVERTED_TO_TITLE_CASE = "Converted to title case";
-    public static final String NOTES_UNKNOWN_CATEGORY = "unknown category so omitted from overall results";
-
     public static final String FOR_KEY = "for key";
+
+    public static final String ANNOTATION_NO_TIME_NO_INTERPOLATION1 = "Time not recorded. No basis for interpolation so set to first recorded time.";
+    public static final String ANNOTATION_NO_TIME_NO_INTERPOLATION2 = "Time not recorded. No basis for interpolation so set to last recorded time + 1s.";
+    public static final String ANNOTATION_NO_TIME_INTERPOLATION = "Time not recorded. Time interpolated.";
+
     public static final String FIRST = "First";
     public static final String TEAM = "Team";
-    public static final String TEAM_PRIZES = "Team Prizes";
     public static final String UNDERLINE = "-----------";
     public static final String BIB_NUMBER = "bib number";
-    public static final String TEAM_SCORES = "Team scores";
     public static final String UNATT = "Unatt.";
-    public static final String UPDATE = "Update";
-    public static final String MASS_START_INDICATOR = "M";
+    public static final String ANNOTATION_UPDATE = "Update";
     public static final String TIME = "Time";
-    public static final String DETAILED = "detailed";
-    public static final String M_3_MASS_START_LEG_3 = "M3: mass start leg 3";
-    public static final String M_4_MASS_START_LEG_4 = "M4: mass start leg 4";
-    public static final String LEG = "leg_";
-    public static final String LEG1 = "Leg";
-    public static final String FULL_RESULTS = "Full Results";
     public static final String TOTAL = "Total";
     public static final String POS = "Pos";
     public static final String NO = "No";
     public static final String CLUB = "Club";
     public static final String SPLIT = "Split";
-    public static final String TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_FIRST_RECORDED_TIME = "Time not recorded. No basis for interpolation so set to first recorded time.";
-    public static final String TIME_NOT_RECORDED_TIME_INTERPOLATED = "Time not recorded. Time interpolated.";
-    public static final String TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_LAST_RECORDED_TIME_1_S = "Time not recorded. No basis for interpolation so set to last recorded time + 1s.";
     public static final String TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_TOO_MANY_MISSING_TIMES_TO_GUESS_FROM_DNF_TEAMS = "Time but not bib number recorded electronically. Bib number not recorded on paper. Too many missing times to guess from DNF teams.";
     public static final String TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_GUESSED_BIB_NUMBER = "Time but not bib number recorded electronically. Bib number not recorded on paper. Guessed bib number.";
     public static final String RUNNERS_IN_SERIES = "Runners in Series";
@@ -138,7 +168,6 @@ public class Config {
     public static final String RUNNER_NAME = "Runner name";
     public static final String RECORDED_FOR_MULTIPLE_CLUBS = "recorded for multiple clubs";
     public static final String ASSUMING_THERE_ARE_MULTIPLE_RUNNERS_WITH_THIS_NAME = "assuming there are multiple runners with this name";
-    public static final String CATEGORY_CHANGES = "Category Changes";
     public static final String CHANGED_CATEGORY_FROM = "changed category from";
     public static final String TO = "to";
     public static final String AT = "at";
@@ -166,17 +195,16 @@ public class Config {
         
         """;
 
-    public static final int RELAY_RACE_RESULT_ANNOTATION_POSITION_INDEX = 1;
-    public static final int RELAY_RACE_RESULT_ANNOTATION_BIB_INDEX = 2;
-    public static final int RELAY_RACE_RESULT_ANNOTATION_TIME_INDEX = 3;
-    public static final int RELAY_RACE_RESULT_ANNOTATION_COMMENT_INDEX = 4;
+    public static final int ANNOTATION_RELAY_RACE_RESULT_POSITION_INDEX = 1;
+    public static final int ANNOTATION_RELAY_RACE_RESULT_BIB_INDEX = 2;
+    public static final int ANNOTATION_RELAY_RACE_RESULT_TIME_INDEX = 3;
+    public static final int ANNOTATION_RELAY_RACE_RESULT_COMMENT_INDEX = 4;
 
     public static final Duration DUMMY_WINNING_TIME = Duration.ofMinutes(10);
     public static final Duration DUMMY_INTERVAL = Duration.ofSeconds(12);
 
-
-    public static final List<String> HEADERS = List.of(POS, NO, RUNNER, CLUB, CATEGORY, TIME);
-    public static final List<String> POS1 = List.of(POS, NO, TEAM, CATEGORY);
+    public static final List<String> HEADERS = List.of(POS, NO, RUNNER, CLUB, HEADING_CATEGORY, TIME);
+    public static final List<String> POS1 = List.of(POS, NO, TEAM, HEADING_CATEGORY);
     public static final List<String> HEADERS2 = concat(POS1, List.of(TOTAL));
 
     // Treated differently from other configurable paths, because it needs to be accessed
@@ -257,36 +285,12 @@ public class Config {
     /** Platform-specific line separator used in creating output files. */
     public static final String LINE_SEPARATOR = System.lineSeparator();
 
-    /** Used when a result is recorded without a bib number. */
-    public static final String UNKNOWN_BIB_NUMBER_INDICATOR = "?";
     public static final int UNKNOWN_BIB_NUMBER = 0;
-
-    public static final String UNKNOWN_TIME_INDICATOR = "?";
-    public static final String UNKNOWN_CLUB_INDICATOR = "?";
 
     public static final OpenOption[] STANDARD_FILE_OPEN_OPTIONS = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
 
     /** Web link to application on GitHub. */
     public static final String SOFTWARE_CREDIT_LINK_TEXT = "<p style=\"font-size:smaller; font-style:italic;\">Results generated using <a href=\"https://github.com/grahamkirby/race-timing\">race-timing</a>.</p>";
-    public static final String OUTPUT_DIRECTORY_NAME = "output";
-
-    public static final String STRONG_OPEN = "<strong>";
-    public static final String STRONG_CLOSE = "</strong>";
-    public static final String H3_OPEN = "<h3>";
-    public static final String H3_CLOSE = "</h3>";
-    public static final String H4_OPEN = "<h4>";
-    public static final String H4_CLOSE = "</h4>";
-    public static final String UL_OPEN = "<ul>";
-    public static final String LI_OPEN = "<li>";
-    public static final String LI_CLOSE = "</li>";
-    public static final String UL_CLOSE = "</ul>";
-    public static final String PARA_OPEN = "<p>";
-    public static final String PARA_CLOSE = "</p>";
-    public static final String TH_OPEN = "<th>";
-    public static final String TH_CLOSE = "</th>";
-    public static final String TD_OPEN = "<td>";
-    public static final String TD_CLOSE = "</td>";
-    public static final String BR = "<br />";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -484,7 +488,7 @@ public class Config {
         // This assumes that the config file is in the "input" directory
         // which is at the same level as the "output" directory.
 
-        return config_path.getParent().resolveSibling(OUTPUT_DIRECTORY_NAME);
+        return config_path.getParent().resolveSibling(DIRECTORY_OUTPUT_NAME);
     }
 
     public String getRaceName() {

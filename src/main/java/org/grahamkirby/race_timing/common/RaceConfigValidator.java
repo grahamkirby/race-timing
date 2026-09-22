@@ -97,8 +97,8 @@ public abstract class RaceConfigValidator {
         final BoxedDuration previous_time = new BoxedDuration();
 
         getCleanedLines(raw_results_path, line_number).
-            map(line -> line.split(RAW_RESULT_SEPARATOR)[RAW_RESULT_TIME_INDEX]).
-            filter(time_string -> !time_string.equals(UNKNOWN_TIME_INDICATOR)).
+            map(line -> line.split(SEPARATOR_RAW_RESULT)[RAW_RESULT_TIME_INDEX]).
+            filter(time_string -> !time_string.equals(INDICATOR_TIME_UNKNOWN)).
             map(NormalisationProcessor::parseTime).
             forEachOrdered(finish_time -> validateConsecutiveRawResultsOrdering(finish_time, previous_time, raw_results_path, line_number));
     }

@@ -194,7 +194,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
     /** Records the same position for the given range of results. */
     private static void recordEqualPositions(final List<? extends RaceResult> results, final int start_index, final int length_of_sequence_of_equal_performances) {
 
-        final String position_string = (start_index + 1) + EQUAL_POSITION_INDICATOR;
+        final String position_string = (start_index + 1) + INDICATOR_EQUAL_POSITION;
 
         results.stream().
             skip(start_index).

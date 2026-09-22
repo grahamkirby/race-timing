@@ -243,9 +243,9 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         final Map<EntryCategory, Duration> category_offsets = new HashMap<>();
 
-        for (final String offset_string : category_start_offsets.split(CONFIG_OUTER_SEPARATOR, -1)) {
+        for (final String offset_string : category_start_offsets.split(SEPARATOR_CONFIG_OUTER, -1)) {
 
-            final String[] split = offset_string.split(CONFIG_INNER_SEPARATOR);
+            final String[] split = offset_string.split(SEPARATOR_CONFIG_INNER);
             final String category = split[0];
             final Duration offset = parseTime(split[1]);
 
@@ -337,9 +337,9 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         final Map<Integer, Duration> start_times = new HashMap<>();
 
-        for (final String individual_early_start : individual_start_times.split(CONFIG_OUTER_SEPARATOR)) {
+        for (final String individual_early_start : individual_start_times.split(SEPARATOR_CONFIG_OUTER)) {
 
-            final String[] split = individual_early_start.split(CONFIG_INNER_SEPARATOR);
+            final String[] split = individual_early_start.split(SEPARATOR_CONFIG_INNER);
 
             final int bib_number = Integer.parseInt(split[0]);
             final Duration offset = parseTime(split[1]);
@@ -393,7 +393,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         team_prizes = team_prize_gender_categories == null ? List.of() :
 
-            Arrays.stream(team_prize_gender_categories.split(CONFIG_OUTER_SEPARATOR)).
+            Arrays.stream(team_prize_gender_categories.split(SEPARATOR_CONFIG_OUTER)).
                 map(this::getFirstTeamInGenderCategory).
                 filter(Optional::isPresent).
                 map(Optional::get).
@@ -415,7 +415,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             sorted(sort_by_aggregate_position.thenComparing(sort_by_first_position)).toList();
 
         final NotesProcessor notes = race.getNotesProcessor();
-        notes.appendToNotes(TEAM_SCORES + ": " + team_prize_gender_category + LINE_SEPARATOR + LINE_SEPARATOR);
+        notes.appendToNotes(NOTES_TEAM_SCORES + ": " + team_prize_gender_category + LINE_SEPARATOR + LINE_SEPARATOR);
 
         for (int i = 0; i < list.size(); i++) {
 

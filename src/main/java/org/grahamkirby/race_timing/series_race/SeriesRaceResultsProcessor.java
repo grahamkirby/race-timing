@@ -130,7 +130,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private SeriesRaceCategory makeRaceCategory(final String line) {
 
-        final String[] elements = line.split(CONFIG_OUTER_SEPARATOR);
+        final String[] elements = line.split(SEPARATOR_CONFIG_OUTER);
 
         final String category_name = elements[0];
         final int minimum_number = Integer.parseInt(elements[1]);
@@ -165,7 +165,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
         race_temporal_permutation = race_temporal_order_string != null ?
             new Permutation<>(
-                Arrays.stream(race_temporal_order_string.split(CONFIG_OUTER_SEPARATOR)).
+                Arrays.stream(race_temporal_order_string.split(SEPARATOR_CONFIG_OUTER)).
                     map(Integer::parseInt).
                     toList()) :
 
@@ -177,7 +177,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
         final String eligible_clubs_string = race.getConfig().getString(KEY_ELIGIBLE_CLUBS);
 
         eligible_clubs = eligible_clubs_string != null ?
-            List.of(eligible_clubs_string.split(CONFIG_OUTER_SEPARATOR)) :
+            List.of(eligible_clubs_string.split(SEPARATOR_CONFIG_OUTER)) :
             List.of();
     }
 
@@ -342,7 +342,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     private List<String> getKnownClubsForRunnerName(final String runner_name) {
 
         return getClubsForRunnerName(runner_name).stream().
-            filter(club -> !club.equals(UNKNOWN_CLUB_INDICATOR)).
+            filter(club -> !club.equals(INDICATOR_CLUB_UNKNOWN)).
             toList();
     }
 
@@ -364,7 +364,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
     private void ensureRunnerCategoryConsistencyOverSeries() {
 
-        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR + CATEGORY_CHANGES + LINE_SEPARATOR + "----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
+        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR + NOTES_CATEGORY_CHANGES + LINE_SEPARATOR + "----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
 
         getResultsByEligibleRunner().forEach(results_for_runner -> {
 
@@ -433,6 +433,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     private static void checkAgeCategoryRangeOverSeries(final String runner_name, final EntryCategory earliest_category, final EntryCategory latest_category) {
 
         if (earliest_category != null && latest_category != null && latest_category.getAgeRange().getMinimumAge() > earliest_category.getAgeRange().getMaximumAge() + 1)
-            throw new RuntimeException(ERROR_CATEGORY_INVALID_CHANGE + ": " + RUNNER.toLowerCase() + " '" + runner_name + "' " + CHANGED_FROM + " " + earliest_category.getShortName() + " " + TO + " " + latest_category.getShortName() + " " + DURING_SERIES);
+            throw new RuntimeException(ERROR_CATEGORY_INVALID_CHANGE + ": " + RUNNER.toLowerCase() + " '" + runner_name + "' " + NOTES_CATEGORY_CHANGE1 + " " + earliest_category.getShortName() + " " + TO + " " + latest_category.getShortName() + " " + NOTES_CATEGORY_CHANGE2);
     }
 }

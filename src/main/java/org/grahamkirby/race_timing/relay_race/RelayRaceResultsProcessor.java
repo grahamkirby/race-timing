@@ -413,7 +413,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
             forEachOrdered(result -> {
 
                 result.setRecordedFinishTime(first_recorded_time);
-                result.appendComment(TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_FIRST_RECORDED_TIME);
+                result.appendComment(ANNOTATION_NO_TIME_NO_INTERPOLATION1);
             });
     }
 
@@ -486,7 +486,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
             final RawResult interpolated_result = results.get(sequence.start_index + i);
 
             interpolated_result.setRecordedFinishTime(rounded_interpolated_finish_time);
-            interpolated_result.appendComment(TIME_NOT_RECORDED_TIME_INTERPOLATED);
+            interpolated_result.appendComment(ANNOTATION_NO_TIME_INTERPOLATION);
         }
     }
 
@@ -499,7 +499,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
         ((RelayRace) race).getRawResults().stream().
             skip(missing_times_start_index).
-            forEachOrdered(result -> result.appendComment(TIME_NOT_RECORDED_NO_BASIS_FOR_INTERPOLATION_SO_SET_TO_LAST_RECORDED_TIME_1_S));
+            forEachOrdered(result -> result.appendComment(ANNOTATION_NO_TIME_NO_INTERPOLATION2));
     }
 
     public Duration getLastRecordedFinishTime() {

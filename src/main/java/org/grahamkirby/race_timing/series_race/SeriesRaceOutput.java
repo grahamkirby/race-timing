@@ -23,7 +23,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.grahamkirby.race_timing.common.*;
-import org.grahamkirby.race_timing.individual_race.IndividualRaceOutput;
 import org.grahamkirby.race_timing.individual_race.Runner;
 
 import java.io.IOException;
@@ -245,7 +244,7 @@ class SeriesRaceOutput extends RaceOutput {
         @Override
         public void printNoResults() throws IOException {
 
-            document.add(new Paragraph(NO_RESULTS).setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+            document.add(new Paragraph(HEADING_NO_RESULTS).setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 }

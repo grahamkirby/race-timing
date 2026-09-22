@@ -79,7 +79,7 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
     @Override
     public void printNoResults() throws IOException {
 
-        writer.append(para(NO_RESULTS)).append(LINE_SEPARATOR);
+        writer.append(para(HEADING_NO_RESULTS)).append(LINE_SEPARATOR);
     }
 
     protected abstract List<String> getResultsElements(final RaceResult result) throws IOException;

@@ -192,7 +192,7 @@ public final class CategoriesProcessor  {
 
     private String getEligibleGenderList(final PrizeCategory category) {
 
-        return String.join(CONFIG_INNER_SEPARATOR, category.getEligibleGenders());
+        return String.join(SEPARATOR_CONFIG_INNER, category.getEligibleGenders());
     }
 
     private void validateCategoryGenders(final List<EntryCategory> entry_categories, final List<PrizeCategory> prize_categories) {
@@ -206,7 +206,7 @@ public final class CategoriesProcessor  {
             collect(Collectors.toSet());
 
         if (!entry_genders.equals(prize_genders))
-            throw new RuntimeException(ERROR_GENDER_INCONSISTENT + " (" + String.join(CONFIG_INNER_SEPARATOR, entry_genders) + ") and " + ERROR_CATEGORY_PRIZE + " (" + String.join(CONFIG_INNER_SEPARATOR, prize_genders) + ")");
+            throw new RuntimeException(ERROR_GENDER_INCONSISTENT + " (" + String.join(SEPARATOR_CONFIG_INNER, entry_genders) + ") and " + ERROR_CATEGORY_PRIZE + " (" + String.join(SEPARATOR_CONFIG_INNER, prize_genders) + ")");
     }
 
     private <C extends Category> List<C> loadCategories(final Path entry_categories_path, final Function<String, C> make_category) throws IOException {

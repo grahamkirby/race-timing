@@ -62,9 +62,9 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
     static void validateDNFRecords(final String dnf_string, final String config_file_name) {
 
         if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(CONFIG_OUTER_SEPARATOR)) {
+            for (final String individual_dnf_string : dnf_string.split(SEPARATOR_CONFIG_OUTER)) {
                 try {
-                    final String[] elements = individual_dnf_string.split(CONFIG_INNER_SEPARATOR);
+                    final String[] elements = individual_dnf_string.split(SEPARATOR_CONFIG_INNER);
                     if (elements.length < 2)
                         throw new RuntimeException(ERROR_CONFIG_ENTRY_INVALID + " '" + dnf_string + "' " + FOR_KEY + " '" + KEY_DNF_FINISHERS + "' " + IN_FILE + " '" + config_file_name + "'");
 
@@ -82,9 +82,9 @@ public class RelayRaceConfigValidator extends ConfigProcessor {
         Duration previous_time = null;
 
         if (mass_start_elapsed_times != null)
-            for (final String leg_time_string : mass_start_elapsed_times.split(CONFIG_OUTER_SEPARATOR)) {
+            for (final String leg_time_string : mass_start_elapsed_times.split(SEPARATOR_CONFIG_OUTER)) {
 
-                final String[] split = leg_time_string.split(CONFIG_INNER_SEPARATOR);
+                final String[] split = leg_time_string.split(SEPARATOR_CONFIG_INNER);
 
                 final Duration mass_start_time;
                 try {

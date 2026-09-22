@@ -103,7 +103,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsCSV() throws IOException {
 
-        final OutputStream stream = getOutputStream(DETAILED, FILE_SUFFIX_CSV);
+        final OutputStream stream = getOutputStream(FILE_PREFIX_DETAILED, FILE_SUFFIX_CSV);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, new DetailedResultPrinterCSV(race_results, writer), _ -> "");
@@ -112,7 +112,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(DETAILED, FILE_SUFFIX_HTML);
+        final OutputStream stream = getOutputStream(FILE_PREFIX_DETAILED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResultsHTML(writer);
@@ -124,7 +124,7 @@ public class RelayRaceOutput extends RaceOutput {
         printResults(writer, new DetailedResultPrinterHTML(race_results, writer), this::getResultsSubHeaderHTML);
 
         if (areAnyResultsInMassStart())
-            writer.append(para(M_3_MASS_START_LEG_3 + BR + M_4_MASS_START_LEG_4)).append(LINE_SEPARATOR);
+            writer.append(para(LEGEND_MASS_STARTS)).append(LINE_SEPARATOR);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsCSV(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream(LEG + leg, FILE_SUFFIX_CSV);
+        final OutputStream stream = getOutputStream(PREFIX_LEG + leg, FILE_SUFFIX_CSV);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -154,7 +154,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printLegResultsHTML(final int leg) throws IOException {
 
-        final OutputStream stream = getOutputStream(LEG + leg, FILE_SUFFIX_HTML);
+        final OutputStream stream = getOutputStream(PREFIX_LEG + leg, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printLegResultsHTML(writer, leg);
@@ -173,24 +173,24 @@ public class RelayRaceOutput extends RaceOutput {
     /** Prints all details to a single web page. */
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(COMBINED, FILE_SUFFIX_HTML);
+        final OutputStream stream = getOutputStream(FILE_PREFIX_COMBINED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-            writer.append(heading3(RESULTS)).append(LINE_SEPARATOR);
+            writer.append(heading3(HEADING_RESULTS)).append(LINE_SEPARATOR);
 
             writer.append(getPrizesHeaderHTML());
             printPrizesHTML(writer, new PrizeResultPrinterHTML(race_results, writer));
 
-            writer.append(heading4(OVERALL)).append(LINE_SEPARATOR);
+            writer.append(heading4(HEADING_OVERALL)).append(LINE_SEPARATOR);
             printResults(writer, new RelayRaceOverallResultPrinterHTML(race_results, writer), this::getResultsSubHeaderHTML);
 
-            writer.append(heading4(FULL_RESULTS)).append(LINE_SEPARATOR);
+            writer.append(heading4(HEADING_FULL_RESULTS)).append(LINE_SEPARATOR);
             printDetailedResultsHTML(writer);
 
             for (int leg_number = 1; leg_number <= ((RelayRaceResults) race_results).getNumberOfLegs(); leg_number++) {
 
-                writer.append(para("") + LINE_SEPARATOR + heading4(LEG1 + " " + leg_number + " " + RESULTS) + LINE_SEPARATOR);
+                writer.append(para("") + LINE_SEPARATOR + heading4(LEG + " " + leg_number + " " + HEADING_RESULTS) + LINE_SEPARATOR);
                 printLegResultsHTML(writer, leg_number);
             }
 
@@ -258,9 +258,9 @@ public class RelayRaceOutput extends RaceOutput {
 
         final int bib_number = raw_result.getBibNumber();
 
-        writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : UNKNOWN_BIB_NUMBER_INDICATOR).
-            append(RAW_RESULT_SEPARATOR).
-            append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime(), DNF_STRING) : UNKNOWN_TIME_INDICATOR);
+        writer.append(bib_number != UNKNOWN_BIB_NUMBER ? String.valueOf(bib_number) : INDICATOR_BIB_NUMBER_UNKNOWN).
+            append(SEPARATOR_RAW_RESULT).
+            append(raw_result.getRecordedFinishTime() != null ? renderDuration(raw_result.getRecordedFinishTime(), DNF_STRING) : INDICATOR_TIME_UNKNOWN);
     }
 
     private void printLegNumber(final OutputStreamWriter writer, final RawResult raw_result, final int legs_already_finished) throws IOException {
@@ -270,10 +270,10 @@ public class RelayRaceOutput extends RaceOutput {
         if (explicitly_recorded_leg_numbers.containsKey(raw_result)) {
 
             final int leg_number = explicitly_recorded_leg_numbers.get(raw_result);
-            writer.append(RAW_RESULT_SEPARATOR + leg_number);
+            writer.append(SEPARATOR_RAW_RESULT + leg_number);
 
             if (legs_already_finished >= leg_number)
-                raw_result.appendComment(LEG1 + " " + leg_number + " " + FINISHER_WAS_RUNNER + " " + (legs_already_finished + 1) + " " + TO_FINISH_FOR_TEAM + ".");
+                raw_result.appendComment(LEG + " " + leg_number + " " + FINISHER_WAS_RUNNER + " " + (legs_already_finished + 1) + " " + TO_FINISH_FOR_TEAM + ".");
         }
     }
 
@@ -283,8 +283,8 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!raw_result.getComment().isEmpty()) {
 
-            if (!explicitly_recorded_leg_numbers.containsKey(raw_result)) writer.append(RAW_RESULT_SEPARATOR);
-            writer.append(RAW_RESULT_SEPARATOR).append(COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
+            if (!explicitly_recorded_leg_numbers.containsKey(raw_result)) writer.append(SEPARATOR_RAW_RESULT);
+            writer.append(SEPARATOR_RAW_RESULT).append(COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
         }
 
         writer.append(LINE_SEPARATOR);
@@ -388,7 +388,7 @@ public class RelayRaceOutput extends RaceOutput {
 
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
-                writer.append(RUNNER + "s " + leg_number + "," + LEG1 + " " + leg_number + ",");
+                writer.append(RUNNER + "s " + leg_number + "," + LEG + " " + leg_number + ",");
                 if (leg_number < number_of_legs) writer.append(SPLIT + " " + leg_number + ",");
             }
 
@@ -438,7 +438,7 @@ public class RelayRaceOutput extends RaceOutput {
                 final String plural = ((RelayRaceResults) race_results).getPairedLegs().get(leg_number - 1) ? "s" : "";
 
                 headers.add(RUNNER + plural + " " + leg_number);
-                headers.add(LEG1 + " " + leg_number);
+                headers.add(LEG + " " + leg_number);
                 headers.add(leg_number < number_of_legs ? SPLIT + " " + leg_number : TOTAL);
             }
 
@@ -563,7 +563,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printNoResults() throws IOException {
 
-            document.add(new Paragraph(NO_RESULTS).setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
+            document.add(new Paragraph(HEADING_NO_RESULTS).setFont(getFont(PDF_PRIZE_FONT_ITALIC_NAME)));
         }
     }
 }

@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
-import static org.grahamkirby.race_timing.common.Config.RELAY_RACE_RESULT_ANNOTATION_BIB_INDEX;
+import static org.grahamkirby.race_timing.common.Config.ANNOTATION_RELAY_RACE_RESULT_BIB_INDEX;
 import static org.grahamkirby.race_timing.common.NormalisationProcessor.parseTime;
 import static org.grahamkirby.race_timing.common.NormalisationProcessor.renderDuration;
 import static org.grahamkirby.race_timing.common.RaceConfigValidator.*;
@@ -342,7 +342,7 @@ public class RelayRace implements SingleRaceInternal {
     private void validateEntryCategory(final String line) {
 
         final NormalisationProcessor normalisation = getNormalisationProcessor();
-        final List<String> elements = Arrays.stream(line.split(ENTRY_SEPARATOR)).toList();
+        final List<String> elements = Arrays.stream(line.split(SEPARATOR_ENTRY)).toList();
         final List<String> mapped_elements = normalisation.mapRaceEntryElements(elements);
 
         try {
@@ -402,7 +402,7 @@ public class RelayRace implements SingleRaceInternal {
 
     private int getExplicitLegNumber(final String line) {
 
-        final String[] elements = line.split(RAW_RESULT_SEPARATOR);
+        final String[] elements = line.split(SEPARATOR_RAW_RESULT);
         return elements.length > 2 ? Integer.parseInt(elements[2]) : 0;
     }
 
@@ -441,7 +441,7 @@ public class RelayRace implements SingleRaceInternal {
         countLegResults(bib_counts, paper_results_path);
 
         for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
-            if (!entry.getKey().equals(UNKNOWN_BIB_NUMBER_INDICATOR) && entry.getValue() > getNumberOfLegs()) {
+            if (!entry.getKey().equals(INDICATOR_BIB_NUMBER_UNKNOWN) && entry.getValue() > getNumberOfLegs()) {
                 String message = ERROR_TEAM_SURPLUS_RESULT + " '" + entry.getKey() + "' " + IN_FILE + " '" + raw_results_path.getFileName() + "'";
                 if (paper_results_path != null)
                     message += " or '" + paper_results_path.getFileName() + "'";
@@ -454,7 +454,7 @@ public class RelayRace implements SingleRaceInternal {
         readAllLines(results_path).stream().
             map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
-            map(line -> line.split(ENTRY_SEPARATOR)[0]).
+            map(line -> line.split(SEPARATOR_ENTRY)[0]).
             forEachOrdered(bib_number -> bib_counts.put(bib_number, bib_counts.getOrDefault(bib_number, 0) + 1));
     }
 
@@ -462,25 +462,25 @@ public class RelayRace implements SingleRaceInternal {
 
         readAllLines(path).stream().
             skip(1).                                      // Skip header line.
-            map(line -> line.split(RELAY_RACE_RESULT_ANNOTATION_SEPARATOR)).
+            map(line -> line.split(SEPARATOR_ANNOTATION_RELAY_RACE_RESULT)).
             forEach(elements -> {
-                if (elements[0].equals(UPDATE))            // May add insertion option later.
+                if (elements[0].equals(ANNOTATION_UPDATE))            // May add insertion option later.
                     updateResult(raw_results, elements);
             });
     }
 
     private static void updateResult(final List<? extends RawResult> raw_results, final String[] elements) {
 
-        final int position = Integer.parseInt(elements[RELAY_RACE_RESULT_ANNOTATION_POSITION_INDEX]);
+        final int position = Integer.parseInt(elements[ANNOTATION_RELAY_RACE_RESULT_POSITION_INDEX]);
         final RawResult raw_result = raw_results.get(position - 1);
 
-        if (elements[2].equals(UNKNOWN_BIB_NUMBER_INDICATOR)) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
-        else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[RELAY_RACE_RESULT_ANNOTATION_BIB_INDEX]));
+        if (elements[2].equals(INDICATOR_BIB_NUMBER_UNKNOWN)) raw_result.setBibNumber(UNKNOWN_BIB_NUMBER);
+        else if (!elements[2].isEmpty()) raw_result.setBibNumber(Integer.parseInt(elements[ANNOTATION_RELAY_RACE_RESULT_BIB_INDEX]));
 
-        if (elements[3].equals(UNKNOWN_TIME_INDICATOR)) raw_result.setRecordedFinishTime(null);
-        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(NormalisationProcessor.parseTime(elements[RELAY_RACE_RESULT_ANNOTATION_TIME_INDEX]));
+        if (elements[3].equals(INDICATOR_TIME_UNKNOWN)) raw_result.setRecordedFinishTime(null);
+        else if (!elements[3].isEmpty()) raw_result.setRecordedFinishTime(NormalisationProcessor.parseTime(elements[ANNOTATION_RELAY_RACE_RESULT_TIME_INDEX]));
 
-        if (!elements[4].isEmpty()) raw_result.appendComment(elements[RELAY_RACE_RESULT_ANNOTATION_COMMENT_INDEX]);
+        if (!elements[4].isEmpty()) raw_result.appendComment(elements[ANNOTATION_RELAY_RACE_RESULT_COMMENT_INDEX]);
     }
 
     private List<RaceEntry> loadEntries(final Path entries_path) throws IOException {
@@ -488,7 +488,7 @@ public class RelayRace implements SingleRaceInternal {
         return readAllLines(entries_path).stream().
             map(NormalisationProcessor::stripComment).
             filter(Predicate.not(String::isBlank)).
-            map(line -> makeRelayRaceEntry(Arrays.stream(line.split(ENTRY_SEPARATOR)).toList())).
+            map(line -> makeRelayRaceEntry(Arrays.stream(line.split(SEPARATOR_ENTRY)).toList())).
             toList();
     }
 
@@ -520,7 +520,7 @@ public class RelayRace implements SingleRaceInternal {
     private String getMassStartAnnotation(final RelayRaceLegResult leg_result, final int leg_number) {
 
         // Adds e.g. "(M3)" after names of runner_names that started in leg 3 mass start.
-        return leg_result.isInMassStart() ? " (" + MASS_START_INDICATOR + getNextMassStartLeg(leg_number) + ")" : "";
+        return leg_result.isInMassStart() ? " (" + INDICATOR_MASS_START + getNextMassStartLeg(leg_number) + ")" : "";
     }
 
     private int getNextMassStartLeg(final int leg_number) {
@@ -579,7 +579,7 @@ public class RelayRace implements SingleRaceInternal {
     private void processMassStartTimes(final Object mass_start_string) {
 
         // Example: MASS_START_TIMES = 3/02:42:33,4/03:34:50
-        final String[] mass_start_elapsed_times_strings = ((String) mass_start_string).split(CONFIG_OUTER_SEPARATOR);
+        final String[] mass_start_elapsed_times_strings = ((String) mass_start_string).split(SEPARATOR_CONFIG_OUTER);
 
         for (final String bib_time_as_string : mass_start_elapsed_times_strings)
             setMassStartTime(bib_time_as_string);
@@ -587,7 +587,7 @@ public class RelayRace implements SingleRaceInternal {
 
     private void setMassStartTime(final String bib_time_as_string) {
 
-        final String[] split = bib_time_as_string.split(CONFIG_INNER_SEPARATOR);
+        final String[] split = bib_time_as_string.split(SEPARATOR_CONFIG_INNER);
 
         final int leg_number = Integer.parseInt(split[0]);
         final Duration mass_start_time = parseTime(split[1]);
@@ -621,14 +621,14 @@ public class RelayRace implements SingleRaceInternal {
         // Example: INDIVIDUAL_LEG_STARTS = 2/1/0:10:00,26/3/2:41:20
 
         individual_starts = individual_leg_starts_string == null ? new ArrayList<>() :
-            Arrays.stream(individual_leg_starts_string.split(CONFIG_OUTER_SEPARATOR)).
+            Arrays.stream(individual_leg_starts_string.split(SEPARATOR_CONFIG_OUTER)).
                 map(RelayRace::getIndividualLegStart).
                 toList();
     }
 
     private static IndividualStart getIndividualLegStart(final String individual_leg_starts_string) {
 
-        final String[] split = individual_leg_starts_string.split(CONFIG_INNER_SEPARATOR);
+        final String[] split = individual_leg_starts_string.split(SEPARATOR_CONFIG_INNER);
 
         final int bib_number = Integer.parseInt(split[0]);
         final int leg_number = Integer.parseInt(split[1]);

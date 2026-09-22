@@ -64,7 +64,7 @@ public class IndividualRaceConfigValidator extends ConfigProcessor {
     private void validateDNFRecords(final String dnf_string) {
 
         if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(CONFIG_OUTER_SEPARATOR))
+            for (final String individual_dnf_string : dnf_string.split(SEPARATOR_CONFIG_OUTER))
                 try {
                     // Each DNF string contains single bib number.
                     Integer.parseInt(individual_dnf_string);

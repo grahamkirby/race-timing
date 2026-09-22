@@ -55,6 +55,6 @@ public class PrizeResultPrinterHTML extends ResultPrinter {
     @Override
     public void printNoResults() throws IOException {
 
-        writer.append(PARA_OPEN + NO_RESULTS + PARA_CLOSE).append(LINE_SEPARATOR);
+        writer.append(PARA_OPEN + HEADING_NO_RESULTS + PARA_CLOSE).append(LINE_SEPARATOR);
     }
 }

@@ -131,7 +131,7 @@ public class IndividualRace implements SingleRaceInternal {
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream2)) {
             Duration dummy_time = DUMMY_WINNING_TIME;
             for (final RaceEntry entry : entries) {
-                writer.append(entry.getBibNumber() + RAW_RESULT_SEPARATOR + renderDuration(dummy_time, "-") + LINE_SEPARATOR);
+                writer.append(entry.getBibNumber() + SEPARATOR_RAW_RESULT + renderDuration(dummy_time, "-") + LINE_SEPARATOR);
                 dummy_time = dummy_time.plus(DUMMY_INTERVAL);
             }
         }
@@ -226,10 +226,10 @@ public class IndividualRace implements SingleRaceInternal {
         final String name = participant.getName();
         final String category_name = participant.getCategory().getShortName();
 
-        return entry.getBibNumber() + ENTRY_SEPARATOR +
-            getLastNameOfRunner(name) + ENTRY_SEPARATOR +
-            getFirstNameOfRunner(name) + ENTRY_SEPARATOR +
-            ((Runner) participant).getClub() + ENTRY_SEPARATOR +
+        return entry.getBibNumber() + SEPARATOR_ENTRY +
+            getLastNameOfRunner(name) + SEPARATOR_ENTRY +
+            getFirstNameOfRunner(name) + SEPARATOR_ENTRY +
+            ((Runner) participant).getClub() + SEPARATOR_ENTRY +
             category_name.charAt(0) + "\t\t" +
             category_name;
     }
@@ -321,7 +321,7 @@ public class IndividualRace implements SingleRaceInternal {
 
     private List<String> getLineElements(final String line) {
 
-        return Arrays.stream(splitLine(line, ENTRY_SEPARATOR)).collect(Collectors.toList());
+        return Arrays.stream(splitLine(line, SEPARATOR_ENTRY)).collect(Collectors.toList());
     }
 
     private String[] splitLine(final String line, final String delimiter) {
@@ -374,9 +374,9 @@ public class IndividualRace implements SingleRaceInternal {
 
             // Example: SEPARATELY_RECORDED_RESULTS = 126/8:09,145/11:21
 
-            for (final String s : splitLine((String) value, CONFIG_OUTER_SEPARATOR)) {
+            for (final String s : splitLine((String) value, SEPARATOR_CONFIG_OUTER)) {
 
-                final String[] split = splitLine(s, CONFIG_INNER_SEPARATOR);
+                final String[] split = splitLine(s, SEPARATOR_CONFIG_INNER);
                 final int bib_number = Integer.parseInt(split[0]);
                 final Duration finish_time = parseTime(split[1]);
 
@@ -394,7 +394,7 @@ public class IndividualRace implements SingleRaceInternal {
         final Consumer<Object> process_dead_heats = value -> {
 
             // Example: DEAD_HEATS = 10,29,4
-            dead_heats = Arrays.stream(splitLine((String) value, CONFIG_OUTER_SEPARATOR)).map(Integer::parseInt).collect(Collectors.toSet());
+            dead_heats = Arrays.stream(splitLine((String) value, SEPARATOR_CONFIG_OUTER)).map(Integer::parseInt).collect(Collectors.toSet());
         };
 
         config.processConfigIfPresent(KEY_DEAD_HEATS, process_dead_heats);
