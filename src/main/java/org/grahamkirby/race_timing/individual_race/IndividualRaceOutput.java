@@ -126,7 +126,7 @@ public class IndividualRaceOutput extends RaceOutput {
                 final int best_team_total = getAggregatePosition(team_performance);
 
                 writer.append("    ").append(LI_OPEN).
-                    append(FIRST + " " + strong(team_performance.gender().toLowerCase() + " " + TEAM.toLowerCase()) + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR).
+                    append(FIRST + " " + strong(team_performance.gender().toLowerCase() + " " + COLUMN_HEADING_TEAM.toLowerCase()) + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR).
                     append("        ").append(UL_OPEN).append(LINE_SEPARATOR).
                     append("            ").append(LI_OPEN).
                     append(
@@ -162,7 +162,7 @@ public class IndividualRaceOutput extends RaceOutput {
 
                 final Paragraph paragraph1 = new Paragraph();
                 paragraph1.add(new Text(FIRST + " "));
-                paragraph1.add(new Text(team_performance.gender().toLowerCase() + " " + TEAM.toLowerCase()).setFont(bold_font));
+                paragraph1.add(new Text(team_performance.gender().toLowerCase() + " " + COLUMN_HEADING_TEAM.toLowerCase()).setFont(bold_font));
                 paragraph1.add(new Text(": " + team_performance.club() + " (" + best_team_total + "):"));
 
                 final Paragraph paragraph2 = new Paragraph().setFirstLineIndent(TEAM_MEMBERS_INDENT);
@@ -183,13 +183,13 @@ public class IndividualRaceOutput extends RaceOutput {
         if (!team_prizes.isEmpty()) {
 
             writer.append(HEADING_TEAM_PRIZES).append(LINE_SEPARATOR);
-            writer.append(UNDERLINE).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+            writer.append(underline(HEADING_TEAM_PRIZES, "-")).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
             for (final TeamPerformance team_performance : team_prizes) {
 
                 final int best_team_total = getAggregatePosition(team_performance);
 
-                writer.append(FIRST + " " + team_performance.gender().toLowerCase() + " " + TEAM.toLowerCase() + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
+                writer.append(FIRST + " " + team_performance.gender().toLowerCase() + " " + COLUMN_HEADING_TEAM.toLowerCase() + ": " + team_performance.club() + " (" + best_team_total + "):" + LINE_SEPARATOR + "   " +
                     team_performance.runner_performances().stream().
                         map(runner_performance -> runner_performance.name() + " (" + runner_performance.position() + ")").
                         collect(Collectors.joining(", ")));
@@ -225,7 +225,7 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append(String.join(SEPARATOR_CSV, HEADERS)).append(LINE_SEPARATOR);
+            writer.append(String.join(SEPARATOR_CSV, HEADERS1)).append(LINE_SEPARATOR);
         }
 
         @Override
@@ -257,7 +257,7 @@ public class IndividualRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            return HEADERS;
+            return HEADERS1;
         }
 
         @Override

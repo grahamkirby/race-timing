@@ -120,13 +120,6 @@ public abstract class RaceOutput {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static String underline(final String header, final String character) {
-
-        return character.repeat(header.length());
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void printOverallResults() throws IOException {
 
         printResultsCSV();
@@ -150,7 +143,7 @@ public abstract class RaceOutput {
         if (race_results != null)
             for (final RaceResult result : race_results.getOverallResults())
                 if (result.getEntryCategory() == null)
-                    race_results.getNotesProcessor().appendToNotes(RUNNER + " " + result.getParticipantName() + " " + NOTES_CATEGORY_UNKNOWN + LINE_SEPARATOR);
+                    race_results.getNotesProcessor().appendToNotes(COLUMN_HEADING_RUNNER + " " + result.getParticipantName() + " " + NOTES_CATEGORY_UNKNOWN + LINE_SEPARATOR);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */

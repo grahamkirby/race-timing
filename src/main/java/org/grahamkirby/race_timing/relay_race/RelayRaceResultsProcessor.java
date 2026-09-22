@@ -515,7 +515,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
 
         ((RelayRace) race).getRawResults().stream().
             filter(result -> result.getBibNumber() == UNKNOWN_BIB_NUMBER).
-            forEach(result -> result.appendComment(TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_TOO_MANY_MISSING_TIMES_TO_GUESS_FROM_DNF_TEAMS));
+            forEach(result -> result.appendComment(ANNOTATION_TIME_NO_BIB_NUMBER_NO_GUESS));
     }
 
     private void guessMissingBibNumbersWithAllTimesRecorded() {
@@ -529,7 +529,7 @@ public class RelayRaceResultsProcessor extends RaceResultsProcessor implements R
             final int guessed_number = guessTeamNumber(position_of_missing_bib_number);
 
             result_with_missing_number.setBibNumber(guessed_number);
-            result_with_missing_number.appendComment(TIME_BUT_NOT_BIB_NUMBER_RECORDED_ELECTRONICALLY_BIB_NUMBER_NOT_RECORDED_ON_PAPER_GUESSED_BIB_NUMBER);
+            result_with_missing_number.appendComment(ANNOTATION_TIME_NO_BIB_NUMBER_GUESS);
 
             position_of_missing_bib_number = getPositionOfNextMissingBibNumber();
         }

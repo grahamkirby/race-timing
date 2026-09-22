@@ -212,7 +212,7 @@ public final class CategoriesProcessor  {
     private <C extends Category> List<C> loadCategories(final Path entry_categories_path, final Function<String, C> make_category) throws IOException {
 
         return readAllLines(entry_categories_path).stream().
-            filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+            filter(line -> !line.startsWith(INDICATOR_COMMENT)).
             map(make_category).
             collect(Collectors.toList());
     }

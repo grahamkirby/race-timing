@@ -89,7 +89,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
             result.setDnf(true);
         }
         catch (NoSuchElementException _) {
-            throw new RuntimeException(BIB_NUMBER + ": " + bib_number + " " + ERROR_DNF_NO_RESULT);
+            throw new RuntimeException(ERROR_BIB_NUMBER + ": " + bib_number + " " + ERROR_DNF_NO_RESULT);
         }
     }
 
@@ -453,7 +453,7 @@ public class IndividualRaceResultsProcessor extends RaceResultsProcessor impleme
 
         return getOverallResults().stream().
             map(result -> ((Runner) result.getParticipant()).getClub()).
-            filter(Predicate.not(club -> club.equals(UNATT))).
+            filter(Predicate.not(club -> club.equals(UNATTACHED))).
             collect(Collectors.toSet());
     }
 }

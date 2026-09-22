@@ -152,7 +152,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
         race_categories = race_categories_path != null ?
             readAllLines(race_categories_path).stream().
-                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+                filter(line -> !line.startsWith(INDICATOR_COMMENT)).
                 map(this::makeRaceCategory).
                 toList() :
 
@@ -217,8 +217,8 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
 
         final NotesProcessor notes = race.getNotesProcessor();
 
-        notes.appendToNotes(LINE_SEPARATOR + RUNNERS_IN_SERIES + LINE_SEPARATOR +
-            "-----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
+        notes.appendToNotes(LINE_SEPARATOR + NOTES_SERIES_RUNNERS_HEADER + LINE_SEPARATOR +
+            underline(NOTES_SERIES_RUNNERS_HEADER, "-") + LINE_SEPARATOR + LINE_SEPARATOR);
 
         overall_results.stream().
             map(result -> ((SeriesRaceResult) result)).
@@ -352,19 +352,19 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
             map(participant -> (Runner) participant).
             forEachOrdered(runner -> runner.setClub(defined_club));
 
-        race.getNotesProcessor().appendToNotes(CLUB + " " + defined_club + " " + SUBSTITUTED_FOR_UNKNOWN_CLUBS_FOR_RUNNER_NAME + " " + runner_name + LINE_SEPARATOR);
+        race.getNotesProcessor().appendToNotes(COLUMN_HEADING_CLUB + " " + defined_club + " " + NOTES_CLUB_SUBSTITUTION + " " + runner_name + LINE_SEPARATOR);
     }
 
     private void noteRunnerNameRepresentsMultipleRunners(final String runner_name, final List<String> known_clubs) {
 
-        race.getNotesProcessor().appendToNotes(RUNNER_NAME + " " + runner_name + " " + RECORDED_FOR_MULTIPLE_CLUBS + ": " + String.join(", ", known_clubs) + "; " + ASSUMING_THERE_ARE_MULTIPLE_RUNNERS_WITH_THIS_NAME + LINE_SEPARATOR);
+        race.getNotesProcessor().appendToNotes(NOTES_RUNNER_NAME + " " + runner_name + " " + NOTES_MULTIPLE_CLUBS_FOR_RUNNER + ": " + String.join(", ", known_clubs) + "; " + NOTES_MULTIPLE_RUNNERS_WITH_NAME + LINE_SEPARATOR);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void ensureRunnerCategoryConsistencyOverSeries() {
 
-        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR + NOTES_CATEGORY_CHANGES + LINE_SEPARATOR + "----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
+        race.getNotesProcessor().appendToNotes(LINE_SEPARATOR + NOTES_CATEGORY_CHANGE_HEADER + LINE_SEPARATOR + "----------------" + LINE_SEPARATOR + LINE_SEPARATOR);
 
         getResultsByEligibleRunner().forEach(results_for_runner -> {
 
@@ -420,7 +420,7 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
         if (!previous_category.equals(current_category)) {
 
             final String race_name = result.getRace().getConfig().getRaceName();
-            final String note = RUNNER + " " + result.getParticipantName() + " " + CHANGED_CATEGORY_FROM + " " + previous_category.getShortName() + " " + TO + " " + current_category.getShortName() + " " + AT + " " + race_name;
+            final String note = COLUMN_HEADING_RUNNER + " " + result.getParticipantName() + " " + NOTES_CATEGORY_CHANGE + " " + previous_category.getShortName() + " " + TO + " " + current_category.getShortName() + " " + AT + " " + race_name;
 
             // If ages are equal, gender must have changed since categories are different.
             if (current_category.getAgeRange().getMinimumAge() <= previous_category.getAgeRange().getMinimumAge())
@@ -433,6 +433,6 @@ public class SeriesRaceResultsProcessor extends RaceResultsProcessor implements 
     private static void checkAgeCategoryRangeOverSeries(final String runner_name, final EntryCategory earliest_category, final EntryCategory latest_category) {
 
         if (earliest_category != null && latest_category != null && latest_category.getAgeRange().getMinimumAge() > earliest_category.getAgeRange().getMaximumAge() + 1)
-            throw new RuntimeException(ERROR_CATEGORY_INVALID_CHANGE + ": " + RUNNER.toLowerCase() + " '" + runner_name + "' " + NOTES_CATEGORY_CHANGE1 + " " + earliest_category.getShortName() + " " + TO + " " + latest_category.getShortName() + " " + NOTES_CATEGORY_CHANGE2);
+            throw new RuntimeException(ERROR_CATEGORY_INVALID_CHANGE + ": " + COLUMN_HEADING_RUNNER.toLowerCase() + " '" + runner_name + "' " + NOTES_CATEGORY_CHANGE1 + " " + earliest_category.getShortName() + " " + TO + " " + latest_category.getShortName() + " " + NOTES_CATEGORY_CHANGE2);
     }
 }

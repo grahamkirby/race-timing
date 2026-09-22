@@ -84,7 +84,7 @@ public class NormalisationProcessor {
 
     public static String stripComment(final String line) {
 
-        return line.startsWith(COMMENT_SYMBOL) ? "" : line.split(COMMENT_SYMBOL)[0];
+        return line.startsWith(INDICATOR_COMMENT) ? "" : line.split(INDICATOR_COMMENT)[0];
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -340,7 +340,7 @@ public class NormalisationProcessor {
 
             readAllLines(category_map_path).stream().
                 filter(line -> !line.isEmpty()).
-                filter(line -> !line.startsWith(COMMENT_SYMBOL)).
+                filter(line -> !line.startsWith(INDICATOR_COMMENT)).
                 forEachOrdered(line -> {
                     final String[] parts = line.split(SEPARATOR_CONFIG_OUTER);
                     map.put(parts[0], parts[1]);

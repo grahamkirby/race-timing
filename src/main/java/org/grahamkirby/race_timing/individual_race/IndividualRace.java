@@ -361,7 +361,7 @@ public class IndividualRace implements SingleRaceInternal {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
-                    throw new RuntimeException(ERROR_ENTRY_DUPLICATE + " '" + entry1 + "' " + IN_FILE + " '" + entries_path.getFileName() + "'");
+                    throw new RuntimeException(ERROR_ENTRY_DUPLICATE + " '" + entry1 + "' " + ERROR_FILE + " '" + entries_path.getFileName() + "'");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

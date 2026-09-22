@@ -245,13 +245,14 @@ public class RelayRaceOutput extends RaceOutput {
         final boolean discrepancies_exist = !bib_numbers_with_missing_times.isEmpty() || !times_with_missing_bib_numbers.isEmpty();
 
         if (discrepancies_exist)
-            race_results.getNotesProcessor().appendToNotes(DISCREPANCIES);
+            race_results.getNotesProcessor().appendToNotes(LINE_SEPARATOR).appendToNotes(NOTES_DISCREPANCIES).
+                appendToNotes(LINE_SEPARATOR).appendToNotes(underline(NOTES_DISCREPANCIES, "-")).appendToNotes(LINE_SEPARATOR);
 
         recordBibNumbersWithMissingTimes(bib_numbers_with_missing_times);
         recordTimesWithMissingBibNumbers(times_with_missing_bib_numbers);
 
         if (discrepancies_exist)
-            race_results.getNotesProcessor().appendToNotes(S);
+            race_results.getNotesProcessor().appendToNotes(LINE_SEPARATOR).appendToNotes(LINE_SEPARATOR);
     }
 
     private void printBibNumberAndTime(final OutputStreamWriter writer, final RawResult raw_result) throws IOException {
@@ -273,7 +274,7 @@ public class RelayRaceOutput extends RaceOutput {
             writer.append(SEPARATOR_RAW_RESULT + leg_number);
 
             if (legs_already_finished >= leg_number)
-                raw_result.appendComment(LEG + " " + leg_number + " " + FINISHER_WAS_RUNNER + " " + (legs_already_finished + 1) + " " + TO_FINISH_FOR_TEAM + ".");
+                raw_result.appendComment(LEG + " " + leg_number + " " + ANNOTATION_TEAM_FINISHER_NUMBER1 + " " + (legs_already_finished + 1) + " " + ANNOTATION_TEAM_FINISHER_NUMBER2 + ".");
         }
     }
 
@@ -284,7 +285,7 @@ public class RelayRaceOutput extends RaceOutput {
         if (!raw_result.getComment().isEmpty()) {
 
             if (!explicitly_recorded_leg_numbers.containsKey(raw_result)) writer.append(SEPARATOR_RAW_RESULT);
-            writer.append(SEPARATOR_RAW_RESULT).append(COMMENT_SYMBOL).append(" ").append(raw_result.getComment());
+            writer.append(SEPARATOR_RAW_RESULT).append(INDICATOR_COMMENT).append(" ").append(raw_result.getComment());
         }
 
         writer.append(LINE_SEPARATOR);
@@ -294,7 +295,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!bib_numbers_with_missing_times.isEmpty()) {
 
-            race_results.getNotesProcessor().appendToNotes(S1).appendToNotes(
+            race_results.getNotesProcessor().appendToNotes(LINE_SEPARATOR).appendToNotes(NOTES_BIB_NUMBERS_NO_TIMES).appendToNotes(" ").appendToNotes(
                 bib_numbers_with_missing_times.stream().
                     map(String::valueOf).
                     collect(Collectors.joining(", ")));
@@ -305,7 +306,7 @@ public class RelayRaceOutput extends RaceOutput {
 
         if (!times_with_missing_bib_numbers.isEmpty()) {
 
-            race_results.getNotesProcessor().appendToNotes(S2).appendToNotes(
+            race_results.getNotesProcessor().appendToNotes(LINE_SEPARATOR).appendToNotes(NOTES_TIMES_NO_BIB_NUMBERS).appendToNotes(LINE_SEPARATOR).appendToNotes(LINE_SEPARATOR).appendToNotes(
                 times_with_missing_bib_numbers.stream().
                     map(duration -> renderDuration(duration, DNF_STRING)).
                     collect(Collectors.joining(LINE_SEPARATOR)));
@@ -323,7 +324,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         public void printResultsHeader() throws IOException {
 
-            writer.append(String.join(",", POS1) + "," + TOTAL + LINE_SEPARATOR);
+            writer.append(String.join(",", HEADERS2) + "," + COLUMN_HEADING_TOTAL + LINE_SEPARATOR);
         }
 
         @Override
@@ -353,7 +354,7 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            return HEADERS2;
+            return HEADERS3;
         }
 
         @Override
@@ -384,15 +385,15 @@ public class RelayRaceOutput extends RaceOutput {
 
             final int number_of_legs = ((RelayRaceResults) race_results).getNumberOfLegs();
 
-            writer.append(String.join(",", POS1) + ",");
+            writer.append(String.join(",", HEADERS2) + ",");
 
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
-                writer.append(RUNNER + "s " + leg_number + "," + LEG + " " + leg_number + ",");
+                writer.append(COLUMN_HEADING_RUNNER + "s " + leg_number + "," + LEG + " " + leg_number + ",");
                 if (leg_number < number_of_legs) writer.append(SPLIT + " " + leg_number + ",");
             }
 
-            writer.append(TOTAL).append(LINE_SEPARATOR);
+            writer.append(COLUMN_HEADING_TOTAL).append(LINE_SEPARATOR);
         }
 
         @Override
@@ -430,16 +431,16 @@ public class RelayRaceOutput extends RaceOutput {
         @Override
         protected List<String> getResultsColumnHeaders() {
 
-            final List<String> headers = makeMutableCopy(POS1);
+            final List<String> headers = makeMutableCopy(HEADERS2);
             final int number_of_legs = ((RelayRaceResults) race_results).getNumberOfLegs();
 
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
                 final String plural = ((RelayRaceResults) race_results).getPairedLegs().get(leg_number - 1) ? "s" : "";
 
-                headers.add(RUNNER + plural + " " + leg_number);
+                headers.add(COLUMN_HEADING_RUNNER + plural + " " + leg_number);
                 headers.add(LEG + " " + leg_number);
-                headers.add(leg_number < number_of_legs ? SPLIT + " " + leg_number : TOTAL);
+                headers.add(leg_number < number_of_legs ? SPLIT + " " + leg_number : COLUMN_HEADING_TOTAL);
             }
 
             return headers;
@@ -479,7 +480,7 @@ public class RelayRaceOutput extends RaceOutput {
         public void printResultsHeader() throws IOException {
 
             final String plural = ((RelayRaceResults) race_results).getPairedLegs().get(leg - 1) ? "s" : "";
-            writer.append(POS + "," + RUNNER + plural + "," + TIME + LINE_SEPARATOR);
+            writer.append(COLUMN_HEADING_POSITION + "," + COLUMN_HEADING_RUNNER + plural + "," + COLUMN_HEADING_TIME + LINE_SEPARATOR);
         }
 
         @Override
@@ -516,9 +517,9 @@ public class RelayRaceOutput extends RaceOutput {
             final String plural = paired_legs.get(leg - 1) ? "s" : "";
 
             return List.of(
-                POS,
-                RUNNER + plural,
-                TIME);
+                COLUMN_HEADING_POSITION,
+                COLUMN_HEADING_RUNNER + plural,
+                COLUMN_HEADING_TIME);
         }
 
         @Override

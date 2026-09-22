@@ -419,7 +419,7 @@ public class RelayRace implements SingleRaceInternal {
             map(RawResult::getBibNumber).
             filter(bib_number -> bib_number != UNKNOWN_BIB_NUMBER && !entry_bib_numbers.contains(bib_number)).
             forEachOrdered(bib_number -> {
-                String message = ERROR_BIB_NUMBER_UNREGISTERED + " '" + bib_number + "' " + AT_LINE + " " + line.line + " " + IN_FILE + " '" + electronic_results_path.getFileName() + "'";
+                String message = ERROR_BIB_NUMBER_UNREGISTERED + " '" + bib_number + "' " + AT_LINE + " " + line.line + " " + ERROR_FILE + " '" + electronic_results_path.getFileName() + "'";
                 if (paper_results_path != null) message += " or '" + paper_results_path.getFileName() + "'";
                 throw new RuntimeException(message);
             });
@@ -430,7 +430,7 @@ public class RelayRace implements SingleRaceInternal {
         for (final RaceEntry entry1 : entries)
             for (final RaceEntry entry2 : entries)
                 if (entry1.getParticipant() != entry2.getParticipant() && entry1.getParticipant().equals(entry2.getParticipant()))
-                    throw new RuntimeException(ERROR_ENTRY_DUPLICATE + " '" + entry1.getParticipant().getName() + "' " + IN_FILE + " '" + entries_path.getFileName() + "'");
+                    throw new RuntimeException(ERROR_ENTRY_DUPLICATE + " '" + entry1.getParticipant().getName() + "' " + ERROR_FILE + " '" + entries_path.getFileName() + "'");
     }
 
     private void validateNumberOfLegResults(final Path raw_results_path, final Path paper_results_path) throws IOException {
@@ -442,7 +442,7 @@ public class RelayRace implements SingleRaceInternal {
 
         for (final Map.Entry<String, Integer> entry : bib_counts.entrySet())
             if (!entry.getKey().equals(INDICATOR_BIB_NUMBER_UNKNOWN) && entry.getValue() > getNumberOfLegs()) {
-                String message = ERROR_TEAM_SURPLUS_RESULT + " '" + entry.getKey() + "' " + IN_FILE + " '" + raw_results_path.getFileName() + "'";
+                String message = ERROR_TEAM_SURPLUS_RESULT + " '" + entry.getKey() + "' " + ERROR_FILE + " '" + raw_results_path.getFileName() + "'";
                 if (paper_results_path != null)
                     message += " or '" + paper_results_path.getFileName() + "'";
                 throw new RuntimeException(message);
@@ -462,7 +462,7 @@ public class RelayRace implements SingleRaceInternal {
 
         readAllLines(path).stream().
             skip(1).                                      // Skip header line.
-            map(line -> line.split(SEPARATOR_ANNOTATION_RELAY_RACE_RESULT)).
+            map(line -> line.split(SEPARATOR_RELAY_RACE_RESULT_ANNOTATION)).
             forEach(elements -> {
                 if (elements[0].equals(ANNOTATION_UPDATE))            // May add insertion option later.
                     updateResult(raw_results, elements);

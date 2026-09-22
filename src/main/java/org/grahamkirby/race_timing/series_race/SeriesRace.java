@@ -203,7 +203,7 @@ public class SeriesRace implements RaceInternal {
         final Path config_path = config.interpretPath(individual_race_config_path);
 
         if (!Files.exists(config_path))
-            throw new RuntimeException(ERROR_CONFIG_RACE_INVALID + " " + race_number + " " + IN_FILE + " '" + config.getConfigPath().getFileName() + "'");
+            throw new RuntimeException(ERROR_CONFIG_RACE_INVALID + " " + race_number + " " + ERROR_FILE + " '" + config.getConfigPath().getFileName() + "'");
 
         final SingleRaceInternal individual_race = (SingleRaceInternal) new IndividualRaceFactory().makeRace(config_path);
         individual_race.processResults();
