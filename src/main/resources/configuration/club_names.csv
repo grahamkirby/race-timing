@@ -1,33 +1,16 @@
-# Alternative club name, Canonical club name
-,Unatt.
-Unattached,Unatt.
-U/A,Unatt.
-None,Unatt.
-Anster Haddies RC,Anster Haddies
-Haddies,Anster Haddies
-Bellahouston RR,Bellahouston Road Runners
-Carnegie H,Carnegie Harriers
-Dundee Hawkhill,Dundee Hawkhill Harriers
-DHH,Dundee Hawkhill Harriers
-Dundee HH,Dundee Hawkhill Harriers
-Dundee Hawkhill H,Dundee Hawkhill Harriers
-Dundee Road Runners AC,Dundee Road Runners
-Dundee RR,Dundee Road Runners
-DRR,Dundee Road Runners
-East Fife Tri,East Fife Triathlon Club
-East Fife Triathlon,East Fife Triathlon Club
-East Fife Tri Club,East Fife Triathlon Club
-Falkland TR,Falkland Trail Runners
-Falkland Trail R,Falkland Trail Runners
-FTR,Falkland Trail Runners
-Fife Athletic Club,Fife AC
-Leven Las Vegas,Leven Las Vegas RC
-Leven Las Vegas Running Club,Leven Las Vegas RC
-Kinross RR,Kinross Road Runners
-Perth RR,Perth Road Runners
-PH Racing Club,PH Racing
-Recreational Running,Recreational Runners
-RunSum Kirkcaldy,RunSum Running Kirkcaldy
-RunSum Running Group,RunSum Running Kirkcaldy
-Run Sum Kirkcaldy,RunSum Running Kirkcaldy
-Run Sum Running,RunSum Running Kirkcaldy
+# Canonical club name, Alternatives
+Unatt.,/Unattached/U\/A/None/No Club   # First in alternatives is empty string.
+Anster Haddies,Anster Haddies RC/Haddies
+Bellahouston Road Runners,Bellahouston RR
+Carnegie Harriers,Carnegie H
+Dundee Hawkhill Harriers,Dundee Hawkhill/DHH/Dundee HH/Dundee Hawkhill H
+Dundee Road Runners,Dundee Road Runners AC/Dundee RR/DRR
+East Fife Triathlon Club,East Fife Tri/East Fife Triathlon/East Fife Tri Club
+Falkland Trail Runners,Falkland TR/Falkland Trail R/FTR
+Fife AC,Fife Athletic Club/FAC
+Leven Las Vegas RC,Leven Las Vegas/Leven Las Vegas Running Club
+Kinross Road Runners,Kinross RR
+Perth Road Runners,Perth RR
+PH Racing,PH Racing Club
+Recreational Runners,Recreational Running
+RunSum Running Kirkcaldy,RunSum Kirkcaldy/RunSum Running Group/Run Sum Kirkcaldy/Run Sum Running

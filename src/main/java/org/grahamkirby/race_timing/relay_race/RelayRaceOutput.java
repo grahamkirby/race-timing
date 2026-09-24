@@ -103,7 +103,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsCSV() throws IOException {
 
-        final OutputStream stream = getOutputStream(FILE_PREFIX_DETAILED, FILE_SUFFIX_CSV);
+        final OutputStream stream = getOutputStream(FILE_NAME_DETAILED, FILE_SUFFIX_CSV);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printResults(writer, new DetailedResultPrinterCSV(race_results, writer), _ -> "");
@@ -112,7 +112,7 @@ public class RelayRaceOutput extends RaceOutput {
 
     private void printDetailedResultsHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(FILE_PREFIX_DETAILED, FILE_SUFFIX_HTML);
+        final OutputStream stream = getOutputStream(FILE_NAME_DETAILED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
             printDetailedResultsHTML(writer);
@@ -173,7 +173,7 @@ public class RelayRaceOutput extends RaceOutput {
     /** Prints all details to a single web page. */
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(FILE_PREFIX_COMBINED, FILE_SUFFIX_HTML);
+        final OutputStream stream = getOutputStream(FILE_NAME_COMBINED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
@@ -390,7 +390,7 @@ public class RelayRaceOutput extends RaceOutput {
             for (int leg_number = 1; leg_number <= number_of_legs; leg_number++) {
 
                 writer.append(COLUMN_HEADING_RUNNER + "s " + leg_number + "," + LEG + " " + leg_number + ",");
-                if (leg_number < number_of_legs) writer.append(SPLIT + " " + leg_number + ",");
+                if (leg_number < number_of_legs) writer.append(COLUMN_HEADING_SPLIT + " " + leg_number + ",");
             }
 
             writer.append(COLUMN_HEADING_TOTAL).append(LINE_SEPARATOR);
@@ -440,7 +440,7 @@ public class RelayRaceOutput extends RaceOutput {
 
                 headers.add(COLUMN_HEADING_RUNNER + plural + " " + leg_number);
                 headers.add(LEG + " " + leg_number);
-                headers.add(leg_number < number_of_legs ? SPLIT + " " + leg_number : COLUMN_HEADING_TOTAL);
+                headers.add(leg_number < number_of_legs ? COLUMN_HEADING_SPLIT + " " + leg_number : COLUMN_HEADING_TOTAL);
             }
 
             return headers;

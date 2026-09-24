@@ -119,7 +119,7 @@ public class RelayRace implements SingleRaceInternal {
             final String converted_words = normalisation.getNonTitleCaseWords();
 
             if (!converted_words.isEmpty())
-                notes.appendToNotes(NOTES_CONVERTED_TO_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
+                notes.appendToNotes(NOTES_CONVERSION_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
         }
 
         results_output.printNotes(notes);
@@ -497,7 +497,7 @@ public class RelayRace implements SingleRaceInternal {
         // Expected format: "1", "Team 1", "Women Senior", "John Smith", "Hailey Dickson & Alix Crawford", "Rhys Müllar & Paige Thompson", "Amé MacDonald"
 
         if (elements.size() != FIRST_RUNNER_NAME_INDEX + getNumberOfLegs())
-            throw new RuntimeException(ERROR_ENTRY_RELAY_RACE_INVALID_NUMBER_OF_ELEMENTS + ": " + String.join(" ", elements));
+            throw new RuntimeException(ERROR_ENTRY_RELAY_RACE_INVALID + ": " + String.join(" ", elements));
 
         final int bib_number = Integer.parseInt(elements.get(BIB_NUMBER_INDEX));
 

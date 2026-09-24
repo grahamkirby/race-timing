@@ -110,7 +110,7 @@ public class IndividualRace implements SingleRaceInternal {
             final String converted_words = normalisation.getNonTitleCaseWords();
 
             if (!converted_words.isEmpty())
-                notes.appendToNotes(NOTES_CONVERTED_TO_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
+                notes.appendToNotes(NOTES_CONVERSION_TITLE_CASE + ": " + converted_words + LINE_SEPARATOR);
         }
 
         results_output.printNotes(notes);

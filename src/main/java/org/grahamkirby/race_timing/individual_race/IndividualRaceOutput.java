@@ -204,7 +204,7 @@ public class IndividualRaceOutput extends RaceOutput {
     @Override
     protected void printCombinedHTML() throws IOException {
 
-        final OutputStream stream = getOutputStream(FILE_PREFIX_COMBINED, FILE_SUFFIX_HTML);
+        final OutputStream stream = getOutputStream(FILE_NAME_COMBINED, FILE_SUFFIX_HTML);
 
         try (final OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 

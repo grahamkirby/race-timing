@@ -43,6 +43,7 @@ public class NormalisationProcessor {
 
     /** Used when replacing double spaces with single space. */
     private static final Map<String, String> DOUBLE_SPACE_REMOVAL_MAP = Map.of("  ", " ");
+    public static final String STRING_ASSUMED_NOT_TO_OCCUR_IN_INPUT_FILES = "±";
 
     /** Strings that should not be converted to title case. */
     private Set<String> capitalisation_stop_words;
@@ -355,13 +356,33 @@ public class NormalisationProcessor {
         final Map<String, String> map = key_case_sensitive ? new HashMap<>() : new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         final Path path = config.getPath(path_key);
 
-        readAllLines(path).forEach(line -> {
-
-            final String[] parts = line.split(SEPARATOR_CONFIG_OUTER);
-            map.put(parts[0], parts[1]);
-        });
+        readAllLines(path).stream().
+            map(NormalisationProcessor::stripComment).
+            filter(line -> !line.isEmpty()).
+            forEach(line -> loadNormalisations(line, map));
 
         return map;
+    }
+
+    private static void loadNormalisations(final String line, final Map<String, String> map) {
+
+        final String[] parts = line.split(SEPARATOR_CONFIG_OUTER);
+        final String canonical_name = parts[0];
+
+        // If an alternative form includes the separator character it is escaped with backslash
+        // e.g. "U/A" recorded as "U\/A".
+        final String escaped_separator = "\\" + SEPARATOR_CONFIG_INNER;
+
+        // Replace instances of the escaped character with some other character that won't occur naturally.
+        final String alternatives_string = parts[1].replace(escaped_separator, STRING_ASSUMED_NOT_TO_OCCUR_IN_INPUT_FILES);
+
+        for (final String alternative : alternatives_string.split(SEPARATOR_CONFIG_INNER, -1)) {
+
+            // Restore instances of the separator character.
+            final String final_alternative = alternative.replace(STRING_ASSUMED_NOT_TO_OCCUR_IN_INPUT_FILES, SEPARATOR_CONFIG_INNER);
+
+            map.put(final_alternative, canonical_name);
+        }
     }
 
     private static String getMappedElement(final List<String> elements, final String element_combination_map) {
@@ -371,7 +392,7 @@ public class NormalisationProcessor {
         // If it contains "3-5-4" then the result is formed from the third, fifth and fourth values
         // in 'elements' concatenated with spaces.
 
-        return Arrays.stream(element_combination_map.split("-")).
+        return Arrays.stream(element_combination_map.split(SEPARATOR_ELEMENT_MAP)).
             map(column_number_as_string -> elements.get(Integer.parseInt(column_number_as_string) - 1)).
             collect(Collectors.joining(" "));
     }

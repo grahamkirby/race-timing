@@ -32,15 +32,19 @@ import java.util.stream.Stream;
 
 public class Config {
 
-    public static final String FILE_PREFIX_COMBINED = "combined";
-    public static final String FILE_PREFIX_DETAILED = "detailed";
-
-    public static final String DIRECTORY_OUTPUT_NAME = "output";
+    public static final String FILE_NAME_COLLATED_TIMES = "times_collated";
+    public static final String FILE_NAME_COMBINED = "combined";
+    public static final String FILE_NAME_DETAILED = "detailed";
+    public static final String FILE_NAME_DUMMY_RAWTIMES = "dummy_rawtimes";
+    public static final String FILE_NAME_POCKET_TIMER_INPUT = "racers";
+    public static final String FILE_NAME_PROCESSING_NOTES = "processing_notes";
 
     public static final String FILE_SUFFIX_CSV = "csv";
     public static final String FILE_SUFFIX_HTML = "html";
     public static final String FILE_SUFFIX_PDF = "pdf";
     public static final String FILE_SUFFIX_TEXT = "txt";
+
+    public static final String DIRECTORY_NAME_OUTPUT = "output";
 
     public static final String H3_OPEN = "<h3>";
     public static final String H3_CLOSE = "</h3>";
@@ -60,29 +64,23 @@ public class Config {
     public static final String STRONG_CLOSE = "</strong>";
     public static final String BR = "<br />";
 
-    public static final String FILE_NAME_COLLATED_TIMES = "times_collated";
-    public static final String FILE_NAME_POCKET_TIMER_INPUT = "racers";
-    public static final String FILE_NAME_DUMMY_RAWTIMES = "dummy_rawtimes";
-    public static final String FILE_NAME_PROCESSING_NOTES = "processing_notes";
-
     public static final String SEPARATOR_CONFIG_INNER = "/";
     public static final String SEPARATOR_CONFIG_OUTER = ",";
     public static final String SEPARATOR_CSV = ",";
+    public static final String SEPARATOR_ELEMENT_MAP = "-";
     public static final String SEPARATOR_ENTRY = "\t";
     public static final String SEPARATOR_RAW_RESULT = "\t";
     public static final String SEPARATOR_RELAY_RACE_RESULT_ANNOTATION = "\t";
     public static final String SEPARATOR_RUNNER_PAIR_NAMES = " & ";
 
-    /** Comment symbol used within configuration files. */
-    public static final String INDICATOR_COMMENT = "#";
-
-    public static final String INDICATOR_EQUAL_POSITION = "=";
-    public static final String INDICATOR_MASS_START = "M";
-
     /** Used when a result is recorded without a bib number. */
     public static final String INDICATOR_BIB_NUMBER_UNKNOWN = "?";
-    public static final String INDICATOR_TIME_UNKNOWN = "?";
     public static final String INDICATOR_CLUB_UNKNOWN = "?";
+    /** Comment symbol used within configuration files. */
+    public static final String INDICATOR_COMMENT = "#";
+    public static final String INDICATOR_EQUAL_POSITION = "=";
+    public static final String INDICATOR_MASS_START = "M";
+    public static final String INDICATOR_TIME_UNKNOWN = "?";
 
     public static final String ERROR_AGE_RANGE_INTERSECTING = "invalid intersecting age ranges";
     public static final String ERROR_AGE_RANGE_INVALID = "invalid age range";
@@ -107,21 +105,21 @@ public class Config {
     public static final String ERROR_CONFIG_RACE_INVALID = "invalid config for race";
     public static final String ERROR_CONFIG_RACE_NONE_APPLICABLE = "no applicable race type for config file";
     public static final String ERROR_DNF_NO_RESULT = "recorded as DNF but no result was recorded";
-    public static final String ERROR_ENTRY_RELAY_RACE_INVALID_NUMBER_OF_ELEMENTS = "invalid number of elements";
+    public static final String ERROR_ENTRY_RELAY_RACE_INVALID = "invalid number of elements";
     public static final String ERROR_ENTRY_DUPLICATE = "duplicate entry";
-    public static final String ERROR_FILE_DIR_CREATION = "cannot create output directory, or file within it";
     public static final String ERROR_FILE = "in file";
+    public static final String ERROR_FILE_DIR_CREATION = "cannot create output directory, or file within it";
     public static final String ERROR_FILE_UNUSED = "unused input files";
     public static final String ERROR_GENDER_INCONSISTENT = "genders are not consistent between entry categories";
     public static final String ERROR_LEG_NUMBER_INVALID = "invalid leg number for key";
     public static final String ERROR_MASS_START_TIME_INVALID = "invalid mass start time for key";
     public static final String ERROR_MASS_START_ORDER_INVALID = "invalid mass start time order for key";
-    public static final String ERROR_TEAM_SURPLUS_RESULT = "surplus result for team";
     public static final String ERROR_PRIZES_INVALID_NUMBER = "invalid number of prizes";
     public static final String ERROR_RAW_RESULT_INVALID = "invalid record";
     public static final String ERROR_RAW_RESULT_INVALID_ORDER = "result out of order at line";
     public static final String ERROR_SERIES_NUMBER_INVALID = "invalid number of races specified in file";
     public static final String ERROR_SERIES_DUPLICATES = "duplicate races specified in file";
+    public static final String ERROR_TEAM_SURPLUS_RESULT = "surplus result for team";
 
     public static final String HEADING_CATEGORY = "Category";
     public static final String HEADING_CATEGORY_PRIZES = "Category Prizes";
@@ -134,13 +132,15 @@ public class Config {
     public static final String HEADING_TEAM_PRIZES = "Team Prizes";
 
     public static final String NOTES_BIB_NUMBERS_NO_TIMES = "Bib numbers with missing times:";
-    public static final String NOTES_CATEGORY_CHANGE1 = "changed from";
-    public static final String NOTES_CATEGORY_CHANGE2 = "during series";
+    public static final String NOTES_CATEGORY_CHANGE_AT = "at";
+    public static final String NOTES_CATEGORY_CHANGE_DURING = "during series";
+    public static final String NOTES_CATEGORY_CHANGE_FROM = "changed from";
+    public static final String NOTES_CATEGORY_CHANGE_TO = "to";
     public static final String NOTES_CATEGORY_UNKNOWN = "unknown category so omitted from overall results";
-    public static final String NOTES_CONVERTED_TO_TITLE_CASE = "Converted to title case";
     public static final String NOTES_CATEGORY_CHANGE_HEADER = "Category Changes";
     public static final String NOTES_CATEGORY_CHANGE = "changed category from";
     public static final String NOTES_CLUB_SUBSTITUTION = "substituted for unknown clubs for runner name";
+    public static final String NOTES_CONVERSION_TITLE_CASE = "Converted to title case";
     public static final String NOTES_DISCREPANCIES = "Discrepancies";
     public static final String NOTES_MULTIPLE_CLUBS_FOR_RUNNER = "recorded for multiple clubs";
     public static final String NOTES_MULTIPLE_RUNNERS_WITH_NAME = "assuming there are multiple runners with this name";
@@ -164,16 +164,16 @@ public class Config {
     public static final String COLUMN_HEADING_CLUB = "Club";
     public static final String COLUMN_HEADING_POSITION = "Pos";
     public static final String COLUMN_HEADING_RUNNER = "Runner";
+    public static final String COLUMN_HEADING_SPLIT = "Split";
     public static final String COLUMN_HEADING_TEAM = "Team";
     public static final String COLUMN_HEADING_TIME = "Time";
     public static final String COLUMN_HEADING_TOTAL = "Total";
 
-    public static final String AT = "at";
     public static final String AT_LINE = "at line";
     public static final String FIRST = "First";
     public static final String LEG = "Leg";
-    public static final String SPLIT = "Split";
-    public static final String TO = "to";
+
+    // Replace with logic to extract from club name aliases file.
     public static final String UNATTACHED = "Unatt.";
 
     public static final String PREFIX_LEG = LEG.toLowerCase() + "_";
@@ -469,7 +469,7 @@ public class Config {
         // This assumes that the config file is in the "input" directory
         // which is at the same level as the "output" directory.
 
-        return config_path.getParent().resolveSibling(DIRECTORY_OUTPUT_NAME);
+        return config_path.getParent().resolveSibling(DIRECTORY_NAME_OUTPUT);
     }
 
     public String getRaceName() {
