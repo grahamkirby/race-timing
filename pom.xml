@@ -33,13 +33,7 @@
 
     <dependencies>
 
-        <!-- These override insecure transitive dependencies -->
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>[2.21.5,)</version>
-        </dependency>
+        <!-- Any dependencies listed here override insecure transitive dependencies -->
 
         <!-- Direct dependencies -->
 
