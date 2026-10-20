@@ -1,0 +1,11 @@
+YEAR = 2026
+RACE_NAME_FOR_RESULTS = Giffordtown 5K
+RACE_NAME_FOR_FILENAMES = giffordtown
+
+# Relative to directory containing configuration file.
+ENTRIES_PATH = entries.txt
+RAW_RESULTS_PATH = rawtimes.txt
+CATEGORY_MAP_PATH = category_map.csv
+PRIZE_CATEGORIES_PATH = categories_prize_individual_senior.csv
+
+ENTRY_COLUMN_MAP = 1,2-3,4,5

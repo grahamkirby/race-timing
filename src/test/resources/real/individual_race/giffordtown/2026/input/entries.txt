@@ -1,0 +1,186 @@
+1	David	Aitken	Dundee Road Runners	M50
+2	Mark	Allan		MSen
+3	David	Baird	Dundee Road Runners	M40
+4	Reuben	Banks		MSen
+5	Twig	Barber	Falkland TR	FSen
+6	James	Barnet	Dundee Road Runners	M40
+7	Carol	Batey	Kirkcaldy Wizards	F60
+8	Lauren	Bennet	PH Racing Club	FSen
+9	Nick	Bennett	Dundee Road Runners	MSen
+10	Wright	Beveridge	PH Racing Club	M50
+11	Keith	Bonthrone	Fife AC	M60
+12	Innes	Bracegirdle	Fife AC	F70
+13	Kevin	Brady	Anster Haddies RC	M40
+14	John	Brady	Anster Haddies RC	MU20
+15	Ian	Brooks		M50
+16	Isobel	Burnett	Carnegie Harriers	F60
+17	Arman	Buta	Kirkcaldy Wizards	MSen
+18	Alexander	Byrne	Thames Valley H	MSen
+19	Leanne	Calder	Edinburgh Athletic Club	F40
+20	Max	Callender- Galbraith	Fife AC	MU20
+21	David	Cole	Wormit Runners	M40
+22	Lesley	Coutts	Dundee Road Runners	F60
+23	Kenny	Cowie	Carnegie Harriers	M40
+24	Keith	Crane	Fife AC	M40
+25	James	Crawford	Fife AC	M60
+26	John	Crookston	PH Racing Club	M60
+27	Alan	Cunningham	Corstorphine AAC	M50
+28	Amber	Cunningham	Harmeny AC	FU20
+29	Dale	Cunningham		M40
+30	Samantha	Cunningham	Fife AC	FU20
+31	Lindsay	Darling-Brackenridge	Dundee Road Runners	M40
+32	Laura	Darling-Brackenridge	Dundee Road Runners	F40
+33	Chris	Dewar		M40
+34	Jennifer	Douglas		FSen
+35	Nicola	Duncan		F50
+36	Ryan	Dunning	Fife AC	M40
+37	Ewan	Duthie	Dundee Road Runners	MSen
+38	Daniel	Dutton	Dundee Road Runners	MSen
+39	Duncan	Edward	Dundee Road Runners	M40
+187	Andrew	Edward		M40
+41	Shona	Ewing		F50
+42	Daniel	Fields	Dundee Road Runners	M40
+43	Finlay	Finlay	Garscube H	M40
+44	Heather	Finlayson	Kirkcaldy Wizards	F60
+45	Daniel	Forbes	Carnegie Harriers	MU20
+46	David	Forbes	Carnegie Harriers	M40
+47	Paul	Forbes	Edinburgh Athletic Club	M60
+48	Kim	Forbes		F60
+49	Mary	Gallagher		F40
+50	Ella	Gallagher		FU20
+51	Thomas	Gambino	Fife AC	MSen
+52	John	Gibbs	Penicuik H	M40
+53	Carrie	Gibbs		F40
+54	Peter	Gibson	PH Racing Club	MSen
+55	Andrew	Gibson	Teviotdale H	M40
+56	Rikki	Gillespie	Dundee Road Runners	MSen
+57	Phillip	Gillespie	Dundee Road Runners	M50
+58	Rebecca	Gillespie		FSen
+59	Regan	Gillespie		MSen
+60	Clare	Graham	PH Racing Club	F50
+61	Scott	Graves	Dundee Road Runners	M40
+62	Ryan	Gray	Fife AC	MSen
+63	Stuart	Green	PH Racing Club	M40
+64	Andy	Harley	Fife AC	M40
+65	Adam	Hart	Dundee Road Runners	MSen
+66	Mel	Hayes	Dundee Road Runners	F40
+67	Scott	Henderson	Dundee Road Runners	MSen
+68	Louise	Henderson	Dundee Road Runners	F40
+69	Shaun	Henderson		MSen
+70	Dominic	Hughes	Dundee Road Runners	M40
+71	Kevin	Hughes	PH Racing Club	M50
+72	Bailee	Hunter	Couch 2 5k by Michaela	FSen
+73	Martin	Hutchinson	Dundee Road Runners	M50
+74	Jordy	Hutt	PH Racing Club	MSen
+75	John	Hynd	Carnegie Harriers	M60
+76	Bob	Irving	PH Racing Club	MSen
+77	Harry	Kay	Dundee Road Runners	M70
+78	James	Kelman	Fife AC	M60
+79	Allan	Kettles	Dundee Road Runners	M50
+80	Liz	Killean	Fife AC	F60
+81	Shania	King	Dundee Hawkhill H	FSen
+82	Tim	Kinnaird	Fife AC	M40
+83	Isla	Kinnaird	Fife AC	FU20
+84	Murray	Kinnaird	Fife AC	MU20
+85	Ben	Kinninmonth	Fife AC	MSen
+86	Johanna	Kirk	Kirkcaldy Wizards	F50
+87	Vikki	Laing	Kirkcaldy Wizards	F40
+88	Brian	Lawrence	Dundee Road Runners	M60
+89	Keun Joung	Lee	Dundee Road Runners	F40
+90	Louise	Lessels	Falkland TR	F40
+91	Jamie	Lessels	Fife AC	MSen
+92	Michael	Lindsay	PH Racing Club	M40
+93	Mairi	Littleson	Dundee Road Runners	FSen
+94	Scott	Love	PH Racing Club	M40
+95	Fred	Lowe	Carnegie Harriers	M50
+96	Iain	Luke	Dundee Road Runners	M70
+97	Miguel	Luna-Sanchez		MSen
+98	George	MacDonald	Kirkcaldy Wizards	M60
+99	Marcas	Macfarlane	Fife AC	MU20
+40	Neil	MacLeod		M40
+101	Allison	MacPherson	Falkland TR	F40
+102	Steven	Maloney	Dundee Road Runners	M40
+103	Morag	Martin	Dundee Road Runners	F50
+104	Joseph	Martin		MSen
+105	Margaret	Martin	Fife AC	F70
+106	Dave	Martin	Dundee Road Runners	M50
+107	Scott	McClung	Fife AC	MSen
+108	Padraic	McConville		MSen
+109	Sandy	McDougall	Dundee Hawkhill H	F40
+110	Lachlan	McGhie	Carnegie Harriers	MSen
+111	John	Mcintosh	Edinburgh Athletic Club	M60
+112	Abby	McIntosh	Kirkcaldy Wizards	F40
+113	John	Mcintyre snr	Fife AC	M50
+114	Josh	McKay	Dundee Road Runners	MSen
+115	Craig	McLaren	Carnegie Harriers	M50
+116	Stuart	Meiklejohn	PH Racing Club	M40
+117	Louise	Menzies	Dundee Road Runners	F40
+118	Shannon	Mika		FSen
+119	Gordon	Milligan	Dundee Road Runners	M50
+120	Michael	Mitchell	Dundee Road Runners	M50
+121	Ed	Norton	PH Racing Club	M70
+122	Anna	Nowakowska		F40
+123	Craig	O'Donnell	Dunbar RC	M40
+124	Stefan	O'Grady	Dundee Road Runners	M40
+125	Charlotte	Paddison	Fife AC	FU20
+126	Alistair	Paddison		M40
+127	Angie	Parkin	Carnegie Harriers	F50
+128	Norry	Passway	Dundee Hawkhill H	M60
+129	Tracey	Passway	Dundee Hawkhill H	F60
+130	Niall	Patterson	Carnegie Harriers	M60
+131	Tom	Rainey	Anster Haddies RC	M40
+132	Graeme	Ramshaw		M40
+133	Summer	Ramshaw		FU20
+134	Leanne	Reid	Kirkcaldy Wizards	F40
+135	Graham	Rena	Dundee Road Runners	M50
+136	Michael	Richardson	Dundee Road Runners	MSen
+137	Ailsa	Roberts		FSen
+138	Iain	Rodger		M40
+139	Martin	Rollo	Dundee Road Runners	M60
+140	Andrew	Rose		MSen
+141	Fergus	Russell	Fife AC	M40
+142	Rachel	Russell		FSen
+143	Ben	Sandilands	Fife AC	MSen
+144	Rory	Sandilands	Fife AC	M40
+145	Claire	Sandilands	Fife AC	F50
+146	Darren	Sayer		MSen
+147	Arron	Small	Dundee Road Runners	MSen
+148	James	Small	Dundee Road Runners	M50
+149	Keirra	Small	Dundee Road Runners	FSen
+150	Barry	Smith	PH Racing Club	M40
+151	Isla	Smith	Kirkcaldy Wizards	F40
+152	Joey	Smith	Fife AC	MU20
+153	Damani	Smith		MSen
+154	Sondai	Smith		MSen
+155	Gordon	Somerville	Carnegie Harriers	M60
+156	Andrew	Spence	Carnegie Harriers	M40
+157	Kevin	Spowart	Carnegie Harriers	M40
+158	Scott	Stables	Dundee Road Runners	MSen
+159	Lissa	Stewart	Dundee Road Runners	F40
+160	Douglas	Stirling	Dundee Road Runners	M60
+161	Gail	Stirling	Dundee Road Runners	F60
+162	Graeme	Stirling	Carnegie Harriers	M60
+163	Billy	Sutherland	Ross County AC	MU20
+164	Alison	Sutherland	Fife AC	F40
+165	Carter	Taylor	Fife AC	MSen
+166	John	Thomson	Fife AC	M60
+167	Claire	Thornton-Granville	Dundee Road Runners	F40
+168	Stuart	Tite	Kirkcaldy Wizards	M40
+169	Ruan	Van Rensburg	Fife AC	MSen
+170	Louise	Walker	Kirkcaldy Wizards	FSen
+171	Peter	Warland	Dundee Road Runners	M60
+172	Sharon	Warland	Dundee Road Runners	F60
+173	Ian	Watters	Kirkcaldy Wizards	M70
+174	David	Webster	Dundee Road Runners	MSen
+175	Sarah	Wellcoat	Carnegie Harriers	FSen
+176	Mark	Western	PH Racing Club	M60
+177	Mary	Western	PH Racing Club	F60
+178	Lewis	Whittingham	Fife AC	MU20
+179	Ralph	Williams	Carnegie Harriers	M50
+180	Amanda	Worrall		F50
+181	Andrew	Wright	PH Racing Club	M50
+182	Raymond	Young		M70
+183	Mike	Young		M40
+184	Judith	Turner	PH Racing Club	F50
+185	Donald	Gavine	Dundee Hawkhill H	MSen
+186	Rose	Ryan	Perth Road Runners	FSen
