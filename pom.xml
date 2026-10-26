@@ -48,6 +48,12 @@
 
         <!-- Any dependencies listed here override insecure transitive dependencies -->
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>[2.21.4,)</version>
+        </dependency>
+
         <!-- Direct dependencies -->
 
         <dependency>
