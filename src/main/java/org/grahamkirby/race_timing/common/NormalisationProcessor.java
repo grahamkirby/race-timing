@@ -44,6 +44,7 @@ public class NormalisationProcessor {
     /** Used when replacing double spaces with single space. */
     private static final Map<String, String> DOUBLE_SPACE_REMOVAL_MAP = Map.of("  ", " ");
     public static final String STRING_ASSUMED_NOT_TO_OCCUR_IN_INPUT_FILES = "±";
+    public static final String NOTES_TITLE_CASE_WORDS_SEPARATOR = ",";
 
     /** Strings that should not be converted to title case. */
     private Set<String> capitalisation_stop_words;
@@ -94,7 +95,7 @@ public class NormalisationProcessor {
 
         return non_title_case_words.stream().
             sorted().
-            collect(Collectors.joining(", "));
+            collect(Collectors.joining(NOTES_TITLE_CASE_WORDS_SEPARATOR + SPACE));
     }
 
     /** Maps the given category to normalised form if any. */
@@ -156,14 +157,14 @@ public class NormalisationProcessor {
     /** Gets the first name of the given runner, or of the first runner if it's a pair. */
     public static String getFirstNameOfRunner(final String s) {
 
-        return s.split(" ")[0];
+        return s.split(SPACE)[0];
     }
 
     /** Gets the last name of the given runner, or of the first runner if it's a pair. */
     public static String getLastNameOfRunner(final String s) {
 
         final String runner = s.contains(SEPARATOR_RUNNER_PAIR_NAMES) ? s.split(SEPARATOR_RUNNER_PAIR_NAMES)[0] : s;
-        return Arrays.stream(runner.split(" ")).toList().getLast();
+        return Arrays.stream(runner.split(SPACE)).toList().getLast();
     }
 
     /** Replaces any accented characters with HTML entity codes. */
@@ -174,7 +175,7 @@ public class NormalisationProcessor {
     /** Encodes a single value by surrounding with quotes if it contains a comma. */
     public static String csvEncode(final String s) {
 
-        return s.contains(",") ? "\"" + s + "\"" : s;
+        return s.contains(NOTES_TITLE_CASE_WORDS_SEPARATOR) ? "\"" + s + "\"" : s;
     }
 
     /** Parses the given time string, trying both colon and full stop as separators. */

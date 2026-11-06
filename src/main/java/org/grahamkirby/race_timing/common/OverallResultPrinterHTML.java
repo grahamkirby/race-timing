@@ -36,44 +36,34 @@ public abstract class OverallResultPrinterHTML extends ResultPrinter {
     @Override
     public void printResultsHeader() throws IOException {
 
-        writer.append("""
-            <table class="fac-table">
-                <thead>
-                    <tr>
-            """);
+        writer.append(TABLE_OPEN + LINE_SEPARATOR +
+            INDENT + THEAD_OPEN + LINE_SEPARATOR +
+            INDENT + INDENT + TR_OPEN + LINE_SEPARATOR);
 
         for (final String header : getResultsColumnHeaders())
-            writer.append("            " + TH_OPEN + header + TH_CLOSE + LINE_SEPARATOR);
+            writer.append(INDENT + INDENT + INDENT + TH_OPEN + header + TH_CLOSE + LINE_SEPARATOR);
 
-        writer.append("""
-                    </tr>
-                </thead>
-                <tbody>
-            """);
+        writer.append(
+            INDENT + INDENT + TR_CLOSE + LINE_SEPARATOR +
+            INDENT + THEAD_CLOSE + LINE_SEPARATOR +
+            INDENT + TBODY_OPEN + LINE_SEPARATOR);
     }
 
     @Override
     public void printResult(final RaceResult result) throws IOException {
 
-        writer.append("""
-                    <tr>
-            """);
+        writer.append(INDENT + INDENT + TR_OPEN + LINE_SEPARATOR);
 
         for (final String element : getResultsElements(result))
-            writer.append("            " + TD_OPEN + element + TD_CLOSE + LINE_SEPARATOR);
+            writer.append(INDENT + INDENT + INDENT + TD_OPEN + element + TD_CLOSE + LINE_SEPARATOR);
 
-        writer.append("""
-                    </tr>
-            """);
+        writer.append(INDENT + INDENT + TR_CLOSE + LINE_SEPARATOR);
     }
 
     @Override
     public void printResultsFooter() throws IOException {
 
-        writer.append("""
-                </tbody>
-            </table>
-            """);
+        writer.append(INDENT + TBODY_CLOSE + LINE_SEPARATOR + TABLE_CLOSE + LINE_SEPARATOR);
     }
 
     @Override

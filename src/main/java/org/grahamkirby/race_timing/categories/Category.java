@@ -20,8 +20,7 @@ package org.grahamkirby.race_timing.categories;
 
 import org.grahamkirby.race_timing.common.NormalisationProcessor;
 
-import static org.grahamkirby.race_timing.common.Config.ERROR_AGE_RANGE_INVALID;
-import static org.grahamkirby.race_timing.common.Config.ERROR_CATEGORY_MISSING_ELEMENTS;
+import static org.grahamkirby.race_timing.common.Config.*;
 
 /**
  * Parent class for entry category and prize category.
@@ -59,7 +58,7 @@ public abstract class Category {
 
     Category(final String components) {
 
-        final String[] parts = components.split(",", -1);
+        final String[] parts = components.split(CATEGORY_SEPARATOR, -1);
 
         if (parts.length <= CATEGORY_INDEX_MAXIMUM_AGE)
             throw new RuntimeException(ERROR_CATEGORY_MISSING_ELEMENTS);
@@ -74,7 +73,7 @@ public abstract class Category {
             age_range = new AgeRange(Integer.parseInt(minimum_age_as_string), Integer.parseInt(maximum_age_as_string));
         }
         catch (NumberFormatException _) {
-            throw new RuntimeException(ERROR_AGE_RANGE_INVALID + " for category: " + minimum_age_as_string + ", " + maximum_age_as_string);
+            throw new RuntimeException(ERROR_AGE_RANGE_INVALID + SPACE + FOR_CATEGORY + ": " + minimum_age_as_string + ", " + maximum_age_as_string);
         }
     }
 
@@ -100,6 +99,6 @@ public abstract class Category {
     @Override
     public String toString() {
 
-        return getShortName() + " (" + getAgeRange().getMinimumAge() + "," + getAgeRange().getMaximumAge() + ")";
+        return getShortName() + " (" + getAgeRange().getMinimumAge() + CATEGORY_SEPARATOR + getAgeRange().getMaximumAge() + ")";
     }
 }

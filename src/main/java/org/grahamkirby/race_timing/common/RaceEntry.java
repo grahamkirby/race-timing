@@ -35,7 +35,7 @@ public class RaceEntry {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @SuppressWarnings({"OverlyBroadCatchBlock", "IfCanBeAssertion"})
+//    @SuppressWarnings({"OverlyBroadCatchBlock", "IfCanBeAssertion"})
     public RaceEntry(final List<String> elements, final SingleRaceInternal race) {
 
         final NormalisationProcessor normalisation = race.getNormalisationProcessor();

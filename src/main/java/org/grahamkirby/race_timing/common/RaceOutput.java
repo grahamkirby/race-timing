@@ -143,7 +143,7 @@ public abstract class RaceOutput {
         if (race_results != null)
             for (final RaceResult result : race_results.getOverallResults())
                 if (result.getEntryCategory() == null)
-                    race_results.getNotesProcessor().appendToNotes(COLUMN_HEADING_RUNNER + " " + result.getParticipantName() + " " + NOTES_CATEGORY_UNKNOWN + LINE_SEPARATOR);
+                    race_results.getNotesProcessor().appendToNotes(COLUMN_HEADING_RUNNER + SPACE + result.getParticipantName() + SPACE + NOTES_CATEGORY_UNKNOWN + LINE_SEPARATOR);
     }
 
     /** Prints out the words converted to title case, and any other processing notes. */
@@ -268,12 +268,12 @@ public abstract class RaceOutput {
 
         try {
             final String header = HEADING_CATEGORY + ": " + category.getLongName();
-            writer.append(header + LINE_SEPARATOR + underline(header, "-")).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+            writer.append(header + LINE_SEPARATOR + underline(header, SINGLE_UNDERLINE_CHAR) + LINE_SEPARATOR + LINE_SEPARATOR);
 
             final List<? extends RaceResult> category_prize_winners = race_results.getPrizeWinners(category);
             printer.print(category_prize_winners);
 
-            writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+            writer.append(LINE_SEPARATOR + LINE_SEPARATOR);
         }
         // Called from lambda that can't throw checked exception.
         catch (final IOException e) {
@@ -284,9 +284,9 @@ public abstract class RaceOutput {
     protected void printPrizesHeaderText(final OutputStreamWriter writer) throws IOException {
 
         final String race_name = race_results.getConfig().getRaceName();
-        final String header = race_name + " " + HEADING_RESULTS + " " + race_results.getConfig().getString(KEY_YEAR);
+        final String header = race_name + SPACE + HEADING_RESULTS + SPACE + race_results.getConfig().getString(KEY_YEAR);
 
-        writer.append(header + LINE_SEPARATOR + underline(header, "=")).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+        writer.append(header + LINE_SEPARATOR + underline(header, DOUBLE_UNDERLINE_CHAR) + LINE_SEPARATOR + LINE_SEPARATOR);
     }
 
     protected void printPrizesText() throws IOException {
@@ -320,7 +320,7 @@ public abstract class RaceOutput {
         final Paragraph section_header = new Paragraph().
             setFont(getFont(PDF_PRIZE_FONT_NAME)).
             setFontSize(PDF_PRIZE_FONT_SIZE).
-            add(race_name + " " + year + " " + HEADING_CATEGORY_PRIZES);
+            add(race_name + SPACE + year + SPACE + HEADING_CATEGORY_PRIZES);
 
         document.add(section_header);
         printPrizes(category -> printPrizesPDF(category, document, printer));
@@ -370,13 +370,13 @@ public abstract class RaceOutput {
         @Override
         public void printResult(final RaceResult result) throws IOException {
 
-            writer.append(result.getPositionString() + ": " + result).append(LINE_SEPARATOR);
+            writer.append(result.getPositionString() + ": " + result + LINE_SEPARATOR);
         }
 
         @Override
         public void printNoResults() throws IOException {
 
-            writer.append(HEADING_NO_RESULTS).append(LINE_SEPARATOR);
+            writer.append(HEADING_NO_RESULTS + LINE_SEPARATOR);
         }
     }
 }

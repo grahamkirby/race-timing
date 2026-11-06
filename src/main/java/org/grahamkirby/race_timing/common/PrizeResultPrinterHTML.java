@@ -40,21 +40,21 @@ public class PrizeResultPrinterHTML extends ResultPrinter {
     @Override
     public void printResult(final RaceResult result) throws IOException {
 
-        writer.append("    ").
-            append(LI_OPEN).append(result.getPositionString()).append(" ").
-            append(race_results.getNormalisationProcessor().htmlEncode(String.valueOf(result))).
-            append(LI_CLOSE).append(LINE_SEPARATOR);
+        writer.append(
+            INDENT + LI_OPEN + result.getPositionString() + SPACE +
+            race_results.getNormalisationProcessor().htmlEncode(String.valueOf(result)) +
+            LI_CLOSE + LINE_SEPARATOR);
     }
 
     @Override
     public void printResultsFooter() throws IOException {
 
-        writer.append(UL_CLOSE).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+        writer.append(UL_CLOSE + LINE_SEPARATOR + LINE_SEPARATOR);
     }
 
     @Override
     public void printNoResults() throws IOException {
 
-        writer.append(PARA_OPEN + HEADING_NO_RESULTS + PARA_CLOSE).append(LINE_SEPARATOR);
+        writer.append(PARA_OPEN + HEADING_NO_RESULTS + PARA_CLOSE + LINE_SEPARATOR);
     }
 }

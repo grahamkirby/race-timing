@@ -72,7 +72,7 @@ public class RawResult {
 
     public void appendComment(final String comment) {
 
-        if (!this.comment.isEmpty()) this.comment += " ";
+        if (!this.comment.isEmpty()) this.comment += SPACE;
         this.comment += comment;
     }
 }

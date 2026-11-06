@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 import static org.grahamkirby.race_timing.common.Config.*;
 
 public abstract class RaceResultsProcessor implements RaceResults {
+    public static final String NO_POSITION_INDICATOR = "-";
+    public static final String DNF_SEPARATOR = ",";
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -169,7 +171,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
                     result.setPositionString(String.valueOf(result_index + 1));
 
             } else
-                result.setPositionString("-");
+                result.setPositionString(NO_POSITION_INDICATOR);
         }
     }
 
@@ -259,7 +261,7 @@ public abstract class RaceResultsProcessor implements RaceResults {
         final String dnf_string = (String) race.getConfig().get(KEY_DNF_FINISHERS);
 
         if (dnf_string != null && !dnf_string.isBlank())
-            for (final String individual_dnf_string : dnf_string.split(","))
+            for (final String individual_dnf_string : dnf_string.split(DNF_SEPARATOR))
                 recordDNF(individual_dnf_string);
     }
 

@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 
 import static org.grahamkirby.race_timing.common.Config.*;
 
-@SuppressWarnings("preview")
 public class RaceConfigAdjuster extends ConfigProcessor {
 
     public static final Path DEFAULT_CONFIG_ROOT_PATH = Path.of("/src/main/resources/configuration");

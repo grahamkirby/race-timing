@@ -30,8 +30,7 @@ public interface Race {
     // TODO move interpolation from RelayRace to SingleRace.
     // TODO store forenames and surnames separately to allow sorting on multi-word surnames.
     // TODO rationalise config syntax for dead heats and dnfs.
-    // TODO rationalise duplication of error message strings.
-    // TODO use paths rather than strings wherever possible.
+    // TODO tidy Config.java.
 
     /**
      * Processes the race data and generates results.

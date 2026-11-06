@@ -64,6 +64,17 @@ public class Config {
     public static final String STRONG_CLOSE = "</strong>";
     public static final String BR = "<br />";
 
+    public static final String TR_OPEN = "<tr>";
+    public static final String THEAD_OPEN = "<thead>";
+    public static final String TABLE_OPEN = "<table class=\"fac-table\">";
+    public static final String INDENT = "    ";
+    public static final String TR_CLOSE = "</tr>";
+    public static final String THEAD_CLOSE = "</thead>";
+    public static final String TBODY_OPEN = "<tbody>";
+    public static final String TBODY_CLOSE = "</tbody>";
+    public static final String TABLE_CLOSE = "</table>";
+    public static final String SPACE = " ";
+
     public static final String SEPARATOR_CONFIG_INNER = "/";
     public static final String SEPARATOR_CONFIG_OUTER = ",";
     public static final String SEPARATOR_CSV = ",";
@@ -73,9 +84,30 @@ public class Config {
     public static final String SEPARATOR_RELAY_RACE_RESULT_ANNOTATION = "\t";
     public static final String SEPARATOR_RUNNER_PAIR_NAMES = " & ";
 
+    public static String singleQuote(final String s) {
+        return "'" + s + "'";
+    }
+
+    public static String singleQuote(final Path p) {
+        return "'" + p + "'";
+    }
+
+    public static String curlyBrackets(final String s) {
+        return "{" + s + "}";
+    }
+
+    public static final String CATEGORY_SEPARATOR = ",";
+    public static final String FOR_CATEGORY = "for category";
+    public static final String SINGLE_UNDERLINE_CHAR = "-";
+    public static final String DOUBLE_UNDERLINE_CHAR = "=";
+
+    public static final String IN_FILE = "in file";
+    public static final String FOR_KEY = "for key";
+
     /** Used when a result is recorded without a bib number. */
     public static final String INDICATOR_BIB_NUMBER_UNKNOWN = "?";
     public static final String INDICATOR_CLUB_UNKNOWN = "?";
+
     /** Comment symbol used within configuration files. */
     public static final String INDICATOR_COMMENT = "#";
     public static final String INDICATOR_EQUAL_POSITION = "=";
